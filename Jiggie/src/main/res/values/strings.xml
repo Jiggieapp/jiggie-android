@@ -1,0 +1,155 @@
+<resources>
+    <string name="app_name">Jiggie</string>
+    <!--<string name="server_host">https://jiggie-dev.herokuapp.com/app/v3/</string>-->
+    <string name="server_host">https://jiggie.herokuapp.com/app/v3/</string>
+    <string name="gcm_project_number">86543651746</string>
+    <string name="google_api_key">AIzaSyDI11veTh3B7nPq1x_tVQcuoUf-9otkpEg</string>
+    <string name="facebook_app_id">840535009393707</string>
+    <string name="support_email">support@jiggieapp.com</string>
+    <string name="appsflyer_devkey">D4Uux6HSu3aYjNHkCHsTiC</string>
+    <string name="mixpanel_token">0a94cf8d4142e2803752e9ca812a8e53</string>
+
+    <string name="broadcast_notification">jiggie.broadcast.notification</string>
+    <string name="broadcast_social">jiggie.broadcast.social</string>
+    <string name="broadcast_social_chat">jiggie.broadcast.social.chat</string>
+
+    <string name="error_could_not_connect_server">Could not connect to server</string>
+    <string name="error_connection_failed">Connection failed</string>
+    <string name="error_no_connection">No connection</string>
+    <string name="error_unknown">Unknown error</string>
+
+    <string name="facebook_permission_required">To get the full benefits of Jiggie\n please accept the following Facebook permission(s): Birthday, Email, Photos, Location, About_me</string>
+    <string name="welcome_description">Welcome to Jiggie, Jiggie shows you great\nevents near you - let\'s get going.</string>
+    <string name="we_dont_post">We don\'t post anything to Facebook</string>
+    <string name="sign_in_facebook">Sign in with Facebook</string>
+    <string name="have_account">I have a Jiggie account</string>
+    <string name="see_whats_going">See whats going on&#8230;</string>
+    <string name="browse_the_latest">Browse the latest events in Jakarta</string>
+    <string name="check_other_guest">Check out other guests who like the same events you do</string>
+    <string name="connect_with_other">Connect with other fun loving people and make new friends</string>
+    <string name="chat_with_new_friends">Chat with your new friends and make plans to meet up</string>
+    <string name="rate_app">Rate Jiggie</string>
+    <string name="rate_app_desc">If you enjoy using Jiggie, please take a moment to rate it. \n\nThanks for your support!</string>
+    <string name="guest_interested_title">GUESTS INTERESTED</string>
+    <string name="rate">Rate</string>
+    <string name="never">Never</string>
+    <string name="later">Later</string>
+    <string name="events">Events</string>
+    <string name="chat">Chat</string>
+    <string name="social">Social</string>
+    <string name="more">More</string>
+    <string name="open_drawer">Open drawer</string>
+    <string name="close_drawer">Close drawer</string>
+    <string name="distance">Distance</string>
+    <string name="distance_sort">Sort guests by their distance&#8230;</string>
+    <string name="age">Age</string>
+    <string name="age_sort">Sort guests by their age&#8230;</string>
+    <string name="profile">Profile</string>
+    <string name="invite">Invite friends</string>
+    <string name="settings">Settings</string>
+    <string name="support">Support</string>
+    <string name="logout">Logout</string>
+    <string name="user_viewing">%1$s also interested in</string>
+    <string name="location_viewing">%1$s at %2$s</string>
+    <string name="connect_with">Connect with %1$s?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="dash"> - </string>
+    <string name="recent">Recent</string>
+    <string name="previous">Previous</string>
+    <string name="loading">Loading</string>
+    <string name="description">Description</string>
+    <string name="connect">Connect</string>
+    <string name="sent">Sent</string>
+    <string name="interested">Interested</string>
+    <string name="event_interested_guests">See who\'s checked out this event</string>
+    <string name="user_age">%1$s, %2$s</string>
+    <string name="about">About</string>
+    <string name="about_you">About You</string>
+    <string name="save">Save</string>
+    <string name="confirmation">Are you sure?</string>
+    <string name="notification">Notification</string>
+    <string name="gender">Gender</string>
+    <string name="social_feed">Social feed</string>
+    <string name="chat_messages">Chat messages</string>
+    <string name="chat_setting_description">This changes the notification Jiggie will send you - you don\'t want to miss out</string>
+    <string name="im_a">I am a</string>
+    <string name="both">Both</string>
+    <string name="man">Man</string>
+    <string name="woman">Woman</string>
+    <string name="interested_in">Interested in meeting</string>
+    <string name="documents">Documents</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="term_of_use">Term of Use</string>
+    <string name="share">Share</string>
+    <string name="your_location">Your location</string>
+    <string name="connected">Connected</string>
+    <string name="check_back_later">Check back later</string>
+    <string name="check_back_later_description">Browse through some more events and we\'ll match you up.</string>
+    <string name="start_chatting">Start chatting</string>
+    <string name="make_some_plan">Make some plans for today!</string>
+    <string name="socialize">Socialize</string>
+    <string name="socialize_description">Other member will be able to view your card</string>
+    <string name="socialize_description_off">Other member will not be able to view your card</string>
+    <string name="wants_to_go_with">%1$s wants to go with you to</string>
+    <string name="interested_question">Interested?</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="retry">Retry</string>
+    <string name="event_date_format">%1$s to %2$s</string>
+    <string name="book_now">Book now</string>
+    <string name="external_site">(External site)</string>
+    <string name="send">Send</string>
+    <string name="user_chat_profile">%1$s\'s profile</string>
+    <string name="user_chat_block">Block %1$s</string>
+    <string name="block_failed">Failed to block %1$s</string>
+    <string name="your_message">Your message&#8230;</string>
+    <string name="book_error">Unable to retrieve external site.</string>
+    <string name="clear_conversation">Clear conversation</string>
+    <string name="clear_conversation_failed">Failed to clear conversation</string>
+    <string name="your_experience">Your experience</string>
+    <string name="your_experience_description">Pick the type of events you\'ll be into</string>
+    <string name="stay_in_the_loop">Stay in the loop</string>
+    <string name="stay_in_the_loop_description">For the best experience allow us access</string>
+    <string name="dont_miss_invites">Don\'t miss exclusive invites and chat messages from other member</string>
+    <string name="notifications">Notifications</string>
+    <string name="next">Next</string>
+    <string name="done">Done</string>
+    <string name="find_events">Find events for you</string>
+    <string name="find_events_description">For the best experience allow us access</string>
+    <string name="location">Location</string>
+    <string name="location_description">Stay in the know on hot events and hostings around you</string>
+    <string name="no_fullfillment">This event does not have external site</string>
+    <string name="call">Call</string>
+    <string name="reserve">Reserve now</string>
+    <string name="purchase">Purchase table</string>
+    <string name="see_all_guests">See all guests</string>
+
+    <string name="wk_event_title">EVENTS</string>
+    <string name="wk_match_title">SUGGESTED MATCH</string>
+    <string name="wk_request_title">CONNECTION REQUEST</string>
+    <string name="wk_chat_title">CHAT</string>
+    <string name="wk_event_desc">Scroll through our curated list of the best events in Jakarta. If you see an event you like, tap on it for more details.</string>
+    <string name="wk_match_desc">We suggest matches with fun people who like the same events you do.\nTap <b>YES</b> if you want to connect with them.\nIf they also Tap <b>YES</b> then you can start chatting.</string>
+    <string name="wk_request_desc">This card means they want to connect with you.\nTap <b>YES</b> to start chatting right away.</string>
+    <string name="wk_chat_desc">When you both tap <b>YES</b> a chat connection begins.\nStart chatting and make plans to go to events together!</string>
+
+    <string name="wk_chat_action">START TYPING</string>
+    <string name="wk_match_action">CONNECT</string>
+    <string name="wk_request_action">ACCEPT REQUEST</string>
+
+    <plurals name="guest_count">
+        <item quantity="one">%1$d Guest</item>
+        <item quantity="other">%1$d Guests</item>
+    </plurals>
+
+    <string-array name="items_gender">
+        <item>@string/man</item>
+        <item>@string/woman</item>
+    </string-array>
+
+    <string-array name="items_gender_interest">
+        <item>Both</item>
+        <item>@string/man</item>
+        <item>@string/woman</item>
+    </string-array>
+</resources>

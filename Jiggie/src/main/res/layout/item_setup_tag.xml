@@ -1,0 +1,31 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:padding="3dp">
+
+    <LinearLayout
+        android:background="@drawable/btn_tag_white"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:id="@+id/container"
+        android:clickable="true">
+
+        <TextView
+            android:textColor="@android:color/white"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:id="@+id/textView"/>
+
+        <View
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_height="14dp"
+            android:layout_width="14dp"
+            android:background="@mipmap/ic_check"
+            android:id="@+id/checkView"/>
+    </LinearLayout>
+</FrameLayout>

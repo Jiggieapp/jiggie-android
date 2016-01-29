@@ -1,0 +1,31 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_margin="@dimen/padding_standard"
+    android:layout_gravity="center_vertical"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:src="@mipmap/ic_start_chatting"
+        android:layout_width="match_parent"
+        android:contentDescription="@null"
+        android:layout_height="96dp"/>
+
+    <TextView
+        android:text="@string/start_chatting"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:gravity="center_horizontal"
+        android:textStyle="bold"
+        android:textSize="18sp"/>
+
+    <TextView
+        android:layout_marginTop="@dimen/padding_standard_half"
+        android:text="@string/make_some_plan"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:gravity="center_horizontal"
+        android:layout_marginRight="32dp"
+        android:layout_marginLeft="32dp"/>
+</LinearLayout>

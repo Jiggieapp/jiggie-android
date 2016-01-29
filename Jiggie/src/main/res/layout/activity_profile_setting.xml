@@ -1,0 +1,258 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/white"
+        android:elevation="4dp"
+        app:titleTextColor="@color/colorPrimary"/>
+
+    <ScrollView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:scrollbars="vertical"
+        android:id="@+id/scrollView">
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_margin="@dimen/padding_standard"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:textColor="@android:color/black"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:text="@string/notification"
+                    android:textAllCaps="true"
+                    android:textSize="16sp"/>
+
+                <Switch
+                    android:layout_marginTop="@dimen/padding_standard_half"
+                    android:textColor="@android:color/tab_indicator_text"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:text="@string/social_feed"
+                    android:id="@+id/switchSocial"
+                    android:textStyle="bold"/>
+
+                <View
+                    android:layout_marginTop="@dimen/padding_standard_half"
+                    android:background="@android:color/darker_gray"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"/>
+
+                <LinearLayout
+                    android:layout_marginTop="@dimen/padding_standard_half"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:orientation="vertical">
+
+                    <Switch
+                        android:textColor="@android:color/tab_indicator_text"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:text="@string/chat_messages"
+                        android:id="@+id/switchChat"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:text="@string/chat_setting_description"
+                        android:textColor="@android:color/darker_gray"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:paddingRight="50dp"
+                        android:paddingEnd="50dp"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_marginTop="@dimen/padding_standard_half"
+                android:background="@android:color/darker_gray"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"/>
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_marginRight="@dimen/padding_standard"
+                    android:layout_marginLeft="@dimen/padding_standard"
+                    android:layout_marginTop="@dimen/padding_standard"
+                    android:textColor="@android:color/black"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:text="@string/gender"
+                    android:textAllCaps="true"
+                    android:textSize="16sp"/>
+
+                <LinearLayout
+                    android:background="?attr/selectableItemBackground"
+                    android:padding="@dimen/padding_standard"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:id="@+id/layoutGender"
+                    android:clickable="true">
+
+                    <TextView
+                        android:textColor="@android:color/tab_indicator_text"
+                        android:layout_height="wrap_content"
+                        android:text="@string/im_a"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:textColor="@android:color/holo_blue_dark"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:id="@+id/txtGender"
+                        android:text="@string/man"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_marginRight="@dimen/padding_standard"
+                    android:layout_marginLeft="@dimen/padding_standard"
+                    android:background="@android:color/darker_gray"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"/>
+
+                <LinearLayout
+                    android:background="?attr/selectableItemBackground"
+                    android:padding="@dimen/padding_standard"
+                    android:id="@+id/layoutGenderInterest"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:clickable="true">
+
+                    <TextView
+                        android:textColor="@android:color/tab_indicator_text"
+                        android:layout_height="wrap_content"
+                        android:text="@string/interested_in"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:textColor="@android:color/holo_blue_dark"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:id="@+id/txtGenderInterest"
+                        android:text="@string/both"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:background="@android:color/darker_gray"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"/>
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_marginRight="@dimen/padding_standard"
+                    android:layout_marginLeft="@dimen/padding_standard"
+                    android:layout_marginTop="@dimen/padding_standard"
+                    android:textColor="@android:color/black"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:text="@string/documents"
+                    android:textAllCaps="true"
+                    android:textSize="16sp"/>
+
+                <LinearLayout
+                    android:background="?attr/selectableItemBackground"
+                    android:padding="@dimen/padding_standard"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:id="@+id/layoutPrivacy"
+                    android:clickable="true">
+
+                    <TextView
+                        android:textColor="@android:color/tab_indicator_text"
+                        android:layout_height="wrap_content"
+                        android:text="@string/privacy_policy"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:textStyle="bold"/>
+
+                    <ImageView
+                        android:contentDescription="@null"
+                        android:src="@mipmap/ic_arrow"
+                        android:layout_height="16dp"
+                        android:layout_width="16dp"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_marginRight="@dimen/padding_standard"
+                    android:layout_marginLeft="@dimen/padding_standard"
+                    android:background="@android:color/darker_gray"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"/>
+
+                <LinearLayout
+                    android:background="?attr/selectableItemBackground"
+                    android:padding="@dimen/padding_standard"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:id="@+id/layoutTerm"
+                    android:clickable="true">
+
+                    <TextView
+                        android:textColor="@android:color/tab_indicator_text"
+                        android:layout_height="wrap_content"
+                        android:text="@string/term_of_use"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:textStyle="bold"/>
+
+                    <ImageView
+                        android:contentDescription="@null"
+                        android:src="@mipmap/ic_arrow"
+                        android:layout_height="16dp"
+                        android:layout_width="16dp"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <FrameLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:id="@+id/layoutError">
+
+        <include layout="@layout/view_failed"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:id="@+id/progressBar">
+
+        <ProgressBar
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"/>
+    </FrameLayout>
+</LinearLayout>

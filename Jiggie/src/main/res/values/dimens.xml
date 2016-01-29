@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="signin_text_size">18sp</dimen>
+    <dimen name="padding_standard">16dp</dimen>
+    <dimen name="padding_standard_half">8dp</dimen>
+    <dimen name="chat_user_text_size">16sp</dimen>
+    <dimen name="tag_spacing">3dp</dimen>
+
+    <dimen name="margin_text_walkthrough">45dp</dimen>
+</resources>

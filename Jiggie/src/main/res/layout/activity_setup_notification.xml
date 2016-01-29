@@ -1,0 +1,68 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@mipmap/signup1"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/root">
+
+    <LinearLayout
+        android:padding="@dimen/padding_standard"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ImageView
+            android:layout_marginBottom="@dimen/padding_standard"
+            android:layout_marginTop="@dimen/padding_standard"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="64dp"
+            android:layout_width="64dp"
+            android:contentDescription="@null"
+            android:src="@mipmap/ic_setup_notification"/>
+
+        <TextView
+            android:textColor="@android:color/white"
+            android:text="@string/stay_in_the_loop"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:gravity="center_horizontal"
+            android:textSize="22sp"/>
+
+        <TextView
+            android:layout_marginBottom="@dimen/padding_standard"
+            android:text="@string/stay_in_the_loop_description"
+            android:textColor="@color/grayLight"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:gravity="center_horizontal"/>
+
+        <Switch
+            android:layout_marginRight="@dimen/padding_standard"
+            android:layout_marginLeft="@dimen/padding_standard"
+            android:layout_marginTop="@dimen/padding_standard"
+            android:textColor="@android:color/white"
+            android:text="@string/notifications"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textSize="18sp"
+            android:checked="true"
+            android:id="@+id/switchView"/>
+
+        <TextView
+            android:layout_marginRight="@dimen/padding_standard"
+            android:layout_marginLeft="@dimen/padding_standard"
+            android:textColor="@android:color/darker_gray"
+            android:text="@string/dont_miss_invites"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"/>
+    </LinearLayout>
+    <Button
+        android:textColor="@android:color/white"
+        android:background="@drawable/btn_next"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="@string/next"
+        android:id="@+id/btnNext"/>
+</LinearLayout>
