@@ -20,4 +20,9 @@ public class Utils {
         return pixel;
     }
     //-----
+
+    public final static String URL = "http://api-dev.jiggieapp.com/";
+    //public final static String URL = "http://api.jiggieapp.com/";
+    public final static String GET_EVENTS = URL + "app/v3/events/list/{fb_id}/{gender_interest}";
+
 }

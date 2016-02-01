@@ -299,4 +299,5 @@ public class App extends Application {
     }
 
     public void setUserLoggedIn() { getSharedPreferences().edit().putBoolean("loggedIn", true).apply(); }
+
 }

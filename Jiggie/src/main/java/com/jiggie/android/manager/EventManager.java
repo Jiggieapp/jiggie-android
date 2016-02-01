@@ -3,7 +3,9 @@ package com.jiggie.android.manager;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.jiggie.android.api.API;
 import com.jiggie.android.api.EventInterface;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.EventModel;
 
 import java.io.IOException;
@@ -23,7 +25,8 @@ public class EventManager {
 
     public static void initEventService(){
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://52.77.222.216")
+                //.baseUrl("http://52.77.222.216")
+                .baseUrl(Utils.URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         eventInterface = retrofit.create(EventInterface.class);
