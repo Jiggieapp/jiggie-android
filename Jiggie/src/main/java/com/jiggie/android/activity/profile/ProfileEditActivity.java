@@ -17,7 +17,7 @@ import org.json.JSONObject;
 import butterknife.Bind;
 import butterknife.OnClick;
 import com.jiggie.android.App;
-import com.android.jiggie.R;
+import com.jiggie.android.R;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.model.UserProfile;

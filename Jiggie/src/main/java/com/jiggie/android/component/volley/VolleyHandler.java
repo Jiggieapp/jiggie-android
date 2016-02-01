@@ -3,7 +3,7 @@ package com.jiggie.android.component.volley;
 import android.content.Context;
 
 import com.jiggie.android.App;
-import com.android.jiggie.R;
+import com.jiggie.android.R;
 import com.jiggie.android.model.Model;
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;

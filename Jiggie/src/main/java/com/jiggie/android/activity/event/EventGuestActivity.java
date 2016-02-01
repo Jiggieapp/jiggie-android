@@ -10,7 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.ViewTreeObserver;
 
 import com.jiggie.android.App;
-import com.android.jiggie.R;
+import com.jiggie.android.R;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.EventGuestAdapter;

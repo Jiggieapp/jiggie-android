@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jiggie.android.App;
-import com.android.jiggie.R;
+import com.jiggie.android.R;
 import com.jiggie.android.model.Guest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;

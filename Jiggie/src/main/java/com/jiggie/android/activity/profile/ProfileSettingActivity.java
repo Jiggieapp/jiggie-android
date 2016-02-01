@@ -14,7 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jiggie.android.App;
-import com.android.jiggie.R;
+import com.jiggie.android.R;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;

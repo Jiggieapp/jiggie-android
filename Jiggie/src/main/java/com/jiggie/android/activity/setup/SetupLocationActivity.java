@@ -11,7 +11,7 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.jiggie.android.App;
-import com.android.jiggie.R;
+import com.jiggie.android.R;
 import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.component.BitmapUtility;
 import com.jiggie.android.component.activity.BaseActivity;

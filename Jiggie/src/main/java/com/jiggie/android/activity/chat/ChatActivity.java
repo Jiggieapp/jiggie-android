@@ -22,7 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.jiggie.android.App;
-import com.android.jiggie.R;
+import com.jiggie.android.R;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
 import com.jiggie.android.component.SimpleTextWatcher;
 import com.jiggie.android.component.activity.ToolbarActivity;

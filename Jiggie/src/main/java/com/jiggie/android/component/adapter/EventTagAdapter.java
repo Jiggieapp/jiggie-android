@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.android.jiggie.R;
+import com.jiggie.android.R;
 
 /**
  * Created by rangg on 11/11/2015.

@@ -5,7 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.android.jiggie.R;
+import com.jiggie.android.R;
 
 import butterknife.ButterKnife;
 

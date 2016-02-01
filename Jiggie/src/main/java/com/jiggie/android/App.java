@@ -21,7 +21,7 @@ import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
-import com.android.jiggie.R;
+import com.jiggie.android.R;
 import com.jiggie.android.component.SimpleJSONObject;
 import com.jiggie.android.component.database.DatabaseConnection;
 import com.jiggie.android.component.volley.VolleyHandler;

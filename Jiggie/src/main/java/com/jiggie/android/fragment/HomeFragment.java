@@ -15,7 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 
-import com.android.jiggie.R;
+import com.jiggie.android.R;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
 

@@ -25,8 +25,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jiggie.android.App;
-import com.android.jiggie.BuildConfig;
-import com.android.jiggie.R;
+import com.jiggie.android.BuildConfig;
+import com.jiggie.android.R;
 import com.jiggie.android.activity.chat.ChatActivity;
 import com.jiggie.android.activity.event.EventDetailActivity;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;

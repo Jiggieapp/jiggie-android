@@ -27,7 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jiggie.android.App;
-import com.android.jiggie.R;
+import com.jiggie.android.R;
 import com.jiggie.android.component.FlowLayout;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.activity.ToolbarActivity;
@@ -123,6 +123,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        String a = AccessToken.getCurrentAccessToken().getUserId();
+        String b = this.currentEvent.getId();
         final String url = String.format("guest/events/viewed/%s/%s", AccessToken.getCurrentAccessToken().getUserId(), this.currentEvent.getId());
         VolleyHandler.getInstance().createVolleyRequest(url, new SimpleVolleyRequestListener<Object, JSONObject>(){
             @Override

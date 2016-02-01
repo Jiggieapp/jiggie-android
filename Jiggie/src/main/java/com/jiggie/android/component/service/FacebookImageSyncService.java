@@ -31,7 +31,7 @@ import java.util.Iterator;
 
 import cz.msebera.android.httpclient.Header;
 import com.jiggie.android.App;
-import com.android.jiggie.R;
+import com.jiggie.android.R;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.Login;

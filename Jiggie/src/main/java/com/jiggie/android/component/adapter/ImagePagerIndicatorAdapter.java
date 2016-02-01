@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.android.jiggie.R;
+import com.jiggie.android.R;
 import com.jiggie.android.model.Common;
 import com.bumptech.glide.Glide;
 

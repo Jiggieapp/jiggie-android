@@ -9,7 +9,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
-import com.android.jiggie.R;
+import com.jiggie.android.R;
 import com.jiggie.android.component.activity.ToolbarActivity;
 
 import butterknife.Bind;

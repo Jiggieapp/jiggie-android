@@ -19,7 +19,7 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.jiggie.android.App;
-import com.android.jiggie.R;
+import com.jiggie.android.R;
 import com.jiggie.android.model.Common;
 
 /**
