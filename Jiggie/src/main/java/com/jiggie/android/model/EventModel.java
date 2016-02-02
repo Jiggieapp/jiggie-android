@@ -10,15 +10,15 @@ import java.util.ArrayList;
  */
 public class EventModel {
 
-    String response;
+    int response;
     String msg;
     Data data;
 
-    public String getResponse() {
+    public int getResponse() {
         return response;
     }
 
-    public void setResponse(String response) {
+    public void setResponse(int response) {
         this.response = response;
     }
 
@@ -52,7 +52,7 @@ public class EventModel {
 
         public static class Events implements Parcelable {
             String _id;
-            String rank;
+            int rank;
             String title;
             String venue_name;
             String start_datetime;
@@ -100,11 +100,11 @@ public class EventModel {
                 this._id = _id;
             }
 
-            public String getRank() {
+            public int getRank() {
                 return rank;
             }
 
-            public void setRank(String rank) {
+            public void setRank(int rank) {
                 this.rank = rank;
             }
 

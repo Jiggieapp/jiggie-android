@@ -97,7 +97,7 @@ public class SignInFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         ButterKnife.bind(this, rootView);
 
-        AccountManager.initLoginService();
+        AccountManager.initAccountService();
         EventBus.getDefault().register(this);
 
         LoginManager.getInstance().registerCallback(this.callbackManager = CallbackManager.Factory.create(), this.facebookCallback);
@@ -279,7 +279,7 @@ public class SignInFragment extends Fragment {
         final App app = App.getInstance();
         progressDialog.dismiss();
 
-        AccountManager.saveSetting(getActivity(), message);
+        AccountManager.saveSetting(message);
         setupWalkthrough(message.is_new_user(), message.isShow_walkthrough());
 
         if (App.getSharedPreferences().getBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, false)) {
