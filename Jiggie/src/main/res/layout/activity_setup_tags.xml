@@ -41,7 +41,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/padding_standard">
 
-            <com.android.jiggie.component.FlowLayout
+            <com.jiggie.android.component.FlowLayout
                 android:id="@+id/flowLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
