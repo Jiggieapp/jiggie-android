@@ -91,7 +91,7 @@
                         android:textAllCaps="true"
                         android:textColor="@android:color/black" />
 
-                    <com.android.jiggie.component.FlowLayout
+                    <com.jiggie.android.component.FlowLayout
                         android:id="@+id/flowLayout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

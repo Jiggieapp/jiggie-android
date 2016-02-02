@@ -270,4 +270,5 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
         App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, false).commit();
     }
 
+
 }

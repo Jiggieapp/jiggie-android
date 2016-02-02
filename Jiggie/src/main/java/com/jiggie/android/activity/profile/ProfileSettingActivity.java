@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
@@ -40,6 +41,8 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
     @Bind(R.id.txtGender) TextView txtGender;
     @Bind(R.id.switchChat) Switch switchChat;
     @Bind(R.id.layoutError) View layoutError;
+
+    public final static String TAG = ProfileSettingActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

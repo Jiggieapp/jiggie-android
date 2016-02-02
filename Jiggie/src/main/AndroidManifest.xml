@@ -1,143 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.jiggie.android"
+    package="com.jiggie.android"
     android:versionCode="101"
-    android:versionName="1.0.1">
+    android:versionName="1.0.1 dev">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!--<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />-->
-    <!--<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />-->
+    <!-- <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> -->
+    <!-- <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <permission android:name="com.android.jiggie.permission.C2D_MESSAGE"
-                android:protectionLevel="signature" />
+
+    <permission
+        android:name="com.android.jiggie.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
     <uses-permission android:name="com.android.jiggie.permission.C2D_MESSAGE" />
 
     <application
-        android:name="com.jiggie.android.App"
-        android:supportsRtl="true"
+        android:name=".App"
         android:allowBackup="false"
-        android:theme="@style/AppTheme"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:icon="@mipmap/ic_launcher">
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
 
-        <!--<meta-data-->
-            <!--android:name="io.fabric.ApiKey"-->
-            <!--android:value="1714fcc893d2312cb2b248ed57743517e718c399" />-->
+        <!-- <meta-data -->
+        <!-- android:name="io.fabric.ApiKey" -->
+        <!-- android:value="1714fcc893d2312cb2b248ed57743517e718c399" /> -->
 
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="00fd18220f391f657cb53b7830f04e5efd103e49" />
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
+            android:value="@string/facebook_app_id" />
         <meta-data
-            android:value="@integer/google_play_services_version"
-            android:name="com.google.android.gms.version"/>
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/google_api_key" />
 
         <activity
-            android:name="com.jiggie.android.activity.MainActivity"
+            android:name=".activity.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/SplashTheme"
-            android:screenOrientation="portrait">
-
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name=".activity.setup.SetupTagsActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme" />
+        <activity
+            android:name=".activity.setup.SetupNotificationActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme" />
+        <activity
+            android:name=".activity.setup.SetupLocationActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme" />
+        <activity
+            android:name=".activity.event.EventDetailActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme" />
+        <activity
+            android:name=".activity.event.EventGuestActivity"
+            android:label="@string/guest_interested_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme" />
+        <activity
+            android:name=".activity.profile.ProfileDetailActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme" />
+        <activity
+            android:name=".activity.profile.ProfileSettingActivity"
+            android:label="@string/settings"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme" />
+        <activity
+            android:name=".activity.profile.ProfileEditActivity"
+            android:label="@string/about_you"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme" />
+        <activity
+            android:name=".activity.profile.PrivacyPolicyActivity"
+            android:label="@string/privacy_policy"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme" />
+        <activity
+            android:name=".activity.profile.TermOfUseActivity"
+            android:label="@string/term_of_use"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme" />
+        <activity
+            android:name=".activity.chat.ChatActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme" />
 
-        <activity android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-                  android:theme="@android:style/Theme.Translucent.NoTitleBar"
-                  android:name="com.facebook.FacebookActivity"
-                  android:screenOrientation="portrait"
-                  android:label="@string/app_name" />
-
-        <activity android:name="com.jiggie.android.activity.setup.SetupTagsActivity" android:theme="@style/SplashTheme" android:screenOrientation="portrait" android:label="@string/app_name"/>
-        <activity android:name="com.jiggie.android.activity.setup.SetupNotificationActivity" android:theme="@style/SplashTheme" android:screenOrientation="portrait" android:label="@string/app_name" />
-        <activity android:name="com.jiggie.android.activity.setup.SetupLocationActivity" android:theme="@style/SplashTheme" android:screenOrientation="portrait" android:label="@string/app_name" />
-        <activity android:name="com.jiggie.android.activity.event.EventDetailActivity" android:theme="@style/SplashTheme" android:screenOrientation="portrait" android:label="@string/app_name"/>
-        <activity android:name="com.jiggie.android.activity.event.EventGuestActivity" android:theme="@style/SplashTheme" android:screenOrientation="portrait" android:label="@string/guest_interested_title" />
-        <activity android:name="com.jiggie.android.activity.profile.ProfileDetailActivity" android:theme="@style/SplashTheme" android:screenOrientation="portrait" android:label="@string/app_name"/>
-        <activity android:name="com.jiggie.android.activity.profile.ProfileSettingActivity" android:theme="@style/SplashTheme" android:screenOrientation="portrait" android:label="@string/settings" />
-        <activity android:name="com.jiggie.android.activity.profile.ProfileEditActivity" android:theme="@style/SplashTheme" android:screenOrientation="portrait" android:label="@string/about_you" />
-        <activity android:name="com.jiggie.android.activity.profile.PrivacyPolicyActivity" android:theme="@style/SplashTheme" android:screenOrientation="portrait" android:label="@string/privacy_policy" />
-        <activity android:name="com.jiggie.android.activity.profile.TermOfUseActivity" android:theme="@style/SplashTheme" android:screenOrientation="portrait" android:label="@string/term_of_use" />
-        <activity android:name="com.jiggie.android.activity.chat.ChatActivity" android:theme="@style/SplashTheme" android:screenOrientation="portrait" android:label="@string/app_name"/>
-
-        <!--BroadcastReceivers-->
+        <!-- BroadcastReceivers -->
         <receiver
-            android:permission="com.google.android.c2dm.permission.SEND"
             android:name="com.google.android.gms.gcm.GcmReceiver"
-            android:exported="true" >
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
                 <category android:name="com.android.jiggie" />
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.jiggie.android.component.gcm.GCMBootReceiver"
+            android:name=".component.gcm.GCMBootReceiver"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
         <receiver
             android:name="com.appsflyer.MultipleInstallBroadcastReceiver"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.android.vending.INSTALL_REFERRER"/>
+                <action android:name="com.android.vending.INSTALL_REFERRER" />
             </intent-filter>
         </receiver>
         <receiver
-            android:name="com.jiggie.android.component.InstallReferrerReceiver"
+            android:name=".component.InstallReferrerReceiver"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.android.vending.INSTALL_REFERRER"/>
+                <action android:name="com.android.vending.INSTALL_REFERRER" />
             </intent-filter>
         </receiver>
 
-        <!--Services-->
-        <service android:name="com.jiggie.android.component.service.FacebookImageSyncService" />
+        <!-- Services -->
+        <service android:name=".component.service.FacebookImageSyncService" />
         <service
+            android:name=".component.service.ChatSendService"
             android:exported="true"
-            android:name="com.jiggie.android.component.service.ChatSendService"
             android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE">
             <intent-filter>
                 <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY" />
             </intent-filter>
         </service>
         <service
+            android:name=".component.gcm.GCMBootScheduler"
             android:exported="true"
-            android:name="com.jiggie.android.component.gcm.GCMBootScheduler"
             android:permission="com.google.android.gms.permission.BIND_NETWORK_TASK_SERVICE">
             <intent-filter>
                 <action android:name="com.google.android.gms.gcm.ACTION_TASK_READY" />
             </intent-filter>
         </service>
-        <service android:name="com.jiggie.android.component.gcm.GCMRegistrationService"/>
-        <service android:name="com.jiggie.android.component.gcm.GCMMessageHandler"
-                 android:exported="false" >
+        <service android:name=".component.gcm.GCMRegistrationService" />
+        <service
+            android:name=".component.gcm.GCMMessageHandler"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
-        <service android:name="com.jiggie.android.component.gcm.GCMInstanceIDListener"
-                 android:exported="false">
+        <service
+            android:name=".component.gcm.GCMInstanceIDListener"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID"/>
+                <action android:name="com.google.android.gms.iid.InstanceID" />
             </intent-filter>
         </service>
+
+        <activity android:name=".activity.profile.FilterActivity"></activity>
     </application>
+
 </manifest>

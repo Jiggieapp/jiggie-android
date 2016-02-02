@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.profile.FilterActivity;
 import com.jiggie.android.activity.setup.SetupTagsActivity;
 import com.jiggie.android.component.gcm.GCMRegistrationService;
 import com.jiggie.android.component.service.FacebookImageSyncService;
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         final GoogleApiAvailability api = GoogleApiAvailability.getInstance();
         int code = api.isGooglePlayServicesAvailable(this);
 
-        if (code == ConnectionResult.SUCCESS) {
+        /*if (code == ConnectionResult.SUCCESS) {
             App.getInstance().trackMixPanelEvent("LogIn");
             this.onActivityResult(REQUEST_GOOGLE_PLAY_SERVICES, Activity.RESULT_OK, null);
         } else if (api.isUserResolvableError(code) && api.showErrorDialogFragment(this, code, REQUEST_GOOGLE_PLAY_SERVICES)) {
@@ -51,7 +52,9 @@ public class MainActivity extends AppCompatActivity {
         } else {
             final String str = GoogleApiAvailability.getInstance().getErrorString(code);
             Toast.makeText(this, str, Toast.LENGTH_LONG).show();
-        }
+        }*/
+        Intent i = new Intent(this, FilterActivity.class);
+        startActivity(i);
     }
 
     public void navigateToHome() {
