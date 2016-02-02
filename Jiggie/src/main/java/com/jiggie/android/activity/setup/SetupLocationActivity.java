@@ -68,7 +68,7 @@ public class SetupLocationActivity extends BaseActivity {
         loginSetting.setExperiences(TextUtils.join(",", intent.getStringArrayExtra(SetupTagsActivity.PARAM_EXPERIENCES)));
 
         final MemberSettingModel memberSettingModel = new MemberSettingModel();
-        memberSettingModel.setGender();
+        //memberSettingModel.setGender();
 
         VolleyHandler.getInstance().createVolleyRequest("membersettings", loginSetting, new VolleyRequestListener<Boolean, JSONObject>() {
             @Override

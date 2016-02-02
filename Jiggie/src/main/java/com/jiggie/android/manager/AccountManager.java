@@ -66,8 +66,8 @@ public class AccountManager {
         }
     }
 
-    public static void saveSetting(SettingModel settingModel){
-        App.getInstance().getSharedPreferences(SettingModel.getClass().getName(), Context.MODE_PRIVATE).edit()
+    public static void saveSetting(Activity a, SettingModel settingModel){
+        App.getInstance().getSharedPreferences(a.getClass().getName(), Context.MODE_PRIVATE).edit()
                 .putString(Common.FIELD_GENDER, settingModel.getData().getGender())
                 .putString(Common.FIELD_GENDER_INTEREST, settingModel.getData().getGender_interest())
                 .putString(Common.FIELD_PHONE, settingModel.getData().getPhone())
