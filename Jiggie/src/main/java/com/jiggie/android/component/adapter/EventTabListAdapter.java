@@ -30,34 +30,17 @@ import it.sephiroth.android.library.widget.HListView;
  * Created by rangg on 03/11/2015.
  */
 public class EventTabListAdapter extends RecyclerView.Adapter<EventTabListAdapter.ViewHolder> {
-    /*private final EventSelectedListener listener;
-    private final ArrayList<Event> items;*/
     private final Fragment fragment;
-
-    //Added by Aga
     private final ViewSelectedListener listener;
     private final ArrayList<EventModel.Data.Events> items;
-    //------------
 
-    /*public EventTabListAdapter(Fragment fragment, EventSelectedListener listener) {
-        this.items = new ArrayList<>();
-        this.listener = listener;
-        this.fragment = fragment;
-    }*/
-
-    //Added by Aga
     public EventTabListAdapter(Fragment fragment, ViewSelectedListener listener) {
         this.items = new ArrayList<>();
         this.listener = listener;
         this.fragment = fragment;
     }
-    //-----------
 
-    /*public void addAll(Collection<Event> items) { this.items.addAll(items); }
-    public void add(Event item) { this.items.add(item); }*/
     public void clear() { this.items.clear(); }
-
-    //Added by Aga
     public void addAll(ArrayList<EventModel.Data.Events> items) { this.items.addAll(items); }
     public void add(EventModel.Data.Events item) { this.items.add(item); }
     public void setItems(ArrayList<EventModel.Data.Events> items){
@@ -68,29 +51,6 @@ public class EventTabListAdapter extends RecyclerView.Adapter<EventTabListAdapte
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_event, parent, false), this.listener);
     }
-
-    /*@Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        try {
-            final Event item = this.items.get(position);
-            String imageUrl = item.getImageUrl();
-
-            if (imageUrl == null) {
-                imageUrl = String.format("%simages/event/%s", VolleyHandler.getInstance().getServerHost(), item.getId());
-                item.setImageUrl(imageUrl);
-            }
-
-            holder.event = item;
-            holder.txtTitle.setText(item.getTitle());
-            holder.eventTagAdapter.setTags(item.getTags());
-            holder.eventTagAdapter.notifyDataSetChanged();
-            holder.txtVenueName.setText(item.getVenueName());
-            Glide.with(this.fragment).load(imageUrl).into(holder.image);
-            holder.txtDate.setText(item.getSimpleDate());
-        } catch (ParseException e) {
-            throw new RuntimeException(App.getErrorMessage(e), e);
-        }
-    }*/
 
     //Added by Aga
     @Override
@@ -169,13 +129,7 @@ public class EventTabListAdapter extends RecyclerView.Adapter<EventTabListAdapte
         }
     }
 
-    /*public interface EventSelectedListener {
-        void onEventSelected(Event event);
-    }*/
-
-    //Added by Aga
     public interface ViewSelectedListener{
         void onViewSelected(EventModel.Data.Events event);
     }
-    //------------
 }
