@@ -123,8 +123,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        String a = AccessToken.getCurrentAccessToken().getUserId();
-        String b = this.currentEvent.getId();
         final String url = String.format("guest/events/viewed/%s/%s", AccessToken.getCurrentAccessToken().getUserId(), this.currentEvent.getId());
         VolleyHandler.getInstance().createVolleyRequest(url, new SimpleVolleyRequestListener<Object, JSONObject>(){
             @Override
