@@ -16,6 +16,10 @@ public class Utils {
 
     //ERROR CODE & MESSAGE
     public static String MSG_EXCEPTION = "Failed: ";
+    //--------------------
+
+    public static String PREFERENCE_SETTING = "setting";
+    public static String SETTING_MODEL = "setting_model";
 
     public static int myPixel(Activity a,int dip){
         float scale = a.getResources().getDisplayMetrics().density;
@@ -30,5 +34,6 @@ public class Utils {
     //public final static String GET_EVENTS = URL + "app/v3/events/list/{fb_id}/{gender_interest}";
 
     public final static String URL_LOGIN = BASE_URL + "app/v3/login";
+    public final static String URL_MEMBER_SETTING = BASE_URL + "app/v3/membersettings";
 
 }

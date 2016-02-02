@@ -11,7 +11,9 @@ import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.LoginModel;
+import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.SettingModel;
+import com.jiggie.android.model.SuccessModel;
 
 import java.io.IOException;
 
@@ -28,7 +30,7 @@ public class AccountManager {
 
     static AccountInterface accountInterface;
 
-    public static void initLoginService(){
+    public static void initAccountService(){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Utils.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -38,6 +40,10 @@ public class AccountManager {
 
     private static void postLogin(LoginModel loginRequestModel, Callback callback) throws IOException {
         accountInterface.postLogin(Utils.URL_LOGIN, loginRequestModel).enqueue(callback);
+    }
+
+    private static void postMemberSetting(MemberSettingModel memberSettingModel, Callback callback) throws IOException {
+        accountInterface.postMemberSetting(Utils.URL_MEMBER_SETTING, memberSettingModel).enqueue(callback);
     }
 
     public static void loaderLogin(LoginModel loginRequestModel){
@@ -66,8 +72,34 @@ public class AccountManager {
         }
     }
 
-    public static void saveSetting(Activity a, SettingModel settingModel){
-        App.getInstance().getSharedPreferences(a.getClass().getName(), Context.MODE_PRIVATE).edit()
+    public static void loaderMemberSetting(MemberSettingModel memberSettingModel){
+        try {
+            postMemberSetting(memberSettingModel, new Callback() {
+                @Override
+                public void onResponse(Response response, Retrofit retrofit) {
+                    String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);
+
+                    SuccessModel dataTemp = (SuccessModel) response.body();
+
+                    EventBus.getDefault().post(dataTemp);
+
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.d("failure", t.toString());
+                    EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + t.toString()));
+                }
+            });
+        }catch (IOException e){
+            Log.d("exception", e.toString());
+            EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + e.toString()));
+        }
+    }
+
+    public static void saveSetting(SettingModel settingModel){
+        /*App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
                 .putString(Common.FIELD_GENDER, settingModel.getData().getGender())
                 .putString(Common.FIELD_GENDER_INTEREST, settingModel.getData().getGender_interest())
                 .putString(Common.FIELD_PHONE, settingModel.getData().getPhone())
@@ -75,7 +107,20 @@ public class AccountManager {
                 .putBoolean(Common.FIELD_MATCH_ME, settingModel.isMatch_me())
                 .putBoolean(Common.FIELD_FEED, settingModel.getData().getNotifications().isFeed())
                 .putBoolean(Common.FIELD_CHAT, settingModel.getData().getNotifications().isChat())
-                .apply();
+                .apply();*/
+
+        String model = new Gson().toJson(settingModel);
+        App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
+                .putString(Utils.SETTING_MODEL, model).apply();
+
+    }
+
+    public static SettingModel loadSetting(){
+
+        SettingModel settingModel = new Gson().fromJson(App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING,
+                Context.MODE_PRIVATE).getString(Utils.SETTING_MODEL, ""), SettingModel.class);
+
+        return settingModel;
     }
 
 }

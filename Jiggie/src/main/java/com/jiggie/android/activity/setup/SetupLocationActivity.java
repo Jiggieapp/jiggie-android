@@ -17,17 +17,22 @@ import com.jiggie.android.component.BitmapUtility;
 import com.jiggie.android.component.activity.BaseActivity;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
+import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.Common;
+import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.LoginSetting;
 import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.Setting;
 import com.android.volley.VolleyError;
 import com.facebook.AccessToken;
+import com.jiggie.android.model.SettingModel;
+import com.jiggie.android.model.SuccessModel;
 
 import org.json.JSONObject;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by rangg on 15/01/2016.
@@ -35,12 +40,16 @@ import butterknife.OnClick;
 public class SetupLocationActivity extends BaseActivity {
     @Bind(R.id.switchView) Switch switchView;
     @Bind(R.id.root) View root;
+    ProgressDialog dialog = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_setup_location);
         super.bindView();
+
+        AccountManager.initAccountService();
+        EventBus.getDefault().register(this);
 
         final Bitmap background = BitmapUtility.getBitmapResource(R.mipmap.signup1);
         final Bitmap blurBackground = BitmapUtility.blur(background);
@@ -54,53 +63,54 @@ public class SetupLocationActivity extends BaseActivity {
     @SuppressWarnings("unused")
     void btnDoneOnClick() {
         final ProgressDialog dialog = App.showProgressDialog(this);
-        final LoginSetting loginSetting = new LoginSetting();
-        final Setting currentSetting = Setting.getCurrentSetting();
         final Intent intent = super.getIntent();
 
-        loginSetting.setAccountType(currentSetting.getAccountType());
-        loginSetting.setLocation(this.switchView.isChecked());
-        loginSetting.setGender(currentSetting.getGenderString());
-        loginSetting.setGenderInterest(currentSetting.getGenderInterestString());
-        loginSetting.setFacebookId(AccessToken.getCurrentAccessToken().getUserId());
-        loginSetting.setChat(intent.getBooleanExtra(SetupNotificationActivity.PARAM_NOTIFICATION, true));
-        loginSetting.setFeed(intent.getBooleanExtra(SetupNotificationActivity.PARAM_NOTIFICATION, true));
-        loginSetting.setExperiences(TextUtils.join(",", intent.getStringArrayExtra(SetupTagsActivity.PARAM_EXPERIENCES)));
-
         final MemberSettingModel memberSettingModel = new MemberSettingModel();
-        //memberSettingModel.setGender();
+        final SettingModel currentSettingModel = AccountManager.loadSetting();
+        memberSettingModel.setAccount_type(currentSettingModel.getData().getAccount_type());
+        memberSettingModel.setLocation(this.switchView.isChecked() ? 1 : 0);
+        memberSettingModel.setGender(currentSettingModel.getData().getGender());
+        memberSettingModel.setGender_interest(currentSettingModel.getData().getGender_interest());
+        memberSettingModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
+        memberSettingModel.setChat(intent.getBooleanExtra(SetupNotificationActivity.PARAM_NOTIFICATION, true) ? 1 : 0);
+        memberSettingModel.setFeed(intent.getBooleanExtra(SetupNotificationActivity.PARAM_NOTIFICATION, true) ? 1 : 0);
+        memberSettingModel.setExperiences(TextUtils.join(",", intent.getStringArrayExtra(SetupTagsActivity.PARAM_EXPERIENCES)));
 
-        VolleyHandler.getInstance().createVolleyRequest("membersettings", loginSetting, new VolleyRequestListener<Boolean, JSONObject>() {
-            @Override
-            public Boolean onResponseAsync(JSONObject jsonObject) { return jsonObject.optBoolean(Common.FIELD_STATUS, false); }
+        AccountManager.loaderMemberSetting(memberSettingModel);
 
-            @Override
-            public void onResponseCompleted(Boolean value) {
-                if (isActive()) {
-                    dialog.dismiss();
-                    finish();
-                }
-                // Start new activity from app context instead of current activity. This prevent crash when activity has been destroyed.
-                final App app = App.getInstance();
-                app.trackMixPanelEvent("Walkthrough Location");
-                app.trackMixPanelEvent("Completed Walkthrough");
-                App.getSharedPreferences().edit().putBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, true).apply();
-                app.startActivity(new Intent(App.getInstance(), MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
-            }
+    }
 
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (isActive()) {
-                    Toast.makeText(SetupLocationActivity.this, App.getErrorMessage(error), Toast.LENGTH_SHORT).show();
-                    dialog.dismiss();
-                }
-            }
-        });
+    public void onEvent(SuccessModel message){
+        dialog = App.showProgressDialog(this);
+
+        if (isActive()) {
+            dialog.dismiss();
+            finish();
+        }
+        // Start new activity from app context instead of current activity. This prevent crash when activity has been destroyed.
+        final App app = App.getInstance();
+        app.trackMixPanelEvent("Walkthrough Location");
+        app.trackMixPanelEvent("Completed Walkthrough");
+        App.getSharedPreferences().edit().putBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, true).apply();
+        app.startActivity(new Intent(App.getInstance(), MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+    }
+
+    public void onEvent(ExceptionModel message){
+        if (isActive()) {
+            Toast.makeText(SetupLocationActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
+        }
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         super.overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }
