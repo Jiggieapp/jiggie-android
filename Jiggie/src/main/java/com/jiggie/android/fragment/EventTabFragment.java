@@ -224,7 +224,7 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
         });*/
 
         //Added by Aga
-        EventManager.loaderEvent(token.getUserId(), Setting.getCurrentSetting().getGenderInterestString());
+        EventManager.loaderEvent(token.getUserId());
         //--------------
     }
 
@@ -284,6 +284,7 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
 
     //Added by Aga
     public void onEvent(ArrayList<EventModel.Data.Events> message){
+        int size = message.size();
         events = message;
 
         adapter.clear();

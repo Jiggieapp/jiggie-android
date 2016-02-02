@@ -30,7 +30,7 @@ public class Utils {
 
     public final static String BASE_URL = "http://api-dev.jiggieapp.com/";
     //public final static String URL = "http://api.jiggieapp.com/";
-    public final static String GET_EVENTS = BASE_URL + "app/v3/events/list/{fb_id}/{gender_interest}";
+    public final static String GET_EVENTS = BASE_URL + "app/v3/events/list/{fb_id}";
     //public final static String GET_EVENTS = URL + "app/v3/events/list/{fb_id}/{gender_interest}";
 
     public final static String URL_LOGIN = BASE_URL + "app/v3/login";

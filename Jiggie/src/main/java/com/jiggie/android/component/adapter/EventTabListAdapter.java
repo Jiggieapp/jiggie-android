@@ -98,12 +98,17 @@ public class EventTabListAdapter extends RecyclerView.Adapter<EventTabListAdapte
         try {
             final EventModel.Data.Events item = this.items.get(position);
 
-
-            String imageUrl = item.getPhotos().get(0);
-            if (imageUrl == null) {
-                imageUrl = String.format("%simages/event/%s", VolleyHandler.getInstance().getServerHost(), item.get_id());
-                //item.setImageUrl(imageUrl);
+            int sizePhoto = item.getPhotos().size();
+            String imageUrl = null;
+            if(sizePhoto>0){
+                imageUrl = item.getPhotos().get(0);
+            }else{
+                if (imageUrl == null) {
+                    imageUrl = String.format("%simages/event/%s", VolleyHandler.getInstance().getServerHost(), item.get_id());
+                    //item.setImageUrl(imageUrl);
+                }
             }
+
 
             //String imageUrl = String.format("%simages/event/%s", VolleyHandler.getInstance().getServerHost(), item.get_id());
 
