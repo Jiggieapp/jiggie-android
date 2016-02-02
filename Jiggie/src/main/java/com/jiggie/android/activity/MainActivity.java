@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         final GoogleApiAvailability api = GoogleApiAvailability.getInstance();
         int code = api.isGooglePlayServicesAvailable(this);
 
-        /*if (code == ConnectionResult.SUCCESS) {
+        if (code == ConnectionResult.SUCCESS) {
             App.getInstance().trackMixPanelEvent("LogIn");
             this.onActivityResult(REQUEST_GOOGLE_PLAY_SERVICES, Activity.RESULT_OK, null);
         } else if (api.isUserResolvableError(code) && api.showErrorDialogFragment(this, code, REQUEST_GOOGLE_PLAY_SERVICES)) {
@@ -52,9 +52,9 @@ public class MainActivity extends AppCompatActivity {
         } else {
             final String str = GoogleApiAvailability.getInstance().getErrorString(code);
             Toast.makeText(this, str, Toast.LENGTH_LONG).show();
-        }*/
-        Intent i = new Intent(this, FilterActivity.class);
-        startActivity(i);
+        }
+        /*Intent i = new Intent(this, FilterActivity.class);
+        startActivity(i);*/
     }
 
     public void navigateToHome() {

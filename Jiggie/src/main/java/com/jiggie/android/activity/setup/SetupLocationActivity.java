@@ -19,6 +19,7 @@ import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.LoginSetting;
+import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.Setting;
 import com.android.volley.VolleyError;
 import com.facebook.AccessToken;
@@ -65,6 +66,9 @@ public class SetupLocationActivity extends BaseActivity {
         loginSetting.setChat(intent.getBooleanExtra(SetupNotificationActivity.PARAM_NOTIFICATION, true));
         loginSetting.setFeed(intent.getBooleanExtra(SetupNotificationActivity.PARAM_NOTIFICATION, true));
         loginSetting.setExperiences(TextUtils.join(",", intent.getStringArrayExtra(SetupTagsActivity.PARAM_EXPERIENCES)));
+
+        final MemberSettingModel memberSettingModel = new MemberSettingModel();
+        //memberSettingModel.setGender();
 
         VolleyHandler.getInstance().createVolleyRequest("membersettings", loginSetting, new VolleyRequestListener<Boolean, JSONObject>() {
             @Override

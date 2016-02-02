@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.MainActivity;
@@ -27,8 +29,11 @@ import com.jiggie.android.component.gcm.GCMRegistration;
 import com.jiggie.android.component.service.FacebookImageSyncService;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
+import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.Common;
+import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.Login;
+import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.Setting;
 import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
@@ -40,6 +45,8 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.jiggie.android.model.SettingModel;
+import com.jiggie.android.model.SuccessModel;
 
 import org.json.JSONObject;
 
@@ -50,6 +57,7 @@ import java.util.Date;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 import it.sephiroth.android.library.widget.HListView;
 
 /**
@@ -88,6 +96,10 @@ public class SignInFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ButterKnife.bind(this, rootView);
+
+        AccountManager.initLoginService();
+        EventBus.getDefault().register(this);
+
         LoginManager.getInstance().registerCallback(this.callbackManager = CallbackManager.Factory.create(), this.facebookCallback);
 
         final ImagePagerIndicatorAdapter imagePagerIndicatorAdapter = new ImagePagerIndicatorAdapter(super.getActivity().getSupportFragmentManager(), this.imageViewPager);
@@ -226,25 +238,31 @@ public class SignInFragment extends Fragment {
             try {
                 final Date birthDay = Common.FACEBOOK_DATE_FORMAT.parse(object.optString("birthday"));
                 final JSONObject location = object.optJSONObject("location");
-                final Login login = new Login();
 
-                login.setAbout(object.optString("about"));
-                login.setBirthday(Common.SHORT_DATE_FORMAT.format(birthDay));
-                login.setEmail(object.optString("email"));
-                login.setFacebookId(object.optString("id"));
-                login.setFirstName(object.optString("first_name"));
-                login.setLastName(object.optString("last_name"));
-                login.setGender(object.optString("gender"));
-                login.setLocation(location == null ? null : location.optString("name"));
-                login.setApnToken(gcmId);
-                login.save(getContext());
+                //Added by Aga 2-2-2016
+                LoginModel loginModel = new LoginModel();
+                loginModel.setVersion("1.1.0");
+                loginModel.setUser_first_name(object.optString("first_name"));
+                loginModel.setAbout(object.optString("about"));
+                loginModel.setApn_token(gcmId);
+                loginModel.setProfil_image_url("");
+                loginModel.setUserId("");
+                loginModel.setLocation(location == null ? null : location.optString("name"));
+                loginModel.setBirthday(Common.SHORT_DATE_FORMAT.format(birthDay));
+                loginModel.setFb_id(object.optString("id"));
+                loginModel.setUser_first_name(object.optString("first_name"));
+                loginModel.setEmail(object.optString("email"));
+                loginModel.setGender(object.optString("gender"));
+                //------------
 
-                VolleyHandler.getInstance().createVolleyRequest("login", login, loginListener);
+                AccountManager.loaderLogin(loginModel);
+
+                String name = loginModel.getUser_first_name() + " " + loginModel.getUser_last_name();
 
                 App.getInstance().setUserLoggedIn();
                 App.getSharedPreferences().edit()
-                        .putString(Common.PREF_FACEBOOK_NAME, login.getName())
-                        .putString(Common.PREF_FACEBOOK_ID, login.getFacebookId())
+                        .putString(Common.PREF_FACEBOOK_NAME, name)
+                        .putString(Common.PREF_FACEBOOK_ID, loginModel.getFb_id())
                         .apply();
             } catch (ParseException e) {
                 throw new RuntimeException(e);
@@ -252,49 +270,68 @@ public class SignInFragment extends Fragment {
         }
     };
 
-    private VolleyRequestListener<Void, JSONObject> loginListener = new VolleyRequestListener<Void, JSONObject>() {
-        @Override
-        public Void onResponseAsync(JSONObject response) {
-            new Setting(VolleyHandler.getData(response)).save();
-            return null;
+    public void onEvent(SettingModel message){
+
+        String responses = new Gson().toJson(message);
+        Log.d("res", responses);
+
+        final MainActivity activity = (MainActivity) getActivity();
+        final App app = App.getInstance();
+        progressDialog.dismiss();
+
+        AccountManager.saveSetting(getActivity(), message);
+        setupWalkthrough(message.is_new_user(), message.isShow_walkthrough());
+
+        if (App.getSharedPreferences().getBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, false)) {
+            app.trackMixPanelEvent("Login");
+            if (activity != null)
+                activity.navigateToHome();
+            else
+                app.startActivity(new Intent(App.getInstance(), MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+        } else {
+            // Start new activity from app context instead of current activity. This prevent crash when activity has been destroyed.
+            app.trackMixPanelEvent("SignUp");
+            app.startActivity(new Intent(app, SetupTagsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+            app.startService(new Intent(app, FacebookImageSyncService.class));
+            if (activity != null)
+                activity.finish();
         }
+    }
 
-        @Override
-        public void onResponseCompleted(Void value) {
-            final MainActivity activity = (MainActivity) getActivity();
-            final App app = App.getInstance();
-            progressDialog.dismiss();
+    public void onEvent(ExceptionModel message){
+        Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_LONG).show();
+        btnSignIn.setEnabled(true);
+        progressDialog.dismiss();
+    }
 
-            /*boolean isNewUser = App.getSharedPreferences().getBoolean(Setting.FIELD_NEW_USER, false);
-            if(isNewUser){*/
-            //set first login to show walkthrough
+    //must use unit test
+    private void setupWalkthrough(boolean isNewUser, boolean isShowWalkthrough){
+        if(isNewUser){
             App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, true).commit();
             App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_SOCIAL, true).commit();
             App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_CHAT, true).commit();
-            //-----------------------------------
-            //}
+        }else{
+            if(isShowWalkthrough){
 
-            if (App.getSharedPreferences().getBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, false)) {
-                app.trackMixPanelEvent("Login");
-                if (activity != null)
-                    activity.navigateToHome();
-                else
-                    app.startActivity(new Intent(App.getInstance(), MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
-            } else {
-                // Start new activity from app context instead of current activity. This prevent crash when activity has been destroyed.
-                app.trackMixPanelEvent("SignUp");
-                app.startActivity(new Intent(app, SetupTagsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
-                app.startService(new Intent(app, FacebookImageSyncService.class));
-                if (activity != null)
-                    activity.finish();
+                boolean wkEvent = App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_EVENT, false);
+                boolean wkSocial = App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_SOCIAL, false);
+                boolean wkChat = App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_CHAT, false);
+
+                App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, wkEvent).commit();
+                App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_SOCIAL, wkSocial).commit();
+                App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_CHAT, wkChat).commit();
+
+            }else{
+                App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, false).commit();
+                App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_SOCIAL, false).commit();
+                App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_CHAT, false).commit();
             }
         }
+    }
 
-        @Override
-        public void onErrorResponse(VolleyError error) {
-            Toast.makeText(getContext(), App.getErrorMessage(error), Toast.LENGTH_LONG).show();
-            btnSignIn.setEnabled(true);
-            progressDialog.dismiss();
-        }
-    };
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }

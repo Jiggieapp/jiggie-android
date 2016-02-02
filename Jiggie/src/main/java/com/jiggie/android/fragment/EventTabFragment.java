@@ -31,7 +31,9 @@ import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.EventTabListAdapter;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
+import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.model.Event;
+import com.jiggie.android.model.EventModel;
 import com.jiggie.android.model.Setting;
 import com.android.volley.VolleyError;
 import com.facebook.AccessToken;
@@ -44,11 +46,12 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by rangg on 21/10/2015.
  */
-public class EventTabFragment extends Fragment implements TabFragment, SwipeRefreshLayout.OnRefreshListener, EventTabListAdapter.EventSelectedListener {
+public class EventTabFragment extends Fragment implements TabFragment, SwipeRefreshLayout.OnRefreshListener, EventTabListAdapter.ViewSelectedListener {
     @Bind(R.id.swipe_refresh)
     SwipeRefreshLayout refreshLayout;
     @Bind(R.id.recycler)
@@ -65,12 +68,14 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
     RelativeLayout layoutWalkthrough;
 
     private EventTabListAdapter adapter;
-    private ArrayList<Event> events;
+    //private ArrayList<Event> events;
     private HomeMain homeMain;
     private String searchText;
     private boolean isLoading;
     private View rootView;
     private String title;
+
+    private ArrayList<EventModel.Data.Events> events = new ArrayList<EventModel.Data.Events>();
 
     @Override
     public void onTabSelected() {
@@ -101,6 +106,9 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ButterKnife.bind(this, this.rootView);
+
+        EventBus.getDefault().register(this);
+        EventManager.initEventService();
 
         this.recyclerView.setAdapter(this.adapter = new EventTabListAdapter(this, this));
         this.recyclerView.setLayoutManager(new LinearLayoutManager(super.getContext()));
@@ -172,9 +180,9 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
         this.isLoading = true;
         this.refreshLayout.setRefreshing(true);
         final AccessToken token = AccessToken.getCurrentAccessToken();
-        final String url = String.format("events/list/%s/%s", token.getUserId(), Setting.getCurrentSetting().getGenderInterestString());
+        //final String url = String.format("events/list/%s/%s", token.getUserId(), Setting.getCurrentSetting().getGenderInterestString());
 
-        VolleyHandler.getInstance().createVolleyArrayRequest(url, new VolleyRequestListener<Void, JSONArray>() {
+        /*VolleyHandler.getInstance().createVolleyArrayRequest(url, new VolleyRequestListener<Void, JSONArray>() {
             @Override
             public Void onResponseAsync(JSONArray response) {
                 final int count = response == null ? 0 : response.length();
@@ -213,15 +221,19 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
                     refreshLayout.setRefreshing(false);
                 }
             }
-        });
+        });*/
+
+        //Added by Aga
+        EventManager.loaderEvent(token.getUserId(), Setting.getCurrentSetting().getGenderInterestString());
+        //--------------
     }
 
-    @Override
+    /*@Override
     public void onEventSelected(Event event) {
         super.startActivity(new Intent(super.getActivity(), EventDetailActivity.class).putExtra(event.getClass().getName(), event));
-    }
+    }*/
 
-    private void filter(boolean notify) {
+    /*private void filter(boolean notify) {
         if ((!this.refreshLayout.isRefreshing()) && (this.searchText != null)) {
             this.adapter.clear();
             final int size = this.events.size();
@@ -255,7 +267,7 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
             if (notify)
                 this.adapter.notifyDataSetChanged();
         }
-    }
+    }*/
 
     @Override
     public void onDestroyView() {
@@ -270,5 +282,70 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
         App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, false).commit();
     }
 
+    //Added by Aga
+    public void onEvent(ArrayList<EventModel.Data.Events> message){
+        events = message;
 
+        adapter.clear();
+        //events.clear();
+
+        if (searchText == null)
+            adapter.addAll(events);
+
+        refreshLayout.setRefreshing(false);
+        filter(true);
+    }
+
+    @Override
+    public void onViewSelected(EventModel.Data.Events event) {
+        super.startActivity(new Intent(super.getActivity(), EventDetailActivity.class).putExtra(event.getClass().getName(), event));
+    }
+
+    private void filter(boolean notify) {
+        if ((!this.refreshLayout.isRefreshing()) && (this.searchText != null)) {
+            this.adapter.clear();
+            final int size = this.events.size();
+            final String searchText = this.searchText.toLowerCase();
+
+            for (int i = 0; i < size; i++) {
+                final EventModel.Data.Events event = this.events.get(i);
+                if (event.getTitle().toLowerCase().contains(searchText))
+                    this.adapter.add(event);
+                else if (event.getVenue_name().toLowerCase().contains(searchText))
+                    this.adapter.add(event);
+                else {
+
+                    final String[] tags =  new String[event.getTags().size()];
+                    event.getTags().toArray(tags);
+                    final int tagCount = tags.length;
+
+                    for (int t = 0; t < tagCount; t++) {
+                        final String tag = tags[t];
+                        if (tag.toLowerCase().contains(searchText)) {
+                            this.adapter.add(event);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (notify)
+                adapter.notifyDataSetChanged();
+        } else if (!this.refreshLayout.isRefreshing()) {
+            this.adapter.clear();
+            this.adapter.addAll(this.events);
+            if (notify) {
+                int sizes = events.size();
+                this.adapter.notifyDataSetChanged();
+            }
+        }
+    }
+    //--------------------------------
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }

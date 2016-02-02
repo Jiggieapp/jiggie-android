@@ -15,6 +15,6 @@ import retrofit.http.Path;
  */
 public interface FilterInterface {
     @GET(Utils.GET_USER_TAG_LIST)
-   Call<FilterModel> getUserTagList(@Path("user_id") String fb_id);
+    Call<FilterModel> getUserTagList(@Path("user_id") String fb_id);
     //Call<JSONObject> getUserTagList(@Path("user_id") String user_id);
 }

@@ -25,7 +25,7 @@ public class EventManager {
     public static void initEventService(){
         Retrofit retrofit = new Retrofit.Builder()
                 //.baseUrl("http://52.77.222.216")
-                .baseUrl(Utils.URL)
+                .baseUrl(Utils.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         eventInterface = retrofit.create(EventInterface.class);

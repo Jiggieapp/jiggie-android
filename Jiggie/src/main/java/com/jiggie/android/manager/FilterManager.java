@@ -1,26 +1,9 @@
 package com.jiggie.android.manager;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewTreeObserver;
-import android.widget.Toast;
-
-import com.android.volley.VolleyError;
 import com.facebook.AccessToken;
-import com.google.gson.Gson;
-import com.jiggie.android.App;
-import com.jiggie.android.R;
-import com.jiggie.android.api.API;
-import com.jiggie.android.api.FilterInterface;
+import com.jiggie.android.api.AccountInterface;
 import com.jiggie.android.component.Utils;
-import com.jiggie.android.component.volley.VolleyHandler;
-import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.model.FilterModel;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.logging.Filter;
 
 import de.greenrobot.event.EventBus;
 import retrofit.Callback;
@@ -33,18 +16,16 @@ import retrofit.Retrofit;
  */
 public class FilterManager {
 
-    private static FilterInterface filterInterface;
+    private static AccountInterface accountInterface;
     public final static String TAG = FilterManager.class.getSimpleName();
 
     public static void initFilter()
     {
         Retrofit retrofit = new Retrofit.Builder()
-                //.baseUrl("http://52.77.222.216")
-                //.baseUrl(Utils.URL)
-                .baseUrl(Utils.OLD_URL)
+                .baseUrl(Utils.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        filterInterface = retrofit.create(FilterInterface.class);
+        accountInterface = retrofit.create(AccountInterface.class);
     }
 
     private static void loadUserTagList(Callback callback)
@@ -56,13 +37,13 @@ public class FilterManager {
             }
         });*/
 
-        filterInterface.getUserTagList(
-                AccessToken.getCurrentAccessToken().getUserId()).enqueue(callback);
+        accountInterface.getUserTagList("10153418311072858"
+               /* AccessToken.getCurrentAccessToken().getUserId()*/).enqueue(callback);
     }
 
     public static void getUserTagList()
     {
-        if(filterInterface == null)
+        if(accountInterface == null)
             initFilter();
         loadUserTagList(new Callback() {
             @Override
@@ -71,6 +52,8 @@ public class FilterManager {
                 //String r = new Gson().toJson(response.body());
                 //JSONObject r = (JSONObject) response.body();
                 FilterModel filterMode = (FilterModel) response.body();
+                /*for(String res : filterMode.getData().getExperiences())
+                    Utils.d(TAG, "res " + res);*/
                 EventBus.getDefault().post(filterMode.getData().getExperiences());
             }
 

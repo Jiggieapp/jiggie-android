@@ -88,9 +88,8 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
             final ViewHolder holder = new ViewHolder(FilterActivity.this, view, res);
 
             holder.textView.setText(holder.text);
-            holder.textView.setTextColor(getResources().getColor(R.color.textDarkGray));
-            holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_grey));
-            holder.checkView.setBackground(getResources().getDrawable(R.drawable.btn_tag_grey));
+            holder.textView.setTextColor(getResources().getColor(android.R.color.white));
+            holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_blue));
             selectedItems.add(holder.text);
             flowLayout.addView(view);
 
@@ -146,10 +145,18 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
         final boolean selected = holder.checkView.getVisibility() != View.VISIBLE;
 
         if (selected)
+        {
             this.selectedItems.add(holder.text);
+            //holder.container.setBackgroundColor(getResources().getColor(R.color.setup_blue));
+            holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_blue));
+            holder.textView.setTextColor(getResources().getColor(android.R.color.white));
+        }
         else
+        {
             this.selectedItems.remove(holder.text);
-
+            holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_grey));
+            holder.textView.setTextColor(getResources().getColor(R.color.textDarkGray));
+        }
         holder.checkView.setVisibility(selected ? View.VISIBLE : View.GONE);
     }
 }
