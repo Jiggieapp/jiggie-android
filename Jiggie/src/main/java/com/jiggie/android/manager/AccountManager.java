@@ -100,8 +100,6 @@ public class AccountManager {
         }
     }
 
-
-
     public static void saveSetting(SettingModel settingModel){
         /*App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
                 .putString(Common.FIELD_GENDER, settingModel.getData().getGender())

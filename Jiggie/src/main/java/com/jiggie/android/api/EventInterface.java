@@ -14,7 +14,7 @@ public interface EventInterface {
 
     //@GET("http://52.76.76.3/app/v3/events/list/{fb_id}/{gender_interest}")
     @GET(Utils.GET_EVENTS)
-    Call<EventModel> getEventList(@Path("fb_id") String fb_id, @Path("gender_interest") String gender_interest);
+    Call<EventModel> getEventList(@Path("fb_id") String fb_id);
 
     /*@GET("http://52.76.76.3/app/v3/events/details/{_id}/{fb_id}/{gender_interest}")
     Call<EventDetailModel> getEventDetail(@Path("_id") String _id, @Path("fb_id") String fb_id, @Path("gender_interest") String gender_interest);*/

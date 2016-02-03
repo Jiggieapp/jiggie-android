@@ -1,10 +1,6 @@
 package com.jiggie.android.component;
 
 import android.app.Activity;
-import android.util.Log;
-
-import com.jiggie.android.App;
-import com.jiggie.android.R;
 
 /**
  * Created by LTE on 1/29/2016.
@@ -24,7 +20,6 @@ public class Utils {
 
     public static String PREFERENCE_SETTING = "setting";
     public static String SETTING_MODEL = "setting_model";
-    public static String MEMBER_SETTING_MODEL = "member_setting_model";
 
     public static int myPixel(Activity a,int dip){
         float scale = a.getResources().getDisplayMetrics().density;
@@ -33,21 +28,9 @@ public class Utils {
     }
     //-----
 
-    public static void d(final String TAG, final String body)
-    {
-        Log.d(TAG, body);
-    }
-
-    //API
-    //rule : base URL always ends with /
-    //rule : @url doesnt start with /
-    public final static String URL = "http://api-dev.jiggieapp.com/";
-    //public final static String OLD_URL = "https://jiggie.herokuapp.com/app/v3/";
-    public final static String OLD_URL = "https://jiggie-dev.herokuapp.com/app/v3/";
     public final static String BASE_URL = "http://api-dev.jiggieapp.com/";
     //public final static String URL = "http://api.jiggieapp.com/";
-    public final static String GET_USER_TAG_LIST = BASE_URL + "app/v3/membersettings";
-    public final static String GET_EVENTS = BASE_URL + "app/v3/events/list/{fb_id}/{gender_interest}";
+    public final static String GET_EVENTS = BASE_URL + "app/v3/events/list/{fb_id}";
     //public final static String GET_EVENTS = URL + "app/v3/events/list/{fb_id}/{gender_interest}";
 
     public final static String URL_LOGIN = BASE_URL + "app/v3/login";

@@ -31,13 +31,13 @@ public class EventManager {
         eventInterface = retrofit.create(EventInterface.class);
     }
 
-    private static void getEventList(String fb_id, String gender_interest, Callback callback) throws IOException {
-        eventInterface.getEventList(fb_id, gender_interest).enqueue(callback);
+    private static void getEventList(String fb_id, Callback callback) throws IOException {
+        eventInterface.getEventList(fb_id).enqueue(callback);
     }
 
-    public static void loaderEvent(String fb_id, String gender_interest){
+    public static void loaderEvent(String fb_id){
         try {
-            getEventList(fb_id, gender_interest, new Callback() {
+            getEventList(fb_id, new Callback() {
                 @Override
                 public void onResponse(Response response, Retrofit retrofit) {
 
@@ -45,6 +45,8 @@ public class EventManager {
                     String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);
                     EventModel dataTemp = (EventModel) response.body();
+
+                    int size = dataTemp.getData().getEvents().size();
 
                     EventBus.getDefault().post(dataTemp.getData().getEvents());
                 }
