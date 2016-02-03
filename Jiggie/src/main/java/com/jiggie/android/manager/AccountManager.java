@@ -1,19 +1,14 @@
 package com.jiggie.android.manager;
 
-import android.app.Activity;
 import android.content.Context;
-import android.text.TextUtils;
 import android.util.Log;
 
-import com.facebook.AccessToken;
 import com.google.gson.Gson;
 import com.jiggie.android.App;
-import com.jiggie.android.activity.setup.SetupNotificationActivity;
-import com.jiggie.android.activity.setup.SetupTagsActivity;
 import com.jiggie.android.api.AccountInterface;
 import com.jiggie.android.component.Utils;
-import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
+import com.jiggie.android.model.FilterModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.SettingModel;
@@ -33,8 +28,9 @@ import retrofit.Retrofit;
 public class AccountManager {
 
     static AccountInterface accountInterface;
+    public final static String TAG = AccountManager.class.getSimpleName();
 
-    public static void initAccountService(){
+    private static void initAccountService(){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Utils.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -42,12 +38,25 @@ public class AccountManager {
         accountInterface = retrofit.create(AccountInterface.class);
     }
 
+    public static AccountInterface getAccountInterface()
+    {
+        if(accountInterface == null)
+            initAccountService();
+        return accountInterface;
+    }
+
     private static void postLogin(LoginModel loginRequestModel, Callback callback) throws IOException {
-        accountInterface.postLogin(Utils.URL_LOGIN, loginRequestModel).enqueue(callback);
+        getAccountInterface().postLogin(Utils.URL_LOGIN, loginRequestModel).enqueue(callback);
     }
 
     private static void postMemberSetting(MemberSettingModel memberSettingModel, Callback callback) throws IOException {
-        accountInterface.postMemberSetting(Utils.URL_MEMBER_SETTING, memberSettingModel).enqueue(callback);
+        getAccountInterface().postMemberSetting(Utils.URL_MEMBER_SETTING, memberSettingModel).enqueue(callback);
+    }
+
+    private static void getUserTagList(Callback callback)
+    {
+        getAccountInterface().getUserTagList("10153418311072858"
+               /* AccessToken.getCurrentAccessToken().getUserId()*/).enqueue(callback);
     }
 
     public static void loaderLogin(LoginModel loginRequestModel){
@@ -79,9 +88,8 @@ public class AccountManager {
             postMemberSetting(memberSettingModel, new Callback() {
                 @Override
                 public void onResponse(Response response, Retrofit retrofit) {
-                   /* String responses = new Gson().toJson(response.body());
+                    /* String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);*/
-                    Utils.d("AccountManager", memberSettingModel.getExperiences());
                     SuccessModel dataTemp = (SuccessModel) response.body();
                     EventBus.getDefault().post(dataTemp);
 
@@ -90,7 +98,7 @@ public class AccountManager {
 
                 @Override
                 public void onFailure(Throwable t) {
-                    Log.d("failure", t.toString());
+                    Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
@@ -101,7 +109,7 @@ public class AccountManager {
     }
 
     public static void saveSetting(SettingModel settingModel){
-        /*App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
+        /*App.getAccountInterface().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
                 .putString(Common.FIELD_GENDER, settingModel.getData().getGender())
                 .putString(Common.FIELD_GENDER_INTEREST, settingModel.getData().getGender_interest())
                 .putString(Common.FIELD_PHONE, settingModel.getData().getPhone())
@@ -122,6 +130,11 @@ public class AccountManager {
                 .putString(Utils.MEMBER_SETTING_MODEL, model).apply();
     }
 
+    private static void saveTagsList()
+    {
+
+    }
+
     public static SettingModel loadSetting(){
         SettingModel settingModel = new Gson().fromJson(App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING,
                 Context.MODE_PRIVATE).getString(Utils.SETTING_MODEL, ""), SettingModel.class);
@@ -135,7 +148,49 @@ public class AccountManager {
         return memberSettingModel;
     }
 
+    public static void getUserTagList()
+    {
+        getUserTagList(new Callback() {
+            @Override
+            public void onResponse(Response response, Retrofit retrofit) {
+                //String[] result = (String[]) response.body();
+                //String r = new Gson().toJson(response.body());
+                //JSONObject r = (JSONObject) response.body();
+                FilterModel filterMode = (FilterModel) response.body();
+                //for(String res : filterMode.getData().getExperiences())
+                //Utils.d(TAG, "res filter model " + filterMode.getData().getExperiences());
+                EventBus.getDefault().post(filterMode.getData().getExperiences());
+            }
 
+            @Override
+            public void onFailure(Throwable t) {
+                Utils.d(TAG, "response fail" + t.getMessage());
+            }
+        });
+
+        /*VolleyHandler.getAccountInterface().createVolleyArrayRequest("user/tagslist", new VolleyRequestListener<String[], JSONArray>() {
+            @Override
+            public String[] onResponseAsync(JSONArray jsonArray) {
+                final int length = jsonArray.length();
+                final String[] values = new String[length];
+                for (int i = 0; i < length; i++)
+                    values[i] = jsonArray.optString(i);
+                return values;
+            }
+
+            @Override
+            public void onResponseCompleted(String[] values) {
+                for(String val : values)
+                {
+                    Utils.d(TAG, "val " + val);
+                }
+            }
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        });*/
+    }
 
 
 }

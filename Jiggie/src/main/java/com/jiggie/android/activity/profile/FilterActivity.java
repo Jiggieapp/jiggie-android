@@ -1,12 +1,15 @@
 package com.jiggie.android.activity.profile;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -14,8 +17,12 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.util.Util;
 import com.google.gson.Gson;
+import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.MainActivity;
+import com.jiggie.android.activity.setup.SetupTagsActivity;
 import com.jiggie.android.api.API;
 import com.jiggie.android.component.FlowLayout;
 import com.jiggie.android.component.Utils;
@@ -25,6 +32,7 @@ import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.FilterManager;
 import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.SettingModel;
+import com.jiggie.android.model.SuccessModel;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -72,7 +80,7 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
 
     private void loadData()
     {
-        FilterManager.getUserTagList();
+        AccountManager.getUserTagList();
     }
 
     @Override
@@ -104,7 +112,12 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
         }*/
 
         //fetch all experiences from server
-        for (String res : settingModel.getData().getExperiences() /*result*/) {
+
+        Set<String> tags = App.getInstance()
+                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                .getStringSet(Utils.TAGS_LIST, null);
+
+        for (String res : tags /*settingModel.getData().getExperiences() *//*result*/) {
             final View view = getLayoutInflater().inflate(R.layout.item_setup_tag, flowLayout, false);
             final ViewHolder holder = new ViewHolder(FilterActivity.this, view, res);
 
@@ -215,8 +228,10 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
         if(selectedItems.size() > 0)
         {
             MemberSettingModel memberSettingModel = AccountManager.loadMemberSetting();
-            memberSettingModel.setExperiences(selectedItems.toArray(new String[this.selectedItems.size()]).toString());
-            AccountManager.initAccountService();
+            final String experiences = TextUtils.join(",", selectedItems.toArray(new String[this.selectedItems.size()]));
+            Utils.d(TAG, "experiences " + experiences);
+            //memberSettingModel.setExperiences(selectedItems.toArray(new String[this.selectedItems.size()]).toString());
+            memberSettingModel.setExperiences(experiences);
             AccountManager.loaderMemberSetting(memberSettingModel);
         }
         else
@@ -225,12 +240,23 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
         }
     }
 
+    public void onEvent(SuccessModel message){
+        /*dialog = App.showProgressDialog(this);
+
+        if (isActive()) {
+            dialog.dismiss();
+            finish();
+        }*/
+        // Start new activity from app context instead of current activity. This prevent crash when activity has been destroyed.
+        final App app = App.getInstance();
+    }
+
     private void showConfirmationDialog()
     {
         final AlertDialog builder = new AlertDialog.Builder(FilterActivity.this)
                 //.setTitle(getAct)
-                .setMessage("Lorem ipsum")
-                .setPositiveButton(FilterActivity.this.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+                .setMessage(getResources().getString(R.string.choose_one_experience))
+                .setPositiveButton(FilterActivity.this.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();

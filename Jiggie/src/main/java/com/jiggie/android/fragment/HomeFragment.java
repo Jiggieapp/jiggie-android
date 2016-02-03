@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.TextView;
 
 import com.jiggie.android.R;
 import com.jiggie.android.component.HomeMain;
@@ -68,6 +69,9 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
 
         if ((super.getArguments() != null) && (super.getArguments().getBoolean("chat", false)))
             this.viewPager.setCurrentItem(2);
+
+
+        setupTabIcons();
     }
 
     @Override
@@ -103,13 +107,13 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
             this.fragments = new Fragment[] {
                     new EventTabFragment(),
                     new SocialTabFragment(),
-                    new ChatTabFragment(),
-                    new MoreTabFragment()
+                    new ChatTabFragment()
+                    //,new MoreTabFragment()
             };
             ((TabFragment)this.fragments[0]).setHomeMain(homeMain);
             ((TabFragment)this.fragments[1]).setHomeMain(homeMain);
             ((TabFragment)this.fragments[2]).setHomeMain(homeMain);
-            ((TabFragment)this.fragments[3]).setHomeMain(homeMain);
+            //((TabFragment)this.fragments[3]).setHomeMain(homeMain);
         }
 
         @Override
@@ -129,5 +133,23 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
 
             return -1;
         }
+    }
+
+    private void setupTabIcons()
+    {
+        TextView tabOne = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.tab_custom, null);
+        tabOne.setText(adapter.getPageTitle(0));
+        tabOne.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_event_white_24dp, 0, 0);
+        tab.getTabAt(0).setCustomView(tabOne);
+
+        TextView tabTwo = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.tab_custom, null);
+        tabTwo.setText(adapter.getPageTitle(1));
+        tabTwo.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_chat_white_24dp, 0, 0);
+        tab.getTabAt(1).setCustomView(tabTwo);
+
+        TextView tabThree = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.tab_custom, null);
+        tabThree.setText(adapter.getPageTitle(2));
+        tabThree.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_visibility_white_24dp, 0, 0);
+        tab.getTabAt(2).setCustomView(tabThree);
     }
 }

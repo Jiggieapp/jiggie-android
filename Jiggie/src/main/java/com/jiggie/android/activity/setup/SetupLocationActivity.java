@@ -48,7 +48,6 @@ public class SetupLocationActivity extends BaseActivity {
         super.setContentView(R.layout.activity_setup_location);
         super.bindView();
 
-        AccountManager.initAccountService();
         EventBus.getDefault().register(this);
 
         final Bitmap background = BitmapUtility.getBitmapResource(R.mipmap.signup1);

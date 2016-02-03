@@ -1,5 +1,6 @@
 package com.jiggie.android.activity.setup;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -17,6 +18,7 @@ import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.BitmapUtility;
 import com.jiggie.android.component.FlowLayout;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.BaseActivity;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
@@ -24,6 +26,7 @@ import com.android.volley.VolleyError;
 
 import org.json.JSONArray;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -46,6 +49,7 @@ public class SetupTagsActivity extends BaseActivity implements ViewTreeObserver.
     @Bind(R.id.root) View root;
 
     private Set<String> selectedItems;
+    private static final String TAG = SetupTagsActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,8 +85,23 @@ public class SetupTagsActivity extends BaseActivity implements ViewTreeObserver.
             public String[] onResponseAsync(JSONArray jsonArray) {
                 final int length = jsonArray.length();
                 final String[] values = new String[length];
+                final Set<String> setValues = new HashSet<String>();
                 for (int i = 0; i < length; i++)
                     values[i] = jsonArray.optString(i);
+
+                for(String temp : values)
+                {
+                    setValues.add(temp);
+                }
+                App.getInstance()
+                        .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                        .edit()
+                        //.putString(Utils.TAGS_LIST, Arrays.toString(values));
+                        .putStringSet(Utils.TAGS_LIST, setValues)
+                        .apply();
+                Set<String> tags = App.getInstance()
+                        .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                        .getStringSet(Utils.TAGS_LIST, null);
                 return values;
             }
 
@@ -143,8 +162,11 @@ public class SetupTagsActivity extends BaseActivity implements ViewTreeObserver.
     @OnClick(R.id.btnNext)
     @SuppressWarnings("unused")
     void btnNextOnClick() {
-        App.getInstance().trackMixPanelEvent("Walkthrough Tags");
-        super.startActivity(new Intent(this, SetupNotificationActivity.class).putExtra(PARAM_EXPERIENCES, this.selectedItems.toArray(new String[this.selectedItems.size()])));
+        final String[] tags = this.selectedItems.toArray(new String[this.selectedItems.size()]);
+                App.getInstance().trackMixPanelEvent("Walkthrough Tags");
+
+        super.startActivity(new Intent(this, SetupNotificationActivity.class)
+                .putExtra(PARAM_EXPERIENCES, tags));
     }
 
     static class ViewHolder {

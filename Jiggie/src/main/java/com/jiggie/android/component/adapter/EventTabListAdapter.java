@@ -70,7 +70,7 @@ public class EventTabListAdapter extends RecyclerView.Adapter<EventTabListAdapte
             }
 
 
-            //String imageUrl = String.format("%simages/event/%s", VolleyHandler.getInstance().getServerHost(), item.get_id());
+            //String imageUrl = String.format("%simages/event/%s", VolleyHandler.getAccountInterface().getServerHost(), item.get_id());
 
             holder.event = item;
             holder.txtTitle.setText(item.getTitle());

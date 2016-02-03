@@ -1,6 +1,7 @@
 package com.jiggie.android.component;
 
 import android.app.Activity;
+import android.util.Log;
 
 /**
  * Created by LTE on 1/29/2016.
@@ -20,6 +21,8 @@ public class Utils {
 
     public static String PREFERENCE_SETTING = "setting";
     public static String SETTING_MODEL = "setting_model";
+    public static String MEMBER_SETTING_MODEL = "member_setting_model";
+    public static String TAGS_LIST = "tags_list";
 
     public static int myPixel(Activity a,int dip){
         float scale = a.getResources().getDisplayMetrics().density;
@@ -36,4 +39,7 @@ public class Utils {
     public final static String URL_LOGIN = BASE_URL + "app/v3/login";
     public final static String URL_MEMBER_SETTING = BASE_URL + "app/v3/membersettings";
 
+    public static void d(final String tag,final String value) {
+        Log.d(tag, value);
+    }
 }

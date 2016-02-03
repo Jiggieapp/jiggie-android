@@ -57,6 +57,8 @@
     <string name="connect_with">Connect with %1$s?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
     <string name="dash"> - </string>
     <string name="recent">Recent</string>
     <string name="previous">Previous</string>
@@ -157,4 +159,5 @@
     </string-array>
 
     <string name="filter_title">Filter</string>
+    <string name="choose_one_experience">You have to choose at least one experience</string>
 </resources>

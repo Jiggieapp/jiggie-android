@@ -26,6 +26,8 @@ public interface AccountInterface {
     @POST
     Call<SuccessModel> postMemberSetting(@Url String url, @Body MemberSettingModel memberSettingModel);
 
-    @GET(Utils.GET_USER_TAG_LIST)
+    @GET(Utils.URL_MEMBER_SETTING)
     Call<FilterModel> getUserTagList(@Query("fb_id") String fb_id);
+    
+
 }

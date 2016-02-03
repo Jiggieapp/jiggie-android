@@ -31,8 +31,15 @@ public class EventManager {
         eventInterface = retrofit.create(EventInterface.class);
     }
 
+    private static EventInterface getEventInterface()
+    {
+        if(eventInterface == null)
+            initEventService();
+        return eventInterface;
+    }
+
     private static void getEventList(String fb_id, Callback callback) throws IOException {
-        eventInterface.getEventList(fb_id).enqueue(callback);
+        getEventInterface().getEventList(fb_id).enqueue(callback);
     }
 
     public static void loaderEvent(String fb_id){

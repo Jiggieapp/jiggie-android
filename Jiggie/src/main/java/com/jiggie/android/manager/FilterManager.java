@@ -19,32 +19,15 @@ public class FilterManager {
     private static AccountInterface accountInterface;
     public final static String TAG = FilterManager.class.getSimpleName();
 
-    public static void initFilter()
-    {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Utils.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        accountInterface = retrofit.create(AccountInterface.class);
-    }
-
     private static void loadUserTagList(Callback callback)
     {
-        /*API.loadUserTagList(new API.OnResponseCompleted() {
-            @Override
-            public void onResponse(String[] values) {
-
-            }
-        });*/
-
         accountInterface.getUserTagList("10153418311072858"
                /* AccessToken.getCurrentAccessToken().getUserId()*/).enqueue(callback);
     }
 
     public static void getUserTagList()
     {
-        if(accountInterface == null)
-            initFilter();
+
         loadUserTagList(new Callback() {
             @Override
             public void onResponse(Response response, Retrofit retrofit) {
@@ -63,7 +46,7 @@ public class FilterManager {
             }
         });
 
-        /*VolleyHandler.getInstance().createVolleyArrayRequest("user/tagslist", new VolleyRequestListener<String[], JSONArray>() {
+        /*VolleyHandler.getAccountInterface().createVolleyArrayRequest("user/tagslist", new VolleyRequestListener<String[], JSONArray>() {
             @Override
             public String[] onResponseAsync(JSONArray jsonArray) {
                 final int length = jsonArray.length();
