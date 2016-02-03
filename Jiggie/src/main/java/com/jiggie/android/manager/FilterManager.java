@@ -52,8 +52,8 @@ public class FilterManager {
                 //String r = new Gson().toJson(response.body());
                 //JSONObject r = (JSONObject) response.body();
                 FilterModel filterMode = (FilterModel) response.body();
-                /*for(String res : filterMode.getData().getExperiences())
-                    Utils.d(TAG, "res " + res);*/
+                //for(String res : filterMode.getData().getExperiences())
+                    //Utils.d(TAG, "res filter model " + filterMode.getData().getExperiences());
                 EventBus.getDefault().post(filterMode.getData().getExperiences());
             }
 

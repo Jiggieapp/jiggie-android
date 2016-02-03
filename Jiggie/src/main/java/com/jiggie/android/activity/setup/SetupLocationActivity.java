@@ -77,7 +77,6 @@ public class SetupLocationActivity extends BaseActivity {
         memberSettingModel.setExperiences(TextUtils.join(",", intent.getStringArrayExtra(SetupTagsActivity.PARAM_EXPERIENCES)));
 
         AccountManager.loaderMemberSetting(memberSettingModel);
-
     }
 
     public void onEvent(SuccessModel message){

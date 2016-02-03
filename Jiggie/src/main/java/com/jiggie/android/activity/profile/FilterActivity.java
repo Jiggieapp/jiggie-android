@@ -1,20 +1,30 @@
 package com.jiggie.android.activity.profile;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.graphics.Color;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.jiggie.android.R;
 import com.jiggie.android.api.API;
 import com.jiggie.android.component.FlowLayout;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.BaseActivity;
 import com.jiggie.android.component.activity.ToolbarActivity;
+import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.FilterManager;
+import com.jiggie.android.model.MemberSettingModel;
+import com.jiggie.android.model.SettingModel;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,6 +32,7 @@ import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
 public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.OnGlobalLayoutListener{
@@ -29,9 +40,12 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
     @Bind(R.id.flowLayout) FlowLayout flowLayout;
     @Bind(R.id.progressBar) ProgressBar progressBar;
     @Bind(R.id.viewFailed) View failedView;
+    @Bind(R.id.btnApply) Button btnApply;
 
-    private Set<String> selectedItems;
+   // private Set<String> selectedItems;
+    private ArrayList<String> selectedItems;
     private final static String TAG = FilterActivity.class.getSimpleName();
+    private boolean hasChanged;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +55,7 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
 
         super.setToolbarTitle(getResources().getString(R.string.filter_title), true);
 
-        selectedItems = new HashSet<>();
+        selectedItems = new ArrayList<>();
         this.flowLayout.getViewTreeObserver().addOnGlobalLayoutListener(this);
         this.failedView.setVisibility(View.GONE);
 
@@ -83,15 +97,37 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
         this.progressBar.setVisibility(View.GONE);
         this.failedView.setVisibility(View.GONE);
 
-        for (String res : result) {
+        SettingModel settingModel = AccountManager.loadSetting();
+        /*for(String already : settingModel.getData().getExperiences())
+        {
+            Utils.d(TAG, "already " + already);
+        }*/
+
+        //fetch all experiences from server
+        for (String res : settingModel.getData().getExperiences() /*result*/) {
             final View view = getLayoutInflater().inflate(R.layout.item_setup_tag, flowLayout, false);
             final ViewHolder holder = new ViewHolder(FilterActivity.this, view, res);
 
             holder.textView.setText(holder.text);
-            holder.textView.setTextColor(getResources().getColor(android.R.color.white));
-            holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_blue));
-            selectedItems.add(holder.text);
+            //holder.textView.setTextColor(getResources().getColor(android.R.color.white));
+            //holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_blue));
+            //selectedItems.add(holder.text);
             flowLayout.addView(view);
+            if(result.contains(res))
+            //if(settingModel.getData().getExperiences().contains(res))
+            {
+                //setSelected(holder.container, holder.textView, true);
+                selectedItems.add(res);
+                holder.checkView.setVisibility(View.GONE);
+            }
+            else
+            {
+                //setSelected(holder.container, holder.textView, false);
+                holder.checkView.setVisibility(View.VISIBLE);
+            }
+            //onTagClick(holder);
+            setSelected(holder, holder.checkView.getVisibility() != View.VISIBLE);
+            hasChanged = false;
 
             view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
@@ -143,20 +179,71 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
 
     private void onTagClick(ViewHolder holder) {
         final boolean selected = holder.checkView.getVisibility() != View.VISIBLE;
-
         if (selected)
         {
             this.selectedItems.add(holder.text);
-            //holder.container.setBackgroundColor(getResources().getColor(R.color.setup_blue));
+
+        } else {
+            this.selectedItems.remove(holder.text);
+        }
+        setSelected(holder, selected);
+    }
+
+    private void setSelected(ViewHolder holder, boolean selected)
+    {
+        if(selected)
+        {
             holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_blue));
             holder.textView.setTextColor(getResources().getColor(android.R.color.white));
         }
         else
         {
-            this.selectedItems.remove(holder.text);
             holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_grey));
             holder.textView.setTextColor(getResources().getColor(R.color.textDarkGray));
         }
         holder.checkView.setVisibility(selected ? View.VISIBLE : View.GONE);
+        hasChanged = true;
+    }
+
+    @OnClick(R.id.btnApply)
+    @SuppressWarnings("unused")
+    void onClickBtnApply()
+    {
+        for(String item : selectedItems)
+            Utils.d(TAG, "item " + item);
+
+        if(selectedItems.size() > 0)
+        {
+            MemberSettingModel memberSettingModel = AccountManager.loadMemberSetting();
+            memberSettingModel.setExperiences(selectedItems.toArray(new String[this.selectedItems.size()]).toString());
+            AccountManager.initAccountService();
+            AccountManager.loaderMemberSetting(memberSettingModel);
+        }
+        else
+        {
+            showConfirmationDialog();
+        }
+    }
+
+    private void showConfirmationDialog()
+    {
+        final AlertDialog builder = new AlertDialog.Builder(FilterActivity.this)
+                //.setTitle(getAct)
+                .setMessage("Lorem ipsum")
+                .setPositiveButton(FilterActivity.this.getResources().getString(R.string.yes), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        //listener.onNextAction(ACTION, data);
+                    }
+                })
+                /*.setNegativeButton(get().getResources().getString(R.string.edit), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })*/
+                .create();
+        builder.show();
     }
 }

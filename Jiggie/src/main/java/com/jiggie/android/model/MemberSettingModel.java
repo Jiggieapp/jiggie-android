@@ -1,5 +1,11 @@
 package com.jiggie.android.model;
 
+import android.text.TextUtils;
+
+import com.facebook.AccessToken;
+import com.jiggie.android.activity.setup.SetupNotificationActivity;
+import com.jiggie.android.activity.setup.SetupTagsActivity;
+
 import java.util.ArrayList;
 
 /**
@@ -88,4 +94,5 @@ public class MemberSettingModel {
     public void setPhotos(ArrayList<String> photos) {
         this.photos = photos;
     }
+
 }

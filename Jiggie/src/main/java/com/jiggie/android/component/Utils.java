@@ -24,6 +24,7 @@ public class Utils {
 
     public static String PREFERENCE_SETTING = "setting";
     public static String SETTING_MODEL = "setting_model";
+    public static String MEMBER_SETTING_MODEL = "member_setting_model";
 
     public static int myPixel(Activity a,int dip){
         float scale = a.getResources().getDisplayMetrics().density;

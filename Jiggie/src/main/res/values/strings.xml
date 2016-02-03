@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Jiggie</string>
-    <!--<string name="server_host">https://jiggie-dev.herokuapp.com/app/v3/</string>-->
-    <string name="server_host">https://jiggie.herokuapp.com/app/v3/</string>
+    <string name="server_host">https://jiggie-dev.herokuapp.com/app/v3/</string>
+    <!--<string name="server_host">https://jiggie.herokuapp.com/app/v3/</string>-->
 
     <!--<string name="server_host">https://api-dev.jiggieapp.com/app/v3/</string>-->
 

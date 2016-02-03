@@ -2,10 +2,14 @@ package com.jiggie.android.manager;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
+import com.facebook.AccessToken;
 import com.google.gson.Gson;
 import com.jiggie.android.App;
+import com.jiggie.android.activity.setup.SetupNotificationActivity;
+import com.jiggie.android.activity.setup.SetupTagsActivity;
 import com.jiggie.android.api.AccountInterface;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.Common;
@@ -51,39 +55,11 @@ public class AccountManager {
             postLogin(loginRequestModel, new Callback() {
                 @Override
                 public void onResponse(Response response, Retrofit retrofit) {
-                    String responses = new Gson().toJson(response.body());
-                    Utils.d("res", responses);
+                    /*String responses = new Gson().toJson(response.body());
+                    Utils.d("res", responses);*/
 
-                    SettingModel dataTemp = (SettingModel)response.body();
-
+                    SettingModel dataTemp = (SettingModel) response.body();
                     EventBus.getDefault().post(dataTemp);
-
-                }
-
-                @Override
-                public void onFailure(Throwable t) {
-                    Log.d("failure", t.toString());
-                    EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION+t.toString()));
-                }
-            });
-        }catch (IOException e){
-            Log.d("exception", e.toString());
-            EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + e.toString()));
-        }
-    }
-
-    public static void loaderMemberSetting(MemberSettingModel memberSettingModel){
-        try {
-            postMemberSetting(memberSettingModel, new Callback() {
-                @Override
-                public void onResponse(Response response, Retrofit retrofit) {
-                    String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
-
-                    SuccessModel dataTemp = (SuccessModel) response.body();
-
-                    EventBus.getDefault().post(dataTemp);
-
                 }
 
                 @Override
@@ -97,6 +73,34 @@ public class AccountManager {
             EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + e.toString()));
         }
     }
+
+    public static void loaderMemberSetting(final MemberSettingModel memberSettingModel){
+        try {
+            postMemberSetting(memberSettingModel, new Callback() {
+                @Override
+                public void onResponse(Response response, Retrofit retrofit) {
+                   /* String responses = new Gson().toJson(response.body());
+                    Utils.d("res", responses);*/
+                    Utils.d("AccountManager", memberSettingModel.getExperiences());
+                    SuccessModel dataTemp = (SuccessModel) response.body();
+                    EventBus.getDefault().post(dataTemp);
+
+                    AccountManager.saveMemberSetting(memberSettingModel);
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.d("failure", t.toString());
+                    EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + t.toString()));
+                }
+            });
+        }catch (IOException e){
+            Utils.d("exception", e.toString());
+            EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + e.toString()));
+        }
+    }
+
+
 
     public static void saveSetting(SettingModel settingModel){
         /*App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
@@ -112,15 +116,28 @@ public class AccountManager {
         String model = new Gson().toJson(settingModel);
         App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
                 .putString(Utils.SETTING_MODEL, model).apply();
+    }
 
+    private static void saveMemberSetting(MemberSettingModel memberSettingModel) {
+        String model = new Gson().toJson(memberSettingModel);
+        App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
+                .putString(Utils.MEMBER_SETTING_MODEL, model).apply();
     }
 
     public static SettingModel loadSetting(){
-
         SettingModel settingModel = new Gson().fromJson(App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING,
                 Context.MODE_PRIVATE).getString(Utils.SETTING_MODEL, ""), SettingModel.class);
-
         return settingModel;
     }
+
+    public static MemberSettingModel loadMemberSetting()
+    {
+        MemberSettingModel memberSettingModel = new Gson().fromJson(App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING,
+                Context.MODE_PRIVATE).getString(Utils.MEMBER_SETTING_MODEL, ""), MemberSettingModel.class);
+        return memberSettingModel;
+    }
+
+
+
 
 }

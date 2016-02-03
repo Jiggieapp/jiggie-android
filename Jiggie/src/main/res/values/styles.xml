@@ -23,4 +23,12 @@
     <style name="ExpandableToolbarTitleStyle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textColor">@android:color/white</item>
     </style>
+
+    <!--<style name="CustomFlatButtonStyle" parent="android:Widget.Material.Light.Button.Borderless">
+        <item name="android:textColor">@color/blue_selector</item>
+    </style>-->
+
+    <style name="CustomFlatButtonStyle" parent="@style/Widget.AppCompat.Button.Borderless">>
+        <item name="android:textColor">@color/blue_selector</item>
+    </style>
 </resources>
