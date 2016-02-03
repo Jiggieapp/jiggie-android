@@ -159,7 +159,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         this.switchSocialize.setOnCheckedChangeListener(this.socializeChanged);
         App.getInstance().registerReceiver(this.socialReceiver, new IntentFilter(super.getString(R.string.broadcast_social)));
 
-        if (Utils.SHOW_WALKTHROUGH_SOCIAL) {
+        if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_EVENT, false)) {
             layoutWalkthrough.setVisibility(View.VISIBLE);
             imgWk.setImageResource(R.drawable.wk_img_suggestion);
             txtWkAction.setPadding(0, 0, Utils.myPixel(getActivity(), 37), Utils.myPixel(getActivity(), 22));

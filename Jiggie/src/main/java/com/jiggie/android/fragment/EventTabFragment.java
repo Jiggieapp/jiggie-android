@@ -33,7 +33,9 @@ import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.model.Event;
+import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.EventModel;
+import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.Setting;
 import com.android.volley.VolleyError;
 import com.facebook.AccessToken;
@@ -116,7 +118,7 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
         this.events = new ArrayList<>();
         super.setHasOptionsMenu(true);
 
-        if (Utils.SHOW_WALKTHROUGH_EVENT) {
+        if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_EVENT, false)) {
             layoutWalkthrough.setVisibility(View.VISIBLE);
             imgWk.setImageResource(R.drawable.wk_img_event);
             txtWkAction.setVisibility(View.GONE);
@@ -180,94 +182,10 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
         this.isLoading = true;
         this.refreshLayout.setRefreshing(true);
         final AccessToken token = AccessToken.getCurrentAccessToken();
-        //final String url = String.format("events/list/%s/%s", token.getUserId(), Setting.getCurrentSetting().getGenderInterestString());
 
-        /*VolleyHandler.getInstance().createVolleyArrayRequest(url, new VolleyRequestListener<Void, JSONArray>() {
-            @Override
-            public Void onResponseAsync(JSONArray response) {
-                final int count = response == null ? 0 : response.length();
-
-                adapter.clear();
-                events.clear();
-
-                for (int i = 0; i < count; i++) {
-                    final JSONObject obj = response.optJSONObject(i);
-                    final JSONArray subArray = obj == null ? null : obj.optJSONArray("events");
-                    final int eventCount = subArray == null ? 0 : subArray.length();
-
-                    for (int u = 0; u < eventCount; u++)
-                        events.add(new Event(subArray.optJSONObject(u)));
-                }
-
-                if (searchText == null)
-                    adapter.addAll(events);
-                return null;
-            }
-
-            @Override
-            public void onResponseCompleted(Void value) {
-                isLoading = false;
-                if (getContext() != null) {
-                    refreshLayout.setRefreshing(false);
-                    filter(true);
-                }
-            }
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                isLoading = false;
-                if (getContext() != null) {
-                    Toast.makeText(getContext(), App.getErrorMessage(error), Toast.LENGTH_SHORT).show();
-                    refreshLayout.setRefreshing(false);
-                }
-            }
-        });*/
-
-        //Added by Aga
         EventManager.loaderEvent(token.getUserId());
-        //--------------
+
     }
-
-    /*@Override
-    public void onEventSelected(Event event) {
-        super.startActivity(new Intent(super.getActivity(), EventDetailActivity.class).putExtra(event.getClass().getName(), event));
-    }*/
-
-    /*private void filter(boolean notify) {
-        if ((!this.refreshLayout.isRefreshing()) && (this.searchText != null)) {
-            this.adapter.clear();
-            final int size = this.events.size();
-            final String searchText = this.searchText.toLowerCase();
-
-            for (int i = 0; i < size; i++) {
-                final Event event = this.events.get(i);
-                if (event.getTitle().toLowerCase().contains(searchText))
-                    this.adapter.add(event);
-                else if (event.getVenueName().toLowerCase().contains(searchText))
-                    this.adapter.add(event);
-                else {
-                    final String[] tags = event.getTags();
-                    final int tagCount = tags.length;
-
-                    for (int t = 0; t < tagCount; t++) {
-                        final String tag = tags[t];
-                        if (tag.toLowerCase().contains(searchText)) {
-                            this.adapter.add(event);
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (notify)
-                adapter.notifyDataSetChanged();
-        } else if (!this.refreshLayout.isRefreshing()) {
-            this.adapter.clear();
-            this.adapter.addAll(this.events);
-            if (notify)
-                this.adapter.notifyDataSetChanged();
-        }
-    }*/
 
     @Override
     public void onDestroyView() {
@@ -295,6 +213,14 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
 
         refreshLayout.setRefreshing(false);
         filter(true);
+    }
+
+    public void onEvent(ExceptionModel message){
+        isLoading = false;
+        if (getContext() != null) {
+            Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
+            refreshLayout.setRefreshing(false);
+        }
     }
 
     @Override

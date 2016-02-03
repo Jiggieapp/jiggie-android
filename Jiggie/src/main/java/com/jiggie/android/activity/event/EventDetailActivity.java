@@ -35,8 +35,14 @@ import com.jiggie.android.component.adapter.ImagePagerIndicatorAdapter;
 import com.jiggie.android.component.volley.SimpleVolleyRequestListener;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
+import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.manager.EventManager;
+import com.jiggie.android.model.Common;
 import com.jiggie.android.model.Event;
 import com.jiggie.android.model.EventDetail;
+import com.jiggie.android.model.EventDetailModel;
+import com.jiggie.android.model.EventModel;
+import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.Guest;
 import com.jiggie.android.model.Setting;
 import com.jiggie.android.model.ShareLink;
@@ -56,9 +62,12 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 import it.sephiroth.android.library.widget.HListView;
 
 /**
@@ -90,10 +99,13 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
     private ImagePagerIndicatorAdapter imagePagerIndicatorAdapter;
     private ImageView[] imageGuests;
-    private EventDetail eventDetail;
+    //private EventDetail eventDetail;
     private ShareLink shareLink;
-    private Event currentEvent;
+    //private Event currentEvent;
     private GoogleMap map;
+
+    private EventModel.Data.Events currentEvent;
+    private EventDetailModel.Data.EventDetail eventDetail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,8 +113,10 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         super.setContentView(R.layout.activity_event_detail);
         super.bindView();
 
-        this.currentEvent = super.getIntent().getParcelableExtra(Event.class.getName());
-        this.txtVenue.setText(this.currentEvent.getVenueName());
+        EventBus.getDefault().register(this);
+
+        this.currentEvent = super.getIntent().getParcelableExtra(EventModel.Data.Events.class.getName());
+        this.txtVenue.setText(this.currentEvent.getVenue_name());
         this.txtGuestCounter.setVisibility(View.GONE);
         this.appBarLayout.addOnOffsetChangedListener(this);
         this.swipeRefresh.setOnRefreshListener(this);
@@ -119,11 +133,13 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
         super.registerReceiver(this.guestInvitedReceiver, new IntentFilter(super.getString(R.string.broadcastGuestInvited)));
         App.getInstance().trackMixPanelEvent("View Event Details");
+
+
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        final String url = String.format("guest/events/viewed/%s/%s", AccessToken.getCurrentAccessToken().getUserId(), this.currentEvent.getId());
+        final String url = String.format("guest/events/viewed/%s/%s", AccessToken.getCurrentAccessToken().getUserId(), this.currentEvent.get_id());
         VolleyHandler.getInstance().createVolleyRequest(url, new SimpleVolleyRequestListener<Object, JSONObject>(){
             @Override
             public void onResponseCompleted(Object value) {
@@ -153,7 +169,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     public void onRefresh() {
         this.btnBook.setVisibility(View.GONE);
         this.swipeRefresh.setRefreshing(true);
-        final String url = String.format("event/details/%s/%s/%s", this.currentEvent.getId(), AccessToken.getCurrentAccessToken().getUserId(), Setting.getCurrentSetting().getGenderInterestString());
+        /*final String url = String.format("event/details/%s/%s/%s", this.currentEvent.get_id(), AccessToken.getCurrentAccessToken().getUserId(), Setting.getCurrentSetting().getGenderInterestString());
 
         VolleyHandler.getInstance().createVolleyRequest(url, new VolleyRequestListener<EventDetail, JSONObject>() {
             @Override
@@ -228,7 +244,93 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                     swipeRefresh.setRefreshing(false);
                 }
             }
-        });
+        });*/
+
+
+        EventManager.loaderEventDetail(this.currentEvent.get_id(), AccessToken.getCurrentAccessToken().getUserId(), AccountManager.loadSetting().getData().getGender_interest());
+    }
+
+    public void onEvent(EventDetailModel message){
+        try {
+            if (!isActive())
+                return;
+
+            ArrayList<EventDetailModel.Data.EventDetail.GuestViewed> guestArr = message.getData().getEvents_detail().getGuests_viewed();
+            Guest[] guests = new Guest[guestArr.size()];
+            guests = guestArr.toArray(guests);
+
+            int guestCount = guests == null ? 0 : guests.length;
+            final double latt = Double.parseDouble(message.getData().getEvents_detail().getVenue().getLat());
+            final double lon = Double.parseDouble(message.getData().getEvents_detail().getVenue().getLon());
+            final LatLng lat = new LatLng(latt, lon);
+
+            ArrayList<String> photoArr = message.getData().getEvents_detail().getPhotos();
+            String[] photo = new String[photoArr.size()];
+            photo = photoArr.toArray(photo);
+
+            imagePagerIndicatorAdapter.setImages(photo);
+            txtDescription.setText(message.getData().getEvents_detail().getDescription());
+            txtAddress.setText(message.getData().getEvents_detail().getVenue().getAddress());
+            txtGuestCounter.setText(String.format("+%s", guestCount - imageGuests.length));
+            txtGuestCounter.setVisibility(guestCount > imageGuests.length ? View.VISIBLE : View.GONE);
+            txtGuestCount.setText(getResources().getQuantityString(R.plurals.guest_count, guestCount, guestCount));
+
+            if (guestCount > 0) {
+                final int width = imageGuest1.getWidth() * 2;
+                guestCount = guestCount > imageGuests.length ? imageGuests.length : guestCount;
+
+                for (int i = 0; i < guestCount; i++) {
+                    final String url = App.getFacebookImage(guests[i].getFacebookId(), width);
+                    Glide.with(EventDetailActivity.this).load(url).asBitmap().centerCrop().into(new BitmapImageViewTarget(imageGuests[i]) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            final Resources resources = getResources();
+                            if (resources != null) {
+                                final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(resources, resource);
+                                circularBitmapDrawable.setCircular(true);
+                                super.getView().setImageDrawable(circularBitmapDrawable);
+                            }
+                        }
+                    });
+                }
+            }
+
+            btnBook.setVisibility(StringUtility.isEquals(EventDetail.FullfillmentTypes.NONE, message.getData().getEvents_detail().getFullfillment_type(), true) ? View.GONE : View.VISIBLE);
+            map.addMarker(new MarkerOptions().position(lat).title(message.getData().getEvents_detail().getVenue_name()));
+            layoutGuests.setVisibility(guestCount > 0 ? View.VISIBLE : View.GONE);
+            map.animateCamera(CameraUpdateFactory.newLatLngZoom(lat, 15));
+            scrollView.setVisibility(View.VISIBLE);
+
+            final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(message.getData().getEvents_detail().getStart_datetime());
+            final Date endDate = Common.ISO8601_DATE_FORMAT_UTC.parse(message.getData().getEvents_detail().getEnd_datetime());
+            String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format, Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));
+            txtDate.setText(simpleDate);
+
+            swipeRefresh.setRefreshing(false);
+            eventDetail = message.getData().getEvents_detail();
+            invalidateOptionsMenu();
+            populateTags();
+
+            if (StringUtility.isEquals(EventDetail.FullfillmentTypes.PHONE_NUMBER, message.getData().getEvents_detail().getFullfillment_type(), true)) {
+                txtExternalSite.setVisibility(View.GONE);
+                txtBookNow.setText(R.string.call);
+            } else if (StringUtility.isEquals(EventDetail.FullfillmentTypes.RESERVATION, message.getData().getEvents_detail().getFullfillment_type(), true)) {
+                txtExternalSite.setVisibility(View.GONE);
+                txtBookNow.setText(R.string.reserve);
+            } else if (StringUtility.isEquals(EventDetail.FullfillmentTypes.PURCHASE, message.getData().getEvents_detail().getFullfillment_type(), true)) {
+                txtExternalSite.setVisibility(View.GONE);
+                txtBookNow.setText(R.string.purchase);
+            }
+        } catch (ParseException e) {
+            throw new RuntimeException(App.getErrorMessage(e), e);
+        }
+    }
+
+    public void onEvent(ExceptionModel message){
+        if (isActive()) {
+            Toast.makeText(App.getInstance(), message.getMessage(), Toast.LENGTH_SHORT).show();
+            swipeRefresh.setRefreshing(false);
+        }
     }
 
     private void populateTags() {
@@ -240,7 +342,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             textView.setText(tag);
         }
 
-        if (this.eventDetail.getTags().length > 2) {
+        if (this.eventDetail.getTags().size() > 2) {
             // hack (buggy flow layout always missing 1 last item).
             final View view = inflater.inflate(R.layout.item_event_tag_detail, this.flowLayout, false);
             final TextView textView = (TextView) view.findViewById(R.id.txtTag);
@@ -254,7 +356,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     @OnClick(R.id.guestView)
     void guestViewOnClick() {
         if ((!this.swipeRefresh.isRefreshing()) && (this.eventDetail != null))
-            super.startActivityForResult(new Intent(this, EventGuestActivity.class).putExtra(Guest.class.getName(), this.eventDetail.getGuests()), 0);
+            super.startActivityForResult(new Intent(this, EventGuestActivity.class).putExtra(Guest.class.getName(), this.eventDetail.getGuests_viewed()), 0);
     }
 
     @SuppressWarnings("unused")
@@ -265,8 +367,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     @OnClick(R.id.layoutAddress)
     void layoutAddressOnClick() {
         if (this.eventDetail != null) {
-            final Uri uri = Uri.parse(String.format("http://maps.google.com/maps?daddr=%f,%f", this.eventDetail.getVenue().getLatitude(), this.eventDetail.getVenue().getLongitude()));
-            super.startActivity(Intent.createChooser(new Intent(android.content.Intent.ACTION_VIEW, uri), this.eventDetail.getVenueName()));
+            final Uri uri = Uri.parse(String.format("http://maps.google.com/maps?daddr=%f,%f", this.eventDetail.getVenue().getLat(), this.eventDetail.getVenue().getLon()));
+            super.startActivity(Intent.createChooser(new Intent(android.content.Intent.ACTION_VIEW, uri), this.eventDetail.getVenue_name()));
         }
     }
 
@@ -277,22 +379,22 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             final Intent intent = new Intent();
             App.getInstance().trackMixPanelEvent("Fulfillment Request");
 
-            if (StringUtility.isEquals(EventDetail.FullfillmentTypes.PHONE_NUMBER, this.eventDetail.getFullfillmentType(), true)) {
-                intent.setData(Uri.fromParts("tel", this.eventDetail.getFieldFullfillmentValue(), null));
+            if (StringUtility.isEquals(EventDetail.FullfillmentTypes.PHONE_NUMBER, this.eventDetail.getFullfillment_type(), true)) {
+                intent.setData(Uri.fromParts("tel", this.eventDetail.getFullfillment_value(), null));
                 intent.setAction(Intent.ACTION_DIAL);
-            } else if (StringUtility.isEquals(EventDetail.FullfillmentTypes.LINK, this.eventDetail.getFullfillmentType(), true)) {
-                intent.setData(Uri.parse(this.eventDetail.getFieldFullfillmentValue()));
+            } else if (StringUtility.isEquals(EventDetail.FullfillmentTypes.LINK, this.eventDetail.getFullfillment_type(), true)) {
+                intent.setData(Uri.parse(this.eventDetail.getFullfillment_value()));
                 intent.setAction(Intent.ACTION_VIEW);
-            } else if (StringUtility.isEquals(EventDetail.FullfillmentTypes.RESERVATION, this.eventDetail.getFullfillmentType(), true)) {
-                intent.setData(Uri.parse(this.eventDetail.getFieldFullfillmentValue()));
+            } else if (StringUtility.isEquals(EventDetail.FullfillmentTypes.RESERVATION, this.eventDetail.getFullfillment_type(), true)) {
+                intent.setData(Uri.parse(this.eventDetail.getFullfillment_value()));
                 intent.setAction(Intent.ACTION_VIEW);
-            } else if (StringUtility.isEquals(EventDetail.FullfillmentTypes.PURCHASE, this.eventDetail.getFullfillmentType(), true)) {
-                intent.setData(Uri.parse(this.eventDetail.getFieldFullfillmentValue()));
+            } else if (StringUtility.isEquals(EventDetail.FullfillmentTypes.PURCHASE, this.eventDetail.getFullfillment_type(), true)) {
+                intent.setData(Uri.parse(this.eventDetail.getFullfillment_value()));
                 intent.setAction(Intent.ACTION_VIEW);
             }
             if (!TextUtils.isEmpty(intent.getAction()))
                 super.startActivity(Intent.createChooser(intent, super.getString(R.string.book_now)));
-            else if (StringUtility.isEquals(EventDetail.FullfillmentTypes.NONE, this.eventDetail.getFullfillmentType(), true))
+            else if (StringUtility.isEquals(EventDetail.FullfillmentTypes.NONE, this.eventDetail.getFullfillment_type(), true))
                 Toast.makeText(this, R.string.no_fullfillment, Toast.LENGTH_SHORT).show();
             else
                 Toast.makeText(this, R.string.book_error, Toast.LENGTH_SHORT).show();
@@ -309,6 +411,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     @Override
     protected void onDestroy() {
         super.unregisterReceiver(this.guestInvitedReceiver);
+        EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
 
@@ -332,8 +435,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             final ProgressDialog progressDialog = App.showProgressDialog(this);
             final String url = String.format("invitelink?from_fb_id=%s&type=event&os=android&venue_name=%s&event_id=%s",
                     URLEncoder.encode(AccessToken.getCurrentAccessToken().getUserId(), "UTF-8"),
-                    URLEncoder.encode(this.eventDetail.getVenueName(), "UTF-8"),
-                    URLEncoder.encode(this.eventDetail.getId(), "UTF-8"));
+                    URLEncoder.encode(this.eventDetail.getVenue_name(), "UTF-8"),
+                    URLEncoder.encode(this.eventDetail.getVenue_id(), "UTF-8"));
 
             VolleyHandler.getInstance().createVolleyRequest(url, new VolleyRequestListener<ShareLink, JSONObject>() {
                 @Override
@@ -365,7 +468,11 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         public void onReceive(Context context, Intent intent) {
             if (!isActive()) return;
             final Guest guest = intent.getParcelableExtra(Guest.class.getName());
-            final Guest[] guests = eventDetail.getGuests();
+
+            ArrayList<EventDetailModel.Data.EventDetail.GuestViewed> guestArr = eventDetail.getGuests_viewed();
+            Guest[] guests = new Guest[guestArr.size()];
+            guests = guestArr.toArray(guests);
+
             final int length = guests.length;
 
             for (int i = 0; i < length; i++) {
@@ -378,4 +485,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             }
         }
     };
+
+
 }

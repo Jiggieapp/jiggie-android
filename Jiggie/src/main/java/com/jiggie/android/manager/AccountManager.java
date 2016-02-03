@@ -36,6 +36,7 @@ public class AccountManager {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         accountInterface = retrofit.create(AccountInterface.class);
+
     }
 
     private static void postLogin(LoginModel loginRequestModel, Callback callback) throws IOException {
@@ -99,15 +100,6 @@ public class AccountManager {
     }
 
     public static void saveSetting(SettingModel settingModel){
-        /*App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
-                .putString(Common.FIELD_GENDER, settingModel.getData().getGender())
-                .putString(Common.FIELD_GENDER_INTEREST, settingModel.getData().getGender_interest())
-                .putString(Common.FIELD_PHONE, settingModel.getData().getPhone())
-                .putString(Common.FIELD_ACCOUNT_TYPE, settingModel.getData().getAccount_type())
-                .putBoolean(Common.FIELD_MATCH_ME, settingModel.isMatch_me())
-                .putBoolean(Common.FIELD_FEED, settingModel.getData().getNotifications().isFeed())
-                .putBoolean(Common.FIELD_CHAT, settingModel.getData().getNotifications().isChat())
-                .apply();*/
 
         String model = new Gson().toJson(settingModel);
         App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()

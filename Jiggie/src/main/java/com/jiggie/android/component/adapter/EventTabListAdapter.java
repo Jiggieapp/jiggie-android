@@ -123,9 +123,14 @@ public class EventTabListAdapter extends RecyclerView.Adapter<EventTabListAdapte
 
         @Override
         public void onClick(View v) {
-            if (listener != null)
+            if (listener != null){
+                //EventModel.Data.Events eventss = this.event;
+
                 //listener.onEventSelected(this.event);
                 listener.onViewSelected(this.event);
+            }
+
+
         }
     }
 

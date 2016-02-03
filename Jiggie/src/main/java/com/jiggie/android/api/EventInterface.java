@@ -1,6 +1,7 @@
 package com.jiggie.android.api;
 
 import com.jiggie.android.component.Utils;
+import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.EventModel;
 
 import retrofit.Call;
@@ -12,11 +13,10 @@ import retrofit.http.Path;
  */
 public interface EventInterface {
 
-    //@GET("http://52.76.76.3/app/v3/events/list/{fb_id}/{gender_interest}")
-    @GET(Utils.GET_EVENTS)
+    @GET(Utils.URL_EVENTS)
     Call<EventModel> getEventList(@Path("fb_id") String fb_id);
 
-    /*@GET("http://52.76.76.3/app/v3/events/details/{_id}/{fb_id}/{gender_interest}")
-    Call<EventDetailModel> getEventDetail(@Path("_id") String _id, @Path("fb_id") String fb_id, @Path("gender_interest") String gender_interest);*/
+    @GET(Utils.URL_EVENT_DETAIL)
+    Call<EventDetailModel> getEventDetail(@Path("id") String _id, @Path("fb_id") String fb_id, @Path("gender_interest") String gender_interest);
 
 }
