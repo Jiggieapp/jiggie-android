@@ -16,13 +16,21 @@ import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.EventGuestAdapter;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
+import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.manager.GuestManager;
+import com.jiggie.android.model.Common;
+import com.jiggie.android.model.EventDetailModel;
+import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.Guest;
 import com.android.volley.VolleyError;
 import com.facebook.AccessToken;
+import com.jiggie.android.model.GuestModel;
+import com.jiggie.android.model.SettingModel;
 
 import org.json.JSONObject;
 
 import butterknife.Bind;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by rangg on 13/11/2015.
@@ -39,6 +47,8 @@ public class EventGuestActivity extends ToolbarActivity implements ViewTreeObser
         super.bindView();
         super.setBackEnabled(true);
 
+        EventBus.getDefault().register(this);
+
         this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         this.recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(this);
         this.recyclerView.setAdapter(this.adapter = new EventGuestAdapter(this, this));
@@ -53,46 +63,41 @@ public class EventGuestActivity extends ToolbarActivity implements ViewTreeObser
     }
 
     private void loadData() {
-        new AsyncTask<Void, Void, Guest[]>() {
-            @Override
-            protected Guest[] doInBackground(Void... params) {
-                final Intent intent = getIntent();
 
-                if (intent != null) {
-                    final Parcelable[] items = intent.getParcelableArrayExtra(Guest.class.getName());
-                    final Guest[] guests = new Guest[items == null ? 0 : items.length];
-                    final int length = guests.length;
+        final Intent intent = getIntent();
+        EventDetailModel.Data.EventDetail dataEventDetail = intent.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
+        SettingModel settingModel = AccountManager.loadSetting();
 
-                    for (int i = 0; i < length; i++)
-                        guests[i] = (Guest) (items != null ? items[i] : null);
+        String event_id = dataEventDetail.get_id();
+        String fb_id = settingModel.getData().getFb_id();
+        String gender_interest = settingModel.getData().getGender_interest();
 
-                    return guests;
-                }
-                return null;
-            }
+        GuestManager.loaderGuestInterest(event_id, fb_id, gender_interest);
+    }
 
-            @Override
-            protected void onPostExecute(Guest[] guests) {
-                adapter.setGuests(guests);
-                adapter.notifyDataSetChanged();
-            }
-        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    public void onEvent(GuestModel message){
+        adapter.setGuests(message.getData().getGuest_interests());
+        adapter.notifyDataSetChanged();
+    }
+
+    public void onEvent(ExceptionModel message){
+
     }
 
     @Override
     public void onGuestConnect(final EventGuestAdapter.ViewHolder viewHolder) {
         this.adapter.invite(viewHolder);
 
-        final Guest guest = viewHolder.getGuest();
+        final GuestModel.Data.GuestInterests guest = viewHolder.getGuest();
         final ProgressDialog dialog = App.showProgressDialog(this);
         final String id = AccessToken.getCurrentAccessToken().getUserId();
-        final String url = String.format("partyfeed/match/%s/%s/approved", id, guest.getFacebookId());
+        final String url = String.format("partyfeed/match/%s/%s/approved", id, guest.getFb_id());
 
         VolleyHandler.getInstance().createVolleyRequest(url, new VolleyRequestListener<Void, JSONObject>() {
             @Override
             public Void onResponseAsync(JSONObject jsonObject) {
-                guest.setInvited(true);
-                sendBroadcast(new Intent(getString(R.string.broadcastGuestInvited)).putExtra(Guest.class.getName(), guest));
+                guest.setIs_invited(true);
+                sendBroadcast(new Intent(getString(R.string.broadcastGuestInvited)).putExtra(GuestModel.Data.GuestInterests.class.getName(), guest));
                 return null;
             }
 
@@ -112,6 +117,13 @@ public class EventGuestActivity extends ToolbarActivity implements ViewTreeObser
 
     @Override
     public void onGuestClick(EventGuestAdapter.ViewHolder viewHolder) {
-        super.startActivityForResult(new Intent(this, ProfileDetailActivity.class).putExtra(Guest.class.getName(), viewHolder.getGuest()), 0);
+        //super.startActivityForResult(new Intent(this, ProfileDetailActivity.class).putExtra(GuestModel.Data.GuestInterests.class.getName(), viewHolder.getGuest()), 0);
+        super.startActivityForResult(new Intent(this, ProfileDetailActivity.class).putExtra(Common.FIELD_FACEBOOK_ID, viewHolder.getGuest().getFb_id()), 0);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

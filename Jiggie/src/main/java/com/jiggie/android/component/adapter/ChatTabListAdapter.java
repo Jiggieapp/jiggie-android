@@ -13,12 +13,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jiggie.android.R;
+import com.jiggie.android.model.ChatListModel;
+import com.jiggie.android.model.Common;
 import com.jiggie.android.model.Conversation;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
@@ -29,8 +32,10 @@ import butterknife.ButterKnife;
  */
 public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.ViewHolder> {
     private ConversationSelectedListener listener;
-    private ArrayList<Conversation> items;
+    //private ArrayList<Conversation> items;
     private Fragment fragment;
+
+    private ArrayList<ChatListModel.Data.ChatLists> items;
 
     public ChatTabListAdapter(Fragment fragment, ConversationSelectedListener listener) {
         this.items = new ArrayList<>();
@@ -39,9 +44,16 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
     }
 
     public void clear() { this.items.clear(); }
-    public void add(Conversation item) { this.items.add(item); }
+    /*public void add(Conversation item) { this.items.add(item); }
     public void remove(Conversation item) { this.items.remove(item); }
     public void move(Conversation item, int position) {
+        this.items.remove(item);
+        this.items.add(position, item);
+    }*/
+
+    public void add(ChatListModel.Data.ChatLists item) { this.items.add(item); }
+    public void remove(ChatListModel.Data.ChatLists item) { this.items.remove(item); }
+    public void move(ChatListModel.Data.ChatLists item, int position) {
         this.items.remove(item);
         this.items.add(position, item);
     }
@@ -51,7 +63,7 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_conversation, parent, false), this.listener);
     }
 
-    @Override
+    /*@Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         try {
             final Conversation item = this.items.get(position);
@@ -74,6 +86,35 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
+    }*/
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        try {
+            final ChatListModel.Data.ChatLists item = this.items.get(position);
+            holder.conversation = item;
+            holder.txtUser.setText(item.getFromName());
+            holder.txtMessage.setText(item.getLast_message());
+
+            final Date date = Common.ISO8601_DATE_FORMAT_UTC.parse(item.getLast_updated());
+            String simpleDate = Common.SIMPLE_12_HOUR_FORMAT.format(date).replace("AM", "").replace("PM", "").trim();
+
+            holder.txtTime.setText(simpleDate);
+            holder.txtUnread.setText(String.valueOf(item.getUnread()));
+            holder.txtUnread.setVisibility(item.getUnread() == 0 ? View.INVISIBLE : View.VISIBLE);
+            holder.txtTime.setTextColor(ContextCompat.getColor(this.fragment.getContext(), item.getUnread() == 0 ? android.R.color.darker_gray : R.color.colorAccent));
+
+            Glide.with(this.fragment).load(item.getProfile_image()).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.imageView) {
+                @Override
+                protected void setResource(Bitmap resource) {
+                    final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(fragment.getResources(), resource);
+                    circularBitmapDrawable.setCircular(true);
+                    super.getView().setImageDrawable(circularBitmapDrawable);
+                }
+            });
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -86,7 +127,8 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
         @Bind(R.id.txtTime) TextView txtTime;
         @Bind(R.id.txtUnread) TextView txtUnread;
 
-        Conversation conversation;
+        //Conversation conversation;
+        ChatListModel.Data.ChatLists conversation;
         private ConversationSelectedListener listener;
 
         public ViewHolder(View itemView, ConversationSelectedListener listener) {
@@ -104,14 +146,16 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
     }
 
     public interface ConversationSelectedListener {
-        void onConversationSelected(Conversation conversation);
+        //void onConversationSelected(Conversation conversation);
+        void onConversationSelected(ChatListModel.Data.ChatLists conversation);
     }
 
-    public Conversation find(String facebookId) {
+    public ChatListModel.Data.ChatLists find(String facebookId) {
         final int length = this.items.size();
         for (int i = 0; i < length; i++) {
-            final Conversation item = this.items.get(i);
-            if (facebookId.equals(item.getFacebookId()))
+            final ChatListModel.Data.ChatLists item = this.items.get(i);
+            //if (facebookId.equals(item.getFacebookId()))
+            if (facebookId.equals(item.getFb_id()))
                 return item;
         }
         return null;
@@ -127,5 +171,6 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
         return unreadCount;
     }
 
-    public List<Conversation> getItems() { return this.items; }
+    //public List<Conversation> getItems() { return this.items; }
+    public List<ChatListModel.Data.ChatLists> getItems() { return this.items; }
 }

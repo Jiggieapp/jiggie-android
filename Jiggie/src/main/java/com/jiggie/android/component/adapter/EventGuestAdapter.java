@@ -17,6 +17,9 @@ import com.jiggie.android.R;
 import com.jiggie.android.model.Guest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.jiggie.android.model.GuestModel;
+
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -28,14 +31,16 @@ import butterknife.OnClick;
 public class EventGuestAdapter extends RecyclerView.Adapter<EventGuestAdapter.ViewHolder> {
     private final GuestConnectListener listener;
     private final Activity activity;
-    private Guest[] guests;
+    //private Guest[] guests;
+
+    private ArrayList<GuestModel.Data.GuestInterests> guests;
 
     public EventGuestAdapter(Activity activity, GuestConnectListener listener) {
         this.activity = activity;
         this.listener = listener;
     }
 
-    public void setGuests(Guest[] guests){ this.guests = guests; }
+    public void setGuests(ArrayList<GuestModel.Data.GuestInterests> guests){ this.guests = guests; }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -44,11 +49,11 @@ public class EventGuestAdapter extends RecyclerView.Adapter<EventGuestAdapter.Vi
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final Guest item = this.guests[position];
-        final String url = App.getFacebookImage(item.getFacebookId(), holder.image.getWidth() * 2);
+        final GuestModel.Data.GuestInterests item = this.guests.get(position);
+        final String url = App.getFacebookImage(item.getFb_id(), holder.image.getWidth() * 2);
 
         holder.guest = item;
-        holder.text.setText(String.format("%s %s", item.getFirstName(), item.getLastName()));
+        holder.text.setText(String.format("%s %s", item.getFirst_name(), ""));
         Glide.with(this.activity).load(url).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.image) {
             @Override
             protected void setResource(Bitmap resource) {
@@ -57,9 +62,9 @@ public class EventGuestAdapter extends RecyclerView.Adapter<EventGuestAdapter.Vi
                 super.getView().setImageDrawable(circularBitmapDrawable);
             }
         });
-        if (item.isConnected())
+        if (item.is_connected())
             this.connect(holder);
-        else if (item.isInvited())
+        else if (item.is_invited())
             this.invite(holder);
         else this.deselect(holder);
     }
@@ -86,7 +91,7 @@ public class EventGuestAdapter extends RecyclerView.Adapter<EventGuestAdapter.Vi
     }
 
     @Override
-    public int getItemCount() { return this.guests == null ? 0 : this.guests.length; }
+    public int getItemCount() { return this.guests == null ? 0 : this.guests.size(); }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @Bind(R.id.layoutConnect) View layoutConnect;
@@ -96,7 +101,7 @@ public class EventGuestAdapter extends RecyclerView.Adapter<EventGuestAdapter.Vi
         @Bind(R.id.txtUser) TextView text;
 
         private GuestConnectListener listener;
-        private Guest guest;
+        private GuestModel.Data.GuestInterests guest;
 
         public ViewHolder(final View itemView, GuestConnectListener listener) {
             super(itemView);
@@ -112,7 +117,7 @@ public class EventGuestAdapter extends RecyclerView.Adapter<EventGuestAdapter.Vi
                 this.listener.onGuestConnect(this);
         }
 
-        public Guest getGuest() { return this.guest; }
+        public GuestModel.Data.GuestInterests getGuest() { return this.guest; }
 
         @Override
         public void onClick(View v) {

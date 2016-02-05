@@ -1,23 +1,27 @@
 package com.jiggie.android.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by LTE on 2/3/2016.
  */
 public class EventDetailModel {
 
-    String response;
+    int response;
     String msg;
     Data data;
 
-    public String getResponse() {
+    public int getResponse() {
         return response;
     }
 
-    public void setResponse(String response) {
+    public void setResponse(int response) {
         this.response = response;
     }
 
@@ -49,7 +53,7 @@ public class EventDetailModel {
             this.event_detail = events_detail;
         }
 
-        public static class EventDetail{
+        public static class EventDetail implements Parcelable {
 
             String _id;
             String event_id;
@@ -69,6 +73,61 @@ public class EventDetailModel {
 
             ArrayList<GuestViewed> guests_viewed;
             Venue venue;
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                dest.writeString(this._id);
+                dest.writeString(this.event_id);
+                dest.writeString(this.start_datetime);
+                dest.writeString(this.end_datetime);
+                dest.writeString(this.venue_id);
+                dest.writeString(this.venue_name);
+                dest.writeString(this.start_datetime_str);
+                dest.writeString(this.end_datetime_str);
+                dest.writeString(this.fullfillment_type);
+                dest.writeString(this.fullfillment_value);
+                dest.writeStringList(this.photos);
+                dest.writeString(this.description);
+                dest.writeString(this.title);
+                dest.writeStringList(this.tags);
+                //dest.writeList(this.guests_viewed);
+                dest.writeParcelable(this.venue, 0);
+            }
+
+            protected EventDetail(Parcel in) {
+                this._id = in.readString();
+                this.event_id = in.readString();
+                this.start_datetime = in.readString();
+                this.end_datetime = in.readString();
+                this.venue_id = in.readString();
+                this.venue_name = in.readString();
+                this.start_datetime_str = in.readString();
+                this.end_datetime_str = in.readString();
+                this.fullfillment_type = in.readString();
+                this.fullfillment_value = in.readString();
+                this.photos = in.createStringArrayList();
+                this.description = in.readString();
+                this.title = in.readString();
+                this.tags = in.createStringArrayList();
+                /*this.guests_viewed = new ArrayList<GuestViewed>();
+                in.readList(this.guests_viewed, List.class.getClassLoader());*/
+                this.venue = in.readParcelable(Venue.class.getClassLoader());
+            }
+
+            public static final Creator<EventDetail> CREATOR = new Creator<EventDetail>() {
+                public EventDetail createFromParcel(Parcel source) {
+                    return new EventDetail(source);
+                }
+
+                public EventDetail[] newArray(int size) {
+                    return new EventDetail[size];
+                }
+            };
 
             public String get_id() {
                 return _id;
@@ -203,7 +262,6 @@ public class EventDetailModel {
                 String fb_id;
                 String first_name;
                 String gender;
-                //String about;
 
 
                 public String getFb_id() {
@@ -231,7 +289,7 @@ public class EventDetailModel {
                 }
             }
 
-            public static class Venue{
+            public static class Venue implements Parcelable {
 
                 String _id;
                 String address;
@@ -326,7 +384,50 @@ public class EventDetailModel {
                 public void setPhotos(ArrayList<String> photos) {
                     this.photos = photos;
                 }
+
+                @Override
+                public int describeContents() {
+                    return 0;
+                }
+
+                @Override
+                public void writeToParcel(Parcel dest, int flags) {
+                    dest.writeString(this._id);
+                    dest.writeString(this.address);
+                    dest.writeString(this.neighborhood);
+                    dest.writeString(this.city);
+                    dest.writeString(this.description);
+                    dest.writeString(this.lon);
+                    dest.writeString(this.lat);
+                    dest.writeString(this.zip);
+                    dest.writeString(this.name);
+                    dest.writeStringList(this.photos);
+                }
+
+                protected Venue(Parcel in) {
+                    this._id = in.readString();
+                    this.address = in.readString();
+                    this.neighborhood = in.readString();
+                    this.city = in.readString();
+                    this.description = in.readString();
+                    this.lon = in.readString();
+                    this.lat = in.readString();
+                    this.zip = in.readString();
+                    this.name = in.readString();
+                    this.photos = in.createStringArrayList();
+                }
+
+                public static final Creator<Venue> CREATOR = new Creator<Venue>() {
+                    public Venue createFromParcel(Parcel source) {
+                        return new Venue(source);
+                    }
+
+                    public Venue[] newArray(int size) {
+                        return new Venue[size];
+                    }
+                };
             }
+
 
         }
 

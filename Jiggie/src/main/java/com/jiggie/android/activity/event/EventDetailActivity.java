@@ -37,6 +37,7 @@ import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.EventManager;
+import com.jiggie.android.manager.GuestManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.Event;
 import com.jiggie.android.model.EventDetail;
@@ -44,6 +45,7 @@ import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.EventModel;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.Guest;
+import com.jiggie.android.model.GuestModel;
 import com.jiggie.android.model.Setting;
 import com.jiggie.android.model.ShareLink;
 import com.android.volley.VolleyError;
@@ -99,9 +101,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
     private ImagePagerIndicatorAdapter imagePagerIndicatorAdapter;
     private ImageView[] imageGuests;
-    //private EventDetail eventDetail;
     private ShareLink shareLink;
-    //private Event currentEvent;
     private GoogleMap map;
 
     private EventModel.Data.Events currentEvent;
@@ -169,83 +169,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     public void onRefresh() {
         this.btnBook.setVisibility(View.GONE);
         this.swipeRefresh.setRefreshing(true);
-        /*final String url = String.format("event/details/%s/%s/%s", this.currentEvent.get_id(), AccessToken.getCurrentAccessToken().getUserId(), Setting.getCurrentSetting().getGenderInterestString());
-
-        VolleyHandler.getInstance().createVolleyRequest(url, new VolleyRequestListener<EventDetail, JSONObject>() {
-            @Override
-            public EventDetail onResponseAsync(JSONObject jsonObject) { return new EventDetail(jsonObject); }
-
-            @Override
-            public void onResponseCompleted(EventDetail value) {
-                try {
-                    if (!isActive())
-                        return;
-
-                    final Guest[] guests = value.getGuests();
-                    int guestCount = guests == null ? 0 : guests.length;
-                    final LatLng lat = new LatLng(value.getVenue().getLatitude(), value.getVenue().getLongitude());
-                    imagePagerIndicatorAdapter.setImages(value.getPhotos());
-                    txtDescription.setText(value.getDescrption());
-                    txtAddress.setText(value.getVenue().getAddress());
-                    txtGuestCounter.setText(String.format("+%s", guestCount - imageGuests.length));
-                    txtGuestCounter.setVisibility(guestCount > imageGuests.length ? View.VISIBLE : View.GONE);
-                    txtGuestCount.setText(getResources().getQuantityString(R.plurals.guest_count, guestCount, guestCount));
-
-                    if (guestCount > 0) {
-                        final int width = imageGuest1.getWidth() * 2;
-                        guestCount = guestCount > imageGuests.length ? imageGuests.length : guestCount;
-
-                        for (int i = 0; i < guestCount; i++) {
-                            final String url = App.getFacebookImage(guests[i].getFacebookId(), width);
-                            Glide.with(EventDetailActivity.this).load(url).asBitmap().centerCrop().into(new BitmapImageViewTarget(imageGuests[i]) {
-                                @Override
-                                protected void setResource(Bitmap resource) {
-                                    final Resources resources = getResources();
-                                    if (resources != null) {
-                                        final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(resources, resource);
-                                        circularBitmapDrawable.setCircular(true);
-                                        super.getView().setImageDrawable(circularBitmapDrawable);
-                                    }
-                                }
-                            });
-                        }
-                    }
-
-                    btnBook.setVisibility(StringUtility.isEquals(EventDetail.FullfillmentTypes.NONE, value.getFullfillmentType(), true) ? View.GONE : View.VISIBLE);
-                    map.addMarker(new MarkerOptions().position(lat).title(value.getVenueName()));
-                    layoutGuests.setVisibility(guestCount > 0 ? View.VISIBLE : View.GONE);
-                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(lat, 15));
-                    scrollView.setVisibility(View.VISIBLE);
-                    txtDate.setText(value.getSimpleDate());
-                    swipeRefresh.setRefreshing(false);
-                    eventDetail = value;
-                    invalidateOptionsMenu();
-                    populateTags();
-
-                    if (StringUtility.isEquals(EventDetail.FullfillmentTypes.PHONE_NUMBER, value.getFullfillmentType(), true)) {
-                        txtExternalSite.setVisibility(View.GONE);
-                        txtBookNow.setText(R.string.call);
-                    } else if (StringUtility.isEquals(EventDetail.FullfillmentTypes.RESERVATION, value.getFullfillmentType(), true)) {
-                        txtExternalSite.setVisibility(View.GONE);
-                        txtBookNow.setText(R.string.reserve);
-                    } else if (StringUtility.isEquals(EventDetail.FullfillmentTypes.PURCHASE, value.getFullfillmentType(), true)) {
-                        txtExternalSite.setVisibility(View.GONE);
-                        txtBookNow.setText(R.string.purchase);
-                    }
-                } catch (ParseException e) {
-                    throw new RuntimeException(App.getErrorMessage(e), e);
-                }
-            }
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (isActive()) {
-                    Toast.makeText(App.getInstance(), App.getErrorMessage(error), Toast.LENGTH_SHORT).show();
-                    swipeRefresh.setRefreshing(false);
-                }
-            }
-        });*/
-
 
         EventManager.loaderEventDetail(this.currentEvent.get_id(), AccessToken.getCurrentAccessToken().getUserId(), AccountManager.loadSetting().getData().getGender_interest());
     }
@@ -256,10 +179,10 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 return;
 
             ArrayList<EventDetailModel.Data.EventDetail.GuestViewed> guestArr = message.getData().getEvents_detail().getGuests_viewed();
-            Guest[] guests = new Guest[guestArr.size()];
-            guests = guestArr.toArray(guests);
 
-            int guestCount = guests == null ? 0 : guests.length;
+            int size = guestArr.size();
+
+            int guestCount = size;
             final double latt = Double.parseDouble(message.getData().getEvents_detail().getVenue().getLat());
             final double lon = Double.parseDouble(message.getData().getEvents_detail().getVenue().getLon());
             final LatLng lat = new LatLng(latt, lon);
@@ -280,7 +203,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 guestCount = guestCount > imageGuests.length ? imageGuests.length : guestCount;
 
                 for (int i = 0; i < guestCount; i++) {
-                    final String url = App.getFacebookImage(guests[i].getFacebookId(), width);
+                    final String url = App.getFacebookImage(guestArr.get(i).getFb_id(), width);
                     Glide.with(EventDetailActivity.this).load(url).asBitmap().centerCrop().into(new BitmapImageViewTarget(imageGuests[i]) {
                         @Override
                         protected void setResource(Bitmap resource) {
@@ -356,7 +279,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     @OnClick(R.id.guestView)
     void guestViewOnClick() {
         if ((!this.swipeRefresh.isRefreshing()) && (this.eventDetail != null))
-            super.startActivityForResult(new Intent(this, EventGuestActivity.class).putExtra(Guest.class.getName(), this.eventDetail.getGuests_viewed()), 0);
+            super.startActivityForResult(new Intent(this, EventGuestActivity.class).putExtra(EventDetailModel.Data.EventDetail.class.getName(), this.eventDetail), 0);
     }
 
     @SuppressWarnings("unused")
@@ -467,19 +390,19 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         @Override
         public void onReceive(Context context, Intent intent) {
             if (!isActive()) return;
-            final Guest guest = intent.getParcelableExtra(Guest.class.getName());
+            final GuestModel.Data.GuestInterests guest = intent.getParcelableExtra(GuestModel.Data.GuestInterests.class.getName());
 
             ArrayList<EventDetailModel.Data.EventDetail.GuestViewed> guestArr = eventDetail.getGuests_viewed();
-            Guest[] guests = new Guest[guestArr.size()];
-            guests = guestArr.toArray(guests);
 
-            final int length = guests.length;
+            int size = guestArr.size();
+
+            final int length = size;
 
             for (int i = 0; i < length; i++) {
-                final Guest changed = guests[i];
-                if (changed.getFacebookId().equals(guest.getFacebookId())) {
-                    changed.setConnected(guest.isConnected());
-                    changed.setInvited(guest.isInvited());
+                final GuestModel.Data.GuestInterests changed = GuestManager.dataGuestInterest.get(i);
+                if (changed.getFb_id().equals(guest.getFb_id())) {
+                    changed.setIs_connected(guest.is_connected());
+                    changed.setIs_invited(guest.is_invited());
                     break;
                 }
             }

@@ -32,6 +32,7 @@ import com.jiggie.android.component.adapter.EventTabListAdapter;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.manager.EventManager;
+import com.jiggie.android.model.ChatListModel;
 import com.jiggie.android.model.Event;
 import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.EventModel;
@@ -101,6 +102,9 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = this.rootView = inflater.inflate(R.layout.fragment_recycler, container, false);
         ButterKnife.bind(this, view);
+
+        EventBus.getDefault().register(this);
+
         return view;
     }
 
@@ -108,9 +112,6 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ButterKnife.bind(this, this.rootView);
-
-        EventBus.getDefault().register(this);
-        EventManager.initEventService();
 
         this.recyclerView.setAdapter(this.adapter = new EventTabListAdapter(this, this));
         this.recyclerView.setLayoutManager(new LinearLayoutManager(super.getContext()));
@@ -201,9 +202,11 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
     }
 
     //Added by Aga
-    public void onEvent(ArrayList<EventModel.Data.Events> message){
-        int size = message.size();
-        events = message;
+    public void onEvent(EventModel message){
+
+        events = message.getData().getEvents();
+
+        int size = message.getData().getEvents().size();
 
         adapter.clear();
         //events.clear();
@@ -273,6 +276,12 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
     @Override
     public void onDestroy() {
         super.onDestroy();
+        //EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
         EventBus.getDefault().unregister(this);
     }
 }

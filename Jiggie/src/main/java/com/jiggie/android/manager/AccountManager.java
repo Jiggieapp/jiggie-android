@@ -11,6 +11,7 @@ import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.LoginModel;
+import com.jiggie.android.model.MemberInfoModel;
 import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.SuccessModel;
@@ -39,12 +40,23 @@ public class AccountManager {
 
     }
 
+    private static AccountInterface getInstance(){
+        if(accountInterface == null)
+            initAccountService();
+
+        return accountInterface;
+    }
+
     private static void postLogin(LoginModel loginRequestModel, Callback callback) throws IOException {
-        accountInterface.postLogin(Utils.URL_LOGIN, loginRequestModel).enqueue(callback);
+        getInstance().postLogin(Utils.URL_LOGIN, loginRequestModel).enqueue(callback);
     }
 
     private static void postMemberSetting(MemberSettingModel memberSettingModel, Callback callback) throws IOException {
-        accountInterface.postMemberSetting(Utils.URL_MEMBER_SETTING, memberSettingModel).enqueue(callback);
+        getInstance().postMemberSetting(Utils.URL_MEMBER_SETTING, memberSettingModel).enqueue(callback);
+    }
+
+    private static void getMemberInfo(String fb_id, Callback callback) throws IOException {
+        getInstance().getMemberInfo(fb_id).enqueue(callback);
     }
 
     public static void loaderLogin(LoginModel loginRequestModel){
@@ -99,6 +111,32 @@ public class AccountManager {
         }
     }
 
+    public static void loaderMemberInfo(String fb_id){
+        try {
+            getMemberInfo(fb_id, new Callback() {
+                @Override
+                public void onResponse(Response response, Retrofit retrofit) {
+                    String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);
+
+                    MemberInfoModel dataTemp = (MemberInfoModel) response.body();
+
+                    EventBus.getDefault().post(dataTemp);
+
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.d("failure", t.toString());
+                    EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + t.toString()));
+                }
+            });
+        }catch (IOException e){
+            Log.d("exception", e.toString());
+            EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + e.toString()));
+        }
+    }
+
     public static void saveSetting(SettingModel settingModel){
 
         String model = new Gson().toJson(settingModel);
@@ -113,6 +151,22 @@ public class AccountManager {
                 Context.MODE_PRIVATE).getString(Utils.SETTING_MODEL, ""), SettingModel.class);
 
         return settingModel;
+    }
+
+    public static void saveLogin(LoginModel loginModel){
+
+        String model = new Gson().toJson(loginModel);
+        App.getInstance().getSharedPreferences(Utils.PREFERENCE_LOGIN, Context.MODE_PRIVATE).edit()
+                .putString(Utils.LOGIN_MODEL, model).apply();
+
+    }
+
+    public static LoginModel loadLogin(){
+
+        LoginModel loginModel = new Gson().fromJson(App.getInstance().getSharedPreferences(Utils.PREFERENCE_LOGIN,
+                Context.MODE_PRIVATE).getString(Utils.LOGIN_MODEL, ""), LoginModel.class);
+
+        return loginModel;
     }
 
 }

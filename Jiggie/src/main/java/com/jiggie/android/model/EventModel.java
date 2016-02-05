@@ -55,8 +55,6 @@ public class EventModel {
                 this.tags = in.readArrayList(null);
                 this.date_day = in.readString();
                 this.photos = in.readArrayList(null);
-                //this.imageUrl = in.readString();
-                //this.tags = in.createStringArrayList();
 
 
             }
@@ -74,12 +72,9 @@ public class EventModel {
                 dest.writeString(this.start_datetime);
                 dest.writeString(this.end_datetime);
                 dest.writeString(this.special_type);
-                //dest.writeStringList(this.tags);
                 dest.writeList(this.tags);
                 dest.writeString(this.date_day);
-                //dest.writeStringList(this.photos);
                 dest.writeList(this.photos);
-                //dest.writeString(this.imageUrl);
 
 
             }
