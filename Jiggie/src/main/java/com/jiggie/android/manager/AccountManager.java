@@ -1,5 +1,6 @@
 package com.jiggie.android.manager;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
@@ -7,8 +8,8 @@ import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.api.AccountInterface;
 import com.jiggie.android.component.Utils;
+import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
-import com.jiggie.android.model.FilterModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.SettingModel;
@@ -109,15 +110,6 @@ public class AccountManager {
     }
 
     public static void saveSetting(SettingModel settingModel){
-        /*App.getAccountInterface().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
-                .putString(Common.FIELD_GENDER, settingModel.getData().getGender())
-                .putString(Common.FIELD_GENDER_INTEREST, settingModel.getData().getGender_interest())
-                .putString(Common.FIELD_PHONE, settingModel.getData().getPhone())
-                .putString(Common.FIELD_ACCOUNT_TYPE, settingModel.getData().getAccount_type())
-                .putBoolean(Common.FIELD_MATCH_ME, settingModel.isMatch_me())
-                .putBoolean(Common.FIELD_FEED, settingModel.getData().getNotifications().isFeed())
-                .putBoolean(Common.FIELD_CHAT, settingModel.getData().getNotifications().isChat())
-                .apply();*/
 
         String model = new Gson().toJson(settingModel);
         App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()

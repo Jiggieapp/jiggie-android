@@ -3,8 +3,10 @@ package com.jiggie.android.manager;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.jiggie.android.api.API;
 import com.jiggie.android.api.EventInterface;
 import com.jiggie.android.component.Utils;
+import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.EventModel;
 
 import java.io.IOException;
@@ -24,7 +26,6 @@ public class EventManager {
 
     public static void initEventService(){
         Retrofit retrofit = new Retrofit.Builder()
-                //.baseUrl("http://52.77.222.216")
                 .baseUrl(Utils.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -42,6 +43,10 @@ public class EventManager {
         getEventInterface().getEventList(fb_id).enqueue(callback);
     }
 
+    private static void getEventDetail(String _id, String fb_id, String gender_interest, Callback callback) throws IOException {
+        eventInterface.getEventDetail(_id, fb_id, gender_interest).enqueue(callback);
+    }
+
     public static void loaderEvent(String fb_id){
         try {
             getEventList(fb_id, new Callback() {
@@ -56,6 +61,33 @@ public class EventManager {
                     int size = dataTemp.getData().getEvents().size();
 
                     EventBus.getDefault().post(dataTemp.getData().getEvents());
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.d("Failure", t.toString());
+                }
+            });
+        }catch (IOException e){
+            Log.d("Exception", e.toString());
+        }
+    }
+
+    public static void loaderEventDetail(String _id, String fb_id, String gender_interest){
+        try {
+            getEventDetail(_id, fb_id, gender_interest, new Callback() {
+                @Override
+                public void onResponse(Response response, Retrofit retrofit) {
+
+                    //String header = String.valueOf(response.code());
+
+                    String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);
+                    EventDetailModel dataTemp = (EventDetailModel) response.body();
+
+                    //int size = dataTemp.getData().getEvents().size();
+
+                    EventBus.getDefault().post(dataTemp);
                 }
 
                 @Override

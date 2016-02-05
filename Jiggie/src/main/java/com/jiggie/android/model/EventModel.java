@@ -45,12 +45,20 @@ public class EventModel {
 
             protected Events(Parcel in) {
                 //super(in);
+                this._id = in.readString();
+                this.rank = in.readInt();
                 this.title = in.readString();
-                //this.imageUrl = in.readString();
-                this.tags = in.createStringArrayList();
                 this.venue_name = in.readString();
                 this.start_datetime = in.readString();
                 this.end_datetime = in.readString();
+                this.special_type = in.readString();
+                this.tags = in.readArrayList(null);
+                this.date_day = in.readString();
+                this.photos = in.readArrayList(null);
+                //this.imageUrl = in.readString();
+                //this.tags = in.createStringArrayList();
+
+
             }
 
             @Override
@@ -59,11 +67,21 @@ public class EventModel {
             @Override
             public void writeToParcel(Parcel dest, int flags) {
                 //super.writeToParcel(dest);
+                dest.writeString(this._id);
+                dest.writeInt(rank);
                 dest.writeString(this.title);
-                //dest.writeString(this.imageUrl);
-                dest.writeStringList(this.tags);
                 dest.writeString(this.venue_name);
                 dest.writeString(this.start_datetime);
+                dest.writeString(this.end_datetime);
+                dest.writeString(this.special_type);
+                //dest.writeStringList(this.tags);
+                dest.writeList(this.tags);
+                dest.writeString(this.date_day);
+                //dest.writeStringList(this.photos);
+                dest.writeList(this.photos);
+                //dest.writeString(this.imageUrl);
+
+
             }
 
             public static final Creator<Events> CREATOR = new Creator<Events>() {

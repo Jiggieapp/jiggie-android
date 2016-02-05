@@ -5,8 +5,16 @@
 
     <!--<string name="server_host">https://api-dev.jiggieapp.com/app/v3/</string>-->
 
-    <string name="gcm_project_number">86543651746</string>
+    <string name="gcm_project_number">680009696864</string>
+
+    <!--old Google key -->
     <string name="google_api_key">AIzaSyDI11veTh3B7nPq1x_tVQcuoUf-9otkpEg</string>
+
+    <!--Google key debug-->
+    <!--<string name="google_api_key">AIzaSyBpLaTKk463uthyYbVFsRb2SJA8oVRyqew</string>-->
+    <!--Google key release-->
+    <!--<string name="google_api_key">AIzaSyBupBroz0xU4yWQdlHIjDWW0jdTYi4v6oY</string>-->
+
     <string name="facebook_app_id">840535009393707</string>
     <string name="support_email">support@jiggieapp.com</string>
     <string name="appsflyer_devkey">D4Uux6HSu3aYjNHkCHsTiC</string>

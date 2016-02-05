@@ -120,7 +120,7 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
             }
         });
 
-        if (Utils.SHOW_WALKTHROUGH_CHAT) {
+        if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_CHAT, false)) {
             layoutWalkthrough.setVisibility(View.VISIBLE);
             txtWkAction.setPadding(0, 0, Utils.myPixel(getActivity(), 135), Utils.myPixel(getActivity(), 22));
             txtWkAction.setText(getString(R.string.wk_chat_action));
