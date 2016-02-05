@@ -70,7 +70,6 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         if ((super.getArguments() != null) && (super.getArguments().getBoolean("chat", false)))
             this.viewPager.setCurrentItem(2);
 
-
         setupTabIcons();
     }
 
@@ -105,9 +104,10 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         public PageAdapter(HomeMain homeMain, FragmentManager fm) {
             super(fm);
             this.fragments = new Fragment[] {
-                    new EventTabFragment(),
-                    new SocialTabFragment(),
-                    new ChatTabFragment()
+                    //new EventTabFragment()
+                    new EventsFragment()
+                    ,new ChatTabFragment()
+                    ,new SocialTabFragment()
                     //,new MoreTabFragment()
             };
             ((TabFragment)this.fragments[0]).setHomeMain(homeMain);

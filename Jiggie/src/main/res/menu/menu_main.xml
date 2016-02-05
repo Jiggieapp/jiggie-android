@@ -1,7 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
 
     <item
         android:title="@string/account"
@@ -9,12 +9,12 @@
         app:showAsAction="never"/>
 
     <item
-        android:title="@string/settings"
+        android:title="@string/user_chat_block"
         android:id="@+id/action_block"
         app:showAsAction="never"/>
 
     <item
-        android:title="@string/support"
+        android:title="@string/clear_conversation"
         android:id="@+id/action_clear"
         app:showAsAction="never"/>
 </menu>

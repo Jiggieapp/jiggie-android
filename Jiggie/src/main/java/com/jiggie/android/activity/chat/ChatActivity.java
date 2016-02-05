@@ -204,10 +204,6 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
     public boolean onCreateOptionsMenu(Menu menu) {
         if (this.loaded) {
             super.getMenuInflater().inflate(R.menu.menu_chat, menu);
-            final MenuItem menuBlock = menu.findItem(R.id.action_block);
-            final MenuItem menuProfile = menu.findItem(R.id.action_profile);
-            menuBlock.setTitle(super.getString(R.string.user_chat_block, this.toName));
-            menuProfile.setTitle(super.getString(R.string.user_chat_profile, this.toName));
         }
         return super.onCreateOptionsMenu(menu);
     }

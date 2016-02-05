@@ -28,6 +28,7 @@ import android.view.animation.Interpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,9 +62,10 @@ import de.greenrobot.event.EventBus;
 /**
  * Created by rangg on 21/10/2015.
  */
-public class EventTabFragment extends Fragment implements TabFragment, SwipeRefreshLayout.OnRefreshListener, EventTabListAdapter.ViewSelectedListener {
-    @Bind(R.id.swipe_refresh)
-    SwipeRefreshLayout refreshLayout;
+public class EventTabFragment extends Fragment
+        implements TabFragment/*, SwipeRefreshLayout.OnRefreshListener*/, EventTabListAdapter.ViewSelectedListener {
+    /*@Bind(R.id.swipe_refresh)
+    SwipeRefreshLayout refreshLayout;*/
     @Bind(R.id.recycler)
     RecyclerView recyclerView;
     @Bind(R.id.img_wk)
@@ -76,6 +78,8 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
     TextView txtWkDesc;
     @Bind(R.id.layout_walkthrough)
     RelativeLayout layoutWalkthrough;
+    /*@Bind(R.id.tab)
+    TableLayout timeTab;*/
     /*@Bind(R.id.txtFilter)
     TextView txtFilter;
     @Bind(R.id.footerContainer)
@@ -97,11 +101,18 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
     private static final Interpolator INTERPOLATOR = new FastOutSlowInInterpolator();
     private static final String TAG = EventTabFragment.class.getSimpleName();
 
+    public EventTabFragment()
+    {
+
+    }
+
+
     @Override
     public void onTabSelected() {
         App.getInstance().trackMixPanelEvent("View Events");
-        if ((this.adapter != null) && (this.adapter.getItemCount() == 0))
+        /*if ((this.adapter != null) && (this.adapter.getItemCount() == 0)) {
             this.onRefresh();
+        }*/
     }
 
     @Override
@@ -109,15 +120,10 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
         this.homeMain = homeMain;
     }
 
-    @Override
-    public String getTitle() {
-        return this.title == null ? (this.title = this.homeMain.getContext().getString(R.string.events)) : this.title;
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = this.rootView = inflater.inflate(R.layout.fragment_recycler, container, false);
+        View view = this.rootView = inflater.inflate(R.layout.fragment_tab_event, container, false);
         ButterKnife.bind(this, view);
         return view;
     }
@@ -125,14 +131,13 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ButterKnife.bind(this, this.rootView);
-
-        EventBus.getDefault().register(this);
-        EventManager.initEventService();
+        //ButterKnife.bind(this, this.rootView);
+        //EventBus.getDefault().register(this);
+        //EventManager.initEventService();
 
         this.recyclerView.setAdapter(this.adapter = new EventTabListAdapter(this, this));
         this.recyclerView.setLayoutManager(new LinearLayoutManager(super.getContext()));
-        this.refreshLayout.setOnRefreshListener(this);
+        //this.refreshLayout.setOnRefreshListener(this);
         this.events = new ArrayList<>();
         super.setHasOptionsMenu(true);
 
@@ -203,17 +208,10 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
                 .isSnappable(true)
                 .build();
         recyclerView.addOnScrollListener(scrollListener);*/
+
+        this.onTabSelected();
     }
 
-    public static int dp2px(Context context, int dp) {
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        display.getMetrics(displaymetrics);
-
-        return (int) (dp * displaymetrics.density + 0.5f);
-    }
 
     /**
      * Hide the quick return view.
@@ -232,7 +230,8 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
 
         animator.setListener(new Animator.AnimatorListener() {
             @Override
-            public void onAnimationStart(Animator animator) {}
+            public void onAnimationStart(Animator animator) {
+            }
 
             @Override
             public void onAnimationEnd(Animator animator) {
@@ -251,9 +250,9 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
             }
 
             @Override
-            public void onAnimationRepeat(Animator animator) {}
+            public void onAnimationRepeat(Animator animator) {
+            }
         });
-
         animator.start();
     }
 
@@ -306,7 +305,7 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
         final MenuItem searchMenu = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenu);
         final Handler handler = new Handler();
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return true;
@@ -319,12 +318,12 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        filter(true);
+                        //filter(true);
                     }
                 }, getResources().getInteger(R.integer.event_search_delay));
                 return true;
             }
-        });
+        });*/
         MenuItemCompat.setOnActionExpandListener(searchMenu, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
@@ -334,7 +333,7 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 searchText = null;
-                filter(true);
+                //filter(true);
                 return true;
             }
         });
@@ -342,7 +341,7 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
         this.searchText = null;
     }
 
-    @Override
+    /*@Override
     public void onRefresh() {
         if (super.getContext() == null) {
             // fragment has been destroyed.
@@ -356,8 +355,7 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
         final AccessToken token = AccessToken.getCurrentAccessToken();
 
         EventManager.loaderEvent(token.getUserId());
-
-    }
+    }*/
 
     @Override
     public void onDestroyView() {
@@ -383,7 +381,7 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
         if (searchText == null)
             adapter.addAll(events);
 
-        refreshLayout.setRefreshing(false);
+        //refreshLayout.setRefreshing(false);
         filter(true);
     }
 
@@ -391,7 +389,7 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
         isLoading = false;
         if (getContext() != null) {
             Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
-            refreshLayout.setRefreshing(false);
+            //refreshLayout.setRefreshing(false);
         }
     }
 
@@ -401,10 +399,11 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
     }
 
     private void filter(boolean notify) {
-        if ((!this.refreshLayout.isRefreshing()) && (this.searchText != null)) {
+        /*if ((!this.refreshLayout.isRefreshing()) && (this.searchText != null)) {
             this.adapter.clear();
             final int size = this.events.size();
-            final String searchText = this.searchText.toLowerCase();
+            //final String searchText = this.searchText.toLowerCase();
+            Utils.d(TAG, "masuk " + size);
 
             for (int i = 0; i < size; i++) {
                 final EventModel.Data.Events event = this.events.get(i);
@@ -420,15 +419,15 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
 
                     for (int t = 0; t < tagCount; t++) {
                         final String tag = tags[t];
-                        if (tag.toLowerCase().contains(searchText)) {
+                        /if (tag.toLowerCase().contains(searchText)) {
                             this.adapter.add(event);
                             break;
                         }
                     }
                 }
-            }
+            }*/
 
-            if (notify)
+            /*if (notify)
                 adapter.notifyDataSetChanged();
         } else if (!this.refreshLayout.isRefreshing()) {
             this.adapter.clear();
@@ -437,16 +436,65 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
                 int sizes = events.size();
                 this.adapter.notifyDataSetChanged();
             }
-        }
+        }*/
+
+        /*final int size = this.events.size();
+        this.adapter.clear();*/
+        this.adapter.clear();
+        this.adapter.addAll(this.events);
+        this.adapter.notifyDataSetChanged();
     }
+
     //--------------------------------
-
-
     @Override
     public void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
+        //EventBus.getDefault().unregister(this);
     }
 
+    private static EventTabFragment instance;
+    /*
+    private static void newInstance(String title) {
+        instance = new EventTabFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("title", title);
+        instance.setArguments(bundle);
+    }*/
 
+    public static EventTabFragment newInstance(int position)
+    {
+        //EventTabFragment fragment = new EventTabFragment();
+        instance = new EventTabFragment();
+        Bundle args = new Bundle();
+        args.putInt("position", position);
+        instance.setArguments(args);
+        return instance;
+    }
+
+    public static EventTabFragment getInstance(int position)
+    {
+        if(instance == null)
+            instance = newInstance(position);
+        return instance;
+    }
+
+    @Override
+    public String getTitle() {
+        final int position = getArguments().getInt("position");
+        switch(position)
+        {
+            case 0:
+                //return this.getActivity().getResources().getString(R.string.today);
+                return "Today";
+            case 1:
+                //return this.getActivity().getResources().getString(R.string.tomorrow);
+                return "Tomorrow";
+            case 2:
+                //return this.getActivity().getResources().getString(R.string.upcoming);
+                return "Upcoming";
+            default:
+                return "";
+        }
+
+    }
 }

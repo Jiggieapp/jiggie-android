@@ -30,6 +30,7 @@ import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.FlowLayout;
 import com.jiggie.android.component.StringUtility;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.ImagePagerIndicatorAdapter;
 import com.jiggie.android.component.volley.SimpleVolleyRequestListener;
@@ -60,10 +61,15 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -115,26 +121,69 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
         EventBus.getDefault().register(this);
 
+
+
         this.currentEvent = super.getIntent().getParcelableExtra(EventModel.Data.Events.class.getName());
-        this.txtVenue.setText(this.currentEvent.getVenue_name());
-        this.txtGuestCounter.setVisibility(View.GONE);
-        this.appBarLayout.addOnOffsetChangedListener(this);
-        this.swipeRefresh.setOnRefreshListener(this);
-        this.scrollView.setVisibility(View.INVISIBLE);
-        this.collapsingToolbarLayout.setTitleEnabled(false);
-        this.imageGuests = new ImageView[]{imageGuest1, imageGuest2, imageGuest3, imageGuest4};
+        if(currentEvent != null)
+        {
+            Utils.d(TAG, "current event tidak null");
+            this.txtVenue.setText(this.currentEvent.getVenue_name());
+            super.setToolbarTitle(this.currentEvent.getTitle().toUpperCase(), true);
 
-        super.setToolbarTitle(this.currentEvent.getTitle().toUpperCase(), true);
-        final FragmentManager fragmentManager = super.getSupportFragmentManager();
-        ((SupportMapFragment)fragmentManager.findFragmentById(R.id.map)).getMapAsync(this);
+            this.txtGuestCounter.setVisibility(View.GONE);
+            this.appBarLayout.addOnOffsetChangedListener(this);
+            this.swipeRefresh.setOnRefreshListener(this);
+            this.scrollView.setVisibility(View.INVISIBLE);
+            this.collapsingToolbarLayout.setTitleEnabled(false);
+            this.imageGuests = new ImageView[]{imageGuest1, imageGuest2, imageGuest3, imageGuest4};
 
-        this.imagePagerIndicatorAdapter = new ImagePagerIndicatorAdapter(super.getSupportFragmentManager(), this.imageViewPager);
-        this.imagePagerIndicator.setAdapter(this.imagePagerIndicatorAdapter.getIndicatorAdapter());
+            final FragmentManager fragmentManager = super.getSupportFragmentManager();
+            ((SupportMapFragment)fragmentManager.findFragmentById(R.id.map)).getMapAsync(this);
 
-        super.registerReceiver(this.guestInvitedReceiver, new IntentFilter(super.getString(R.string.broadcastGuestInvited)));
-        App.getInstance().trackMixPanelEvent("View Event Details");
+            this.imagePagerIndicatorAdapter = new ImagePagerIndicatorAdapter(super.getSupportFragmentManager(), this.imageViewPager);
+            this.imagePagerIndicator.setAdapter(this.imagePagerIndicatorAdapter.getIndicatorAdapter());
+
+            super.registerReceiver(this.guestInvitedReceiver, new IntentFilter(super.getString(R.string.broadcastGuestInvited)));
+            App.getInstance().trackMixPanelEvent("View Event Details");
+        }
+        else
+        {
+            Utils.d(TAG, "current event null");
+            Intent intent = getIntent();
+            if(intent != null)
+            {
+                this.txtVenue.setText("");
+                super.setToolbarTitle("", true);
+
+                Uri data = intent.getData();
+                try {
+                    Map<String, String> tamp = splitQuery(new URL(data.toString()));
+                    String value = tamp.get("af_sub2");
+                    currentEvent = new EventModel.Data.Events();
+                    currentEvent.set_id(value);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
 
 
+
+
+    }
+
+    public static Map<String, String> splitQuery(URL url) throws UnsupportedEncodingException {
+        Map<String, String> query_pairs = new LinkedHashMap<String, String>();
+        String query = url.getQuery();
+        String[] pairs = query.split("&");
+        for (String pair : pairs) {
+            int idx = pair.indexOf("=");
+            query_pairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"), URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+        }
+        return query_pairs;
     }
 
     @Override
@@ -250,15 +299,26 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         EventManager.loaderEventDetail(this.currentEvent.get_id(), AccessToken.getCurrentAccessToken().getUserId(), AccountManager.loadSetting().getData().getGender_interest());
     }
 
+    private final String TAG = EventDetailActivity.class
+            .getSimpleName();
+
     public void onEvent(EventDetailModel message){
         try {
             if (!isActive())
                 return;
 
-            ArrayList<EventDetailModel.Data.EventDetail.GuestViewed> guestArr = message.getData().getEvents_detail().getGuests_viewed();
-            Guest[] guests = new Guest[guestArr.size()];
-            guests = guestArr.toArray(guests);
 
+
+            ArrayList<EventDetailModel.Data.EventDetail.GuestViewed> guestArr = message.getData().getEvents_detail().getGuests_viewed();
+            if(guestArr == null)
+            {
+                Utils.d(TAG, " guestArr null");
+            }
+
+            Guest[] guests = new Guest[guestArr.size()];
+            if(guests != null) Utils.d(TAG, guestArr.size() + "size brother");
+
+            guests = guestArr.toArray(guests);
             int guestCount = guests == null ? 0 : guests.length;
             final double latt = Double.parseDouble(message.getData().getEvents_detail().getVenue().getLat());
             final double lon = Double.parseDouble(message.getData().getEvents_detail().getVenue().getLon());
@@ -274,6 +334,13 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             txtGuestCounter.setText(String.format("+%s", guestCount - imageGuests.length));
             txtGuestCounter.setVisibility(guestCount > imageGuests.length ? View.VISIBLE : View.GONE);
             txtGuestCount.setText(getResources().getQuantityString(R.plurals.guest_count, guestCount, guestCount));
+
+            if(this.txtVenue.getText().equals("") && super.getActionBar().getTitle().equals(""))
+            {
+                this.txtVenue.setText(message.getData().getEvents_detail().getVenue_name());
+                super.setToolbarTitle(message.getData().getEvents_detail().getTitle(), true);
+                //super.setToolbarTitle(this.currentEvent.getTitle().toUpperCase(), true);
+            }
 
             if (guestCount > 0) {
                 final int width = imageGuest1.getWidth() * 2;

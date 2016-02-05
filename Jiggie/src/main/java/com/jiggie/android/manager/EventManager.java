@@ -1,15 +1,23 @@
 package com.jiggie.android.manager;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.jiggie.android.App;
 import com.jiggie.android.api.API;
 import com.jiggie.android.api.EventInterface;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.EventModel;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import de.greenrobot.event.EventBus;
 import retrofit.Callback;
@@ -44,7 +52,7 @@ public class EventManager {
     }
 
     private static void getEventDetail(String _id, String fb_id, String gender_interest, Callback callback) throws IOException {
-        eventInterface.getEventDetail(_id, fb_id, gender_interest).enqueue(callback);
+        getEventInterface().getEventDetail(_id, fb_id, gender_interest).enqueue(callback);
     }
 
     public static void loaderEvent(String fb_id){
@@ -52,20 +60,29 @@ public class EventManager {
             getEventList(fb_id, new Callback() {
                 @Override
                 public void onResponse(Response response, Retrofit retrofit) {
-
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);
                     EventModel dataTemp = (EventModel) response.body();
 
-                    int size = dataTemp.getData().getEvents().size();
+                    //int size = dataTemp.getData().getEvents().size();
 
-                    EventBus.getDefault().post(dataTemp.getData().getEvents());
+                    if(dataTemp.getData() != null)
+                    {
+                        App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                                .edit().putString(Utils.EVENT_LIST, responses).apply();
+                        EventBus.getDefault().post(dataTemp.getData().getEvents());
+                    }
                 }
 
                 @Override
                 public void onFailure(Throwable t) {
-                    Log.d("Failure", t.toString());
+                   //Log.d("Failure", t.toString());
+                    final String response = App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                            .getString(Utils.EVENT_LIST, "");
+
+                    EventModel eventModel = new Gson().fromJson(response, EventModel.class);
+                    EventBus.getDefault().post(eventModel.getData().getEvents());
                 }
             });
         }catch (IOException e){
@@ -86,8 +103,11 @@ public class EventManager {
                     EventDetailModel dataTemp = (EventDetailModel) response.body();
 
                     //int size = dataTemp.getData().getEvents().size();
+                    if(dataTemp != null)
+                    {
+                        EventBus.getDefault().post(dataTemp);
+                    }
 
-                    EventBus.getDefault().post(dataTemp);
                 }
 
                 @Override

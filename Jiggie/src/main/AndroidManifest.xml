@@ -86,7 +86,22 @@
             android:name=".activity.event.EventDetailActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme" />
+            android:theme="@style/SplashTheme" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with "http://www.example.com/gizmos” -->
+                <data android:scheme="http"
+                    android:host="app.appsflyer.com"
+                    android:pathPrefix="/1630402100" />
+                <data android:scheme="https"
+                    android:host="app.appsflyer.com"
+                    android:pathPrefix="/1630402100" />
+
+                <!--http://app.appsflyer.com/1630402100?pid=Event_Invite&af_dp=jiggie%3A%2F%2F&af_sub1=" + item.from_fb_id + "&af_sub2=" + item.event_id + "&af_force_dp=true
+            --></intent-filter>
+        </activity>
         <activity
             android:name=".activity.event.EventGuestActivity"
             android:label="@string/guest_interested_title"
@@ -197,6 +212,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>-->
         </activity>
+
     </application>
 
 </manifest>

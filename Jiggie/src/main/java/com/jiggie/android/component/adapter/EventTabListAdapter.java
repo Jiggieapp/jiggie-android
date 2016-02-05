@@ -17,6 +17,8 @@ import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.volley.VolleyHandler;
@@ -81,7 +83,11 @@ public class EventTabListAdapter extends RecyclerView.Adapter<EventTabListAdapte
             holder.eventTagAdapter.setTags(tags);
             holder.eventTagAdapter.notifyDataSetChanged();
             holder.txtVenueName.setText(item.getVenue_name());
-            Glide.with(this.fragment).load(imageUrl).into(holder.image);
+            Glide
+                .with(this.fragment)
+                .load(imageUrl)
+                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .into(holder.image);
 
             final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(item.getStart_datetime());
             final Date endDate = Common.ISO8601_DATE_FORMAT_UTC.parse(item.getEnd_datetime());
