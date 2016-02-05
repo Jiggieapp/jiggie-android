@@ -43,6 +43,16 @@ public class Guest implements Parcelable {
         this.about = json.optString(FIELD_ABOUT);
     }
 
+    public Guest(EventDetailModel.Data.EventDetail.GuestViewed data) {
+        this.facebookId = data.getFb_id();
+        this.firstName = StringUtility.formatCharacterCase(data.getFirst_name());
+        /*this.lastName = StringUtility.formatCharacterCase(json.optString(FIELD_LAST_NAME));
+        this.connected = json.optBoolean(FIELD_CONNECTED);*/
+        //this.invited = json.optBoolean(data.ge);
+        this.gender = data.getGender();
+        //this.about = json.optString(FIELD_ABOUT);
+    }
+
     protected Guest(Parcel in) {
         this.connected = in.readByte() != 0;
         this.invited = in.readByte() != 0;

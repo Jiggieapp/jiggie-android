@@ -11,6 +11,7 @@ import com.jiggie.android.api.EventInterface;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.EventModel;
+import com.jiggie.android.model.ExceptionModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,19 +41,18 @@ public class EventManager {
         eventInterface = retrofit.create(EventInterface.class);
     }
 
-    private static EventInterface getEventInterface()
-    {
+    private static EventInterface getInstance(){
         if(eventInterface == null)
             initEventService();
         return eventInterface;
     }
 
     private static void getEventList(String fb_id, Callback callback) throws IOException {
-        getEventInterface().getEventList(fb_id).enqueue(callback);
+        getInstance().getEventList(fb_id).enqueue(callback);
     }
 
     private static void getEventDetail(String _id, String fb_id, String gender_interest, Callback callback) throws IOException {
-        getEventInterface().getEventDetail(_id, fb_id, gender_interest).enqueue(callback);
+        getInstance().getEventDetail(_id, fb_id, gender_interest).enqueue(callback);
     }
 
     public static void loaderEvent(String fb_id){
@@ -65,28 +65,19 @@ public class EventManager {
                     Utils.d("res", responses);
                     EventModel dataTemp = (EventModel) response.body();
 
-                    //int size = dataTemp.getData().getEvents().size();
 
-                    if(dataTemp.getData() != null)
-                    {
-                        App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
-                                .edit().putString(Utils.EVENT_LIST, responses).apply();
-                        EventBus.getDefault().post(dataTemp.getData().getEvents());
-                    }
+                    EventBus.getDefault().post(dataTemp);
                 }
 
                 @Override
                 public void onFailure(Throwable t) {
-                   //Log.d("Failure", t.toString());
-                    final String response = App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
-                            .getString(Utils.EVENT_LIST, "");
-
-                    EventModel eventModel = new Gson().fromJson(response, EventModel.class);
-                    EventBus.getDefault().post(eventModel.getData().getEvents());
+                    Log.d("Failure", t.toString());
+                    EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
             Log.d("Exception", e.toString());
+            EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 

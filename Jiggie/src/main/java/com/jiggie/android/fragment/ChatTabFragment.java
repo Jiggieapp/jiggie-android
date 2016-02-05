@@ -31,15 +31,21 @@ import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.ChatTabListAdapter;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
+import com.jiggie.android.manager.ChatManager;
+import com.jiggie.android.model.ChatListModel;
 import com.jiggie.android.model.Conversation;
 import com.android.volley.VolleyError;
 import com.facebook.AccessToken;
+import com.jiggie.android.model.ExceptionModel;
 
 import org.json.JSONArray;
+
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by rangg on 21/10/2015.
@@ -95,6 +101,9 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = this.rootView = inflater.inflate(R.layout.fragment_recycler, container, false);
         ButterKnife.bind(this, view);
+
+        EventBus.getDefault().register(this);
+
         return view;
     }
 
@@ -144,49 +153,42 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         this.refreshLayout.setRefreshing(true);
         this.getFailedView().setVisibility(View.GONE);
 
-        final String url = "conversations/?fb_id=" + AccessToken.getCurrentAccessToken().getUserId();
-        VolleyHandler.getInstance().createVolleyArrayRequest(url, new VolleyRequestListener<Void, JSONArray>() {
-            @Override
-            public Void onResponseAsync(JSONArray jsonArray) {
-                final int count = jsonArray == null ? 0 : jsonArray.length();
-                adapter.clear();
+        ChatManager.loaderChatList(AccessToken.getCurrentAccessToken().getUserId());
+    }
 
-                for (int i = 0; i < count; i++)
-                    adapter.add(new Conversation(jsonArray.optJSONObject(i)));
+    public void onEvent(ChatListModel message){
 
-                return null;
-            }
+        adapter.clear();
 
-            @Override
-            public void onResponseCompleted(Void value) {
-                isLoading = false;
-                if (getContext() != null) {
-                    getEmptyView().setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
-                    recyclerView.setVisibility(adapter.getItemCount() == 0 ? View.GONE : View.VISIBLE);
-                    refreshLayout.setRefreshing(false);
-                    adapter.notifyDataSetChanged();
-                    setHomeTitle();
-                }
-            }
+        for (int i = 0; i < message.getData().getChat_lists().size(); i++)
+            adapter.add(message.getData().getChat_lists().get(i));
 
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                isLoading = false;
-                if (getContext() != null) {
-                    Toast.makeText(getContext(), App.getErrorMessage(error), Toast.LENGTH_SHORT).show();
-                    getFailedView().setVisibility(View.VISIBLE);
-                    recyclerView.setVisibility(View.GONE);
-                    refreshLayout.setRefreshing(false);
-                }
-            }
-        });
+        isLoading = false;
+        if (getContext() != null) {
+            getEmptyView().setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+            recyclerView.setVisibility(adapter.getItemCount() == 0 ? View.GONE : View.VISIBLE);
+            refreshLayout.setRefreshing(false);
+            adapter.notifyDataSetChanged();
+            setHomeTitle();
+        }
+
+    }
+
+    public void onEvent(ExceptionModel message){
+        isLoading = false;
+        if (getContext() != null) {
+            Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
+            getFailedView().setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.GONE);
+            refreshLayout.setRefreshing(false);
+        }
     }
 
     @Override
-    public void onConversationSelected(Conversation conversation) {
+    public void onConversationSelected(ChatListModel.Data.ChatLists conversation) {
         final Intent intent = new Intent(super.getActivity(), ChatActivity.class);
-        intent.putExtra(Conversation.FIELD_PROFILE_IMAGE, conversation.getProfileImage());
-        intent.putExtra(Conversation.FIELD_FACEBOOK_ID, conversation.getFacebookId());
+        intent.putExtra(Conversation.FIELD_PROFILE_IMAGE, conversation.getProfile_image());
+        intent.putExtra(Conversation.FIELD_FACEBOOK_ID, conversation.getFb_id());
         intent.putExtra(Conversation.FIELD_FROM_NAME, conversation.getFromName());
         super.startActivityForResult(intent, 0);
     }
@@ -195,7 +197,7 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (super.getActivity() != null) {
             final String facebookId = data == null ? null : data.getStringExtra(Conversation.FIELD_FACEBOOK_ID);
-            final Conversation conversation = facebookId == null ? null : this.adapter.find(facebookId);
+            final ChatListModel.Data.ChatLists conversation = facebookId == null ? null : this.adapter.find(facebookId);
             boolean changed = false;
 
             if ((resultCode == Activity.RESULT_OK) && (conversation != null)) {
@@ -205,14 +207,14 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
                 this.adapter.remove(conversation);
                 changed = true;
             } else if ((resultCode == ChatActivity.RESULT_CLEARED) && (conversation != null)) {
-                conversation.setLastMessage(null);
+                conversation.setLast_message(null);
                 conversation.setUnread(0);
                 changed = true;
             } else if ((resultCode == ChatActivity.RESULT_REPLIED) && (conversation != null)) {
                 this.adapter.move(conversation, 0);
 
                 final String lastUpdated = data.getStringExtra(Conversation.FIELD_LAST_UPDATED);
-                conversation.setFieldLastUpdated(lastUpdated);
+                conversation.setLast_updated(lastUpdated);
                 conversation.setUnread(0);
                 changed = true;
             }
@@ -298,7 +300,15 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         final App app = App.getInstance();
         app.unregisterReceiver(this.notificationReceived);
         app.unregisterReceiver(this.socialChatReceiver);
+
+        //EventBus.getDefault().unregister(this);
         super.onDestroy();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override

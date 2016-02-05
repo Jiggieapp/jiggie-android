@@ -44,6 +44,7 @@ import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.EventTabListAdapter;
 import com.jiggie.android.manager.EventManager;
+import com.jiggie.android.model.ChatListModel;
 import com.jiggie.android.model.Event;
 import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.EventModel;
@@ -51,6 +52,9 @@ import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.Setting;
 import com.android.volley.VolleyError;
 import com.facebook.AccessToken;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -125,6 +129,9 @@ public class EventTabFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = this.rootView = inflater.inflate(R.layout.fragment_tab_event, container, false);
         ButterKnife.bind(this, view);
+
+        EventBus.getDefault().register(this);
+
         return view;
     }
 
@@ -384,6 +391,22 @@ public class EventTabFragment extends Fragment
         //refreshLayout.setRefreshing(false);
         filter(true);
     }
+    public void onEvent(EventModel message){
+
+        events = message.getData().getEvents();
+
+        int size = message.getData().getEvents().size();
+
+        adapter.clear();
+        //events.clear();
+
+        if (searchText == null)
+            adapter.addAll(events);
+
+        //refreshLayout.setRefreshing(false);
+        refreshLayout.setRefreshing(false);
+        filter(true);
+    }
 
     public void onEvent(ExceptionModel message){
         isLoading = false;
@@ -449,6 +472,13 @@ public class EventTabFragment extends Fragment
     @Override
     public void onDestroy() {
         super.onDestroy();
+        //EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
         //EventBus.getDefault().unregister(this);
     }
 

@@ -30,6 +30,8 @@ public class Utils {
     public static String MEMBER_SETTING_MODEL = "member_setting_model";
     public static String TAGS_LIST = "tags_list";
     public static String EVENT_LIST = "event_list";
+    public static String PREFERENCE_LOGIN = "login";
+    public static String LOGIN_MODEL = "login_model";
 
     public static int myPixel(Activity a,int dip){
         float scale = a.getResources().getDisplayMetrics().density;
@@ -45,6 +47,10 @@ public class Utils {
     public final static String URL_LOGIN = BASE_URL + "app/v3/login";
     public final static String URL_MEMBER_SETTING = BASE_URL + "app/v3/membersettings";
     public final static String URL_EVENT_DETAIL = BASE_URL + "app/v3/event/details/{id}/{fb_id}/{gender_interest}";
+    public final static String URL_CHAT_CONVERSATION = BASE_URL + "app/v3/chat/conversation/{fb_id}/{to_id}";
+    public final static String URL_CHAT_LIST = BASE_URL + "app/v3/conversations";
+    public final static String URL_GUEST_INTEREST = BASE_URL + "app/v3/event/interest/{event_id}/{fb_id}/{gender_interest}";
+    public final static String URL_MEMBER_INFO = BASE_URL + "app/v3/memberinfo/{fb_id}";
 
     public static void d(final String tag,final String value) {
         Log.d(tag, value);

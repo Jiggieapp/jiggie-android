@@ -41,6 +41,14 @@ public class Chat implements Model, Parcelable, BaseColumns {
         this.createdAt = json.optString(FIELD_CREATED_AT);
     }
 
+    public Chat(ChatConversationModel.Data.ChatConversations.Messages data, String fromId) {
+        this.header = data.getHeader();
+        this.fromId = fromId;
+        this.message = data.getMessage();
+        this.fromYou = data.isFromYou();
+        this.createdAt = data.getCreated_at();
+    }
+
     protected Chat(Parcel in) {
         this.fromYou = in.readByte() != 0;
         this.createdAt = in.readString();
