@@ -90,8 +90,8 @@ public class AccountManager {
             postMemberSetting(memberSettingModel, new Callback() {
                 @Override
                 public void onResponse(Response response, Retrofit retrofit) {
-                    /*String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);*/
+                    String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);
 
                     SuccessModel dataTemp = (SuccessModel) response.body();
 

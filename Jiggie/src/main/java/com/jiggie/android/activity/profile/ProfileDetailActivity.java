@@ -97,7 +97,7 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
 
     public void onEvent(MemberInfoModel message){
         super.setToolbarTitle(message.getData().getMemberinfo().getFirst_name(), true);
-        //final String age = StringUtility.getAge(message.getData().getMemberinfo().getBirth_date());
+        final String age = StringUtility.getAge(message.getData().getMemberinfo().getBirth_date());
         txtLocation.setText(message.getData().getMemberinfo().getLocation());
         txtDescription.setText(message.getData().getMemberinfo().getAbout());
 
@@ -116,8 +116,8 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
 
         String name = message.getData().getMemberinfo().getFirst_name() + " " + message.getData().getMemberinfo().getLast_name();
 
-        //txtUser.setText(((TextUtils.isEmpty(age)) || (age.equals("0"))) ? name : String.format("%s, %s", name, age));
-        txtUser.setText(name);
+        txtUser.setText(((TextUtils.isEmpty(age)) || (age.equals("0"))) ? name : String.format("%s, %s", name, age));
+        //txtUser.setText(name);
         btnEdit.setVisibility(guest == null ? View.VISIBLE : View.GONE);
         setToolbarTitle(name, true);
         refreshLayout.setRefreshing(false);

@@ -225,6 +225,7 @@ public class SignInFragment extends Fragment {
     private GraphRequest.GraphJSONObjectCallback profileCallback = new GraphRequest.GraphJSONObjectCallback() {
         @Override
         public void onCompleted(JSONObject object, GraphResponse response) {
+
             if (getContext() == null) {
                 // fragment already destroyed
                 return;
@@ -250,7 +251,7 @@ public class SignInFragment extends Fragment {
                 loginModel.setLocation(location == null ? null : location.optString("name"));
                 loginModel.setBirthday(Common.SHORT_DATE_FORMAT.format(birthDay));
                 loginModel.setFb_id(object.optString("id"));
-                loginModel.setUser_first_name(object.optString("first_name"));
+                loginModel.setUser_last_name(object.optString("last_name"));
                 loginModel.setEmail(object.optString("email"));
                 loginModel.setGender(object.optString("gender"));
                 //------------

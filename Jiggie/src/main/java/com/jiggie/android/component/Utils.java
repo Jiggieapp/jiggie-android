@@ -41,5 +41,7 @@ public class Utils {
     public final static String URL_CHAT_LIST = BASE_URL + "app/v3/conversations";
     public final static String URL_GUEST_INTEREST = BASE_URL + "app/v3/event/interest/{event_id}/{fb_id}/{gender_interest}";
     public final static String URL_MEMBER_INFO = BASE_URL + "app/v3/memberinfo/{fb_id}";
+    public final static String URL_SHARE_LINK = BASE_URL + "app/v3/invitelink";
+    public final static String URL_SOCIAL_FEED = BASE_URL + "app/v3/partyfeed/list/{fb_id}/{gender_interest}";
 
 }

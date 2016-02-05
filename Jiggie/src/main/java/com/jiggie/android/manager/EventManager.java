@@ -3,7 +3,6 @@ package com.jiggie.android.manager;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.jiggie.android.api.API;
 import com.jiggie.android.api.EventInterface;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.EventDetailModel;

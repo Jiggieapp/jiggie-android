@@ -37,18 +37,23 @@ import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
+import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.model.Conversation;
 import com.jiggie.android.model.Event;
 import com.jiggie.android.model.EventDetail;
+import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.Guest;
 import com.jiggie.android.model.Login;
 import com.jiggie.android.model.Setting;
+import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.SocialMatch;
 import com.android.volley.VolleyError;
 import com.bumptech.glide.DrawableTypeRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.facebook.AccessToken;
+import com.jiggie.android.model.SocialModel;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -180,6 +185,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         }
         this.progressBar.setVisibility(View.VISIBLE);
         this.layoutSocialize.setVisibility(View.GONE);
+
         final String url = String.format("partyfeed/list/%s/%s", AccessToken.getCurrentAccessToken().getUserId(), Setting.getCurrentSetting().getGenderInterestString());
 
         VolleyHandler.getInstance().createVolleyArrayRequest(url, new VolleyRequestListener<SocialMatch, JSONArray>() {
@@ -214,7 +220,32 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                 openDetail(value);
             }
         });
+
+        //SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId(), AccountManager.loadSetting().getData().getGender_interest());
     }
+
+    /*public void onEvent(SocialModel message){
+        SocialMatch current = null;
+
+        for (int i = 0; i < length; i++) {
+            final SocialMatch item = new SocialMatch(jsonArray.optJSONObject(i));
+
+            if (SocialMatch.Type.isInbound(item)) {
+                current = item;
+                break;
+            } else if (current == null)
+                current = item;
+        }
+
+        openDetail(value);
+    }
+
+    public void onEvent(ExceptionModel message){
+        if (getContext() != null) {
+            Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
+            progressBar.setVisibility(View.GONE);
+        }
+    }*/
 
     private void openDetail(SocialMatch value) {
         this.current = value;

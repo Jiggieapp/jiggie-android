@@ -201,15 +201,14 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
         App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, false).commit();
     }
 
-    //Added by Aga
     public void onEvent(EventModel message){
-
+        events.clear();
         events = message.getData().getEvents();
 
         int size = message.getData().getEvents().size();
 
         adapter.clear();
-        //events.clear();
+
 
         if (searchText == null)
             adapter.addAll(events);
