@@ -14,6 +14,7 @@ import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.component.BitmapUtility;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.BaseActivity;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
@@ -96,9 +97,11 @@ public class SetupLocationActivity extends BaseActivity {
     }
 
     public void onEvent(ExceptionModel message){
-        if (isActive()) {
-            Toast.makeText(SetupLocationActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
-            dialog.dismiss();
+        if(message.getFrom().equals(Utils.FROM_MEMBER_SETTING)){
+            if (isActive()) {
+                Toast.makeText(SetupLocationActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
         }
     }
 

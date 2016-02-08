@@ -6,9 +6,14 @@ import com.jiggie.android.model.Common;
 
 import org.json.JSONArray;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Created by rangg on 17/11/2015.
@@ -81,5 +86,40 @@ public class StringUtility {
         } catch (ParseException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
+    }
+
+    public static String getAge2(String dateBirth) {
+        try {
+            if (TextUtils.isEmpty(dateBirth))
+                return null;
+
+            final Date date = Common.SHORT_DATE_FORMAT.parse(dateBirth);
+            final Calendar cal1 = Calendar.getInstance();
+            final Calendar cal2 = Calendar.getInstance();
+
+            cal1.setTime(date);
+            cal2.set(Calendar.MINUTE, 0);
+            cal2.set(Calendar.SECOND, 0);
+            cal2.set(Calendar.HOUR_OF_DAY, 0);
+
+            int age = cal2.get(Calendar.YEAR) - cal1.get(Calendar.YEAR);
+            if (cal2.get(Calendar.DAY_OF_YEAR) < cal1.get(Calendar.DAY_OF_YEAR))
+                age--;
+
+            return String.valueOf(age);
+        } catch (ParseException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    public static Map<String, String> splitQuery(URL url) throws UnsupportedEncodingException {
+        Map<String, String> query_pairs = new LinkedHashMap<String, String>();
+        String query = url.getQuery();
+        String[] pairs = query.split("&");
+        for (String pair : pairs) {
+            int idx = pair.indexOf("=");
+            query_pairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"), URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
+        }
+        return query_pairs;
     }
 }

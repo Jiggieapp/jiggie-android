@@ -15,4 +15,6 @@ public interface ShareInterface {
     @GET(Utils.URL_SHARE_LINK)
     Call<ShareLinkModel> getShareLink(@Query("from_fb_id") String from_fb_id, @Query("type") String type);
 
+
+
 }

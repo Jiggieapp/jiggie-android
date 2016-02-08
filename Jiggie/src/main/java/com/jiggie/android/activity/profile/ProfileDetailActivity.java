@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.StringUtility;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.ImagePagerIndicatorAdapter;
 import com.jiggie.android.component.volley.VolleyHandler;
@@ -124,8 +125,10 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
     }
 
     public void onEvent(ExceptionModel message){
-        Toast.makeText(ProfileDetailActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
-        refreshLayout.setRefreshing(false);
+        if(message.getFrom().equals(Utils.FROM_PROFILE_DETAIL)){
+            Toast.makeText(ProfileDetailActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
+            refreshLayout.setRefreshing(false);
+        }
     }
 
     @SuppressWarnings("unused")
@@ -143,8 +146,8 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
         EventBus.getDefault().unregister(this);
     }
 }

@@ -12,6 +12,7 @@ import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
+import retrofit.http.Query;
 import retrofit.http.Url;
 
 /**
@@ -27,5 +28,8 @@ public interface AccountInterface {
 
     @GET(Utils.URL_MEMBER_INFO)
     Call<MemberInfoModel> getMemberInfo(@Path("fb_id") String fb_id);
+
+    @GET(Utils.URL_GET_SETTING)
+    Call<SettingModel> getSetting(@Query("fb_id") String fb_id);
 
 }

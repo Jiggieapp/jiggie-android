@@ -30,6 +30,7 @@ import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.FlowLayout;
 import com.jiggie.android.component.StringUtility;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.ImagePagerIndicatorAdapter;
 import com.jiggie.android.component.volley.SimpleVolleyRequestListener;
@@ -62,10 +63,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -104,8 +108,10 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     private ShareLink shareLink;
     private GoogleMap map;
 
-    private EventModel.Data.Events currentEvent;
+    //private EventModel.Data.Events currentEvent;
     private EventDetailModel.Data.EventDetail eventDetail;
+    String event_id = "";
+    String event_name = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,16 +121,44 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
         EventBus.getDefault().register(this);
 
-        this.currentEvent = super.getIntent().getParcelableExtra(EventModel.Data.Events.class.getName());
-        this.txtVenue.setText(this.currentEvent.getVenue_name());
-        this.txtGuestCounter.setVisibility(View.GONE);
+        //this.currentEvent = super.getIntent().getParcelableExtra(EventModel.Data.Events.class.getName());
+        Intent a = super.getIntent();
+
+        event_id = a.getStringExtra(Common.FIELD_EVENT_ID);
+        event_name = a.getStringExtra(Common.FIELD_EVENT_NAME);
+
+        if(a != null)
+        {
+            this.txtVenue.setText("");
+            super.setToolbarTitle("", true);
+
+            if(event_id==null){
+                Uri data = a.getData();
+                try {
+                    Map<String, String> tamp = StringUtility.splitQuery(new URL(data.toString()));
+                    event_id = tamp.get("af_sub2");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+        }
+
+        if(event_name!=null){
+            super.setToolbarTitle(event_name.toUpperCase(), true);
+        }
+
         this.appBarLayout.addOnOffsetChangedListener(this);
         this.swipeRefresh.setOnRefreshListener(this);
+
+        this.txtGuestCounter.setVisibility(View.GONE);
         this.scrollView.setVisibility(View.INVISIBLE);
         this.collapsingToolbarLayout.setTitleEnabled(false);
         this.imageGuests = new ImageView[]{imageGuest1, imageGuest2, imageGuest3, imageGuest4};
 
-        super.setToolbarTitle(this.currentEvent.getTitle().toUpperCase(), true);
         final FragmentManager fragmentManager = super.getSupportFragmentManager();
         ((SupportMapFragment)fragmentManager.findFragmentById(R.id.map)).getMapAsync(this);
 
@@ -139,7 +173,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        final String url = String.format("guest/events/viewed/%s/%s", AccessToken.getCurrentAccessToken().getUserId(), this.currentEvent.get_id());
+        final String url = String.format("guest/events/viewed/%s/%s", AccessToken.getCurrentAccessToken().getUserId(), event_id);
         VolleyHandler.getInstance().createVolleyRequest(url, new SimpleVolleyRequestListener<Object, JSONObject>(){
             @Override
             public void onResponseCompleted(Object value) {
@@ -170,11 +204,19 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         this.btnBook.setVisibility(View.GONE);
         this.swipeRefresh.setRefreshing(true);
 
-        EventManager.loaderEventDetail(this.currentEvent.get_id(), AccessToken.getCurrentAccessToken().getUserId(), AccountManager.loadSetting().getData().getGender_interest());
+        EventManager.loaderEventDetail(event_id, AccessToken.getCurrentAccessToken().getUserId(), AccountManager.loadSetting().getData().getGender_interest());
     }
 
     public void onEvent(EventDetailModel message){
         try {
+            eventDetail = message.getData().getEvents_detail();
+
+            if(event_name==null){
+                super.setToolbarTitle(eventDetail.getTitle().toUpperCase(), true);
+            }
+
+            this.txtVenue.setText(eventDetail.getVenue_name());
+
             if (!isActive())
                 return;
 
@@ -250,9 +292,11 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     }
 
     public void onEvent(ExceptionModel message){
-        if (isActive()) {
-            Toast.makeText(App.getInstance(), message.getMessage(), Toast.LENGTH_SHORT).show();
-            swipeRefresh.setRefreshing(false);
+        if(message.getFrom().equals(Utils.FROM_EVENT_DETAIL)){
+            if (isActive()) {
+                Toast.makeText(App.getInstance(), message.getMessage(), Toast.LENGTH_SHORT).show();
+                swipeRefresh.setRefreshing(false);
+            }
         }
     }
 

@@ -27,6 +27,7 @@ import com.jiggie.android.activity.profile.ProfileSettingActivity;
 import com.jiggie.android.activity.setup.SetupTagsActivity;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.MoreTabListAdapter;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
@@ -52,7 +53,6 @@ public class MoreTabFragment extends Fragment implements TabFragment, MoreTabLis
 
     private MoreTabListAdapter adapter;
     private boolean isTabSelectedOnce;
-    //private ShareLink shareLink;
     private HomeMain homeMain;
     private String title;
     private View rootView;
@@ -143,9 +143,11 @@ public class MoreTabFragment extends Fragment implements TabFragment, MoreTabLis
     }
 
     public void onEvent(ExceptionModel message){
-        if (getContext() != null) {
-            Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
-            progressDialog.dismiss();
+        if(message.getFrom().equals(Utils.FROM_SHARE_LINK)){
+            if (getContext() != null) {
+                Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+            }
         }
     }
 
@@ -156,8 +158,8 @@ public class MoreTabFragment extends Fragment implements TabFragment, MoreTabLis
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onStop() {
+        super.onStop();
         EventBus.getDefault().unregister(this);
     }
 }

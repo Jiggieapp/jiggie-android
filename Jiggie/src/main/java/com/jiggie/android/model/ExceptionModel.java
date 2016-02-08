@@ -5,9 +5,11 @@ package com.jiggie.android.model;
  */
 public class ExceptionModel {
 
+    private final String from;
     private final String message;
 
-    public ExceptionModel(String message){
+    public ExceptionModel(String from, String message){
+        this.from = from;
         this.message = message;
     }
 
@@ -15,4 +17,7 @@ public class ExceptionModel {
         return message;
     }
 
+    public String getFrom() {
+        return from;
+    }
 }

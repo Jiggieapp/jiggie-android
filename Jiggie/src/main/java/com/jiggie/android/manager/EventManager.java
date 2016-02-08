@@ -54,9 +54,9 @@ public class EventManager {
                 public void onResponse(Response response, Retrofit retrofit) {
 
                     //String header = String.valueOf(response.code());
+                    /*String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);*/
 
-                    String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
                     EventModel dataTemp = (EventModel) response.body();
 
 
@@ -66,12 +66,12 @@ public class EventManager {
                 @Override
                 public void onFailure(Throwable t) {
                     Log.d("Failure", t.toString());
-                    EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + t.toString()));
+                    EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
             Log.d("Exception", e.toString());
-            EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + e.toString()));
+            EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 
@@ -82,12 +82,9 @@ public class EventManager {
                 public void onResponse(Response response, Retrofit retrofit) {
 
                     //String header = String.valueOf(response.code());
-
-                    String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
+                    /*String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);*/
                     EventDetailModel dataTemp = (EventDetailModel) response.body();
-
-                    //int size = dataTemp.getData().getEvents().size();
 
                     EventBus.getDefault().post(dataTemp);
                 }
@@ -95,10 +92,12 @@ public class EventManager {
                 @Override
                 public void onFailure(Throwable t) {
                     Log.d("Failure", t.toString());
+                    EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT_DETAIL, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
             Log.d("Exception", e.toString());
+            EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT_DETAIL, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 

@@ -2,11 +2,11 @@ package com.jiggie.android.manager;
 
 import android.util.Log;
 
-import com.google.gson.Gson;
 import com.jiggie.android.api.SocialInterface;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.SocialModel;
+import com.jiggie.android.model.SuccessModel;
 
 import java.io.IOException;
 
@@ -42,6 +42,10 @@ public class SocialManager {
         getInstance().getSocialFeed(fb_id, gender_interest).enqueue(callback);
     }
 
+    private static void getSocialMatch(String fb_id, String from_id, String type, Callback callback) throws IOException {
+        getInstance().getSocialMatch(fb_id, from_id, type).enqueue(callback);
+    }
+
     public static void loaderSocialFeed(String fb_id, String gender_interest){
         try {
             getSocialFeed(fb_id, gender_interest, new Callback() {
@@ -49,9 +53,9 @@ public class SocialManager {
                 public void onResponse(Response response, Retrofit retrofit) {
 
                     //String header = String.valueOf(response.code());
+                    /*String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);*/
 
-                    String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
                     SocialModel dataTemp = (SocialModel) response.body();
 
 
@@ -61,13 +65,49 @@ public class SocialManager {
                 @Override
                 public void onFailure(Throwable t) {
                     Log.d("Failure", t.toString());
-                    EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + t.toString()));
+                    EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_FEED, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
             Log.d("Exception", e.toString());
-            EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + e.toString()));
+            EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_FEED, Utils.MSG_EXCEPTION + e.toString()));
         }
+    }
+
+    public static void loaderSocialMatch(String fb_id, String from_id, String type){
+        try {
+            getSocialMatch(fb_id, from_id, type, new Callback() {
+                @Override
+                public void onResponse(Response response, Retrofit retrofit) {
+
+                    //String header = String.valueOf(response.code());
+                    /*String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);*/
+
+                    SuccessModel dataTemp = (SuccessModel) response.body();
+
+
+                    EventBus.getDefault().post(dataTemp);
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.d("Failure", t.toString());
+                    EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_MATCH, Utils.MSG_EXCEPTION + t.toString()));
+                }
+            });
+        }catch (IOException e){
+            Log.d("Exception", e.toString());
+            EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_MATCH, Utils.MSG_EXCEPTION + e.toString()));
+        }
+    }
+
+    public static class Type {
+        public static final String APPROVED = "approved";
+        public static final String VIEWED = "viewed";
+        public static final String DENIED = "denied";
+
+        public static boolean isInbound(SocialModel.Data.SocialFeeds value) { return APPROVED.equalsIgnoreCase(value.getType()); }
     }
 
 }

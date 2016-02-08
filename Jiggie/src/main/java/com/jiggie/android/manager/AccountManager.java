@@ -59,6 +59,10 @@ public class AccountManager {
         getInstance().getMemberInfo(fb_id).enqueue(callback);
     }
 
+    private static void getSetting(String fb_id, Callback callback) throws IOException {
+        getInstance().getSetting(fb_id).enqueue(callback);
+    }
+
     public static void loaderLogin(LoginModel loginRequestModel){
         try {
             postLogin(loginRequestModel, new Callback() {
@@ -76,12 +80,12 @@ public class AccountManager {
                 @Override
                 public void onFailure(Throwable t) {
                     Log.d("failure", t.toString());
-                    EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION+t.toString()));
+                    EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SIGN_IN, Utils.MSG_EXCEPTION+t.toString()));
                 }
             });
         }catch (IOException e){
             Log.d("exception", e.toString());
-            EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + e.toString()));
+            EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SIGN_IN, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 
@@ -102,12 +106,12 @@ public class AccountManager {
                 @Override
                 public void onFailure(Throwable t) {
                     Log.d("failure", t.toString());
-                    EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + t.toString()));
+                    EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
             Log.d("exception", e.toString());
-            EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + e.toString()));
+            EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 
@@ -128,12 +132,38 @@ public class AccountManager {
                 @Override
                 public void onFailure(Throwable t) {
                     Log.d("failure", t.toString());
-                    EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + t.toString()));
+                    EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_DETAIL, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
             Log.d("exception", e.toString());
-            EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + e.toString()));
+            EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_DETAIL, Utils.MSG_EXCEPTION + e.toString()));
+        }
+    }
+
+    public static void loaderSetting(String fb_id){
+        try {
+            getSetting(fb_id, new Callback() {
+                @Override
+                public void onResponse(Response response, Retrofit retrofit) {
+                    String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);
+
+                    SettingModel dataTemp = (SettingModel) response.body();
+
+                    EventBus.getDefault().post(dataTemp);
+
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.d("failure", t.toString());
+                    EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_SETTING, Utils.MSG_EXCEPTION + t.toString()));
+                }
+            });
+        }catch (IOException e){
+            Log.d("exception", e.toString());
+            EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_SETTING, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 

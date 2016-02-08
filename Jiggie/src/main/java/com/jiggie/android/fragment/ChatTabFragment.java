@@ -175,12 +175,14 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     }
 
     public void onEvent(ExceptionModel message){
-        isLoading = false;
-        if (getContext() != null) {
-            Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
-            getFailedView().setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
-            refreshLayout.setRefreshing(false);
+        if(message.getFrom().equals(Utils.FROM_CHAT)){
+            isLoading = false;
+            if (getContext() != null) {
+                Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
+                getFailedView().setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
+                refreshLayout.setRefreshing(false);
+            }
         }
     }
 
