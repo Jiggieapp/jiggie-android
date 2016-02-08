@@ -32,9 +32,9 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
+/*import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
 import com.etiennelawlor.quickreturn.library.listeners.QuickReturnRecyclerViewOnScrollListener;
-import com.etiennelawlor.quickreturn.library.utils.QuickReturnUtils;
+import com.etiennelawlor.quickreturn.library.utils.QuickReturnUtils;*/
 import com.facebook.AccessToken;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
@@ -404,7 +404,7 @@ public class EventTabFragment extends Fragment
             adapter.addAll(events);
 
         //refreshLayout.setRefreshing(false);
-        refreshLayout.setRefreshing(false);
+       // refreshLayout.setRefreshing(false);
         filter(true);
     }
 

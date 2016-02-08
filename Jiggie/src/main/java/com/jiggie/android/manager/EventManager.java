@@ -62,10 +62,7 @@ public class EventManager {
                 public void onResponse(Response response, Retrofit retrofit) {
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());
-                    Utils.d("res", responses);
                     EventModel dataTemp = (EventModel) response.body();
-
-
                     EventBus.getDefault().post(dataTemp);
                 }
 

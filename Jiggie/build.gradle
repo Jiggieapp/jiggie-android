@@ -80,7 +80,7 @@ dependencies {
     compile 'com.squareup.retrofit:converter-gson:2.0.0-beta2'
     compile 'de.greenrobot:eventbus:2.4.0'
     compile files('libs/AF-Android-SDK-v3.3.0.jar')
-    compile 'com.github.lawloretienne:quickreturn:0.0.3'
+    //compile 'com.github.lawloretienne:quickreturn:0.0.3'
 
     //reactive android
     //compile 'io.reactivex:rxandroid:1.1.0'

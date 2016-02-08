@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
+import com.facebook.AccessToken;
 import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.api.AccountInterface;
@@ -187,6 +188,12 @@ public class AccountManager {
         MemberSettingModel memberSettingModel = new Gson().fromJson(App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING,
                 Context.MODE_PRIVATE).getString(Utils.MEMBER_SETTING_MODEL, ""), MemberSettingModel.class);
         return memberSettingModel;
+    }
+
+    private static void getUserTagList(Callback callback)
+    {
+        getAccountInterface().getUserTagList(AccessToken.getCurrentAccessToken()
+                .getUserId()).enqueue(callback);
     }
 
     public static void getUserTagList()

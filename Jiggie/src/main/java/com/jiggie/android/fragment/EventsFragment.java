@@ -93,6 +93,7 @@ public class EventsFragment extends Fragment
 
     @Override
     public void onRefresh() {
+        Utils.d(TAG, "is loading " + isLoading);
         if (super.getContext() == null) {
             // fragment has been destroyed.
             return;
@@ -199,15 +200,13 @@ public class EventsFragment extends Fragment
     }
 
     //Added by Aga
-    public void onEvent(ArrayList<EventModel.Data.Events> message){
+    public void onEvent(EventModel eventModel){
+        ArrayList<EventModel.Data.Events> message = eventModel.getData().getEvents();
         int size = message.size();
         ArrayList<EventModel.Data.Events> events = message;
         ArrayList<EventModel.Data.Events> todayEvents = new ArrayList<>();
         ArrayList<EventModel.Data.Events> tomorrowEvents = new ArrayList<>();
         ArrayList<EventModel.Data.Events> upcomingEvents = new ArrayList<>();
-
-        this.isLoading = false;
-        refreshLayout.setRefreshing(false);
         //adapter.clear();
         //events.clear();
 
@@ -239,6 +238,9 @@ public class EventsFragment extends Fragment
         todayFragment.onEvent(todayEvents);
         tomorrowFragment.onEvent(tomorrowEvents);
         upcomingFragment.onEvent(upcomingEvents);
+
+        this.isLoading = false;
+        this.refreshLayout.setRefreshing(false);
     }
 
     @Override
