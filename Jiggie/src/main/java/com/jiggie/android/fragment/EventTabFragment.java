@@ -105,8 +105,7 @@ public class EventTabFragment extends Fragment
     private static final Interpolator INTERPOLATOR = new FastOutSlowInInterpolator();
     private static final String TAG = EventTabFragment.class.getSimpleName();
 
-    public EventTabFragment()
-    {
+    public EventTabFragment() {
 
     }
 
@@ -130,7 +129,7 @@ public class EventTabFragment extends Fragment
         View view = this.rootView = inflater.inflate(R.layout.fragment_tab_event, container, false);
         ButterKnife.bind(this, view);
 
-        EventBus.getDefault().register(this);
+        //EventBus.getDefault().register(this);
 
         return view;
     }
@@ -222,7 +221,7 @@ public class EventTabFragment extends Fragment
 
     /**
      * Hide the quick return view.
-     *
+     * <p/>
      * Animates hiding the view, with the view sliding down and out of the screen.
      * After the view has disappeared, its visibility will change to GONE.
      *
@@ -265,7 +264,7 @@ public class EventTabFragment extends Fragment
 
     /**
      * Show the quick return view.
-     *
+     * <p/>
      * Animates showing the view, with the view sliding up from the bottom of the screen.
      * After the view has reappeared, its visibility will change to VISIBLE.
      *
@@ -378,20 +377,21 @@ public class EventTabFragment extends Fragment
     }
 
     //Added by Aga
-    public void onEvent(ArrayList<EventModel.Data.Events> message){
+    public void onEvent(ArrayList<EventModel.Data.Events> message) {
         int size = message.size();
-        events = message;
 
-        adapter.clear();
         //events.clear();
-
-        if (searchText == null)
-            adapter.addAll(events);
-
+        Utils.d(TAG, "events size " + size);
+        if (searchText == null && size > 0) {
+            //adapter.clear();
+            //adapter.addAll(events);
+            events = message;
+            filter(true);
+        }
         //refreshLayout.setRefreshing(false);
-        filter(true);
     }
-    public void onEvent(EventModel message){
+
+    public void onEvent(EventModel message) {
 
         events = message.getData().getEvents();
 
@@ -404,11 +404,11 @@ public class EventTabFragment extends Fragment
             adapter.addAll(events);
 
         //refreshLayout.setRefreshing(false);
-       // refreshLayout.setRefreshing(false);
+        // refreshLayout.setRefreshing(false);
         filter(true);
     }
 
-    public void onEvent(ExceptionModel message){
+    public void onEvent(ExceptionModel message) {
         isLoading = false;
         if (getContext() != null) {
             Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
@@ -478,7 +478,7 @@ public class EventTabFragment extends Fragment
     @Override
     public void onStop() {
         super.onStop();
-        EventBus.getDefault().unregister(this);
+        //EventBus.getDefault().unregister(this);
         //EventBus.getDefault().unregister(this);
     }
 
@@ -491,8 +491,7 @@ public class EventTabFragment extends Fragment
         instance.setArguments(bundle);
     }*/
 
-    public static EventTabFragment newInstance(int position)
-    {
+    public static EventTabFragment newInstance(int position) {
         //EventTabFragment fragment = new EventTabFragment();
         instance = new EventTabFragment();
         Bundle args = new Bundle();
@@ -501,9 +500,8 @@ public class EventTabFragment extends Fragment
         return instance;
     }
 
-    public static EventTabFragment getInstance(int position)
-    {
-        if(instance == null)
+    public static EventTabFragment getInstance(int position) {
+        if (instance == null)
             instance = newInstance(position);
         return instance;
     }
@@ -511,8 +509,7 @@ public class EventTabFragment extends Fragment
     @Override
     public String getTitle() {
         final int position = getArguments().getInt("position");
-        switch(position)
-        {
+        switch (position) {
             case 0:
                 //return this.getActivity().getResources().getString(R.string.today);
                 return "Today";

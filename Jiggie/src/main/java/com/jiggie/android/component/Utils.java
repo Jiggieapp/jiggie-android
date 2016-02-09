@@ -1,7 +1,11 @@
 package com.jiggie.android.component;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.Log;
+
+import com.jiggie.android.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -86,5 +90,18 @@ public class Utils {
         }
 
         return "";
+    }
+
+    public static int getToolbarHeight(Context context) {
+        final TypedArray styledAttributes = context.getTheme().obtainStyledAttributes(
+                new int[]{R.attr.actionBarSize});
+        int toolbarHeight = (int) styledAttributes.getDimension(0, 0);
+        styledAttributes.recycle();
+
+        return toolbarHeight;
+    }
+
+    public static int getTabsHeight(Context context) {
+        return (int) context.getResources().getDimension(R.dimen.tabsHeight);
     }
 }

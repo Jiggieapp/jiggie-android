@@ -35,7 +35,7 @@ import de.greenrobot.event.EventBus;
  */
 public class EventsFragment extends Fragment
         implements ViewPager.OnPageChangeListener, HomeMain
-            ,ViewTreeObserver.OnGlobalLayoutListener, TabFragment, SwipeRefreshLayout.OnRefreshListener{
+        , ViewTreeObserver.OnGlobalLayoutListener, TabFragment, SwipeRefreshLayout.OnRefreshListener {
 
     @Bind(R.id.time_tab)
     TabLayout timeTab;
@@ -93,7 +93,6 @@ public class EventsFragment extends Fragment
 
     @Override
     public void onRefresh() {
-        Utils.d(TAG, "is loading " + isLoading);
         if (super.getContext() == null) {
             // fragment has been destroyed.
             return;
@@ -109,6 +108,7 @@ public class EventsFragment extends Fragment
     }
 
     EventTabFragment todayFragment, tomorrowFragment, upcomingFragment;
+
     private class PageAdapter extends FragmentPagerAdapter {
         private final Fragment[] fragments;
 
@@ -133,25 +133,32 @@ public class EventsFragment extends Fragment
             EventTabFragment tomorrowFragment = EventTabFragment.getInstance(1);
             EventTabFragment upcomingFragment = EventTabFragment.getInstance(2);*/
 
-            this.fragments = new Fragment[] {
+
+            this.fragments = new Fragment[]{
                     todayFragment,
                     tomorrowFragment,
                     upcomingFragment
             };
 
-            ((TabFragment)this.fragments[0]).setHomeMain(homeMain);
-            ((TabFragment)this.fragments[1]).setHomeMain(homeMain);
-            ((TabFragment)this.fragments[2]).setHomeMain(homeMain);
+            ((TabFragment) this.fragments[0]).setHomeMain(homeMain);
+            ((TabFragment) this.fragments[1]).setHomeMain(homeMain);
+            ((TabFragment) this.fragments[2]).setHomeMain(homeMain);
             //((TabFragment)this.fragments[3]).setHomeMain(homeMain);
         }
 
         @Override
-        public Fragment getItem(int position) { return this.fragments[position]; }
+        public Fragment getItem(int position) {
+            return this.fragments[position];
+        }
+
         @Override
-        public int getCount() { return this.fragments.length; }
+        public int getCount() {
+            return this.fragments.length;
+        }
+
         @Override
         public CharSequence getPageTitle(int position) {
-            return ((TabFragment)this.fragments[position]).getTitle();
+            return ((TabFragment) this.fragments[position]).getTitle();
         }
 
         public int getFragmentPosition(Object fragment) {
@@ -200,7 +207,7 @@ public class EventsFragment extends Fragment
     }
 
     //Added by Aga
-    public void onEvent(EventModel eventModel){
+    public void onEvent(EventModel eventModel) {
         ArrayList<EventModel.Data.Events> message = eventModel.getData().getEvents();
         int size = message.size();
         ArrayList<EventModel.Data.Events> events = message;
@@ -212,29 +219,19 @@ public class EventsFragment extends Fragment
 
         /*if (searchText == null)
             adapter.addAll(events);*/
-        for(EventModel.Data.Events tempEvent : events)
-        {
+        for (EventModel.Data.Events tempEvent : events) {
             //new Date(event.getDate_day());
             final String diffDays = Utils.calculateTime(tempEvent.getStart_datetime());
-            if(diffDays.equals(Utils.DATE_TODAY))
-            {
+            if (diffDays.equals(Utils.DATE_TODAY)) {
                 todayEvents.add(tempEvent);
-            }
-            else if(diffDays.equals(Utils.DATE_TOMORROW))
-            {
+            } else if (diffDays.equals(Utils.DATE_TOMORROW)) {
                 tomorrowEvents.add(tempEvent);
-            }
-            else if(diffDays.equals(Utils.DATE_UPCOMING))
-            {
+            } else if (diffDays.equals(Utils.DATE_UPCOMING)) {
                 upcomingEvents.add(tempEvent);
             }
 
         }
-        /*todayFragment.onEvent(todayEvents);
-        tomorrowFragment.onEvent(tomorrowEvents);
-        upcomingFragment.onEvent(upcomingEvents);*/
 
-        Utils.d(TAG, "todayEvents " + todayEvents.size());
         todayFragment.onEvent(todayEvents);
         tomorrowFragment.onEvent(tomorrowEvents);
         upcomingFragment.onEvent(upcomingEvents);
