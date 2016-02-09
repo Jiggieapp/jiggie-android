@@ -38,21 +38,51 @@ public class ShareManager {
         return shareInterface;
     }
 
-    private static void getShareLink(String fb_id, Callback callback) throws IOException {
-        getInstance().getShareLink(fb_id, "general").enqueue(callback);
+    private static void getShareApps(String fb_id, Callback callback) throws IOException {
+        getInstance().getShareApps(fb_id, "general").enqueue(callback);
     }
 
-    public static void loaderShareLink(String fb_id){
+    private static void getShareEvent(String event_id, String fb_id, String venue_name, Callback callback) throws IOException {
+        getInstance().getShareEvent(event_id, fb_id, "event", venue_name).enqueue(callback);
+    }
+
+    public static void loaderShareApps(String fb_id){
         try {
-            getShareLink(fb_id, new Callback() {
+            getShareApps(fb_id, new Callback() {
                 @Override
                 public void onResponse(Response response, Retrofit retrofit) {
 
                     //String header = String.valueOf(response.code());
-                    /*String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);*/
+                    String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);
                     ShareLinkModel dataTemp = (ShareLinkModel) response.body();
 
+
+                    EventBus.getDefault().post(dataTemp);
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.d("Failure", t.toString());
+                    EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SHARE_LINK, Utils.MSG_EXCEPTION + t.toString()));
+                }
+            });
+        }catch (IOException e){
+            Log.d("Exception", e.toString());
+            EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SHARE_LINK, Utils.MSG_EXCEPTION + e.toString()));
+        }
+    }
+
+    public static void loaderShareEvent(String event_id, String fb_id, String venue_name){
+        try {
+            getShareEvent(event_id, fb_id, venue_name, new Callback() {
+                @Override
+                public void onResponse(Response response, Retrofit retrofit) {
+
+                    //String header = String.valueOf(response.code());
+                    String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);
+                    ShareLinkModel dataTemp = (ShareLinkModel) response.body();
 
                     EventBus.getDefault().post(dataTemp);
                 }

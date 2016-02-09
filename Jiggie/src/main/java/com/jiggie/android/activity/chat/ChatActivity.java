@@ -34,21 +34,16 @@ import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.ChatManager;
 import com.jiggie.android.model.Chat;
-import com.jiggie.android.model.ChatConversationModel;
 import com.jiggie.android.model.ChatResponseModel;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.Conversation;
 import com.jiggie.android.model.ExceptionModel;
-import com.jiggie.android.model.Guest;
-import com.jiggie.android.model.Login;
 import com.android.volley.VolleyError;
 import com.facebook.AccessToken;
 import com.jiggie.android.model.LoginModel;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -173,7 +168,7 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_profile) {
             final Intent intent = new Intent(this, ProfileDetailActivity.class);
-            intent.putExtra(Guest.class.getName(), new Guest(this.toId, this.toName));
+            intent.putExtra(Common.FIELD_FACEBOOK_ID, toId);
             super.startActivity(intent);
         } else if (item.getItemId() == R.id.action_block) {
             new AlertDialog.Builder(this)

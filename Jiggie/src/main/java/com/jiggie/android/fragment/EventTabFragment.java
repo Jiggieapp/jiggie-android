@@ -29,21 +29,11 @@ import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.EventTabListAdapter;
-import com.jiggie.android.component.volley.VolleyHandler;
-import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.manager.EventManager;
-import com.jiggie.android.model.ChatListModel;
 import com.jiggie.android.model.Common;
-import com.jiggie.android.model.Event;
-import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.EventModel;
 import com.jiggie.android.model.ExceptionModel;
-import com.jiggie.android.model.Setting;
-import com.android.volley.VolleyError;
 import com.facebook.AccessToken;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 

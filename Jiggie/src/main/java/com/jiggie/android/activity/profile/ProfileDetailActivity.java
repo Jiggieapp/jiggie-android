@@ -18,24 +18,12 @@ import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.ImagePagerIndicatorAdapter;
-import com.jiggie.android.component.volley.VolleyHandler;
-import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
-import com.jiggie.android.model.Guest;
 import com.jiggie.android.model.GuestModel;
-import com.jiggie.android.model.Login;
-import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.MemberInfoModel;
-import com.jiggie.android.model.Setting;
-import com.jiggie.android.model.UserProfile;
-import com.android.volley.VolleyError;
 import com.facebook.AccessToken;
-
-import org.json.JSONObject;
-
-import java.util.HashSet;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -56,7 +44,8 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
     @Bind(R.id.txtUser) TextView txtUser;
 
     private ImagePagerIndicatorAdapter pagerIndicatorAdapter;
-    private UserProfile currentProfile;
+    //private UserProfile currentProfile;
+    private MemberInfoModel memberInfoModel;
     private GuestModel.Data.GuestInterests guest;
     String fb_id;
 
@@ -98,7 +87,10 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
 
     public void onEvent(MemberInfoModel message){
         super.setToolbarTitle(message.getData().getMemberinfo().getFirst_name(), true);
+        memberInfoModel = message;
+
         final String age = StringUtility.getAge(message.getData().getMemberinfo().getBirth_date());
+
         txtLocation.setText(message.getData().getMemberinfo().getLocation());
         txtDescription.setText(message.getData().getMemberinfo().getAbout());
 
@@ -118,7 +110,6 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
         String name = message.getData().getMemberinfo().getFirst_name() + " " + message.getData().getMemberinfo().getLast_name();
 
         txtUser.setText(((TextUtils.isEmpty(age)) || (age.equals("0"))) ? name : String.format("%s, %s", name, age));
-        //txtUser.setText(name);
         btnEdit.setVisibility(guest == null ? View.VISIBLE : View.GONE);
         setToolbarTitle(name, true);
         refreshLayout.setRefreshing(false);
@@ -133,15 +124,15 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
 
     @SuppressWarnings("unused")
     @OnClick(R.id.btnEdit)
-    void btnEditOnClick() { super.startActivityForResult(new Intent(this, ProfileEditActivity.class).putExtra(UserProfile.FIELD_ABOUT, this.currentProfile.getAbout()), 0); }
+    void btnEditOnClick() { super.startActivityForResult(new Intent(this, ProfileEditActivity.class).putExtra(Common.FIELD_ABOUT, memberInfoModel.getData().getMemberinfo().getAbout()), 0); }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            this.currentProfile.setAbout(data.getStringExtra(UserProfile.FIELD_ABOUT));
-            this.txtDescription.setText(this.currentProfile.getAbout());
-            this.currentProfile.save(this);
+            //this.currentProfile.setAbout(data.getStringExtra(UserProfile.FIELD_ABOUT));
+            this.txtDescription.setText(memberInfoModel.getData().getMemberinfo().getAbout());
+            //this.currentProfile.save(this);
         }
     }
 

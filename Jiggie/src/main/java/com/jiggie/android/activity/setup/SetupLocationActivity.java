@@ -16,20 +16,12 @@ import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.component.BitmapUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.BaseActivity;
-import com.jiggie.android.component.volley.VolleyHandler;
-import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.manager.AccountManager;
-import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
-import com.jiggie.android.model.LoginSetting;
 import com.jiggie.android.model.MemberSettingModel;
-import com.jiggie.android.model.Setting;
-import com.android.volley.VolleyError;
 import com.facebook.AccessToken;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.SuccessModel;
-
-import org.json.JSONObject;
 
 import butterknife.Bind;
 import butterknife.OnClick;

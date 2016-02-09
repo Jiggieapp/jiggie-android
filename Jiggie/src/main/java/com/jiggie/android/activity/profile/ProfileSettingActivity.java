@@ -3,7 +3,6 @@ package com.jiggie.android.activity.profile;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -18,18 +17,12 @@ import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
-import com.jiggie.android.component.volley.VolleyHandler;
-import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.MemberSettingModel;
-import com.jiggie.android.model.Setting;
-import com.android.volley.VolleyError;
 import com.facebook.AccessToken;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.SuccessModel;
-
-import org.json.JSONObject;
 
 import java.util.Arrays;
 

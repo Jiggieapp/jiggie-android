@@ -24,6 +24,14 @@ public class EventManager {
 
     private static EventInterface eventInterface;
 
+    public static class FullfillmentTypes {
+        public static final String PHONE_NUMBER = "phone_number";
+        public static final String RESERVATION = "reservation";
+        public static final String PURCHASE = "purchase";
+        public static final String LINK = "link";
+        public static final String NONE = "none";
+    }
+
     public static void initEventService(){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Utils.BASE_URL)

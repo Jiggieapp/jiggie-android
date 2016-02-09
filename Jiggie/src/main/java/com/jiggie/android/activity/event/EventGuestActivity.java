@@ -2,9 +2,7 @@ package com.jiggie.android.activity.event;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewTreeObserver;
@@ -22,7 +20,6 @@ import com.jiggie.android.manager.GuestManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.ExceptionModel;
-import com.jiggie.android.model.Guest;
 import com.android.volley.VolleyError;
 import com.facebook.AccessToken;
 import com.jiggie.android.model.GuestModel;

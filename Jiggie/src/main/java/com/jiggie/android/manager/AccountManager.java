@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.api.AccountInterface;
 import com.jiggie.android.component.Utils;
+import com.jiggie.android.model.AboutModel;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.LoginModel;
@@ -61,6 +62,10 @@ public class AccountManager {
 
     private static void getSetting(String fb_id, Callback callback) throws IOException {
         getInstance().getSetting(fb_id).enqueue(callback);
+    }
+
+    private static void postEditAbout(AboutModel aboutModel, Callback callback) throws IOException {
+        getInstance().postEditAbout(Utils.URL_EDIT_ABOUT, aboutModel).enqueue(callback);
     }
 
     public static void loaderLogin(LoginModel loginRequestModel){
@@ -164,6 +169,32 @@ public class AccountManager {
         }catch (IOException e){
             Log.d("exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_SETTING, Utils.MSG_EXCEPTION + e.toString()));
+        }
+    }
+
+    public static void loaderEditAbout(AboutModel aboutModel){
+        try {
+            postEditAbout(aboutModel, new Callback() {
+                @Override
+                public void onResponse(Response response, Retrofit retrofit) {
+                    String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);
+
+                    SuccessModel dataTemp = (SuccessModel) response.body();
+
+                    EventBus.getDefault().post(dataTemp);
+
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.d("failure", t.toString());
+                    EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_EDIT, Utils.MSG_EXCEPTION + t.toString()));
+                }
+            });
+        }catch (IOException e){
+            Log.d("exception", e.toString());
+            EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_EDIT, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 

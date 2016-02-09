@@ -128,7 +128,7 @@ public class MoreTabFragment extends Fragment implements TabFragment, MoreTabLis
             App.getInstance().trackMixPanelEvent("Share App");
         } else {
             progressDialog = App.showProgressDialog(super.getContext());
-            ShareManager.loaderShareLink(AccessToken.getCurrentAccessToken().getUserId());
+            ShareManager.loaderShareApps(AccessToken.getCurrentAccessToken().getUserId());
         }
     }
 

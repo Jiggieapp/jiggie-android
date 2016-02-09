@@ -8,25 +8,28 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
-import com.android.volley.VolleyError;
 import com.facebook.AccessToken;
-
-import org.json.JSONObject;
 
 import butterknife.Bind;
 import butterknife.OnClick;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
-import com.jiggie.android.component.volley.VolleyHandler;
-import com.jiggie.android.component.volley.VolleyRequestListener;
-import com.jiggie.android.model.UserProfile;
+import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.model.AboutModel;
+import com.jiggie.android.model.Common;
+import com.jiggie.android.model.ExceptionModel;
+import com.jiggie.android.model.LoginModel;
+import com.jiggie.android.model.SuccessModel;
 
 /**
  * Created by rangg on 17/11/2015.
  */
 public class ProfileEditActivity extends ToolbarActivity {
     @Bind(R.id.textView) TextView textView;
+
+    ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +38,7 @@ public class ProfileEditActivity extends ToolbarActivity {
         super.bindView();
         super.setBackEnabled(true);
 
-        final String value = super.getIntent().getStringExtra(UserProfile.FIELD_ABOUT);
+        final String value = super.getIntent().getStringExtra(Common.FIELD_ABOUT);
         this.textView.setText(value);
     }
 
@@ -57,28 +60,30 @@ public class ProfileEditActivity extends ToolbarActivity {
     void rootOnClick() { this.textView.requestFocus(); }
 
     private void save() {
-        final ProgressDialog dialog = App.showProgressDialog(this);
-        final UserProfile profile = new UserProfile();
-        profile.setFacebookId(AccessToken.getCurrentAccessToken().getUserId());
-        profile.setAbout(this.textView.getText().toString());
+        dialog = App.showProgressDialog(this);
 
-        VolleyHandler.getInstance().createVolleyRequest("updateuserabout", profile, new VolleyRequestListener<String, JSONObject>() {
-            @Override
-            public String onResponseAsync(JSONObject jsonObject) { return profile.getAbout(); }
+        final AboutModel aboutModel = new AboutModel();
+        aboutModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
+        aboutModel.setAbout(this.textView.getText().toString());
+        AccountManager.loaderEditAbout(aboutModel);
+    }
 
-            @Override
-            public void onResponseCompleted(String value) {
-                setResult(RESULT_OK, new Intent().putExtra(UserProfile.FIELD_ABOUT, value));
-                App.getInstance().trackMixPanelEvent("MyProfile Update");
-                dialog.dismiss();
-                finish();
-            }
+    public void onEvent(SuccessModel message){
+        LoginModel login = AccountManager.loadLogin();
+        login.setAbout(this.textView.getText().toString());
+        AccountManager.saveLogin(login);
+        App.getInstance().trackMixPanelEvent("MyProfile Update");
 
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(ProfileEditActivity.this, App.getErrorMessage(error), Toast.LENGTH_SHORT).show();
-                dialog.dismiss();
-            }
-        });
+        setResult(RESULT_OK, new Intent().putExtra(Common.FIELD_ABOUT, this.textView.getText().toString()));
+
+        dialog.dismiss();
+        finish();
+    }
+
+    public void onEvent(ExceptionModel message){
+        if(message.getFrom().equals(Utils.FROM_PROFILE_EDIT)){
+            Toast.makeText(ProfileEditActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
+        }
     }
 }
