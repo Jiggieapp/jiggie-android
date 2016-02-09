@@ -1,7 +1,6 @@
 package com.jiggie.android.fragment;
 
 import android.animation.Animator;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,13 +8,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.text.TextUtils;
-import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,19 +18,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
-import android.view.WindowManager;
 import android.view.animation.Interpolator;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-/*import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
-import com.etiennelawlor.quickreturn.library.listeners.QuickReturnRecyclerViewOnScrollListener;
-import com.etiennelawlor.quickreturn.library.utils.QuickReturnUtils;*/
-import com.facebook.AccessToken;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.event.EventDetailActivity;
@@ -43,21 +31,19 @@ import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.EventTabListAdapter;
-import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventModel;
 import com.jiggie.android.model.ExceptionModel;
-import com.facebook.AccessToken;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
+
+/*import com.etiennelawlor.quickreturn.library.enums.QuickReturnViewType;
+import com.etiennelawlor.quickreturn.library.listeners.QuickReturnRecyclerViewOnScrollListener;
+import com.etiennelawlor.quickreturn.library.utils.QuickReturnUtils;*/
 
 /**
  * Created by rangg on 21/10/2015.
@@ -108,7 +94,7 @@ public class EventTabFragment extends Fragment
 
     @Override
     public void onTabSelected() {
-        App.getInstance().trackMixPanelEvent("View Events");
+        //App.getInstance().trackMixPanelEvent("View Events");
         /*if ((this.adapter != null) && (this.adapter.getItemCount() == 0)) {
             this.onRefresh();
         }*/
@@ -303,10 +289,10 @@ public class EventTabFragment extends Fragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_event, menu);
+        /*inflater.inflate(R.menu.menu_event, menu);
         final MenuItem searchMenu = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenu);
-        final Handler handler = new Handler();
+        final Handler handler = new Handler();*/
         /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -326,7 +312,7 @@ public class EventTabFragment extends Fragment
                 return true;
             }
         });*/
-        MenuItemCompat.setOnActionExpandListener(searchMenu, new MenuItemCompat.OnActionExpandListener() {
+        /*MenuItemCompat.setOnActionExpandListener(searchMenu, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
                 return true;
@@ -340,7 +326,7 @@ public class EventTabFragment extends Fragment
             }
         });
         super.onCreateOptionsMenu(menu, inflater);
-        this.searchText = null;
+        this.searchText = null;*/
     }
 
     /*@Override
@@ -378,7 +364,7 @@ public class EventTabFragment extends Fragment
 
         //events.clear();
         Utils.d(TAG, "events size " + size);
-        if (searchText == null && size > 0) {
+        if (searchText == null) {
             //adapter.clear();
             //adapter.addAll(events);
             events = message;
@@ -387,16 +373,12 @@ public class EventTabFragment extends Fragment
         //refreshLayout.setRefreshing(false);
     }
 
-    public void onEvent(EventModel message) {
-
     public void onEvent(EventModel message){
         events.clear();
         events = message.getData().getEvents();
 
         int size = message.getData().getEvents().size();
-
         adapter.clear();
-
 
         if (searchText == null)
             adapter.addAll(events);
@@ -411,7 +393,7 @@ public class EventTabFragment extends Fragment
             isLoading = false;
             if (getContext() != null) {
                 Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
-                refreshLayout.setRefreshing(false);
+                //refreshLayout.setRefreshing(false);
             }
         }
     }

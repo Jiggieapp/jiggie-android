@@ -11,21 +11,20 @@
 
         <!-- To change the background of options menu-->
         <!--<item name="android:itemBackground">@color/skyBlue</item>-->
-        <item name="android:popupMenuStyle">@style/PopupMenu</item>
+        <!--<item name="android:popupMenuStyle">@style/PopupMenu</item>-->
     </style>
 
     <style name="AppTheme.Setup" parent="AppTheme">
         <item name="colorPrimaryDark">@color/setup_blue</item>
     </style>
 
-
-    <style name="PopupMenu" parent="@android:style/Widget.PopupMenu">
+    <!--<style name="PopupMenu" parent="@android:style/Widget.PopupMenu">
         <item name="android:popupBackground">@android:color/white</item>
     </style>
 
     <style name="CustomPopUpMenu" parent="android:Theme.Black">
         <item name="android:popupMenuStyle">@style/PopupMenu</item>
-    </style>
+    </style>-->
 
 
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">

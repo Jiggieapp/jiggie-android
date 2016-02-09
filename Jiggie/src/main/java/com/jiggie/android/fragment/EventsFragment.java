@@ -1,15 +1,24 @@
 package com.jiggie.android.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -21,6 +30,7 @@ import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.model.EventModel;
+import com.jiggie.android.model.ExceptionModel;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -43,6 +53,8 @@ public class EventsFragment extends Fragment
     ViewPager viewPagerEvents;
     @Bind(R.id.swipe_refresh)
     SwipeRefreshLayout refreshLayout;
+    @Bind(R.id.coordinatorLayout)
+    CoordinatorLayout coordinatorLayout;
 
     private PageAdapter pageAdapter;
     private View rootView;
@@ -51,6 +63,7 @@ public class EventsFragment extends Fragment
     private TabFragment lastSelectedFragment;
     private final String TAG = EventsFragment.class.getSimpleName();
     private boolean isLoading;
+    private String searchText;
 
     @Override
     public String getTitle() {
@@ -82,8 +95,8 @@ public class EventsFragment extends Fragment
 
     @Override
     public void onPageSelected(int position) {
-        /*this.lastSelectedFragment = (TabFragment) this.pageAdapter.fragments[position];
-        this.lastSelectedFragment.onTabSelected();*/
+        this.lastSelectedFragment = (TabFragment) this.pageAdapter.fragments[position];
+        this.lastSelectedFragment.onTabSelected();
     }
 
     @Override
@@ -210,17 +223,19 @@ public class EventsFragment extends Fragment
     public void onEvent(EventModel eventModel) {
         ArrayList<EventModel.Data.Events> message = eventModel.getData().getEvents();
         int size = message.size();
-        ArrayList<EventModel.Data.Events> events = message;
-        ArrayList<EventModel.Data.Events> todayEvents = new ArrayList<>();
+        setEvents(message);
+        /*ArrayList<EventModel.Data.Events> todayEvents = new ArrayList<>();
         ArrayList<EventModel.Data.Events> tomorrowEvents = new ArrayList<>();
-        ArrayList<EventModel.Data.Events> upcomingEvents = new ArrayList<>();
+        ArrayList<EventModel.Data.Events> upcomingEvents = new ArrayList<>();*/
         //adapter.clear();
         //events.clear();
 
         /*if (searchText == null)
             adapter.addAll(events);*/
-        for (EventModel.Data.Events tempEvent : events) {
+        /*for (EventModel.Data.Events tempEvent : getEvents()) {
             //new Date(event.getDate_day());
+            Utils.d(TAG, "event " + tempEvent.getTitle());
+
             final String diffDays = Utils.calculateTime(tempEvent.getStart_datetime());
             if (diffDays.equals(Utils.DATE_TODAY)) {
                 todayEvents.add(tempEvent);
@@ -229,21 +244,115 @@ public class EventsFragment extends Fragment
             } else if (diffDays.equals(Utils.DATE_UPCOMING)) {
                 upcomingEvents.add(tempEvent);
             }
-
         }
 
         todayFragment.onEvent(todayEvents);
         tomorrowFragment.onEvent(tomorrowEvents);
-        upcomingFragment.onEvent(upcomingEvents);
+        upcomingFragment.onEvent(upcomingEvents);*/
+
+        filter(searchText);
 
         this.isLoading = false;
         this.refreshLayout.setRefreshing(false);
+    }
+
+    private void onEvent(ExceptionModel exceptionModel)
+    {
+        Snackbar snackbar = Snackbar
+                .make(coordinatorLayout, "Welcome to AndroidHive", Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        //super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_event, menu);
+        final MenuItem searchMenu = menu.findItem(R.id.action_search);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenu);
+        final Handler handler = new Handler();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String query) {
+                searchText = ((TextUtils.isEmpty(query)) || (query.trim().length() == 0)) ? null : query.trim();
+                handler.removeCallbacksAndMessages(null);
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                            filter(searchText);
+                    }
+                }, getResources().getInteger(R.integer.event_search_delay));
+                return true;
+            }
+        });
+
+        MenuItemCompat.setOnActionExpandListener(searchMenu, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                searchText = null;
+                //filter(true);
+                return true;
+            }
+        });
+        super.onCreateOptionsMenu(menu, inflater);
+        this.searchText = null;
+    }
+
+    private  ArrayList<EventModel.Data.Events> events;
+    public ArrayList<EventModel.Data.Events> getEvents() {
+        return events;
+    }
+
+    public void setEvents(ArrayList<EventModel.Data.Events> events) {
+        this.events = events;
+    }
+
+    private void filter(String searchText)
+    {
+        if(getEvents() != null)
+        {
+            if(searchText == null)
+                searchText = "";
+            searchText = searchText.toLowerCase();
+            ArrayList<EventModel.Data.Events> todayEvents = new ArrayList<>();
+            ArrayList<EventModel.Data.Events> tomorrowEvents = new ArrayList<>();
+            ArrayList<EventModel.Data.Events> upcomingEvents = new ArrayList<>();
+            for (EventModel.Data.Events tempEvent : getEvents()) {
+                //new Date(event.getDate_day());
+                if(tempEvent.getTitle().toLowerCase().contains(searchText)
+                        || searchText.equals(""))
+                {
+                    final String diffDays = Utils.calculateTime(tempEvent.getStart_datetime());
+                    if (diffDays.equals(Utils.DATE_TODAY)) {
+                        todayEvents.add(tempEvent);
+                    } else if (diffDays.equals(Utils.DATE_TOMORROW)) {
+                        tomorrowEvents.add(tempEvent);
+                    } else if (diffDays.equals(Utils.DATE_UPCOMING)) {
+                        upcomingEvents.add(tempEvent);
+                    }
+                }
+            }
+
+            todayFragment.onEvent(todayEvents);
+            tomorrowFragment.onEvent(tomorrowEvents);
+            upcomingFragment.onEvent(upcomingEvents);
+        }
     }
 
 }

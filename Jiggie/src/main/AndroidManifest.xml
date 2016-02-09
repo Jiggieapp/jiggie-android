@@ -92,6 +92,7 @@
         <activity android:name="com.jiggie.android.activity.profile.PrivacyPolicyActivity" android:theme="@style/SplashTheme" android:screenOrientation="portrait" android:label="@string/privacy_policy" />
         <activity android:name="com.jiggie.android.activity.profile.TermOfUseActivity" android:theme="@style/SplashTheme" android:screenOrientation="portrait" android:label="@string/term_of_use" />
         <activity android:name="com.jiggie.android.activity.chat.ChatActivity" android:theme="@style/SplashTheme" android:screenOrientation="portrait" android:label="@string/app_name"/>
+        <activity android:name="com.jiggie.android.activity.profile.FilterActivity" android:theme="@style/SplashTheme" android:screenOrientation="portrait" android:label="@string/app_name"/>
 
         <!--BroadcastReceivers-->
         <receiver

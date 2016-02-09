@@ -77,6 +77,7 @@ public class Utils {
     public final static String URL_SOCIAL_FEED = BASE_URL + "app/v3/partyfeed/list/{fb_id}/{gender_interest}";
     public final static String URL_SOCIAL_MATCH = BASE_URL + "app/v3/partyfeed/match/{fb_id}/{from_id}/{type}";
     public final static String URL_EDIT_ABOUT = BASE_URL + "app/v3/updateuserabout";
+    public final static String URL_GET_ACCESS_TOKEN =  BASE_URL + "app/v3/userlogin";
 
     public static void d(final String tag,final String value) {
         Log.d(tag, value);

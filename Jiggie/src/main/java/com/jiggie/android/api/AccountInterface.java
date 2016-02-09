@@ -2,6 +2,8 @@ package com.jiggie.android.api;
 
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.AboutModel;
+import com.jiggie.android.model.AccessTokenModel;
+import com.jiggie.android.model.FilterModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.MemberInfoModel;
 import com.jiggie.android.model.MemberSettingModel;
@@ -40,4 +42,6 @@ public interface AccountInterface {
     @POST
     Call<SuccessModel> postEditAbout(@Url String url, @Body AboutModel aboutModel);
 
+    @POST
+    Call<AccessTokenModel> getAccessToken(@Url String url, @Body String fb_token);
 }

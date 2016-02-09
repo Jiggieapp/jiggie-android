@@ -4,12 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.jiggie.android.activity.MainActivity">
+    tools:context=".activity.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -17,8 +18,16 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             app:layout_scrollFlags="scroll|enterAlways"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark"
-            app:titleTextColor="@android:color/white"/>
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:titleTextColor="@android:color/white">
+            <ImageView
+                android:id="@+id/logo_image"
+                android:layout_width="@dimen/jiggie_logo_width"
+                android:layout_height="@dimen/jiggie_logo_height"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:scaleType="fitXY"/>
+        </android.support.v7.widget.Toolbar>
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tab"
@@ -80,6 +89,5 @@
         android:layout_margin="@dimen/fab_margin"
         app:layout_behavior="com.jiggie.android.component.behavior.ScrollingFABBehavior"
         android:background="@color/colorPrimary"
-        android:src="@drawable/ic_filter_list_white_24dp"
-        />
+        android:src="@drawable/ic_filter_list_white_24dp"/>
 </android.support.design.widget.CoordinatorLayout>

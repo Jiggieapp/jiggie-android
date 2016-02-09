@@ -1,8 +1,10 @@
 package com.jiggie.android.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,14 +16,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jiggie.android.R;
+import com.jiggie.android.activity.profile.FilterActivity;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
+import com.jiggie.android.manager.AccountManager;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by rangg on 21/10/2015.
@@ -31,6 +37,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     @Bind(R.id.viewpager) ViewPager viewPager;
     @Bind(R.id.toolbar) Toolbar toolbar;
     @Bind(R.id.tab) TabLayout tab;
+    @Bind(R.id.fab) FloatingActionButton fab;
 
     private TabFragment lastSelectedFragment;
     private PageAdapter adapter;
@@ -48,7 +55,13 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         ButterKnife.bind(this, this.rootView);
 
         final AppCompatActivity activity = (AppCompatActivity) super.getActivity();
-        this.toolbar.setTitle(R.string.app_name);
+        //this.toolbar.setNavigationIcon(R.drawable.logo);
+        //this.toolbar.getLogo().set;
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        final ImageView imgView = (ImageView) toolbar.findViewById(R.id.logo_image);
+        imgView.setImageDrawable(getResources().getDrawable(R.drawable.logo2));
+
+        this.toolbar.setTitle("");
         activity.setSupportActionBar(toolbar);
 
         this.adapter = new PageAdapter(this, activity.getSupportFragmentManager());
@@ -151,5 +164,14 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         tabThree.setText(adapter.getPageTitle(2));
         tabThree.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_visibility_white_24dp, 0, 0);
         tab.getTabAt(2).setCustomView(tabThree);
+    }
+
+    @OnClick(R.id.fab)
+    void onFabClick()
+    {
+        /*Intent i = new Intent(this.getActivity(), FilterActivity.class);
+        startActivity(i);*/
+
+        AccountManager.getAccessToken();
     }
 }

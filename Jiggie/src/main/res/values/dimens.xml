@@ -17,5 +17,8 @@
     <dimen name="custom_tab_padding_bottom">8dp</dimen>
 
     <dimen name="tabsHeight">48dp</dimen>
-    <dimen name="fab_margin">0dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="jiggie_logo_width">63dp</dimen>
+    <dimen name="jiggie_logo_height">24dp</dimen>
 </resources>

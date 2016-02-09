@@ -10,6 +10,7 @@ import com.jiggie.android.App;
 import com.jiggie.android.api.AccountInterface;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.AboutModel;
+import com.jiggie.android.model.AccessTokenModel;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.FilterModel;
@@ -187,9 +188,7 @@ public class AccountManager {
                     Log.d("res", responses);
 
                     SuccessModel dataTemp = (SuccessModel) response.body();
-
                     EventBus.getDefault().post(dataTemp);
-
                 }
 
                 @Override
@@ -257,6 +256,8 @@ public class AccountManager {
                 .getUserId()).enqueue(callback);
     }
 
+
+
     public static void getUserTagList()
     {
         getUserTagList(new Callback() {
@@ -301,5 +302,30 @@ public class AccountManager {
         });*/
     }
 
+    public static void getAccessToken()
+    {
+        getAccessToken(new Callback() {
+            @Override
+            public void onResponse(Response response, Retrofit retrofit) {
+                String responses = new Gson().toJson(response.body());
+                Utils.d(TAG, "response " + responses);
 
+                AccessTokenModel accessTokenModel = (AccessTokenModel) response.body();
+                Utils.d(TAG, accessTokenModel.getToken());
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Utils.d(TAG, "failure " + t.toString());
+            }
+        });
+    }
+
+    private static void getAccessToken(Callback callback)
+    {
+        final String fb_token = AccessToken.getCurrentAccessToken().getToken();
+        Utils.d(TAG, "fb_token " + fb_token);
+        getAccountInterface().getAccessToken(Utils.URL_GET_ACCESS_TOKEN,
+                fb_token).enqueue(callback);
+    }
 }

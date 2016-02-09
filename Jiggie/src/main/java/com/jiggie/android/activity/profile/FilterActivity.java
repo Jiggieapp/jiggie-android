@@ -1,6 +1,7 @@
 package com.jiggie.android.activity.profile;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -54,6 +55,7 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
     private ArrayList<String> selectedItems;
     private final static String TAG = FilterActivity.class.getSimpleName();
     private boolean hasChanged;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +104,8 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
 
     public void onEvent(ArrayList<String> result)
     {
+
+
         this.progressBar.setVisibility(View.GONE);
         this.failedView.setVisibility(View.GONE);
 
@@ -232,6 +236,7 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
             Utils.d(TAG, "experiences " + experiences);
             //memberSettingModel.setExperiences(selectedItems.toArray(new String[this.selectedItems.size()]).toString());
             memberSettingModel.setExperiences(experiences);
+            showProgressDialog();
             AccountManager.loaderMemberSetting(memberSettingModel);
         }
         else
@@ -248,7 +253,9 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
             finish();
         }*/
         // Start new activity from app context instead of current activity. This prevent crash when activity has been destroyed.
-        final App app = App.getInstance();
+        //final App app = App.getInstance();
+        if(progressDialog != null && progressDialog.isShowing())
+            progressDialog.dismiss();
     }
 
     private void showConfirmationDialog()
@@ -271,5 +278,11 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
                 })*/
                 .create();
         builder.show();
+    }
+
+    private void showProgressDialog()
+    {
+        progressDialog = ProgressDialog.show(this, "", getResources().getString(R.string.please_wait), false);
+        progressDialog.show();
     }
 }
