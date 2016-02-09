@@ -37,25 +37,29 @@ import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
+import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.manager.EventManager;
+import com.jiggie.android.manager.SocialManager;
+import com.jiggie.android.model.Common;
 import com.jiggie.android.model.Conversation;
-import com.jiggie.android.model.Event;
-import com.jiggie.android.model.EventDetail;
-import com.jiggie.android.model.Guest;
-import com.jiggie.android.model.Login;
-import com.jiggie.android.model.Setting;
-import com.jiggie.android.model.SocialMatch;
+import com.jiggie.android.model.EventDetailModel;
+import com.jiggie.android.model.ExceptionModel;
+import com.jiggie.android.model.LoginModel;
+import com.jiggie.android.model.SettingModel;
 import com.android.volley.VolleyError;
 import com.bumptech.glide.DrawableTypeRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.facebook.AccessToken;
+import com.jiggie.android.model.SocialModel;
+import com.jiggie.android.model.SuccessModel;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by rangg on 21/10/2015.
@@ -113,10 +117,14 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     @Bind(R.id.layout_walkthrough)
     FrameLayout layoutWalkthrough;
 
-    private SocialMatch current;
+    //private SocialMatch current;
     private HomeMain homeMain;
     private View rootView;
     private String title;
+
+    private SocialModel.Data.SocialFeeds current;
+    boolean confirm;
+    SettingModel currentSetting;
 
     @Override
     public String getTitle() {
@@ -148,6 +156,8 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         super.onActivityCreated(savedInstanceState);
         ButterKnife.bind(this, this.rootView);
 
+        EventBus.getDefault().register(this);
+
         this.layoutSocialize.setVisibility(View.GONE);
         this.progressBar.setVisibility(View.GONE);
         this.cardGeneral.setVisibility(View.GONE);
@@ -155,7 +165,9 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         this.cardEmpty.setVisibility(View.GONE);
         this.card.setVisibility(View.GONE);
 
-        this.switchSocialize.setChecked(Setting.getCurrentSetting().isMatchMe());
+        currentSetting = AccountManager.loadSetting();
+
+        this.switchSocialize.setChecked(currentSetting.isMatchme());
         this.switchSocialize.setOnCheckedChangeListener(this.socializeChanged);
         App.getInstance().registerReceiver(this.socialReceiver, new IntentFilter(super.getString(R.string.broadcast_social)));
 
@@ -180,43 +192,39 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         }
         this.progressBar.setVisibility(View.VISIBLE);
         this.layoutSocialize.setVisibility(View.GONE);
-        final String url = String.format("partyfeed/list/%s/%s", AccessToken.getCurrentAccessToken().getUserId(), Setting.getCurrentSetting().getGenderInterestString());
 
-        VolleyHandler.getInstance().createVolleyArrayRequest(url, new VolleyRequestListener<SocialMatch, JSONArray>() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (getContext() != null) {
-                    Toast.makeText(getContext(), App.getErrorMessage(error), Toast.LENGTH_SHORT).show();
-                    progressBar.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public SocialMatch onResponseAsync(JSONArray jsonArray) {
-                final int length = jsonArray.length();
-                SocialMatch current = null;
-
-                for (int i = 0; i < length; i++) {
-                    final SocialMatch item = new SocialMatch(jsonArray.optJSONObject(i));
-
-                    if (SocialMatch.Type.isInbound(item)) {
-                        current = item;
-                        break;
-                    } else if (current == null)
-                        current = item;
-                }
-
-                return current;
-            }
-
-            @Override
-            public void onResponseCompleted(SocialMatch value) {
-                openDetail(value);
-            }
-        });
+        SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId(), currentSetting.getData().getGender_interest());
     }
 
-    private void openDetail(SocialMatch value) {
+    public void onEvent(SocialModel message){
+        SocialModel.Data.SocialFeeds current = null;
+
+        for (int i = 0; i < message.getData().getSocial_feeds().size(); i++) {
+            final SocialModel.Data.SocialFeeds item = message.getData().getSocial_feeds().get(i);
+
+            if (SocialManager.Type.isInbound(item)) {
+                current = item;
+                break;
+            } else if (current == null)
+                current = item;
+        }
+
+        openDetail(current);
+    }
+
+    public void onEvent(ExceptionModel message){
+        if(message.getFrom().equals(Utils.FROM_SOCIAL_FEED)||message.getFrom().equals(Utils.FROM_SOCIAL_MATCH)||message.getFrom().equals(Utils.FROM_EVENT_DETAIL)){
+            if (getContext() != null) {
+                Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
+                if(message.getFrom().equals(Utils.FROM_SOCIAL_MATCH)||message.getFrom().equals(Utils.FROM_EVENT_DETAIL)){
+                    enableButton(true);
+                }
+            }
+        }
+    }
+
+    private void openDetail(SocialModel.Data.SocialFeeds value) {
         this.current = value;
 
         if ((super.getContext() != null) && (value == null)) {
@@ -227,22 +235,22 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             this.progressBar.setVisibility(View.GONE);
             this.card.setVisibility(View.GONE);
         } else if (super.getContext() != null) {
-            final boolean isInbound = SocialMatch.Type.isInbound(value);
+            final boolean isInbound = SocialManager.Type.isInbound(value);
             this.cardInbound.setVisibility(isInbound ? View.VISIBLE : View.GONE);
             this.cardGeneral.setVisibility(isInbound ? View.GONE : View.VISIBLE);
             this.layoutSocialize.setVisibility(View.VISIBLE);
             this.cardEmpty.setVisibility(View.GONE);
             this.card.setVisibility(View.VISIBLE);
 
-            final String image = App.getFacebookImage(value.getFromFacebookId(), generalImage.getWidth() * 2);
+            final String image = App.getFacebookImage(value.getFrom_fb_id(), generalImage.getWidth() * 2);
             final DrawableTypeRequest<String> glideRequest = Glide.with(SocialTabFragment.this).load(image);
 
             App.getInstance().trackMixPanelEvent("View Feed Item");
 
             if (isInbound) {
                 this.progressBar.setVisibility(View.GONE);
-                this.inboundTxtEvent.setText(value.getEventName());
-                this.inboundTxtUser.setText(super.getString(R.string.wants_to_go_with, value.getFromFirstName()));
+                this.inboundTxtEvent.setText(value.getEvent_name());
+                this.inboundTxtUser.setText(super.getString(R.string.wants_to_go_with, value.getFrom_first_name()));
 
                 glideRequest.asBitmap().centerCrop().into(new BitmapImageViewTarget(inboundImage) {
                     @Override
@@ -255,40 +263,24 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             } else {
                 Glide.with(SocialTabFragment.this).load(image).into(generalImage);
                 this.enableButton(false);
-                this.generalTxtEvent.setText(value.getEventName());
-                this.generalTxtUser.setText(super.getString(R.string.user_viewing, value.getFromFirstName()));
-                this.generalTxtConnect.setText(super.getString(R.string.connect_with, value.getFromFirstName()));
+                this.generalTxtEvent.setText(value.getEvent_name());
+                this.generalTxtUser.setText(super.getString(R.string.user_viewing, value.getFrom_first_name()));
+                this.generalTxtConnect.setText(super.getString(R.string.connect_with, value.getFrom_first_name()));
                 this.layoutSocialize.setVisibility(View.VISIBLE);
 
                 // we need to get venue name from event detail api
                 this.progressBar.setVisibility(View.VISIBLE);
-                final String url = String.format("event/details/%s/%s/%s", current.getEventId(), AccessToken.getCurrentAccessToken().getUserId(), Setting.getCurrentSetting().getGenderInterestString());
 
-                VolleyHandler.getInstance().createVolleyRequest(url, new VolleyRequestListener<EventDetail, JSONObject>() {
-                    @Override
-                    public EventDetail onResponseAsync(JSONObject jsonObject) {
-                        return new EventDetail(jsonObject);
-                    }
-
-                    @Override
-                    public void onResponseCompleted(EventDetail value) {
-                        if (getContext() != null) {
-                            generalTxtEvent.setText(getString(R.string.location_viewing, value.getTitle(), value.getVenueName()));
-                            progressBar.setVisibility(View.GONE);
-                            enableButton(true);
-                        }
-                    }
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        if (getContext() != null) {
-                            Toast.makeText(getContext(), App.getErrorMessage(error), Toast.LENGTH_SHORT).show();
-                            progressBar.setVisibility(View.GONE);
-                            enableButton(true);
-                        }
-                    }
-                });
+                EventManager.loaderEventDetail(current.getEvent_id(), AccessToken.getCurrentAccessToken().getUserId(), currentSetting.getData().getGender_interest());
             }
+        }
+    }
+
+    public void onEvent(EventDetailModel message){
+        if (getContext() != null) {
+            generalTxtEvent.setText(getString(R.string.location_viewing, message.getData().getEvents_detail().getTitle(), message.getData().getEvents_detail().getVenue_name()));
+            progressBar.setVisibility(View.GONE);
+            enableButton(true);
         }
     }
 
@@ -301,8 +293,8 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             VolleyHandler.getInstance().createVolleyRequest(url, new VolleyRequestListener<Void, JSONObject>() {
                 @Override
                 public Void onResponseAsync(JSONObject jsonObject) {
-                    Setting.getCurrentSetting().setMatchMe(isChecked);
-                    Setting.getCurrentSetting().save();
+                    currentSetting.setMatchme(isChecked);
+                    AccountManager.saveSetting(currentSetting);
                     return null;
                 }
 
@@ -360,8 +352,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     @SuppressWarnings("unused")
     @OnClick(R.id.imageUserInbound)
     void imageUserOnClick() {
-        final Guest guest = new Guest(this.current.getFromFacebookId(), this.current.getFromFirstName());
-        super.startActivity(new Intent(super.getContext(), ProfileDetailActivity.class).putExtra(guest.getClass().getName(), guest));
+        super.startActivity(new Intent(super.getContext(), ProfileDetailActivity.class).putExtra(Common.FIELD_FACEBOOK_ID, current.getFrom_fb_id()));
     }
 
     @SuppressWarnings("unused")
@@ -372,8 +363,10 @@ public class SocialTabFragment extends Fragment implements TabFragment {
 
     @OnClick(R.id.cardInbound)
     void cardOnClick() {
-        final Event event = new Event(this.current.getEventId(), this.current.getEventName());
-        super.startActivity(new Intent(super.getContext(), EventDetailActivity.class).putExtra(event.getClass().getName(), event));
+        Intent i = new Intent(super.getContext(), EventDetailActivity.class);
+        i.putExtra(Common.FIELD_EVENT_ID, current.getEvent_id());
+        i.putExtra(Common.FIELD_EVENT_NAME, current.getEvent_name());
+        super.startActivity(i);
     }
 
     @SuppressWarnings("unused")
@@ -407,74 +400,65 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         this.inboundBtnNo.setEnabled(isEnabled);
     }
 
-    private void match(final boolean confirm) {
-        final String url = String.format("partyfeed/match/%s/%s/%s", AccessToken.getCurrentAccessToken().getUserId(), this.current.getFromFacebookId(), confirm ? "approved" : "denied");
+    private void match(final boolean confirms) {
         this.progressBar.setVisibility(View.VISIBLE);
         this.enableButton(false);
 
-        VolleyHandler.getInstance().createVolleyRequest(url, new VolleyRequestListener<Void, JSONObject>() {
-            @Override
-            public Void onResponseAsync(JSONObject jsonObject) {
-                return null;
+        confirm = confirms;
+        SocialManager.loaderSocialMatch(AccessToken.getCurrentAccessToken().getUserId(), this.current.getFrom_fb_id(), confirm ? "approved" : "denied");
+    }
+
+    public void onEvent(SuccessModel message){
+        final App app = App.getInstance();
+        final Context context = getContext();
+        final SocialModel.Data.SocialFeeds socialMatch = current;
+        final LoginModel login = AccountManager.loadLogin();
+        final SettingModel setting = AccountManager.loadSetting();
+
+        progressBar.setVisibility(View.GONE);
+        enableButton(true);
+        current = null;
+        onRefresh();
+
+        if (confirm) {
+            final SimpleJSONObject json = new SimpleJSONObject();
+            json.putString("ABTestChat:Connect", "Connect");
+            json.putString("name_and_fb_id", String.format("%s_%s_%s", login.getUser_first_name(), login.getUser_last_name(), AccessToken.getCurrentAccessToken().getUserId()));
+            json.putString("age", StringUtility.getAge2(login.getBirthday()));
+            json.putString("app_version", String.valueOf(BuildConfig.VERSION_CODE));
+            json.putString("birthday", login.getBirthday());
+            json.putString("device_type", Build.MODEL);
+            json.putString("email", login.getEmail());
+            json.putString("feed_item_type", "viewed");
+            json.putString("first_name", login.getUser_first_name());
+            json.putString("gender", setting.getData().getGender());
+            json.putString("gender_interest", setting.getData().getGender_interest());
+            json.putString("last_name", login.getUser_last_name());
+            json.putString("location", login.getLocation());
+            json.putString("os_version", app.getDeviceOSName());
+            app.trackMixPanelEvent("Accept Feed Item", json);
+
+            if ((SocialManager.Type.isInbound(socialMatch)) && (context != null)) {
+                final Intent intent = new Intent(context, ChatActivity.class);
+                intent.putExtra(Conversation.FIELD_FROM_NAME, socialMatch.getFrom_first_name());
+                intent.putExtra(Conversation.FIELD_FACEBOOK_ID, socialMatch.getFrom_fb_id());
+                context.sendBroadcast(new Intent(getString(R.string.broadcast_social_chat)));
+                startActivity(intent);
             }
-
-            @Override
-            public void onResponseCompleted(Void value) {
-                final App app = App.getInstance();
-                final Context context = getContext();
-                final SocialMatch socialMatch = current;
-                final Login login = Login.getCurrentLogin();
-                final Setting setting = Setting.getCurrentSetting();
-
-                progressBar.setVisibility(View.GONE);
-                enableButton(true);
-                current = null;
-                onRefresh();
-
-                if (confirm) {
-                    final SimpleJSONObject json = new SimpleJSONObject();
-                    json.putString("ABTestChat:Connect", "Connect");
-                    json.putString("name_and_fb_id", String.format("%s_%s_%s", login.getFirstName(), login.getLastName(), AccessToken.getCurrentAccessToken().getUserId()));
-                    json.putString("age", StringUtility.getAge(login.getBirthday()));
-                    json.putString("app_version", String.valueOf(BuildConfig.VERSION_CODE));
-                    json.putString("birthday", login.getBirthday());
-                    json.putString("device_type", Build.MODEL);
-                    json.putString("email", login.getEmail());
-                    json.putString("feed_item_type", "viewed");
-                    json.putString("first_name", login.getFirstName());
-                    json.putString("gender", setting.getGenderString());
-                    json.putString("gender_interest", setting.getGenderInterestString());
-                    json.putString("last_name", login.getLastName());
-                    json.putString("location", login.getLocation());
-                    json.putString("os_version", app.getDeviceOSName());
-                    app.trackMixPanelEvent("Accept Feed Item", json);
-
-                    if ((SocialMatch.Type.isInbound(socialMatch)) && (context != null)) {
-                        final Intent intent = new Intent(context, ChatActivity.class);
-                        intent.putExtra(Conversation.FIELD_FROM_NAME, socialMatch.getFromFirstName());
-                        intent.putExtra(Conversation.FIELD_FACEBOOK_ID, socialMatch.getFromFacebookId());
-                        context.sendBroadcast(new Intent(getString(R.string.broadcast_social_chat)));
-                        startActivity(intent);
-                    }
-                } else
-                    app.trackMixPanelEvent("Passed Feed Item");
-            }
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (getContext() != null) {
-                    Toast.makeText(getContext(), App.getErrorMessage(error), Toast.LENGTH_SHORT).show();
-                    progressBar.setVisibility(View.GONE);
-                    enableButton(true);
-                }
-            }
-        });
+        } else
+            app.trackMixPanelEvent("Passed Feed Item");
     }
 
     @Override
     public void onDestroy() {
         App.getInstance().unregisterReceiver(this.socialReceiver);
         super.onDestroy();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
     private BroadcastReceiver socialReceiver = new BroadcastReceiver() {

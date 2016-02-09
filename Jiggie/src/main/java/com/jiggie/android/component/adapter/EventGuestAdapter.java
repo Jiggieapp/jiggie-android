@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.jiggie.android.App;
 import com.jiggie.android.R;
-import com.jiggie.android.model.Guest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.jiggie.android.model.GuestModel;
@@ -31,7 +30,6 @@ import butterknife.OnClick;
 public class EventGuestAdapter extends RecyclerView.Adapter<EventGuestAdapter.ViewHolder> {
     private final GuestConnectListener listener;
     private final Activity activity;
-    //private Guest[] guests;
 
     private ArrayList<GuestModel.Data.GuestInterests> guests;
 

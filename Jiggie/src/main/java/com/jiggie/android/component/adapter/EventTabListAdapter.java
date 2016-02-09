@@ -12,7 +12,6 @@ import com.bumptech.glide.Glide;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 
 import butterknife.Bind;
@@ -23,7 +22,6 @@ import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.model.Common;
-import com.jiggie.android.model.Event;
 import com.jiggie.android.model.EventModel;
 
 import it.sephiroth.android.library.widget.HListView;
@@ -111,9 +109,7 @@ public class EventTabListAdapter extends RecyclerView.Adapter<EventTabListAdapte
         @Bind(R.id.txtDate) TextView txtDate;
         @Bind(R.id.image) ImageView image;
 
-        //private EventSelectedListener listener;
         private EventTagAdapter eventTagAdapter;
-        //private Event event;
 
         private ViewSelectedListener listener;
         private EventModel.Data.Events event;

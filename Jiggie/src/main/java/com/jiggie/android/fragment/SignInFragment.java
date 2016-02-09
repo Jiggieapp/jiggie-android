@@ -27,15 +27,10 @@ import com.jiggie.android.component.adapter.ImagePagerIndicatorAdapter;
 import com.jiggie.android.component.adapter.TutorialFragmentAdapter;
 import com.jiggie.android.component.gcm.GCMRegistration;
 import com.jiggie.android.component.service.FacebookImageSyncService;
-import com.jiggie.android.component.volley.VolleyHandler;
-import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
-import com.jiggie.android.model.Login;
 import com.jiggie.android.model.LoginModel;
-import com.jiggie.android.model.Setting;
-import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -46,7 +41,6 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.jiggie.android.model.SettingModel;
-import com.jiggie.android.model.SuccessModel;
 
 import org.json.JSONObject;
 
@@ -224,6 +218,7 @@ public class SignInFragment extends Fragment {
     private GraphRequest.GraphJSONObjectCallback profileCallback = new GraphRequest.GraphJSONObjectCallback() {
         @Override
         public void onCompleted(JSONObject object, GraphResponse response) {
+
             if (getContext() == null) {
                 // fragment already destroyed
                 return;
@@ -249,7 +244,7 @@ public class SignInFragment extends Fragment {
                 loginModel.setLocation(location == null ? null : location.optString("name"));
                 loginModel.setBirthday(Common.SHORT_DATE_FORMAT.format(birthDay));
                 loginModel.setFb_id(object.optString("id"));
-                loginModel.setUser_first_name(object.optString("first_name"));
+                loginModel.setUser_last_name(object.optString("last_name"));
                 loginModel.setEmail(object.optString("email"));
                 loginModel.setGender(object.optString("gender"));
                 //------------

@@ -1,7 +1,7 @@
 package com.jiggie.android.api;
 
 import com.jiggie.android.component.Utils;
-import com.jiggie.android.model.FilterModel;
+import com.jiggie.android.model.AboutModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.MemberInfoModel;
 import com.jiggie.android.model.MemberSettingModel;
@@ -33,5 +33,11 @@ public interface AccountInterface {
 
     @GET(Utils.URL_MEMBER_INFO)
     Call<MemberInfoModel> getMemberInfo(@Path("fb_id") String fb_id);
+
+    @GET(Utils.URL_GET_SETTING)
+    Call<SettingModel> getSetting(@Query("fb_id") String fb_id);
+
+    @POST
+    Call<SuccessModel> postEditAbout(@Url String url, @Body AboutModel aboutModel);
 
 }

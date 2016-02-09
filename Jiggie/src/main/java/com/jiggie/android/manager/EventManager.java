@@ -33,6 +33,14 @@ public class EventManager {
 
     private static EventInterface eventInterface;
 
+    public static class FullfillmentTypes {
+        public static final String PHONE_NUMBER = "phone_number";
+        public static final String RESERVATION = "reservation";
+        public static final String PURCHASE = "purchase";
+        public static final String LINK = "link";
+        public static final String NONE = "none";
+    }
+
     public static void initEventService(){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Utils.BASE_URL)
@@ -61,7 +69,9 @@ public class EventManager {
                 @Override
                 public void onResponse(Response response, Retrofit retrofit) {
                     //String header = String.valueOf(response.code());
-                    String responses = new Gson().toJson(response.body());
+                    /*String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);*/
+
                     EventModel dataTemp = (EventModel) response.body();
                     EventBus.getDefault().post(dataTemp);
                 }
@@ -69,12 +79,12 @@ public class EventManager {
                 @Override
                 public void onFailure(Throwable t) {
                     Log.d("Failure", t.toString());
-                    EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + t.toString()));
+                    EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
             Log.d("Exception", e.toString());
-            EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + e.toString()));
+            EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 
@@ -90,21 +100,18 @@ public class EventManager {
                     Log.d("res", responses);
                     EventDetailModel dataTemp = (EventDetailModel) response.body();
 
-                    //int size = dataTemp.getData().getEvents().size();
-                    if(dataTemp != null)
-                    {
-                        EventBus.getDefault().post(dataTemp);
-                    }
-
+                    EventBus.getDefault().post(dataTemp);
                 }
 
                 @Override
                 public void onFailure(Throwable t) {
                     Log.d("Failure", t.toString());
+                    EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT_DETAIL, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
             Log.d("Exception", e.toString());
+            EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT_DETAIL, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 

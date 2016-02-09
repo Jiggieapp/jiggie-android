@@ -21,15 +21,13 @@ import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
-import com.jiggie.android.R;
 import com.jiggie.android.component.SimpleJSONObject;
 import com.jiggie.android.component.database.DatabaseConnection;
 import com.jiggie.android.component.volley.VolleyHandler;
+import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.Common;
-import com.jiggie.android.model.Login;
 import com.android.volley.VolleyError;
 import com.appsflyer.AppsFlyerLib;
-import com.crashlytics.android.Crashlytics;
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
@@ -42,8 +40,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.HashSet;
-
-import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by rangg on 21/10/2015.
@@ -68,7 +64,7 @@ public class App extends Application {
 
         FacebookSdk.sdkInitialize(this);
         AppsFlyerLib.setAppsFlyerKey(super.getString(R.string.appsflyer_devkey));
-        Fabric.with(this, new Crashlytics());
+        //Fabric.with(this, new Crashlytics());
 
         //endregion
 
@@ -171,7 +167,7 @@ public class App extends Application {
 
     public void trackMixPanelEvent(String eventName) { this.trackMixPanelEvent(eventName, new SimpleJSONObject()); }
     public void trackMixPanelEvent(String eventName, SimpleJSONObject json) {
-        final String location = Login.getCurrentLogin() == null ? null : Login.getCurrentLogin().getLocation();
+        final String location = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin().getLocation();
         final String[] locations = TextUtils.isEmpty(location) ? new String[] { "", "" } : location.split(",");
         final ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         final NetworkInfo network = connManager.getActiveNetworkInfo();

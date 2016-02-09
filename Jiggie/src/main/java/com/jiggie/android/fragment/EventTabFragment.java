@@ -44,13 +44,9 @@ import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.EventTabListAdapter;
 import com.jiggie.android.manager.EventManager;
-import com.jiggie.android.model.ChatListModel;
-import com.jiggie.android.model.Event;
-import com.jiggie.android.model.EventDetailModel;
+import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventModel;
 import com.jiggie.android.model.ExceptionModel;
-import com.jiggie.android.model.Setting;
-import com.android.volley.VolleyError;
 import com.facebook.AccessToken;
 
 import org.json.JSONArray;
@@ -393,12 +389,14 @@ public class EventTabFragment extends Fragment
 
     public void onEvent(EventModel message) {
 
+    public void onEvent(EventModel message){
+        events.clear();
         events = message.getData().getEvents();
 
         int size = message.getData().getEvents().size();
 
         adapter.clear();
-        //events.clear();
+
 
         if (searchText == null)
             adapter.addAll(events);
@@ -408,17 +406,22 @@ public class EventTabFragment extends Fragment
         filter(true);
     }
 
-    public void onEvent(ExceptionModel message) {
-        isLoading = false;
-        if (getContext() != null) {
-            Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
-            //refreshLayout.setRefreshing(false);
+    public void onEvent(ExceptionModel message){
+        if(message.getFrom().equals(Utils.FROM_EVENT)){
+            isLoading = false;
+            if (getContext() != null) {
+                Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
+                refreshLayout.setRefreshing(false);
+            }
         }
     }
 
     @Override
     public void onViewSelected(EventModel.Data.Events event) {
-        super.startActivity(new Intent(super.getActivity(), EventDetailActivity.class).putExtra(event.getClass().getName(), event));
+        Intent i = new Intent(super.getActivity(), EventDetailActivity.class);
+        i.putExtra(Common.FIELD_EVENT_ID, event.get_id());
+        i.putExtra(Common.FIELD_EVENT_NAME, event.getTitle());
+        super.startActivity(i);
     }
 
     private void filter(boolean notify) {

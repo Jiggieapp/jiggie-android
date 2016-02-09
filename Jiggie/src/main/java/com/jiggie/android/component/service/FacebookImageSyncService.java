@@ -34,7 +34,6 @@ import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.model.Common;
-import com.jiggie.android.model.Login;
 
 /**
  * Created by rangg on 02/11/2015.
@@ -201,7 +200,7 @@ public class FacebookImageSyncService extends Service {
             return;
         }
 
-        params.put(Login.FIELD_FACEBOOK_ID, accessToken.getUserId());
+        params.put(Common.FIELD_FACEBOOK_ID, accessToken.getUserId());
         for(String img : images) {
             if (TextUtils.isEmpty(img))
                 continue;

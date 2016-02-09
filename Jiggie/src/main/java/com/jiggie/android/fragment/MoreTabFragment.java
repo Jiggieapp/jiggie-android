@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 
 import com.jiggie.android.App;
 import com.jiggie.android.R;
@@ -26,13 +27,17 @@ import com.jiggie.android.activity.profile.ProfileSettingActivity;
 import com.jiggie.android.activity.setup.SetupTagsActivity;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.MoreTabListAdapter;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
+import com.jiggie.android.manager.ShareManager;
+import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.ShareLink;
 import com.android.volley.VolleyError;
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
+import com.jiggie.android.model.ShareLinkModel;
 
 import org.json.JSONObject;
 
@@ -48,10 +53,12 @@ public class MoreTabFragment extends Fragment implements TabFragment, MoreTabLis
 
     private MoreTabListAdapter adapter;
     private boolean isTabSelectedOnce;
-    private ShareLink shareLink;
     private HomeMain homeMain;
     private String title;
     private View rootView;
+
+    ProgressDialog progressDialog = null;
+    private ShareLinkModel shareLink;
 
     @Override
     public void onTabSelected() {
@@ -77,6 +84,8 @@ public class MoreTabFragment extends Fragment implements TabFragment, MoreTabLis
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ButterKnife.bind(this, this.rootView);
+
+        EventBus.getDefault().register(this);
 
         this.refreshLayout.setEnabled(false);
         this.recyclerView.setAdapter(this.adapter = new MoreTabListAdapter(this, this));
@@ -114,37 +123,30 @@ public class MoreTabFragment extends Fragment implements TabFragment, MoreTabLis
 
     private void inviteFriends() {
         if (this.shareLink != null) {
-            startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, this.shareLink.toString()).setType("text/plain"), getString(R.string.invite)));
+            String link = String.format("%s\n\n%s", shareLink.getMessage(), shareLink.getUrl());
+            startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, link).setType("text/plain"), getString(R.string.invite)));
             App.getInstance().trackMixPanelEvent("Share App");
         } else {
-            try {
-                final String url = String.format("invitelink?from_fb_id=%s&type=general&os=android", URLEncoder.encode(AccessToken.getCurrentAccessToken().getUserId(), "UTF-8"));
-                final ProgressDialog progressDialog = App.showProgressDialog(super.getContext());
+            progressDialog = App.showProgressDialog(super.getContext());
+            ShareManager.loaderShareApps(AccessToken.getCurrentAccessToken().getUserId());
+        }
+    }
 
-                VolleyHandler.getInstance().createVolleyRequest(url, new VolleyRequestListener<ShareLink, JSONObject>() {
-                    @Override
-                    public ShareLink onResponseAsync(JSONObject jsonObject) { return new ShareLink(jsonObject); }
+    public void onEvent(ShareLinkModel message){
+        App.getInstance().trackMixPanelEvent("Share App");
+        if (getContext() != null) {
+            String link = String.format("%s\n\n%s", message.getMessage(), message.getUrl());
+            startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, link).setType("text/plain"), getString(R.string.invite)));
+            progressDialog.dismiss();
+            shareLink = message;
+        }
+    }
 
-                    @Override
-                    public void onResponseCompleted(ShareLink value) {
-                        App.getInstance().trackMixPanelEvent("Share App");
-                        if (getContext() != null) {
-                            startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, value.toString()).setType("text/plain"), getString(R.string.invite)));
-                            progressDialog.dismiss();
-                            shareLink = value;
-                        }
-                    }
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        if (getContext() != null) {
-                            Toast.makeText(getContext(), App.getErrorMessage(error), Toast.LENGTH_SHORT).show();
-                            progressDialog.dismiss();
-                        }
-                    }
-                });
-            } catch (UnsupportedEncodingException e) {
-                throw new RuntimeException(e);
+    public void onEvent(ExceptionModel message){
+        if(message.getFrom().equals(Utils.FROM_SHARE_LINK)){
+            if (getContext() != null) {
+                Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
             }
         }
     }
@@ -153,5 +155,11 @@ public class MoreTabFragment extends Fragment implements TabFragment, MoreTabLis
         final Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", super.getString(R.string.support_email), null));
         intent.putExtra(Intent.EXTRA_EMAIL, new String[] {super.getString(R.string.support_email)}); // hack for android 4.3
         super.startActivity(Intent.createChooser(intent, super.getString(R.string.support)));
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 }

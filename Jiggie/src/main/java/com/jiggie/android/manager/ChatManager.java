@@ -58,8 +58,8 @@ public class ChatManager {
             getChatConversations(fb_id, to_id, new Callback() {
                 @Override
                 public void onResponse(Response response, Retrofit retrofit) {
-                    /**/String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
+                    /*String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);*/
 
                     ChatConversationModel dataTemp = (ChatConversationModel) response.body();
 
@@ -69,12 +69,12 @@ public class ChatManager {
                 @Override
                 public void onFailure(Throwable t) {
                     Log.d("Exception", t.toString());
-                    EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + t.toString()));
+                    EventBus.getDefault().post(new ExceptionModel(Utils.FROM_CHAT_CONVERSATION, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
             Log.d("Exception", e.toString());
-            EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + e.toString()));
+            EventBus.getDefault().post(new ExceptionModel(Utils.FROM_CHAT_CONVERSATION, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 
@@ -83,9 +83,8 @@ public class ChatManager {
             getChatList(fb_id, new Callback() {
                 @Override
                 public void onResponse(Response response, Retrofit retrofit) {
-                    /**/
-                    String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
+                    /*String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);*/
 
                     ChatListModel dataTemp = (ChatListModel) response.body();
                     dataChatList = dataTemp.getData().getChat_lists();
@@ -96,12 +95,12 @@ public class ChatManager {
                 @Override
                 public void onFailure(Throwable t) {
                     Log.d("Exception", t.toString());
-                    EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + t.toString()));
+                    EventBus.getDefault().post(new ExceptionModel(Utils.FROM_CHAT, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
             Log.d("Exception", e.toString());
-            EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + e.toString()));
+            EventBus.getDefault().post(new ExceptionModel(Utils.FROM_CHAT, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 

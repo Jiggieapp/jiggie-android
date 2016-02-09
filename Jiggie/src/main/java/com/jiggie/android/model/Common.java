@@ -22,6 +22,10 @@ public class Common {
     public static String FIELD_MATCH_ME = "matchme";
     public static String FIELD_PHONE = "phone";
 
+    public static String FIELD_EVENT_NAME = "event_name";
+    public static String FIELD_EVENT_ID = "event_id";
+    public static String FIELD_ABOUT = "about";
+
     public static final String PREF_IMAGES_UPLOADED = "images-uploaded";
     public static final String PREF_FACEBOOK_ID = FIELD_FACEBOOK_ID;
     public static final String PREF_FACEBOOK_NAME = "fb_name";

@@ -2,12 +2,11 @@ package com.jiggie.android.activity.event;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewTreeObserver;
+import android.widget.Toast;
 
 import com.jiggie.android.App;
 import com.jiggie.android.R;
@@ -21,7 +20,6 @@ import com.jiggie.android.manager.GuestManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.ExceptionModel;
-import com.jiggie.android.model.Guest;
 import com.android.volley.VolleyError;
 import com.facebook.AccessToken;
 import com.jiggie.android.model.GuestModel;
@@ -81,7 +79,7 @@ public class EventGuestActivity extends ToolbarActivity implements ViewTreeObser
     }
 
     public void onEvent(ExceptionModel message){
-
+        Toast.makeText(App.getInstance(), message.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -117,13 +115,12 @@ public class EventGuestActivity extends ToolbarActivity implements ViewTreeObser
 
     @Override
     public void onGuestClick(EventGuestAdapter.ViewHolder viewHolder) {
-        //super.startActivityForResult(new Intent(this, ProfileDetailActivity.class).putExtra(GuestModel.Data.GuestInterests.class.getName(), viewHolder.getGuest()), 0);
         super.startActivityForResult(new Intent(this, ProfileDetailActivity.class).putExtra(Common.FIELD_FACEBOOK_ID, viewHolder.getGuest().getFb_id()), 0);
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
         EventBus.getDefault().unregister(this);
     }
 }

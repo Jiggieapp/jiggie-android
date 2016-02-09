@@ -67,6 +67,7 @@ public class SettingModel {
         public class Notifications{
             boolean chat;
             boolean feed;
+            boolean location;
 
             public boolean isChat() {
                 return chat;
@@ -82,6 +83,14 @@ public class SettingModel {
 
             public void setFeed(boolean feed) {
                 this.feed = feed;
+            }
+
+            public boolean isLocation() {
+                return location;
+            }
+
+            public void setLocation(boolean location) {
+                this.location = location;
             }
         }
 
@@ -149,7 +158,7 @@ public class SettingModel {
     boolean has_phone;
     boolean is_new_user;
     String help_phone;
-    boolean match_me;
+    boolean matchme;
     int device_type;
     boolean show_walkthrough;
 
@@ -177,12 +186,12 @@ public class SettingModel {
         this.help_phone = help_phone;
     }
 
-    public boolean isMatch_me() {
-        return match_me;
+    public boolean isMatchme() {
+        return matchme;
     }
 
-    public void setMatch_me(boolean match_me) {
-        this.match_me = match_me;
+    public void setMatchme(boolean matchme) {
+        this.matchme = matchme;
     }
 
     public int getDevice_type() {

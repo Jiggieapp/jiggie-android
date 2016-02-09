@@ -51,9 +51,8 @@ public class GuestManager {
                 public void onResponse(Response response, Retrofit retrofit) {
 
                     //String header = String.valueOf(response.code());
-
-                    String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
+                    /*String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);*/
                     GuestModel dataTemp = (GuestModel) response.body();
 
                     dataGuestInterest = dataTemp.getData().getGuest_interests();
@@ -64,12 +63,12 @@ public class GuestManager {
                 @Override
                 public void onFailure(Throwable t) {
                     Log.d("Failure", t.toString());
-                    EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + t.toString()));
+                    EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT_GUEST, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
             Log.d("Exception", e.toString());
-            EventBus.getDefault().post(new ExceptionModel(Utils.MSG_EXCEPTION + e.toString()));
+            EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT_GUEST, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 

@@ -30,6 +30,7 @@ import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.FlowLayout;
 import com.jiggie.android.component.StringUtility;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.ImagePagerIndicatorAdapter;
 import com.jiggie.android.component.volley.SimpleVolleyRequestListener;
@@ -38,15 +39,11 @@ import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.manager.GuestManager;
+import com.jiggie.android.manager.ShareManager;
 import com.jiggie.android.model.Common;
-import com.jiggie.android.model.Event;
-import com.jiggie.android.model.EventDetail;
 import com.jiggie.android.model.EventDetailModel;
-import com.jiggie.android.model.EventModel;
 import com.jiggie.android.model.ExceptionModel;
-import com.jiggie.android.model.Guest;
 import com.jiggie.android.model.GuestModel;
-import com.jiggie.android.model.Setting;
 import com.jiggie.android.model.ShareLink;
 import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
@@ -58,14 +55,18 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.jiggie.android.model.ShareLinkModel;
 
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -101,11 +102,14 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
     private ImagePagerIndicatorAdapter imagePagerIndicatorAdapter;
     private ImageView[] imageGuests;
-    private ShareLink shareLink;
+    private ShareLinkModel shareLinkModel;
     private GoogleMap map;
 
-    private EventModel.Data.Events currentEvent;
     private EventDetailModel.Data.EventDetail eventDetail;
+    String event_id = "";
+    String event_name = "";
+
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,16 +119,43 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
         EventBus.getDefault().register(this);
 
-        this.currentEvent = super.getIntent().getParcelableExtra(EventModel.Data.Events.class.getName());
-        this.txtVenue.setText(this.currentEvent.getVenue_name());
-        this.txtGuestCounter.setVisibility(View.GONE);
+        Intent a = super.getIntent();
+
+        event_id = a.getStringExtra(Common.FIELD_EVENT_ID);
+        event_name = a.getStringExtra(Common.FIELD_EVENT_NAME);
+
+        if(a != null)
+        {
+            this.txtVenue.setText("");
+            super.setToolbarTitle("", true);
+
+            if(event_id==null){
+                Uri data = a.getData();
+                try {
+                    Map<String, String> tamp = StringUtility.splitQuery(new URL(data.toString()));
+                    event_id = tamp.get("af_sub2");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+        }
+
+        if(event_name!=null){
+            super.setToolbarTitle(event_name.toUpperCase(), true);
+        }
+
         this.appBarLayout.addOnOffsetChangedListener(this);
         this.swipeRefresh.setOnRefreshListener(this);
+
+        this.txtGuestCounter.setVisibility(View.GONE);
         this.scrollView.setVisibility(View.INVISIBLE);
         this.collapsingToolbarLayout.setTitleEnabled(false);
         this.imageGuests = new ImageView[]{imageGuest1, imageGuest2, imageGuest3, imageGuest4};
 
-        super.setToolbarTitle(this.currentEvent.getTitle().toUpperCase(), true);
         final FragmentManager fragmentManager = super.getSupportFragmentManager();
         ((SupportMapFragment)fragmentManager.findFragmentById(R.id.map)).getMapAsync(this);
 
@@ -139,7 +170,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        final String url = String.format("guest/events/viewed/%s/%s", AccessToken.getCurrentAccessToken().getUserId(), this.currentEvent.get_id());
+        final String url = String.format("guest/events/viewed/%s/%s", AccessToken.getCurrentAccessToken().getUserId(), event_id);
         VolleyHandler.getInstance().createVolleyRequest(url, new SimpleVolleyRequestListener<Object, JSONObject>(){
             @Override
             public void onResponseCompleted(Object value) {
@@ -170,11 +201,19 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         this.btnBook.setVisibility(View.GONE);
         this.swipeRefresh.setRefreshing(true);
 
-        EventManager.loaderEventDetail(this.currentEvent.get_id(), AccessToken.getCurrentAccessToken().getUserId(), AccountManager.loadSetting().getData().getGender_interest());
+        EventManager.loaderEventDetail(event_id, AccessToken.getCurrentAccessToken().getUserId(), AccountManager.loadSetting().getData().getGender_interest());
     }
 
     public void onEvent(EventDetailModel message){
         try {
+            eventDetail = message.getData().getEvents_detail();
+
+            if(event_name==null){
+                super.setToolbarTitle(eventDetail.getTitle().toUpperCase(), true);
+            }
+
+            this.txtVenue.setText(eventDetail.getVenue_name());
+
             if (!isActive())
                 return;
 
@@ -218,7 +257,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 }
             }
 
-            btnBook.setVisibility(StringUtility.isEquals(EventDetail.FullfillmentTypes.NONE, message.getData().getEvents_detail().getFullfillment_type(), true) ? View.GONE : View.VISIBLE);
+            btnBook.setVisibility(StringUtility.isEquals(EventManager.FullfillmentTypes.NONE, message.getData().getEvents_detail().getFullfillment_type(), true) ? View.GONE : View.VISIBLE);
             map.addMarker(new MarkerOptions().position(lat).title(message.getData().getEvents_detail().getVenue_name()));
             layoutGuests.setVisibility(guestCount > 0 ? View.VISIBLE : View.GONE);
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(lat, 15));
@@ -234,13 +273,13 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             invalidateOptionsMenu();
             populateTags();
 
-            if (StringUtility.isEquals(EventDetail.FullfillmentTypes.PHONE_NUMBER, message.getData().getEvents_detail().getFullfillment_type(), true)) {
+            if (StringUtility.isEquals(EventManager.FullfillmentTypes.PHONE_NUMBER, message.getData().getEvents_detail().getFullfillment_type(), true)) {
                 txtExternalSite.setVisibility(View.GONE);
                 txtBookNow.setText(R.string.call);
-            } else if (StringUtility.isEquals(EventDetail.FullfillmentTypes.RESERVATION, message.getData().getEvents_detail().getFullfillment_type(), true)) {
+            } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.RESERVATION, message.getData().getEvents_detail().getFullfillment_type(), true)) {
                 txtExternalSite.setVisibility(View.GONE);
                 txtBookNow.setText(R.string.reserve);
-            } else if (StringUtility.isEquals(EventDetail.FullfillmentTypes.PURCHASE, message.getData().getEvents_detail().getFullfillment_type(), true)) {
+            } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.PURCHASE, message.getData().getEvents_detail().getFullfillment_type(), true)) {
                 txtExternalSite.setVisibility(View.GONE);
                 txtBookNow.setText(R.string.purchase);
             }
@@ -250,9 +289,16 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     }
 
     public void onEvent(ExceptionModel message){
-        if (isActive()) {
-            Toast.makeText(App.getInstance(), message.getMessage(), Toast.LENGTH_SHORT).show();
-            swipeRefresh.setRefreshing(false);
+        if(message.getFrom().equals(Utils.FROM_EVENT_DETAIL)){
+            if (isActive()) {
+                Toast.makeText(App.getInstance(), message.getMessage(), Toast.LENGTH_SHORT).show();
+                swipeRefresh.setRefreshing(false);
+            }
+        }else{
+            if (isActive()) {
+                progressDialog.dismiss();
+                Toast.makeText(EventDetailActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -302,22 +348,22 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             final Intent intent = new Intent();
             App.getInstance().trackMixPanelEvent("Fulfillment Request");
 
-            if (StringUtility.isEquals(EventDetail.FullfillmentTypes.PHONE_NUMBER, this.eventDetail.getFullfillment_type(), true)) {
+            if (StringUtility.isEquals(EventManager.FullfillmentTypes.PHONE_NUMBER, this.eventDetail.getFullfillment_type(), true)) {
                 intent.setData(Uri.fromParts("tel", this.eventDetail.getFullfillment_value(), null));
                 intent.setAction(Intent.ACTION_DIAL);
-            } else if (StringUtility.isEquals(EventDetail.FullfillmentTypes.LINK, this.eventDetail.getFullfillment_type(), true)) {
+            } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.LINK, this.eventDetail.getFullfillment_type(), true)) {
                 intent.setData(Uri.parse(this.eventDetail.getFullfillment_value()));
                 intent.setAction(Intent.ACTION_VIEW);
-            } else if (StringUtility.isEquals(EventDetail.FullfillmentTypes.RESERVATION, this.eventDetail.getFullfillment_type(), true)) {
+            } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.RESERVATION, this.eventDetail.getFullfillment_type(), true)) {
                 intent.setData(Uri.parse(this.eventDetail.getFullfillment_value()));
                 intent.setAction(Intent.ACTION_VIEW);
-            } else if (StringUtility.isEquals(EventDetail.FullfillmentTypes.PURCHASE, this.eventDetail.getFullfillment_type(), true)) {
+            } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.PURCHASE, this.eventDetail.getFullfillment_type(), true)) {
                 intent.setData(Uri.parse(this.eventDetail.getFullfillment_value()));
                 intent.setAction(Intent.ACTION_VIEW);
             }
             if (!TextUtils.isEmpty(intent.getAction()))
                 super.startActivity(Intent.createChooser(intent, super.getString(R.string.book_now)));
-            else if (StringUtility.isEquals(EventDetail.FullfillmentTypes.NONE, this.eventDetail.getFullfillment_type(), true))
+            else if (StringUtility.isEquals(EventManager.FullfillmentTypes.NONE, this.eventDetail.getFullfillment_type(), true))
                 Toast.makeText(this, R.string.no_fullfillment, Toast.LENGTH_SHORT).show();
             else
                 Toast.makeText(this, R.string.book_error, Toast.LENGTH_SHORT).show();
@@ -351,38 +397,24 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     }
 
     private void shareEvent() throws UnsupportedEncodingException {
-        if (this.shareLink != null) {
+        if (this.shareLinkModel != null) {
             App.getInstance().trackMixPanelEvent("Share Event");
-            super.startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, this.shareLink.toString()).setType("text/plain"), super.getString(R.string.share)));
+            String share = String.format("%s\n\n%s", shareLinkModel.getMessage(), shareLinkModel.getUrl());
+            super.startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, share).setType("text/plain"), super.getString(R.string.share)));
         } else {
-            final ProgressDialog progressDialog = App.showProgressDialog(this);
-            final String url = String.format("invitelink?from_fb_id=%s&type=event&os=android&venue_name=%s&event_id=%s",
-                    URLEncoder.encode(AccessToken.getCurrentAccessToken().getUserId(), "UTF-8"),
-                    URLEncoder.encode(this.eventDetail.getVenue_name(), "UTF-8"),
-                    URLEncoder.encode(this.eventDetail.getVenue_id(), "UTF-8"));
+            progressDialog = App.showProgressDialog(this);
 
-            VolleyHandler.getInstance().createVolleyRequest(url, new VolleyRequestListener<ShareLink, JSONObject>() {
-                @Override
-                public ShareLink onResponseAsync(JSONObject jsonObject) { return new ShareLink(jsonObject); }
+            ShareManager.loaderShareEvent(eventDetail.get_id(), AccessToken.getCurrentAccessToken().getUserId(), eventDetail.getVenue_name());
+        }
+    }
 
-                @Override
-                public void onResponseCompleted(ShareLink value) {
-                    if (isActive()) {
-                        startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, value.toString()).setType("text/plain"), getString(R.string.share)));
-                        App.getInstance().trackMixPanelEvent("Share Event");
-                        progressDialog.dismiss();
-                        shareLink = value;
-                    }
-                }
-
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    if (isActive()) {
-                        progressDialog.dismiss();
-                        Toast.makeText(EventDetailActivity.this, App.getErrorMessage(error), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
+    public void onEvent(ShareLinkModel message){
+        if (isActive()) {
+            String share = String.format("%s\n\n%s", message.getMessage(), message.getUrl());
+            startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, share).setType("text/plain"), getString(R.string.share)));
+            App.getInstance().trackMixPanelEvent("Share Event");
+            progressDialog.dismiss();
+            shareLinkModel = message;
         }
     }
 
