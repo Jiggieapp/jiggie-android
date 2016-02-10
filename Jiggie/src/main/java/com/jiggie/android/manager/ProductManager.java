@@ -5,6 +5,7 @@ import com.jiggie.android.api.ProductInterface;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.ProductModel;
 
+import de.greenrobot.event.EventBus;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
@@ -39,6 +40,7 @@ public class ProductManager extends BaseManager{
                 final String responsee = new Gson().toJson(response);
                 Utils.d(TAG, "responsee " + responsee);
                 ProductModel productModel = (ProductModel) response.body();
+                EventBus.getDefault().post(productModel);
             }
 
             @Override

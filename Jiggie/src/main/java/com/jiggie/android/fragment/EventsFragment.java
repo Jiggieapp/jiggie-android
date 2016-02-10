@@ -146,7 +146,6 @@ public class EventsFragment extends Fragment
             EventTabFragment tomorrowFragment = EventTabFragment.getInstance(1);
             EventTabFragment upcomingFragment = EventTabFragment.getInstance(2);*/
 
-
             this.fragments = new Fragment[]{
                     todayFragment,
                     tomorrowFragment,

@@ -112,7 +112,6 @@ public class EventTabFragment extends Fragment
         ButterKnife.bind(this, view);
 
         //EventBus.getDefault().register(this);
-
         return view;
     }
 

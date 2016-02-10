@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.ecommerce.ProductListActivity;
 import com.jiggie.android.component.FlowLayout;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
@@ -379,9 +380,11 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 super.startActivity(Intent.createChooser(intent, super.getString(R.string.book_now)));
             else if (StringUtility.isEquals(EventManager.FullfillmentTypes.NONE, this.eventDetail.getFullfillment_type(), true))
                 Toast.makeText(this, R.string.no_fullfillment, Toast.LENGTH_SHORT).show();
-            else if(StringUtility.isEquals(EventManager.FullfillmentTypes.TICKET))
+            else if(StringUtility.isEquals(EventManager.FullfillmentTypes.TICKET, this.eventDetail.getFullfillment_type(), true))
             {
-
+                Intent i = new Intent(this, ProductListActivity.class);
+                i.putExtra(Common.FIELD_EVENT_ID, this.eventDetail.get_id());
+                startActivity(i);
             }
             else
                 Toast.makeText(this, R.string.book_error, Toast.LENGTH_SHORT).show();
