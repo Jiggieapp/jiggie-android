@@ -138,6 +138,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
 
     @Override
     public void onTabSelected() {
+        //if (this.current == null||SocialManager.NEED_REFRESH)
         if (this.current == null)
             this.onRefresh();
         App.getInstance().trackMixPanelEvent("View Social Feed");
@@ -183,6 +184,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     }
 
     private void onRefresh() {
+        //SocialManager.NEED_REFRESH = false;
         if (super.getContext() == null) {
             // fragment already destroyed.
             return;
@@ -190,14 +192,18 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             // refreshing is ongoing.
             return;
         }
+
+        if(current==null){
+            this.layoutSocialize.setVisibility(View.GONE);
+        }
         this.progressBar.setVisibility(View.VISIBLE);
-        this.layoutSocialize.setVisibility(View.GONE);
+
 
         SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId(), currentSetting.getData().getGender_interest());
     }
 
     public void onEvent(SocialModel message){
-        SocialModel.Data.SocialFeeds current = null;
+        current = null;
 
         for (int i = 0; i < message.getData().getSocial_feeds().size(); i++) {
             final SocialModel.Data.SocialFeeds item = message.getData().getSocial_feeds().get(i);
@@ -213,6 +219,8 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     }
 
     public void onEvent(ExceptionModel message){
+        String ex = message.getMessage();
+
         if(message.getFrom().equals(Utils.FROM_SOCIAL_FEED)||message.getFrom().equals(Utils.FROM_SOCIAL_MATCH)||message.getFrom().equals(Utils.FROM_EVENT_DETAIL)){
             if (getContext() != null) {
                 Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
@@ -452,19 +460,18 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     @Override
     public void onDestroy() {
         App.getInstance().unregisterReceiver(this.socialReceiver);
-        super.onDestroy();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
         EventBus.getDefault().unregister(this);
+        super.onDestroy();
     }
 
     private BroadcastReceiver socialReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            onRefresh();
+            if (getContext() != null) {
+                //SocialManager.NEED_REFRESH = true;
+                onRefresh();
+            }
+
         }
     };
 

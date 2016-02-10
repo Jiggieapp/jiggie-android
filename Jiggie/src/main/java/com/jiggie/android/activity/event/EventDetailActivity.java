@@ -117,8 +117,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         super.setContentView(R.layout.activity_event_detail);
         super.bindView();
 
-        EventBus.getDefault().register(this);
-
         Intent a = super.getIntent();
 
         event_id = a.getStringExtra(Common.FIELD_EVENT_ID);
@@ -257,7 +255,15 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 }
             }
 
-            btnBook.setVisibility(StringUtility.isEquals(EventManager.FullfillmentTypes.NONE, message.getData().getEvents_detail().getFullfillment_type(), true) ? View.GONE : View.VISIBLE);
+            //Added by Aga 10-2-2016
+            if(StringUtility.isEquals(EventManager.FullfillmentTypes.NONE, message.getData().getEvents_detail().getFullfillment_type(), true)||
+                    TextUtils.isEmpty(message.getData().getEvents_detail().getFullfillment_value())){
+                btnBook.setVisibility(View.GONE);
+            }else{
+                btnBook.setVisibility(View.VISIBLE);
+            }
+            //btnBook.setVisibility(StringUtility.isEquals(EventManager.FullfillmentTypes.NONE, message.getData().getEvents_detail().getFullfillment_type(), true) ? View.GONE : View.VISIBLE);
+
             map.addMarker(new MarkerOptions().position(lat).title(message.getData().getEvents_detail().getVenue_name()));
             layoutGuests.setVisibility(guestCount > 0 ? View.VISIBLE : View.GONE);
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(lat, 15));
@@ -283,6 +289,12 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 txtExternalSite.setVisibility(View.GONE);
                 txtBookNow.setText(R.string.purchase);
             }
+
+            //Added by Aga 22-1-2016
+            else if (StringUtility.isEquals(EventManager.FullfillmentTypes.LINK, message.getData().getEvents_detail().getFullfillment_type(), true)) {
+                txtExternalSite.setVisibility(View.GONE);
+                txtBookNow.setText(R.string.book_now);
+            }
         } catch (ParseException e) {
             throw new RuntimeException(App.getErrorMessage(e), e);
         }
@@ -303,6 +315,11 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     }
 
     private void populateTags() {
+
+        if(flowLayout.getChildCount()>0){
+            flowLayout.removeAllViews();
+        }
+
         final LayoutInflater inflater = super.getLayoutInflater();
         for (String tag : this.eventDetail.getTags()) {
             final View view = inflater.inflate(R.layout.item_event_tag_detail, this.flowLayout, false);
@@ -380,8 +397,19 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     @Override
     protected void onDestroy() {
         super.unregisterReceiver(this.guestInvitedReceiver);
-        EventBus.getDefault().unregister(this);
         super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -404,7 +432,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         } else {
             progressDialog = App.showProgressDialog(this);
 
-            ShareManager.loaderShareEvent(eventDetail.get_id(), AccessToken.getCurrentAccessToken().getUserId(), eventDetail.getVenue_name());
+            ShareManager.loaderShareEvent(eventDetail.get_id(), AccessToken.getCurrentAccessToken().getUserId(), URLEncoder.encode(eventDetail.getVenue_name(), "UTF-8"));
         }
     }
 

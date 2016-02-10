@@ -155,20 +155,11 @@ public class SettingModel {
 
     }
 
-    boolean has_phone;
     boolean is_new_user;
     String help_phone;
     boolean matchme;
     int device_type;
     boolean show_walkthrough;
-
-    public boolean isHas_phone() {
-        return has_phone;
-    }
-
-    public void setHas_phone(boolean has_phone) {
-        this.has_phone = has_phone;
-    }
 
     public boolean is_new_user() {
         return is_new_user;

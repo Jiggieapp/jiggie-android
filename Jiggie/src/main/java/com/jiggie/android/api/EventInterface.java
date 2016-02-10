@@ -3,6 +3,7 @@ package com.jiggie.android.api;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.EventModel;
+import com.jiggie.android.model.TagsListModel;
 
 import retrofit.Call;
 import retrofit.http.GET;
@@ -19,4 +20,6 @@ public interface EventInterface {
     @GET(Utils.URL_EVENT_DETAIL)
     Call<EventDetailModel> getEventDetail(@Path("id") String _id, @Path("fb_id") String fb_id, @Path("gender_interest") String gender_interest);
 
+    @GET(Utils.URL_TAGSLIST)
+    Call<TagsListModel> getTagsList();
 }

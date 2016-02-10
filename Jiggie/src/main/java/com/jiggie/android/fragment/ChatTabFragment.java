@@ -92,6 +92,7 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     @Override
     public void onTabSelected() {
         App.getInstance().trackMixPanelEvent("Conversations List");
+        //if ((this.adapter != null) && (this.adapter.getItemCount() == 0)||ChatManager.NEED_REFRESH_CHATLIST)
         if ((this.adapter != null) && (this.adapter.getItemCount() == 0))
             this.onRefresh();
     }
@@ -102,8 +103,6 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         View view = this.rootView = inflater.inflate(R.layout.fragment_recycler, container, false);
         ButterKnife.bind(this, view);
 
-        EventBus.getDefault().register(this);
-
         return view;
     }
 
@@ -111,6 +110,8 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ButterKnife.bind(this, this.rootView);
+
+        EventBus.getDefault().register(this);
 
         this.recyclerView.setLayoutManager(new LinearLayoutManager(super.getContext()));
         this.recyclerView.setAdapter(this.adapter = new ChatTabListAdapter(this, this));
@@ -142,6 +143,7 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
 
     @Override
     public void onRefresh() {
+        //ChatManager.NEED_REFRESH_CHATLIST = false;
         if (super.getContext() == null) {
             // fragment has been destroyed.
             return;
@@ -292,8 +294,10 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     private Runnable checkNewMessageRunnable = new Runnable() {
         @Override
         public void run() {
-            if ((getContext() != null) && (!refreshLayout.isRefreshing()))
+            if ((getContext() != null) && (!refreshLayout.isRefreshing())) {
+                //ChatManager.NEED_REFRESH_CHATLIST = true;
                 onRefresh();
+            }
         }
     };
 
@@ -302,15 +306,20 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         final App app = App.getInstance();
         app.unregisterReceiver(this.notificationReceived);
         app.unregisterReceiver(this.socialChatReceiver);
-
-        //EventBus.getDefault().unregister(this);
+        EventBus.getDefault().unregister(this);
         super.onDestroy();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        EventBus.getDefault().unregister(this);
+
     }
 
     @Override

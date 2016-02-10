@@ -89,7 +89,7 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
         super.setToolbarTitle(message.getData().getMemberinfo().getFirst_name(), true);
         memberInfoModel = message;
 
-        final String age = StringUtility.getAge(message.getData().getMemberinfo().getBirth_date());
+        final String age = StringUtility.getAge2(message.getData().getMemberinfo().getBirthday());
 
         txtLocation.setText(message.getData().getMemberinfo().getLocation());
         txtDescription.setText(message.getData().getMemberinfo().getAbout());

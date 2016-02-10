@@ -93,7 +93,7 @@ public class StringUtility {
             if (TextUtils.isEmpty(dateBirth))
                 return null;
 
-            final Date date = Common.SHORT_DATE_FORMAT.parse(dateBirth);
+            final Date date = Common.FACEBOOK_DATE_FORMAT.parse(dateBirth);
             final Calendar cal1 = Calendar.getInstance();
             final Calendar cal2 = Calendar.getInstance();
 

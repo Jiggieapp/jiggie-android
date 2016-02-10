@@ -21,6 +21,7 @@ import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
+import com.crashlytics.android.Crashlytics;
 import com.jiggie.android.component.SimpleJSONObject;
 import com.jiggie.android.component.database.DatabaseConnection;
 import com.jiggie.android.component.volley.VolleyHandler;
@@ -41,6 +42,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.HashSet;
 
+import io.fabric.sdk.android.Fabric;
+
 /**
  * Created by rangg on 21/10/2015.
  */
@@ -53,13 +56,14 @@ public class App extends Application {
     private String osName;
 
     private static App instance;
-    final static String mPackageName = "com.jiggie.android";
+    static String mPackageName;
 
     @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
 
+        mPackageName = getApplicationContext().getPackageName();
         //region Initialize third party libraries
 
         FacebookSdk.sdkInitialize(this);

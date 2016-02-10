@@ -93,8 +93,6 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
         View view = this.rootView = inflater.inflate(R.layout.fragment_recycler, container, false);
         ButterKnife.bind(this, view);
 
-        EventBus.getDefault().register(this);
-
         return view;
     }
 
@@ -102,6 +100,8 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ButterKnife.bind(this, this.rootView);
+
+        EventBus.getDefault().register(this);
 
         this.recyclerView.setAdapter(this.adapter = new EventTabListAdapter(this, this));
         this.recyclerView.setLayoutManager(new LinearLayoutManager(super.getContext()));
@@ -166,7 +166,8 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
         if (super.getContext() == null) {
             // fragment has been destroyed.
             return;
-        } else if (this.isLoading) {
+        }
+        else if (this.isLoading) {
             // refresh is ongoing
             return;
         }
@@ -203,6 +204,7 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
         if (searchText == null)
             adapter.addAll(events);
 
+        isLoading = false;
         refreshLayout.setRefreshing(false);
         filter(true);
     }
@@ -270,12 +272,6 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //EventBus.getDefault().unregister(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
         EventBus.getDefault().unregister(this);
     }
 }

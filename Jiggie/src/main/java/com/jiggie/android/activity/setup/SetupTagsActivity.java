@@ -17,10 +17,14 @@ import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.BitmapUtility;
 import com.jiggie.android.component.FlowLayout;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.BaseActivity;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.android.volley.VolleyError;
+import com.jiggie.android.manager.EventManager;
+import com.jiggie.android.model.ExceptionModel;
+import com.jiggie.android.model.TagsListModel;
 
 import org.json.JSONArray;
 
@@ -30,6 +34,7 @@ import java.util.Set;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by rangg on 12/01/2016.
@@ -52,6 +57,8 @@ public class SetupTagsActivity extends BaseActivity implements ViewTreeObserver.
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_setup_tags);
         super.bindView();
+
+        EventBus.getDefault().register(this);
 
         final Bitmap background = BitmapUtility.getBitmapResource(R.mipmap.signup1);
         final Bitmap blurBackground = BitmapUtility.blur(background);
@@ -76,54 +83,46 @@ public class SetupTagsActivity extends BaseActivity implements ViewTreeObserver.
         this.failedView.setVisibility(View.GONE);
         this.btnNext.setVisibility(View.GONE);
 
-        VolleyHandler.getInstance().createVolleyArrayRequest("user/tagslist", new VolleyRequestListener<String[], JSONArray>() {
-            @Override
-            public String[] onResponseAsync(JSONArray jsonArray) {
-                final int length = jsonArray.length();
-                final String[] values = new String[length];
-                for (int i = 0; i < length; i++)
-                    values[i] = jsonArray.optString(i);
-                return values;
-            }
+        EventManager.loaderTagsList();
+    }
 
-            @Override
-            public void onResponseCompleted(String[] values) {
-                if (isActive()) {
-                    final LayoutInflater inflater = getLayoutInflater();
-                    final int length = values.length;
-                    selectedItems.clear();
+    public void onEvent(TagsListModel message){
+        if (isActive()) {
+            final LayoutInflater inflater = getLayoutInflater();
+            final int length = message.getData().getTagslist().size();
+            selectedItems.clear();
 
-                    for (int i = 0; i < length; i++) {
-                        final View view = inflater.inflate(R.layout.item_setup_tag, flowLayout, false);
-                        final ViewHolder holder = new ViewHolder(SetupTagsActivity.this, view, values[i]);
+            for (int i = 0; i < length; i++) {
+                final View view = inflater.inflate(R.layout.item_setup_tag, flowLayout, false);
+                final ViewHolder holder = new ViewHolder(SetupTagsActivity.this, view, message.getData().getTagslist().get(i));
 
-                        holder.textView.setText(holder.text);
-                        selectedItems.add(holder.text);
-                        flowLayout.addView(view);
+                holder.textView.setText(holder.text);
+                selectedItems.add(holder.text);
+                flowLayout.addView(view);
 
-                        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                            @Override
-                            public void onGlobalLayout() {
-                                view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                                holder.container.setMinimumWidth(holder.container.getMeasuredWidth());
-                            }
-                        });
+                view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        holder.container.setMinimumWidth(holder.container.getMeasuredWidth());
                     }
-
-                    progressBar.setVisibility(View.GONE);
-                    btnNext.setVisibility(View.VISIBLE);
-                }
+                });
             }
 
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (isActive()) {
-                    Toast.makeText(SetupTagsActivity.this, App.getErrorMessage(error), Toast.LENGTH_SHORT).show();
-                    failedView.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
-                }
+            EventManager.saveTagsList(message);
+            progressBar.setVisibility(View.GONE);
+            btnNext.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void onEvent(ExceptionModel message){
+        if(message.getFrom().equals(Utils.FROM_SETUP_TAGS)){
+            if (isActive()) {
+                Toast.makeText(SetupTagsActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
+                failedView.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
             }
-        });
+        }
     }
 
     private void onTagClick(ViewHolder holder) {
@@ -169,5 +168,11 @@ public class SetupTagsActivity extends BaseActivity implements ViewTreeObserver.
                 }
             });
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 }

@@ -219,6 +219,7 @@ public class SignInFragment extends Fragment {
     private GraphRequest.GraphJSONObjectCallback profileCallback = new GraphRequest.GraphJSONObjectCallback() {
         @Override
         public void onCompleted(JSONObject object, GraphResponse response) {
+            String s = object.toString();
 
             if (getContext() == null) {
                 // fragment already destroyed
@@ -243,7 +244,8 @@ public class SignInFragment extends Fragment {
                 loginModel.setProfil_image_url("");
                 loginModel.setUserId("");
                 loginModel.setLocation(location == null ? null : location.optString("name"));
-                loginModel.setBirthday(Common.SHORT_DATE_FORMAT.format(birthDay));
+
+                loginModel.setBirthday(Common.FACEBOOK_DATE_FORMAT.format(birthDay));
                 loginModel.setFb_id(object.optString("id"));
                 loginModel.setUser_last_name(object.optString("last_name"));
                 loginModel.setEmail(object.optString("email"));
@@ -280,7 +282,7 @@ public class SignInFragment extends Fragment {
         AccountManager.saveSetting(message);
         setupWalkthrough(message.is_new_user(), message.isShow_walkthrough());
 
-        if (App.getSharedPreferences().getBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, false)) {
+        if (App.getSharedPreferences().getBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, false)&&!message.is_new_user()) {
             app.trackMixPanelEvent("Login");
             if (activity != null)
                 activity.navigateToHome();

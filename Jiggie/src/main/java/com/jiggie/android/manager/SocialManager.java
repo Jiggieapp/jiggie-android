@@ -2,11 +2,13 @@ package com.jiggie.android.manager;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.jiggie.android.api.SocialInterface;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.SocialModel;
 import com.jiggie.android.model.SuccessModel;
+import com.squareup.okhttp.ConnectionSpec;
 
 import java.io.IOException;
 
@@ -22,6 +24,7 @@ import retrofit.Retrofit;
 public class SocialManager {
 
     private static SocialInterface socialInterface;
+    //
 
     public static void iniSocialService(){
         Retrofit retrofit = new Retrofit.Builder()
@@ -29,6 +32,7 @@ public class SocialManager {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         socialInterface = retrofit.create(SocialInterface.class);
+
     }
 
     private static SocialInterface getInstance(){
@@ -53,8 +57,8 @@ public class SocialManager {
                 public void onResponse(Response response, Retrofit retrofit) {
 
                     //String header = String.valueOf(response.code());
-                    /*String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);*/
+                    String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);
 
                     SocialModel dataTemp = (SocialModel) response.body();
 
@@ -81,8 +85,8 @@ public class SocialManager {
                 public void onResponse(Response response, Retrofit retrofit) {
 
                     //String header = String.valueOf(response.code());
-                    /*String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);*/
+                    String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);
 
                     SuccessModel dataTemp = (SuccessModel) response.body();
 

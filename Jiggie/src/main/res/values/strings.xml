@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Jiggie</string>
+    <!--<string name="app_name">Jiggie</string>-->
     <string name="server_host">https://jiggie-dev.herokuapp.com/app/v3/</string>
     <!--<string name="server_host">https://jiggie.herokuapp.com/app/v3/</string>-->
 
@@ -100,8 +100,8 @@
     <string name="start_chatting">Start chatting</string>
     <string name="make_some_plan">Make some plans for today!</string>
     <string name="socialize">Socialize</string>
-    <string name="socialize_description">Other member will be able to view your card</string>
-    <string name="socialize_description_off">Other member will not be able to view your card</string>
+    <string name="socialize_description">Turn off if you do not wish to be seen by others</string>
+    <string name="socialize_description_off">Turn on if you wish to be seen by others</string>
     <string name="wants_to_go_with">%1$s wants to go with you to</string>
     <string name="interested_question">Interested?</string>
     <string name="something_went_wrong">Something went wrong</string>
@@ -128,7 +128,7 @@
     <string name="find_events">Find events for you</string>
     <string name="find_events_description">For the best experience allow us access</string>
     <string name="location">Location</string>
-    <string name="location_description">Stay in the know on hot events and hostings around you</string>
+    <string name="location_description">Stay in the know on most popular events around you</string>
     <string name="no_fullfillment">This event does not have external site</string>
     <string name="call">Call</string>
     <string name="reserve">Reserve now</string>

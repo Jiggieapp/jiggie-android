@@ -22,6 +22,7 @@ import de.greenrobot.event.EventBus;
 
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
 import com.jiggie.android.activity.profile.ProfileSettingActivity;
 import com.jiggie.android.activity.setup.SetupTagsActivity;
@@ -113,7 +114,15 @@ public class MoreTabFragment extends Fragment implements TabFragment, MoreTabLis
                         public void onClick(DialogInterface dialog, int which) {
                             App.getSharedPreferences().edit().clear().putBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, true).apply();
                             LoginManager.getInstance().logOut();
+                            //getActivity().finish();
+
+                            //added by Aga 22-1-2016
+                            Intent i = new Intent(getActivity(), MainActivity.class);
+                            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            getActivity().startActivity(i);
                             getActivity().finish();
+                            //----------------------
+
                         }
                     }).show();
         }
@@ -154,6 +163,7 @@ public class MoreTabFragment extends Fragment implements TabFragment, MoreTabLis
     private void mailSupport() {
         final Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", super.getString(R.string.support_email), null));
         intent.putExtra(Intent.EXTRA_EMAIL, new String[] {super.getString(R.string.support_email)}); // hack for android 4.3
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Support");
         super.startActivity(Intent.createChooser(intent, super.getString(R.string.support)));
     }
 

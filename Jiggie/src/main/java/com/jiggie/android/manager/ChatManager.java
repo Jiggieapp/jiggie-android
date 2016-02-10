@@ -27,6 +27,7 @@ public class ChatManager {
     private static ChatInterface chatInterface;
     public static final String FROM_LOAD = "load";
     public static final String FROM_CHECK_NEW = "check";
+    //public static boolean NEED_REFRESH_CHATLIST = true;
 
     public static ArrayList<ChatListModel.Data.ChatLists> dataChatList = new ArrayList<ChatListModel.Data.ChatLists>();
 
@@ -83,8 +84,8 @@ public class ChatManager {
             getChatList(fb_id, new Callback() {
                 @Override
                 public void onResponse(Response response, Retrofit retrofit) {
-                    /*String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);*/
+                    String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);
 
                     ChatListModel dataTemp = (ChatListModel) response.body();
                     dataChatList = dataTemp.getData().getChat_lists();
