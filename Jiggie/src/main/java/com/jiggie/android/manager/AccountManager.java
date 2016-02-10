@@ -19,6 +19,10 @@ import com.jiggie.android.model.MemberInfoModel;
 import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.SuccessModel;
+import com.squareup.okhttp.Connection;
+import com.squareup.okhttp.Interceptor;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
 
 import java.io.IOException;
 
@@ -31,7 +35,7 @@ import retrofit.Retrofit;
 /**
  * Created by LTE on 2/1/2016.
  */
-public class AccountManager {
+public class AccountManager extends BaseManager{
 
     static AccountInterface accountInterface;
     public final static String TAG = AccountManager.class.getSimpleName();
@@ -44,13 +48,20 @@ public class AccountManager {
         accountInterface = retrofit.create(AccountInterface.class);
     }
 
-
     private static AccountInterface getInstance(){
         if(accountInterface == null)
-            initAccountService();
-
+        {
+            /*accountInterface = retrofitService.createService()
+                    .create(AccountInterface.class);*/
+            accountInterface = getRetrofit().create(AccountInterface.class);
+        }
         return accountInterface;
     }
+
+    /*@Override
+    public AccountInterface getService(Retrofit retrofit) {
+        accountInterface = retrofit.create(AccountInterface.class);
+    }*/
 
     private static void postLogin(LoginModel loginRequestModel, Callback callback) throws IOException {
         getInstance().postLogin(Utils.URL_LOGIN, loginRequestModel).enqueue(callback);
@@ -87,7 +98,7 @@ public class AccountManager {
                 @Override
                 public void onFailure(Throwable t) {
                     Log.d("failure", t.toString());
-                    EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SIGN_IN, Utils.MSG_EXCEPTION+t.toString()));
+                    EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SIGN_IN, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
@@ -101,11 +112,10 @@ public class AccountManager {
             postMemberSetting(memberSettingModel, new Callback() {
                 @Override
                 public void onResponse(Response response, Retrofit retrofit) {
-                    /* String responses = new Gson().toJson(response.body());
+                    /*String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);*/
                     SuccessModel dataTemp = (SuccessModel) response.body();
                     EventBus.getDefault().post(dataTemp);
-
                     AccountManager.saveMemberSetting(memberSettingModel);
                 }
 
@@ -116,6 +126,7 @@ public class AccountManager {
                 }
             });
         }catch (IOException e){
+            Utils.d(TAG, "memberSetting " + new Gson().toJson(memberSettingModel));
             Log.d("exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.MSG_EXCEPTION + e.toString()));
         }
@@ -249,12 +260,7 @@ public class AccountManager {
         getUserTagList(new Callback() {
             @Override
             public void onResponse(Response response, Retrofit retrofit) {
-                //String[] result = (String[]) response.body();
-                //String r = new Gson().toJson(response.body());
-                //JSONObject r = (JSONObject) response.body();
                 FilterModel filterMode = (FilterModel) response.body();
-                //for(String res : filterMode.getData().getExperiences())
-                //Utils.d(TAG, "res filter model " + filterMode.getData().getExperiences());
                 EventBus.getDefault().post(filterMode.getData().getExperiences());
             }
 
@@ -322,4 +328,6 @@ public class AccountManager {
         getInstance().getAccessToken(Utils.URL_GET_ACCESS_TOKEN,
                 accessTokenModel).enqueue(callback);
     }
+
+
 }

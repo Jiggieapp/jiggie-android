@@ -256,11 +256,14 @@ public class EventsFragment extends Fragment
         this.refreshLayout.setRefreshing(false);
     }
 
-    private void onEvent(ExceptionModel exceptionModel)
+    public void onEvent(ExceptionModel exceptionModel)
     {
         Snackbar snackbar = Snackbar
                 .make(coordinatorLayout, "Welcome to AndroidHive", Snackbar.LENGTH_LONG);
         snackbar.show();
+
+        this.isLoading = false;
+        this.refreshLayout.setRefreshing(false);
     }
 
     @Override

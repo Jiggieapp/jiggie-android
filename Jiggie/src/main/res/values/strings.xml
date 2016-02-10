@@ -174,4 +174,5 @@
     <string name="upcoming">Upcoming</string>
     <string name="account">Account</string>
     <string name="please_wait">Updating your experiences</string>
+    <string name="purchase_ticket">Purchase ticket</string>
 </resources>

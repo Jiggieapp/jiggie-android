@@ -22,7 +22,7 @@ import retrofit.http.Url;
 /**
  * Created by LTE on 2/1/2016.
  */
-public interface AccountInterface extends BaseModel{
+public interface AccountInterface{
 
     @POST
     Call<SettingModel> postLogin(@Url String url, @Body LoginModel loginModel);
@@ -44,7 +44,4 @@ public interface AccountInterface extends BaseModel{
 
     @POST
     Call<SuccessModel> getAccessToken(@Url String url, @Body AccessTokenModel accessTokenModel);
-
-    @Override
-    String getAccessToken();
 }

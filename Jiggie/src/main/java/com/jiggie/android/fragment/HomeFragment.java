@@ -24,6 +24,7 @@ import com.jiggie.android.activity.profile.FilterActivity;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.manager.ProductManager;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -169,9 +170,10 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     @OnClick(R.id.fab)
     void onFabClick()
     {
-        /*Intent i = new Intent(this.getActivity(), FilterActivity.class);
-        startActivity(i);*/
+        Intent i = new Intent(this.getActivity(), FilterActivity.class);
+        startActivity(i);
 
-        AccountManager.getAccessToken();
+        //AccountManager.getAccessToken();
+        //ProductManager.getProductList("56b1a0bf89bfed03005c50f0");
     }
 }

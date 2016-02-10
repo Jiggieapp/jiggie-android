@@ -140,8 +140,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                     e.printStackTrace();
                 }
             }
-
-
         }
 
         if(event_name!=null){
@@ -164,8 +162,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
         super.registerReceiver(this.guestInvitedReceiver, new IntentFilter(super.getString(R.string.broadcastGuestInvited)));
         App.getInstance().trackMixPanelEvent("View Event Details");
-
-
     }
 
     @Override
@@ -257,7 +253,20 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 }
             }
 
-            btnBook.setVisibility(StringUtility.isEquals(EventManager.FullfillmentTypes.NONE, message.getData().getEvents_detail().getFullfillment_type(), true) ? View.GONE : View.VISIBLE);
+            final String fullfillmentType = message.getData().getEvents_detail().getFullfillment_type();
+            btnBook.setVisibility(
+                    StringUtility.isEquals(EventManager.FullfillmentTypes.NONE, message.getData().getEvents_detail().getFullfillment_type(), true)
+                    ? View.GONE : View.VISIBLE);
+            /*if(EventManager.FullfillmentTypes.NONE.equals(fullfillmentType))
+            {
+                btnBook.setVisibility(View.GONE);
+            }
+            else if(EventManager.FullfillmentTypes.TICKET.equals(fullfillmentType))
+            {
+                btnBook.setVisibility(View.VISIBLE);
+            }
+            else btnBook.setVisibility(View.VISIBLE);*/
+
             map.addMarker(new MarkerOptions().position(lat).title(message.getData().getEvents_detail().getVenue_name()));
             layoutGuests.setVisibility(guestCount > 0 ? View.VISIBLE : View.GONE);
             map.animateCamera(CameraUpdateFactory.newLatLngZoom(lat, 15));
@@ -273,15 +282,20 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             invalidateOptionsMenu();
             populateTags();
 
-            if (StringUtility.isEquals(EventManager.FullfillmentTypes.PHONE_NUMBER, message.getData().getEvents_detail().getFullfillment_type(), true)) {
+            if (StringUtility.isEquals(EventManager.FullfillmentTypes.PHONE_NUMBER, fullfillmentType, true)) {
                 txtExternalSite.setVisibility(View.GONE);
                 txtBookNow.setText(R.string.call);
-            } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.RESERVATION, message.getData().getEvents_detail().getFullfillment_type(), true)) {
+            } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.RESERVATION, fullfillmentType, true)) {
                 txtExternalSite.setVisibility(View.GONE);
                 txtBookNow.setText(R.string.reserve);
-            } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.PURCHASE, message.getData().getEvents_detail().getFullfillment_type(), true)) {
+            } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.PURCHASE, fullfillmentType, true)) {
                 txtExternalSite.setVisibility(View.GONE);
                 txtBookNow.setText(R.string.purchase);
+            }
+            else if(StringUtility.isEquals(EventManager.FullfillmentTypes.TICKET, fullfillmentType, true))
+            {
+                txtExternalSite.setVisibility(View.GONE);
+                txtBookNow.setText(getResources().getString(R.string.purchase_ticket));
             }
         } catch (ParseException e) {
             throw new RuntimeException(App.getErrorMessage(e), e);
@@ -365,6 +379,10 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 super.startActivity(Intent.createChooser(intent, super.getString(R.string.book_now)));
             else if (StringUtility.isEquals(EventManager.FullfillmentTypes.NONE, this.eventDetail.getFullfillment_type(), true))
                 Toast.makeText(this, R.string.no_fullfillment, Toast.LENGTH_SHORT).show();
+            else if(StringUtility.isEquals(EventManager.FullfillmentTypes.TICKET))
+            {
+
+            }
             else
                 Toast.makeText(this, R.string.book_error, Toast.LENGTH_SHORT).show();
         }

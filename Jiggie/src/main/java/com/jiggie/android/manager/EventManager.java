@@ -32,6 +32,7 @@ import retrofit.Retrofit;
 public class EventManager {
 
     private static EventInterface eventInterface;
+    public static final String TAG = EventManager.class.getSimpleName();
 
     public static class FullfillmentTypes {
         public static final String PHONE_NUMBER = "phone_number";
@@ -39,6 +40,7 @@ public class EventManager {
         public static final String PURCHASE = "purchase";
         public static final String LINK = "link";
         public static final String NONE = "none";
+        public static final String TICKET = "ticket";
     }
 
     public static void initEventService(){
@@ -78,12 +80,12 @@ public class EventManager {
 
                 @Override
                 public void onFailure(Throwable t) {
-                    Log.d("Failure", t.toString());
-                    EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT, Utils.MSG_EXCEPTION + t.toString()));
+                    Utils.d(TAG, t.toString());
+                            EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
-            Log.d("Exception", e.toString());
+            Utils.d(TAG, e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT, Utils.MSG_EXCEPTION + e.toString()));
         }
     }

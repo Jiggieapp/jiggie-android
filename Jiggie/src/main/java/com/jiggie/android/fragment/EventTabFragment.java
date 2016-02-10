@@ -401,7 +401,7 @@ public class EventTabFragment extends Fragment
     @Override
     public void onViewSelected(EventModel.Data.Events event) {
         Intent i = new Intent(super.getActivity(), EventDetailActivity.class);
-        i.putExtra(Common.FIELD_EVENT_ID, event.get_id());
+        i.putExtra(Common.FIELD_EVENT_ID, /*event.get_id(*/ "56b1a0bf89bfed03005c50f0");
         i.putExtra(Common.FIELD_EVENT_NAME, event.getTitle());
         super.startActivity(i);
     }

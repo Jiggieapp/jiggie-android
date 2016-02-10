@@ -5,13 +5,22 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.Log;
 
+import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.squareup.okhttp.Interceptor;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import retrofit.GsonConverterFactory;
+import retrofit.Retrofit;
 
 /**
  * Created by LTE on 1/29/2016.
@@ -79,11 +88,11 @@ public class Utils {
     public final static String URL_SOCIAL_MATCH = BASE_URL + "app/v3/partyfeed/match/{fb_id}/{from_id}/{type}";
     public final static String URL_EDIT_ABOUT = BASE_URL + "app/v3/updateuserabout";
     public final static String URL_GET_ACCESS_TOKEN =  BASE_URL + "app/v3/userlogin";
+    public static final String URL_GET_PRODUCT_LIST = BASE_URL + "app/v3/product/list/{event_id}";
 
     public static void d(final String tag,final String value) {
         Log.d(tag, value);
     }
-
 
     public static final String DATE_TODAY = "today";
     public static final String DATE_TOMORROW = "tomorrow";
@@ -128,4 +137,5 @@ public class Utils {
     public static int getTabsHeight(Context context) {
         return (int) context.getResources().getDimension(R.dimen.tabsHeight);
     }
+
 }
