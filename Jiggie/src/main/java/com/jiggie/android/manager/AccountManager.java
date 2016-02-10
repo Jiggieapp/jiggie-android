@@ -44,12 +44,6 @@ public class AccountManager {
         accountInterface = retrofit.create(AccountInterface.class);
     }
 
-    public static AccountInterface getAccountInterface()
-    {
-        if(accountInterface == null)
-            initAccountService();
-        return accountInterface;
-    }
 
     private static AccountInterface getInstance(){
         if(accountInterface == null)
@@ -136,9 +130,7 @@ public class AccountManager {
                     Log.d("res", responses);
 
                     MemberInfoModel dataTemp = (MemberInfoModel) response.body();
-
                     EventBus.getDefault().post(dataTemp);
-
                 }
 
                 @Override
@@ -162,9 +154,7 @@ public class AccountManager {
                     Log.d("res", responses);
 
                     SettingModel dataTemp = (SettingModel) response.body();
-
                     EventBus.getDefault().post(dataTemp);
-
                 }
 
                 @Override
@@ -204,7 +194,6 @@ public class AccountManager {
     }
 
     public static void saveSetting(SettingModel settingModel){
-
         String model = new Gson().toJson(settingModel);
         App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
                 .putString(Utils.SETTING_MODEL, model).apply();
@@ -228,7 +217,6 @@ public class AccountManager {
     }
 
     public static void saveLogin(LoginModel loginModel){
-
         String model = new Gson().toJson(loginModel);
         App.getInstance().getSharedPreferences(Utils.PREFERENCE_LOGIN, Context.MODE_PRIVATE).edit()
                 .putString(Utils.LOGIN_MODEL, model).apply();
@@ -252,11 +240,9 @@ public class AccountManager {
 
     private static void getUserTagList(Callback callback)
     {
-        getAccountInterface().getUserTagList(AccessToken.getCurrentAccessToken()
+        getInstance().getUserTagList(AccessToken.getCurrentAccessToken()
                 .getUserId()).enqueue(callback);
     }
-
-
 
     public static void getUserTagList()
     {
@@ -307,11 +293,18 @@ public class AccountManager {
         getAccessToken(new Callback() {
             @Override
             public void onResponse(Response response, Retrofit retrofit) {
-                String responses = new Gson().toJson(response.body());
-                Utils.d(TAG, "response " + responses);
+                /*String responses = new Gson().toJson(response.body());
+                Utils.d(TAG, "response " + responses);*/
 
-                AccessTokenModel accessTokenModel = (AccessTokenModel) response.body();
-                Utils.d(TAG, accessTokenModel.getToken());
+                SuccessModel successModel = (SuccessModel) response.body();
+                App.getInstance()
+                        .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                        .edit()
+                        .putString(Utils.ACCESS_TOKEN, successModel.getToken())
+                        .apply();
+
+                //AccessTokenModel accessTokenModel = (AccessTokenModel) response.body();
+                //Utils.d(TAG, accessTokenModel.getToken());
             }
 
             @Override
@@ -324,8 +317,9 @@ public class AccountManager {
     private static void getAccessToken(Callback callback)
     {
         final String fb_token = AccessToken.getCurrentAccessToken().getToken();
-        Utils.d(TAG, "fb_token " + fb_token);
-        getAccountInterface().getAccessToken(Utils.URL_GET_ACCESS_TOKEN,
-                fb_token).enqueue(callback);
+        AccessTokenModel accessTokenModel = new AccessTokenModel();
+        accessTokenModel.setToken(fb_token);
+        getInstance().getAccessToken(Utils.URL_GET_ACCESS_TOKEN,
+                accessTokenModel).enqueue(callback);
     }
 }

@@ -3,6 +3,7 @@ package com.jiggie.android.api;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.AboutModel;
 import com.jiggie.android.model.AccessTokenModel;
+import com.jiggie.android.model.BaseModel;
 import com.jiggie.android.model.FilterModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.MemberInfoModel;
@@ -21,7 +22,7 @@ import retrofit.http.Url;
 /**
  * Created by LTE on 2/1/2016.
  */
-public interface AccountInterface {
+public interface AccountInterface extends BaseModel{
 
     @POST
     Call<SettingModel> postLogin(@Url String url, @Body LoginModel loginModel);
@@ -32,7 +33,6 @@ public interface AccountInterface {
     @GET(Utils.URL_MEMBER_SETTING)
     Call<FilterModel> getUserTagList(@Query("fb_id") String fb_id);
     
-
     @GET(Utils.URL_MEMBER_INFO)
     Call<MemberInfoModel> getMemberInfo(@Path("fb_id") String fb_id);
 
@@ -43,5 +43,8 @@ public interface AccountInterface {
     Call<SuccessModel> postEditAbout(@Url String url, @Body AboutModel aboutModel);
 
     @POST
-    Call<AccessTokenModel> getAccessToken(@Url String url, @Body String fb_token);
+    Call<SuccessModel> getAccessToken(@Url String url, @Body AccessTokenModel accessTokenModel);
+
+    @Override
+    String getAccessToken();
 }

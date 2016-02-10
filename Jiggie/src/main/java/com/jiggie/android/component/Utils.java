@@ -52,6 +52,7 @@ public class Utils {
     public static String EVENT_LIST = "event_list";
     public static String PREFERENCE_LOGIN = "login";
     public static String LOGIN_MODEL = "login_model";
+    public static String ACCESS_TOKEN = "access_token";
 
     public static int myPixel(Activity a,int dip){
         float scale = a.getResources().getDisplayMetrics().density;

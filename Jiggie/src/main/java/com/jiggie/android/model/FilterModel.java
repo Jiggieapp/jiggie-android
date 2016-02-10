@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 
-public final class FilterModel {
+public final class FilterModel{
     public final boolean success;
     public final Data data;
 

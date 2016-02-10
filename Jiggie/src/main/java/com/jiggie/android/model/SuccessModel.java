@@ -15,4 +15,14 @@ public class SuccessModel {
         this.success = success;
     }
 
+    //wandy 10-02-2015
+    String token;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 }

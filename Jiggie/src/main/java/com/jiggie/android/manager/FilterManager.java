@@ -27,7 +27,6 @@ public class FilterManager {
 
     public static void getUserTagList()
     {
-
         loadUserTagList(new Callback() {
             @Override
             public void onResponse(Response response, Retrofit retrofit) {
