@@ -45,7 +45,8 @@ import de.greenrobot.event.EventBus;
  */
 public class EventsFragment extends Fragment
         implements ViewPager.OnPageChangeListener, HomeMain
-        , ViewTreeObserver.OnGlobalLayoutListener, TabFragment, SwipeRefreshLayout.OnRefreshListener {
+        , ViewTreeObserver.OnGlobalLayoutListener, TabFragment, SwipeRefreshLayout.OnRefreshListener
+{
 
     @Bind(R.id.time_tab)
     TabLayout timeTab;

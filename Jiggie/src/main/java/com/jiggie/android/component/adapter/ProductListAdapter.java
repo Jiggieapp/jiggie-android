@@ -22,42 +22,70 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 
     public static final String TAG = ProductListAdapter.class.getSimpleName();
 
-    private final ArrayList<ProductModel.Data.Product_list> items;
+    private ArrayList<ProductModel.Data.Product_lists.Purchase> items;
+    private ArrayList<ProductModel.Data.Product_lists.Purchase> purchases;
+    private ArrayList<ProductModel.Data.Product_lists.Reservation> reservations;
+
     public ProductListAdapter()
     {
         items = new ArrayList<>();
+        purchases = new ArrayList<>();
+        reservations = new ArrayList<>();
     }
 
-    public void clear() { this.items.clear(); }
-    public void addAll(ArrayList<ProductModel.Data.Product_list> data)
+    public void clear()
+    {
+        this.purchases.clear();
+        this.reservations.clear();
+    }
+
+    public void addPurchases(ArrayList<ProductModel.Data.Product_lists.Purchase> data)
     {
         items.addAll(data);
+        purchases.addAll(data);
     }
-    public void add(ProductModel.Data.Product_list data)
+    public void add(ProductModel.Data.Product_lists.Purchase data)
     {
+        purchases.add(data);
         items.add(data);
     }
+
+    public void addReservations(ArrayList<ProductModel.Data.Product_lists.Reservation> data)
+    {
+        //reservations.addAll(data);
+        for(int i=0;i<data.size();i++)
+        {
+
+            ProductModel.Data.Product_lists.Purchase temp
+                    = new ProductModel.Data.Product_lists.Purchase(data.get(i));
+            //temp.setEvent_id(reservations.g);
+            Utils.d(TAG, "data get i " + temp.getName()
+                    + " " + temp.getTicket_type());
+            items.add(temp);
+            notifyDataSetChanged();
+        }
+    }
+
 
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ViewHolder holder = new ViewHolder(
-                LayoutInflater.from(parent.getContext()).inflate(R.layout.item_product_list, parent, false));
+                LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_product_list, parent, false));
         return holder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final ProductModel.Data.Product_list productList
+        final ProductModel.Data.Product_lists.Purchase product
                 = items.get(position);
-        Utils.d(TAG, productList.getName());
-        holder.productName.setText(productList.getName());
+        holder.productName.setText(product.getName());
     }
-
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return purchases.size();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder
