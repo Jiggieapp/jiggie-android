@@ -40,6 +40,7 @@ public class EventTagAdapter extends BaseAdapter {
 
     private static class ViewHolder {
         private TextView txtTag;
-        public ViewHolder(View itemView) { this.txtTag = (TextView) itemView.findViewById(R.id.txtTag); }
+        public ViewHolder(View itemView) {
+            this.txtTag = (TextView) itemView.findViewById(R.id.txtTag); }
     }
 }

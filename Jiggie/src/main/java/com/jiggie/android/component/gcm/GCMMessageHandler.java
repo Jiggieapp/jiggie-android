@@ -59,7 +59,7 @@ public class GCMMessageHandler extends GcmListenerService {
         final NotificationManager notificationManager = (NotificationManager) super.getSystemService(NOTIFICATION_SERVICE);
         //final Intent intent = new Intent(App.getInstance(), MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK).putExtra("chat", chat);
 
-        String profil_image="";
+        /*String profil_image="";
         for(int i=0;i< ChatManager.dataChatList.size();i++){
             if(ChatManager.dataChatList.get(i).getFb_id().equals(fromId)){
                 profil_image = ChatManager.dataChatList.get(i).getProfile_image();
@@ -71,7 +71,26 @@ public class GCMMessageHandler extends GcmListenerService {
         intent.putExtra(Conversation.FIELD_PROFILE_IMAGE, profil_image);
         intent.putExtra(Conversation.FIELD_FROM_NAME, name);
         intent.putExtra(Conversation.FIELD_FACEBOOK_ID, fromId);
-        intent.putExtra("chat", chat);
+        intent.putExtra("chat", chat);*/
+
+        Intent intent;
+        if(chat){
+            String profil_image="";
+            for(int i=0;i< ChatManager.dataChatList.size();i++){
+                if(ChatManager.dataChatList.get(i).getFb_id().equals(fromId)){
+                    profil_image = ChatManager.dataChatList.get(i).getProfile_image();
+                }
+            }
+
+            intent = new Intent(App.getInstance(), ChatActivity.class);
+            //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            intent.putExtra(Conversation.FIELD_PROFILE_IMAGE, profil_image);
+            intent.putExtra(Conversation.FIELD_FROM_NAME, name);
+            intent.putExtra(Conversation.FIELD_FACEBOOK_ID, fromId);
+            intent.putExtra("chat", chat);
+        }else{
+            intent = new Intent(App.getInstance(), MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK).putExtra("chat", chat);
+        }
 
         final PendingIntent pendingIntent = PendingIntent.getActivity(App.getInstance(), Integer.MIN_VALUE, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         final Notification notif = new NotificationCompat.BigTextStyle(new NotificationCompat.Builder(this)

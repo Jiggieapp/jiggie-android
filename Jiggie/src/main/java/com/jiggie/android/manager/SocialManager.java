@@ -61,9 +61,11 @@ public class SocialManager {
                     Log.d("res", responses);
 
                     SocialModel dataTemp = (SocialModel) response.body();
-
-
+                    /*if(dataTemp!=null&&dataTemp.getData().getSocial_feeds().size()>0){
+                        EventBus.getDefault().post(dataTemp);
+                    }*/
                     EventBus.getDefault().post(dataTemp);
+
                 }
 
                 @Override

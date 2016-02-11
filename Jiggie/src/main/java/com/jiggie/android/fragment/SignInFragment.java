@@ -252,6 +252,8 @@ public class SignInFragment extends Fragment {
                 loginModel.setGender(object.optString("gender"));
                 //------------
 
+                String sd = String.valueOf(new Gson().toJson(loginModel));
+
                 AccountManager.loaderLogin(loginModel);
 
                 String name = loginModel.getUser_first_name() + " " + loginModel.getUser_last_name();

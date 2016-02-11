@@ -1,7 +1,7 @@
 <resources>
     <!--<string name="app_name">Jiggie</string>-->
-    <string name="server_host">https://jiggie-dev.herokuapp.com/app/v3/</string>
-    <!--<string name="server_host">https://jiggie.herokuapp.com/app/v3/</string>-->
+    <!--<string name="server_host">https://jiggie-dev.herokuapp.com/app/v3/</string>-->
+    <string name="server_host">https://jiggie.herokuapp.com/app/v3/</string>
 
     <!--<string name="server_host">https://api-dev.jiggieapp.com/app/v3/</string>-->
 
@@ -147,6 +147,9 @@
     <string name="wk_chat_action">START TYPING</string>
     <string name="wk_match_action">CONNECT</string>
     <string name="wk_request_action">ACCEPT REQUEST</string>
+
+    <string name="title_no_event">No events found</string>
+    <string name="msg_no_event">No events found</string>
 
     <plurals name="guest_count">
         <item quantity="one">%1$d Guest</item>
