@@ -117,6 +117,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         super.setContentView(R.layout.activity_event_detail);
         super.bindView();
 
+        EventBus.getDefault().register(this);
+
         Intent a = super.getIntent();
 
         event_id = a.getStringExtra(Common.FIELD_EVENT_ID);
@@ -138,7 +140,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                     e.printStackTrace();
                 }
             }
-
 
         }
 
@@ -353,7 +354,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     @OnClick(R.id.layoutAddress)
     void layoutAddressOnClick() {
         if (this.eventDetail != null) {
-            final Uri uri = Uri.parse(String.format("http://maps.google.com/maps?daddr=%f,%f", this.eventDetail.getVenue().getLat(), this.eventDetail.getVenue().getLon()));
+            final Uri uri = Uri.parse(String.format("http://maps.google.com/maps?daddr=%f,%f", Float.parseFloat(this.eventDetail.getVenue().getLat()), Float.parseFloat(this.eventDetail.getVenue().getLon())));
             super.startActivity(Intent.createChooser(new Intent(android.content.Intent.ACTION_VIEW, uri), this.eventDetail.getVenue_name()));
         }
     }
@@ -397,10 +398,11 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     @Override
     protected void onDestroy() {
         super.unregisterReceiver(this.guestInvitedReceiver);
+        EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
 
-    @Override
+    /*@Override
     protected void onResume() {
         super.onResume();
         EventBus.getDefault().register(this);
@@ -410,7 +412,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     protected void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -428,7 +430,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         if (this.shareLinkModel != null) {
             App.getInstance().trackMixPanelEvent("Share Event");
             String share = String.format("%s\n\n%s", shareLinkModel.getMessage(), shareLinkModel.getUrl());
-            super.startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, share).setType("text/plain"), super.getString(R.string.share)));
+            super.startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, share).putExtra(Intent.EXTRA_SUBJECT, "Lets Go Out With Jiggie").setType("text/plain"), super.getString(R.string.share)));
         } else {
             progressDialog = App.showProgressDialog(this);
 

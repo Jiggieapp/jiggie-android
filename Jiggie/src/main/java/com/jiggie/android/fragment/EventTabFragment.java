@@ -17,11 +17,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.event.EventDetailActivity;
@@ -33,7 +36,6 @@ import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventModel;
 import com.jiggie.android.model.ExceptionModel;
-import com.facebook.AccessToken;
 
 import java.util.ArrayList;
 
@@ -60,6 +62,8 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
     TextView txtWkDesc;
     @Bind(R.id.layout_walkthrough)
     RelativeLayout layoutWalkthrough;
+    @Bind(R.id.contentView2)
+    FrameLayout contentView2;
 
     private EventTabListAdapter adapter;
     private HomeMain homeMain;
@@ -69,6 +73,7 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
     private String title;
 
     private ArrayList<EventModel.Data.Events> events = new ArrayList<EventModel.Data.Events>();
+    private View failedView;
 
     @Override
     public void onTabSelected() {
@@ -166,8 +171,7 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
         if (super.getContext() == null) {
             // fragment has been destroyed.
             return;
-        }
-        else if (this.isLoading) {
+        } else if (this.isLoading) {
             // refresh is ongoing
             return;
         }
@@ -192,7 +196,7 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
         App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, false).commit();
     }
 
-    public void onEvent(EventModel message){
+    public void onEvent(EventModel message) {
         events.clear();
         events = message.getData().getEvents();
 
@@ -209,8 +213,8 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
         filter(true);
     }
 
-    public void onEvent(ExceptionModel message){
-        if(message.getFrom().equals(Utils.FROM_EVENT)){
+    public void onEvent(ExceptionModel message) {
+        if (message.getFrom().equals(Utils.FROM_EVENT)) {
             isLoading = false;
             if (getContext() != null) {
                 Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
@@ -241,7 +245,7 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
                     this.adapter.add(event);
                 else {
 
-                    final String[] tags =  new String[event.getTags().size()];
+                    final String[] tags = new String[event.getTags().size()];
                     event.getTags().toArray(tags);
                     final int tagCount = tags.length;
 
@@ -265,8 +269,32 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
                 this.adapter.notifyDataSetChanged();
             }
         }
+
+        //Added by Aga 11-2-2016
+        if(adapter.getItemCount()>0){
+            getFailedView().setVisibility(View.GONE);
+        }else{
+            getFailedView().setVisibility(View.VISIBLE);
+        }
+        //------
     }
     //--------------------------------
+
+    private View getFailedView() {
+        if (this.failedView == null) {
+
+            //Added by Aga
+            contentView2.setVisibility(View.VISIBLE);
+            //-------------
+
+            this.failedView = LayoutInflater.from(super.getContext()).inflate(R.layout.view_failed, this.contentView2, false);
+            this.failedView.findViewById(R.id.btnRetry).setVisibility(View.GONE);
+            TextView txt = (TextView)this.failedView.findViewById(R.id.textFailed);
+            txt.setText(getResources().getString(R.string.title_no_event));
+            this.contentView2.addView(this.failedView);
+        }
+        return this.failedView;
+    }
 
 
     @Override

@@ -42,10 +42,14 @@ android {
     }
     buildTypes {
         debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix '-Dev'
+            resValue "string", "app_name", "Jiggie Dev"
             signingConfig signingConfigs.configDebug
         }
         release {
             minifyEnabled false
+            resValue "string", "app_name", "Jiggie"
             signingConfig signingConfigs.configRelease
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
