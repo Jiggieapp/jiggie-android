@@ -7,4 +7,5 @@
     <dimen name="tag_spacing">3dp</dimen>
 
     <dimen name="margin_text_walkthrough">45dp</dimen>
+    <dimen name="badgeSizeHome">20dp</dimen>
 </resources>

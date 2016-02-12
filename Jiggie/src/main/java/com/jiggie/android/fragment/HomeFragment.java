@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.TextView;
 
 import com.jiggie.android.R;
 import com.jiggie.android.component.HomeMain;
@@ -53,7 +54,11 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         this.adapter = new PageAdapter(this, activity.getSupportFragmentManager());
         this.viewPager.setOffscreenPageLimit(this.adapter.getCount());
         this.viewPager.setAdapter(this.adapter);
+
         this.tab.setupWithViewPager(this.viewPager);
+        /*this.tab.getTabAt(1).setCustomView(R.layout.custom_tab);
+        TextView txtView = (TextView) tab.findViewById(R.id.tab_badge);
+        txtView.setText("99");*/
         this.viewPager.addOnPageChangeListener(this);
 
         final int tabCount = this.adapter.getCount();

@@ -113,7 +113,10 @@ public class SocialManager {
         public static final String VIEWED = "viewed";
         public static final String DENIED = "denied";
 
-        public static boolean isInbound(SocialModel.Data.SocialFeeds value) { return APPROVED.equalsIgnoreCase(value.getType()); }
+        public static boolean isInbound(SocialModel.Data.SocialFeeds value)
+        {
+            return APPROVED.equalsIgnoreCase(value.getType());
+        }
     }
 
 }
