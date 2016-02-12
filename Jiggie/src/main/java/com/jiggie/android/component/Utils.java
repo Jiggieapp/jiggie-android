@@ -1,6 +1,7 @@
 package com.jiggie.android.component;
 
 import android.app.Activity;
+import android.util.Log;
 
 /**
  * Created by LTE on 1/29/2016.
@@ -70,4 +71,7 @@ public class Utils {
     public final static String URL_EDIT_ABOUT = BASE_URL + "app/v3/updateuserabout";
     public final static String URL_TAGSLIST = BASE_URL + "app/v3/user/tagslist";
 
+    public static void d(final String title, final String text) {
+        Log.d(title, text);
+    }
 }
