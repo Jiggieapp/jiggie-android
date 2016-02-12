@@ -166,4 +166,6 @@
         <item>@string/man</item>
         <item>@string/woman</item>
     </string-array>
+
+    <string name="wait">Please wait</string>
 </resources>
