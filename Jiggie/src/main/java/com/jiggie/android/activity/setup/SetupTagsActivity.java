@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -126,14 +127,26 @@ public class SetupTagsActivity extends BaseActivity implements ViewTreeObserver.
     }
 
     private void onTagClick(ViewHolder holder) {
-        final boolean selected = holder.checkView.getVisibility() != View.VISIBLE;
+        boolean selected = holder.checkView.getVisibility() != View.VISIBLE;
+        boolean doNothing = false;
 
         if (selected)
             this.selectedItems.add(holder.text);
-        else
-            this.selectedItems.remove(holder.text);
+        else {
+            if(this.selectedItems.size()==1){
+                doNothing = true;
+                selected = false;
+            }else{
+                this.selectedItems.remove(holder.text);
+            }
+        }
 
-        holder.checkView.setVisibility(selected ? View.VISIBLE : View.GONE);
+        if(!doNothing){
+            holder.checkView.setVisibility(selected ? View.VISIBLE : View.GONE);
+        }
+
+        Log.d("tags", this.selectedItems.toString());
+
     }
 
     @Override
