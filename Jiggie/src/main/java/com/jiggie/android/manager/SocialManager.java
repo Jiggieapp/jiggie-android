@@ -5,6 +5,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.jiggie.android.api.SocialInterface;
 import com.jiggie.android.component.Utils;
+import com.jiggie.android.component.callback.CustomCallback;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.SocialModel;
 import com.jiggie.android.model.SuccessModel;
@@ -51,25 +52,23 @@ public class SocialManager {
     }
 
     public static void loaderSocialFeed(String fb_id, String gender_interest){
-        try {
-            getSocialFeed(fb_id, gender_interest, new Callback() {
+        /*try {
+            getSocialFeed(fb_id, gender_interest, new CustomCallback() {
                 @Override
-                public void onResponse(Response response, Retrofit retrofit) {
-
+                public void onCustomCallbackReponse(Response response, Retrofit retrofit) {
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());
                     Log.d("res", responses);
 
                     SocialModel dataTemp = (SocialModel) response.body();
-                    /*if(dataTemp!=null&&dataTemp.getData().getSocial_feeds().size()>0){
+                    *//*if(dataTemp!=null&&dataTemp.getData().getSocial_feeds().size()>0){
                         EventBus.getDefault().post(dataTemp);
-                    }*/
+                    }*//*
                     EventBus.getDefault().post(dataTemp);
-
                 }
 
                 @Override
-                public void onFailure(Throwable t) {
+                public void onCustomCallbackFailure(String t) {
                     Log.d("Failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_FEED, Utils.MSG_EXCEPTION + t.toString()));
                 }
@@ -77,14 +76,35 @@ public class SocialManager {
         }catch (IOException e){
             Log.d("Exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_FEED, Utils.MSG_EXCEPTION + e.toString()));
+        }*/
+
+        try {
+            getSocialFeed(fb_id, gender_interest, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                    //String header = String.valueOf(response.code());
+                    /*String responses = new Gson().toJson(response.body());
+                    Utils.d("res", responses)*/;
+
+                    SocialModel dataTemp = (SocialModel) response.body();
+                    EventBus.getDefault().post(dataTemp);
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_FEED, t));
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     public static void loaderSocialMatch(String fb_id, String from_id, String type){
         try {
-            getSocialMatch(fb_id, from_id, type, new Callback() {
+            getSocialMatch(fb_id, from_id, type, new CustomCallback() {
                 @Override
-                public void onResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());
@@ -97,7 +117,7 @@ public class SocialManager {
                 }
 
                 @Override
-                public void onFailure(Throwable t) {
+                public void onCustomCallbackFailure(String t) {
                     Log.d("Failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_MATCH, Utils.MSG_EXCEPTION + t.toString()));
                 }

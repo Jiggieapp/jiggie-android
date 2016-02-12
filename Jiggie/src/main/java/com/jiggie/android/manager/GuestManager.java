@@ -5,6 +5,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.jiggie.android.api.GuestInterface;
 import com.jiggie.android.component.Utils;
+import com.jiggie.android.component.callback.CustomCallback;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.GuestModel;
 import com.jiggie.android.model.Success2Model;
@@ -52,9 +53,9 @@ public class GuestManager {
 
     public static void loaderGuestInterest(String event_id, String fb_id, String gender_interest){
         try {
-            getGuestInterest(event_id, fb_id, gender_interest, new Callback() {
+            getGuestInterest(event_id, fb_id, gender_interest, new CustomCallback() {
                 @Override
-                public void onResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());
@@ -67,7 +68,7 @@ public class GuestManager {
                 }
 
                 @Override
-                public void onFailure(Throwable t) {
+                public void onCustomCallbackFailure(String t) {
                     Log.d("Failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT_GUEST, Utils.MSG_EXCEPTION + t.toString()));
                 }
@@ -80,9 +81,9 @@ public class GuestManager {
 
     public static void loaderGuestConnect(String fb_id, String from_id){
         try {
-            getGuestConnect(fb_id, from_id, new Callback() {
+            getGuestConnect(fb_id, from_id, new CustomCallback() {
                 @Override
-                public void onResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
                     //String header = String.valueOf(response.code());
                     /*String responses = new Gson().toJson(response.body());
@@ -93,7 +94,7 @@ public class GuestManager {
                 }
 
                 @Override
-                public void onFailure(Throwable t) {
+                public void onCustomCallbackFailure(String t) {
                     Log.d("Failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_GUEST_CONNECT, Utils.MSG_EXCEPTION + t.toString()));
                 }

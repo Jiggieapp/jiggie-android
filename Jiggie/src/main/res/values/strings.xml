@@ -168,4 +168,7 @@
     </string-array>
 
     <string name="wait">Please wait</string>
+
+    <string name="no_internet_connection">Please check your internet connection</string>
+    <string name="standard_error_message">Sorry we\'re having some server issues, please check back in a few minutes.</string>
 </resources>

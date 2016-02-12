@@ -7,6 +7,7 @@ import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.api.EventInterface;
 import com.jiggie.android.component.Utils;
+import com.jiggie.android.component.callback.CustomCallback;
 import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.EventModel;
 import com.jiggie.android.model.ExceptionModel;
@@ -64,9 +65,9 @@ public class EventManager {
 
     public static void loaderEvent(String fb_id){
         try {
-            getEventList(fb_id, new Callback() {
+            getEventList(fb_id, new CustomCallback() {
                 @Override
-                public void onResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
                     //String header = String.valueOf(response.code());
                     /*String responses = new Gson().toJson(response.body());
@@ -79,7 +80,7 @@ public class EventManager {
                 }
 
                 @Override
-                public void onFailure(Throwable t) {
+                public void onCustomCallbackFailure(String t) {
                     Log.d("Failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT, Utils.MSG_EXCEPTION + t.toString()));
                 }
@@ -92,9 +93,9 @@ public class EventManager {
 
     public static void loaderEventDetail(String _id, String fb_id, String gender_interest){
         try {
-            getEventDetail(_id, fb_id, gender_interest, new Callback() {
+            getEventDetail(_id, fb_id, gender_interest, new CustomCallback() {
                 @Override
-                public void onResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
                     //String header = String.valueOf(response.code());
                     /*String responses = new Gson().toJson(response.body());
@@ -105,7 +106,7 @@ public class EventManager {
                 }
 
                 @Override
-                public void onFailure(Throwable t) {
+                public void onCustomCallbackFailure(String t) {
                     Log.d("Failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT_DETAIL, Utils.MSG_EXCEPTION + t.toString()));
                 }
@@ -118,9 +119,9 @@ public class EventManager {
 
     public static void loaderTagsList(){
         try {
-            getTagsList(new Callback() {
+            getTagsList(new CustomCallback() {
                 @Override
-                public void onResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());
@@ -131,7 +132,7 @@ public class EventManager {
                 }
 
                 @Override
-                public void onFailure(Throwable t) {
+                public void onCustomCallbackFailure(String t) {
                     Log.d("Failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SETUP_TAGS, Utils.MSG_EXCEPTION + t.toString()));
                 }
