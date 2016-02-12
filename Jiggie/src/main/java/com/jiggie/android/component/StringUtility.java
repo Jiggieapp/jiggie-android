@@ -112,6 +112,31 @@ public class StringUtility {
         }
     }
 
+    //added by Wandy 12-02-2016
+    public static String getAge3(String dateBirth) {
+        try {
+            if (TextUtils.isEmpty(dateBirth))
+                return null;
+
+            final Date date = Common.SHORT_DATE_FORMAT.parse(dateBirth);
+            final Calendar cal1 = Calendar.getInstance();
+            final Calendar cal2 = Calendar.getInstance();
+
+            cal1.setTime(date);
+            cal2.set(Calendar.MINUTE, 0);
+            cal2.set(Calendar.SECOND, 0);
+            cal2.set(Calendar.HOUR_OF_DAY, 0);
+
+            int age = cal2.get(Calendar.YEAR) - cal1.get(Calendar.YEAR);
+            if (cal2.get(Calendar.DAY_OF_YEAR) < cal1.get(Calendar.DAY_OF_YEAR))
+                age--;
+
+            return String.valueOf(age);
+        } catch (ParseException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
     public static Map<String, String> splitQuery(URL url) throws UnsupportedEncodingException {
         Map<String, String> query_pairs = new LinkedHashMap<String, String>();
         String query = url.getQuery();

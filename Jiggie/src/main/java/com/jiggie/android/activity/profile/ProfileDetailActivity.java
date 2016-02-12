@@ -48,6 +48,8 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
     private MemberInfoModel memberInfoModel;
     private GuestModel.Data.GuestInterests guest;
     String fb_id;
+    public static final String TAG = ProfileDetailActivity.class
+            .getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +91,10 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
         super.setToolbarTitle(message.getData().getMemberinfo().getFirst_name(), true);
         memberInfoModel = message;
 
-        final String age = StringUtility.getAge2(message.getData().getMemberinfo().getBirthday());
+        //final String age = StringUtility.getAge2(message.getData().getMemberinfo().getBirthday());
+        //added by wandy 12-02-2016
+        final String age = StringUtility.getAge3(message.getData().getMemberinfo().getBirthday());
+
 
         txtLocation.setText(message.getData().getMemberinfo().getLocation());
         txtDescription.setText(message.getData().getMemberinfo().getAbout());
@@ -110,7 +115,22 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
         String name = message.getData().getMemberinfo().getFirst_name() + " " + message.getData().getMemberinfo().getLast_name();
 
         txtUser.setText(((TextUtils.isEmpty(age)) || (age.equals("0"))) ? name : String.format("%s, %s", name, age));
-        btnEdit.setVisibility(guest == null ? View.VISIBLE : View.GONE);
+        /*if(guest == null)
+            Utils.d(TAG, "guest null");
+        else Utils.d(TAG, "guest tidak null");
+        btnEdit.setVisibility(guest == null ? View.VISIBLE : View.GONE);*/
+
+        Utils.d(TAG, message.getData().getMemberinfo().get_id() + " koosong "
+            + AccountManager.loadLogin().getUserId());
+        if(message.getData().getMemberinfo().getFb_id().equals(
+                AccountManager.loadLogin().getFb_id())) //saya
+        {
+            btnEdit.setVisibility(View.VISIBLE);
+        }
+        else //guest
+        {
+            btnEdit.setVisibility(View.GONE);
+        }
         setToolbarTitle(name, true);
         refreshLayout.setRefreshing(false);
     }

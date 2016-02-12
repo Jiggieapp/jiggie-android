@@ -198,13 +198,13 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         }
         this.progressBar.setVisibility(View.VISIBLE);
 
-
+        //showProgressDialog();
         SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId(), currentSetting.getData().getGender_interest());
     }
 
     public void onEvent(SocialModel message){
         current = null;
-
+        dismissProgressDialog();
         for (int i = 0; i < message.getData().getSocial_feeds().size(); i++) {
             final SocialModel.Data.SocialFeeds item = message.getData().getSocial_feeds().get(i);
 
@@ -220,9 +220,9 @@ public class SocialTabFragment extends Fragment implements TabFragment {
 
     public void onEvent(ExceptionModel message){
         String ex = message.getMessage();
-
         if(message.getFrom().equals(Utils.FROM_SOCIAL_FEED)||message.getFrom().equals(Utils.FROM_SOCIAL_MATCH)||message.getFrom().equals(Utils.FROM_EVENT_DETAIL)){
             if (getContext() != null) {
+                dismissProgressDialog();
                 Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.GONE);
                 if(message.getFrom().equals(Utils.FROM_SOCIAL_MATCH)||message.getFrom().equals(Utils.FROM_EVENT_DETAIL)){
@@ -286,6 +286,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
 
     public void onEvent(EventDetailModel message){
         if (getContext() != null) {
+            dismissProgressDialog();
             generalTxtEvent.setText(getString(R.string.location_viewing, message.getData().getEvents_detail().getTitle(), message.getData().getEvents_detail().getVenue_name()));
             progressBar.setVisibility(View.GONE);
             enableButton(true);
@@ -408,11 +409,33 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         this.inboundBtnNo.setEnabled(isEnabled);
     }
 
+    private ProgressDialog progressDialog;
+
+    private void showProgressDialog()
+    {
+        if(progressDialog == null)
+        {
+            progressDialog = ProgressDialog.show(getActivity(), "",
+                    getResources().getString(R.string.wait));
+            progressDialog.setCancelable(false);
+        }
+
+        if(!progressDialog.isShowing())
+            progressDialog.show();
+    }
+
+    private void dismissProgressDialog()
+    {
+        if(progressDialog!=null && progressDialog.isShowing())
+            progressDialog.dismiss();
+    }
+
     private void match(final boolean confirms) {
         this.progressBar.setVisibility(View.VISIBLE);
         this.enableButton(false);
 
         confirm = confirms;
+        showProgressDialog();
         SocialManager.loaderSocialMatch(AccessToken.getCurrentAccessToken().getUserId(), this.current.getFrom_fb_id(), confirm ? "approved" : "denied");
     }
 
@@ -426,6 +449,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         progressBar.setVisibility(View.GONE);
         enableButton(true);
         current = null;
+
         onRefresh();
 
         if (confirm) {
@@ -453,6 +477,8 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                 context.sendBroadcast(new Intent(getString(R.string.broadcast_social_chat)));
                 startActivity(intent);
             }
+
+            dismissProgressDialog();
         } else
             app.trackMixPanelEvent("Passed Feed Item");
     }
