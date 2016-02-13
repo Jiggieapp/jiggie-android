@@ -5,8 +5,12 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.jiggie.android.api.ChatInterface;
 import com.jiggie.android.component.Utils;
+<<<<<<< HEAD
 import com.jiggie.android.model.ChatActionModel;
 import com.jiggie.android.model.ChatAddModel;
+=======
+import com.jiggie.android.component.callback.CustomCallback;
+>>>>>>> 9b867a0640e31132a20fcc5411495772b5ede880
 import com.jiggie.android.model.ChatConversationModel;
 import com.jiggie.android.model.ChatListModel;
 import com.jiggie.android.model.ChatResponseModel;
@@ -71,9 +75,9 @@ public class ChatManager {
 
     public static void loaderChatConversations(String fb_id, String to_id, final String fromFunction){
         try {
-            getChatConversations(fb_id, to_id, new Callback() {
+            getChatConversations(fb_id, to_id, new CustomCallback() {
                 @Override
-                public void onResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
                     /*String responses = new Gson().toJson(response.body());
                     Log.d("res", responses);*/
 
@@ -83,7 +87,7 @@ public class ChatManager {
                 }
 
                 @Override
-                public void onFailure(Throwable t) {
+                public void onCustomCallbackFailure(String  t) {
                     Log.d("Exception", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_CHAT_CONVERSATION, Utils.MSG_EXCEPTION + t.toString()));
                 }
@@ -96,9 +100,9 @@ public class ChatManager {
 
     public static void loaderChatList(String fb_id){
         try {
-            getChatList(fb_id, new Callback() {
+            getChatList(fb_id, new CustomCallback() {
                 @Override
-                public void onResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
                     String responses = new Gson().toJson(response.body());
                     Log.d("res", responses);
 
@@ -109,7 +113,7 @@ public class ChatManager {
                 }
 
                 @Override
-                public void onFailure(Throwable t) {
+                public void onCustomCallbackFailure(String  t) {
                     Log.d("Exception", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_CHAT, Utils.MSG_EXCEPTION + t.toString()));
                 }

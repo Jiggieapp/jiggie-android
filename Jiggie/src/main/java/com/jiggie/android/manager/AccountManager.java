@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.api.AccountInterface;
 import com.jiggie.android.component.Utils;
+import com.jiggie.android.component.callback.CustomCallback;
 import com.jiggie.android.model.AboutModel;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
@@ -45,7 +46,6 @@ public class AccountManager {
     private static AccountInterface getInstance(){
         if(accountInterface == null)
             initAccountService();
-
         return accountInterface;
     }
 
@@ -71,163 +71,146 @@ public class AccountManager {
 
     public static void loaderLogin(LoginModel loginRequestModel){
         try {
-            postLogin(loginRequestModel, new Callback() {
+            postLogin(loginRequestModel, new CustomCallback() {
                 @Override
-                public void onResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
                     String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
+                    Utils.d("res", responses);
 
                     SettingModel dataTemp = (SettingModel)response.body();
-
                     EventBus.getDefault().post(dataTemp);
-
                 }
 
                 @Override
-                public void onFailure(Throwable t) {
-                    Log.d("failure", t.toString());
+                public void onCustomCallbackFailure(String  t) {
+                    Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SIGN_IN, Utils.MSG_EXCEPTION+t.toString()));
                 }
             });
         }catch (IOException e){
-            Log.d("exception", e.toString());
+            Utils.d("exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SIGN_IN, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 
     public static void loaderMemberSetting(MemberSettingModel memberSettingModel){
         try {
-            postMemberSetting(memberSettingModel, new Callback() {
+            postMemberSetting(memberSettingModel, new CustomCallback() {
                 @Override
-                public void onResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
                     String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
+                    Utils.d("res", responses);
 
                     SuccessModel dataTemp = (SuccessModel) response.body();
-
                     EventBus.getDefault().post(dataTemp);
-
                 }
 
                 @Override
-                public void onFailure(Throwable t) {
-                    Log.d("failure", t.toString());
+                public void onCustomCallbackFailure(String t) {
+                    Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
-            Log.d("exception", e.toString());
+            Utils.d("exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 
     public static void loaderMemberInfo(String fb_id){
         try {
-            getMemberInfo(fb_id, new Callback() {
+            getMemberInfo(fb_id, new CustomCallback() {
                 @Override
-                public void onResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
                     String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
+                    Utils.d("res", responses);
 
                     MemberInfoModel dataTemp = (MemberInfoModel) response.body();
-
                     EventBus.getDefault().post(dataTemp);
-
                 }
 
                 @Override
-                public void onFailure(Throwable t) {
-                    Log.d("failure", t.toString());
+                public void onCustomCallbackFailure(String  t) {
+                    Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_DETAIL, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
-            Log.d("exception", e.toString());
+            Utils.d("exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_DETAIL, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 
     public static void loaderSetting(String fb_id){
         try {
-            getSetting(fb_id, new Callback() {
+            getSetting(fb_id, new CustomCallback() {
                 @Override
-                public void onResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
                     String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
+                    Utils.d("res", responses);
 
                     SettingModel dataTemp = (SettingModel) response.body();
-
                     EventBus.getDefault().post(dataTemp);
-
                 }
 
                 @Override
-                public void onFailure(Throwable t) {
-                    Log.d("failure", t.toString());
+                public void onCustomCallbackFailure(String  t) {
+                    Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_SETTING, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
-            Log.d("exception", e.toString());
+            Utils.d("exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_SETTING, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 
     public static void loaderEditAbout(AboutModel aboutModel){
         try {
-            postEditAbout(aboutModel, new Callback() {
+            postEditAbout(aboutModel, new CustomCallback() {
                 @Override
-                public void onResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
                     String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
+                    Utils.d("res", responses);
 
                     Success2Model dataTemp = (Success2Model) response.body();
-
                     EventBus.getDefault().post(dataTemp);
-
                 }
 
                 @Override
-                public void onFailure(Throwable t) {
-                    Log.d("failure", t.toString());
+                public void onCustomCallbackFailure(String  t) {
+                    Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_EDIT, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
-            Log.d("exception", e.toString());
+            Utils.d("exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_EDIT, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 
     public static void saveSetting(SettingModel settingModel){
-
         String model = new Gson().toJson(settingModel);
         App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
                 .putString(Utils.SETTING_MODEL, model).apply();
-
     }
 
     public static SettingModel loadSetting(){
-
         SettingModel settingModel = new Gson().fromJson(App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING,
                 Context.MODE_PRIVATE).getString(Utils.SETTING_MODEL, ""), SettingModel.class);
-
         return settingModel;
     }
 
     public static void saveLogin(LoginModel loginModel){
-
         String model = new Gson().toJson(loginModel);
         App.getInstance().getSharedPreferences(Utils.PREFERENCE_LOGIN, Context.MODE_PRIVATE).edit()
                 .putString(Utils.LOGIN_MODEL, model).apply();
-
     }
 
     public static LoginModel loadLogin(){
 
         LoginModel loginModel = new Gson().fromJson(App.getInstance().getSharedPreferences(Utils.PREFERENCE_LOGIN,
                 Context.MODE_PRIVATE).getString(Utils.LOGIN_MODEL, ""), LoginModel.class);
-
         return loginModel;
     }
 

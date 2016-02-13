@@ -28,6 +28,7 @@ public class Utils {
     public static String FROM_SHARE_LINK = "share_link";
     public static String FROM_SETUP_TAGS = "setup_tags";
     public static String FROM_GUEST_CONNECT = "guest_connect";
+    public static String ACCESS_TOKEN = "access_token";
 
     public static boolean SHOW_WALKTHROUGH_EVENT = true;
     public static boolean SHOW_WALKTHROUGH_SOCIAL = true;
@@ -37,7 +38,9 @@ public class Utils {
     public static String SET_WALKTHROUGH_CHAT = "walkthrough_chat";
 
     //ERROR CODE & MESSAGE
-    public static String MSG_EXCEPTION = "Failed: ";
+    //public static String MSG_EXCEPTION = "Failed: ";
+    //changed by wandy 12-02-2016
+    public static String MSG_EXCEPTION = "";
     //--------------------
 
     public static String PREFERENCE_SETTING = "setting";

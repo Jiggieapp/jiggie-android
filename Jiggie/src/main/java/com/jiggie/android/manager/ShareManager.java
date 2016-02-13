@@ -5,6 +5,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.jiggie.android.api.ShareInterface;
 import com.jiggie.android.component.Utils;
+import com.jiggie.android.component.callback.CustomCallback;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.ShareLinkModel;
 
@@ -48,9 +49,9 @@ public class ShareManager {
 
     public static void loaderShareApps(String fb_id){
         try {
-            getShareApps(fb_id, new Callback() {
+            getShareApps(fb_id, new CustomCallback() {
                 @Override
-                public void onResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());
@@ -62,7 +63,7 @@ public class ShareManager {
                 }
 
                 @Override
-                public void onFailure(Throwable t) {
+                public void onCustomCallbackFailure(String t) {
                     Log.d("Failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SHARE_LINK, Utils.MSG_EXCEPTION + t.toString()));
                 }
@@ -75,9 +76,9 @@ public class ShareManager {
 
     public static void loaderShareEvent(String event_id, String fb_id, String venue_name){
         try {
-            getShareEvent(event_id, fb_id, venue_name, new Callback() {
+            getShareEvent(event_id, fb_id, venue_name, new CustomCallback() {
                 @Override
-                public void onResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());
@@ -88,7 +89,7 @@ public class ShareManager {
                 }
 
                 @Override
-                public void onFailure(Throwable t) {
+                public void onCustomCallbackFailure(String t) {
                     Log.d("Failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SHARE_LINK, Utils.MSG_EXCEPTION + t.toString()));
                 }

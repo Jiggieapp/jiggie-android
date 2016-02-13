@@ -24,6 +24,11 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
+import com.bumptech.glide.DrawableTypeRequest;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.facebook.AccessToken;
 import com.jiggie.android.App;
 import com.jiggie.android.BuildConfig;
 import com.jiggie.android.R;
@@ -46,11 +51,6 @@ import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.SettingModel;
-import com.android.volley.VolleyError;
-import com.bumptech.glide.DrawableTypeRequest;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.facebook.AccessToken;
 import com.jiggie.android.model.SocialModel;
 import com.jiggie.android.model.SuccessModel;
 
@@ -125,6 +125,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     private SocialModel.Data.SocialFeeds current;
     boolean confirm;
     SettingModel currentSetting;
+    private int socialSize;
 
     @Override
     public String getTitle() {
@@ -204,17 +205,26 @@ public class SocialTabFragment extends Fragment implements TabFragment {
 
     public void onEvent(SocialModel message){
         current = null;
+
+        for(SocialModel.Data.SocialFeeds item : message.getData().getSocial_feeds())
+        {
+            if(SocialManager.Type.isInbound(item))
+            {
+                socialSize++;
+            }
+        }
         dismissProgressDialog();
+
         for (int i = 0; i < message.getData().getSocial_feeds().size(); i++) {
             final SocialModel.Data.SocialFeeds item = message.getData().getSocial_feeds().get(i);
-
+            //if(item..equalsIgnoreCase(Common.SOCIAL_FEED_TYPE_APPROVED))
             if (SocialManager.Type.isInbound(item)) {
                 current = item;
                 break;
             } else if (current == null)
                 current = item;
         }
-
+        setHomeTitle();
         openDetail(current);
     }
 
@@ -505,5 +515,20 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    private void setHomeTitle() {
+        if (this.homeMain != null) {
+            //final int unreadCount = this.adapter.countUnread();
+            if (socialSize > 0)
+            {
+                if(socialSize > 99)
+                    this.title = String.format("%s (%d)", getString(R.string.social), 99);
+                else
+                    this.title = String.format("%s (%d)", getString(R.string.social), socialSize);
+            }
+            else this.title = super.getString(R.string.social);
+            this.homeMain.onTabTitleChanged(this);
+        }
     }
 }
