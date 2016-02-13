@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.model.ChatListModel;
 import com.jiggie.android.model.Common;
@@ -104,7 +105,17 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
             holder.txtUnread.setVisibility(item.getUnread() == 0 ? View.INVISIBLE : View.VISIBLE);
             holder.txtTime.setTextColor(ContextCompat.getColor(this.fragment.getContext(), item.getUnread() == 0 ? android.R.color.darker_gray : R.color.colorAccent));
 
-            Glide.with(this.fragment).load(item.getProfile_image()).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.imageView) {
+            //Added by Aga 12-2-2016---
+            String urlImage;
+            if(item.getProfile_image()!=null){
+                urlImage = item.getProfile_image();
+            }else{
+                final int width = holder.imageView.getWidth() * 2;
+                urlImage = App.getFacebookImage(item.getFb_id(), width);
+            }
+            //---------
+
+            Glide.with(this.fragment).load(urlImage).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.imageView) {
                 @Override
                 protected void setResource(Bitmap resource) {
                     final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(fragment.getResources(), resource);

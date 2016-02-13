@@ -95,8 +95,8 @@
     <string name="share">Share</string>
     <string name="your_location">Your location</string>
     <string name="connected">Connected</string>
-    <string name="check_back_later">Check back later</string>
-    <string name="check_back_later_description">Browse through some more events and we\'ll match you up.</string>
+    <string name="check_back_later">Check back soon</string>
+    <string name="check_back_later_description">Browse some events and your social feed will show members who like the same events.</string>
     <string name="start_chatting">Start chatting</string>
     <string name="make_some_plan">Make some plans for today!</string>
     <string name="socialize">Socialize</string>

@@ -15,6 +15,7 @@ import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.MemberInfoModel;
 import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.SettingModel;
+import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SuccessModel;
 
 import java.io.IOException;
@@ -180,7 +181,7 @@ public class AccountManager {
                     String responses = new Gson().toJson(response.body());
                     Log.d("res", responses);
 
-                    SuccessModel dataTemp = (SuccessModel) response.body();
+                    Success2Model dataTemp = (Success2Model) response.body();
 
                     EventBus.getDefault().post(dataTemp);
 

@@ -91,9 +91,9 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
         super.setToolbarTitle(message.getData().getMemberinfo().getFirst_name(), true);
         memberInfoModel = message;
 
-        //final String age = StringUtility.getAge2(message.getData().getMemberinfo().getBirthday());
+        final String age = StringUtility.getAge2(message.getData().getMemberinfo().getBirthday());
         //added by wandy 12-02-2016
-        final String age = StringUtility.getAge3(message.getData().getMemberinfo().getBirthday());
+        //final String age = StringUtility.getAge3(message.getData().getMemberinfo().getBirthday());
 
 
         txtLocation.setText(message.getData().getMemberinfo().getLocation());
@@ -151,7 +151,8 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             //this.currentProfile.setAbout(data.getStringExtra(UserProfile.FIELD_ABOUT));
-            this.txtDescription.setText(memberInfoModel.getData().getMemberinfo().getAbout());
+
+            this.txtDescription.setText(AccountManager.loadLogin().getAbout());
             //this.currentProfile.save(this);
         }
     }

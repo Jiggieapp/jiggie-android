@@ -431,6 +431,19 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             App.getInstance().trackMixPanelEvent("Share Event");
             String share = String.format("%s\n\n%s", shareLinkModel.getMessage(), shareLinkModel.getUrl());
             super.startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, share).putExtra(Intent.EXTRA_SUBJECT, "Lets Go Out With Jiggie").setType("text/plain"), super.getString(R.string.share)));
+
+            /*super.startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, share).
+                    putExtra(Intent.EXTRA_STREAM, Uri.parse(eventDetail.getPhotos().get(0))).
+                    putExtra(Intent.EXTRA_SUBJECT, "Lets Go Out With Jiggie").setType("**///*"), super.getString(R.string.share)));*/
+
+            /*Glide.with(this).load(eventDetail.getPhotos().get(0)).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.imageView) {
+                @Override
+                protected void setResource(Bitmap resource) {
+                    final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(fragment.getResources(), resource);
+                    circularBitmapDrawable.setCircular(true);
+                    super.getView().setImageDrawable(circularBitmapDrawable);
+                }
+            });*/
         } else {
             progressDialog = App.showProgressDialog(this);
 

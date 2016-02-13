@@ -87,6 +87,12 @@ public class VolleyHandler {
         return this.serverHost == null ? (this.serverHost = App.getInstance().getString(R.string.server_host)) : this.serverHost;
     }
 
+    //Added by Aga----
+    public String getServerHost2() {
+        return this.serverHost == null ? (this.serverHost = "http://api-dev.jiggieapp.com/app/v3/") : this.serverHost;
+    }
+    //-------
+
     public RequestQueue getVolleyRequestQueue() {
         if (this.volleyRequestQueue == null) {
             this.volleyRequestQueue = new RequestQueue(new DiskBasedCache(new File(App.getInstance().getCachePath("volley")), DEFAULT_DISK_USAGE_BYTES), new BasicNetwork(new HurlStack()));
