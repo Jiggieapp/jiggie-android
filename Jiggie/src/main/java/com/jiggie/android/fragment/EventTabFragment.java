@@ -1,6 +1,9 @@
 package com.jiggie.android.fragment;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -17,7 +20,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -52,18 +56,16 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
     SwipeRefreshLayout refreshLayout;
     @Bind(R.id.recycler)
     RecyclerView recyclerView;
-    @Bind(R.id.img_wk)
+    @Bind(R.id.contentView2)
+    FrameLayout contentView2;
+    /*@Bind(R.id.img_wk)
     ImageView imgWk;
     @Bind(R.id.txt_wk_action)
     TextView txtWkAction;
     @Bind(R.id.txt_wk_title)
     TextView txtWkTitle;
     @Bind(R.id.txt_wk_desc)
-    TextView txtWkDesc;
-    @Bind(R.id.layout_walkthrough)
-    RelativeLayout layoutWalkthrough;
-    @Bind(R.id.contentView2)
-    FrameLayout contentView2;
+    TextView txtWkDesc;*/
 
     private EventTabListAdapter adapter;
     private HomeMain homeMain;
@@ -74,12 +76,20 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
 
     private ArrayList<EventModel.Data.Events> events = new ArrayList<EventModel.Data.Events>();
     private View failedView;
+    private Dialog dialogWalkthrough;
 
     @Override
     public void onTabSelected() {
         App.getInstance().trackMixPanelEvent("View Events");
-        if ((this.adapter != null) && (this.adapter.getItemCount() == 0))
+        if ((this.adapter != null) && (this.adapter.getItemCount() == 0)) {
             this.onRefresh();
+
+            if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_EVENT, false)) {
+                showWalkthroughDialog();
+
+            }
+        }
+
     }
 
     @Override
@@ -113,14 +123,6 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
         this.refreshLayout.setOnRefreshListener(this);
         this.events = new ArrayList<>();
         super.setHasOptionsMenu(true);
-
-        if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_EVENT, false)) {
-            layoutWalkthrough.setVisibility(View.VISIBLE);
-            imgWk.setImageResource(R.drawable.wk_img_event);
-            txtWkAction.setVisibility(View.GONE);
-            txtWkTitle.setText(R.string.wk_event_title);
-            txtWkDesc.setText(R.string.wk_event_desc);
-        }
 
     }
 
@@ -187,13 +189,6 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
-    }
-
-    @OnClick(R.id.layout_walkthrough)
-    void walkthroughOnClick() {
-        Utils.SHOW_WALKTHROUGH_EVENT = false;
-        layoutWalkthrough.setVisibility(View.GONE);
-        App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, false).commit();
     }
 
     public void onEvent(EventModel message) {
@@ -271,9 +266,9 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
         }
 
         //Added by Aga 11-2-2016
-        if(adapter.getItemCount()>0){
+        if (adapter.getItemCount() > 0) {
             getFailedView().setVisibility(View.GONE);
-        }else{
+        } else {
             getFailedView().setVisibility(View.VISIBLE);
         }
         //------
@@ -289,7 +284,7 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
 
             this.failedView = LayoutInflater.from(super.getContext()).inflate(R.layout.view_failed, this.contentView2, false);
             this.failedView.findViewById(R.id.btnRetry).setVisibility(View.GONE);
-            TextView txt = (TextView)this.failedView.findViewById(R.id.textFailed);
+            TextView txt = (TextView) this.failedView.findViewById(R.id.textFailed);
             txt.setText(getResources().getString(R.string.title_no_event));
             this.contentView2.addView(this.failedView);
         }
@@ -301,5 +296,43 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+    }
+
+    private void showWalkthroughDialog() {
+        dialogWalkthrough = new Dialog(getActivity());
+        dialogWalkthrough.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialogWalkthrough.setContentView(R.layout.walkthrough_screen);
+        dialogWalkthrough.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialogWalkthrough.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
+
+        RelativeLayout layout = (RelativeLayout)dialogWalkthrough.findViewById(R.id.layout_walkthrough);
+        ImageView imgWk = (ImageView)dialogWalkthrough.findViewById(R.id.img_wk);
+        TextView txtWkAction = (TextView)dialogWalkthrough.findViewById(R.id.txt_wk_action);
+        TextView txtWkTitle = (TextView)dialogWalkthrough.findViewById(R.id.txt_wk_title);
+        TextView txtWkDesc = (TextView)dialogWalkthrough.findViewById(R.id.txt_wk_desc);
+        imgWk.setImageResource(R.drawable.wk_img_event);
+        txtWkAction.setVisibility(View.GONE);
+        txtWkTitle.setText(R.string.wk_event_title);
+        txtWkDesc.setText(R.string.wk_event_desc);
+
+        dialogWalkthrough.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                Utils.SHOW_WALKTHROUGH_EVENT = false;
+                App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, false).commit();
+            }
+        });
+
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.SHOW_WALKTHROUGH_EVENT = false;
+                App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, false).commit();
+                dialogWalkthrough.dismiss();
+            }
+        });
+
+        dialogWalkthrough.show();
     }
 }

@@ -26,14 +26,5 @@
 
         </FrameLayout>
 
-        <RelativeLayout
-            android:id="@+id/layout_walkthrough"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone">
-
-            <include layout="@layout/walkthrough_screen"></include>
-        </RelativeLayout>
-
     </FrameLayout>
 </android.support.v4.widget.SwipeRefreshLayout>

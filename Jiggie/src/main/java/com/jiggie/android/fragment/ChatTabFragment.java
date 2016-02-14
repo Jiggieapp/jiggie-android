@@ -1,10 +1,13 @@
 package com.jiggie.android.fragment;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -16,6 +19,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -57,16 +62,6 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     RecyclerView recyclerView;
     /*@Bind(R.id.contentView)
     ViewGroup contentView;*/
-    @Bind(R.id.img_wk)
-    ImageView imgWk;
-    @Bind(R.id.txt_wk_action)
-    TextView txtWkAction;
-    @Bind(R.id.txt_wk_title)
-    TextView txtWkTitle;
-    @Bind(R.id.txt_wk_desc)
-    TextView txtWkDesc;
-    @Bind(R.id.layout_walkthrough)
-    RelativeLayout layoutWalkthrough;
     @Bind(R.id.contentView2)
     FrameLayout contentView2;
 
@@ -78,6 +73,8 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     private View emptyView;
     private View rootView;
     private String title;
+
+    Dialog dialogWalkthrough;
 
     @Override
     public void setHomeMain(HomeMain homeMain) {
@@ -93,8 +90,14 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     public void onTabSelected() {
         App.getInstance().trackMixPanelEvent("Conversations List");
         //if ((this.adapter != null) && (this.adapter.getItemCount() == 0)||ChatManager.NEED_REFRESH_CHATLIST)
-        if ((this.adapter != null) && (this.adapter.getItemCount() == 0))
+        if ((this.adapter != null) && (this.adapter.getItemCount() == 0)){
             this.onRefresh();
+
+            if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_CHAT, false)) {
+                showWalkthroughDialog();
+            }
+        }
+
     }
 
     @Nullable
@@ -130,14 +133,6 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
             }
         });
 
-        if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_CHAT, false)) {
-            layoutWalkthrough.setVisibility(View.VISIBLE);
-            txtWkAction.setPadding(0, 0, Utils.myPixel(getActivity(), 135), Utils.myPixel(getActivity(), 22));
-            txtWkAction.setText(getString(R.string.wk_chat_action));
-            imgWk.setImageResource(R.drawable.wk_img_chat);
-            txtWkTitle.setText(R.string.wk_chat_title);
-            txtWkDesc.setText(getResources().getText(R.string.wk_chat_desc));
-        }
 
     }
 
@@ -328,11 +323,44 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         ButterKnife.unbind(this);
     }
 
-    @OnClick(R.id.layout_walkthrough)
-    void walkthroughOnClick() {
-        Utils.SHOW_WALKTHROUGH_CHAT = false;
-        App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_CHAT, false).commit();
-        layoutWalkthrough.setVisibility(View.GONE);
+    private void showWalkthroughDialog() {
+        dialogWalkthrough = new Dialog(getActivity());
+        dialogWalkthrough.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialogWalkthrough.setContentView(R.layout.walkthrough_screen);
+        dialogWalkthrough.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialogWalkthrough.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
+        RelativeLayout layout = (RelativeLayout)dialogWalkthrough.findViewById(R.id.layout_walkthrough);
+        ImageView imgWk = (ImageView)dialogWalkthrough.findViewById(R.id.img_wk);
+        TextView txtWkAction = (TextView)dialogWalkthrough.findViewById(R.id.txt_wk_action);
+        TextView txtWkTitle = (TextView)dialogWalkthrough.findViewById(R.id.txt_wk_title);
+        TextView txtWkDesc = (TextView)dialogWalkthrough.findViewById(R.id.txt_wk_desc);
+        txtWkAction.setPadding(0, 0, Utils.myPixel(getActivity(), 135), Utils.myPixel(getActivity(), 22));
+        txtWkAction.setText(getString(R.string.wk_chat_action));
+        imgWk.setImageResource(R.drawable.wk_img_chat);
+        txtWkTitle.setText(R.string.wk_chat_title);
+        txtWkDesc.setText(getResources().getText(R.string.wk_chat_desc));
+
+        dialogWalkthrough.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                Utils.SHOW_WALKTHROUGH_CHAT = false;
+                App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_CHAT, false).commit();
+            }
+        });
+
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.SHOW_WALKTHROUGH_CHAT = false;
+                App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_CHAT, false).commit();
+                dialogWalkthrough.dismiss();
+            }
+        });
+
+        dialogWalkthrough.setCanceledOnTouchOutside(true);
+        dialogWalkthrough.setCancelable(true);
+        dialogWalkthrough.show();
     }
 
 }
