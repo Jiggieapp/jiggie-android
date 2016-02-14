@@ -33,15 +33,16 @@ import butterknife.ButterKnife;
  */
 public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.ViewHolder> {
     private ConversationSelectedListener listener;
-    //private ArrayList<Conversation> items;
+    private ConversationLongClickListener longClickListener;
     private Fragment fragment;
 
     private ArrayList<ChatListModel.Data.ChatLists> items;
 
-    public ChatTabListAdapter(Fragment fragment, ConversationSelectedListener listener) {
+    public ChatTabListAdapter(Fragment fragment, ConversationSelectedListener listener, ConversationLongClickListener longClickListener) {
         this.items = new ArrayList<>();
         this.fragment = fragment;
         this.listener = listener;
+        this.longClickListener = longClickListener;
     }
 
     public void clear() { this.items.clear(); }
@@ -61,7 +62,7 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_conversation, parent, false), this.listener);
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_conversation, parent, false), this.listener, this.longClickListener);
     }
 
     /*@Override
@@ -131,7 +132,7 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
     @Override
     public int getItemCount() { return this.items.size(); }
 
-    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         @Bind(R.id.imageView) ImageView imageView;
         @Bind(R.id.txtUser) TextView txtUser;
         @Bind(R.id.txtMessage) TextView txtMessage;
@@ -141,12 +142,15 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
         //Conversation conversation;
         ChatListModel.Data.ChatLists conversation;
         private ConversationSelectedListener listener;
+        private ConversationLongClickListener longClickListener;
 
-        public ViewHolder(View itemView, ConversationSelectedListener listener) {
+        public ViewHolder(View itemView, ConversationSelectedListener listener, ConversationLongClickListener longClickListener) {
             super(itemView);
             this.listener = listener;
+            this.longClickListener = longClickListener;
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
         @Override
@@ -154,11 +158,21 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
             if (this.listener != null)
                 this.listener.onConversationSelected(this.conversation);
         }
+
+        @Override
+        public boolean onLongClick(View v) {
+            if (this.longClickListener != null)
+                this.longClickListener.onConversationLongClick(this.conversation);
+            return true;
+        }
     }
 
     public interface ConversationSelectedListener {
-        //void onConversationSelected(Conversation conversation);
         void onConversationSelected(ChatListModel.Data.ChatLists conversation);
+    }
+
+    public interface ConversationLongClickListener {
+        void onConversationLongClick(ChatListModel.Data.ChatLists conversation);
     }
 
     public ChatListModel.Data.ChatLists find(String facebookId) {

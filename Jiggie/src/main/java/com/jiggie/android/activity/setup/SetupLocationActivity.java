@@ -1,10 +1,12 @@
 package com.jiggie.android.activity.setup;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Switch;
@@ -22,6 +24,9 @@ import com.jiggie.android.model.MemberSettingModel;
 import com.facebook.AccessToken;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.SuccessModel;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -55,26 +60,15 @@ public class SetupLocationActivity extends BaseActivity {
     @OnClick(R.id.btnDone)
     @SuppressWarnings("unused")
     void btnDoneOnClick() {
-        final ProgressDialog dialog = App.showProgressDialog(this);
-        final Intent intent = super.getIntent();
-
-        final MemberSettingModel memberSettingModel = new MemberSettingModel();
-        final SettingModel currentSettingModel = AccountManager.loadSetting();
-        memberSettingModel.setAccount_type(currentSettingModel.getData().getAccount_type());
-        memberSettingModel.setLocation(this.switchView.isChecked() ? 1 : 0);
-        memberSettingModel.setGender(currentSettingModel.getData().getGender());
-        memberSettingModel.setGender_interest(currentSettingModel.getData().getGender_interest());
-        memberSettingModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
-        memberSettingModel.setChat(intent.getBooleanExtra(SetupNotificationActivity.PARAM_NOTIFICATION, true) ? 1 : 0);
-        memberSettingModel.setFeed(intent.getBooleanExtra(SetupNotificationActivity.PARAM_NOTIFICATION, true) ? 1 : 0);
-        memberSettingModel.setExperiences(TextUtils.join(",", intent.getStringArrayExtra(SetupTagsActivity.PARAM_EXPERIENCES)));
-
-        AccountManager.loaderMemberSetting(memberSettingModel);
+        if(this.switchView.isChecked()){
+            showLocationDialog();
+        }else{
+            actionDone(this.switchView.isChecked());
+        }
 
     }
 
     public void onEvent(SuccessModel message){
-        dialog = App.showProgressDialog(this);
 
         if (isActive()) {
             dialog.dismiss();
@@ -107,5 +101,50 @@ public class SetupLocationActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+    }
+
+    public void showLocationDialog() {
+        AlertDialog dialogNotif = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert)
+                .setTitle(R.string.title_dialog_location).setMessage(R.string.msg_dialog_location)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        actionDone(true);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        actionDone(false);
+                    }
+                }).create();
+        dialogNotif.show();
+
+    }
+
+    private void actionDone(boolean isChecked){
+        dialog = App.showProgressDialog(this);
+        final Intent intent = super.getIntent();
+
+        final MemberSettingModel memberSettingModel = new MemberSettingModel();
+        final SettingModel currentSettingModel = AccountManager.loadSetting();
+        memberSettingModel.setAccount_type(currentSettingModel.getData().getAccount_type());
+        memberSettingModel.setLocation(isChecked ? 1 : 0);
+        memberSettingModel.setGender(currentSettingModel.getData().getGender());
+        memberSettingModel.setGender_interest(currentSettingModel.getData().getGender_interest());
+        memberSettingModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
+        memberSettingModel.setChat(intent.getBooleanExtra(SetupNotificationActivity.PARAM_NOTIFICATION, true) ? 1 : 0);
+        memberSettingModel.setFeed(intent.getBooleanExtra(SetupNotificationActivity.PARAM_NOTIFICATION, true) ? 1 : 0);
+        memberSettingModel.setExperiences(TextUtils.join(",", intent.getStringArrayExtra(SetupTagsActivity.PARAM_EXPERIENCES)));
+
+        AccountManager.loaderMemberSetting(memberSettingModel);
+
+        currentSettingModel.getData().getNotifications().setLocation(isChecked);
+        currentSettingModel.getData().getNotifications().setChat(intent.getBooleanExtra(SetupNotificationActivity.PARAM_NOTIFICATION, true));
+        currentSettingModel.getData().getNotifications().setFeed(intent.getBooleanExtra(SetupNotificationActivity.PARAM_NOTIFICATION, true));
+        currentSettingModel.setMatchme(intent.getBooleanExtra(SetupNotificationActivity.PARAM_NOTIFICATION, true));
+        ArrayList<String> arrExperiences = new ArrayList<String>(Arrays.asList(intent.getStringArrayExtra(SetupTagsActivity.PARAM_EXPERIENCES)));
+        currentSettingModel.getData().setExperiences(arrExperiences);
+        AccountManager.saveSetting(currentSettingModel);
     }
 }

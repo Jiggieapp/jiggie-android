@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.StringUtility;
@@ -23,7 +24,6 @@ import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.GuestModel;
 import com.jiggie.android.model.MemberInfoModel;
-import com.facebook.AccessToken;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -34,14 +34,24 @@ import it.sephiroth.android.library.widget.HListView;
  * Created by rangg on 14/11/2015.
  */
 public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeObserver.OnGlobalLayoutListener, SwipeRefreshLayout.OnRefreshListener {
-    @Bind(R.id.collapsing_toolbar) CollapsingToolbarLayout collapsingToolbarLayout;
-    @Bind(R.id.imagePagerIndicator) HListView imagePagerIndicator;
-    @Bind(R.id.swipe_refresh) SwipeRefreshLayout refreshLayout;
-    @Bind(R.id.imageViewPager) ViewPager imageViewPager;
-    @Bind(R.id.txtDescription) TextView txtDescription;
-    @Bind(R.id.txtLocation) TextView txtLocation;
-    @Bind(R.id.btnEdit) ImageButton btnEdit;
-    @Bind(R.id.txtUser) TextView txtUser;
+    @Bind(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbarLayout;
+    @Bind(R.id.imagePagerIndicator)
+    HListView imagePagerIndicator;
+    @Bind(R.id.swipe_refresh)
+    SwipeRefreshLayout refreshLayout;
+    @Bind(R.id.imageViewPager)
+    ViewPager imageViewPager;
+    @Bind(R.id.txtDescription)
+    TextView txtDescription;
+    @Bind(R.id.txtLocation)
+    TextView txtLocation;
+    @Bind(R.id.btnEdit)
+    ImageButton btnEdit;
+    @Bind(R.id.txtUser)
+    TextView txtUser;
+    @Bind(R.id.txtTitleDescription)
+    TextView txtTitleDescription;
 
     private ImagePagerIndicatorAdapter pagerIndicatorAdapter;
     //private UserProfile currentProfile;
@@ -72,7 +82,7 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
 
         App.getInstance().trackMixPanelEvent("View Member Profile");
         fb_id = super.getIntent().getStringExtra(Common.FIELD_FACEBOOK_ID);
-        if(fb_id==null){
+        if (fb_id == null) {
             fb_id = AccessToken.getCurrentAccessToken().getUserId();
         }
 
@@ -87,7 +97,7 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
         AccountManager.loaderMemberInfo(fb_id);
     }
 
-    public void onEvent(MemberInfoModel message){
+    public void onEvent(MemberInfoModel message) {
         super.setToolbarTitle(message.getData().getMemberinfo().getFirst_name(), true);
         memberInfoModel = message;
 
@@ -110,7 +120,7 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
         else if (message.getData().getMemberinfo().getLocation().equalsIgnoreCase("n/a"))
             txtLocation.setVisibility(View.GONE);
         if (TextUtils.isEmpty(message.getData().getMemberinfo().getAbout()))
-            txtDescription.setText(R.string.about);
+            txtDescription.setVisibility(View.GONE);
 
         String name = message.getData().getMemberinfo().getFirst_name() + " " + message.getData().getMemberinfo().getLast_name();
 
@@ -121,13 +131,12 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
         btnEdit.setVisibility(guest == null ? View.VISIBLE : View.GONE);*/
 
         Utils.d(TAG, message.getData().getMemberinfo().get_id() + " koosong "
-            + AccountManager.loadLogin().getUserId());
-        if(message.getData().getMemberinfo().getFb_id().equals(
+                + AccountManager.loadLogin().getUserId());
+        if (message.getData().getMemberinfo().getFb_id().equals(
                 AccountManager.loadLogin().getFb_id())) //saya
         {
             btnEdit.setVisibility(View.VISIBLE);
-        }
-        else //guest
+        } else //guest
         {
             btnEdit.setVisibility(View.GONE);
         }
@@ -135,8 +144,8 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
         refreshLayout.setRefreshing(false);
     }
 
-    public void onEvent(ExceptionModel message){
-        if(message.getFrom().equals(Utils.FROM_PROFILE_DETAIL)){
+    public void onEvent(ExceptionModel message) {
+        if (message.getFrom().equals(Utils.FROM_PROFILE_DETAIL)) {
             Toast.makeText(ProfileDetailActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
             refreshLayout.setRefreshing(false);
         }
@@ -144,16 +153,22 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
 
     @SuppressWarnings("unused")
     @OnClick(R.id.btnEdit)
-    void btnEditOnClick() { super.startActivityForResult(new Intent(this, ProfileEditActivity.class).putExtra(Common.FIELD_ABOUT, memberInfoModel.getData().getMemberinfo().getAbout()), 0); }
+    void btnEditOnClick() {
+        super.startActivityForResult(new Intent(this, ProfileEditActivity.class).putExtra(Common.FIELD_ABOUT, AccountManager.loadLogin().getAbout()), 0);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            //this.currentProfile.setAbout(data.getStringExtra(UserProfile.FIELD_ABOUT));
 
-            this.txtDescription.setText(AccountManager.loadLogin().getAbout());
-            //this.currentProfile.save(this);
+            if (TextUtils.isEmpty(AccountManager.loadLogin().getAbout())){
+                txtDescription.setVisibility(View.GONE);
+            }else{
+                txtDescription.setVisibility(View.VISIBLE);
+                this.txtDescription.setText(AccountManager.loadLogin().getAbout());
+            }
+
         }
     }
 

@@ -70,11 +70,16 @@ public class EventManager {
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
                     //String header = String.valueOf(response.code());
-                    String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
+                    /*String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);*/
 
-                    EventModel dataTemp = (EventModel) response.body();
-                    EventBus.getDefault().post(dataTemp);
+                    if(response.code()==Utils.CODE_SUCCESS){
+                        EventModel dataTemp = (EventModel) response.body();
+                        EventBus.getDefault().post(dataTemp);
+                    }else{
+                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT, Utils.RESPONSE_FAILED));
+                    }
+
                 }
 
                 @Override
@@ -98,9 +103,15 @@ public class EventManager {
                     //String header = String.valueOf(response.code());
                     /*String responses = new Gson().toJson(response.body());
                     Log.d("res", responses);*/
-                    EventDetailModel dataTemp = (EventDetailModel) response.body();
-                    dataTemp.setFrom(TAG);
-                    EventBus.getDefault().post(dataTemp);
+
+                    if(response.code()==Utils.CODE_SUCCESS){
+                        EventDetailModel dataTemp = (EventDetailModel) response.body();
+						dataTemp.setFrom(TAG);
+                        EventBus.getDefault().post(dataTemp);
+                    }else{
+                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT_DETAIL, Utils.RESPONSE_FAILED));
+                    }
+
                 }
 
                 @Override
@@ -122,11 +133,16 @@ public class EventManager {
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
                     //String header = String.valueOf(response.code());
-                    String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
-                    TagsListModel dataTemp = (TagsListModel) response.body();
+                    /*String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);*/
 
-                    EventBus.getDefault().post(dataTemp);
+                    if(response.code()==Utils.CODE_SUCCESS){
+                        TagsListModel dataTemp = (TagsListModel) response.body();
+                        EventBus.getDefault().post(dataTemp);
+                    }else{
+                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SETUP_TAGS, Utils.RESPONSE_FAILED));
+                    }
+
                 }
 
                 @Override
