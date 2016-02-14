@@ -13,8 +13,10 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +39,7 @@ import com.jiggie.android.component.adapter.ChatTabListAdapter;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.manager.ChatManager;
+import com.jiggie.android.model.ChatActionModel;
 import com.jiggie.android.model.ChatListModel;
 import com.jiggie.android.model.Conversation;
 import com.android.volley.VolleyError;
@@ -55,7 +58,7 @@ import de.greenrobot.event.EventBus;
 /**
  * Created by rangg on 21/10/2015.
  */
-public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefreshLayout.OnRefreshListener, ChatTabListAdapter.ConversationSelectedListener {
+public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefreshLayout.OnRefreshListener, ChatTabListAdapter.ConversationSelectedListener, ChatTabListAdapter.ConversationLongClickListener {
     @Bind(R.id.swipe_refresh)
     SwipeRefreshLayout refreshLayout;
     @Bind(R.id.recycler)
@@ -74,7 +77,9 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     private View rootView;
     private String title;
 
-    Dialog dialogWalkthrough;
+    private Dialog dialogWalkthrough;
+    private Dialog dialogLongClick;
+    private ChatListModel.Data.ChatLists conversation;
 
     @Override
     public void setHomeMain(HomeMain homeMain) {
@@ -117,7 +122,7 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         EventBus.getDefault().register(this);
 
         this.recyclerView.setLayoutManager(new LinearLayoutManager(super.getContext()));
-        this.recyclerView.setAdapter(this.adapter = new ChatTabListAdapter(this, this));
+        this.recyclerView.setAdapter(this.adapter = new ChatTabListAdapter(this, this, this));
         this.refreshLayout.setOnRefreshListener(this);
         this.handler = new Handler();
 
@@ -171,8 +176,26 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
 
     }
 
-    public void onEvent(ExceptionModel message){
-        if(message.getFrom().equals(Utils.FROM_CHAT)){
+    public void onEvent(ChatActionModel message){
+        String from = message.getFrom();
+        boolean changed = false;
+        if(from.equals(Utils.FROM_BLOCK_CHAT)){
+            this.adapter.remove(conversation);
+            changed = true;
+        }else if(from.equals(Utils.FROM_DELETE_CHAT)){
+            conversation.setLast_message(null);
+            conversation.setUnread(0);
+            changed = true;
+        }
+        if(changed){
+            this.adapter.notifyDataSetChanged();
+            this.setHomeTitle();
+        }
+    }
+
+    public void onEvent(ExceptionModel message) {
+        String from = message.getFrom();
+        if(from.equals(Utils.FROM_CHAT)){
             isLoading = false;
             if (getContext() != null) {
                 Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
@@ -180,6 +203,8 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
                 recyclerView.setVisibility(View.GONE);
                 refreshLayout.setRefreshing(false);
             }
+        }else if(from.equals(Utils.FROM_BLOCK_CHAT)||from.equals(Utils.FROM_DELETE_CHAT)){
+            Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -190,6 +215,12 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         intent.putExtra(Conversation.FIELD_FACEBOOK_ID, conversation.getFb_id());
         intent.putExtra(Conversation.FIELD_FROM_NAME, conversation.getFromName());
         super.startActivityForResult(intent, 0);
+    }
+
+    @Override
+    public void onConversationLongClick(ChatListModel.Data.ChatLists conversation) {
+        this.conversation = conversation;
+        showLongClickDialog(conversation);
     }
 
     @Override
@@ -306,18 +337,6 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
@@ -361,6 +380,36 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         dialogWalkthrough.setCanceledOnTouchOutside(true);
         dialogWalkthrough.setCancelable(true);
         dialogWalkthrough.show();
+    }
+
+    public void showLongClickDialog(final ChatListModel.Data.ChatLists conversation) {
+        String block = "Block "+conversation.getFromName();
+        String[] menu = {block, "Clear conversation"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.fullHeightDialog)
+                .setItems(menu, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                //Log.d("tes", AccessToken.getCurrentAccessToken().getUserId()+"  "+conversation.getFb_id()+"  "+conversation.getFromId() );
+                                ChatManager.loaderBlockChat(AccessToken.getCurrentAccessToken().getUserId(), conversation.getFb_id());
+                                dialogLongClick.dismiss();
+                                break;
+                            case 1:
+                                ChatManager.loaderDeleteChat(AccessToken.getCurrentAccessToken().getUserId(), conversation.getFb_id());
+                                dialogLongClick.dismiss();
+                                break;
+                            default:
+                                dialogLongClick.dismiss();
+                                break;
+                        }
+                    }
+                });
+        dialogLongClick = builder.create();
+
+        dialogLongClick.show();
+
     }
 
 }

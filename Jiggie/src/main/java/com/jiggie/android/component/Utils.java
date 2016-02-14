@@ -41,6 +41,8 @@ public class Utils {
     //public static String MSG_EXCEPTION = "Failed: ";
     //changed by wandy 12-02-2016
     public static String MSG_EXCEPTION = "";
+    public static String RESPONSE_FAILED = "Failed response";
+    public static int CODE_SUCCESS = 200;
     //--------------------
 
     public static String PREFERENCE_SETTING = "setting";

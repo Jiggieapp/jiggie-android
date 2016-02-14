@@ -78,9 +78,13 @@ public class ChatManager {
                     /*String responses = new Gson().toJson(response.body());
                     Log.d("res", responses);*/
 
-                    ChatConversationModel dataTemp = (ChatConversationModel) response.body();
+                    if(response.code()==Utils.CODE_SUCCESS){
+                        ChatConversationModel dataTemp = (ChatConversationModel) response.body();
+                        EventBus.getDefault().post(new ChatResponseModel(fromFunction, dataTemp.getData().getChat_conversations()));
+                    }else{
+                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_CHAT_CONVERSATION, Utils.RESPONSE_FAILED));
+                    }
 
-                    EventBus.getDefault().post(new ChatResponseModel(fromFunction, dataTemp.getData().getChat_conversations()));
                 }
 
                 @Override
@@ -100,13 +104,18 @@ public class ChatManager {
             getChatList(fb_id, new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
-                    String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
+                    /*String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);*/
 
-                    ChatListModel dataTemp = (ChatListModel) response.body();
-                    dataChatList = dataTemp.getData().getChat_lists();
+                    if(response.code()==Utils.CODE_SUCCESS){
+                        ChatListModel dataTemp = (ChatListModel) response.body();
+                        dataChatList = dataTemp.getData().getChat_lists();
 
-                    EventBus.getDefault().post(dataTemp);
+                        EventBus.getDefault().post(dataTemp);
+                    }else{
+                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_CHAT, Utils.RESPONSE_FAILED));
+                    }
+
                 }
 
                 @Override
@@ -126,12 +135,16 @@ public class ChatManager {
             blockChat(fb_id, to_id, new Callback() {
                 @Override
                 public void onResponse(Response response, Retrofit retrofit) {
-                    String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
+                    /*String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);*/
 
-                    Success2Model dataTemp = (Success2Model) response.body();
+                    if(response.code()==Utils.CODE_SUCCESS){
+                        Success2Model dataTemp = (Success2Model) response.body();
+                        EventBus.getDefault().post(new ChatActionModel(Utils.FROM_BLOCK_CHAT, dataTemp));
+                    }else{
+                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_BLOCK_CHAT, Utils.RESPONSE_FAILED));
+                    }
 
-                    EventBus.getDefault().post(new ChatActionModel(Utils.FROM_BLOCK_CHAT, dataTemp));
                 }
 
                 @Override
@@ -151,12 +164,16 @@ public class ChatManager {
             deleteChat(fb_id, to_id, new Callback() {
                 @Override
                 public void onResponse(Response response, Retrofit retrofit) {
-                    String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
+                    /*String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);*/
 
-                    Success2Model dataTemp = (Success2Model) response.body();
+                    if(response.code()==Utils.CODE_SUCCESS){
+                        Success2Model dataTemp = (Success2Model) response.body();
+                        EventBus.getDefault().post(new ChatActionModel(Utils.FROM_DELETE_CHAT, dataTemp));
+                    }else{
+                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_DELETE_CHAT, Utils.RESPONSE_FAILED));
+                    }
 
-                    EventBus.getDefault().post(new ChatActionModel(Utils.FROM_DELETE_CHAT, dataTemp));
                 }
 
                 @Override
@@ -176,12 +193,16 @@ public class ChatManager {
             addChat(chatAddModel, new Callback() {
                 @Override
                 public void onResponse(Response response, Retrofit retrofit) {
-                    String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
+                    /*String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);*/
 
-                    Success2Model dataTemp = (Success2Model) response.body();
+                    if(response.code()==Utils.CODE_SUCCESS){
+                        Success2Model dataTemp = (Success2Model) response.body();
+                        EventBus.getDefault().post(new ChatActionModel(Utils.FROM_ADD_CHAT, dataTemp));
+                    }else{
+                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_ADD_CHAT, Utils.RESPONSE_FAILED));
+                    }
 
-                    EventBus.getDefault().post(new ChatActionModel(Utils.FROM_ADD_CHAT, dataTemp));
                 }
 
                 @Override

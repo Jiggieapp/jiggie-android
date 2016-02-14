@@ -253,6 +253,23 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                         }
                     });
                 }
+
+                //not finished yet----
+                /*for (int i = guestCount; i > 0; i--) {
+                    final String url = App.getFacebookImage(guestArr.get(guestCount - i).getFb_id(), width);
+                    Glide.with(EventDetailActivity.this).load(url).asBitmap().centerCrop().into(new BitmapImageViewTarget(imageGuests[i]) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            final Resources resources = getResources();
+                            if (resources != null) {
+                                final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(resources, resource);
+                                circularBitmapDrawable.setCircular(true);
+                                super.getView().setImageDrawable(circularBitmapDrawable);
+                            }
+                        }
+                    });
+                }*/
+                //-----------------------
             }
 
             //Added by Aga 10-2-2016

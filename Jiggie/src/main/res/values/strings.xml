@@ -151,6 +151,12 @@
     <string name="title_no_event">No events found</string>
     <string name="msg_no_event">No events found</string>
 
+    <string name="title_dialog_notif">Allow notification?</string>
+    <string name="msg_dialog_notif">System will allow your device to receive notification from this app.</string>
+
+    <string name="title_dialog_location">Allow share location?</string>
+    <string name="msg_dialog_location">System will allow this app to get information about your phone location.</string>
+
     <plurals name="guest_count">
         <item quantity="one">%1$d Guest</item>
         <item quantity="other">%1$d Guests</item>

@@ -138,7 +138,13 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     public void onTabSelected() {
         //if (this.current == null||SocialManager.NEED_REFRESH)
         if (this.current == null){
-            this.onRefresh();
+            if (switchSocialize.isChecked()) {
+                txtSocialize.setText(R.string.socialize_description);
+                this.onRefresh();
+            }else{
+                this.layoutSocialize.setVisibility(View.VISIBLE);
+                txtSocialize.setText(R.string.socialize_description_off);
+            }
 
             if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_SOCIAL, false)) {
                 showWalkthroughDialog();
@@ -188,9 +194,6 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             return;
         }
 
-        /*if(current==null){
-            this.layoutSocialize.setVisibility(View.GONE);
-        }*/
         this.progressBar.setVisibility(View.VISIBLE);
 
         //showProgressDialog();
