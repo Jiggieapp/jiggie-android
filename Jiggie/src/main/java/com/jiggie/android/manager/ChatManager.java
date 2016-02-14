@@ -5,12 +5,9 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.jiggie.android.api.ChatInterface;
 import com.jiggie.android.component.Utils;
-<<<<<<< HEAD
 import com.jiggie.android.model.ChatActionModel;
 import com.jiggie.android.model.ChatAddModel;
-=======
 import com.jiggie.android.component.callback.CustomCallback;
->>>>>>> 9b867a0640e31132a20fcc5411495772b5ede880
 import com.jiggie.android.model.ChatConversationModel;
 import com.jiggie.android.model.ChatListModel;
 import com.jiggie.android.model.ChatResponseModel;

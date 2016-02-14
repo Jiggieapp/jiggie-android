@@ -104,12 +104,12 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     private ImageView[] imageGuests;
     private ShareLinkModel shareLinkModel;
     private GoogleMap map;
-
     private EventDetailModel.Data.EventDetail eventDetail;
     String event_id = "";
     String event_name = "";
 
     ProgressDialog progressDialog;
+    public static final String TAG = EventDetailActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,104 +199,108 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         this.btnBook.setVisibility(View.GONE);
         this.swipeRefresh.setRefreshing(true);
 
-        EventManager.loaderEventDetail(event_id, AccessToken.getCurrentAccessToken().getUserId(), AccountManager.loadSetting().getData().getGender_interest());
+        EventManager.loaderEventDetail(event_id, AccessToken.getCurrentAccessToken().getUserId()
+                , AccountManager.loadSetting().getData().getGender_interest(), TAG);
     }
 
-    public void onEvent(EventDetailModel message){
-        try {
-            eventDetail = message.getData().getEvents_detail();
+    public void onEvent(EventDetailModel message) {
+        Utils.d(TAG, message.getFrom() + " / " + TAG);
+        if (message.getFrom().equalsIgnoreCase(TAG)) {
+            try {
+                eventDetail = message.getData().getEvents_detail();
 
-            if(event_name==null){
-                super.setToolbarTitle(eventDetail.getTitle().toUpperCase(), true);
-            }
-
-            this.txtVenue.setText(eventDetail.getVenue_name());
-
-            if (!isActive())
-                return;
-
-            ArrayList<EventDetailModel.Data.EventDetail.GuestViewed> guestArr = message.getData().getEvents_detail().getGuests_viewed();
-
-            int size = guestArr.size();
-
-            int guestCount = size;
-            final double latt = Double.parseDouble(message.getData().getEvents_detail().getVenue().getLat());
-            final double lon = Double.parseDouble(message.getData().getEvents_detail().getVenue().getLon());
-            final LatLng lat = new LatLng(latt, lon);
-
-            ArrayList<String> photoArr = message.getData().getEvents_detail().getPhotos();
-            String[] photo = new String[photoArr.size()];
-            photo = photoArr.toArray(photo);
-
-            imagePagerIndicatorAdapter.setImages(photo);
-            txtDescription.setText(message.getData().getEvents_detail().getDescription());
-            txtAddress.setText(message.getData().getEvents_detail().getVenue().getAddress());
-            txtGuestCounter.setText(String.format("+%s", guestCount - imageGuests.length));
-            txtGuestCounter.setVisibility(guestCount > imageGuests.length ? View.VISIBLE : View.GONE);
-            txtGuestCount.setText(getResources().getQuantityString(R.plurals.guest_count, guestCount, guestCount));
-
-            if (guestCount > 0) {
-                final int width = imageGuest1.getWidth() * 2;
-                guestCount = guestCount > imageGuests.length ? imageGuests.length : guestCount;
-
-                for (int i = 0; i < guestCount; i++) {
-                    final String url = App.getFacebookImage(guestArr.get(i).getFb_id(), width);
-                    Glide.with(EventDetailActivity.this).load(url).asBitmap().centerCrop().into(new BitmapImageViewTarget(imageGuests[i]) {
-                        @Override
-                        protected void setResource(Bitmap resource) {
-                            final Resources resources = getResources();
-                            if (resources != null) {
-                                final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(resources, resource);
-                                circularBitmapDrawable.setCircular(true);
-                                super.getView().setImageDrawable(circularBitmapDrawable);
-                            }
-                        }
-                    });
+                if (event_name == null) {
+                    super.setToolbarTitle(eventDetail.getTitle().toUpperCase(), true);
                 }
+
+                this.txtVenue.setText(eventDetail.getVenue_name());
+
+                if (!isActive())
+                    return;
+
+                ArrayList<EventDetailModel.Data.EventDetail.GuestViewed> guestArr = message.getData().getEvents_detail().getGuests_viewed();
+
+                int size = guestArr.size();
+
+                int guestCount = size;
+                final double latt = Double.parseDouble(message.getData().getEvents_detail().getVenue().getLat());
+                final double lon = Double.parseDouble(message.getData().getEvents_detail().getVenue().getLon());
+                final LatLng lat = new LatLng(latt, lon);
+
+                ArrayList<String> photoArr = message.getData().getEvents_detail().getPhotos();
+                String[] photo = new String[photoArr.size()];
+                photo = photoArr.toArray(photo);
+
+                imagePagerIndicatorAdapter.setImages(photo);
+                txtDescription.setText(message.getData().getEvents_detail().getDescription());
+                txtAddress.setText(message.getData().getEvents_detail().getVenue().getAddress());
+                txtGuestCounter.setText(String.format("+%s", guestCount - imageGuests.length));
+                txtGuestCounter.setVisibility(guestCount > imageGuests.length ? View.VISIBLE : View.GONE);
+                txtGuestCount.setText(getResources().getQuantityString(R.plurals.guest_count, guestCount, guestCount));
+
+                if (guestCount > 0) {
+                    final int width = imageGuest1.getWidth() * 2;
+                    guestCount = guestCount > imageGuests.length ? imageGuests.length : guestCount;
+
+                    for (int i = 0; i < guestCount; i++) {
+                        final String url = App.getFacebookImage(guestArr.get(i).getFb_id(), width);
+                        Glide.with(EventDetailActivity.this).load(url).asBitmap().centerCrop().into(new BitmapImageViewTarget(imageGuests[i]) {
+                            @Override
+                            protected void setResource(Bitmap resource) {
+                                final Resources resources = getResources();
+                                if (resources != null) {
+                                    final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(resources, resource);
+                                    circularBitmapDrawable.setCircular(true);
+                                    super.getView().setImageDrawable(circularBitmapDrawable);
+                                }
+                            }
+                        });
+                    }
+                }
+
+                //Added by Aga 10-2-2016
+                if (StringUtility.isEquals(EventManager.FullfillmentTypes.NONE, message.getData().getEvents_detail().getFullfillment_type(), true) ||
+                        TextUtils.isEmpty(message.getData().getEvents_detail().getFullfillment_value())) {
+                    btnBook.setVisibility(View.GONE);
+                } else {
+                    btnBook.setVisibility(View.VISIBLE);
+                }
+                //btnBook.setVisibility(StringUtility.isEquals(EventManager.FullfillmentTypes.NONE, message.getData().getEvents_detail().getFullfillment_type(), true) ? View.GONE : View.VISIBLE);
+
+                map.addMarker(new MarkerOptions().position(lat).title(message.getData().getEvents_detail().getVenue_name()));
+                layoutGuests.setVisibility(guestCount > 0 ? View.VISIBLE : View.GONE);
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(lat, 15));
+                scrollView.setVisibility(View.VISIBLE);
+
+                final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(message.getData().getEvents_detail().getStart_datetime());
+                final Date endDate = Common.ISO8601_DATE_FORMAT_UTC.parse(message.getData().getEvents_detail().getEnd_datetime());
+                String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format, Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));
+                txtDate.setText(simpleDate);
+
+                swipeRefresh.setRefreshing(false);
+                eventDetail = message.getData().getEvents_detail();
+                invalidateOptionsMenu();
+                populateTags();
+
+                if (StringUtility.isEquals(EventManager.FullfillmentTypes.PHONE_NUMBER, message.getData().getEvents_detail().getFullfillment_type(), true)) {
+                    txtExternalSite.setVisibility(View.GONE);
+                    txtBookNow.setText(R.string.call);
+                } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.RESERVATION, message.getData().getEvents_detail().getFullfillment_type(), true)) {
+                    txtExternalSite.setVisibility(View.GONE);
+                    txtBookNow.setText(R.string.reserve);
+                } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.PURCHASE, message.getData().getEvents_detail().getFullfillment_type(), true)) {
+                    txtExternalSite.setVisibility(View.GONE);
+                    txtBookNow.setText(R.string.purchase);
+                }
+
+                //Added by Aga 22-1-2016
+                else if (StringUtility.isEquals(EventManager.FullfillmentTypes.LINK, message.getData().getEvents_detail().getFullfillment_type(), true)) {
+                    txtExternalSite.setVisibility(View.GONE);
+                    txtBookNow.setText(R.string.book_now);
+                }
+            } catch (ParseException e) {
+                throw new RuntimeException(App.getErrorMessage(e), e);
             }
-
-            //Added by Aga 10-2-2016
-            if(StringUtility.isEquals(EventManager.FullfillmentTypes.NONE, message.getData().getEvents_detail().getFullfillment_type(), true)||
-                    TextUtils.isEmpty(message.getData().getEvents_detail().getFullfillment_value())){
-                btnBook.setVisibility(View.GONE);
-            }else{
-                btnBook.setVisibility(View.VISIBLE);
-            }
-            //btnBook.setVisibility(StringUtility.isEquals(EventManager.FullfillmentTypes.NONE, message.getData().getEvents_detail().getFullfillment_type(), true) ? View.GONE : View.VISIBLE);
-
-            map.addMarker(new MarkerOptions().position(lat).title(message.getData().getEvents_detail().getVenue_name()));
-            layoutGuests.setVisibility(guestCount > 0 ? View.VISIBLE : View.GONE);
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(lat, 15));
-            scrollView.setVisibility(View.VISIBLE);
-
-            final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(message.getData().getEvents_detail().getStart_datetime());
-            final Date endDate = Common.ISO8601_DATE_FORMAT_UTC.parse(message.getData().getEvents_detail().getEnd_datetime());
-            String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format, Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));
-            txtDate.setText(simpleDate);
-
-            swipeRefresh.setRefreshing(false);
-            eventDetail = message.getData().getEvents_detail();
-            invalidateOptionsMenu();
-            populateTags();
-
-            if (StringUtility.isEquals(EventManager.FullfillmentTypes.PHONE_NUMBER, message.getData().getEvents_detail().getFullfillment_type(), true)) {
-                txtExternalSite.setVisibility(View.GONE);
-                txtBookNow.setText(R.string.call);
-            } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.RESERVATION, message.getData().getEvents_detail().getFullfillment_type(), true)) {
-                txtExternalSite.setVisibility(View.GONE);
-                txtBookNow.setText(R.string.reserve);
-            } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.PURCHASE, message.getData().getEvents_detail().getFullfillment_type(), true)) {
-                txtExternalSite.setVisibility(View.GONE);
-                txtBookNow.setText(R.string.purchase);
-            }
-
-            //Added by Aga 22-1-2016
-            else if (StringUtility.isEquals(EventManager.FullfillmentTypes.LINK, message.getData().getEvents_detail().getFullfillment_type(), true)) {
-                txtExternalSite.setVisibility(View.GONE);
-                txtBookNow.setText(R.string.book_now);
-            }
-        } catch (ParseException e) {
-            throw new RuntimeException(App.getErrorMessage(e), e);
         }
     }
 

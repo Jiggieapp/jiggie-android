@@ -74,8 +74,6 @@ public class EventManager {
                     Log.d("res", responses);
 
                     EventModel dataTemp = (EventModel) response.body();
-
-
                     EventBus.getDefault().post(dataTemp);
                 }
 
@@ -91,7 +89,7 @@ public class EventManager {
         }
     }
 
-    public static void loaderEventDetail(String _id, String fb_id, String gender_interest){
+    public static void loaderEventDetail(String _id, String fb_id, String gender_interest, final String TAG){
         try {
             getEventDetail(_id, fb_id, gender_interest, new CustomCallback() {
                 @Override
@@ -101,7 +99,7 @@ public class EventManager {
                     /*String responses = new Gson().toJson(response.body());
                     Log.d("res", responses);*/
                     EventDetailModel dataTemp = (EventDetailModel) response.body();
-
+                    dataTemp.setFrom(TAG);
                     EventBus.getDefault().post(dataTemp);
                 }
 
