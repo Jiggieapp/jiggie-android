@@ -122,6 +122,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     boolean confirm;
     SettingModel currentSetting;
     private int socialSize;
+    public static final String TAG = SocialTabFragment.class.getSimpleName();
     private Dialog dialogWalkthrough;
 
     @Override
@@ -194,6 +195,9 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             return;
         }
 
+        if(current==null){
+            this.layoutSocialize.setVisibility(View.GONE);
+        }
         this.progressBar.setVisibility(View.VISIBLE);
 
         //showProgressDialog();
@@ -286,13 +290,16 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                 // we need to get venue name from event detail api
                 this.progressBar.setVisibility(View.VISIBLE);
 
-                EventManager.loaderEventDetail(current.getEvent_id(), AccessToken.getCurrentAccessToken().getUserId(), currentSetting.getData().getGender_interest());
+                EventManager.loaderEventDetail(current.getEvent_id()
+                        , AccessToken.getCurrentAccessToken().getUserId()
+                        , currentSetting.getData().getGender_interest()
+                        ,TAG);
             }
         }
     }
 
     public void onEvent(EventDetailModel message){
-        if (getContext() != null) {
+        if (getContext() != null && message.getFrom().equalsIgnoreCase(TAG)) {
             dismissProgressDialog();
             generalTxtEvent.setText(getString(R.string.location_viewing, message.getData().getEvents_detail().getTitle(), message.getData().getEvents_detail().getVenue_name()));
             progressBar.setVisibility(View.GONE);

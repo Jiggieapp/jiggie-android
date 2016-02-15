@@ -104,12 +104,12 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     private ImageView[] imageGuests;
     private ShareLinkModel shareLinkModel;
     private GoogleMap map;
-
     private EventDetailModel.Data.EventDetail eventDetail;
     String event_id = "";
     String event_name = "";
 
     ProgressDialog progressDialog;
+    public static final String TAG = EventDetailActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,7 +199,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         this.btnBook.setVisibility(View.GONE);
         this.swipeRefresh.setRefreshing(true);
 
-        EventManager.loaderEventDetail(event_id, AccessToken.getCurrentAccessToken().getUserId(), AccountManager.loadSetting().getData().getGender_interest());
+        EventManager.loaderEventDetail(event_id, AccessToken.getCurrentAccessToken().getUserId()
+                , AccountManager.loadSetting().getData().getGender_interest(), TAG);
     }
 
     public void onEvent(EventDetailModel message){

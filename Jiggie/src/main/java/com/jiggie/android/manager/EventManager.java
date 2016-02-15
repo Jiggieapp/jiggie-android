@@ -94,7 +94,7 @@ public class EventManager {
         }
     }
 
-    public static void loaderEventDetail(String _id, String fb_id, String gender_interest){
+    public static void loaderEventDetail(String _id, String fb_id, String gender_interest, final String TAG){
         try {
             getEventDetail(_id, fb_id, gender_interest, new CustomCallback() {
                 @Override
@@ -106,6 +106,7 @@ public class EventManager {
 
                     if(response.code()==Utils.CODE_SUCCESS){
                         EventDetailModel dataTemp = (EventDetailModel) response.body();
+						dataTemp.setFrom(TAG);
                         EventBus.getDefault().post(dataTemp);
                     }else{
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT_DETAIL, Utils.RESPONSE_FAILED));
