@@ -78,17 +78,17 @@ public class ChatManager {
                     /*String responses = new Gson().toJson(response.body());
                     Log.d("res", responses);*/
 
-                    if(response.code()==Utils.CODE_SUCCESS){
+                    if (response.code() == Utils.CODE_SUCCESS) {
                         ChatConversationModel dataTemp = (ChatConversationModel) response.body();
                         EventBus.getDefault().post(new ChatResponseModel(fromFunction, dataTemp.getData().getChat_conversations()));
-                    }else{
+                    } else {
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_CHAT_CONVERSATION, Utils.RESPONSE_FAILED));
                     }
 
                 }
 
                 @Override
-                public void onCustomCallbackFailure(String  t) {
+                public void onCustomCallbackFailure(String t) {
                     Log.d("Exception", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_CHAT_CONVERSATION, Utils.MSG_EXCEPTION + t.toString()));
                 }
@@ -107,11 +107,15 @@ public class ChatManager {
                     /*String responses = new Gson().toJson(response.body());
                     Log.d("res", responses);*/
 
-                    if(response.code()==Utils.CODE_SUCCESS){
+                    int responseCode = response.code();
+
+                    if(responseCode==Utils.CODE_SUCCESS){
                         ChatListModel dataTemp = (ChatListModel) response.body();
                         dataChatList = dataTemp.getData().getChat_lists();
 
                         EventBus.getDefault().post(dataTemp);
+                    }else if(responseCode==Utils.CODE_EMPTY_DATA){
+                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_CHAT, Utils.MSG_EMPTY_DATA));
                     }else{
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_CHAT, Utils.RESPONSE_FAILED));
                     }
