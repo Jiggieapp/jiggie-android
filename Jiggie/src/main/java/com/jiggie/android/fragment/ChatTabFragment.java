@@ -185,6 +185,9 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         }else if(from.equals(Utils.FROM_DELETE_CHAT)){
             conversation.setLast_message(null);
             conversation.setUnread(0);
+
+            this.adapter.remove(conversation);
+
             changed = true;
         }
         if(changed){
@@ -384,7 +387,7 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
 
     public void showLongClickDialog(final ChatListModel.Data.ChatLists conversation) {
         String block = "Block "+conversation.getFromName();
-        String[] menu = {block, "Clear conversation"};
+        String[] menu = {block, "Delete"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.fullHeightDialog)
                 .setItems(menu, new DialogInterface.OnClickListener() {

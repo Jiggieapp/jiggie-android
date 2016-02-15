@@ -487,7 +487,16 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         public void onReceive(Context context, Intent intent) {
             if (getContext() != null) {
                 //SocialManager.NEED_REFRESH = true;
-                onRefresh();
+
+                if (switchSocialize.isChecked()) {
+                    txtSocialize.setText(R.string.socialize_description);
+                    onRefresh();
+                }else{
+                    layoutSocialize.setVisibility(View.VISIBLE);
+                    txtSocialize.setText(R.string.socialize_description_off);
+                }
+
+                //onRefresh();
             }
 
         }

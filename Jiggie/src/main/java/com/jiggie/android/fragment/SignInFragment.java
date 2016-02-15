@@ -300,7 +300,6 @@ public class SignInFragment extends Fragment {
             if (activity != null)
                 activity.finish();
         }
-
     }
 
     public void onEvent(ExceptionModel message){

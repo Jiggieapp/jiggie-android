@@ -209,7 +209,8 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
                             blockUser();
                         }
                     }).show();
-        } else if (item.getItemId() == R.id.action_clear) {
+        }
+        /*else if (item.getItemId() == R.id.action_clear) {
             new AlertDialog.Builder(this)
                     .setMessage(R.string.confirmation)
                     .setTitle(super.getString(R.string.clear_conversation))
@@ -221,7 +222,7 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
                             dialog.dismiss();
                         }
                     }).show();
-        }
+        }*/
         return super.onOptionsItemSelected(item);
     }
 
@@ -395,6 +396,7 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
             final boolean value = message.getSuccess2Model().getResponse()==1 ? true : false;
             if (value)
                 App.getInstance().trackMixPanelEvent("Delete Messages");
+
             if ((isActive()) && (!value)) {
                 Toast.makeText(ChatActivity.this, getString(R.string.clear_conversation_failed), Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
@@ -434,7 +436,6 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
                 //-----------------
             }
         }
-
     }
 
     @Override
