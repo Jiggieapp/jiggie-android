@@ -57,8 +57,6 @@ public class ShareManager {
                     String responses = new Gson().toJson(response.body());
                     Log.d("res", responses);
                     ShareLinkModel dataTemp = (ShareLinkModel) response.body();
-
-
                     EventBus.getDefault().post(dataTemp);
                 }
 

@@ -126,6 +126,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     boolean confirm;
     SettingModel currentSetting;
     private int socialSize;
+    private final static String TAG = SocialTabFragment.class.getSimpleName();
 
     @Override
     public String getTitle() {
@@ -154,11 +155,16 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if(!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ButterKnife.bind(this, this.rootView);
-
-        EventBus.getDefault().register(this);
 
         this.layoutSocialize.setVisibility(View.GONE);
         this.progressBar.setVisibility(View.GONE);
@@ -195,7 +201,8 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         }
 
         if(current==null){
-            this.layoutSocialize.setVisibility(View.GONE);
+            //wandy, add comment 12-02-2016
+            //this.layoutSocialize.setVisibility(View.GONE);
         }
         this.progressBar.setVisibility(View.VISIBLE);
 
@@ -205,7 +212,6 @@ public class SocialTabFragment extends Fragment implements TabFragment {
 
     public void onEvent(SocialModel message){
         current = null;
-
         for(SocialModel.Data.SocialFeeds item : message.getData().getSocial_feeds())
         {
             if(SocialManager.Type.isInbound(item))
@@ -288,7 +294,6 @@ public class SocialTabFragment extends Fragment implements TabFragment {
 
                 // we need to get venue name from event detail api
                 this.progressBar.setVisibility(View.VISIBLE);
-
                 EventManager.loaderEventDetail(current.getEvent_id(), AccessToken.getCurrentAccessToken().getUserId(), currentSetting.getData().getGender_interest());
             }
         }
@@ -496,8 +501,13 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     @Override
     public void onDestroy() {
         App.getInstance().unregisterReceiver(this.socialReceiver);
-        EventBus.getDefault().unregister(this);
         super.onDestroy();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        EventBus.getDefault().unregister(this);
     }
 
     private BroadcastReceiver socialReceiver = new BroadcastReceiver() {

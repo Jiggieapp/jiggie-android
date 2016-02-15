@@ -60,6 +60,7 @@ public class MoreTabFragment extends Fragment implements TabFragment, MoreTabLis
 
     ProgressDialog progressDialog = null;
     private ShareLinkModel shareLink;
+    public final static String TAG = MoreTabFragment.class.getSimpleName();
 
     @Override
     public void onTabSelected() {
@@ -143,11 +144,23 @@ public class MoreTabFragment extends Fragment implements TabFragment, MoreTabLis
 
     public void onEvent(ShareLinkModel message){
         App.getInstance().trackMixPanelEvent("Share App");
+        if(getContext() == null)
+            Utils.d(TAG, "getContext null");
+        else Utils.d(TAG, "getContexttidak sama null");
         if (getContext() != null) {
             String link = String.format("%s\n\n%s", message.getMessage(), message.getUrl());
             startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, link).setType("text/plain"), getString(R.string.invite)));
-            progressDialog.dismiss();
+
             shareLink = message;
+        }
+        hideProgressDialog();
+    }
+
+    private void hideProgressDialog()
+    {
+        if(progressDialog!=null && progressDialog.isShowing())
+        {
+            progressDialog.dismiss();
         }
     }
 
@@ -155,9 +168,10 @@ public class MoreTabFragment extends Fragment implements TabFragment, MoreTabLis
         if(message.getFrom().equals(Utils.FROM_SHARE_LINK)){
             if (getContext() != null) {
                 Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
-                progressDialog.dismiss();
+                //progressDialog.dismiss();
             }
         }
+        hideProgressDialog();
     }
 
     private void mailSupport() {

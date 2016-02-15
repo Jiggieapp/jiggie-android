@@ -27,6 +27,7 @@ import retrofit.Retrofit;
 public class EventManager {
 
     private static EventInterface eventInterface;
+    public final static String TAG = EventManager.class.getSimpleName();
 
     public static class FullfillmentTypes {
         public static final String PHONE_NUMBER = "phone_number";
@@ -96,12 +97,9 @@ public class EventManager {
             getEventDetail(_id, fb_id, gender_interest, new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
-
-                    //String header = String.valueOf(response.code());
-                    /*String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);*/
+                    String responses = new Gson().toJson(response.body());
+                    Utils.d(TAG, responses);
                     EventDetailModel dataTemp = (EventDetailModel) response.body();
-
                     EventBus.getDefault().post(dataTemp);
                 }
 
