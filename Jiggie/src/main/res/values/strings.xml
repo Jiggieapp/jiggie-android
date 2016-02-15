@@ -55,6 +55,7 @@
     <string name="distance_sort">Sort guests by their distance&#8230;</string>
     <string name="age">Age</string>
     <string name="age_sort">Sort guests by their age&#8230;</string>
+    <string name="verify_your_phone_number">Verify your phone number</string>
     <string name="profile">Profile</string>
     <string name="invite">Invite friends</string>
     <string name="settings">Settings</string>
@@ -177,4 +178,8 @@
 
     <string name="no_internet_connection">Please check your internet connection</string>
     <string name="standard_error_message">Sorry we\'re having some server issues, please check back in a few minutes.</string>
+
+    <string name="no_one_will_see_your_phone_number">No one will see your phone number on Jiggie.</string>
+    <string name="international">International</string>
+    <string name="usa">US_United States</string>
 </resources>

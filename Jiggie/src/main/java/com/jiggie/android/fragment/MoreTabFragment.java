@@ -14,10 +14,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
 import com.jiggie.android.App;
@@ -25,6 +27,7 @@ import com.jiggie.android.R;
 import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
 import com.jiggie.android.activity.profile.ProfileSettingActivity;
+import com.jiggie.android.activity.profile.VerifyPhoneNumberActivity;
 import com.jiggie.android.activity.setup.SetupTagsActivity;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
@@ -60,6 +63,7 @@ public class MoreTabFragment extends Fragment implements TabFragment, MoreTabLis
 
     ProgressDialog progressDialog = null;
     private ShareLinkModel shareLink;
+    public final static String TAG = MoreTabFragment.class.getSimpleName();
 
     @Override
     public void onTabSelected() {
@@ -146,8 +150,16 @@ public class MoreTabFragment extends Fragment implements TabFragment, MoreTabLis
         if (getContext() != null) {
             String link = String.format("%s\n\n%s", message.getMessage(), message.getUrl());
             startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, link).setType("text/plain"), getString(R.string.invite)));
-            progressDialog.dismiss();
             shareLink = message;
+        }
+        hideProgressDialog();
+    }
+
+    private void hideProgressDialog()
+    {
+        if(progressDialog!=null && progressDialog.isShowing())
+        {
+            progressDialog.dismiss();
         }
     }
 
@@ -155,9 +167,10 @@ public class MoreTabFragment extends Fragment implements TabFragment, MoreTabLis
         if(message.getFrom().equals(Utils.FROM_SHARE_LINK)){
             if (getContext() != null) {
                 Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
-                progressDialog.dismiss();
+                //progressDialog.dismiss();
             }
         }
+        hideProgressDialog();
     }
 
     private void mailSupport() {
@@ -171,5 +184,11 @@ public class MoreTabFragment extends Fragment implements TabFragment, MoreTabLis
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onVerifyPhoneNumberSelected() {
+        Intent i = new Intent(getActivity(), VerifyPhoneNumberActivity.class);
+        startActivity(i);
     }
 }

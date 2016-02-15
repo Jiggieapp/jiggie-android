@@ -1,6 +1,7 @@
 package com.jiggie.android.component.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -19,10 +20,12 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 import com.facebook.AccessToken;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.profile.VerifyPhoneNumberActivity;
 import com.jiggie.android.model.Common;
 
 /**
@@ -50,7 +53,7 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 context.getString(R.string.support),
                 context.getString(R.string.logout)
         };
-        this.resources = new int[] {
+        this.resources = new int[]{
                 R.mipmap.ic_profile,
                 R.mipmap.ic_invite,
                 R.mipmap.ic_settings,
@@ -67,7 +70,9 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
 
     @Override
-    public int getItemViewType(int position) { return position == 0 ? 0 : 1; }
+    public int getItemViewType(int position) {
+        return position == 0 ? 0 : 1;
+    }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
@@ -85,9 +90,9 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             viewHolder.txtUser.setText(pref.getString(Common.PREF_FACEBOOK_NAME, null));
 
             //Added by Aga 12-2-2016
-            if(userImage!=null){
+            if (userImage != null) {
                 imagePath = String.format("file:///%s%s", dataPath, userImage);
-            }else{
+            } else {
                 final int width = viewHolder.image.getWidth() * 2;
                 imagePath = App.getFacebookImage(AccessToken.getCurrentAccessToken().getUserId(), width);
             }
@@ -101,16 +106,19 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     super.getView().setImageDrawable(circularBitmapDrawable);
                 }
             });
-
         }
     }
 
     @Override
-    public int getItemCount() { return this.items == null ? 0 : this.items.length + 1; }
+    public int getItemCount() {
+        return this.items == null ? 0 : this.items.length + 1;
+    }
 
     static class AccountViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @Bind(R.id.imageView) ImageView imageView;
-        @Bind(R.id.text) TextView text;
+        @Bind(R.id.imageView)
+        ImageView imageView;
+        @Bind(R.id.text)
+        TextView text;
 
         private ItemSelectedListener listener;
         private int position;
@@ -123,13 +131,28 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
         @Override
-        public void onClick(View v) { if (this.listener != null) this.listener.onItemSelected(this.position); }
-        public void setPosition(int position) { this.position = position; }
+        public void onClick(View v) {
+            if (this.listener != null) this.listener.onItemSelected(this.position);
+        }
+
+        public void setPosition(int position) {
+            this.position = position;
+        }
     }
 
     static class AccountHeaderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @Bind(R.id.imageView) ImageView image;
-        @Bind(R.id.txtUser) TextView txtUser;
+        @Bind(R.id.imageView)
+        ImageView image;
+        @Bind(R.id.txtUser)
+        TextView txtUser;
+        @Bind(R.id.txtVerifyPhoneNumber)
+        TextView txtVerifyPhoneNumber;
+
+        @OnClick(R.id.txtVerifyPhoneNumber)
+        public void onVerifyPhoneNumberClick() {
+            if(listener!= null)
+                this.listener.onVerifyPhoneNumberSelected();
+        }
 
         private ItemSelectedListener listener;
 
@@ -141,10 +164,13 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
         @Override
-        public void onClick(View v) { if (this.listener != null) this.listener.onItemSelected(0); }
+        public void onClick(View v) {
+            if (this.listener != null) this.listener.onItemSelected(0);
+        }
     }
 
     public interface ItemSelectedListener {
         void onItemSelected(int position);
+        void onVerifyPhoneNumberSelected();
     }
 }
