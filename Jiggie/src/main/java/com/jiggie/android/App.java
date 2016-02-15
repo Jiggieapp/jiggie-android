@@ -203,7 +203,7 @@ public class App extends Application {
     }
 
     //Added by Aga
-    private String getVersionName(Context c){
+    public static String getVersionName(Context c){
         PackageInfo pi = null;
         try {
             pi = c.getPackageManager()

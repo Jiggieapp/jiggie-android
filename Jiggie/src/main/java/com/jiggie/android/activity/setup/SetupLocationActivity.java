@@ -142,7 +142,7 @@ public class SetupLocationActivity extends BaseActivity {
         currentSettingModel.getData().getNotifications().setLocation(isChecked);
         currentSettingModel.getData().getNotifications().setChat(intent.getBooleanExtra(SetupNotificationActivity.PARAM_NOTIFICATION, true));
         currentSettingModel.getData().getNotifications().setFeed(intent.getBooleanExtra(SetupNotificationActivity.PARAM_NOTIFICATION, true));
-        currentSettingModel.setMatchme(intent.getBooleanExtra(SetupNotificationActivity.PARAM_NOTIFICATION, true));
+
         ArrayList<String> arrExperiences = new ArrayList<String>(Arrays.asList(intent.getStringArrayExtra(SetupTagsActivity.PARAM_EXPERIENCES)));
         currentSettingModel.getData().setExperiences(arrExperiences);
         AccountManager.saveSetting(currentSettingModel);

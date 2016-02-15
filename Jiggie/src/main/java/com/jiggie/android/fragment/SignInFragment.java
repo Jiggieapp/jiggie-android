@@ -237,6 +237,8 @@ public class SignInFragment extends Fragment {
                 //Added by Aga 2-2-2016
                 LoginModel loginModel = new LoginModel();
                 loginModel.setVersion("1.1.0");
+                //String v = App.getVersionName(getActivity());
+                //loginModel.setVersion(v);
                 loginModel.setUser_first_name(object.optString("first_name"));
                 loginModel.setAbout(object.optString("about"));
                 loginModel.setApn_token(gcmId);
@@ -300,7 +302,6 @@ public class SignInFragment extends Fragment {
             if (activity != null)
                 activity.finish();
         }
-
     }
 
     public void onEvent(ExceptionModel message){

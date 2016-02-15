@@ -74,8 +74,8 @@ public class AccountManager {
             postLogin(loginRequestModel, new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
-                    /*String responses = new Gson().toJson(response.body());
-                    Utils.d("res", responses);*/
+                    String responses = new Gson().toJson(response.body());
+                    Utils.d("res", responses);
 
                     if (response.code() == Utils.CODE_SUCCESS) {
                         SettingModel dataTemp = (SettingModel) response.body();
@@ -83,7 +83,6 @@ public class AccountManager {
                     } else {
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SIGN_IN, Utils.RESPONSE_FAILED));
                     }
-
 
                 }
 
