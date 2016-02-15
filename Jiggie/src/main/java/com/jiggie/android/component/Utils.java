@@ -16,6 +16,9 @@ public class Utils {
     public static String FROM_SOCIAL_MATCH = "social_match";
     public static String FROM_CHAT = "chat";
     public static String FROM_CHAT_CONVERSATION = "chat_conversation";
+    public static String FROM_BLOCK_CHAT = "block_chat";
+    public static String FROM_DELETE_CHAT = "delete_chat";
+    public static String FROM_ADD_CHAT = "add_chat";
     //public static String FROM_MORE = "more";
     public static String FROM_EVENT_DETAIL = "event_detail";
     public static String FROM_EVENT_GUEST = "event_guest";
@@ -38,6 +41,8 @@ public class Utils {
     //public static String MSG_EXCEPTION = "Failed: ";
     //changed by wandy 12-02-2016
     public static String MSG_EXCEPTION = "";
+    public static String RESPONSE_FAILED = "Failed response";
+    public static int CODE_SUCCESS = 200;
     //--------------------
 
     public static String PREFERENCE_SETTING = "setting";
@@ -55,7 +60,7 @@ public class Utils {
     //-----
 
     public final static String BASE_URL = "http://api-dev.jiggieapp.com/";
-    /*public final static String BASE_URL = "http://api.jiggieapp.com/";*/
+    //public final static String BASE_URL = "http://api.jiggieapp.com/";
     public final static String URL_EVENTS = BASE_URL + "app/v3/events/list/{fb_id}";
 
     public final static String URL_LOGIN = BASE_URL + "app/v3/login";
@@ -73,6 +78,9 @@ public class Utils {
     public final static String URL_SOCIAL_MATCH = BASE_URL + "app/v3/partyfeed_socialmatch/match/{fb_id}/{from_id}/{type}";
     public final static String URL_EDIT_ABOUT = BASE_URL + "app/v3/updateuserabout";
     public final static String URL_TAGSLIST = BASE_URL + "app/v3/user/tagslist";
+    public final static String URL_BLOCK_CHAT = BASE_URL + "app/v3/blockuserwithfbid";
+    public final static String URL_DELETE_CHAT = BASE_URL + "app/v3/deletemessageswithfbid";
+    public final static String URL_ADD_CHAT = BASE_URL + "app/v3/messages/add";
 
     public static void d(final String title, final String text) {
         Log.d(title, text);

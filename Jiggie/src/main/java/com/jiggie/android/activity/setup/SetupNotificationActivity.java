@@ -1,9 +1,11 @@
 package com.jiggie.android.activity.setup;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Switch;
 
@@ -38,11 +40,12 @@ public class SetupNotificationActivity extends BaseActivity {
     @OnClick(R.id.btnNext)
     @SuppressWarnings("unused")
     void btnNextOnClick() {
-        App.getInstance().trackMixPanelEvent("Walkthrough Push Notifications");
-        final Intent intent = new Intent(this,SetupLocationActivity.class);
-        intent.putExtra(PARAM_NOTIFICATION, this.switchView.isChecked());
-        intent.putExtras(super.getIntent());
-        super.startActivity(intent);
+        if(switchView.isChecked()){
+            showNotifDialog();
+        }else{
+            actionNext(switchView.isChecked());
+        }
+
     }
 
     @Override
@@ -52,5 +55,32 @@ public class SetupNotificationActivity extends BaseActivity {
     public void onBackPressed() {
         super.onBackPressed();
         super.overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
+    }
+
+    public void showNotifDialog() {
+        final AlertDialog dialogNotif = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert)
+                .setTitle(R.string.title_dialog_notif).setMessage(R.string.msg_dialog_notif)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        actionNext(true);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        actionNext(false);
+                    }
+                }).create();
+        dialogNotif.show();
+
+    }
+
+    private void actionNext(boolean isChecked){
+        App.getInstance().trackMixPanelEvent("Walkthrough Push Notifications");
+        final Intent intent = new Intent(SetupNotificationActivity.this,SetupLocationActivity.class);
+        intent.putExtra(PARAM_NOTIFICATION, isChecked);
+        intent.putExtras(super.getIntent());
+        super.startActivity(intent);
     }
 }

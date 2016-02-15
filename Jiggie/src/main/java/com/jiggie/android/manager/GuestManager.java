@@ -58,13 +58,17 @@ public class GuestManager {
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
                     //String header = String.valueOf(response.code());
-                    String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
-                    GuestModel dataTemp = (GuestModel) response.body();
+                    /*String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);*/
 
-                    dataGuestInterest = dataTemp.getData().getGuest_interests();
+                    if(response.code()==Utils.CODE_SUCCESS){
+                        GuestModel dataTemp = (GuestModel) response.body();
+                        dataGuestInterest = dataTemp.getData().getGuest_interests();
+                        EventBus.getDefault().post(dataTemp);
+                    }else{
+                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT_GUEST, Utils.RESPONSE_FAILED));
+                    }
 
-                    EventBus.getDefault().post(dataTemp);
                 }
 
                 @Override
@@ -88,9 +92,14 @@ public class GuestManager {
                     //String header = String.valueOf(response.code());
                     /*String responses = new Gson().toJson(response.body());
                     Log.d("res", responses);*/
-                    Success2Model dataTemp = (Success2Model) response.body();
 
-                    EventBus.getDefault().post(dataTemp);
+                    if(response.code()==Utils.CODE_SUCCESS){
+                        Success2Model dataTemp = (Success2Model) response.body();
+                        EventBus.getDefault().post(dataTemp);
+                    }else{
+                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_GUEST_CONNECT, Utils.RESPONSE_FAILED));
+                    }
+
                 }
 
                 @Override

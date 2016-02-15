@@ -54,10 +54,16 @@ public class ShareManager {
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
                     //String header = String.valueOf(response.code());
-                    String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
-                    ShareLinkModel dataTemp = (ShareLinkModel) response.body();
-                    EventBus.getDefault().post(dataTemp);
+                    /*String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);*/
+
+                    if(response.code()==Utils.CODE_SUCCESS){
+                        ShareLinkModel dataTemp = (ShareLinkModel) response.body();
+                        EventBus.getDefault().post(dataTemp);
+                    }else{
+                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SHARE_LINK, Utils.RESPONSE_FAILED));
+                    }
+
                 }
 
                 @Override
@@ -79,11 +85,17 @@ public class ShareManager {
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
                     //String header = String.valueOf(response.code());
-                    String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
-                    ShareLinkModel dataTemp = (ShareLinkModel) response.body();
+                    /*String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);*/
 
-                    EventBus.getDefault().post(dataTemp);
+                    if(response.code()==Utils.CODE_SUCCESS){
+                        ShareLinkModel dataTemp = (ShareLinkModel) response.body();
+                        EventBus.getDefault().post(dataTemp);
+                    }else{
+                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SHARE_LINK, Utils.RESPONSE_FAILED));
+                    }
+
+
                 }
 
                 @Override

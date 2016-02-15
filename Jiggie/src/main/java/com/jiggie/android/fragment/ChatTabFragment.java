@@ -1,21 +1,28 @@
 package com.jiggie.android.fragment;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -32,6 +39,7 @@ import com.jiggie.android.component.adapter.ChatTabListAdapter;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.manager.ChatManager;
+import com.jiggie.android.model.ChatActionModel;
 import com.jiggie.android.model.ChatListModel;
 import com.jiggie.android.model.Conversation;
 import com.android.volley.VolleyError;
@@ -50,23 +58,13 @@ import de.greenrobot.event.EventBus;
 /**
  * Created by rangg on 21/10/2015.
  */
-public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefreshLayout.OnRefreshListener, ChatTabListAdapter.ConversationSelectedListener {
+public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefreshLayout.OnRefreshListener, ChatTabListAdapter.ConversationSelectedListener, ChatTabListAdapter.ConversationLongClickListener {
     @Bind(R.id.swipe_refresh)
     SwipeRefreshLayout refreshLayout;
     @Bind(R.id.recycler)
     RecyclerView recyclerView;
     /*@Bind(R.id.contentView)
     ViewGroup contentView;*/
-    @Bind(R.id.img_wk)
-    ImageView imgWk;
-    @Bind(R.id.txt_wk_action)
-    TextView txtWkAction;
-    @Bind(R.id.txt_wk_title)
-    TextView txtWkTitle;
-    @Bind(R.id.txt_wk_desc)
-    TextView txtWkDesc;
-    @Bind(R.id.layout_walkthrough)
-    RelativeLayout layoutWalkthrough;
     @Bind(R.id.contentView2)
     FrameLayout contentView2;
 
@@ -78,6 +76,10 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     private View emptyView;
     private View rootView;
     private String title;
+
+    private Dialog dialogWalkthrough;
+    private Dialog dialogLongClick;
+    private ChatListModel.Data.ChatLists conversation;
 
     @Override
     public void setHomeMain(HomeMain homeMain) {
@@ -93,8 +95,14 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     public void onTabSelected() {
         App.getInstance().trackMixPanelEvent("Conversations List");
         //if ((this.adapter != null) && (this.adapter.getItemCount() == 0)||ChatManager.NEED_REFRESH_CHATLIST)
-        if ((this.adapter != null) && (this.adapter.getItemCount() == 0))
+        if ((this.adapter != null) && (this.adapter.getItemCount() == 0)){
             this.onRefresh();
+
+            if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_CHAT, false)) {
+                showWalkthroughDialog();
+            }
+        }
+
     }
 
     @Nullable
@@ -114,7 +122,7 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         EventBus.getDefault().register(this);
 
         this.recyclerView.setLayoutManager(new LinearLayoutManager(super.getContext()));
-        this.recyclerView.setAdapter(this.adapter = new ChatTabListAdapter(this, this));
+        this.recyclerView.setAdapter(this.adapter = new ChatTabListAdapter(this, this, this));
         this.refreshLayout.setOnRefreshListener(this);
         this.handler = new Handler();
 
@@ -130,14 +138,6 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
             }
         });
 
-        if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_CHAT, false)) {
-            layoutWalkthrough.setVisibility(View.VISIBLE);
-            txtWkAction.setPadding(0, 0, Utils.myPixel(getActivity(), 135), Utils.myPixel(getActivity(), 22));
-            txtWkAction.setText(getString(R.string.wk_chat_action));
-            imgWk.setImageResource(R.drawable.wk_img_chat);
-            txtWkTitle.setText(R.string.wk_chat_title);
-            txtWkDesc.setText(getResources().getText(R.string.wk_chat_desc));
-        }
 
     }
 
@@ -176,8 +176,26 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
 
     }
 
-    public void onEvent(ExceptionModel message){
-        if(message.getFrom().equals(Utils.FROM_CHAT)){
+    public void onEvent(ChatActionModel message){
+        String from = message.getFrom();
+        boolean changed = false;
+        if(from.equals(Utils.FROM_BLOCK_CHAT)){
+            this.adapter.remove(conversation);
+            changed = true;
+        }else if(from.equals(Utils.FROM_DELETE_CHAT)){
+            conversation.setLast_message(null);
+            conversation.setUnread(0);
+            changed = true;
+        }
+        if(changed){
+            this.adapter.notifyDataSetChanged();
+            this.setHomeTitle();
+        }
+    }
+
+    public void onEvent(ExceptionModel message) {
+        String from = message.getFrom();
+        if(from.equals(Utils.FROM_CHAT)){
             isLoading = false;
             if (getContext() != null) {
                 Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
@@ -185,6 +203,8 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
                 recyclerView.setVisibility(View.GONE);
                 refreshLayout.setRefreshing(false);
             }
+        }else if(from.equals(Utils.FROM_BLOCK_CHAT)||from.equals(Utils.FROM_DELETE_CHAT)){
+            Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -195,6 +215,12 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         intent.putExtra(Conversation.FIELD_FACEBOOK_ID, conversation.getFb_id());
         intent.putExtra(Conversation.FIELD_FROM_NAME, conversation.getFromName());
         super.startActivityForResult(intent, 0);
+    }
+
+    @Override
+    public void onConversationLongClick(ChatListModel.Data.ChatLists conversation) {
+        this.conversation = conversation;
+        showLongClickDialog(conversation);
     }
 
     @Override
@@ -311,28 +337,79 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
 
-    @OnClick(R.id.layout_walkthrough)
-    void walkthroughOnClick() {
-        Utils.SHOW_WALKTHROUGH_CHAT = false;
-        App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_CHAT, false).commit();
-        layoutWalkthrough.setVisibility(View.GONE);
+    private void showWalkthroughDialog() {
+        dialogWalkthrough = new Dialog(getActivity());
+        dialogWalkthrough.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialogWalkthrough.setContentView(R.layout.walkthrough_screen);
+        dialogWalkthrough.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialogWalkthrough.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
+        RelativeLayout layout = (RelativeLayout)dialogWalkthrough.findViewById(R.id.layout_walkthrough);
+        ImageView imgWk = (ImageView)dialogWalkthrough.findViewById(R.id.img_wk);
+        TextView txtWkAction = (TextView)dialogWalkthrough.findViewById(R.id.txt_wk_action);
+        TextView txtWkTitle = (TextView)dialogWalkthrough.findViewById(R.id.txt_wk_title);
+        TextView txtWkDesc = (TextView)dialogWalkthrough.findViewById(R.id.txt_wk_desc);
+        txtWkAction.setPadding(0, 0, Utils.myPixel(getActivity(), 135), Utils.myPixel(getActivity(), 22));
+        txtWkAction.setText(getString(R.string.wk_chat_action));
+        imgWk.setImageResource(R.drawable.wk_img_chat);
+        txtWkTitle.setText(R.string.wk_chat_title);
+        txtWkDesc.setText(getResources().getText(R.string.wk_chat_desc));
+
+        dialogWalkthrough.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                Utils.SHOW_WALKTHROUGH_CHAT = false;
+                App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_CHAT, false).commit();
+            }
+        });
+
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.SHOW_WALKTHROUGH_CHAT = false;
+                App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_CHAT, false).commit();
+                dialogWalkthrough.dismiss();
+            }
+        });
+
+        dialogWalkthrough.setCanceledOnTouchOutside(true);
+        dialogWalkthrough.setCancelable(true);
+        dialogWalkthrough.show();
+    }
+
+    public void showLongClickDialog(final ChatListModel.Data.ChatLists conversation) {
+        String block = "Block "+conversation.getFromName();
+        String[] menu = {block, "Clear conversation"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.fullHeightDialog)
+                .setItems(menu, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                //Log.d("tes", AccessToken.getCurrentAccessToken().getUserId()+"  "+conversation.getFb_id()+"  "+conversation.getFromId() );
+                                ChatManager.loaderBlockChat(AccessToken.getCurrentAccessToken().getUserId(), conversation.getFb_id());
+                                dialogLongClick.dismiss();
+                                break;
+                            case 1:
+                                ChatManager.loaderDeleteChat(AccessToken.getCurrentAccessToken().getUserId(), conversation.getFb_id());
+                                dialogLongClick.dismiss();
+                                break;
+                            default:
+                                dialogLongClick.dismiss();
+                                break;
+                        }
+                    }
+                });
+        dialogLongClick = builder.create();
+
+        dialogLongClick.show();
+
     }
 
 }

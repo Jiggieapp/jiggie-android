@@ -27,7 +27,6 @@ import retrofit.Retrofit;
 public class EventManager {
 
     private static EventInterface eventInterface;
-    public final static String TAG = EventManager.class.getSimpleName();
 
     public static class FullfillmentTypes {
         public static final String PHONE_NUMBER = "phone_number";
@@ -74,10 +73,13 @@ public class EventManager {
                     /*String responses = new Gson().toJson(response.body());
                     Log.d("res", responses);*/
 
-                    EventModel dataTemp = (EventModel) response.body();
+                    if(response.code()==Utils.CODE_SUCCESS){
+                        EventModel dataTemp = (EventModel) response.body();
+                        EventBus.getDefault().post(dataTemp);
+                    }else{
+                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT, Utils.RESPONSE_FAILED));
+                    }
 
-
-                    EventBus.getDefault().post(dataTemp);
                 }
 
                 @Override
@@ -92,15 +94,24 @@ public class EventManager {
         }
     }
 
-    public static void loaderEventDetail(String _id, String fb_id, String gender_interest){
+    public static void loaderEventDetail(String _id, String fb_id, String gender_interest, final String TAG){
         try {
             getEventDetail(_id, fb_id, gender_interest, new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
-                    String responses = new Gson().toJson(response.body());
-                    Utils.d(TAG, responses);
-                    EventDetailModel dataTemp = (EventDetailModel) response.body();
-                    EventBus.getDefault().post(dataTemp);
+
+                    //String header = String.valueOf(response.code());
+                    /*String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);*/
+
+                    if(response.code()==Utils.CODE_SUCCESS){
+                        EventDetailModel dataTemp = (EventDetailModel) response.body();
+						dataTemp.setFrom(TAG);
+                        EventBus.getDefault().post(dataTemp);
+                    }else{
+                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT_DETAIL, Utils.RESPONSE_FAILED));
+                    }
+
                 }
 
                 @Override
@@ -122,11 +133,16 @@ public class EventManager {
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
                     //String header = String.valueOf(response.code());
-                    String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
-                    TagsListModel dataTemp = (TagsListModel) response.body();
+                    /*String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);*/
 
-                    EventBus.getDefault().post(dataTemp);
+                    if(response.code()==Utils.CODE_SUCCESS){
+                        TagsListModel dataTemp = (TagsListModel) response.body();
+                        EventBus.getDefault().post(dataTemp);
+                    }else{
+                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SETUP_TAGS, Utils.RESPONSE_FAILED));
+                    }
+
                 }
 
                 @Override

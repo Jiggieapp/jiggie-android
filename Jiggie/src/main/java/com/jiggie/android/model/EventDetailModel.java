@@ -41,6 +41,16 @@ public class EventDetailModel {
         this.data = data;
     }
 
+    public String from;
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
+
     public static class Data{
 
         EventDetail event_detail;

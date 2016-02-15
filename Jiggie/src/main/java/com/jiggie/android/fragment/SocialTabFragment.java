@@ -1,11 +1,14 @@
 package com.jiggie.android.fragment;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,11 +18,14 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -106,16 +112,6 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     Button inboundBtnYes;
     @Bind(R.id.btnNoInbound)
     Button inboundBtnNo;
-    @Bind(R.id.img_wk)
-    ImageView imgWk;
-    @Bind(R.id.txt_wk_action)
-    TextView txtWkAction;
-    @Bind(R.id.txt_wk_title)
-    TextView txtWkTitle;
-    @Bind(R.id.txt_wk_desc)
-    TextView txtWkDesc;
-    @Bind(R.id.layout_walkthrough)
-    FrameLayout layoutWalkthrough;
 
     //private SocialMatch current;
     private HomeMain homeMain;
@@ -126,7 +122,8 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     boolean confirm;
     SettingModel currentSetting;
     private int socialSize;
-    private final static String TAG = SocialTabFragment.class.getSimpleName();
+    public static final String TAG = SocialTabFragment.class.getSimpleName();
+    private Dialog dialogWalkthrough;
 
     @Override
     public String getTitle() {
@@ -141,8 +138,20 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     @Override
     public void onTabSelected() {
         //if (this.current == null||SocialManager.NEED_REFRESH)
-        if (this.current == null)
-            this.onRefresh();
+        if (this.current == null){
+            if (switchSocialize.isChecked()) {
+                txtSocialize.setText(R.string.socialize_description);
+                this.onRefresh();
+            }else{
+                this.layoutSocialize.setVisibility(View.VISIBLE);
+                txtSocialize.setText(R.string.socialize_description_off);
+            }
+
+            if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_SOCIAL, false)) {
+                showWalkthroughDialog();
+            }
+        }
+
         App.getInstance().trackMixPanelEvent("View Social Feed");
     }
 
@@ -155,16 +164,11 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        if(!EventBus.getDefault().isRegistered(this))
-            EventBus.getDefault().register(this);
-    }
-
-    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ButterKnife.bind(this, this.rootView);
+
+        EventBus.getDefault().register(this);
 
         this.layoutSocialize.setVisibility(View.GONE);
         this.progressBar.setVisibility(View.GONE);
@@ -179,15 +183,6 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         this.switchSocialize.setOnCheckedChangeListener(this.socializeChanged);
         App.getInstance().registerReceiver(this.socialReceiver, new IntentFilter(super.getString(R.string.broadcast_social)));
 
-        if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_EVENT, false)) {
-            layoutWalkthrough.setVisibility(View.VISIBLE);
-            imgWk.setImageResource(R.drawable.wk_img_suggestion);
-            txtWkAction.setPadding(0, 0, Utils.myPixel(getActivity(), 37), Utils.myPixel(getActivity(), 22));
-            txtWkAction.setText(getString(R.string.wk_match_action));
-            txtWkTitle.setText(R.string.wk_match_title);
-            txtWkDesc.setText(getResources().getText(R.string.wk_match_desc));
-        }
-
     }
 
     private void onRefresh() {
@@ -201,8 +196,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         }
 
         if(current==null){
-            //wandy, add comment 12-02-2016
-            //this.layoutSocialize.setVisibility(View.GONE);
+            this.layoutSocialize.setVisibility(View.GONE);
         }
         this.progressBar.setVisibility(View.VISIBLE);
 
@@ -212,6 +206,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
 
     public void onEvent(SocialModel message){
         current = null;
+
         for(SocialModel.Data.SocialFeeds item : message.getData().getSocial_feeds())
         {
             if(SocialManager.Type.isInbound(item))
@@ -294,13 +289,17 @@ public class SocialTabFragment extends Fragment implements TabFragment {
 
                 // we need to get venue name from event detail api
                 this.progressBar.setVisibility(View.VISIBLE);
-                EventManager.loaderEventDetail(current.getEvent_id(), AccessToken.getCurrentAccessToken().getUserId(), currentSetting.getData().getGender_interest());
+
+                EventManager.loaderEventDetail(current.getEvent_id()
+                        , AccessToken.getCurrentAccessToken().getUserId()
+                        , currentSetting.getData().getGender_interest()
+                        ,TAG);
             }
         }
     }
 
     public void onEvent(EventDetailModel message){
-        if (getContext() != null) {
+        if (getContext() != null && message.getFrom().equalsIgnoreCase(TAG)) {
             dismissProgressDialog();
             generalTxtEvent.setText(getString(R.string.location_viewing, message.getData().getEvents_detail().getTitle(), message.getData().getEvents_detail().getVenue_name()));
             progressBar.setVisibility(View.GONE);
@@ -351,21 +350,6 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             });
         }
     };
-
-    @OnClick(R.id.layout_walkthrough)
-    void walkthroughOnClick() {
-        if (txtWkTitle.getText().toString().equals(getString(R.string.wk_request_title))) {
-            Utils.SHOW_WALKTHROUGH_SOCIAL = false;
-            App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_SOCIAL, false).commit();
-            layoutWalkthrough.setVisibility(View.GONE);
-        }
-
-        imgWk.setImageResource(R.drawable.wk_img_connection);
-        txtWkAction.setPadding(0, 0, Utils.myPixel(getActivity(), 32), Utils.myPixel(getActivity(), 22));
-        txtWkAction.setText(getString(R.string.wk_request_action));
-        txtWkTitle.setText(R.string.wk_request_title);
-        txtWkDesc.setText(getResources().getText(R.string.wk_request_desc));
-    }
 
     @SuppressWarnings("unused")
     @OnClick(R.id.imageUserGeneral)
@@ -501,13 +485,8 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     @Override
     public void onDestroy() {
         App.getInstance().unregisterReceiver(this.socialReceiver);
-        super.onDestroy();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
         EventBus.getDefault().unregister(this);
+        super.onDestroy();
     }
 
     private BroadcastReceiver socialReceiver = new BroadcastReceiver() {
@@ -539,6 +518,78 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             }
             else this.title = super.getString(R.string.social);
             this.homeMain.onTabTitleChanged(this);
+        }
+    }
+
+    private void showWalkthroughDialog() {
+        dialogWalkthrough = new Dialog(getActivity());
+        dialogWalkthrough.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialogWalkthrough.setContentView(R.layout.walkthrough_screen);
+        dialogWalkthrough.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialogWalkthrough.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
+        RelativeLayout layout = (RelativeLayout)dialogWalkthrough.findViewById(R.id.layout_walkthrough);
+        final ImageView imgWk = (ImageView)dialogWalkthrough.findViewById(R.id.img_wk);
+        final TextView txtWkAction = (TextView)dialogWalkthrough.findViewById(R.id.txt_wk_action);
+        final TextView txtWkTitle = (TextView)dialogWalkthrough.findViewById(R.id.txt_wk_title);
+        final TextView txtWkDesc = (TextView)dialogWalkthrough.findViewById(R.id.txt_wk_desc);
+        imgWk.setImageResource(R.drawable.wk_img_suggestion);
+        txtWkAction.setPadding(0, 0, Utils.myPixel(getActivity(), 27), Utils.myPixel(getActivity(), 22));
+        txtWkAction.setText(getString(R.string.wk_match_action));
+        txtWkTitle.setText(R.string.wk_match_title);
+        txtWkDesc.setText(getResources().getText(R.string.wk_match_desc));
+
+        dialogWalkthrough.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                if (txtWkTitle.getText().toString().equals(getString(R.string.wk_request_title))) {
+                    Utils.SHOW_WALKTHROUGH_SOCIAL = false;
+                    App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_SOCIAL, false).commit();
+                    dismissWalkthroughDialog();
+                } else {
+                    imgWk.setImageResource(R.drawable.wk_img_connection);
+                    txtWkAction.setPadding(0, 0, Utils.myPixel(getActivity(), 30), Utils.myPixel(getActivity(), 22));
+                    txtWkAction.setText(getString(R.string.wk_request_action));
+                    txtWkTitle.setText(R.string.wk_request_title);
+                    txtWkDesc.setText(getResources().getText(R.string.wk_request_desc));
+                    showAgainWalkthroughDialog();
+                }
+
+            }
+        });
+
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (txtWkTitle.getText().toString().equals(getString(R.string.wk_request_title))) {
+                    Utils.SHOW_WALKTHROUGH_SOCIAL = false;
+                    App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_SOCIAL, false).commit();
+                    dismissWalkthroughDialog();
+                } else {
+                    imgWk.setImageResource(R.drawable.wk_img_connection);
+                    txtWkAction.setPadding(0, 0, Utils.myPixel(getActivity(), 30), Utils.myPixel(getActivity(), 22));
+                    txtWkAction.setText(getString(R.string.wk_request_action));
+                    txtWkTitle.setText(R.string.wk_request_title);
+                    txtWkDesc.setText(getResources().getText(R.string.wk_request_desc));
+                    //showAgainWalkthroughDialog();
+                }
+            }
+        });
+
+        dialogWalkthrough.setCanceledOnTouchOutside(true);
+        dialogWalkthrough.setCancelable(true);
+        dialogWalkthrough.show();
+    }
+
+    private void showAgainWalkthroughDialog(){
+        if(dialogWalkthrough!=null&&!dialogWalkthrough.isShowing()){
+            dialogWalkthrough.show();
+        }
+    }
+
+    private void dismissWalkthroughDialog(){
+        if(dialogWalkthrough!=null&&dialogWalkthrough.isShowing()){
+            dialogWalkthrough.dismiss();
         }
     }
 }

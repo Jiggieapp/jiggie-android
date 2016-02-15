@@ -14,10 +14,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
 import com.jiggie.android.App;
@@ -25,6 +27,7 @@ import com.jiggie.android.R;
 import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
 import com.jiggie.android.activity.profile.ProfileSettingActivity;
+import com.jiggie.android.activity.profile.VerifyPhoneNumberActivity;
 import com.jiggie.android.activity.setup.SetupTagsActivity;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
@@ -144,13 +147,9 @@ public class MoreTabFragment extends Fragment implements TabFragment, MoreTabLis
 
     public void onEvent(ShareLinkModel message){
         App.getInstance().trackMixPanelEvent("Share App");
-        if(getContext() == null)
-            Utils.d(TAG, "getContext null");
-        else Utils.d(TAG, "getContexttidak sama null");
         if (getContext() != null) {
             String link = String.format("%s\n\n%s", message.getMessage(), message.getUrl());
             startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, link).setType("text/plain"), getString(R.string.invite)));
-
             shareLink = message;
         }
         hideProgressDialog();
@@ -185,5 +184,11 @@ public class MoreTabFragment extends Fragment implements TabFragment, MoreTabLis
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onVerifyPhoneNumberSelected() {
+        Intent i = new Intent(getActivity(), VerifyPhoneNumberActivity.class);
+        startActivity(i);
     }
 }

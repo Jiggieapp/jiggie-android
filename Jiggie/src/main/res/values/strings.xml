@@ -55,6 +55,7 @@
     <string name="distance_sort">Sort guests by their distance&#8230;</string>
     <string name="age">Age</string>
     <string name="age_sort">Sort guests by their age&#8230;</string>
+    <string name="verify_your_phone_number">Verify your phone number</string>
     <string name="profile">Profile</string>
     <string name="invite">Invite friends</string>
     <string name="settings">Settings</string>
@@ -95,8 +96,8 @@
     <string name="share">Share</string>
     <string name="your_location">Your location</string>
     <string name="connected">Connected</string>
-    <string name="check_back_later">Check back later</string>
-    <string name="check_back_later_description">Browse through some more events and we\'ll match you up.</string>
+    <string name="check_back_later">Check back soon</string>
+    <string name="check_back_later_description">Browse some events and your social feed will show members who like the same events.</string>
     <string name="start_chatting">Start chatting</string>
     <string name="make_some_plan">Make some plans for today!</string>
     <string name="socialize">Socialize</string>
@@ -151,6 +152,12 @@
     <string name="title_no_event">No events found</string>
     <string name="msg_no_event">No events found</string>
 
+    <string name="title_dialog_notif">Allow notification?</string>
+    <string name="msg_dialog_notif">System will allow your device to receive notification from this app.</string>
+
+    <string name="title_dialog_location">Allow share location?</string>
+    <string name="msg_dialog_location">System will allow this app to get information about your phone location.</string>
+
     <plurals name="guest_count">
         <item quantity="one">%1$d Guest</item>
         <item quantity="other">%1$d Guests</item>
@@ -171,4 +178,8 @@
 
     <string name="no_internet_connection">Please check your internet connection</string>
     <string name="standard_error_message">Sorry we\'re having some server issues, please check back in a few minutes.</string>
+
+    <string name="no_one_will_see_your_phone_number">No one will see your phone number on Jiggie.</string>
+    <string name="international">International</string>
+    <string name="usa">US_United States</string>
 </resources>

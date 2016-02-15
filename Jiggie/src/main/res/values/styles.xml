@@ -23,4 +23,8 @@
     <style name="ExpandableToolbarTitleStyle" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textColor">@android:color/white</item>
     </style>
+
+    <style name="fullHeightDialog" parent="android:style/Theme.Material.Light.Dialog.Alert">
+        <item name="android:windowNoTitle">true</item>
+    </style>
 </resources>

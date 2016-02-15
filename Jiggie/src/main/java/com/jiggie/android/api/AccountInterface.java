@@ -6,6 +6,7 @@ import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.MemberInfoModel;
 import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.SettingModel;
+import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SuccessModel;
 
 import retrofit.Call;
@@ -34,6 +35,6 @@ public interface AccountInterface {
     Call<SettingModel> getSetting(@Query("fb_id") String fb_id);
 
     @POST
-    Call<SuccessModel> postEditAbout(@Url String url, @Body AboutModel aboutModel);
+    Call<Success2Model> postEditAbout(@Url String url, @Body AboutModel aboutModel);
 
 }
