@@ -83,8 +83,8 @@ public class SocialManager {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
                     //String header = String.valueOf(response.code());
-                    /*String responses = new Gson().toJson(response.body());
-                    Utils.d("res", responses)*/;
+                    String responses = new Gson().toJson(response.body());
+                    Utils.d("res", responses);
 
                     if(response.code()==Utils.CODE_SUCCESS){
                         SocialModel dataTemp = (SocialModel) response.body();
@@ -112,8 +112,8 @@ public class SocialManager {
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
                     //String header = String.valueOf(response.code());
-                    /*String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);*/
+                    String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);
 
                     if(response.code()==Utils.CODE_SUCCESS){
                         SuccessModel dataTemp = (SuccessModel) response.body();

@@ -119,7 +119,6 @@ public class ChatManager {
                     }else{
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_CHAT, Utils.RESPONSE_FAILED));
                     }
-
                 }
 
                 @Override

@@ -13,8 +13,10 @@ import com.jiggie.android.model.AboutModel;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.LoginModel;
+import com.jiggie.android.model.LoginResultModel;
 import com.jiggie.android.model.MemberInfoModel;
 import com.jiggie.android.model.MemberSettingModel;
+import com.jiggie.android.model.MemberSettingResultModel;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SuccessModel;
@@ -78,7 +80,10 @@ public class AccountManager {
                     Utils.d("res", responses);
 
                     if (response.code() == Utils.CODE_SUCCESS) {
-                        SettingModel dataTemp = (SettingModel) response.body();
+
+                        LoginResultModel dataLogin = (LoginResultModel) response.body();
+                        SettingModel dataTemp = setSettingModelFromLogin(dataLogin);
+
                         EventBus.getDefault().post(dataTemp);
                     } else {
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SIGN_IN, Utils.RESPONSE_FAILED));
@@ -103,13 +108,13 @@ public class AccountManager {
             postMemberSetting(memberSettingModel, new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
-                    /*String responses = new Gson().toJson(response.body());
-                    Utils.d("res", responses);*/
+                    String responses = new Gson().toJson(response.body());
+                    Utils.d("res", responses);
 
-                    if(response.code()==Utils.CODE_SUCCESS){
-                        SuccessModel dataTemp = (SuccessModel) response.body();
+                    if (response.code() == Utils.CODE_SUCCESS) {
+                        Success2Model dataTemp = (Success2Model) response.body();
                         EventBus.getDefault().post(dataTemp);
-                    }else{
+                    } else {
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.RESPONSE_FAILED));
                     }
 
@@ -135,10 +140,10 @@ public class AccountManager {
                     /*String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);*/
 
-                    if(response.code()==Utils.CODE_SUCCESS){
+                    if (response.code() == Utils.CODE_SUCCESS) {
                         MemberInfoModel dataTemp = (MemberInfoModel) response.body();
                         EventBus.getDefault().post(dataTemp);
-                    }else{
+                    } else {
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_DETAIL, Utils.RESPONSE_FAILED));
                     }
 
@@ -146,7 +151,7 @@ public class AccountManager {
                 }
 
                 @Override
-                public void onCustomCallbackFailure(String  t) {
+                public void onCustomCallbackFailure(String t) {
                     Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_DETAIL, Utils.MSG_EXCEPTION + t.toString()));
                 }
@@ -162,20 +167,21 @@ public class AccountManager {
             getSetting(fb_id, new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
-                    /*String responses = new Gson().toJson(response.body());
-                    Utils.d("res", responses);*/
+                    String responses = new Gson().toJson(response.body());
+                    Utils.d("res", responses);
 
-                    if(response.code()==Utils.CODE_SUCCESS){
-                        SettingModel dataTemp = (SettingModel) response.body();
+                    if (response.code() == Utils.CODE_SUCCESS) {
+                        MemberSettingResultModel data = (MemberSettingResultModel) response.body();
+                        SettingModel dataTemp = setSettingModelFromMemberSetting(data);
                         EventBus.getDefault().post(dataTemp);
-                    }else{
+                    } else {
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_SETTING, Utils.RESPONSE_FAILED));
                     }
 
                 }
 
                 @Override
-                public void onCustomCallbackFailure(String  t) {
+                public void onCustomCallbackFailure(String t) {
                     Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_SETTING, Utils.MSG_EXCEPTION + t.toString()));
                 }
@@ -194,17 +200,17 @@ public class AccountManager {
                     /*String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);*/
 
-                    if(response.code()==Utils.CODE_SUCCESS){
+                    if (response.code() == Utils.CODE_SUCCESS) {
                         Success2Model dataTemp = (Success2Model) response.body();
                         EventBus.getDefault().post(dataTemp);
-                    }else{
+                    } else {
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_EDIT, Utils.RESPONSE_FAILED));
                     }
 
                 }
 
                 @Override
-                public void onCustomCallbackFailure(String  t) {
+                public void onCustomCallbackFailure(String t) {
                     Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_EDIT, Utils.MSG_EXCEPTION + t.toString()));
                 }
@@ -238,6 +244,52 @@ public class AccountManager {
         LoginModel loginModel = new Gson().fromJson(App.getInstance().getSharedPreferences(Utils.PREFERENCE_LOGIN,
                 Context.MODE_PRIVATE).getString(Utils.LOGIN_MODEL, ""), LoginModel.class);
         return loginModel;
+    }
+
+    private static SettingModel setSettingModelFromLogin(LoginResultModel data){
+        boolean success = true;
+
+
+        LoginResultModel.Data.Login login = data.getData().getLogin();
+
+        SettingModel.Data.Notifications notifications = new SettingModel.Data.Notifications(login.getNotifications().isChat(), login.getNotifications().isFeed(),
+                login.getNotifications().isLocation());
+        //payment still empty
+        SettingModel.Data.Payment payment = new SettingModel.Data.Payment();
+
+        SettingModel.Data settingData = new SettingModel.Data(login.get_id(), login.getFb_id(), login.getGender(), notifications,
+                login.getUpdated_at(), login.getAccount_type(), login.getExperiences(), login.getGender_interest(), payment, login.getPhone());
+
+
+
+
+        SettingModel model = new SettingModel(success, settingData);
+        model.setIs_new_user(login.is_new_user());
+        model.setHelp_phone(login.getHelp_phone());
+        model.setMatchme(login.isMatchme());
+        model.setDevice_type(login.getDevice_type());
+        model.setShow_walkthrough(login.isShow_walkthrough());
+
+        return model;
+    }
+
+    private static SettingModel setSettingModelFromMemberSetting(MemberSettingResultModel data){
+        boolean success = true;
+
+
+        MemberSettingResultModel.Data.MemberSettings memberSettingResultModel = data.getData().getMembersettings();
+
+        SettingModel.Data.Notifications notifications = new SettingModel.Data.Notifications(memberSettingResultModel.getNotifications().isChat(), memberSettingResultModel.getNotifications().isFeed(),
+                memberSettingResultModel.getNotifications().isLocation());
+        //payment still empty
+        SettingModel.Data.Payment payment = new SettingModel.Data.Payment();
+
+        SettingModel.Data settingData = new SettingModel.Data(memberSettingResultModel.get_id(), memberSettingResultModel.getFb_id(), memberSettingResultModel.getGender(), notifications,
+                memberSettingResultModel.getUpdated_at(), memberSettingResultModel.getAccount_type(), memberSettingResultModel.getExperiences(), memberSettingResultModel.getGender_interest(), payment, memberSettingResultModel.getPhone());
+
+        SettingModel model = new SettingModel(success, settingData);
+
+        return model;
     }
 
 }

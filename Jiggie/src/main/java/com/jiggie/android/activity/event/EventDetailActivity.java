@@ -325,9 +325,9 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                     txtBookNow.setText(R.string.purchase);
                 }
 
-                //Added by Aga 22-1-2016
+                //Changed by Aga 16-2-2016
                 else if (StringUtility.isEquals(EventManager.FullfillmentTypes.LINK, message.getData().getEvents_detail().getFullfillment_type(), true)) {
-                    txtExternalSite.setVisibility(View.GONE);
+                    txtExternalSite.setVisibility(View.VISIBLE);
                     txtBookNow.setText(R.string.book_now);
                 }
             } catch (ParseException e) {

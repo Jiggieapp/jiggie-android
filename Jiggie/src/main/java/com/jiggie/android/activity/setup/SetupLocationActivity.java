@@ -23,6 +23,7 @@ import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.MemberSettingModel;
 import com.facebook.AccessToken;
 import com.jiggie.android.model.SettingModel;
+import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SuccessModel;
 
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ public class SetupLocationActivity extends BaseActivity {
 
     }
 
-    public void onEvent(SuccessModel message){
+    public void onEvent(Success2Model message){
 
         if (isActive()) {
             dialog.dismiss();

@@ -139,6 +139,10 @@ public class MoreTabFragment extends Fragment implements TabFragment, MoreTabLis
             String link = String.format("%s\n\n%s", shareLink.getMessage(), shareLink.getUrl());
             startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, link).setType("text/plain"), getString(R.string.invite)));
             App.getInstance().trackMixPanelEvent("Share App");
+
+            //Added 16-2-2016
+            hideProgressDialog();
+            //-------------
         } else {
             progressDialog = App.showProgressDialog(super.getContext());
             ShareManager.loaderShareApps(AccessToken.getCurrentAccessToken().getUserId());
