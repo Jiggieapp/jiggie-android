@@ -1,6 +1,10 @@
 package com.jiggie.android.component;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.util.Log;
 
 /**
@@ -87,4 +91,25 @@ public class Utils {
     public static void d(final String title, final String text) {
         Log.d(title, text);
     }
+
+    //permission for Marshmallow
+    public static final int PERMISSION_REQUEST = 284;
+
+    /*@TargetApi(Build.VERSION_CODES.M)
+    private void checkPermission(final String permission
+            , final Activity activity)
+    {
+        int requestCode = 0;
+        if(permission.equalsIgnoreCase(Manifest.permission.READ_PHONE_STATE))
+        {
+            requestCode = PERMISSION_REQUEST;
+        }
+        int hasPermission = activity.checkSelfPermission(permission);
+        if (hasPermission != PackageManager.PERMISSION_GRANTED) {
+            activity.requestPermissions(new String[]{permission},
+                    requestCode);
+            return;
+        }
+        else return;
+    }*/
 }

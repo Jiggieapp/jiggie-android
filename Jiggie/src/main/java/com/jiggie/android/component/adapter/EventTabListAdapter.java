@@ -18,6 +18,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventModel;
@@ -31,6 +32,7 @@ public class EventTabListAdapter extends RecyclerView.Adapter<EventTabListAdapte
     private final Fragment fragment;
     private final ViewSelectedListener listener;
     private final ArrayList<EventModel.Data.Events> items;
+    private static final String TAG = EventTabListAdapter.class.getSimpleName();
 
     public EventTabListAdapter(Fragment fragment, ViewSelectedListener listener) {
         this.items = new ArrayList<>();
@@ -66,8 +68,6 @@ public class EventTabListAdapter extends RecyclerView.Adapter<EventTabListAdapte
                     //item.setImageUrl(imageUrl);
                 }
             }
-
-
             //String imageUrl = String.format("%simages/event/%s", VolleyHandler.getInstance().getServerHost(), item.get_id());
 
             holder.event = item;
@@ -76,8 +76,14 @@ public class EventTabListAdapter extends RecyclerView.Adapter<EventTabListAdapte
             String[] tags =  new String[item.getTags().size()];
             item.getTags().toArray(tags);
 
+            String temp = "";
+            for(int i=0;i<tags.length;i++)
+            {
+                temp += tags[i] + " ";
+            }
+            Utils.d(TAG, item.getTitle() + " temp oi " + temp);
             holder.eventTagAdapter.setTags(tags);
-            holder.eventTagAdapter.notifyDataSetChanged();
+            //holder.eventTagAdapter.notifyDataSetChanged();
             holder.txtVenueName.setText(item.getVenue_name());
             Glide.with(this.fragment).load(imageUrl).into(holder.image);
 
@@ -86,7 +92,6 @@ public class EventTabListAdapter extends RecyclerView.Adapter<EventTabListAdapte
             String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format, Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));
 
             holder.txtDate.setText(simpleDate);
-
         } catch (ParseException e) {
             throw new RuntimeException(App.getErrorMessage(e), e);
         }
@@ -104,15 +109,15 @@ public class EventTabListAdapter extends RecyclerView.Adapter<EventTabListAdapte
         @Bind(R.id.image) ImageView image;
 
         private EventTagAdapter eventTagAdapter;
-
+        //private EventTagArrayAdapter eventTagAdapter;
         private ViewSelectedListener listener;
         private EventModel.Data.Events event;
 
         public ViewHolder(View itemView, ViewSelectedListener listener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            this.tagListView.setAdapter(this.eventTagAdapter = new EventTagAdapter(R.layout.item_event_tag));
-
+            this.eventTagAdapter = new EventTagAdapter(R.layout.item_event_tag);
+            this.tagListView.setAdapter(eventTagAdapter);
             if ((this.listener = listener) != null)
                 itemView.setOnClickListener(this);
         }

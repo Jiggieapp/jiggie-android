@@ -277,7 +277,6 @@ public class SignInFragment extends Fragment {
     };
 
     public void onEvent(SettingModel message){
-
         String responses = new Gson().toJson(message);
         Log.d("res", responses);
 

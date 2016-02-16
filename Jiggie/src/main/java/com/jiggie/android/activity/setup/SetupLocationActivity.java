@@ -39,6 +39,7 @@ public class SetupLocationActivity extends BaseActivity {
     @Bind(R.id.switchView) Switch switchView;
     @Bind(R.id.root) View root;
     ProgressDialog dialog = null;
+    public static final String TAG = SetupLocationActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,7 +139,6 @@ public class SetupLocationActivity extends BaseActivity {
         memberSettingModel.setExperiences(TextUtils.join(",", intent.getStringArrayExtra(SetupTagsActivity.PARAM_EXPERIENCES)));
 
         AccountManager.loaderMemberSetting(memberSettingModel);
-
         currentSettingModel.getData().getNotifications().setLocation(isChecked);
         currentSettingModel.getData().getNotifications().setChat(intent.getBooleanExtra(SetupNotificationActivity.PARAM_NOTIFICATION, true));
         currentSettingModel.getData().getNotifications().setFeed(intent.getBooleanExtra(SetupNotificationActivity.PARAM_NOTIFICATION, true));

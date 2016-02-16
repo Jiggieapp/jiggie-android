@@ -195,9 +195,9 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             return;
         }
 
-        if(current==null){
+        /*if(current==null){
             this.layoutSocialize.setVisibility(View.GONE);
-        }
+        }*/
         this.progressBar.setVisibility(View.VISIBLE);
 
         //showProgressDialog();

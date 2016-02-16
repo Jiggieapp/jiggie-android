@@ -31,7 +31,7 @@ import retrofit.Retrofit;
  * Created by LTE on 2/1/2016.
  */
 public class AccountManager {
-
+    private static final String TAG = AccountManager.class.getSimpleName();
     static AccountInterface accountInterface;
 
     public static void initAccountService(){
@@ -75,7 +75,7 @@ public class AccountManager {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
                     String responses = new Gson().toJson(response.body());
-                    Utils.d("res", responses);
+                    Utils.d(TAG, responses);
 
                     if (response.code() == Utils.CODE_SUCCESS) {
                         SettingModel dataTemp = (SettingModel) response.body();
@@ -83,7 +83,6 @@ public class AccountManager {
                     } else {
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SIGN_IN, Utils.RESPONSE_FAILED));
                     }
-
                 }
 
                 @Override

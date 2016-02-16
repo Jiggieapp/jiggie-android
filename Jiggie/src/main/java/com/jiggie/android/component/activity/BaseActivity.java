@@ -1,13 +1,19 @@
 package com.jiggie.android.component.activity;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.jiggie.android.R;
+import com.jiggie.android.component.Utils;
 
 import butterknife.ButterKnife;
+
+import static android.support.v4.app.ActivityCompat.requestPermissions;
 
 /**
  * Created by rangg on 14/01/2016.
@@ -42,4 +48,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         this.active = false;
         super.onDestroy();
     }
+
+
 }

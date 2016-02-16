@@ -1,6 +1,10 @@
 package com.jiggie.android;
 
+import android.*;
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -23,6 +27,7 @@ import android.view.WindowManager;
 
 import com.crashlytics.android.Crashlytics;
 import com.jiggie.android.component.SimpleJSONObject;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.database.DatabaseConnection;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.manager.AccountManager;
@@ -41,8 +46,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.UUID;
 
 import io.fabric.sdk.android.Fabric;
+
+import static android.support.v4.app.ActivityCompat.requestPermissions;
 
 /**
  * Created by rangg on 21/10/2015.
@@ -225,7 +233,6 @@ public class App extends Application {
         } catch (Exception e) {
             // e.printStackTrace();
         }
-
         return String.valueOf(pi.versionCode);
     }
     //----------------------
@@ -263,12 +270,49 @@ public class App extends Application {
     }
 
     private String getDeviceId() {
-        if (this.deviceId == null) {
-            final TelephonyManager telephonyManager = (TelephonyManager) super.getSystemService(Context.TELEPHONY_SERVICE);
-            final String deviceId = telephonyManager.getDeviceId();
-            this.deviceId = ((TextUtils.isEmpty(deviceId)) || (deviceId.equals("000000000000000"))) ? Settings.Secure.getString(super.getContentResolver(), Settings.Secure.ANDROID_ID) : deviceId;
+        /*if (this.deviceId == null) {
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            {
+                checkPermission(Manifest.permission.READ_PHONE_STATE, App.getInstance().getApplicationContext());
+            }
+            else
+            {
+                final TelephonyManager telephonyManager = (TelephonyManager) super.getSystemService(Context.TELEPHONY_SERVICE);
+                final String deviceId = telephonyManager.getDeviceId();
+                this.deviceId = ((TextUtils.isEmpty(deviceId)) || (deviceId.equals("000000000000000"))) ? Settings.Secure.getString(super.getContentResolver(), Settings.Secure.ANDROID_ID) : deviceId;
+            }
+        }
+        return this.deviceId;*/
+
+        /*if(this.deviceId == null)
+        {
+            final String androidId = "" + android.provider.Settings.Secure.getString(getContentResolver()
+                    , android.provider.Settings.Secure.ANDROID_ID);
+            UUID deviceUuid = new UUID(androidId.hashCode()
+                    , ((long)tmDevice.hashCode() << 32) | tmSerial.hashCode());
+            this.deviceId = deviceUuid.toString();
+        }
+        return this.deviceId;*/
+
+        if(this.deviceId == null)
+        {
+            this.deviceId = Settings.Secure.getString(getApplicationContext().getContentResolver(),
+                    Settings.Secure.ANDROID_ID);
         }
         return this.deviceId;
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private void checkPermission(final String permission
+            , final Activity activity)
+    {
+            int hasWriteContactsPermission = checkSelfPermission(permission);
+            if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(activity, new String[]{permission},
+                        Utils.PERMISSION_REQUEST);
+                return;
+            }
+        else return;
     }
 
     private String getSimOperatorName() {
