@@ -232,14 +232,24 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     public void onEvent(ExceptionModel message){
         String ex = message.getMessage();
         if(message.getFrom().equals(Utils.FROM_SOCIAL_FEED)||message.getFrom().equals(Utils.FROM_SOCIAL_MATCH)||message.getFrom().equals(Utils.FROM_EVENT_DETAIL)){
-            if (getContext() != null) {
-                dismissProgressDialog();
-                Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
-                progressBar.setVisibility(View.GONE);
-                if(message.getFrom().equals(Utils.FROM_SOCIAL_MATCH)||message.getFrom().equals(Utils.FROM_EVENT_DETAIL)){
-                    enableButton(true);
+            if(ex.equals(Utils.RESPONSE_FAILED+" "+"empty data")){
+                this.layoutSocialize.setVisibility(View.GONE);
+                this.cardEmpty.setVisibility(View.VISIBLE);
+                this.cardGeneral.setVisibility(View.GONE);
+                this.cardInbound.setVisibility(View.GONE);
+                this.progressBar.setVisibility(View.GONE);
+                this.card.setVisibility(View.GONE);
+            }else{
+                if (getContext() != null) {
+                    dismissProgressDialog();
+                    Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    if(message.getFrom().equals(Utils.FROM_SOCIAL_MATCH)||message.getFrom().equals(Utils.FROM_EVENT_DETAIL)){
+                        enableButton(true);
+                    }
                 }
             }
+
         }
     }
 

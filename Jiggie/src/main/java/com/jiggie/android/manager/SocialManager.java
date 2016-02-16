@@ -86,11 +86,13 @@ public class SocialManager {
                     String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);
 
+                    //int response_code = response.code();
+
                     if(response.code()==Utils.CODE_SUCCESS){
                         SocialModel dataTemp = (SocialModel) response.body();
                         EventBus.getDefault().post(dataTemp);
                     }else{
-                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_FEED, Utils.RESPONSE_FAILED));
+                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_FEED, Utils.RESPONSE_FAILED+" "+"empty data"));
                     }
 
                 }
