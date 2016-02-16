@@ -83,14 +83,16 @@ public class SocialManager {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
                     //String header = String.valueOf(response.code());
-                    /*String responses = new Gson().toJson(response.body());
-                    Utils.d("res", responses)*/;
+                    String responses = new Gson().toJson(response.body());
+                    Utils.d("res", responses);
+
+                    //int response_code = response.code();
 
                     if(response.code()==Utils.CODE_SUCCESS){
                         SocialModel dataTemp = (SocialModel) response.body();
                         EventBus.getDefault().post(dataTemp);
                     }else{
-                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_FEED, Utils.RESPONSE_FAILED));
+                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_FEED, Utils.RESPONSE_FAILED+" "+"empty data"));
                     }
 
                 }
@@ -112,8 +114,8 @@ public class SocialManager {
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
                     //String header = String.valueOf(response.code());
-                    /*String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);*/
+                    String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);
 
                     if(response.code()==Utils.CODE_SUCCESS){
                         SuccessModel dataTemp = (SuccessModel) response.body();

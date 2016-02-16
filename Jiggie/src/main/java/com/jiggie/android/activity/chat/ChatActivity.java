@@ -371,7 +371,7 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
                 adapter.notifyDataSetChanged();
                 recyclerView.scrollToPosition(adapter.getItemCount() - 1);
             }
-            isChecking = false;
+            this.isChecking = false;
         }
 
     }

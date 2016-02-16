@@ -101,8 +101,8 @@ public class EventManager {
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
                     //String header = String.valueOf(response.code());
-                    /*String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);*/
+                    String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);
 
                     if(response.code()==Utils.CODE_SUCCESS){
                         EventDetailModel dataTemp = (EventDetailModel) response.body();

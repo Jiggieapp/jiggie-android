@@ -392,7 +392,7 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
 
     public void showLongClickDialog(final ChatListModel.Data.ChatLists conversation) {
         String block = "Block "+conversation.getFromName();
-        String[] menu = {block, "Delete"};
+        String[] menu = {block, "Delete Chat"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.fullHeightDialog)
                 .setItems(menu, new DialogInterface.OnClickListener() {
