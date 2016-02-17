@@ -1,6 +1,8 @@
 package com.jiggie.android.component.adapter;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +30,8 @@ import it.sephiroth.android.library.widget.HListView;
 /**
  * Created by rangg on 03/11/2015.
  */
-public class EventTabListAdapter extends RecyclerView.Adapter<EventTabListAdapter.ViewHolder> {
+public class EventTabListAdapter
+        extends RecyclerView.Adapter<EventTabListAdapter.ViewHolder> {
     private final Fragment fragment;
     private final ViewSelectedListener listener;
     private final ArrayList<EventModel.Data.Events> items;
@@ -45,13 +48,16 @@ public class EventTabListAdapter extends RecyclerView.Adapter<EventTabListAdapte
     public void add(EventModel.Data.Events item) { this.items.add(item); }
     public void setItems(ArrayList<EventModel.Data.Events> items){
         this.items.addAll(items);}
+    private Context context;
 
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_event, parent, false), this.listener);
+        this.context = parent.getContext();
+        return new ViewHolder(LayoutInflater.from(this.context).inflate(R.layout.item_event, parent, false), this.listener);
     }
 
+    private EventTagAdapter eventTagAdapter;
     //Added by Aga
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
@@ -76,13 +82,13 @@ public class EventTabListAdapter extends RecyclerView.Adapter<EventTabListAdapte
             String[] tags =  new String[item.getTags().size()];
             item.getTags().toArray(tags);
 
-            String temp = "";
-            for(int i=0;i<tags.length;i++)
-            {
-                temp += tags[i] + " ";
-            }
-            Utils.d(TAG, item.getTitle() + " temp oi " + temp);
-            holder.eventTagAdapter.setTags(tags);
+            this.eventTagAdapter = new EventTagAdapter(R.layout.item_event_tag);
+
+            eventTagAdapter.setTags(tags);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(fragment.getContext()
+                    ,LinearLayoutManager.HORIZONTAL, false);
+            holder.tagListView.setLayoutManager(layoutManager);
+            holder.tagListView.setAdapter(eventTagAdapter);
             //holder.eventTagAdapter.notifyDataSetChanged();
             holder.txtVenueName.setText(item.getVenue_name());
             Glide.with(this.fragment).load(imageUrl).into(holder.image);
@@ -102,13 +108,13 @@ public class EventTabListAdapter extends RecyclerView.Adapter<EventTabListAdapte
     public int getItemCount() { return this.items.size(); }
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @Bind(R.id.hListView) HListView tagListView;
+        @Bind(R.id.hListView) RecyclerView tagListView;
         @Bind(R.id.txtEventName) TextView txtTitle;
         @Bind(R.id.txtVenue) TextView txtVenueName;
         @Bind(R.id.txtDate) TextView txtDate;
         @Bind(R.id.image) ImageView image;
 
-        private EventTagAdapter eventTagAdapter;
+
         //private EventTagArrayAdapter eventTagAdapter;
         private ViewSelectedListener listener;
         private EventModel.Data.Events event;
@@ -116,8 +122,7 @@ public class EventTabListAdapter extends RecyclerView.Adapter<EventTabListAdapte
         public ViewHolder(View itemView, ViewSelectedListener listener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            this.eventTagAdapter = new EventTagAdapter(R.layout.item_event_tag);
-            this.tagListView.setAdapter(eventTagAdapter);
+
             if ((this.listener = listener) != null)
                 itemView.setOnClickListener(this);
         }

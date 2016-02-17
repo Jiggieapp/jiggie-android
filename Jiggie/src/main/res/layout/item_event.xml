@@ -47,12 +47,19 @@
             android:layout_width="match_parent"
             android:id="@+id/txtVenue"/>
 
-        <it.sephiroth.android.library.widget.HListView
+        <!--<it.sephiroth.android.library.widget.HListView
             android:layout_margin="@dimen/padding_standard_half"
             android:cacheColorHint="@android:color/transparent"
             android:listSelector="@android:color/transparent"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:id="@+id/hListView"/>
+            android:id="@+id/hListView"/>-->
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/hListView"
+            android:layout_height="21dp"
+            android:layout_width="match_parent"
+            android:scrollbars="horizontal"
+            android:layout_margin="@dimen/padding_standard_half"/>
     </LinearLayout>
 </android.support.v7.widget.CardView>

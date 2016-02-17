@@ -39,4 +39,9 @@ public interface AccountInterface {
     @POST
     Call<Success2Model> postEditAbout(@Url String url, @Body AboutModel aboutModel);
 
+    @GET(Utils.URL_VERIFY_PHONE_NUMBER)
+    Call<Success2Model> verifyPhoneNumber(@Path("fb_id") String fb_id, @Path("phone") String phone);
+
+    @GET(Utils.URL_VERIFY_VERIFICATION_CODE)
+    Call<Success2Model> verifyVerificationCode(@Path("fb_id") String fb_id, @Path("token") String token);
 }

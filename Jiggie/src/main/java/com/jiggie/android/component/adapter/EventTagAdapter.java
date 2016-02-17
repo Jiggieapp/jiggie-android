@@ -1,6 +1,7 @@
 package com.jiggie.android.component.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +14,11 @@ import com.jiggie.android.component.Utils;
 /**
  * Created by rangg on 11/11/2015.
  */
-public class EventTagAdapter extends BaseAdapter {
+public class EventTagAdapter
+        extends /*BaseAdapter*/ RecyclerView.Adapter<EventTagAdapter.ViewHolder>{
     private final int tagResourceId;
     private String[] tags;
     private final static String TAG = EventTagAdapter.class.getSimpleName();
-    private LayoutInflater inflater;
 
     public EventTagAdapter(int tagResourceId)
     {
@@ -27,18 +28,42 @@ public class EventTagAdapter extends BaseAdapter {
     public void setTags(String[] tags)
     {
         this.tags = tags;
+        //notifyDataSetChanged();
+    }
 
-        notifyDataSetChanged();
+    /*@Override
+    public int getCount()
+    {
+        return this.tags == null ? 0 : this.tags.length;
+    }
+    @Override
+    public Object getItem(int position)
+    {
+        return this.tags[position];
+    }*/
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        View view = inflater.inflate(this.tagResourceId, parent, false);
+        return new ViewHolder(view);
+        //return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_event_tag, parent, false));
     }
 
     @Override
-    public int getCount() { return this.tags == null ? 0 : this.tags.length; }
-    @Override
-    public Object getItem(int position) { return this.tags[position]; }
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.txtTag.setText(this.tags[position]);
+    }
+
     @Override
     public long getItemId(int position) { return position; }
 
     @Override
+    public int getItemCount() {
+        return this.tags == null ? 0 : this.tags.length;
+    }
+
+    /*@Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
@@ -46,8 +71,8 @@ public class EventTagAdapter extends BaseAdapter {
                     (this.tagResourceId, parent, false);
             //convertView = inflater.inflate(this.tagResourceId, null);
             convertView.setTag(holder = new ViewHolder(convertView));
-            /*holder = new ViewHolder();
-            holder.txtTag = (TextView) convertView.findViewById(R.id.txtTag);*/
+            *//*holder = new ViewHolder();
+            holder.txtTag = (TextView) convertView.findViewById(R.id.txtTag);*//*
 
             convertView.setTag(holder);
         } else
@@ -62,16 +87,13 @@ public class EventTagAdapter extends BaseAdapter {
         Utils.d(TAG, "temp maneh 2 " + tags[position]);
         holder.txtTag.setText(this.tags[position]);
         return convertView;
-    }
+    }*/
 
-    private static class ViewHolder {
+     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView txtTag;
         public ViewHolder(View itemView) {
+            super(itemView);
             this.txtTag = (TextView) itemView.findViewById(R.id.txtTag); }
 
-        public ViewHolder()
-        {
-
-        }
     }
 }

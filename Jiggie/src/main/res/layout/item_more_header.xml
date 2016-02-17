@@ -26,8 +26,9 @@
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:id="@+id/txtVerifyPhoneNumber"
+        android:paddingTop="@dimen/padding_standard"
+        android:paddingBottom="@dimen/padding_standard"
         android:text="@string/verify_your_phone_number"
         android:textColor="@android:color/holo_blue_dark"
-        android:textSize="16dp"
-        android:visibility="gone"/>
+        android:textSize="16dp"/>
 </LinearLayout>

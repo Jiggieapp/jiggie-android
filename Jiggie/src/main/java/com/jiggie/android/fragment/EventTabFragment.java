@@ -36,6 +36,7 @@ import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.EventTabListAdapter;
+import com.jiggie.android.component.adapter.EventTagAdapter;
 import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventModel;
@@ -68,6 +69,7 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
     TextView txtWkDesc;*/
 
     private EventTabListAdapter adapter;
+    private EventTagAdapter tagAdapter;
     private HomeMain homeMain;
     private String searchText;
     private boolean isLoading;
@@ -119,11 +121,19 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
         EventBus.getDefault().register(this);
 
         this.recyclerView.setAdapter(this.adapter = new EventTabListAdapter(this, this));
-        this.recyclerView.setLayoutManager(new LinearLayoutManager(super.getContext()));
+        /*tagAdapter = new EventTagAdapter(R.layout.item_event_tag);
+        this.recyclerView.setAdapter(tagAdapter);
+        tagAdapter.setTags(new String[]{"ok", "bro"});*/
+
+        /*LinearLayoutManager layoutManager
+                = new LinearLayoutManager(super.getContext()
+                , LinearLayoutManager.HORIZONTAL, false);*/
+        LinearLayoutManager layoutManager = new LinearLayoutManager(super.getContext());
+        this.recyclerView.setLayoutManager(layoutManager);
         this.refreshLayout.setOnRefreshListener(this);
+
         this.events = new ArrayList<>();
         super.setHasOptionsMenu(true);
-
     }
 
     @Override
@@ -239,7 +249,6 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
                 else if (event.getVenue_name().toLowerCase().contains(searchText))
                     this.adapter.add(event);
                 else {
-
                     final String[] tags = new String[event.getTags().size()];
                     event.getTags().toArray(tags);
                     final int tagCount = tags.length;
