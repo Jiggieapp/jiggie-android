@@ -22,8 +22,11 @@ import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
+import com.appsflyer.AppsFlyerProperties;
 import com.crashlytics.android.Crashlytics;
 import com.jiggie.android.component.SimpleJSONObject;
+import com.jiggie.android.component.StringUtility;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.database.DatabaseConnection;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.manager.AccountManager;
@@ -32,6 +35,8 @@ import com.android.volley.VolleyError;
 import com.appsflyer.AppsFlyerLib;
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
+import com.jiggie.android.model.LoginModel;
+import com.jiggie.android.model.SettingModel;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
 import java.io.Closeable;
@@ -177,6 +182,13 @@ public class App extends Application {
         final ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         final NetworkInfo network = connManager.getActiveNetworkInfo();
 
+        if(!Utils.AFmedia_source.equals(""))
+            json.putString("AFmedia_source", Utils.AFmedia_source);
+        if(!Utils.AFcampaign.equals(""))
+            json.putString("AFcampaign", Utils.AFcampaign);
+        if(!Utils.AFinstall_type.equals(""))
+            json.putString("AFinstall_type", Utils.AFinstall_type);
+
         //Added by Aga
         json.putString("App Release", getVersionName(this));
         json.putString("App Version", getVersionCode(this));
@@ -201,6 +213,22 @@ public class App extends Application {
         //json.putString("Library Version", "");
         json.putString("Region", locations[0]);
 
+        final LoginModel login = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin();
+        if(login!=null){
+
+            json.putString("age", StringUtility.getAge2(login.getBirthday()));
+            json.putString("birthday", login.getBirthday());
+            json.putString("email", login.getEmail());
+            json.putString("first_name", login.getUser_first_name());
+            json.putString("last_name", login.getUser_last_name());
+            json.putString("name_and_fb_id", login.getUser_first_name()+"_"+login.getUser_last_name()+"_"+login.getFb_id());
+
+            final SettingModel settingModel = AccountManager.loadSetting() == null ? null : AccountManager.loadSetting();
+            if(settingModel!=null){
+                json.putString("gender", settingModel.getData().getGender());
+                json.putString("gender_interest", settingModel.getData().getGender_interest());
+            }
+        }
 
 
         MixpanelAPI.getInstance(this, super.getString(R.string.mixpanel_token)).track(eventName, json);

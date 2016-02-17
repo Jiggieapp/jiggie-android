@@ -239,6 +239,7 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
             final String facebookId = data == null ? null : data.getStringExtra(Conversation.FIELD_FACEBOOK_ID);
             final ChatListModel.Data.ChatLists conversation = facebookId == null ? null : this.adapter.find(facebookId);
             boolean changed = false;
+            boolean fromReplied = false;
 
             if ((resultCode == Activity.RESULT_OK) && (conversation != null)) {
                 conversation.setUnread(0);
@@ -252,16 +253,21 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
                 changed = true;
             } else if ((resultCode == ChatActivity.RESULT_REPLIED) && (conversation != null)) {
                 this.adapter.move(conversation, 0);
-
                 final String lastUpdated = data.getStringExtra(Conversation.FIELD_LAST_UPDATED);
                 conversation.setLast_updated(lastUpdated);
                 conversation.setUnread(0);
                 changed = true;
+                fromReplied = true;
             }
 
             if (changed) {
-                this.adapter.notifyDataSetChanged();
-                this.setHomeTitle();
+                if(fromReplied){
+                    onRefresh();
+                }else {
+                    this.adapter.notifyDataSetChanged();
+                    this.setHomeTitle();
+                }
+
             }
         }
 

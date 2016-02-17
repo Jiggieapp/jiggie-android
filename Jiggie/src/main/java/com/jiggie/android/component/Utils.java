@@ -53,6 +53,13 @@ public class Utils {
     public static String LOGIN_MODEL = "login_model";
     public static String PREFERENCE_TAGLIST = "taglist";
     public static String TAGLIST_MODEL = "taglist_model";
+    public static String IS_FIRST_RUN = "is_first_run";
+
+    //AppsFlyer properties----
+    public static String AFinstall_type = "";
+    public static String AFcampaign = "";
+    public static String AFmedia_source = "";
+    //------------------------
 
     public static int myPixel(Activity a,int dip){
         float scale = a.getResources().getDisplayMetrics().density;
