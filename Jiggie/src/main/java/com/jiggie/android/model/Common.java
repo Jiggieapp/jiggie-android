@@ -58,4 +58,5 @@ public class Common {
 
     /*Social Feeds*/
     public static final String SOCIAL_FEED_TYPE_APPROVED = "approved";
+    public static final String PHONE_NUMBER = "phone_number";
 }

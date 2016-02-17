@@ -25,8 +25,7 @@ public abstract class BaseManager {
     public static OkHttpClient getHttpClient() {
         final String accessToken = App.getInstance()
                 .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
-                .getString(Utils.ACCESS_TOKEN, "")
-                ;
+                .getString(Utils.ACCESS_TOKEN, "");
         // Utils.d(TAG, "accesstoken " + accessToken);
         /*if(accessToken.equals("")
                 && !AccessToken.getCurrentAccessToken().getToken().equals("")
@@ -59,7 +58,7 @@ public abstract class BaseManager {
             retrofit = new Retrofit.Builder()
                     .baseUrl(Utils.BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
-                    //.client(okHttpClient)
+                            //.client(okHttpClient)
                     .build();
 
         }

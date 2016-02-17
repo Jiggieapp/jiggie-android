@@ -1,0 +1,115 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/white"
+        android:elevation="4dp"
+        app:titleTextColor="@color/colorPrimary" />
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:scrollbars="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/lblVerify"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:paddingTop="@dimen/padding_standard"
+                android:text="@string/enter_verification_code"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
+
+            <!--<TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="@string/no_one_will_see_your_phone_number"
+                android:textColor="@color/com_facebook_button_background_color_disabled"
+                android:textSize="12sp"/>-->
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginBottom="@dimen/padding_standard"
+                android:layout_marginTop="@dimen/padding_standard"
+                android:background="@android:color/darker_gray" />
+
+            <TextView
+                android:id="@+id/lblPhoneNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:textColor="@color/com_facebook_button_background_color_disabled"
+                android:textSize="16sp"
+                android:textStyle="" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginBottom="@dimen/padding_standard"
+                android:layout_marginTop="@dimen/padding_standard"
+                android:background="@android:color/darker_gray" />
+
+
+            <EditText
+                android:id="@+id/txtValidationCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:hint="@string/hint_validation_code"
+                android:inputType="number"
+                android:maxLength="6"
+                android:textSize="16sp" />
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginBottom="@dimen/padding_standard_half"
+                android:layout_marginTop="@dimen/padding_standard_half"
+                android:background="@android:color/darker_gray" />
+
+            <TextView
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="@string/description_validation_code"
+                android:textColor="@color/com_facebook_button_background_color_disabled"
+                android:textSize="12sp"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/lblSubmitValidation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:background="@drawable/btn_blue_rectangle"
+        android:gravity="center"
+        android:paddingBottom="@dimen/padding_standard"
+        android:paddingTop="@dimen/padding_standard"
+        android:text="@string/submit_validation"
+        android:textAllCaps="true"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+</LinearLayout>

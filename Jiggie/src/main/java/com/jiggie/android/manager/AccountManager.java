@@ -1,11 +1,14 @@
 package com.jiggie.android.manager;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
 
+import com.facebook.AccessToken;
 import com.google.gson.Gson;
 import com.jiggie.android.App;
+import com.jiggie.android.R;
 import com.jiggie.android.api.AccountInterface;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.callback.CustomCallback;
@@ -33,7 +36,7 @@ import retrofit.Retrofit;
  * Created by LTE on 2/1/2016.
  */
 public class AccountManager {
-
+    private static final String TAG = AccountManager.class.getSimpleName();
     static AccountInterface accountInterface;
 
     public static void initAccountService(){
@@ -77,7 +80,7 @@ public class AccountManager {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
                     String responses = new Gson().toJson(response.body());
-                    Utils.d("res", responses);
+                    Utils.d(TAG, responses);
 
                     if (response.code() == Utils.CODE_SUCCESS) {
 
@@ -88,7 +91,6 @@ public class AccountManager {
                     } else {
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SIGN_IN, Utils.RESPONSE_FAILED));
                     }
-
                 }
 
                 @Override
@@ -108,8 +110,8 @@ public class AccountManager {
             postMemberSetting(memberSettingModel, new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
-                    String responses = new Gson().toJson(response.body());
-                    Utils.d("res", responses);
+                    /*String responses = new Gson().toJson(response.body());
+                    Utils.d("res", responses);*/
 
                     if (response.code() == Utils.CODE_SUCCESS) {
                         Success2Model dataTemp = (Success2Model) response.body();
@@ -289,6 +291,64 @@ public class AccountManager {
         SettingModel model = new SettingModel(success, settingData);
 
         return model;
+    }
+
+    public static void verifyPhoneNumber(final String phoneNumber, Callback callback)
+    {
+        Utils.d(TAG, AccessToken.getCurrentAccessToken().getUserId() + " " +
+            phoneNumber);
+        getInstance().verifyPhoneNumber(AccessToken.getCurrentAccessToken().getUserId()
+                , phoneNumber).enqueue(callback);
+    }
+
+    public static void verifyPhoneNumber(final String phoneNumber)
+    {
+        verifyPhoneNumber(phoneNumber, new CustomCallback() {
+            @Override
+            public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                /*String responses = new Gson().toJson(response.body());
+                Utils.d(TAG, responses);*/
+
+                Success2Model success2Model = (Success2Model) response.body();
+                EventBus.getDefault().post(success2Model);
+
+
+            }
+
+            @Override
+            public void onCustomCallbackFailure(String t) {
+
+            }
+        });
+    }
+
+    public static void verifyVerificationCode(final String verificationCode)
+    {
+        verifyVerificationCode(verificationCode, new CustomCallback() {
+            @Override
+            public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                /*final String res = new Gson().toJson(response.body());
+                Utils.d(TAG, "response " + res);*/
+
+                if (response.code() == Utils.CODE_SUCCESS) {
+                    Success2Model success2Model = (Success2Model) response.body();
+                    EventBus.getDefault().post(success2Model);
+                } else {
+                    EventBus.getDefault().post(new ExceptionModel(Utils.FROM_VERIFY_VERIFICATION_CODE, Utils.RESPONSE_FAILED));
+                }
+            }
+
+            @Override
+            public void onCustomCallbackFailure(String t) {
+
+            }
+        });
+    }
+
+    private static void verifyVerificationCode(final String verificationCode, Callback callback)
+    {
+        getInstance().verifyVerificationCode(AccessToken.getCurrentAccessToken().getUserId()
+                , verificationCode).enqueue(callback);
     }
 
 }

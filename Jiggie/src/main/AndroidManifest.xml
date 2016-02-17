@@ -214,6 +214,11 @@
             </intent-filter>
         </service>
 
+        <activity
+            android:name=".activity.profile.VerifyPhoneNumberActivity"
+            android:label=""></activity>
+        <activity android:name=".activity.profile.ConfirmationCodeActivity"
+            android:label=""></activity>
         <activity android:name=".activity.profile.VerifyPhoneNumberActivity"
             android:label="">
 
