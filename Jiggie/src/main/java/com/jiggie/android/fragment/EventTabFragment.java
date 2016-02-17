@@ -320,7 +320,7 @@ public class EventTabFragment extends Fragment implements TabFragment, SwipeRefr
         TextView txtWkAction = (TextView)dialogWalkthrough.findViewById(R.id.txt_wk_action);
         TextView txtWkTitle = (TextView)dialogWalkthrough.findViewById(R.id.txt_wk_title);
         TextView txtWkDesc = (TextView)dialogWalkthrough.findViewById(R.id.txt_wk_desc);
-        imgWk.setImageResource(R.drawable.wk_img_event);
+        imgWk.setImageResource(R.drawable.wk_event);
         txtWkAction.setVisibility(View.GONE);
         txtWkTitle.setText(R.string.wk_event_title);
         txtWkDesc.setText(R.string.wk_event_desc);

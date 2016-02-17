@@ -278,7 +278,6 @@ public class AccountManager {
     private static SettingModel setSettingModelFromMemberSetting(MemberSettingResultModel data){
         boolean success = true;
 
-
         MemberSettingResultModel.Data.MemberSettings memberSettingResultModel = data.getData().getMembersettings();
 
         SettingModel.Data.Notifications notifications = new SettingModel.Data.Notifications(memberSettingResultModel.getNotifications().isChat(), memberSettingResultModel.getNotifications().isFeed(),

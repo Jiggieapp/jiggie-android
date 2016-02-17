@@ -288,14 +288,14 @@ public class SignInFragment extends Fragment {
         setupWalkthrough(message.is_new_user(), message.isShow_walkthrough());
 
         if (App.getSharedPreferences().getBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, false)&&!message.is_new_user()) {
-            app.trackMixPanelEvent("Login");
+            app.trackMixPanelEvent("Log In");
             if (activity != null)
                 activity.navigateToHome();
             else
                 app.startActivity(new Intent(App.getInstance(), MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
         } else {
             // Start new activity from app context instead of current activity. This prevent crash when activity has been destroyed.
-            app.trackMixPanelEvent("SignUp");
+            app.trackMixPanelEvent("Sign Up");
             app.startActivity(new Intent(app, SetupTagsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
             app.startService(new Intent(app, FacebookImageSyncService.class));
             if (activity != null)

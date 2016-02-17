@@ -18,7 +18,9 @@
     <string name="facebook_app_id">840535009393707</string>
     <string name="support_email">support@jiggieapp.com</string>
     <string name="appsflyer_devkey">D4Uux6HSu3aYjNHkCHsTiC</string>
-    <string name="mixpanel_token">0a94cf8d4142e2803752e9ca812a8e53</string>
+    <!--<string name="mixpanel_token">0a94cf8d4142e2803752e9ca812a8e53</string>-->
+
+    <string name="mixpanel_token">39ae6be779ffea77ea2b2a898305f560</string>
 
     <string name="broadcast_notification">jiggie.broadcast.notification</string>
     <string name="broadcast_social">jiggie.broadcast.social</string>
