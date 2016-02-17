@@ -58,6 +58,7 @@ import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.SocialModel;
+import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SuccessModel;
 
 import org.json.JSONObject;
@@ -448,7 +449,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         SocialManager.loaderSocialMatch(AccessToken.getCurrentAccessToken().getUserId(), this.current.getFrom_fb_id(), confirm ? "approved" : "denied");
     }
 
-    public void onEvent(SuccessModel message){
+    public void onEvent(Success2Model message){
         final App app = App.getInstance();
         final Context context = getContext();
         final SocialModel.Data.SocialFeeds socialMatch = current;

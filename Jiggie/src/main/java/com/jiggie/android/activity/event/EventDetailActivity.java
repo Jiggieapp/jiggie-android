@@ -344,8 +344,14 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             }
         }else{
             if (isActive()) {
-                progressDialog.dismiss();
-                Toast.makeText(EventDetailActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
+                if(progressDialog!=null&&progressDialog.isShowing()){
+                    progressDialog.dismiss();
+                }
+
+                if(!message.getMessage().equals(Utils.RESPONSE_FAILED + " " + "empty data")){
+                    Toast.makeText(EventDetailActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
             }
         }
     }
