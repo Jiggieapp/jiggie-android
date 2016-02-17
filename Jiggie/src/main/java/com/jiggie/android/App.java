@@ -216,7 +216,11 @@ public class App extends Application {
         final LoginModel login = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin();
         if(login!=null){
 
-            json.putString("age", StringUtility.getAge2(login.getBirthday()));
+            try {
+                json.putString("age", StringUtility.getAge2(login.getBirthday()));
+            }catch (Exception e){
+
+            }
             json.putString("birthday", login.getBirthday());
             json.putString("email", login.getEmail());
             json.putString("first_name", login.getUser_first_name());

@@ -9,7 +9,7 @@
         android:layout_height="250dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/wk_img_event"
+        android:src="@drawable/wk_event"
         android:layout_marginTop="45dp"
         android:layout_marginBottom="25dp"
         android:layout_marginLeft="30dp"
