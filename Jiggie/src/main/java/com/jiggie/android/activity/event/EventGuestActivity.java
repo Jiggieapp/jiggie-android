@@ -56,7 +56,7 @@ public class EventGuestActivity extends ToolbarActivity implements ViewTreeObser
         this.recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(this);
         this.recyclerView.setAdapter(this.adapter = new EventGuestAdapter(this, this));
 
-        App.getInstance().trackMixPanelEvent("View Guest Listing");
+        App.getInstance().trackMixPanelEvent("View Guest Listings");
     }
 
     @Override

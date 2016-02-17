@@ -180,9 +180,11 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         String from = message.getFrom();
         boolean changed = false;
         if(from.equals(Utils.FROM_BLOCK_CHAT)){
+            App.getInstance().trackMixPanelEvent("Block User");
             this.adapter.remove(conversation);
             changed = true;
         }else if(from.equals(Utils.FROM_DELETE_CHAT)){
+            App.getInstance().trackMixPanelEvent("Delete Messages");
             conversation.setLast_message(null);
             conversation.setUnread(0);
 

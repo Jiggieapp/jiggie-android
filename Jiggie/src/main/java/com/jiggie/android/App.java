@@ -1,6 +1,7 @@
 package com.jiggie.android;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -199,6 +200,9 @@ public class App extends Application {
         json.putString("Mixpanel Library", "Android");
         //json.putString("Library Version", "");
         json.putString("Region", locations[0]);
+
+
+
         MixpanelAPI.getInstance(this, super.getString(R.string.mixpanel_token)).track(eventName, json);
     }
 
