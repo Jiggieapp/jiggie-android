@@ -43,7 +43,11 @@
         <item name="android:textColor">@color/blue_selector</item>
     </style>-->
 
-    <style name="CustomFlatButtonStyle" parent="@style/Widget.AppCompat.Button.Borderless">>
+    <style name="CustomFlatButtonStyle" parent="@style/Widget.AppCompat.Button.Borderless">
         <item name="android:textColor">@color/blue_selector</item>
+    </style>
+
+    <style name="fullHeightDialog" parent="android:style/Theme.Material.Light.Dialog.Alert">
+        <item name="android:windowNoTitle">true</item>
     </style>
 </resources>

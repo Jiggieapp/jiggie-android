@@ -2,6 +2,7 @@ package com.jiggie.android.component.service;
 
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.component.database.ChatTable;
 import com.jiggie.android.component.database.DatabaseConnection;
@@ -14,6 +15,7 @@ import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.OneoffTask;
 import com.google.android.gms.gcm.Task;
 import com.google.android.gms.gcm.TaskParams;
+import com.jiggie.android.model.ChatAddModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,7 +56,21 @@ public class ChatSendService extends GcmTaskService {
         while ((chat = ChatTable.getUnprocessed(db)) != null) {
             try {
                 final RequestFuture<JSONObject> future = RequestFuture.newFuture();
-                final JsonObjectRequest request = new JsonObjectRequest(VolleyHandler.getInstance().getServerHost() + "messages/add", chat.toJsonObject(), future, future);
+
+                //Added by Aga------
+                ChatAddModel chatAddModel = new ChatAddModel();
+                chatAddModel.setFromId(chat.getFromId());
+                chatAddModel.setHeader("");
+                chatAddModel.setFromName(chat.getFromName());
+                chatAddModel.setMessage(chat.getMessage());
+                chatAddModel.setHosting_id("");
+                chatAddModel.setKey("kT7bgkacbx73i3yxma09su0u901nu209mnuu30akhkpHJJ");
+                chatAddModel.setToId(chat.getToId());
+
+                JSONObject chatObj = new JSONObject(new Gson().toJson(chatAddModel));
+                //--------------------
+
+                final JsonObjectRequest request = new JsonObjectRequest(VolleyHandler.getInstance().getServerHost2() + "messages/add", chatObj, future, future);
 
                 VolleyHandler.getInstance().getVolleyRequestQueue().add(request);
                 future.get();

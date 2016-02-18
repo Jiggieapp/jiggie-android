@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent" android:background="#E6000000">
+    android:layout_width="match_parent" android:layout_height="match_parent" android:background="#E6000000"
+    android:id="@+id/layout_walkthrough">
 
     <ImageView
         android:id="@+id/img_wk"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="250dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/wk_img_event"
-        android:layout_marginTop="25dp"
+        android:src="@drawable/wk_event"
+        android:layout_marginTop="45dp"
         android:layout_marginBottom="25dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"/>
@@ -58,7 +59,7 @@
         android:layout_alignParentBottom="true"
         android:src="@drawable/button_gotit"
         android:layout_marginRight="25dp"
-        android:layout_marginBottom="75dp"
+        android:layout_marginBottom="45dp"
         android:foreground="?android:attr/selectableItemBackground"
         />
 

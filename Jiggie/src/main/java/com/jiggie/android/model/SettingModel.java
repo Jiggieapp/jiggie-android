@@ -10,6 +10,11 @@ public class SettingModel {
     boolean success;
     Data data;
 
+    public SettingModel(boolean success, Data data){
+        this.success = success;
+        this.data = data;
+    }
+
     public boolean isSuccess() {
         return success;
     }
@@ -26,11 +31,25 @@ public class SettingModel {
         this.data = data;
     }
 
-    public class Data{
+    public static class Data{
         String _id;
         String fb_id;
         String gender;
         Notifications notifications;
+
+        public Data(String _id, String fb_id, String gender, Notifications notifications, String update_at, String account_type, ArrayList<String> experiences,
+                    String gender_interest, Payment payment, String phone){
+            this._id = _id;
+            this.fb_id = fb_id;
+            this.gender = gender;
+            this.notifications = notifications;
+            this.updated_at = update_at;
+            this.account_type = account_type;
+            this.experiences = experiences;
+            this.gender_interest = gender_interest;
+            this.payment = payment;
+            this.phone = phone;
+        }
 
         public String get_id() {
             return _id;
@@ -64,10 +83,16 @@ public class SettingModel {
             this.notifications = notifications;
         }
 
-        public class Notifications{
+        public static class Notifications{
             boolean chat;
             boolean feed;
             boolean location;
+
+            public Notifications(boolean chat, boolean feed, boolean location){
+                this.chat = chat;
+                this.feed = feed;
+                this.location = location;
+            }
 
             public boolean isChat() {
                 return chat;
@@ -149,26 +174,19 @@ public class SettingModel {
             this.phone = phone;
         }
 
-        public class Payment{
+        public static class Payment{
+            public Payment(){
 
+            }
         }
 
     }
 
-    boolean has_phone;
     boolean is_new_user;
     String help_phone;
     boolean matchme;
     int device_type;
     boolean show_walkthrough;
-
-    public boolean isHas_phone() {
-        return has_phone;
-    }
-
-    public void setHas_phone(boolean has_phone) {
-        this.has_phone = has_phone;
-    }
 
     public boolean is_new_user() {
         return is_new_user;

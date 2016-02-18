@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ScrollView;
@@ -23,6 +24,7 @@ import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.MemberSettingModel;
 import com.facebook.AccessToken;
 import com.jiggie.android.model.SettingModel;
+import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SuccessModel;
 
 import java.util.Arrays;
@@ -73,10 +75,14 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
         switchSocial.setOnCheckedChangeListener(null);
         switchChat.setOnCheckedChangeListener(null);
 
-        txtGender.setText(setting.getData().getGender());
+        String gender = checkGenderShow(setting.getData().getGender());
+        txtGender.setText(gender);
+
         switchChat.setChecked(setting.getData().getNotifications().isChat());
         switchSocial.setChecked(setting.getData().getNotifications().isFeed());
-        txtGenderInterest.setText(setting.getData().getGender_interest());
+
+        String gender_interest = checkGenderShow(setting.getData().getGender_interest());
+        txtGenderInterest.setText(gender_interest);
 
         switchSocial.setOnCheckedChangeListener(ProfileSettingActivity.this);
         switchChat.setOnCheckedChangeListener(ProfileSettingActivity.this);
@@ -134,16 +140,20 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
 
         int index_gender = Arrays.binarySearch(genders, this.txtGender.getText().toString(), String.CASE_INSENSITIVE_ORDER);
         if(index_gender<0){
-            memberSettingModel.setGender(setting.getData().getGender());
+            String gender = checkGender(setting.getData().getGender());
+            memberSettingModel.setGender(gender);
         }else{
-            memberSettingModel.setGender(genders[Arrays.binarySearch(genders, this.txtGender.getText().toString(), String.CASE_INSENSITIVE_ORDER)]);
+            String gender = checkGender(genders[Arrays.binarySearch(genders, this.txtGender.getText().toString(), String.CASE_INSENSITIVE_ORDER)]);
+            memberSettingModel.setGender(gender);
         }
 
-        int index_gender_interest = Arrays.binarySearch(genders, this.txtGender.getText().toString(), String.CASE_INSENSITIVE_ORDER);
+        int index_gender_interest = Arrays.binarySearch(genderInterest, this.txtGenderInterest.getText().toString(), String.CASE_INSENSITIVE_ORDER);
         if(index_gender_interest<0){
-            memberSettingModel.setGender_interest(setting.getData().getGender_interest());
+            String gender_interest = checkGender(setting.getData().getGender_interest());
+            memberSettingModel.setGender_interest(gender_interest);
         }else{
-            memberSettingModel.setGender_interest(genderInterest[Arrays.binarySearch(genderInterest, this.txtGenderInterest.getText().toString(), String.CASE_INSENSITIVE_ORDER)]);
+            String gender_interest = checkGender(genderInterest[Arrays.binarySearch(genderInterest, this.txtGenderInterest.getText().toString(), String.CASE_INSENSITIVE_ORDER)]);
+            memberSettingModel.setGender_interest(gender_interest);
         }
 
 
@@ -155,11 +165,15 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
 
         AccountManager.loaderMemberSetting(memberSettingModel);
 
-        if(index_gender_interest>=0)
-            setting.getData().setGender(genders[Arrays.binarySearch(genders, this.txtGender.getText().toString(), String.CASE_INSENSITIVE_ORDER)]);
+        if(index_gender>=0) {
+            String gender = checkGender(genders[Arrays.binarySearch(genders, this.txtGender.getText().toString(), String.CASE_INSENSITIVE_ORDER)]);
+            setting.getData().setGender(gender);
+        }
 
-        if(index_gender_interest>=0)
-            setting.getData().setGender_interest(genderInterest[Arrays.binarySearch(genderInterest, this.txtGenderInterest.getText().toString(), String.CASE_INSENSITIVE_ORDER)]);
+        if(index_gender_interest>=0){
+            String gender_interest = checkGender(genderInterest[Arrays.binarySearch(genderInterest, this.txtGenderInterest.getText().toString(), String.CASE_INSENSITIVE_ORDER)]);
+            setting.getData().setGender_interest(gender_interest);
+        }
 
 
         setting.getData().getNotifications().setChat(this.switchChat.isChecked());
@@ -168,7 +182,7 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
         AccountManager.saveSetting(setting);
     }
 
-    public void onEvent(SuccessModel message){
+    public void onEvent(Success2Model message){
         if (isActive()) {
             refreshView(setting);
             dialog.dismiss();
@@ -200,5 +214,31 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
     protected void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+    private String checkGender(String gInput){
+        String gOutput = "";
+        if(gInput.equals(getResources().getString(R.string.man))){
+            gOutput = "male";
+        }else if(gInput.equals(getResources().getString(R.string.woman))){
+            gOutput = "female";
+        }else{
+            gOutput = "both";
+        }
+
+        return gOutput;
+    }
+
+    private String checkGenderShow(String gInput){
+        String gOutput = "";
+        if(gInput.equals("male")){
+            gOutput = getResources().getString(R.string.man);
+        }else if(gInput.equals("female")){
+            gOutput = getResources().getString(R.string.woman);
+        }else{
+            gOutput = "Both";
+        }
+
+        return gOutput;
     }
 }

@@ -236,18 +236,26 @@ public class SignInFragment extends Fragment {
                 //Added by Aga 2-2-2016
                 LoginModel loginModel = new LoginModel();
                 loginModel.setVersion("1.1.0");
+                //String v = App.getVersionName(getActivity());
+                //loginModel.setVersion(v);
                 loginModel.setUser_first_name(object.optString("first_name"));
                 loginModel.setAbout(object.optString("about"));
                 loginModel.setApn_token(gcmId);
                 loginModel.setProfil_image_url("");
                 loginModel.setUserId("");
                 loginModel.setLocation(location == null ? null : location.optString("name"));
-                loginModel.setBirthday(Common.SHORT_DATE_FORMAT.format(birthDay));
+
+                loginModel.setBirthday(Common.FACEBOOK_DATE_FORMAT.format(birthDay));
                 loginModel.setFb_id(object.optString("id"));
                 loginModel.setUser_last_name(object.optString("last_name"));
                 loginModel.setEmail(object.optString("email"));
                 loginModel.setGender(object.optString("gender"));
+
+                //Added by Aga 11-2-2016
+                loginModel.setDevice_type("2");
                 //------------
+
+                //String sd = String.valueOf(new Gson().toJson(loginModel));
 
                 AccountManager.loaderLogin(loginModel);
 
@@ -268,7 +276,6 @@ public class SignInFragment extends Fragment {
     };
 
     public void onEvent(SettingModel message){
-
         String responses = new Gson().toJson(message);
         Log.d("res", responses);
 
@@ -279,15 +286,15 @@ public class SignInFragment extends Fragment {
         AccountManager.saveSetting(message);
         setupWalkthrough(message.is_new_user(), message.isShow_walkthrough());
 
-        if (App.getSharedPreferences().getBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, false)) {
-            app.trackMixPanelEvent("Login");
+        if (App.getSharedPreferences().getBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, false)&&!message.is_new_user()) {
+            app.trackMixPanelEvent("Log In");
             if (activity != null)
                 activity.navigateToHome();
             else
                 app.startActivity(new Intent(App.getInstance(), MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
         } else {
             // Start new activity from app context instead of current activity. This prevent crash when activity has been destroyed.
-            app.trackMixPanelEvent("SignUp");
+            app.trackMixPanelEvent("Sign Up");
             app.startActivity(new Intent(app, SetupTagsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
             app.startService(new Intent(app, FacebookImageSyncService.class));
             if (activity != null)

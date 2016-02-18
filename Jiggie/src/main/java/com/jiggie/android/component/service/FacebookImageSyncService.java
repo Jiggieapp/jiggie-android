@@ -164,6 +164,8 @@ public class FacebookImageSyncService extends Service {
                     }
                 }
 
+                String d = newFiles[0];
+
                 // save the list of images to the cache.
                 preferences.edit()
                         .putStringSet(Common.PREF_IMAGES, files)

@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.model.Chat;
 import com.bumptech.glide.Glide;
@@ -34,11 +35,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     private Activity activity;
     private List<Chat> items;
     private String profileImage;
+    private String toId;
 
-    public ChatAdapter(Activity activity, String profileImage) {
+    public ChatAdapter(Activity activity, String profileImage, String toId) {
         this.profileImage = profileImage;
         this.items = new ArrayList<>();
         this.activity = activity;
+        this.toId = toId;
     }
 
     @Override
@@ -75,7 +78,18 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             layoutParams.gravity = item.isFromYou() ? Gravity.END : Gravity.START;
 
             if (!item.isFromYou()) {
-                Glide.with(this.activity).load(this.profileImage).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.imageView) {
+
+                //Added by Aga 12-2-2016---
+                String urlImage;
+                if(this.profileImage!=null){
+                    urlImage = this.profileImage;
+                }else{
+                    final int width = holder.imageView.getWidth() * 2;
+                    urlImage = App.getFacebookImage(toId, width);
+                }
+                //---------
+
+                Glide.with(this.activity).load(urlImage).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.imageView) {
                     @Override
                     protected void setResource(Bitmap resource) {
                         final Resources resources = activity.getResources();

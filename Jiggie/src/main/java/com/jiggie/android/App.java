@@ -1,6 +1,10 @@
 package com.jiggie.android;
 
+import android.*;
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -21,7 +25,11 @@ import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
+import com.appsflyer.AppsFlyerProperties;
+import com.crashlytics.android.Crashlytics;
 import com.jiggie.android.component.SimpleJSONObject;
+import com.jiggie.android.component.StringUtility;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.database.DatabaseConnection;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.manager.AccountManager;
@@ -30,6 +38,8 @@ import com.android.volley.VolleyError;
 import com.appsflyer.AppsFlyerLib;
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
+import com.jiggie.android.model.LoginModel;
+import com.jiggie.android.model.SettingModel;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
 import java.io.Closeable;
@@ -40,6 +50,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.UUID;
+
+import io.fabric.sdk.android.Fabric;
+
+import static android.support.v4.app.ActivityCompat.requestPermissions;
 
 /**
  * Created by rangg on 21/10/2015.
@@ -53,13 +68,14 @@ public class App extends Application {
     private String osName;
 
     private static App instance;
-    final static String mPackageName = "com.jiggie.android";
+    static String mPackageName;
 
     @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
 
+        mPackageName = getApplicationContext().getPackageName();
         //region Initialize third party libraries
 
         FacebookSdk.sdkInitialize(this);
@@ -172,6 +188,13 @@ public class App extends Application {
         final ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         final NetworkInfo network = connManager.getActiveNetworkInfo();
 
+        if(!Utils.AFmedia_source.equals(""))
+            json.putString("AFmedia_source", Utils.AFmedia_source);
+        if(!Utils.AFcampaign.equals(""))
+            json.putString("AFcampaign", Utils.AFcampaign);
+        if(!Utils.AFinstall_type.equals(""))
+            json.putString("AFinstall_type", Utils.AFinstall_type);
+
         //Added by Aga
         json.putString("App Release", getVersionName(this));
         json.putString("App Version", getVersionCode(this));
@@ -195,11 +218,34 @@ public class App extends Application {
         json.putString("Mixpanel Library", "Android");
         //json.putString("Library Version", "");
         json.putString("Region", locations[0]);
+
+        final LoginModel login = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin();
+        if(login!=null){
+
+            try {
+                json.putString("age", StringUtility.getAge2(login.getBirthday()));
+            }catch (Exception e){
+
+            }
+            json.putString("birthday", login.getBirthday());
+            json.putString("email", login.getEmail());
+            json.putString("first_name", login.getUser_first_name());
+            json.putString("last_name", login.getUser_last_name());
+            json.putString("name_and_fb_id", login.getUser_first_name()+"_"+login.getUser_last_name()+"_"+login.getFb_id());
+
+            final SettingModel settingModel = AccountManager.loadSetting() == null ? null : AccountManager.loadSetting();
+            if(settingModel!=null){
+                json.putString("gender", settingModel.getData().getGender());
+                json.putString("gender_interest", settingModel.getData().getGender_interest());
+            }
+        }
+
+
         MixpanelAPI.getInstance(this, super.getString(R.string.mixpanel_token)).track(eventName, json);
     }
 
     //Added by Aga
-    private String getVersionName(Context c){
+    public static String getVersionName(Context c){
         PackageInfo pi = null;
         try {
             pi = c.getPackageManager()
@@ -221,7 +267,6 @@ public class App extends Application {
         } catch (Exception e) {
             // e.printStackTrace();
         }
-
         return String.valueOf(pi.versionCode);
     }
     //----------------------
@@ -259,12 +304,49 @@ public class App extends Application {
     }
 
     private String getDeviceId() {
-        if (this.deviceId == null) {
-            final TelephonyManager telephonyManager = (TelephonyManager) super.getSystemService(Context.TELEPHONY_SERVICE);
-            final String deviceId = telephonyManager.getDeviceId();
-            this.deviceId = ((TextUtils.isEmpty(deviceId)) || (deviceId.equals("000000000000000"))) ? Settings.Secure.getString(super.getContentResolver(), Settings.Secure.ANDROID_ID) : deviceId;
+        /*if (this.deviceId == null) {
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            {
+                checkPermission(Manifest.permission.READ_PHONE_STATE, App.getInstance().getApplicationContext());
+            }
+            else
+            {
+                final TelephonyManager telephonyManager = (TelephonyManager) super.getSystemService(Context.TELEPHONY_SERVICE);
+                final String deviceId = telephonyManager.getDeviceId();
+                this.deviceId = ((TextUtils.isEmpty(deviceId)) || (deviceId.equals("000000000000000"))) ? Settings.Secure.getString(super.getContentResolver(), Settings.Secure.ANDROID_ID) : deviceId;
+            }
+        }
+        return this.deviceId;*/
+
+        /*if(this.deviceId == null)
+        {
+            final String androidId = "" + android.provider.Settings.Secure.getString(getContentResolver()
+                    , android.provider.Settings.Secure.ANDROID_ID);
+            UUID deviceUuid = new UUID(androidId.hashCode()
+                    , ((long)tmDevice.hashCode() << 32) | tmSerial.hashCode());
+            this.deviceId = deviceUuid.toString();
+        }
+        return this.deviceId;*/
+
+        if(this.deviceId == null)
+        {
+            this.deviceId = Settings.Secure.getString(getApplicationContext().getContentResolver(),
+                    Settings.Secure.ANDROID_ID);
         }
         return this.deviceId;
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    private void checkPermission(final String permission
+            , final Activity activity)
+    {
+            int hasWriteContactsPermission = checkSelfPermission(permission);
+            if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(activity, new String[]{permission},
+                        Utils.PERMISSION_REQUEST);
+                return;
+            }
+        else return;
     }
 
     private String getSimOperatorName() {

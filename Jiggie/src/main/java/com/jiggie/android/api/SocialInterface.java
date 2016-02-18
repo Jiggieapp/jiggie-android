@@ -2,6 +2,7 @@ package com.jiggie.android.api;
 
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.SocialModel;
+import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SuccessModel;
 
 import retrofit.Call;
@@ -17,6 +18,6 @@ public interface SocialInterface {
     Call<SocialModel> getSocialFeed(@Path("fb_id") String fb_id, @Path("gender_interest") String gender_interest);
 
     @GET(Utils.URL_SOCIAL_MATCH)
-    Call<SuccessModel> getSocialMatch(@Path("fb_id") String fb_id, @Path("from_id") String from_id, @Path("type") String type);
+    Call<Success2Model> getSocialMatch(@Path("fb_id") String fb_id, @Path("from_id") String from_id, @Path("type") String type);
 
 }

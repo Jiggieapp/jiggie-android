@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -23,6 +24,9 @@ import com.jiggie.android.component.activity.BaseActivity;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.android.volley.VolleyError;
+import com.jiggie.android.manager.EventManager;
+import com.jiggie.android.model.ExceptionModel;
+import com.jiggie.android.model.TagsListModel;
 
 import org.json.JSONArray;
 
@@ -33,6 +37,7 @@ import java.util.Set;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by rangg on 12/01/2016.
@@ -57,6 +62,8 @@ public class SetupTagsActivity extends BaseActivity implements ViewTreeObserver.
         super.setContentView(R.layout.activity_setup_tags);
         super.bindView();
 
+        EventBus.getDefault().register(this);
+
         final Bitmap background = BitmapUtility.getBitmapResource(R.mipmap.signup1);
         final Bitmap blurBackground = BitmapUtility.blur(background);
         this.root.setBackground(new BitmapDrawable(super.getResources(), blurBackground));
@@ -80,80 +87,69 @@ public class SetupTagsActivity extends BaseActivity implements ViewTreeObserver.
         this.failedView.setVisibility(View.GONE);
         this.btnNext.setVisibility(View.GONE);
 
-        VolleyHandler.getInstance().createVolleyArrayRequest("user/tagslist", new VolleyRequestListener<String[], JSONArray>() {
-            @Override
-            public String[] onResponseAsync(JSONArray jsonArray) {
-                final int length = jsonArray.length();
-                final String[] values = new String[length];
-                final Set<String> setValues = new HashSet<String>();
-                for (int i = 0; i < length; i++)
-                    values[i] = jsonArray.optString(i);
+        EventManager.loaderTagsList();
+    }
 
-                for(String temp : values)
-                {
-                    setValues.add(temp);
-                }
-                App.getInstance()
-                        .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
-                        .edit()
-                        //.putString(Utils.TAGS_LIST, Arrays.toString(values));
-                        .putStringSet(Utils.TAGS_LIST, setValues)
-                        .apply();
-                Set<String> tags = App.getInstance()
-                        .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
-                        .getStringSet(Utils.TAGS_LIST, null);
-                return values;
-            }
+    public void onEvent(TagsListModel message){
+        if (isActive()) {
+            final LayoutInflater inflater = getLayoutInflater();
+            final int length = message.getData().getTagslist().size();
+            selectedItems.clear();
 
-            @Override
-            public void onResponseCompleted(String[] values) {
-                if (isActive()) {
-                    final LayoutInflater inflater = getLayoutInflater();
-                    final int length = values.length;
-                    selectedItems.clear();
+            for (int i = 0; i < length; i++) {
+                final View view = inflater.inflate(R.layout.item_setup_tag, flowLayout, false);
+                final ViewHolder holder = new ViewHolder(SetupTagsActivity.this, view, message.getData().getTagslist().get(i));
 
-                    for (int i = 0; i < length; i++) {
-                        final View view = inflater.inflate(R.layout.item_setup_tag, flowLayout, false);
-                        final ViewHolder holder = new ViewHolder(SetupTagsActivity.this, view, values[i]);
+                holder.textView.setText(holder.text);
+                selectedItems.add(holder.text);
+                flowLayout.addView(view);
 
-                        holder.textView.setText(holder.text);
-                        selectedItems.add(holder.text);
-                        flowLayout.addView(view);
-
-                        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                            @Override
-                            public void onGlobalLayout() {
-                                view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                                holder.container.setMinimumWidth(holder.container.getMeasuredWidth());
-                            }
-                        });
+                view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        holder.container.setMinimumWidth(holder.container.getMeasuredWidth());
                     }
-
-                    progressBar.setVisibility(View.GONE);
-                    btnNext.setVisibility(View.VISIBLE);
-                }
+                });
             }
 
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (isActive()) {
-                    Toast.makeText(SetupTagsActivity.this, App.getErrorMessage(error), Toast.LENGTH_SHORT).show();
-                    failedView.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
-                }
+            EventManager.saveTagsList(message);
+            progressBar.setVisibility(View.GONE);
+            btnNext.setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void onEvent(ExceptionModel message){
+        if(message.getFrom().equals(Utils.FROM_SETUP_TAGS)){
+            if (isActive()) {
+                Toast.makeText(SetupTagsActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
+                failedView.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
             }
-        });
+        }
     }
 
     private void onTagClick(ViewHolder holder) {
-        final boolean selected = holder.checkView.getVisibility() != View.VISIBLE;
+        boolean selected = holder.checkView.getVisibility() != View.VISIBLE;
+        boolean doNothing = false;
 
         if (selected)
             this.selectedItems.add(holder.text);
-        else
-            this.selectedItems.remove(holder.text);
+        else {
+            if(this.selectedItems.size()==1){
+                doNothing = true;
+                selected = false;
+            }else{
+                this.selectedItems.remove(holder.text);
+            }
+        }
 
-        holder.checkView.setVisibility(selected ? View.VISIBLE : View.GONE);
+        if(!doNothing){
+            holder.checkView.setVisibility(selected ? View.VISIBLE : View.GONE);
+        }
+
+        Log.d("tags", this.selectedItems.toString());
+
     }
 
     @Override
@@ -191,5 +187,11 @@ public class SetupTagsActivity extends BaseActivity implements ViewTreeObserver.
                 }
             });
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 }

@@ -25,6 +25,7 @@ import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
 import com.jiggie.android.component.SimpleTextWatcher;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.ChatAdapter;
 import com.jiggie.android.component.database.ChatTable;
@@ -34,6 +35,8 @@ import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.ChatManager;
 import com.jiggie.android.model.Chat;
+import com.jiggie.android.model.ChatActionModel;
+import com.jiggie.android.model.ChatAddModel;
 import com.jiggie.android.model.ChatResponseModel;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.Conversation;
@@ -75,6 +78,8 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
     private String toId;
 
     boolean changed;
+    Chat chat;
+    ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +101,7 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
         this.viewChat.setVisibility(View.GONE);
         this.failedView.setVisibility(View.GONE);
         this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        this.recyclerView.setAdapter(this.adapter = new ChatAdapter(this, profileImage));
+        this.recyclerView.setAdapter(this.adapter = new ChatAdapter(this, profileImage, toId));
         this.recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(this);
         this.txtMessage.addTextChangedListener(new SimpleTextWatcher() {
             @Override
@@ -117,7 +122,7 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
     @OnClick(R.id.btnSend)
     @SuppressWarnings("unused")
     void btnSendOnClick() {
-        final Chat chat = new Chat();
+        chat = new Chat();
         final LoginModel loginModel = AccountManager.loadLogin();
 
         chat.setFromId(AccessToken.getCurrentAccessToken().getUserId());
@@ -127,7 +132,19 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
         chat.setToId(this.toId);
         chat.setFromYou(true);
 
+        //Added by Aga------
+        ChatAddModel chatAddModel = new ChatAddModel();
+        chatAddModel.setFromId(AccessToken.getCurrentAccessToken().getUserId());
+        chatAddModel.setHeader("");
+        chatAddModel.setFromName(loginModel.getUser_first_name());
+        chatAddModel.setMessage(this.txtMessage.getText().toString().trim());
+        chatAddModel.setHosting_id("");
+        chatAddModel.setKey("kT7bgkacbx73i3yxma09su0u901nu209mnuu30akhkpHJJ");
+        chatAddModel.setToId(this.toId);
+        //------------------
+
         this.adapter.add(chat);
+
         this.txtMessage.setText(null);
         this.adapter.notifyDataSetChanged();
         this.recyclerView.scrollToPosition(adapter.getItemCount() - 1);
@@ -138,18 +155,28 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
 
         super.setResult(RESULT_REPLIED, resultIntent);
 
-        VolleyHandler.getInstance().createVolleyRequest("messages/add", chat, new VolleyRequestListener<Void, JSONObject>() {
+        //Added by Aga-----
+        ChatManager.loaderAddChat(chatAddModel);
+        //-----------------
+
+        /*VolleyHandler.getInstance().createVolleyRequest("messages/add", chat, new VolleyRequestListener<Void, JSONObject>() {
             @Override
-            public Void onResponseAsync(JSONObject jsonObject) { return null; }
+            public Void onResponseAsync(JSONObject jsonObject) {
+                return null;
+            }
+
             @Override
-            public void onResponseCompleted(Void value) { }
+            public void onResponseCompleted(Void value) {
+            }
 
             @Override
             public void onErrorResponse(VolleyError error) {
                 ChatTable.addUnprocessed(App.getInstance().getDatabase(), chat);
                 ChatSendService.registerSchedule();
             }
-        });
+        });*/
+
+
     }
 
     @Override
@@ -178,7 +205,8 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
                             blockUser();
                         }
                     }).show();
-        } else if (item.getItemId() == R.id.action_clear) {
+        }
+        /*else if (item.getItemId() == R.id.action_clear) {
             new AlertDialog.Builder(this)
                     .setMessage(R.string.confirmation)
                     .setTitle(super.getString(R.string.clear_conversation))
@@ -190,13 +218,13 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
                             dialog.dismiss();
                         }
                     }).show();
-        }
+        }*/
         return super.onOptionsItemSelected(item);
     }
 
     private void blockUser() {
-        final ProgressDialog dialog = App.showProgressDialog(this);
-        final String url = String.format("blockuserwithfbid?fromId=%s&toId=%s", AccessToken.getCurrentAccessToken().getUserId(), this.toId);
+        dialog = App.showProgressDialog(this);
+        /*final String url = String.format("blockuserwithfbid?fromId=%s&toId=%s", AccessToken.getCurrentAccessToken().getUserId(), this.toId);
         VolleyHandler.getInstance().createVolleyRequest(url, new VolleyRequestListener<Boolean, JSONObject>() {
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -220,12 +248,14 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
                     onBackPressed();
                 }
             }
-        });
+        });*/
+
+        ChatManager.loaderBlockChat(AccessToken.getCurrentAccessToken().getUserId(), this.toId);
     }
 
     private void clearConversation() {
-        final ProgressDialog dialog = App.showProgressDialog(this);
-        final String url = String.format("deletemessageswithfbid?fromId=%s&toId=%s", AccessToken.getCurrentAccessToken().getUserId(), this.toId);
+        dialog = App.showProgressDialog(this);
+        /*final String url = String.format("deletemessageswithfbid?fromId=%s&toId=%s", AccessToken.getCurrentAccessToken().getUserId(), this.toId);
         VolleyHandler.getInstance().createVolleyRequest(url, new VolleyRequestListener<Boolean, JSONObject>() {
             @Override
             public Boolean onResponseAsync(JSONObject jsonObject) { return jsonObject.optBoolean("success"); }
@@ -255,7 +285,8 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
                     dialog.dismiss();
                 }
             }
-        });
+        });*/
+        ChatManager.loaderDeleteChat(AccessToken.getCurrentAccessToken().getUserId(), this.toId);
     }
 
     private BroadcastReceiver notificationReceived = new BroadcastReceiver() {
@@ -336,18 +367,71 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
                 adapter.notifyDataSetChanged();
                 recyclerView.scrollToPosition(adapter.getItemCount() - 1);
             }
-            isChecking = false;
+            this.isChecking = false;
         }
 
     }
 
-    public void onEvent(ExceptionModel message){
-        if (isActive()) {
-            Toast.makeText(ChatActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
-            failedView.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.GONE);
+    public void onEvent(ChatActionModel message){
+        String from = message.getFrom();
+        if(from.equals(Utils.FROM_ADD_CHAT)){
+            //doNothing
+        }else if(from.equals(Utils.FROM_BLOCK_CHAT)){
+            final boolean value = message.getSuccess2Model().getResponse()==1 ? true : false;
+            if (value)
+                App.getInstance().trackMixPanelEvent("Block User");
+            if ((isActive()) && (!value)) {
+                Toast.makeText(ChatActivity.this, getString(R.string.block_failed, toName), Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            } else if (isActive()) {
+                setResult(RESULT_BLOCKED, new Intent().putExtra(Conversation.FIELD_FACEBOOK_ID, toId));
+                dialog.dismiss();
+                onBackPressed();
+            }
+        }else if(from.equals(Utils.FROM_DELETE_CHAT)){
+            final boolean value = message.getSuccess2Model().getResponse()==1 ? true : false;
+            if (value)
+                App.getInstance().trackMixPanelEvent("Delete Messages");
+
+            if ((isActive()) && (!value)) {
+                Toast.makeText(ChatActivity.this, getString(R.string.clear_conversation_failed), Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            } else if (isActive()) {
+                final Intent resultIntent = new Intent();
+                resultIntent.putExtra(Conversation.FIELD_LAST_UPDATED, Common.ISO8601_DATE_FORMAT_UTC.format(new Date()));
+                resultIntent.putExtra(Conversation.FIELD_FACEBOOK_ID, toId);
+                setResult(RESULT_CLEARED, resultIntent);
+
+                lastMessageDate = "";
+                adapter.clear(true);
+                dialog.dismiss();
+            }
         }
-        isChecking = false;
+    }
+
+    public void onEvent(ExceptionModel message){
+        String from = message.getFrom();
+        if(from.equals(Utils.FROM_CHAT_CONVERSATION)){
+            if (isActive()) {
+                Toast.makeText(ChatActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
+                failedView.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+            }
+            isChecking = false;
+        }else if(from.equals(Utils.FROM_ADD_CHAT)){
+            if(chat!=null){
+                ChatTable.addUnprocessed(App.getInstance().getDatabase(), chat);
+                ChatSendService.registerSchedule();
+            }
+        }else if(from.equals(Utils.FROM_BLOCK_CHAT)||from.equals(Utils.FROM_DELETE_CHAT)){
+            if (isActive()){
+                Toast.makeText(ChatActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
+                //Added by Aga 13-2-2016
+                if(dialog.isShowing())
+                    dialog.dismiss();
+                //-----------------
+            }
+        }
     }
 
     @Override

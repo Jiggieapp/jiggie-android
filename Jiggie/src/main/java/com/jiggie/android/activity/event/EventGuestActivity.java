@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.EventGuestAdapter;
 import com.jiggie.android.component.volley.VolleyHandler;
@@ -24,6 +25,8 @@ import com.android.volley.VolleyError;
 import com.facebook.AccessToken;
 import com.jiggie.android.model.GuestModel;
 import com.jiggie.android.model.SettingModel;
+import com.jiggie.android.model.Success2Model;
+import com.jiggie.android.model.SuccessModel;
 
 import org.json.JSONObject;
 
@@ -38,6 +41,10 @@ public class EventGuestActivity extends ToolbarActivity implements ViewTreeObser
 
     private EventGuestAdapter adapter;
 
+    private GuestModel.Data.GuestInterests guest;
+    private EventGuestAdapter.ViewHolder viewHolder;
+    private ProgressDialog dialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,13 +52,11 @@ public class EventGuestActivity extends ToolbarActivity implements ViewTreeObser
         super.bindView();
         super.setBackEnabled(true);
 
-        EventBus.getDefault().register(this);
-
         this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         this.recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(this);
         this.recyclerView.setAdapter(this.adapter = new EventGuestAdapter(this, this));
 
-        App.getInstance().trackMixPanelEvent("View Guest Listing");
+        App.getInstance().trackMixPanelEvent("View Guest Listings");
     }
 
     @Override
@@ -79,16 +84,29 @@ public class EventGuestActivity extends ToolbarActivity implements ViewTreeObser
     }
 
     public void onEvent(ExceptionModel message){
-        Toast.makeText(App.getInstance(), message.getMessage(), Toast.LENGTH_SHORT).show();
+        if(message.getFrom().equals(Utils.FROM_EVENT_GUEST)){
+            Toast.makeText(App.getInstance(), message.getMessage(), Toast.LENGTH_SHORT).show();
+        }else if(message.getFrom().equals(Utils.FROM_GUEST_CONNECT)){
+            adapter.deselect(viewHolder);
+            dialog.dismiss();
+        }
+    }
+
+    public void onEvent(Success2Model message){
+        guest.setIs_invited(true);
+        sendBroadcast(new Intent(getString(R.string.broadcastGuestInvited)).putExtra(GuestModel.Data.GuestInterests.class.getName(), guest));
+
+        adapter.invite(viewHolder);
+        dialog.dismiss();
     }
 
     @Override
     public void onGuestConnect(final EventGuestAdapter.ViewHolder viewHolder) {
         this.adapter.invite(viewHolder);
-
-        final GuestModel.Data.GuestInterests guest = viewHolder.getGuest();
-        final ProgressDialog dialog = App.showProgressDialog(this);
-        final String id = AccessToken.getCurrentAccessToken().getUserId();
+        this.viewHolder = viewHolder;
+        this.guest = viewHolder.getGuest();
+        dialog = App.showProgressDialog(this);
+        /*final String id = ;
         final String url = String.format("partyfeed/match/%s/%s/approved", id, guest.getFb_id());
 
         VolleyHandler.getInstance().createVolleyRequest(url, new VolleyRequestListener<Void, JSONObject>() {
@@ -110,7 +128,9 @@ public class EventGuestActivity extends ToolbarActivity implements ViewTreeObser
                 adapter.deselect(viewHolder);
                 dialog.dismiss();
             }
-        });
+        });*/
+
+        GuestManager.loaderGuestConnect(AccessToken.getCurrentAccessToken().getUserId(), guest.getFb_id());
     }
 
     @Override
@@ -122,5 +142,11 @@ public class EventGuestActivity extends ToolbarActivity implements ViewTreeObser
     protected void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
     }
 }

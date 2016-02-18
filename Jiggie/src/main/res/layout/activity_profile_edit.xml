@@ -24,5 +24,6 @@
         android:orientation="vertical"
         android:gravity="top"
         android:hint="@string/about"
-        android:id="@+id/textView"/>
+        android:id="@+id/textView"
+        android:layout_marginLeft="@dimen/padding_standard_half"/>
 </LinearLayout>

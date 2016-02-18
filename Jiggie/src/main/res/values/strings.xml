@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Jiggie</string>
+    <!--<string name="app_name">Jiggie</string>-->
     <string name="server_host">https://jiggie-dev.herokuapp.com/app/v3/</string>
     <!--<string name="server_host">https://jiggie.herokuapp.com/app/v3/</string>-->
 
@@ -18,7 +18,9 @@
     <string name="facebook_app_id">840535009393707</string>
     <string name="support_email">support@jiggieapp.com</string>
     <string name="appsflyer_devkey">D4Uux6HSu3aYjNHkCHsTiC</string>
-    <string name="mixpanel_token">0a94cf8d4142e2803752e9ca812a8e53</string>
+    <!--<string name="mixpanel_token">0a94cf8d4142e2803752e9ca812a8e53</string>-->
+
+    <string name="mixpanel_token">39ae6be779ffea77ea2b2a898305f560</string>
 
     <string name="broadcast_notification">jiggie.broadcast.notification</string>
     <string name="broadcast_social">jiggie.broadcast.social</string>
@@ -55,6 +57,7 @@
     <string name="distance_sort">Sort guests by their distance&#8230;</string>
     <string name="age">Age</string>
     <string name="age_sort">Sort guests by their age&#8230;</string>
+    <string name="verify_your_phone_number">Verify your phone number</string>
     <string name="profile">Profile</string>
     <string name="invite">Invite friends</string>
     <string name="settings">Settings</string>
@@ -97,13 +100,13 @@
     <string name="share">Share</string>
     <string name="your_location">Your location</string>
     <string name="connected">Connected</string>
-    <string name="check_back_later">Check back later</string>
-    <string name="check_back_later_description">Browse through some more events and we\'ll match you up.</string>
+    <string name="check_back_later">Check back soon</string>
+    <string name="check_back_later_description">Browse some events and your social feed will show members who like the same events.</string>
     <string name="start_chatting">Start chatting</string>
     <string name="make_some_plan">Make some plans for today!</string>
     <string name="socialize">Socialize</string>
-    <string name="socialize_description">Other member will be able to view your card</string>
-    <string name="socialize_description_off">Other member will not be able to view your card</string>
+    <string name="socialize_description">Turn off if you do not wish to be seen by others</string>
+    <string name="socialize_description_off">Turn on if you wish to be seen by others</string>
     <string name="wants_to_go_with">%1$s wants to go with you to</string>
     <string name="interested_question">Interested?</string>
     <string name="something_went_wrong">Something went wrong</string>
@@ -123,14 +126,14 @@
     <string name="your_experience_description">Pick the type of events you\'ll be into</string>
     <string name="stay_in_the_loop">Stay in the loop</string>
     <string name="stay_in_the_loop_description">For the best experience allow us access</string>
-    <string name="dont_miss_invites">Don\'t miss exclusive invites and chat messages from other member</string>
+    <string name="dont_miss_invites">Don\'t miss exclusive invites and chat messages from other members</string>
     <string name="notifications">Notifications</string>
     <string name="next">Next</string>
     <string name="done">Done</string>
     <string name="find_events">Find events for you</string>
     <string name="find_events_description">For the best experience allow us access</string>
     <string name="location">Location</string>
-    <string name="location_description">Stay in the know on hot events and hostings around you</string>
+    <string name="location_description">Stay in the know on most popular events around you</string>
     <string name="no_fullfillment">This event does not have external site</string>
     <string name="call">Call</string>
     <string name="reserve">Reserve now</string>
@@ -149,6 +152,15 @@
     <string name="wk_chat_action">START TYPING</string>
     <string name="wk_match_action">CONNECT</string>
     <string name="wk_request_action">ACCEPT REQUEST</string>
+
+    <string name="title_no_event">No events found</string>
+    <string name="msg_no_event">No events found</string>
+
+    <string name="title_dialog_notif">Allow notification?</string>
+    <string name="msg_dialog_notif">System will allow your device to receive notification from this app.</string>
+
+    <string name="title_dialog_location">Allow share location?</string>
+    <string name="msg_dialog_location">System will allow this app to get information about your phone location.</string>
 
     <plurals name="guest_count">
         <item quantity="one">%1$d Guest</item>
@@ -175,4 +187,21 @@
     <string name="account">Account</string>
     <string name="please_wait">Updating your experiences</string>
     <string name="purchase_ticket">Purchase ticket</string>
+    <string name="wait">Please wait</string>
+
+    <string name="no_internet_connection">Please check your internet connection</string>
+    <string name="standard_error_message">Sorry we\'re having some server issues, please check back in a few minutes.</string>
+
+    <string name="no_one_will_see_your_phone_number">No one will see your phone number on Jiggie.</string>
+    <string name="international">International</string>
+    <string name="usa">US_United States</string>
+    <string name="enter_verification_code">Enter your verification code</string>
+    <string name="verify_phone_number">Verify Phone Number</string>
+    <string name="submit_validation">Submit Validation</string>
+    <string name="submit_validation_dialog">We will send a verification code to the phone number : </string>
+    <string name="send_code">Send Code</string>
+    <string name="hint_validation_code">Validation Code</string>
+    <string name="description_validation_code">Enter the 6 digit code we just sent to your number</string>
+    <string name="verification_success">Your phone number has been successfully verified</string>
+    <string name="verification_failed">Plese check the number and try again</string>
 </resources>

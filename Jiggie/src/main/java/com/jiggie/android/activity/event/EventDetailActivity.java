@@ -8,7 +8,9 @@ import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.FragmentManager;
@@ -60,6 +62,10 @@ import com.jiggie.android.model.ShareLinkModel;
 
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -68,11 +74,17 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import butterknife.Bind;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 import it.sephiroth.android.library.widget.HListView;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by rangg on 11/11/2015.
@@ -105,12 +117,13 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     private ImageView[] imageGuests;
     private ShareLinkModel shareLinkModel;
     private GoogleMap map;
-
     private EventDetailModel.Data.EventDetail eventDetail;
     String event_id = "";
     String event_name = "";
 
     ProgressDialog progressDialog;
+    public static final String TAG = EventDetailActivity.class.getSimpleName();
+    private File file;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +176,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
         super.registerReceiver(this.guestInvitedReceiver, new IntentFilter(super.getString(R.string.broadcastGuestInvited)));
         App.getInstance().trackMixPanelEvent("View Event Details");
+        if(file.exists())
+            file.delete();
     }
 
     @Override
@@ -198,108 +213,141 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         this.btnBook.setVisibility(View.GONE);
         this.swipeRefresh.setRefreshing(true);
 
-        EventManager.loaderEventDetail(event_id, AccessToken.getCurrentAccessToken().getUserId(), AccountManager.loadSetting().getData().getGender_interest());
+        EventManager.loaderEventDetail(event_id, AccessToken.getCurrentAccessToken().getUserId()
+                , AccountManager.loadSetting().getData().getGender_interest(), TAG);
     }
 
-    public void onEvent(EventDetailModel message){
-        try {
-            eventDetail = message.getData().getEvents_detail();
+    public void onEvent(EventDetailModel message) {
+        if (message.getFrom().equalsIgnoreCase(TAG)) {
+            try {
+                eventDetail = message.getData().getEvents_detail();
 
-            if(event_name==null){
-                super.setToolbarTitle(eventDetail.getTitle().toUpperCase(), true);
-            }
-
-            this.txtVenue.setText(eventDetail.getVenue_name());
-
-            if (!isActive())
-                return;
-
-            ArrayList<EventDetailModel.Data.EventDetail.GuestViewed> guestArr = message.getData().getEvents_detail().getGuests_viewed();
-
-            int size = guestArr.size();
-
-            int guestCount = size;
-            final double latt = Double.parseDouble(message.getData().getEvents_detail().getVenue().getLat());
-            final double lon = Double.parseDouble(message.getData().getEvents_detail().getVenue().getLon());
-            final LatLng lat = new LatLng(latt, lon);
-
-            ArrayList<String> photoArr = message.getData().getEvents_detail().getPhotos();
-            String[] photo = new String[photoArr.size()];
-            photo = photoArr.toArray(photo);
-
-            imagePagerIndicatorAdapter.setImages(photo);
-            txtDescription.setText(message.getData().getEvents_detail().getDescription());
-            txtAddress.setText(message.getData().getEvents_detail().getVenue().getAddress());
-            txtGuestCounter.setText(String.format("+%s", guestCount - imageGuests.length));
-            txtGuestCounter.setVisibility(guestCount > imageGuests.length ? View.VISIBLE : View.GONE);
-            txtGuestCount.setText(getResources().getQuantityString(R.plurals.guest_count, guestCount, guestCount));
-
-            if (guestCount > 0) {
-                final int width = imageGuest1.getWidth() * 2;
-                guestCount = guestCount > imageGuests.length ? imageGuests.length : guestCount;
-
-                for (int i = 0; i < guestCount; i++) {
-                    final String url = App.getFacebookImage(guestArr.get(i).getFb_id(), width);
-                    Glide.with(EventDetailActivity.this).load(url).asBitmap().centerCrop().into(new BitmapImageViewTarget(imageGuests[i]) {
-                        @Override
-                        protected void setResource(Bitmap resource) {
-                            final Resources resources = getResources();
-                            if (resources != null) {
-                                final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(resources, resource);
-                                circularBitmapDrawable.setCircular(true);
-                                super.getView().setImageDrawable(circularBitmapDrawable);
-                            }
-                        }
-                    });
+                if (event_name == null) {
+                    super.setToolbarTitle(eventDetail.getTitle().toUpperCase(), true);
                 }
-            }
 
-            final String fullfillmentType = message.getData().getEvents_detail().getFullfillment_type();
-            btnBook.setVisibility(
-                    StringUtility.isEquals(EventManager.FullfillmentTypes.NONE, message.getData().getEvents_detail().getFullfillment_type(), true)
-                    ? View.GONE : View.VISIBLE);
-            /*if(EventManager.FullfillmentTypes.NONE.equals(fullfillmentType))
-            {
-                btnBook.setVisibility(View.GONE);
-            }
-            else if(EventManager.FullfillmentTypes.TICKET.equals(fullfillmentType))
-            {
-                btnBook.setVisibility(View.VISIBLE);
-            }
-            else btnBook.setVisibility(View.VISIBLE);*/
+                this.txtVenue.setText(eventDetail.getVenue_name());
 
-            map.addMarker(new MarkerOptions().position(lat).title(message.getData().getEvents_detail().getVenue_name()));
-            layoutGuests.setVisibility(guestCount > 0 ? View.VISIBLE : View.GONE);
-            map.animateCamera(CameraUpdateFactory.newLatLngZoom(lat, 15));
-            scrollView.setVisibility(View.VISIBLE);
+                if (!isActive())
+                    return;
 
-            final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(message.getData().getEvents_detail().getStart_datetime());
-            final Date endDate = Common.ISO8601_DATE_FORMAT_UTC.parse(message.getData().getEvents_detail().getEnd_datetime());
-            String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format, Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));
-            txtDate.setText(simpleDate);
+                ArrayList<EventDetailModel.Data.EventDetail.GuestViewed> guestArr = message.getData().getEvents_detail().getGuests_viewed();
 
-            swipeRefresh.setRefreshing(false);
-            eventDetail = message.getData().getEvents_detail();
-            invalidateOptionsMenu();
-            populateTags();
+                int size = guestArr.size();
 
-            if (StringUtility.isEquals(EventManager.FullfillmentTypes.PHONE_NUMBER, fullfillmentType, true)) {
-                txtExternalSite.setVisibility(View.GONE);
-                txtBookNow.setText(R.string.call);
-            } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.RESERVATION, fullfillmentType, true)) {
-                txtExternalSite.setVisibility(View.GONE);
-                txtBookNow.setText(R.string.reserve);
-            } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.PURCHASE, fullfillmentType, true)) {
-                txtExternalSite.setVisibility(View.GONE);
-                txtBookNow.setText(R.string.purchase);
+                int guestCount = size;
+                final double latt = Double.parseDouble(message.getData().getEvents_detail().getVenue().getLat());
+                final double lon = Double.parseDouble(message.getData().getEvents_detail().getVenue().getLon());
+                final LatLng lat = new LatLng(latt, lon);
+
+                ArrayList<String> photoArr = message.getData().getEvents_detail().getPhotos();
+                String[] photo = new String[photoArr.size()];
+                photo = photoArr.toArray(photo);
+
+                imagePagerIndicatorAdapter.setImages(photo);
+                txtDescription.setText(message.getData().getEvents_detail().getDescription());
+                txtAddress.setText(message.getData().getEvents_detail().getVenue().getAddress());
+                txtGuestCounter.setText(String.format("+%s", guestCount - imageGuests.length));
+                txtGuestCounter.setVisibility(guestCount > imageGuests.length ? View.VISIBLE : View.GONE);
+                txtGuestCount.setText(getResources().getQuantityString(R.plurals.guest_count, guestCount, guestCount));
+
+                if (guestCount > 0) {
+                    final int width = imageGuest1.getWidth() * 2;
+                    guestCount = guestCount > imageGuests.length ? imageGuests.length : guestCount;
+
+                    for (int i = 0; i < guestCount; i++) {
+                        final String url = App.getFacebookImage(guestArr.get(i).getFb_id(), width);
+                        Glide.with(EventDetailActivity.this).load(url).asBitmap().centerCrop().into(new BitmapImageViewTarget(imageGuests[i]) {
+                            @Override
+                            protected void setResource(Bitmap resource) {
+                                final Resources resources = getResources();
+                                if (resources != null) {
+                                    final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(resources, resource);
+                                    circularBitmapDrawable.setCircular(true);
+                                    super.getView().setImageDrawable(circularBitmapDrawable);
+                                }
+                            }
+                        });
+                    }
+
+                    //not finished yet----
+                    /*for (int i = guestCount; i > 0; i--) {
+                        final String url = App.getFacebookImage(guestArr.get(guestCount - i).getFb_id(), width);
+                        Glide.with(EventDetailActivity.this).load(url).asBitmap().centerCrop().into(new BitmapImageViewTarget(imageGuests[i]) {
+                            @Override
+                            protected void setResource(Bitmap resource) {
+                                final Resources resources = getResources();
+                                if (resources != null) {
+                                    final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(resources, resource);
+                                    circularBitmapDrawable.setCircular(true);
+                                    super.getView().setImageDrawable(circularBitmapDrawable);
+                                }
+                            }
+                        });
+                    }*/
+                    //-----------------------
+                }
+
+                //Added by Aga 10-2-2016
+                if (StringUtility.isEquals(EventManager.FullfillmentTypes.NONE, message.getData().getEvents_detail().getFullfillment_type(), true) ||
+                        TextUtils.isEmpty(message.getData().getEvents_detail().getFullfillment_value())) {
+                    btnBook.setVisibility(View.GONE);
+                } else {
+                    btnBook.setVisibility(View.VISIBLE);
+                }
+                //btnBook.setVisibility(StringUtility.isEquals(EventManager.FullfillmentTypes.NONE, message.getData().getEvents_detail().getFullfillment_type(), true) ? View.GONE : View.VISIBLE);
+
+                map.addMarker(new MarkerOptions().position(lat).title(message.getData().getEvents_detail().getVenue_name()));
+                layoutGuests.setVisibility(guestCount > 0 ? View.VISIBLE : View.GONE);
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(lat, 15));
+                scrollView.setVisibility(View.VISIBLE);
+
+                final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(message.getData().getEvents_detail().getStart_datetime());
+                final Date endDate = Common.ISO8601_DATE_FORMAT_UTC.parse(message.getData().getEvents_detail().getEnd_datetime());
+                String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format, Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));
+                txtDate.setText(simpleDate);
+
+                swipeRefresh.setRefreshing(false);
+                eventDetail = message.getData().getEvents_detail();
+                invalidateOptionsMenu();
+                populateTags();
+
+                final String fullfillmentType = message.getData().getEvents_detail().getFullfillment_type();
+                btnBook.setVisibility(
+                        StringUtility.isEquals(EventManager.FullfillmentTypes.NONE, message.getData().getEvents_detail().getFullfillment_type(), true)
+                                ? View.GONE : View.VISIBLE);
+                /*if(EventManager.FullfillmentTypes.NONE.equals(fullfillmentType))
+                {
+                    btnBook.setVisibility(View.GONE);
+                }
+                else if(EventManager.FullfillmentTypes.TICKET.equals(fullfillmentType))
+                {
+                    btnBook.setVisibility(View.VISIBLE);
+                }
+                else btnBook.setVisibility(View.VISIBLE);*/
+
+
+                if (StringUtility.isEquals(EventManager.FullfillmentTypes.PHONE_NUMBER, fullfillmentType, true)) {
+                    txtExternalSite.setVisibility(View.GONE);
+                    txtBookNow.setText(R.string.call);
+                } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.RESERVATION, fullfillmentType, true)) {
+                    txtExternalSite.setVisibility(View.GONE);
+                    txtBookNow.setText(R.string.reserve);
+                } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.PURCHASE, fullfillmentType, true)) {
+                    txtExternalSite.setVisibility(View.GONE);
+                    txtBookNow.setText(R.string.purchase);
+                } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.TICKET, fullfillmentType, true)) {
+                    txtExternalSite.setVisibility(View.GONE);
+                    txtBookNow.setText(getResources().getString(R.string.purchase_ticket));
+                }
+                //Changed by Aga 16-2-2016
+                else if (StringUtility.isEquals(EventManager.FullfillmentTypes.LINK, message.getData().getEvents_detail().getFullfillment_type(), true)) {
+                    txtExternalSite.setVisibility(View.VISIBLE);
+                    txtBookNow.setText(R.string.book_now);
+                }
+            } catch (ParseException e) {
+                throw new RuntimeException(App.getErrorMessage(e), e);
             }
-            else if(StringUtility.isEquals(EventManager.FullfillmentTypes.TICKET, fullfillmentType, true))
-            {
-                txtExternalSite.setVisibility(View.GONE);
-                txtBookNow.setText(getResources().getString(R.string.purchase_ticket));
-            }
-        } catch (ParseException e) {
-            throw new RuntimeException(App.getErrorMessage(e), e);
         }
     }
 
@@ -311,13 +359,24 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             }
         }else{
             if (isActive()) {
-                progressDialog.dismiss();
-                Toast.makeText(EventDetailActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
+                if(progressDialog!=null&&progressDialog.isShowing()){
+                    progressDialog.dismiss();
+                }
+
+                if(!message.getMessage().equals(Utils.RESPONSE_FAILED + " " + "empty data")){
+                    Toast.makeText(EventDetailActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
             }
         }
     }
 
     private void populateTags() {
+
+        if(flowLayout.getChildCount()>0){
+            flowLayout.removeAllViews();
+        }
+
         final LayoutInflater inflater = super.getLayoutInflater();
         for (String tag : this.eventDetail.getTags()) {
             final View view = inflater.inflate(R.layout.item_event_tag_detail, this.flowLayout, false);
@@ -351,7 +410,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     @OnClick(R.id.layoutAddress)
     void layoutAddressOnClick() {
         if (this.eventDetail != null) {
-            final Uri uri = Uri.parse(String.format("http://maps.google.com/maps?daddr=%f,%f", this.eventDetail.getVenue().getLat(), this.eventDetail.getVenue().getLon()));
+            final Uri uri = Uri.parse(String.format("http://maps.google.com/maps?daddr=%f,%f", Float.parseFloat(this.eventDetail.getVenue().getLat()), Float.parseFloat(this.eventDetail.getVenue().getLon())));
             super.startActivity(Intent.createChooser(new Intent(android.content.Intent.ACTION_VIEW, uri), this.eventDetail.getVenue_name()));
         }
     }
@@ -403,7 +462,22 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         super.unregisterReceiver(this.guestInvitedReceiver);
         EventBus.getDefault().unregister(this);
         super.onDestroy();
+        if(file != null)
+            file.delete();
     }
+
+    /*@Override
+    protected void onResume() {
+        super.onResume();
+        if(!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -417,25 +491,147 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         return super.onOptionsItemSelected(item);
     }
 
+    private File createFile(final Bitmap bmp)
+    {
+        //create a file to write bitmap data
+        try {
+            //File f = new File(this.getCacheDir(), "temp.png");
+            File f = new File(Environment.getExternalStorageDirectory()
+                    , /*venueName +*/ "event.png");
+            if(!f.exists())
+            {
+                f.createNewFile();
+                //Convert bitmap to byte array
+                Bitmap bitmap = bmp;
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+                byte[] bitmapdata = bos.toByteArray();
+
+                //write the bytes in file
+                FileOutputStream fos = new FileOutputStream(f);
+                fos.write(bitmapdata);
+                fos.flush();
+                fos.close();
+                return f;
+            }
+            else
+            {
+                Utils.d(TAG, "file exists ");
+                return f;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private void shareEvent() throws UnsupportedEncodingException {
         if (this.shareLinkModel != null) {
             App.getInstance().trackMixPanelEvent("Share Event");
-            String share = String.format("%s\n\n%s", shareLinkModel.getMessage(), shareLinkModel.getUrl());
-            super.startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, share).setType("text/plain"), super.getString(R.string.share)));
+            /*Utils.d(TAG, Build.VERSION.SDK_INT + " " + Build.VERSION_CODES.LOLLIPOP_MR1);
+            if (android.os.Build.VERSION.SDK_INT
+                    < Build.VERSION_CODES.LOLLIPOP_MR1) {
+                String share = String.format("%s\n\n%s", shareLinkModel.getMessage(), shareLinkModel.getUrl());
+                Intent i = new Intent(Intent.ACTION_SEND)
+                        .putExtra(Intent.EXTRA_TEXT, share)
+                        .putExtra(Intent.EXTRA_SUBJECT, "Lets Go Out With Jiggie");
+                i.setType("text/plain");
+                super.startActivity(Intent.createChooser
+                        (i, super.getString(R.string.share)
+                        //,)
+                        ));
+            }
+            else {
+                String share = String.format("%s\n\n%s", shareLinkModel.getMessage(), shareLinkModel.getUrl());
+                super.startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, share).putExtra(Intent.EXTRA_SUBJECT, "Lets Go Out With Jiggie").setType("text/plain"), super.getString(R.string.share)));
+
+            }*/
+
+            final String share = String.format("%s\n\n%s", shareLinkModel.getMessage(), shareLinkModel.getUrl());
+
+            Observable<File> myObservable
+                    = Observable.create(new Observable.OnSubscribe<File>() {
+                @Override
+                public void call(Subscriber subscriber) {
+                    try {
+                        Utils.d(TAG, "pic url " + eventDetail.getPhotos()
+                                .get(0));
+                        Bitmap bmp = Glide.with(EventDetailActivity.this)
+                                .load(eventDetail.getPhotos()
+                                        .get(0)).asBitmap().into(200, 200).get();
+                        file = createFile(bmp);
+                        subscriber.onNext(file);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            myObservable
+                    .subscribeOn(Schedulers.newThread()) // Create a new Thread
+                    .observeOn(AndroidSchedulers.mainThread()) // Use the UI thread
+                    .subscribe(new Action1<File>() {
+                        @Override
+                        public void call(File file) {
+                            //view.setText(view.getText() + "\n" + s); // Change a View
+                            Intent i = new Intent(Intent.ACTION_SEND)
+                                    .putExtra(Intent.EXTRA_TEXT, share)
+                                    .putExtra(Intent.EXTRA_SUBJECT, "Lets Go Out With Jiggie");
+
+                            if (file != null && file.exists()) {
+                                //Utils.d(TAG, "file getabsolutepath " + file.getAbsolutePath());
+                                i.putExtra(android.content.Intent.EXTRA_STREAM,
+                                        Uri.parse("file:" + file.getAbsolutePath()));
+                            } else {
+                                //Utils.d(TAG, "file not existss");
+                            }
+
+                            i.setType("text/plain");
+                            if(progressDialog!= null && progressDialog.isShowing())
+                                progressDialog.dismiss();
+
+                            EventDetailActivity.this.startActivity(Intent.createChooser
+                                    (i, EventDetailActivity.this.getString(R.string.share)
+                                            //,)
+                                    ));
+                            //file.delete();
+                        }
+                    });
+
+
+
+            /*super.startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, share).
+                    putExtra(Intent.EXTRA_STREAM, Uri.parse(eventDetail.getPhotos().get(0))).
+                    putExtra(Intent.EXTRA_SUBJECT, "Lets Go Out With Jiggie").setType("**///*"), super.getString(R.string.share)));*/
+
+            /*Glide.with(this).load(eventDetail.getPhotos().get(0)).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.imageView) {
+                @Override
+                protected void setResource(Bitmap resource) {
+                    final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(fragment.getResources(), resource);
+                    circularBitmapDrawable.setCircular(true);
+                    super.getView().setImageDrawable(circularBitmapDrawable);
+                }
+            });*/
         } else {
             progressDialog = App.showProgressDialog(this);
-
-            ShareManager.loaderShareEvent(eventDetail.get_id(), AccessToken.getCurrentAccessToken().getUserId(), eventDetail.getVenue_name());
+            ShareManager.loaderShareEvent(eventDetail.get_id(), AccessToken.getCurrentAccessToken().getUserId(), URLEncoder.encode(eventDetail.getVenue_name(), "UTF-8"));
         }
     }
 
-    public void onEvent(ShareLinkModel message){
+    public void onEvent(ShareLinkModel message)throws UnsupportedEncodingException{
         if (isActive()) {
-            String share = String.format("%s\n\n%s", message.getMessage(), message.getUrl());
+            /*String share = String.format("%s\n\n%s", message.getMessage(), message.getUrl());
             startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, share).setType("text/plain"), getString(R.string.share)));
             App.getInstance().trackMixPanelEvent("Share Event");
             progressDialog.dismiss();
+            shareLinkModel = message;*/
+
+            //wandy 15-02-2016
             shareLinkModel = message;
+            this.shareEvent();
+
         }
     }
 
@@ -448,7 +644,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             ArrayList<EventDetailModel.Data.EventDetail.GuestViewed> guestArr = eventDetail.getGuests_viewed();
 
             int size = guestArr.size();
-
             final int length = size;
 
             for (int i = 0; i < length; i++) {

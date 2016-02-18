@@ -1,9 +1,11 @@
 package com.jiggie.android.activity;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,12 +15,15 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.appsflyer.AppsFlyerConversionListener;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.profile.FilterActivity;
 import com.jiggie.android.activity.setup.SetupTagsActivity;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.gcm.GCMRegistrationService;
 import com.jiggie.android.component.service.FacebookImageSyncService;
 import com.jiggie.android.fragment.HomeFragment;
@@ -26,6 +31,8 @@ import com.jiggie.android.fragment.SignInFragment;
 import com.appsflyer.AppsFlyerLib;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+
+import java.util.Map;
 
 /**
  * Created by rangg on 21/10/2015.
@@ -42,12 +49,19 @@ public class MainActivity extends AppCompatActivity {
         super.setContentView(R.layout.activity_main);
         this.active = true;
 
+        final SharedPreferences pref = App.getSharedPreferences();
+        boolean isFirstRun = pref.getBoolean(Utils.IS_FIRST_RUN, true);
+        if(isFirstRun){
+            pref.edit().putBoolean(Utils.IS_FIRST_RUN, false).commit();
+            App.getInstance().trackMixPanelEvent("Install");
+        }
+
         // validate GCM Version and update if necessary
         final GoogleApiAvailability api = GoogleApiAvailability.getInstance();
         int code = api.isGooglePlayServicesAvailable(this);
 
         if (code == ConnectionResult.SUCCESS) {
-            App.getInstance().trackMixPanelEvent("LogIn");
+            App.getInstance().trackMixPanelEvent("Log In");
             this.onActivityResult(REQUEST_GOOGLE_PLAY_SERVICES, Activity.RESULT_OK, null);
         } else if (api.isUserResolvableError(code) && api.showErrorDialogFragment(this, code, REQUEST_GOOGLE_PLAY_SERVICES)) {
             // wait for onActivityResult call (see below)
@@ -57,6 +71,24 @@ public class MainActivity extends AppCompatActivity {
         }
         /*Intent i = new Intent(this, FilterActivity.class);
         startActivity(i);*/
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case Utils.PERMISSION_REQUEST:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission Granted
+                    //insertDummyContact();
+                } else {
+                    // Permission Denied
+                    Toast.makeText(MainActivity.this, "WRITE_CONTACTS Denied", Toast.LENGTH_SHORT)
+                            .show();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 
     public void navigateToHome() {
@@ -77,6 +109,8 @@ public class MainActivity extends AppCompatActivity {
             // Track AppsFlyer Install
             AppsFlyerLib.sendTracking(super.getApplicationContext());
 
+            registerAppsFlyerConversion();
+
             if (!App.getInstance().isUserLoggedIn()) {
                 final SignInFragment fragment = new SignInFragment();
                 super.getSupportFragmentManager().beginTransaction().add(R.id.container, fragment).commit();
@@ -95,6 +129,38 @@ public class MainActivity extends AppCompatActivity {
             }
         } else if (requestCode == REQUEST_GOOGLE_PLAY_SERVICES)
             super.onBackPressed();
+    }
+
+    private void registerAppsFlyerConversion(){
+        AppsFlyerLib.registerConversionListener(super.getApplicationContext(), new AppsFlyerConversionListener() {
+            @Override
+            public void onInstallConversionDataLoaded(Map<String, String> map) {
+                String media_source = map.get("media_source") == null ? null : map.get("media_source");
+                String campaign = map.get("campaign") == null ? null : map.get("campaign");
+                String af_status = map.get("af_status") == null ? null : map.get("af_status");
+                if(media_source!=null)
+                    Utils.AFmedia_source = media_source;
+                if(campaign!=null)
+                    Utils.AFcampaign = campaign;
+                if(af_status!=null)
+                    Utils.AFinstall_type = af_status;
+            }
+
+            @Override
+            public void onInstallConversionFailure(String s) {
+
+            }
+
+            @Override
+            public void onAppOpenAttribution(Map<String, String> map) {
+
+            }
+
+            @Override
+            public void onAttributionFailure(String s) {
+
+            }
+        });
     }
 
     private void showRateDialog() {
@@ -132,7 +198,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    protected boolean isActive() { return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) ? !super.isDestroyed() : this.active; }
+    protected boolean isActive()
+    {
+        return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) ?
+            !super.isDestroyed() : this.active;
+    }
 
     @Override
     protected void onDestroy() {

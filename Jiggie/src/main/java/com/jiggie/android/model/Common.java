@@ -55,4 +55,8 @@ public class Common {
         SIMPLE_24_HOUR_FORMAT_UTC.setTimeZone(utcTimeZone);
         SHORT_DATE_FORMAT_UTC.setTimeZone(utcTimeZone);
     }
+
+    /*Social Feeds*/
+    public static final String SOCIAL_FEED_TYPE_APPROVED = "approved";
+    public static final String PHONE_NUMBER = "phone_number";
 }

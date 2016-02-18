@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.model.ChatListModel;
 import com.jiggie.android.model.Common;
@@ -32,15 +33,16 @@ import butterknife.ButterKnife;
  */
 public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.ViewHolder> {
     private ConversationSelectedListener listener;
-    //private ArrayList<Conversation> items;
+    private ConversationLongClickListener longClickListener;
     private Fragment fragment;
 
     private ArrayList<ChatListModel.Data.ChatLists> items;
 
-    public ChatTabListAdapter(Fragment fragment, ConversationSelectedListener listener) {
+    public ChatTabListAdapter(Fragment fragment, ConversationSelectedListener listener, ConversationLongClickListener longClickListener) {
         this.items = new ArrayList<>();
         this.fragment = fragment;
         this.listener = listener;
+        this.longClickListener = longClickListener;
     }
 
     public void clear() { this.items.clear(); }
@@ -60,7 +62,7 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_conversation, parent, false), this.listener);
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_conversation, parent, false), this.listener, this.longClickListener);
     }
 
     /*@Override
@@ -104,7 +106,17 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
             holder.txtUnread.setVisibility(item.getUnread() == 0 ? View.INVISIBLE : View.VISIBLE);
             holder.txtTime.setTextColor(ContextCompat.getColor(this.fragment.getContext(), item.getUnread() == 0 ? android.R.color.darker_gray : R.color.colorAccent));
 
-            Glide.with(this.fragment).load(item.getProfile_image()).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.imageView) {
+            //Added by Aga 12-2-2016---
+            String urlImage;
+            if(item.getProfile_image()!=null){
+                urlImage = item.getProfile_image();
+            }else{
+                final int width = holder.imageView.getWidth() * 2;
+                urlImage = App.getFacebookImage(item.getFb_id(), width);
+            }
+            //---------
+
+            Glide.with(this.fragment).load(urlImage).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.imageView) {
                 @Override
                 protected void setResource(Bitmap resource) {
                     final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(fragment.getResources(), resource);
@@ -120,7 +132,7 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
     @Override
     public int getItemCount() { return this.items.size(); }
 
-    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         @Bind(R.id.imageView) ImageView imageView;
         @Bind(R.id.txtUser) TextView txtUser;
         @Bind(R.id.txtMessage) TextView txtMessage;
@@ -130,12 +142,15 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
         //Conversation conversation;
         ChatListModel.Data.ChatLists conversation;
         private ConversationSelectedListener listener;
+        private ConversationLongClickListener longClickListener;
 
-        public ViewHolder(View itemView, ConversationSelectedListener listener) {
+        public ViewHolder(View itemView, ConversationSelectedListener listener, ConversationLongClickListener longClickListener) {
             super(itemView);
             this.listener = listener;
+            this.longClickListener = longClickListener;
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
         @Override
@@ -143,11 +158,21 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
             if (this.listener != null)
                 this.listener.onConversationSelected(this.conversation);
         }
+
+        @Override
+        public boolean onLongClick(View v) {
+            if (this.longClickListener != null)
+                this.longClickListener.onConversationLongClick(this.conversation);
+            return true;
+        }
     }
 
     public interface ConversationSelectedListener {
-        //void onConversationSelected(Conversation conversation);
         void onConversationSelected(ChatListModel.Data.ChatLists conversation);
+    }
+
+    public interface ConversationLongClickListener {
+        void onConversationLongClick(ChatListModel.Data.ChatLists conversation);
     }
 
     public ChatListModel.Data.ChatLists find(String facebookId) {

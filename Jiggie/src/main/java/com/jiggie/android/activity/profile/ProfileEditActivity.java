@@ -8,12 +8,15 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.facebook.AccessToken;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
+
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.manager.AccountManager;
@@ -21,6 +24,7 @@ import com.jiggie.android.model.AboutModel;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.LoginModel;
+import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SuccessModel;
 
 /**
@@ -37,6 +41,8 @@ public class ProfileEditActivity extends ToolbarActivity {
         super.setContentView(R.layout.activity_profile_edit);
         super.bindView();
         super.setBackEnabled(true);
+
+        EventBus.getDefault().register(this);
 
         final String value = super.getIntent().getStringExtra(Common.FIELD_ABOUT);
         this.textView.setText(value);
@@ -65,19 +71,27 @@ public class ProfileEditActivity extends ToolbarActivity {
         final AboutModel aboutModel = new AboutModel();
         aboutModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
         aboutModel.setAbout(this.textView.getText().toString());
+
+        String sd = String.valueOf(new Gson().toJson(aboutModel));
+
         AccountManager.loaderEditAbout(aboutModel);
     }
 
-    public void onEvent(SuccessModel message){
-        LoginModel login = AccountManager.loadLogin();
-        login.setAbout(this.textView.getText().toString());
-        AccountManager.saveLogin(login);
-        App.getInstance().trackMixPanelEvent("MyProfile Update");
+    public void onEvent(Success2Model message){
+        if(message.getResponse()==1){
+            LoginModel login = AccountManager.loadLogin();
+            login.setAbout(this.textView.getText().toString());
+            AccountManager.saveLogin(login);
+            App.getInstance().trackMixPanelEvent("MyProfile Update");
 
-        setResult(RESULT_OK, new Intent().putExtra(Common.FIELD_ABOUT, this.textView.getText().toString()));
+            setResult(RESULT_OK, new Intent().putExtra(Common.FIELD_ABOUT, this.textView.getText().toString()));
 
-        dialog.dismiss();
-        finish();
+            dialog.dismiss();
+            finish();
+        }else{
+            Toast.makeText(ProfileEditActivity.this, "edit about failed", Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
+        }
     }
 
     public void onEvent(ExceptionModel message){
@@ -85,5 +99,11 @@ public class ProfileEditActivity extends ToolbarActivity {
             Toast.makeText(ProfileEditActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
             dialog.dismiss();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

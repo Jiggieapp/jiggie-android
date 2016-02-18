@@ -1,28 +1,25 @@
 package com.jiggie.android.manager;
 
-import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 
 import com.facebook.AccessToken;
 import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.api.AccountInterface;
 import com.jiggie.android.component.Utils;
+import com.jiggie.android.component.callback.CustomCallback;
 import com.jiggie.android.model.AboutModel;
 import com.jiggie.android.model.AccessTokenModel;
-import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.FilterModel;
 import com.jiggie.android.model.LoginModel;
+import com.jiggie.android.model.LoginResultModel;
 import com.jiggie.android.model.MemberInfoModel;
 import com.jiggie.android.model.MemberSettingModel;
+import com.jiggie.android.model.MemberSettingResultModel;
 import com.jiggie.android.model.SettingModel;
+import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SuccessModel;
-import com.squareup.okhttp.Connection;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
 
 import java.io.IOException;
 
@@ -36,9 +33,8 @@ import retrofit.Retrofit;
  * Created by LTE on 2/1/2016.
  */
 public class AccountManager extends BaseManager{
-
+    private static final String TAG = AccountManager.class.getSimpleName();
     static AccountInterface accountInterface;
-    public final static String TAG = AccountManager.class.getSimpleName();
 
     private static void initAccountService(){
         Retrofit retrofit = new Retrofit.Builder()
@@ -85,121 +81,143 @@ public class AccountManager extends BaseManager{
 
     public static void loaderLogin(LoginModel loginRequestModel){
         try {
-            postLogin(loginRequestModel, new Callback() {
+            postLogin(loginRequestModel, new CustomCallback() {
                 @Override
-                public void onResponse(Response response, Retrofit retrofit) {
-                    /*String responses = new Gson().toJson(response.body());
-                    Utils.d("res", responses);*/
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                    String responses = new Gson().toJson(response.body());
+                    Utils.d(TAG, responses);
 
-                    SettingModel dataTemp = (SettingModel) response.body();
-                    EventBus.getDefault().post(dataTemp);
+                    if (response.code() == Utils.CODE_SUCCESS) {
+
+                        LoginResultModel dataLogin = (LoginResultModel) response.body();
+                        SettingModel dataTemp = setSettingModelFromLogin(dataLogin);
+
+                        EventBus.getDefault().post(dataTemp);
+                    } else {
+                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SIGN_IN, Utils.RESPONSE_FAILED));
+                    }
                 }
 
                 @Override
-                public void onFailure(Throwable t) {
-                    Log.d("failure", t.toString());
+                public void onCustomCallbackFailure(String t) {
+                    Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SIGN_IN, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
-            Log.d("exception", e.toString());
+            Utils.d("exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SIGN_IN, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 
     public static void loaderMemberSetting(final MemberSettingModel memberSettingModel){
         try {
-            postMemberSetting(memberSettingModel, new Callback() {
+            postMemberSetting(memberSettingModel, new CustomCallback() {
                 @Override
-                public void onResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
                     /*String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);*/
-                    SuccessModel dataTemp = (SuccessModel) response.body();
-                    EventBus.getDefault().post(dataTemp);
-                    AccountManager.saveMemberSetting(memberSettingModel);
+
+                    if (response.code() == Utils.CODE_SUCCESS) {
+                        Success2Model dataTemp = (Success2Model) response.body();
+                        EventBus.getDefault().post(dataTemp);
+                        AccountManager.saveMemberSetting(memberSettingModel);
+                    } else {
+                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.RESPONSE_FAILED));
+                    }
                 }
 
                 @Override
-                public void onFailure(Throwable t) {
-                    Log.d("failure", t.toString());
+                public void onCustomCallbackFailure(String t) {
+                    Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
-        }catch (IOException e){
+        } catch (IOException e){
             Utils.d(TAG, "memberSetting " + new Gson().toJson(memberSettingModel));
-            Log.d("exception", e.toString());
+            Utils.d("exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 
     public static void loaderMemberInfo(String fb_id){
         try {
-            getMemberInfo(fb_id, new Callback() {
+            getMemberInfo(fb_id, new CustomCallback() {
                 @Override
-                public void onResponse(Response response, Retrofit retrofit) {
-                    String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
-
-                    MemberInfoModel dataTemp = (MemberInfoModel) response.body();
-                    EventBus.getDefault().post(dataTemp);
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                    /*String responses = new Gson().toJson(response.body());
+                    Utils.d("res", responses);*/
+                    if (response.code() == Utils.CODE_SUCCESS) {
+                        MemberInfoModel dataTemp = (MemberInfoModel) response.body();
+                        EventBus.getDefault().post(dataTemp);
+                    } else {
+                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_DETAIL, Utils.RESPONSE_FAILED));
+                    }
                 }
 
                 @Override
-                public void onFailure(Throwable t) {
-                    Log.d("failure", t.toString());
+                public void onCustomCallbackFailure(String t) {
+                    Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_DETAIL, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
-            Log.d("exception", e.toString());
+            Utils.d("exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_DETAIL, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 
     public static void loaderSetting(String fb_id){
         try {
-            getSetting(fb_id, new Callback() {
+            getSetting(fb_id, new CustomCallback() {
                 @Override
-                public void onResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
                     String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
-
-                    SettingModel dataTemp = (SettingModel) response.body();
-                    EventBus.getDefault().post(dataTemp);
+                    Utils.d("res", responses);
+                    if (response.code() == Utils.CODE_SUCCESS) {
+                        MemberSettingResultModel data = (MemberSettingResultModel) response.body();
+                        SettingModel dataTemp = setSettingModelFromMemberSetting(data);
+                        EventBus.getDefault().post(dataTemp);
+                    } else {
+                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_SETTING, Utils.RESPONSE_FAILED));
+                    }
                 }
 
                 @Override
-                public void onFailure(Throwable t) {
-                    Log.d("failure", t.toString());
+                public void onCustomCallbackFailure(String t) {
+                    Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_SETTING, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
-            Log.d("exception", e.toString());
+            Utils.d("exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_SETTING, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 
     public static void loaderEditAbout(AboutModel aboutModel){
         try {
-            postEditAbout(aboutModel, new Callback() {
+            postEditAbout(aboutModel, new CustomCallback() {
                 @Override
-                public void onResponse(Response response, Retrofit retrofit) {
-                    String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
-
-                    SuccessModel dataTemp = (SuccessModel) response.body();
-                    EventBus.getDefault().post(dataTemp);
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                    /*String responses = new Gson().toJson(response.body());
+                    Utils.d("res", responses);*/
+                    if (response.code() == Utils.CODE_SUCCESS) {
+                        Success2Model dataTemp = (Success2Model) response.body();
+                        EventBus.getDefault().post(dataTemp);
+                    } else {
+                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_EDIT, Utils.RESPONSE_FAILED));
+                    }
                 }
 
                 @Override
-                public void onFailure(Throwable t) {
-                    Log.d("failure", t.toString());
+                public void onCustomCallbackFailure(String t) {
+                    Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_EDIT, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
-            Log.d("exception", e.toString());
+            Utils.d("exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_EDIT, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
@@ -231,14 +249,12 @@ public class AccountManager extends BaseManager{
         String model = new Gson().toJson(loginModel);
         App.getInstance().getSharedPreferences(Utils.PREFERENCE_LOGIN, Context.MODE_PRIVATE).edit()
                 .putString(Utils.LOGIN_MODEL, model).apply();
-
     }
 
     public static LoginModel loadLogin(){
 
         LoginModel loginModel = new Gson().fromJson(App.getInstance().getSharedPreferences(Utils.PREFERENCE_LOGIN,
                 Context.MODE_PRIVATE).getString(Utils.LOGIN_MODEL, ""), LoginModel.class);
-
         return loginModel;
     }
 
@@ -257,48 +273,118 @@ public class AccountManager extends BaseManager{
 
     public static void getUserTagList()
     {
-        getUserTagList(new Callback() {
+        getUserTagList(new CustomCallback() {
             @Override
-            public void onResponse(Response response, Retrofit retrofit) {
+            public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
                 FilterModel filterMode = (FilterModel) response.body();
                 EventBus.getDefault().post(filterMode.getData().getExperiences());
             }
 
             @Override
-            public void onFailure(Throwable t) {
-                Utils.d(TAG, "response fail" + t.getMessage());
+            public void onCustomCallbackFailure(String t) {
+                Utils.d(TAG, "response fail" + t);
             }
         });
+    }
 
-        /*VolleyHandler.getAccountInterface().createVolleyArrayRequest("user/tagslist", new VolleyRequestListener<String[], JSONArray>() {
+    private static SettingModel setSettingModelFromLogin(LoginResultModel data){
+        boolean success = true;
+
+
+        LoginResultModel.Data.Login login = data.getData().getLogin();
+
+        SettingModel.Data.Notifications notifications = new SettingModel.Data.Notifications(login.getNotifications().isChat(), login.getNotifications().isFeed(),
+                login.getNotifications().isLocation());
+        //payment still empty
+        SettingModel.Data.Payment payment = new SettingModel.Data.Payment();
+
+        SettingModel.Data settingData = new SettingModel.Data(login.get_id(), login.getFb_id(), login.getGender(), notifications,
+                login.getUpdated_at(), login.getAccount_type(), login.getExperiences(), login.getGender_interest(), payment, login.getPhone());
+
+        SettingModel model = new SettingModel(success, settingData);
+        model.setIs_new_user(login.is_new_user());
+        model.setHelp_phone(login.getHelp_phone());
+        model.setMatchme(login.isMatchme());
+        model.setDevice_type(login.getDevice_type());
+        model.setShow_walkthrough(login.isShow_walkthrough());
+
+        return model;
+    }
+
+    private static SettingModel setSettingModelFromMemberSetting(MemberSettingResultModel data){
+        boolean success = true;
+
+        MemberSettingResultModel.Data.MemberSettings memberSettingResultModel = data.getData().getMembersettings();
+
+        SettingModel.Data.Notifications notifications = new SettingModel.Data.Notifications(memberSettingResultModel.getNotifications().isChat(), memberSettingResultModel.getNotifications().isFeed(),
+                memberSettingResultModel.getNotifications().isLocation());
+        //payment still empty
+        SettingModel.Data.Payment payment = new SettingModel.Data.Payment();
+
+        SettingModel.Data settingData = new SettingModel.Data(memberSettingResultModel.get_id(), memberSettingResultModel.getFb_id(), memberSettingResultModel.getGender(), notifications,
+                memberSettingResultModel.getUpdated_at(), memberSettingResultModel.getAccount_type(), memberSettingResultModel.getExperiences(), memberSettingResultModel.getGender_interest(), payment, memberSettingResultModel.getPhone());
+
+        SettingModel model = new SettingModel(success, settingData);
+
+        return model;
+    }
+
+    public static void verifyPhoneNumber(final String phoneNumber, Callback callback)
+    {
+        Utils.d(TAG, AccessToken.getCurrentAccessToken().getUserId() + " " +
+            phoneNumber);
+        getInstance().verifyPhoneNumber(AccessToken.getCurrentAccessToken().getUserId()
+                , phoneNumber).enqueue(callback);
+    }
+
+    public static void verifyPhoneNumber(final String phoneNumber)
+    {
+        verifyPhoneNumber(phoneNumber, new CustomCallback() {
             @Override
-            public String[] onResponseAsync(JSONArray jsonArray) {
-                final int length = jsonArray.length();
-                final String[] values = new String[length];
-                for (int i = 0; i < length; i++)
-                    values[i] = jsonArray.optString(i);
-                return values;
+            public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                /*String responses = new Gson().toJson(response.body());
+                Utils.d(TAG, responses);*/
+
+                Success2Model success2Model = (Success2Model) response.body();
+                EventBus.getDefault().post(success2Model);
             }
 
             @Override
-            public void onResponseCompleted(String[] values) {
-                for(String val : values)
-                {
-                    Utils.d(TAG, "val " + val);
+            public void onCustomCallbackFailure(String t) {
+
+            }
+        });
+    }
+
+    public static void verifyVerificationCode(final String verificationCode)
+    {
+        verifyVerificationCode(verificationCode, new CustomCallback() {
+            @Override
+            public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                /*final String res = new Gson().toJson(response.body());
+                Utils.d(TAG, "response " + res);*/
+
+                if (response.code() == Utils.CODE_SUCCESS) {
+                    Success2Model success2Model = (Success2Model) response.body();
+                    EventBus.getDefault().post(success2Model);
+                } else {
+                    EventBus.getDefault().post(new ExceptionModel(Utils.FROM_VERIFY_VERIFICATION_CODE, Utils.RESPONSE_FAILED));
                 }
             }
 
             @Override
-            public void onErrorResponse(VolleyError error) {
+            public void onCustomCallbackFailure(String t) {
+
             }
-        });*/
+        });
     }
+
 
     public static void getAccessToken()
     {
-        getAccessToken(new Callback() {
+        getAccessToken(new CustomCallback() {
             @Override
-            public void onResponse(Response response, Retrofit retrofit) {
+            public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
                 /*String responses = new Gson().toJson(response.body());
                 Utils.d(TAG, "response " + responses);*/
 
@@ -314,7 +400,7 @@ public class AccountManager extends BaseManager{
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onCustomCallbackFailure(String t) {
                 Utils.d(TAG, "failure " + t.toString());
             }
         });
@@ -329,5 +415,10 @@ public class AccountManager extends BaseManager{
                 accessTokenModel).enqueue(callback);
     }
 
+    private static void verifyVerificationCode(final String verificationCode, Callback callback)
+    {
+        getInstance().verifyVerificationCode(AccessToken.getCurrentAccessToken().getUserId()
+                , verificationCode).enqueue(callback);
+    }
 
 }
