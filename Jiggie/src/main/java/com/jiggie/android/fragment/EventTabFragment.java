@@ -138,7 +138,7 @@ public class EventTabFragment extends Fragment
         //EventBus.getDefault().register(this);
         //EventManager.initEventService();
 
-        EventBus.getDefault().register(this);
+        //EventBus.getDefault().register(this);
 
         this.recyclerView.setAdapter(this.adapter = new EventTabListAdapter(this, this));
         LinearLayoutManager layoutManager = new LinearLayoutManager(super.getContext());
@@ -321,12 +321,8 @@ public class EventTabFragment extends Fragment
     //Added by Aga
     public void onEvent(ArrayList<EventModel.Data.Events> message) {
         int size = message.size();
-
-        //events.clear();
         Utils.d(TAG, "events size " + size);
         if (searchText == null) {
-            //adapter.clear();
-            //adapter.addAll(events);
             events = message;
             filter(true);
         }
@@ -361,7 +357,7 @@ public class EventTabFragment extends Fragment
     @Override
     public void onViewSelected(EventModel.Data.Events event) {
         Intent i = new Intent(super.getActivity(), EventDetailActivity.class);
-        i.putExtra(Common.FIELD_EVENT_ID, /*event.get_id(*/ "56b1a0bf89bfed03005c50f0");
+        i.putExtra(Common.FIELD_EVENT_ID, event.get_id() /*"56b1a0bf89bfed03005c50f0"*/);
         i.putExtra(Common.FIELD_EVENT_NAME, event.getTitle());
         super.startActivity(i);
     }

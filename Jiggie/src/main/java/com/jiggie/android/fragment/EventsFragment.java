@@ -339,6 +339,8 @@ public class EventsFragment extends Fragment
             for (EventModel.Data.Events tempEvent : getEvents()) {
                 //new Date(event.getDate_day());
                 if(tempEvent.getTitle().toLowerCase().contains(searchText)
+                        || tempEvent.getVenue_name().toLowerCase().contains(searchText)
+                        || tempEvent.getTags().toString().toLowerCase().contains(searchText)
                         || searchText.equals(""))
                 {
                     final String diffDays = Utils.calculateTime(tempEvent.getStart_datetime());

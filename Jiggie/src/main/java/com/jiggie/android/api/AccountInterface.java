@@ -32,7 +32,7 @@ public interface AccountInterface{
     Call<Success2Model> postMemberSetting(@Url String url, @Body MemberSettingModel memberSettingModel);
 
     @GET(Utils.URL_MEMBER_SETTING)
-    Call<FilterModel> getUserTagList(@Query("fb_id") String fb_id);
+    Call<MemberSettingResultModel> getUserTagList(@Query("fb_id") String fb_id);
     
     @GET(Utils.URL_MEMBER_INFO)
     Call<MemberInfoModel> getMemberInfo(@Path("fb_id") String fb_id);

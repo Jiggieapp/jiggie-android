@@ -276,8 +276,8 @@ public class AccountManager extends BaseManager{
         getUserTagList(new CustomCallback() {
             @Override
             public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
-                FilterModel filterMode = (FilterModel) response.body();
-                EventBus.getDefault().post(filterMode.getData().getExperiences());
+                MemberSettingResultModel memberSettingResultModel = (MemberSettingResultModel) response.body();
+                EventBus.getDefault().post(memberSettingResultModel.getData().getMembersettings().getExperiences());
             }
 
             @Override

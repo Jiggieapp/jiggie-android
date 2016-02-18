@@ -48,7 +48,7 @@ public class ProductListActivity extends ToolbarActivity
 
         adapter = new ProductListAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.addItemDecoration(new DividerItemDecoration(this,LinearLayoutManager.VERTICAL));
+        //recyclerView.addItemDecoration(new DividerItemDecoration(this,LinearLayoutManager.VERTICAL));
         recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(this);
         swipeRefreshLayout.setOnRefreshListener(this);
         this.isLoading = false;

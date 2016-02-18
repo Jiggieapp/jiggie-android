@@ -16,6 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -87,6 +89,46 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
             this.viewPager.setCurrentItem(2);
 
         setupTabIcons();
+
+        //Load animation
+        makeOutAnimation = AnimationUtils.loadAnimation(this.getActivity(),
+                R.anim.slide_down);
+
+        makeInAnimation = AnimationUtils.loadAnimation(this.getActivity(),
+                R.anim.slide_up);
+
+
+        /*makeInAnimation = AnimationUtils.makeInAnimation(this.getActivity(), false);
+        makeOutAnimation = AnimationUtils.makeOutAnimation(this.getActivity(), true);
+
+        makeInAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+                fab.setVisibility(View.VISIBLE);
+            }
+        });
+        makeOutAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                fab.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+        });*/
     }
 
     @Override
@@ -103,7 +145,29 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     public void onPageSelected(int position) {
         this.lastSelectedFragment = (TabFragment) this.adapter.fragments[position];
         this.lastSelectedFragment.onTabSelected();
+
+        if(position == 0)
+        {
+            //fab.setVisibility(View.VISIBLE);
+            if(fab.getVisibility() == View.GONE)
+            {
+                fab.startAnimation(makeInAnimation);
+                fab.setVisibility(View.VISIBLE);
+            }
+
+        }
+        else {
+            //fab.setVisibility(View.GONE);
+            if (fab.getVisibility() == View.VISIBLE)
+            {
+                fab.startAnimation(makeOutAnimation);
+                fab.setVisibility(View.GONE);
+            }
+        }
     }
+
+    Animation makeInAnimation, makeOutAnimation;
+
 
     @Override
     public void onTabTitleChanged(TabFragment fragment) {

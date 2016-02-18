@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.jiggie.android.R;
+import com.squareup.okhttp.Response;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -176,4 +178,9 @@ public class Utils {
         }
         else return;
     }*/
+
+    public static String print(Response response)
+    {
+        return new Gson().toJson(response.body());
+    }
 }

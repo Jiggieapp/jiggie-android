@@ -5,193 +5,67 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 
-public final class FilterModel{
-    public final boolean success;
+public final class FilterModel {
+    public final long response;
+    public final String msg;
     public final Data data;
 
-    public Data getData() {
-        return data;
-    }
-
-    public FilterModel(boolean success, Data data){
-        this.success = success;
+    public FilterModel(long response, String msg, Data data){
+        this.response = response;
+        this.msg = msg;
         this.data = data;
     }
 
-    public static final class Data implements Parcelable{
-        String _id;
-        String fb_id;
-        String gender;
-        Notifications notifications;
-        String updated_at;
-        String account_type;
-        ArrayList<String> experiences;
-        String gender_interest;
-        boolean matchme;
-        Payment payment;
-        String phone;
+    public static final class Data {
+        public final Membersettings membersettings;
 
-        public String get_id() {
-            return _id;
+        public Data(Membersettings membersettings){
+            this.membersettings = membersettings;
         }
 
-        public void set_id(String _id) {
-            this._id = _id;
-        }
+        public static final class Membersettings {
+            public final String _id;
+            public final String fb_id;
+            public final Notifications notifications;
+            public final String account_type;
+            public final String gender;
+            public final String[] experiences;
+            public final String gender_interest;
+            public final String updated_at;
+            public final boolean matchme;
+            public final Payment payment;
+            public final String phone;
 
-        public String getFb_id() {
-            return fb_id;
-        }
-
-        public void setFb_id(String fb_id) {
-            this.fb_id = fb_id;
-        }
-
-        public String getGender() {
-            return gender;
-        }
-
-        public void setGender(String gender) {
-            this.gender = gender;
-        }
-
-        public Notifications getNotifications() {
-            return notifications;
-        }
-
-        public void setNotifications(Notifications notifications) {
-            this.notifications = notifications;
-        }
-
-        public String getUpdated_at() {
-            return updated_at;
-        }
-
-        public void setUpdated_at(String updated_at) {
-            this.updated_at = updated_at;
-        }
-
-        public String getAccount_type() {
-            return account_type;
-        }
-
-        public void setAccount_type(String account_type) {
-            this.account_type = account_type;
-        }
-
-        public ArrayList<String> getExperiences() {
-            return experiences;
-        }
-
-        public void setExperiences(ArrayList<String> experiences) {
-            this.experiences = experiences;
-        }
-
-        public String getGender_interest() {
-            return gender_interest;
-        }
-
-        public void setGender_interest(String gender_interest) {
-            this.gender_interest = gender_interest;
-        }
-
-        public boolean isMatchme() {
-            return matchme;
-        }
-
-        public void setMatchme(boolean matchme) {
-            this.matchme = matchme;
-        }
-
-        public Payment getPayment() {
-            return payment;
-        }
-
-        public void setPayment(Payment payment) {
-            this.payment = payment;
-        }
-
-        public String getPhone() {
-            return phone;
-        }
-
-        public void setPhone(String phone) {
-            this.phone = phone;
-        }
-
-        public static Creator<Data> getCREATOR() {
-            return CREATOR;
-        }
-
-        public Data(String _id, String fb_id, String gender, Notifications notifications, String updated_at, String account_type, ArrayList<String> experiences, String gender_interest, boolean matchme, Payment payment, String phone){
-            this._id = _id;
-            this.fb_id = fb_id;
-            this.gender = gender;
-            this.notifications = notifications;
-            this.updated_at = updated_at;
-            this.account_type = account_type;
-            this.experiences = experiences;
-            this.gender_interest = gender_interest;
-            this.matchme = matchme;
-            this.payment = payment;
-            this.phone = phone;
-        }
-
-        protected Data(Parcel in) {
-            _id = in.readString();
-            fb_id = in.readString();
-            gender = in.readString();
-            updated_at = in.readString();
-            account_type = in.readString();
-            experiences = in.createStringArrayList();
-            gender_interest = in.readString();
-            matchme = in.readByte() != 0;
-            phone = in.readString();
-        }
-
-        public static final Creator<Data> CREATOR = new Creator<Data>() {
-            @Override
-            public Data createFromParcel(Parcel in) {
-                return new Data(in);
+            public Membersettings(String _id, String fb_id, Notifications notifications, String account_type, String gender, String[] experiences, String gender_interest, String updated_at, boolean matchme, Payment payment, String phone){
+                this._id = _id;
+                this.fb_id = fb_id;
+                this.notifications = notifications;
+                this.account_type = account_type;
+                this.gender = gender;
+                this.experiences = experiences;
+                this.gender_interest = gender_interest;
+                this.updated_at = updated_at;
+                this.matchme = matchme;
+                this.payment = payment;
+                this.phone = phone;
             }
 
-            @Override
-            public Data[] newArray(int size) {
-                return new Data[size];
+            public static final class Notifications {
+                public final boolean feed;
+                public final boolean chat;
+                public final boolean location;
+
+                public Notifications(boolean feed, boolean chat, boolean location){
+                    this.feed = feed;
+                    this.chat = chat;
+                    this.location = location;
+                }
             }
-        };
 
-        @Override
-        public int describeContents() {
-            return 0;
-        }
+            public static final class Payment {
 
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(_id);
-            dest.writeString(fb_id);
-            dest.writeString(gender);
-            dest.writeString(updated_at);
-            dest.writeString(account_type);
-            dest.writeStringList(experiences);
-            dest.writeString(gender_interest);
-            dest.writeByte((byte) (matchme ? 1 : 0));
-            dest.writeString(phone);
-        }
-
-        public static final class Notifications {
-            public final boolean feed;
-            public final boolean chat;
-
-            public Notifications(boolean feed, boolean chat){
-                this.feed = feed;
-                this.chat = chat;
-            }
-        }
-
-        public static final class Payment {
-
-            public Payment(){
+                public Payment(){
+                }
             }
         }
     }

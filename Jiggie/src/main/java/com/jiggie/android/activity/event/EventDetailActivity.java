@@ -176,7 +176,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
         super.registerReceiver(this.guestInvitedReceiver, new IntentFilter(super.getString(R.string.broadcastGuestInvited)));
         App.getInstance().trackMixPanelEvent("View Event Details");
-        if(file.exists())
+        if(file!= null && file.exists())
             file.delete();
     }
 

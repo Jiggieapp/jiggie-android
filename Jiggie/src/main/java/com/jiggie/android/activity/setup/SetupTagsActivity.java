@@ -30,6 +30,7 @@ import com.jiggie.android.model.TagsListModel;
 
 import org.json.JSONArray;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -92,6 +93,8 @@ public class SetupTagsActivity extends BaseActivity implements ViewTreeObserver.
 
     public void onEvent(TagsListModel message){
         if (isActive()) {
+            saveTags(message.getData().getTagslist());
+
             final LayoutInflater inflater = getLayoutInflater();
             final int length = message.getData().getTagslist().size();
             selectedItems.clear();
@@ -117,6 +120,28 @@ public class SetupTagsActivity extends BaseActivity implements ViewTreeObserver.
             progressBar.setVisibility(View.GONE);
             btnNext.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void saveTags(ArrayList<String> jsonArray)
+    {
+        final int length = jsonArray.size();
+        final String[] values = new String[length];
+        final Set<String> setValues = new HashSet<String>();
+        for (int i = 0; i < length; i++)
+            values[i] = jsonArray.get(i);
+
+        for(String temp : values)
+        {
+            setValues.add(temp);
+        }
+       /* App.getInstance()
+                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                .edit()
+                //.putString(Utils.TAGS_LIST, Arrays.toString(values));
+                .putStringSet(Utils.TAGS_LIST, setValues)
+                .apply();*/
+
+        App.getInstance().savePreference(Utils.TAGS_LIST, setValues);
     }
 
     public void onEvent(ExceptionModel message){

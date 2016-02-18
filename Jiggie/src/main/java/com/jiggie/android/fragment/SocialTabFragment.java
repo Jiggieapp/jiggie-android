@@ -613,3 +613,4 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         }
     }
 }
+

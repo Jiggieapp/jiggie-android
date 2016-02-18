@@ -4,39 +4,25 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Color;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.util.Util;
-import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
-import com.jiggie.android.activity.MainActivity;
-import com.jiggie.android.activity.setup.SetupTagsActivity;
-import com.jiggie.android.api.API;
 import com.jiggie.android.component.FlowLayout;
 import com.jiggie.android.component.Utils;
-import com.jiggie.android.component.activity.BaseActivity;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.manager.AccountManager;
-import com.jiggie.android.manager.FilterManager;
 import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.SettingModel;
-import com.jiggie.android.model.SuccessModel;
+import com.jiggie.android.model.Success2Model;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Set;
 
 import butterknife.Bind;
@@ -104,8 +90,6 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
 
     public void onEvent(ArrayList<String> result)
     {
-
-
         this.progressBar.setVisibility(View.GONE);
         this.failedView.setVisibility(View.GONE);
 
@@ -233,8 +217,6 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
         {
             MemberSettingModel memberSettingModel = AccountManager.loadMemberSetting();
             final String experiences = TextUtils.join(",", selectedItems.toArray(new String[this.selectedItems.size()]));
-            Utils.d(TAG, "experiences " + experiences);
-            //memberSettingModel.setExperiences(selectedItems.toArray(new String[this.selectedItems.size()]).toString());
             memberSettingModel.setExperiences(experiences);
             showProgressDialog();
             AccountManager.loaderMemberSetting(memberSettingModel);
@@ -245,7 +227,7 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
         }
     }
 
-    public void onEvent(SuccessModel message){
+    public void onEvent(Success2Model message){
         /*dialog = App.showProgressDialog(this);
 
         if (isActive()) {
