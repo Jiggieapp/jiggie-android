@@ -8,6 +8,7 @@ import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.callback.CustomCallback;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.SocialModel;
+import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SuccessModel;
 import com.squareup.okhttp.ConnectionSpec;
 
@@ -86,7 +87,7 @@ public class SocialManager {
                     String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);
 
-                    //int response_code = response.code();
+                    int response_code = response.code();
 
                     if(response.code()==Utils.CODE_SUCCESS){
                         SocialModel dataTemp = (SocialModel) response.body();
@@ -118,7 +119,7 @@ public class SocialManager {
                     Log.d("res", responses);
 
                     if(response.code()==Utils.CODE_SUCCESS){
-                        SuccessModel dataTemp = (SuccessModel) response.body();
+                        Success2Model dataTemp = (Success2Model) response.body();
                         EventBus.getDefault().post(dataTemp);
                     }else{
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_MATCH, Utils.RESPONSE_FAILED));
