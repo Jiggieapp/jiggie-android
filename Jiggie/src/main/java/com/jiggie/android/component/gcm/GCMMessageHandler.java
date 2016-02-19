@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.jiggie.android.App;
 import com.jiggie.android.R;
@@ -57,21 +58,6 @@ public class GCMMessageHandler extends GcmListenerService {
         }
 
         final NotificationManager notificationManager = (NotificationManager) super.getSystemService(NOTIFICATION_SERVICE);
-        //final Intent intent = new Intent(App.getInstance(), MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK).putExtra("chat", chat);
-
-        /*String profil_image="";
-        for(int i=0;i< ChatManager.dataChatList.size();i++){
-            if(ChatManager.dataChatList.get(i).getFb_id().equals(fromId)){
-                profil_image = ChatManager.dataChatList.get(i).getProfile_image();
-            }
-        }
-
-        final Intent intent = new Intent(App.getInstance(), ChatActivity.class);
-        //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.putExtra(Conversation.FIELD_PROFILE_IMAGE, profil_image);
-        intent.putExtra(Conversation.FIELD_FROM_NAME, name);
-        intent.putExtra(Conversation.FIELD_FACEBOOK_ID, fromId);
-        intent.putExtra("chat", chat);*/
 
         Intent intent;
         if(chat){
@@ -89,7 +75,19 @@ public class GCMMessageHandler extends GcmListenerService {
             intent.putExtra(Conversation.FIELD_FACEBOOK_ID, fromId);
             intent.putExtra("chat", chat);
         }else{
-            intent = new Intent(App.getInstance(), MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK).putExtra("chat", chat);
+            //match notification---------
+            String fromName = "";
+            try {
+                fromName = message.substring(message.indexOf("with ")+5, message.length());
+            }catch (Exception e){
+                Log.d("error String Arr", e.toString());
+            }
+
+
+            intent = new Intent(App.getInstance(), ChatActivity.class);
+            intent.putExtra(Conversation.FIELD_FROM_NAME, fromName);
+            intent.putExtra(Conversation.FIELD_FACEBOOK_ID, fromId);
+            intent.putExtra("chat", chat);
         }
 
         final PendingIntent pendingIntent = PendingIntent.getActivity(App.getInstance(), Integer.MIN_VALUE, intent, PendingIntent.FLAG_CANCEL_CURRENT);

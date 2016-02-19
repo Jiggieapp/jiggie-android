@@ -2,14 +2,12 @@ package com.jiggie.android.manager;
 
 import android.util.Log;
 
-import com.google.gson.Gson;
 import com.jiggie.android.api.GuestInterface;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.callback.CustomCallback;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.GuestModel;
 import com.jiggie.android.model.Success2Model;
-import com.jiggie.android.model.SuccessModel;
 
 import java.io.IOException;
 import java.util.ArrayList;

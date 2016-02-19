@@ -58,7 +58,7 @@ public class SetupNotificationActivity extends BaseActivity {
     }
 
     public void showNotifDialog() {
-        final AlertDialog dialogNotif = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert)
+        final AlertDialog dialogNotif = new AlertDialog.Builder(this)
                 .setTitle(R.string.title_dialog_notif).setMessage(R.string.msg_dialog_notif)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
@@ -73,7 +73,6 @@ public class SetupNotificationActivity extends BaseActivity {
                     }
                 }).create();
         dialogNotif.show();
-
     }
 
     private void actionNext(boolean isChecked){

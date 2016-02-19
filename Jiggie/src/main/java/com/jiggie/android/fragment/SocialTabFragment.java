@@ -22,7 +22,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -59,7 +58,6 @@ import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.SocialModel;
 import com.jiggie.android.model.Success2Model;
-import com.jiggie.android.model.SuccessModel;
 
 import org.json.JSONObject;
 
@@ -138,7 +136,11 @@ public class SocialTabFragment extends Fragment implements TabFragment {
 
     @Override
     public void onTabSelected() {
-        //if (this.current == null||SocialManager.NEED_REFRESH)
+
+        currentSetting = AccountManager.loadSetting();
+
+        boolean a = AccountManager.anySettingChange;
+
         if (this.current == null){
             if (switchSocialize.isChecked()) {
                 txtSocialize.setText(R.string.socialize_description);
@@ -151,6 +153,12 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_SOCIAL, false)) {
                 showWalkthroughDialog();
             }
+        }
+
+        if (switchSocialize.isChecked()&&AccountManager.anySettingChange) {
+            txtSocialize.setText(R.string.socialize_description);
+            this.onRefresh();
+            AccountManager.anySettingChange = false;
         }
 
         App.getInstance().trackMixPanelEvent("View Social Feed");
@@ -446,7 +454,8 @@ public class SocialTabFragment extends Fragment implements TabFragment {
 
         confirm = confirms;
         showProgressDialog();
-        SocialManager.loaderSocialMatch(AccessToken.getCurrentAccessToken().getUserId(), this.current.getFrom_fb_id(), confirm ? "approved" : "denied");
+        if(current!=null)
+            SocialManager.loaderSocialMatch(AccessToken.getCurrentAccessToken().getUserId(), this.current.getFrom_fb_id(), confirm ? "approved" : "denied");
     }
 
     public void onEvent(Success2Model message){

@@ -25,7 +25,6 @@ import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.Success2Model;
-import com.jiggie.android.model.SuccessModel;
 
 /**
  * Created by rangg on 17/11/2015.

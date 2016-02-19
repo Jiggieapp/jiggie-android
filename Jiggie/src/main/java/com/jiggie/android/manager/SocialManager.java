@@ -9,8 +9,6 @@ import com.jiggie.android.component.callback.CustomCallback;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.SocialModel;
 import com.jiggie.android.model.Success2Model;
-import com.jiggie.android.model.SuccessModel;
-import com.squareup.okhttp.ConnectionSpec;
 
 import java.io.IOException;
 
