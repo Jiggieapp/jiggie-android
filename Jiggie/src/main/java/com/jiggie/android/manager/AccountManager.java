@@ -1,19 +1,14 @@
 package com.jiggie.android.manager;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.util.Log;
 
 import com.facebook.AccessToken;
 import com.google.gson.Gson;
 import com.jiggie.android.App;
-import com.jiggie.android.R;
 import com.jiggie.android.api.AccountInterface;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.callback.CustomCallback;
 import com.jiggie.android.model.AboutModel;
-import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.LoginResultModel;
@@ -22,7 +17,6 @@ import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.MemberSettingResultModel;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.Success2Model;
-import com.jiggie.android.model.SuccessModel;
 
 import java.io.IOException;
 
@@ -38,6 +32,8 @@ import retrofit.Retrofit;
 public class AccountManager {
     private static final String TAG = AccountManager.class.getSimpleName();
     static AccountInterface accountInterface;
+
+    public static boolean anySettingChange = false;
 
     public static void initAccountService(){
         Retrofit retrofit = new Retrofit.Builder()
@@ -148,7 +144,6 @@ public class AccountManager {
                     } else {
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_DETAIL, Utils.RESPONSE_FAILED));
                     }
-
 
                 }
 
@@ -288,7 +283,11 @@ public class AccountManager {
         SettingModel.Data settingData = new SettingModel.Data(memberSettingResultModel.get_id(), memberSettingResultModel.getFb_id(), memberSettingResultModel.getGender(), notifications,
                 memberSettingResultModel.getUpdated_at(), memberSettingResultModel.getAccount_type(), memberSettingResultModel.getExperiences(), memberSettingResultModel.getGender_interest(), payment, memberSettingResultModel.getPhone());
 
-        SettingModel model = new SettingModel(success, settingData);
+        //SettingModel model = new SettingModel(success, settingData);
+        SettingModel model = AccountManager.loadSetting();
+        model.setSuccess(success);
+        model.setData(settingData);
+        AccountManager.saveSetting(model);
 
         return model;
     }

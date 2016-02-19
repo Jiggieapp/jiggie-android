@@ -24,7 +24,6 @@ import com.jiggie.android.model.MemberSettingModel;
 import com.facebook.AccessToken;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.Success2Model;
-import com.jiggie.android.model.SuccessModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,7 +105,7 @@ public class SetupLocationActivity extends BaseActivity {
     }
 
     public void showLocationDialog() {
-        AlertDialog dialogNotif = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert)
+        AlertDialog dialogNotif = new AlertDialog.Builder(this)
                 .setTitle(R.string.title_dialog_location).setMessage(R.string.msg_dialog_location)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override

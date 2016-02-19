@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ScrollView;
@@ -24,7 +23,6 @@ import com.jiggie.android.model.MemberSettingModel;
 import com.facebook.AccessToken;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.Success2Model;
-import com.jiggie.android.model.SuccessModel;
 
 import java.util.Arrays;
 
@@ -183,6 +181,7 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
         if (isActive()) {
             refreshView(setting);
             dialog.dismiss();
+            AccountManager.anySettingChange = true;
         }
     }
 
