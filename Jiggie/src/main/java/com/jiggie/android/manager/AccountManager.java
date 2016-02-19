@@ -34,6 +34,7 @@ public class AccountManager {
     static AccountInterface accountInterface;
 
     public static boolean anySettingChange = false;
+    public static boolean isInSettingPage = false;
 
     public static void initAccountService(){
         Retrofit retrofit = new Retrofit.Builder()
