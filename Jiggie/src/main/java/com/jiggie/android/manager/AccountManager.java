@@ -112,10 +112,12 @@ public class AccountManager {
                     if (response.code() == Utils.CODE_SUCCESS) {
                         Success2Model dataTemp = (Success2Model) response.body();
                         EventBus.getDefault().post(dataTemp);
+
+                        /*MemberSettingResultModel memberSettingModel = (MemberSettingResultModel) response.body();
+                        AccountManager.saveMemberSetting(memberSettingModel);*/
                     } else {
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.RESPONSE_FAILED));
                     }
-
                 }
 
                 @Override
@@ -169,12 +171,13 @@ public class AccountManager {
 
                     if (response.code() == Utils.CODE_SUCCESS) {
                         MemberSettingResultModel data = (MemberSettingResultModel) response.body();
+                        App.getInstance().savePreference(Utils.MEMBER_SETTING_MODEL, new Gson().toJson(response.body()));
+
                         SettingModel dataTemp = setSettingModelFromMemberSetting(data);
                         EventBus.getDefault().post(dataTemp);
                     } else {
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_SETTING, Utils.RESPONSE_FAILED));
                     }
-
                 }
 
                 @Override
@@ -203,7 +206,6 @@ public class AccountManager {
                     } else {
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_EDIT, Utils.RESPONSE_FAILED));
                     }
-
                 }
 
                 @Override
@@ -245,8 +247,6 @@ public class AccountManager {
 
     private static SettingModel setSettingModelFromLogin(LoginResultModel data){
         boolean success = true;
-
-
         LoginResultModel.Data.Login login = data.getData().getLogin();
 
         SettingModel.Data.Notifications notifications = new SettingModel.Data.Notifications(login.getNotifications().isChat(), login.getNotifications().isFeed(),
@@ -256,9 +256,6 @@ public class AccountManager {
 
         SettingModel.Data settingData = new SettingModel.Data(login.get_id(), login.getFb_id(), login.getGender(), notifications,
                 login.getUpdated_at(), login.getAccount_type(), login.getExperiences(), login.getGender_interest(), payment, login.getPhone());
-
-
-
 
         SettingModel model = new SettingModel(success, settingData);
         model.setIs_new_user(login.is_new_user());
@@ -272,9 +269,7 @@ public class AccountManager {
 
     private static SettingModel setSettingModelFromMemberSetting(MemberSettingResultModel data){
         boolean success = true;
-
         MemberSettingResultModel.Data.MemberSettings memberSettingResultModel = data.getData().getMembersettings();
-
         SettingModel.Data.Notifications notifications = new SettingModel.Data.Notifications(memberSettingResultModel.getNotifications().isChat(), memberSettingResultModel.getNotifications().isFeed(),
                 memberSettingResultModel.getNotifications().isLocation());
         //payment still empty
@@ -287,21 +282,21 @@ public class AccountManager {
         SettingModel model = AccountManager.loadSetting();
         model.setSuccess(success);
         model.setData(settingData);
+        Utils.d(TAG, "phoneNo " + memberSettingResultModel.getPhone());
+        model.getData().setPhone(memberSettingResultModel.getPhone());
         AccountManager.saveSetting(model);
-
         return model;
     }
 
     public static void verifyPhoneNumber(final String phoneNumber, Callback callback)
     {
         Utils.d(TAG, AccessToken.getCurrentAccessToken().getUserId() + " " +
-            phoneNumber);
+                phoneNumber);
         getInstance().verifyPhoneNumber(AccessToken.getCurrentAccessToken().getUserId()
                 , phoneNumber).enqueue(callback);
     }
 
-    public static void verifyPhoneNumber(final String phoneNumber)
-    {
+    public static void verifyPhoneNumber(final String phoneNumber) {
         verifyPhoneNumber(phoneNumber, new CustomCallback() {
             @Override
             public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
@@ -310,8 +305,6 @@ public class AccountManager {
 
                 Success2Model success2Model = (Success2Model) response.body();
                 EventBus.getDefault().post(success2Model);
-
-
             }
 
             @Override
@@ -321,8 +314,7 @@ public class AccountManager {
         });
     }
 
-    public static void verifyVerificationCode(final String verificationCode)
-    {
+    public static void verifyVerificationCode(final String verificationCode) {
         verifyVerificationCode(verificationCode, new CustomCallback() {
             @Override
             public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
@@ -350,4 +342,9 @@ public class AccountManager {
                 , verificationCode).enqueue(callback);
     }
 
+    private static void saveMemberSetting(MemberSettingResultModel memberSettingModel) {
+        String model = new Gson().toJson(memberSettingModel);
+        App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
+                .putString(Utils.MEMBER_SETTING_MODEL, model).apply();
+    }
 }

@@ -145,6 +145,7 @@ public class SetupLocationActivity extends BaseActivity {
 
         ArrayList<String> arrExperiences = new ArrayList<String>(Arrays.asList(intent.getStringArrayExtra(SetupTagsActivity.PARAM_EXPERIENCES)));
         currentSettingModel.getData().setExperiences(arrExperiences);
+
         AccountManager.saveSetting(currentSettingModel);
     }
 }

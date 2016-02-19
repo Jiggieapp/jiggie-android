@@ -173,7 +173,6 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
             adapter.notifyDataSetChanged();
             setHomeTitle();
         }
-
     }
 
     public void onEvent(ChatActionModel message){

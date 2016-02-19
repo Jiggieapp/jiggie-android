@@ -50,6 +50,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import io.fabric.sdk.android.Fabric;
@@ -451,4 +452,35 @@ public class App extends Application {
 
     public void setUserLoggedIn() { getSharedPreferences().edit().putBoolean("loggedIn", true).apply(); }
 
+    public static void savePreference(final String key, final Object object)
+    {
+        SharedPreferences.Editor sharedPreferencesEditor = App.getInstance()
+                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                .edit();
+        if(object instanceof Integer)
+        {
+            sharedPreferencesEditor.putInt(key, (Integer) object);
+        }
+        else if(object instanceof String)
+        {
+            sharedPreferencesEditor.putString(key, (String) object);
+        }
+        else if(object instanceof Boolean)
+        {
+            sharedPreferencesEditor.putBoolean(key, (Boolean) object);
+        }
+        else if(object instanceof Long )
+        {
+            sharedPreferencesEditor.putLong(key, (Long) object);
+        }
+        else if(object instanceof Float)
+        {
+            sharedPreferencesEditor.putFloat(key, (Float) object);
+        }
+        else if(object instanceof Set<?>)
+        {
+            sharedPreferencesEditor.putStringSet(key, (Set<String>) object);
+        }
+        sharedPreferencesEditor.apply();
+    }
 }

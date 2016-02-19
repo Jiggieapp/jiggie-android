@@ -59,6 +59,7 @@ public class Utils {
     public static String PREFERENCE_TAGLIST = "taglist";
     public static String TAGLIST_MODEL = "taglist_model";
     public static String IS_FIRST_RUN = "is_first_run";
+    public static String MEMBER_SETTING_MODEL = "member_setting_model";
 
     //AppsFlyer properties----
     public static String AFinstall_type = "";
