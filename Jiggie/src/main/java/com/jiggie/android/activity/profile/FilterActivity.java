@@ -11,6 +11,7 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jiggie.android.App;
 import com.jiggie.android.R;
@@ -18,6 +19,7 @@ import com.jiggie.android.component.FlowLayout;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.Success2Model;
@@ -30,14 +32,20 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
-public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.OnGlobalLayoutListener{
+public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.OnGlobalLayoutListener {
 
-    @Bind(R.id.flowLayout) FlowLayout flowLayout;
-    @Bind(R.id.progressBar) ProgressBar progressBar;
-    @Bind(R.id.viewFailed) View failedView;
-    @Bind(R.id.btnApply) Button btnApply;
+    @Bind(R.id.flowLayout)
+    FlowLayout flowLayout;
+    @Bind(R.id.progressBar)
+    ProgressBar progressBar;
+    @Bind(R.id.viewFailed)
+    View failedView;
+    @Bind(R.id.btnApply)
+    Button btnApply;
+    @Bind(R.id.btnRetry)
+    Button btnRetry;
 
-   // private Set<String> selectedItems;
+    // private Set<String> selectedItems;
     private ArrayList<String> selectedItems;
     private final static String TAG = FilterActivity.class.getSimpleName();
     private boolean hasChanged;
@@ -66,8 +74,7 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
 
     }
 
-    private void loadData()
-    {
+    private void loadData() {
         AccountManager.getUserTagList();
     }
 
@@ -83,15 +90,20 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
         EventBus.getDefault().unregister(this);
     }
 
-    public void onEvent(FilterMessageEvent filterMessageEvent)
-    {
+    public void onEvent(FilterMessageEvent filterMessageEvent) {
         Utils.d(TAG, filterMessageEvent.getMessageEvent());
     }
 
-    public void onEvent(ArrayList<String> result)
-    {
+    public void onEvent(ExceptionModel exceptionModel) {
+        Toast.makeText(this, exceptionModel.getMessage(), Toast.LENGTH_SHORT).show();
+        this.progressBar.setVisibility(View.GONE);
+        this.failedView.setVisibility(View.VISIBLE);
+    }
+
+    public void onEvent(ArrayList<String> result) {
         this.progressBar.setVisibility(View.GONE);
         this.failedView.setVisibility(View.GONE);
+        this.btnApply.setVisibility(View.VISIBLE);
 
         SettingModel settingModel = AccountManager.loadSetting();
         /*for(String already : settingModel.getData().getExperiences())
@@ -114,15 +126,13 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
             //holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_blue));
             //selectedItems.add(holder.text);
             flowLayout.addView(view);
-            if(result.contains(res))
+            if (result.contains(res))
             //if(settingModel.getData().getExperiences().contains(res))
             {
                 //setSelected(holder.container, holder.textView, true);
                 selectedItems.add(res);
                 holder.checkView.setVisibility(View.GONE);
-            }
-            else
-            {
+            } else {
                 //setSelected(holder.container, holder.textView, false);
                 holder.checkView.setVisibility(View.VISIBLE);
             }
@@ -143,8 +153,10 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
     static class ViewHolder {
         @Bind(R.id.textView)
         TextView textView;
-        @Bind(R.id.checkView) View checkView;
-        @Bind(R.id.container) View container;
+        @Bind(R.id.checkView)
+        View checkView;
+        @Bind(R.id.container)
+        View container;
 
         View parent;
         String text;
@@ -165,8 +177,7 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
         }
     }
 
-    public class FilterMessageEvent
-    {
+    public class FilterMessageEvent {
         private String messageEvent;
 
         public String getMessageEvent() {
@@ -180,8 +191,7 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
 
     private void onTagClick(ViewHolder holder) {
         final boolean selected = holder.checkView.getVisibility() != View.VISIBLE;
-        if (selected)
-        {
+        if (selected) {
             this.selectedItems.add(holder.text);
 
         } else {
@@ -190,15 +200,11 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
         setSelected(holder, selected);
     }
 
-    private void setSelected(ViewHolder holder, boolean selected)
-    {
-        if(selected)
-        {
+    private void setSelected(ViewHolder holder, boolean selected) {
+        if (selected) {
             holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_blue));
             holder.textView.setTextColor(getResources().getColor(android.R.color.white));
-        }
-        else
-        {
+        } else {
             holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_grey));
             holder.textView.setTextColor(getResources().getColor(R.color.textDarkGray));
         }
@@ -208,26 +214,22 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
 
     @OnClick(R.id.btnApply)
     @SuppressWarnings("unused")
-    void onClickBtnApply()
-    {
-        for(String item : selectedItems)
+    void onClickBtnApply() {
+        for (String item : selectedItems)
             Utils.d(TAG, "item " + item);
 
-        if(selectedItems.size() > 0)
-        {
+        if (selectedItems.size() > 0) {
             MemberSettingModel memberSettingModel = AccountManager.loadMemberSetting();
             final String experiences = TextUtils.join(",", selectedItems.toArray(new String[this.selectedItems.size()]));
             memberSettingModel.setExperiences(experiences);
             showProgressDialog();
             AccountManager.loaderMemberSetting(memberSettingModel);
-        }
-        else
-        {
+        } else {
             showConfirmationDialog();
         }
     }
 
-    public void onEvent(Success2Model message){
+    public void onEvent(Success2Model message) {
         /*dialog = App.showProgressDialog(this);
 
         if (isActive()) {
@@ -236,12 +238,11 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
         }*/
         // Start new activity from app context instead of current activity. This prevent crash when activity has been destroyed.
         //final App app = App.getInstance();
-        if(progressDialog != null && progressDialog.isShowing())
+        if (progressDialog != null && progressDialog.isShowing())
             progressDialog.dismiss();
     }
 
-    private void showConfirmationDialog()
-    {
+    private void showConfirmationDialog() {
         final AlertDialog builder = new AlertDialog.Builder(FilterActivity.this)
                 //.setTitle(getAct)
                 .setMessage(getResources().getString(R.string.choose_one_experience))
@@ -262,9 +263,14 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
         builder.show();
     }
 
-    private void showProgressDialog()
-    {
+    private void showProgressDialog() {
         progressDialog = ProgressDialog.show(this, "", getResources().getString(R.string.please_wait), false);
         progressDialog.show();
+    }
+
+    @OnClick(R.id.btnRetry)
+    @SuppressWarnings("unused")
+    public void onBtnRetryOnClick() {
+        loadData();
     }
 }

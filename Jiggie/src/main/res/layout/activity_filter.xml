@@ -18,29 +18,7 @@
             android:background="@color/colorPrimary"
             app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:titleTextColor="@android:color/white">
-            <ImageView
-                android:id="@+id/logo_image"
-                android:layout_width="@dimen/jiggie_logo_width"
-                android:layout_height="@dimen/jiggie_logo_height"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:scaleType="fitXY"/>
-        </android.support.v7.widget.Toolbar>
-
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tab"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/custom_tab_height"
-            android:background="@color/purple"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark"
-            app:tabMode="fixed"
-            app:tabGravity="fill"
-            app:tabIndicatorColor="@android:color/white"
-            app:tabIndicatorHeight="4dp"
-            app:tabSelectedTextColor="@android:color/white"
-            app:tabTextColor="@android:color/darker_gray"/>
-
+            app:titleTextColor="@android:color/white"/>
     </android.support.design.widget.AppBarLayout>
 
 
@@ -80,7 +58,6 @@
         </RelativeLayout>
 
 
-
         <!--<android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_bottom"
             android:layout_height="wrap_content"
@@ -101,14 +78,13 @@
             android:gravity="right"/>-->
 
         <Button
-
+            android:id="@+id/btnApply"
+            style="@style/CustomFlatButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="?attr/actionBarSize"
-            android:text="Apply"
-            style="@style/CustomFlatButtonStyle"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:id="@+id/btnApply"
-            />
+            android:text="Apply"
+            android:visibility="gone"/>
     </RelativeLayout>
 </LinearLayout>

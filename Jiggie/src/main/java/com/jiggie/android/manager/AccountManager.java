@@ -283,6 +283,8 @@ public class AccountManager extends BaseManager{
             @Override
             public void onCustomCallbackFailure(String t) {
                 Utils.d(TAG, "response fail" + t);
+                ExceptionModel exceptionModel = new ExceptionModel(TAG, t);
+                EventBus.getDefault().post(exceptionModel);
             }
         });
     }
@@ -325,14 +327,11 @@ public class AccountManager extends BaseManager{
                 memberSettingResultModel.getUpdated_at(), memberSettingResultModel.getAccount_type(), memberSettingResultModel.getExperiences(), memberSettingResultModel.getGender_interest(), payment, memberSettingResultModel.getPhone());
 
         SettingModel model = new SettingModel(success, settingData);
-
         return model;
     }
 
     public static void verifyPhoneNumber(final String phoneNumber, Callback callback)
     {
-        Utils.d(TAG, AccessToken.getCurrentAccessToken().getUserId() + " " +
-            phoneNumber);
         getInstance().verifyPhoneNumber(AccessToken.getCurrentAccessToken().getUserId()
                 , phoneNumber).enqueue(callback);
     }
