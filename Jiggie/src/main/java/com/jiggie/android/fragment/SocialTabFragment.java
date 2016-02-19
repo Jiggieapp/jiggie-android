@@ -15,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,7 @@ import com.jiggie.android.R;
 import com.jiggie.android.activity.chat.ChatActivity;
 import com.jiggie.android.activity.event.EventDetailActivity;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
+import com.jiggie.android.activity.profile.ProfileSettingActivity;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.SimpleJSONObject;
 import com.jiggie.android.component.StringUtility;
@@ -195,22 +197,25 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     }
 
     private void onRefresh() {
-        //SocialManager.NEED_REFRESH = false;
-        if (super.getContext() == null) {
-            // fragment already destroyed.
-            return;
-        } else if (this.progressBar.getVisibility() == View.VISIBLE) {
-            // refreshing is ongoing.
-            return;
-        }
+
+        if(!AccountManager.isInSettingPage){
+            if (super.getContext() == null) {
+                // fragment already destroyed.
+                return;
+            } else if (this.progressBar.getVisibility() == View.VISIBLE) {
+                // refreshing is ongoing.
+                return;
+            }
 
         /*if(current==null){
             this.layoutSocialize.setVisibility(View.GONE);
         }*/
-        this.progressBar.setVisibility(View.VISIBLE);
+            this.progressBar.setVisibility(View.VISIBLE);
 
-        //showProgressDialog();
-        SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId(), currentSetting.getData().getGender_interest());
+            //showProgressDialog();
+            SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId(), currentSetting.getData().getGender_interest());
+        }
+
     }
 
     public void onEvent(SocialModel message){

@@ -55,6 +55,8 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
 
         EventBus.getDefault().register(this);
         App.getInstance().trackMixPanelEvent("View Settings");
+
+        AccountManager.isInSettingPage = true;
     }
 
     @OnClick(R.id.btnRetry)
@@ -236,5 +238,11 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
         }
 
         return gOutput;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AccountManager.isInSettingPage = false;
     }
 }
