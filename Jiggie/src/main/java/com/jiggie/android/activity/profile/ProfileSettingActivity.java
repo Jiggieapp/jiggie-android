@@ -153,8 +153,6 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
             memberSettingModel.setGender_interest(gender_interest);
         }
 
-
-
         memberSettingModel.setAccount_type(setting.getData().getAccount_type());
         memberSettingModel.setLocation(setting.getData().getNotifications().isLocation() ? 1 : 0);
         memberSettingModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
