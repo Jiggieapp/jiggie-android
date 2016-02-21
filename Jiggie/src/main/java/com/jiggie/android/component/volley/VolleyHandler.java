@@ -88,9 +88,9 @@ public class VolleyHandler {
     }
 
     //Added by Aga----
-    public String getServerHost2() {
+    /*public String getServerHost2() {
         return this.serverHost == null ? (this.serverHost = "http://api-dev.jiggieapp.com/app/v3/") : this.serverHost;
-    }
+    }*/
     //-------
 
     public RequestQueue getVolleyRequestQueue() {
