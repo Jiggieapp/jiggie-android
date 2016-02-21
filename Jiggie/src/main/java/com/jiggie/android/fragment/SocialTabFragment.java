@@ -220,7 +220,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
 
     public void onEvent(SocialModel message){
         current = null;
-
+        socialSize = 0;
         for(SocialModel.Data.SocialFeeds item : message.getData().getSocial_feeds())
         {
             if(SocialManager.Type.isInbound(item))
@@ -405,6 +405,8 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     @OnClick(R.id.btnYesInbound)
     void btnYesInboundOnClick() {
         this.btnYesOnClick();
+        socialSize++;
+        setHomeTitle();
     }
 
     @SuppressWarnings("unused")
@@ -417,6 +419,8 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     @OnClick(R.id.btnNoInbound)
     void btnNoInboundONClick() {
         this.btnNoOnClick();
+        socialSize-=1;
+        setHomeTitle();
     }
 
     @SuppressWarnings("unused")
@@ -550,7 +554,11 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                 else
                     this.title = String.format("%s (%d)", getString(R.string.social), socialSize);
             }
-            else this.title = super.getString(R.string.social);
+            else if(socialSize <= 0)
+            {
+                socialSize = 0;
+                this.title = super.getString(R.string.social);
+            }
             this.homeMain.onTabTitleChanged(this);
         }
     }

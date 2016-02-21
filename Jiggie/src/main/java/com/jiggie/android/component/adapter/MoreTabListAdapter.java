@@ -166,9 +166,17 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         TextView lblPhoneNumber;
 
         @OnClick(R.id.txtVerifyPhoneNumber)
+        @SuppressWarnings("unused")
         public void onVerifyPhoneNumberClick() {
             if(listener!= null)
                 this.listener.onVerifyPhoneNumberSelected();
+        }
+
+        @OnClick(R.id.lblPhoneNumber)
+        @SuppressWarnings("unused")
+        public void onLblPhoneNumberClick()
+        {
+            onVerifyPhoneNumberClick();
         }
 
         private ItemSelectedListener listener;
