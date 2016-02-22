@@ -70,7 +70,7 @@ public class ChatSendService extends GcmTaskService {
                 JSONObject chatObj = new JSONObject(new Gson().toJson(chatAddModel));
                 //--------------------
 
-                final JsonObjectRequest request = new JsonObjectRequest(VolleyHandler.getInstance().getServerHost2() + "messages/add", chatObj, future, future);
+                final JsonObjectRequest request = new JsonObjectRequest(VolleyHandler.getInstance().getServerHost() + "messages/add", chatObj, future, future);
 
                 VolleyHandler.getInstance().getVolleyRequestQueue().add(request);
                 future.get();

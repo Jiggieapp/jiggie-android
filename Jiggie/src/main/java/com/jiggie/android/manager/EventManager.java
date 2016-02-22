@@ -1,7 +1,6 @@
 package com.jiggie.android.manager;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.jiggie.android.App;
@@ -27,6 +26,7 @@ import retrofit.Retrofit;
 public class EventManager {
 
     private static EventInterface eventInterface;
+    public static final String TAG = EventManager.class.getSimpleName();
 
     public static class FullfillmentTypes {
         public static final String PHONE_NUMBER = "phone_number";
@@ -34,6 +34,7 @@ public class EventManager {
         public static final String PURCHASE = "purchase";
         public static final String LINK = "link";
         public static final String NONE = "none";
+        public static final String TICKET = "ticket";
     }
 
     public static void initEventService(){
@@ -47,7 +48,6 @@ public class EventManager {
     private static EventInterface getInstance(){
         if(eventInterface == null)
             initEventService();
-
         return eventInterface;
     }
 
@@ -68,11 +68,9 @@ public class EventManager {
             getEventList(fb_id, new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
-
                     //String header = String.valueOf(response.code());
                     /*String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);*/
-
+                    Utils.d("res", responses);*/
                     if(response.code()==Utils.CODE_SUCCESS){
                         EventModel dataTemp = (EventModel) response.body();
                         EventBus.getDefault().post(dataTemp);
@@ -84,12 +82,12 @@ public class EventManager {
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Log.d("Failure", t.toString());
+                    Utils.d("Failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
-            Log.d("Exception", e.toString());
+            Utils.d(TAG, e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
@@ -99,10 +97,8 @@ public class EventManager {
             getEventDetail(_id, fb_id, gender_interest, new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
-
-                    //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
+                    Utils.d("res", responses);
 
                     if(response.code()==Utils.CODE_SUCCESS){
                         EventDetailModel dataTemp = (EventDetailModel) response.body();
@@ -111,17 +107,16 @@ public class EventManager {
                     }else{
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT_DETAIL, Utils.RESPONSE_FAILED));
                     }
-
                 }
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Log.d("Failure", t.toString());
+                    Utils.d("Failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT_DETAIL, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
-            Log.d("Exception", e.toString());
+            Utils.d("Exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT_DETAIL, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
@@ -134,7 +129,7 @@ public class EventManager {
 
                     //String header = String.valueOf(response.code());
                     /*String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);*/
+                    Utils.d("res", responses);*/
 
                     if(response.code()==Utils.CODE_SUCCESS){
                         TagsListModel dataTemp = (TagsListModel) response.body();
@@ -147,12 +142,12 @@ public class EventManager {
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Log.d("Failure", t.toString());
+                    Utils.d("Failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SETUP_TAGS, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
-            Log.d("Exception", e.toString());
+            Utils.d("Exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SETUP_TAGS, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
@@ -166,10 +161,8 @@ public class EventManager {
     }
 
     public static TagsListModel loadTagsList(){
-
         TagsListModel tagsListModel = new Gson().fromJson(App.getInstance().getSharedPreferences(Utils.PREFERENCE_TAGLIST,
                 Context.MODE_PRIVATE).getString(Utils.TAGLIST_MODEL, ""), TagsListModel.class);
-
         return tagsListModel;
     }
 

@@ -405,7 +405,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     @OnClick(R.id.btnYesInbound)
     void btnYesInboundOnClick() {
         this.btnYesOnClick();
-        socialSize-=1;
+        socialSize++;
         setHomeTitle();
     }
 
@@ -635,3 +635,4 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         }
     }
 }
+

@@ -91,7 +91,6 @@ public class SignInFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         ButterKnife.bind(this, rootView);
 
-        AccountManager.initAccountService();
         EventBus.getDefault().register(this);
 
         LoginManager.getInstance().registerCallback(this.callbackManager = CallbackManager.Factory.create(), this.facebookCallback);

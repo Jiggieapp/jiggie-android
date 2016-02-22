@@ -1,0 +1,10 @@
+diff a/Jiggie/src/main/java/com/jiggie/android/fragment/SocialTabFragment.java b/Jiggie/src/main/java/com/jiggie/android/fragment/SocialTabFragment.java	(rejected hunks)
+@@ -405,7 +405,7 @@
+     @OnClick(R.id.btnYesInbound)
+     void btnYesInboundOnClick() {
+         this.btnYesOnClick();
+-        socialSize++;
++        socialSize-=1;
+         setHomeTitle();
+     }
+ 

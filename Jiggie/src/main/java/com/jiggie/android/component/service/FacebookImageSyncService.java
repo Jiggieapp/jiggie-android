@@ -13,6 +13,7 @@ import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
+import com.jiggie.android.component.Utils;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -216,7 +217,8 @@ public class FacebookImageSyncService extends Service {
 
         if (count > 1) {
             final AsyncHttpClient client = new AsyncHttpClient();
-            final String host = app.getString(R.string.server_host);
+            //final String host = app.getString(R.string.server_host);
+            final String host = Utils.BASE_URL+"app/v3/";
 
             client.post(host + "updatephotos", params, new AsyncHttpResponseHandler() {
                 @Override

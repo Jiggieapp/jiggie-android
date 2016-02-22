@@ -1,0 +1,72 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/contentView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <!--<android.support.design.widget.CoordinatorLayout
+            android:id="@+id/main_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">-->
+
+        <!-- <android.support.design.widget.TabLayout
+             android:id="@+id/tab"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:background="@android:color/white"
+             android:theme="@style/ThemeOverlay.AppCompat.Dark"
+             app:tabIndicatorColor="@color/purple"
+             app:tabIndicatorHeight="4dp"
+             app:tabSelectedTextColor="@color/purple"
+             app:tabTextColor="@android:color/darker_gray"/>-->
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
+
+        <!--<LinearLayout
+            android:id="@+id/footerContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
+            <TextView
+                android:id="@+id/txtFilter"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/footer_height"
+                android:layout_alignParentBottom="true"
+                android:layout_centerInParent="true"
+                android:layout_weight="1"
+                android:background="@drawable/btn_tag_blue"
+                android:gravity="center"
+                android:text="lorem ipsum"
+                android:textColor="@android:color/white" />
+
+        </LinearLayout>-->
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/contentView2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+    </FrameLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/layout_walkthrough"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <include layout="@layout/walkthrough_screen"></include>
+    </RelativeLayout>
+
+
+</FrameLayout>
