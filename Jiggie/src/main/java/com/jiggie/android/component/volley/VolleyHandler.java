@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.Model;
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -83,8 +84,12 @@ public class VolleyHandler {
             return context.getString(R.string.error_unknown);
     }
 
-    public String getServerHost() {
+    /*public String getServerHost() {
         return this.serverHost == null ? (this.serverHost = App.getInstance().getString(R.string.server_host)) : this.serverHost;
+    }*/
+
+    public String getServerHost() {
+        return this.serverHost == null ? (this.serverHost = Utils.BASE_URL+"app/v3/") : this.serverHost;
     }
 
     //Added by Aga----
