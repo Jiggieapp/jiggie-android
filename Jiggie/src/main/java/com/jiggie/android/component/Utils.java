@@ -6,6 +6,12 @@ import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.facebook.appevents.AppEventsConstants;
+import com.jiggie.android.App;
 
 /**
  * Created by LTE on 1/29/2016.
@@ -123,4 +129,15 @@ public class Utils {
         }
         else return;
     }*/
+
+    public static void loadImage(Object object, ImageView target)
+    {
+        //Glide.with(App.getInstance().getApplicationContext()).load(object).into(target);
+        loadImage(object, target, DiskCacheStrategy.RESULT);
+    }
+
+    public static void loadImage(Object object, ImageView target, DiskCacheStrategy cacheStrategy)
+    {
+        Glide.with(App.getInstance().getApplicationContext()).load(object).diskCacheStrategy(cacheStrategy).into(target);
+    }
 }
