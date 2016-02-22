@@ -7,7 +7,6 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ScrollView;
@@ -25,7 +24,6 @@ import com.jiggie.android.model.MemberSettingModel;
 import com.facebook.AccessToken;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.Success2Model;
-import com.jiggie.android.model.SuccessModel;
 
 import java.util.Arrays;
 
@@ -60,6 +58,8 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
 
         EventBus.getDefault().register(this);
         App.getInstance().trackMixPanelEvent("View Settings");
+
+        AccountManager.isInSettingPage = true;
     }
 
     @OnClick(R.id.btnRetry)
@@ -156,8 +156,6 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
             memberSettingModel.setGender_interest(gender_interest);
         }
 
-
-
         memberSettingModel.setAccount_type(setting.getData().getAccount_type());
         memberSettingModel.setLocation(setting.getData().getNotifications().isLocation() ? 1 : 0);
         memberSettingModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
@@ -186,6 +184,7 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
         if (isActive()) {
             refreshView(setting);
             dialog.dismiss();
+            AccountManager.anySettingChange = true;
         }
     }
 
@@ -240,5 +239,11 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
         }
 
         return gOutput;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AccountManager.isInSettingPage = false;
     }
 }

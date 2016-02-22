@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         int code = api.isGooglePlayServicesAvailable(this);
 
         if (code == ConnectionResult.SUCCESS) {
-            App.getInstance().trackMixPanelEvent("Log In");
+            //App.getInstance().trackMixPanelEvent("Log In");
             this.onActivityResult(REQUEST_GOOGLE_PLAY_SERVICES, Activity.RESULT_OK, null);
         } else if (api.isUserResolvableError(code) && api.showErrorDialogFragment(this, code, REQUEST_GOOGLE_PLAY_SERVICES)) {
             // wait for onActivityResult call (see below)
@@ -207,6 +207,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         this.active = false;
+        if(App.mixpanelAPI!=null){
+            App.mixpanelAPI.flush();
+        }
         super.onDestroy();
     }
 

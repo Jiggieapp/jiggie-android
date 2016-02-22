@@ -1,6 +1,7 @@
 package com.jiggie.android.fragment;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -35,8 +36,11 @@ import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.MoreTabListAdapter;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
+import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.ShareManager;
 import com.jiggie.android.model.ExceptionModel;
+import com.jiggie.android.model.MemberSettingResultModel;
+import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.ShareLink;
 import com.android.volley.VolleyError;
 import com.facebook.AccessToken;
@@ -92,6 +96,21 @@ public class MoreTabFragment extends Fragment implements TabFragment, MoreTabLis
 
         EventBus.getDefault().register(this);
 
+        final String settingModel = App.getInstance()
+                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                .getString(Utils.SETTING_MODEL, "");
+        if(settingModel.isEmpty())
+        {
+            AccountManager.loaderSetting(AccessToken.getCurrentAccessToken().getUserId());
+        }
+        else
+        {
+            setAdapter();
+        }
+     }
+
+    private void setAdapter()
+    {
         this.refreshLayout.setEnabled(false);
         this.recyclerView.setAdapter(this.adapter = new MoreTabListAdapter(this, this));
         this.recyclerView.setLayoutManager(new LinearLayoutManager(super.getContext()));
@@ -194,5 +213,9 @@ public class MoreTabFragment extends Fragment implements TabFragment, MoreTabLis
     public void onVerifyPhoneNumberSelected() {
         Intent i = new Intent(getActivity(), VerifyPhoneNumberActivity.class);
         startActivity(i);
+    }
+    public void onEvent(SettingModel settingModel)
+    {
+        setAdapter();
     }
 }

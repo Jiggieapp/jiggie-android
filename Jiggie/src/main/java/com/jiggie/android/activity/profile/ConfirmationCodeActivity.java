@@ -18,6 +18,7 @@ import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
+import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.Success2Model;
 
 import butterknife.Bind;
@@ -34,6 +35,7 @@ public class ConfirmationCodeActivity extends ToolbarActivity {
     EditText txtValidationCode;
 
     private ProgressDialog progressDialog;
+    String phoneNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +45,7 @@ public class ConfirmationCodeActivity extends ToolbarActivity {
         super.bindView();
         super.setBackEnabled(true);
 
-        final String phoneNumber = getIntent().getStringExtra(Common.PHONE_NUMBER);
+        phoneNumber = getIntent().getStringExtra(Common.PHONE_NUMBER);
         lblPhoneNumber.setText(phoneNumber);
     }
 
@@ -70,11 +72,13 @@ public class ConfirmationCodeActivity extends ToolbarActivity {
     {
         dismissProgressDialog();
         final AlertDialog builder = new AlertDialog.Builder(this)
-                //.setTitle(getAct)
                 .setMessage(getResources().getString(R.string.verification_success))
                 .setPositiveButton(this.getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        SettingModel settingModel = AccountManager.loadSetting();
+                        settingModel.getData().setPhone(phoneNumber);
+                        AccountManager.saveSetting(settingModel);
                         dialog.dismiss();
                         redirect();
                     }

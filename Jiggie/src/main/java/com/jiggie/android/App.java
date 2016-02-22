@@ -71,6 +71,8 @@ public class App extends Application {
     private static App instance;
     static String mPackageName;
 
+    public static MixpanelAPI mixpanelAPI;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -189,6 +191,9 @@ public class App extends Application {
         final ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         final NetworkInfo network = connManager.getActiveNetworkInfo();
 
+        final LoginModel login = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin();
+        final SettingModel settingModel = AccountManager.loadSetting() == null ? null : AccountManager.loadSetting();
+
         if(!Utils.AFmedia_source.equals(""))
             json.putString("AFmedia_source", Utils.AFmedia_source);
         if(!Utils.AFcampaign.equals(""))
@@ -206,7 +211,7 @@ public class App extends Application {
         json.putString("Country", locations[1].trim());
         json.putString("Device Model", Build.MODEL);
         json.putString("Manufacturer", Build.MANUFACTURER);
-        json.putString("Distinct Id", this.getDeviceId());
+
         json.putString("Model", Build.MODEL);
         json.putString("OS Version", this.getDeviceOSName());
         json.putString("Radio", this.getPhoneType());
@@ -220,9 +225,9 @@ public class App extends Application {
         //json.putString("Library Version", "");
         json.putString("Region", locations[0]);
 
-        final LoginModel login = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin();
-        if(login!=null){
 
+        if(login!=null){
+            json.putString("Distinct Id", login.getFb_id());
             try {
                 json.putString("age", StringUtility.getAge2(login.getBirthday()));
             }catch (Exception e){
@@ -234,15 +239,83 @@ public class App extends Application {
             json.putString("last_name", login.getUser_last_name());
             json.putString("name_and_fb_id", login.getUser_first_name()+"_"+login.getUser_last_name()+"_"+login.getFb_id());
 
-            final SettingModel settingModel = AccountManager.loadSetting() == null ? null : AccountManager.loadSetting();
             if(settingModel!=null){
                 json.putString("gender", settingModel.getData().getGender());
                 json.putString("gender_interest", settingModel.getData().getGender_interest());
             }
         }
 
+        if(eventName.equals("Sign Up")){
+            getInstanceMixpanel().alias(login.getFb_id(), null);
+            setPeopleMixpanel(login, settingModel);
+            setSuperPropertiesMixpanel(login, settingModel);
+        }else if(eventName.equals("Log In")){
+            getInstanceMixpanel().identify(mixpanelAPI.getDistinctId());
+            setPeopleMixpanel(login, settingModel);
+            setSuperPropertiesMixpanel(login, settingModel);
+        }
+        getInstanceMixpanel().track(eventName, json);
+    }
 
-        MixpanelAPI.getInstance(this, super.getString(R.string.mixpanel_token)).track(eventName, json);
+    public MixpanelAPI getInstanceMixpanel(){
+        if(mixpanelAPI == null)
+            mixpanelAPI = MixpanelAPI.getInstance(this, super.getString(R.string.mixpanel_token));
+        return mixpanelAPI;
+    }
+
+    public void setSuperPropertiesMixpanel(LoginModel login, SettingModel settingModel){
+        SimpleJSONObject json = new SimpleJSONObject();
+        if(login!=null){
+            json.putString("first_name", login.getUser_first_name());
+            json.putString("last_name", login.getUser_last_name());
+            json.putString("birthday", login.getBirthday());
+            json.putString("email", login.getEmail());
+            json.putString("location", login.getLocation());
+            try {
+                json.putString("age", StringUtility.getAge2(login.getBirthday()));
+            }catch (Exception e){
+
+            }
+        }
+
+        if(settingModel!=null){
+            json.putString("gender", settingModel.getData().getGender());
+            json.putString("gender_interest", settingModel.getData().getGender_interest());
+        }
+
+        json.putString("os_version", this.getDeviceOSName());
+        json.putString("device_type", Build.MODEL);
+        json.putString("app_ersion", getVersionCode(this));
+        getInstanceMixpanel().registerSuperProperties(json);
+    }
+
+    public void setPeopleMixpanel(LoginModel login, SettingModel settingModel){
+        //getInstanceMixpanel().identify(mixpanelAPI.getDistinctId());
+        getInstanceMixpanel().getPeople().identify(mixpanelAPI.getDistinctId());
+
+        SimpleJSONObject json = new SimpleJSONObject();
+        if(login!=null){
+            json.putString("first_name", login.getUser_first_name());
+            json.putString("last_name", login.getUser_last_name());
+            json.putString("birthday", login.getBirthday());
+            json.putString("email", login.getEmail());
+            json.putString("fb_id", login.getFb_id());
+            json.putString("name_and_fb_id", login.getUser_first_name()+"_"+login.getUser_last_name()+"_"+login.getFb_id());
+            try {
+                json.putString("age", StringUtility.getAge2(login.getBirthday()));
+            }catch (Exception e){
+
+            }
+        }
+
+        if(settingModel!=null){
+            json.putString("gender", settingModel.getData().getGender());
+            json.putString("gender_interest", settingModel.getData().getGender_interest());
+        }
+
+        json.putString("app_ersion", getVersionCode(this));
+
+        getInstanceMixpanel().getPeople().set(json);
     }
 
     //Added by Aga

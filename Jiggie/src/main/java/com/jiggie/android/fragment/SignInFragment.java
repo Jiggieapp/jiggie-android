@@ -208,7 +208,7 @@ public class SignInFragment extends Fragment {
                 final Bundle parameters = new Bundle();
 
                 final GraphRequest request = GraphRequest.newMeRequest(token, profileCallback);
-                parameters.putString("fields", "id, email, gender, birthday, about, first_name, last_name, location");
+                parameters.putString("fields", "id, email, gender, birthday, bio, first_name, last_name, location");
                 request.setParameters(parameters);
                 request.executeAsync();
             }
@@ -218,6 +218,9 @@ public class SignInFragment extends Fragment {
     private GraphRequest.GraphJSONObjectCallback profileCallback = new GraphRequest.GraphJSONObjectCallback() {
         @Override
         public void onCompleted(JSONObject object, GraphResponse response) {
+
+            String c = object.toString();
+
 
             if (getContext() == null) {
                 // fragment already destroyed
@@ -239,7 +242,7 @@ public class SignInFragment extends Fragment {
                 //String v = App.getVersionName(getActivity());
                 //loginModel.setVersion(v);
                 loginModel.setUser_first_name(object.optString("first_name"));
-                loginModel.setAbout(object.optString("about"));
+                loginModel.setAbout(object.optString("bio"));
                 loginModel.setApn_token(gcmId);
                 loginModel.setProfil_image_url("");
                 loginModel.setUserId("");
@@ -255,7 +258,7 @@ public class SignInFragment extends Fragment {
                 loginModel.setDevice_type("2");
                 //------------
 
-                //String sd = String.valueOf(new Gson().toJson(loginModel));
+                String sd = String.valueOf(new Gson().toJson(loginModel));
 
                 AccountManager.loaderLogin(loginModel);
 

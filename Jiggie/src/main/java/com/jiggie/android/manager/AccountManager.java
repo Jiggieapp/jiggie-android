@@ -11,7 +11,6 @@ import com.jiggie.android.component.callback.CustomCallback;
 import com.jiggie.android.model.AboutModel;
 import com.jiggie.android.model.AccessTokenModel;
 import com.jiggie.android.model.ExceptionModel;
-import com.jiggie.android.model.FilterModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.LoginResultModel;
 import com.jiggie.android.model.MemberInfoModel;
@@ -36,7 +35,10 @@ public class AccountManager extends BaseManager{
     private static final String TAG = AccountManager.class.getSimpleName();
     static AccountInterface accountInterface;
 
-    private static void initAccountService(){
+    public static boolean anySettingChange = false;
+    public static boolean isInSettingPage = false;
+
+    public static void initAccountService(){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Utils.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -122,6 +124,9 @@ public class AccountManager extends BaseManager{
                         Success2Model dataTemp = (Success2Model) response.body();
                         EventBus.getDefault().post(dataTemp);
                         AccountManager.saveMemberSetting(memberSettingModel);
+
+                        /*MemberSettingResultModel memberSettingModel = (MemberSettingResultModel) response.body();
+                        AccountManager.saveMemberSetting(memberSettingModel);*/
                     } else {
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.RESPONSE_FAILED));
                     }
@@ -176,6 +181,8 @@ public class AccountManager extends BaseManager{
                     Utils.d("res", responses);
                     if (response.code() == Utils.CODE_SUCCESS) {
                         MemberSettingResultModel data = (MemberSettingResultModel) response.body();
+                        App.getInstance().savePreference(Utils.MEMBER_SETTING_MODEL, new Gson().toJson(response.body()));
+
                         SettingModel dataTemp = setSettingModelFromMemberSetting(data);
                         EventBus.getDefault().post(dataTemp);
                     } else {
@@ -291,8 +298,6 @@ public class AccountManager extends BaseManager{
 
     private static SettingModel setSettingModelFromLogin(LoginResultModel data){
         boolean success = true;
-
-
         LoginResultModel.Data.Login login = data.getData().getLogin();
 
         SettingModel.Data.Notifications notifications = new SettingModel.Data.Notifications(login.getNotifications().isChat(), login.getNotifications().isFeed(),
@@ -315,9 +320,7 @@ public class AccountManager extends BaseManager{
 
     private static SettingModel setSettingModelFromMemberSetting(MemberSettingResultModel data){
         boolean success = true;
-
         MemberSettingResultModel.Data.MemberSettings memberSettingResultModel = data.getData().getMembersettings();
-
         SettingModel.Data.Notifications notifications = new SettingModel.Data.Notifications(memberSettingResultModel.getNotifications().isChat(), memberSettingResultModel.getNotifications().isFeed(),
                 memberSettingResultModel.getNotifications().isLocation());
         //payment still empty
@@ -326,7 +329,13 @@ public class AccountManager extends BaseManager{
         SettingModel.Data settingData = new SettingModel.Data(memberSettingResultModel.get_id(), memberSettingResultModel.getFb_id(), memberSettingResultModel.getGender(), notifications,
                 memberSettingResultModel.getUpdated_at(), memberSettingResultModel.getAccount_type(), memberSettingResultModel.getExperiences(), memberSettingResultModel.getGender_interest(), payment, memberSettingResultModel.getPhone());
 
-        SettingModel model = new SettingModel(success, settingData);
+        //SettingModel model = new SettingModel(success, settingData);
+        SettingModel model = AccountManager.loadSetting();
+        model.setSuccess(success);
+        model.setData(settingData);
+        Utils.d(TAG, "phoneNo " + memberSettingResultModel.getPhone());
+        model.getData().setPhone(memberSettingResultModel.getPhone());
+        AccountManager.saveSetting(model);
         return model;
     }
 
@@ -336,8 +345,7 @@ public class AccountManager extends BaseManager{
                 , phoneNumber).enqueue(callback);
     }
 
-    public static void verifyPhoneNumber(final String phoneNumber)
-    {
+    public static void verifyPhoneNumber(final String phoneNumber) {
         verifyPhoneNumber(phoneNumber, new CustomCallback() {
             @Override
             public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
@@ -355,8 +363,7 @@ public class AccountManager extends BaseManager{
         });
     }
 
-    public static void verifyVerificationCode(final String verificationCode)
-    {
+    public static void verifyVerificationCode(final String verificationCode) {
         verifyVerificationCode(verificationCode, new CustomCallback() {
             @Override
             public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
@@ -420,4 +427,9 @@ public class AccountManager extends BaseManager{
                 , verificationCode).enqueue(callback);
     }
 
+    private static void saveMemberSetting(MemberSettingResultModel memberSettingModel) {
+        String model = new Gson().toJson(memberSettingModel);
+        App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
+                .putString(Utils.MEMBER_SETTING_MODEL, model).apply();
+    }
 }

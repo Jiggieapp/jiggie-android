@@ -20,6 +20,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -359,9 +360,9 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             }
         }else{
             if (isActive()) {
-                if(progressDialog!=null&&progressDialog.isShowing()){
+                //if(progressDialog!=null&&progressDialog.isShowing()){
                     progressDialog.dismiss();
-                }
+                //}
 
                 if(!message.getMessage().equals(Utils.RESPONSE_FAILED + " " + "empty data")){
                     Toast.makeText(EventDetailActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
@@ -435,9 +436,22 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 intent.setData(Uri.parse(this.eventDetail.getFullfillment_value()));
                 intent.setAction(Intent.ACTION_VIEW);
             }
-            if (!TextUtils.isEmpty(intent.getAction()))
-                super.startActivity(Intent.createChooser(intent, super.getString(R.string.book_now)));
-            else if (StringUtility.isEquals(EventManager.FullfillmentTypes.NONE, this.eventDetail.getFullfillment_type(), true))
+
+
+            if (!TextUtils.isEmpty(intent.getAction())){
+                if (StringUtility.isEquals(EventManager.FullfillmentTypes.LINK, this.eventDetail.getFullfillment_type(), true)) {
+                    String value = this.eventDetail.getFullfillment_value();
+                    /*if(Patterns.WEB_URL.matcher(this.eventDetail.getFullfillment_value()).matches()){
+                        super.startActivity(Intent.createChooser(intent, super.getString(R.string.book_now)));
+                    }*/
+                    if(Patterns.WEB_URL.matcher(value).matches()&&(value.startsWith("http://")||value.startsWith("https://"))){
+                        super.startActivity(Intent.createChooser(intent, super.getString(R.string.book_now)));
+                    }
+                }else{
+                    super.startActivity(Intent.createChooser(intent, super.getString(R.string.book_now)));
+                }
+
+            }else if (StringUtility.isEquals(EventManager.FullfillmentTypes.NONE, this.eventDetail.getFullfillment_type(), true))
                 Toast.makeText(this, R.string.no_fullfillment, Toast.LENGTH_SHORT).show();
             else if(StringUtility.isEquals(EventManager.FullfillmentTypes.TICKET, this.eventDetail.getFullfillment_type(), true))
             {

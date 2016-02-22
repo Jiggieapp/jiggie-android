@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,12 +23,24 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 import com.facebook.AccessToken;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.profile.VerifyPhoneNumberActivity;
+import com.jiggie.android.activity.setup.SetupNotificationActivity;
+import com.jiggie.android.activity.setup.SetupTagsActivity;
+import com.jiggie.android.component.Utils;
+import com.jiggie.android.component.callback.CustomCallback;
+import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.Common;
+import com.jiggie.android.model.MemberSettingModel;
+import com.jiggie.android.model.SettingModel;
+
+import java.io.IOException;
 
 /**
  * Created by rangg on 05/11/2015.
@@ -37,6 +51,7 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private final Fragment fragment;
     private int[] resources;
     private String[] items;
+    public static final String TAG = MoreTabListAdapter.class.getSimpleName();
 
     public MoreTabListAdapter(Fragment fragment, ItemSelectedListener listener) {
         this.pref = App.getSharedPreferences();
@@ -140,18 +155,28 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    static class AccountHeaderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class AccountHeaderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @Bind(R.id.imageView)
         ImageView image;
         @Bind(R.id.txtUser)
         TextView txtUser;
         @Bind(R.id.txtVerifyPhoneNumber)
         TextView txtVerifyPhoneNumber;
+        @Bind(R.id.lblPhoneNumber)
+        TextView lblPhoneNumber;
 
         @OnClick(R.id.txtVerifyPhoneNumber)
+        @SuppressWarnings("unused")
         public void onVerifyPhoneNumberClick() {
             if(listener!= null)
                 this.listener.onVerifyPhoneNumberSelected();
+        }
+
+        @OnClick(R.id.lblPhoneNumber)
+        @SuppressWarnings("unused")
+        public void onLblPhoneNumberClick()
+        {
+            onVerifyPhoneNumberClick();
         }
 
         private ItemSelectedListener listener;
@@ -160,6 +185,20 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             super(itemView);
             this.listener = listener;
             ButterKnife.bind(this, itemView);
+
+            SettingModel settingModel = AccountManager.loadSetting();
+            final String phoneNo = settingModel.getData().getPhone();
+            if (phoneNo == null || phoneNo.isEmpty())
+            {
+                txtVerifyPhoneNumber.setVisibility(View.VISIBLE);
+                lblPhoneNumber.setVisibility(View.GONE);
+            }
+            else
+            {
+                txtVerifyPhoneNumber.setVisibility(View.GONE);
+                lblPhoneNumber.setVisibility(View.VISIBLE);
+                lblPhoneNumber.setText(phoneNo);
+            }
             itemView.setOnClickListener(this);
         }
 

@@ -118,7 +118,7 @@ public class SetupLocationActivity extends BaseActivity {
     }
 
     public void showLocationDialog() {
-        AlertDialog dialogNotif = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert)
+        AlertDialog dialogNotif = new AlertDialog.Builder(this)
                 .setTitle(R.string.title_dialog_location).setMessage(R.string.msg_dialog_location)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
@@ -158,6 +158,7 @@ public class SetupLocationActivity extends BaseActivity {
 
         ArrayList<String> arrExperiences = new ArrayList<String>(Arrays.asList(intent.getStringArrayExtra(SetupTagsActivity.PARAM_EXPERIENCES)));
         currentSettingModel.getData().setExperiences(arrExperiences);
+
         AccountManager.saveSetting(currentSettingModel);
     }
 }

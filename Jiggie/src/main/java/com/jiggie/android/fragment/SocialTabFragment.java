@@ -15,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -41,6 +41,7 @@ import com.jiggie.android.R;
 import com.jiggie.android.activity.chat.ChatActivity;
 import com.jiggie.android.activity.event.EventDetailActivity;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
+import com.jiggie.android.activity.profile.ProfileSettingActivity;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.SimpleJSONObject;
 import com.jiggie.android.component.StringUtility;
@@ -59,7 +60,6 @@ import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.SocialModel;
 import com.jiggie.android.model.Success2Model;
-import com.jiggie.android.model.SuccessModel;
 
 import org.json.JSONObject;
 
@@ -138,7 +138,11 @@ public class SocialTabFragment extends Fragment implements TabFragment {
 
     @Override
     public void onTabSelected() {
-        //if (this.current == null||SocialManager.NEED_REFRESH)
+
+        currentSetting = AccountManager.loadSetting();
+
+        boolean a = AccountManager.anySettingChange;
+
         if (this.current == null){
             if (switchSocialize.isChecked()) {
                 txtSocialize.setText(R.string.socialize_description);
@@ -151,6 +155,12 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_SOCIAL, false)) {
                 showWalkthroughDialog();
             }
+        }
+
+        if (switchSocialize.isChecked()&&AccountManager.anySettingChange) {
+            txtSocialize.setText(R.string.socialize_description);
+            this.onRefresh();
+            AccountManager.anySettingChange = false;
         }
 
         App.getInstance().trackMixPanelEvent("View Social Feed");
@@ -187,27 +197,30 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     }
 
     private void onRefresh() {
-        //SocialManager.NEED_REFRESH = false;
-        if (super.getContext() == null) {
-            // fragment already destroyed.
-            return;
-        } else if (this.progressBar.getVisibility() == View.VISIBLE) {
-            // refreshing is ongoing.
-            return;
-        }
+
+        if(!AccountManager.isInSettingPage){
+            if (super.getContext() == null) {
+                // fragment already destroyed.
+                return;
+            } else if (this.progressBar.getVisibility() == View.VISIBLE) {
+                // refreshing is ongoing.
+                return;
+            }
 
         /*if(current==null){
             this.layoutSocialize.setVisibility(View.GONE);
         }*/
-        this.progressBar.setVisibility(View.VISIBLE);
+            this.progressBar.setVisibility(View.VISIBLE);
 
-        //showProgressDialog();
-        SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId(), currentSetting.getData().getGender_interest());
+            //showProgressDialog();
+            SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId(), currentSetting.getData().getGender_interest());
+        }
+
     }
 
     public void onEvent(SocialModel message){
         current = null;
-
+        socialSize = 0;
         for(SocialModel.Data.SocialFeeds item : message.getData().getSocial_feeds())
         {
             if(SocialManager.Type.isInbound(item))
@@ -392,6 +405,8 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     @OnClick(R.id.btnYesInbound)
     void btnYesInboundOnClick() {
         this.btnYesOnClick();
+        socialSize-=1;
+        setHomeTitle();
     }
 
     @SuppressWarnings("unused")
@@ -404,6 +419,8 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     @OnClick(R.id.btnNoInbound)
     void btnNoInboundONClick() {
         this.btnNoOnClick();
+        socialSize-=1;
+        setHomeTitle();
     }
 
     @SuppressWarnings("unused")
@@ -446,7 +463,8 @@ public class SocialTabFragment extends Fragment implements TabFragment {
 
         confirm = confirms;
         showProgressDialog();
-        SocialManager.loaderSocialMatch(AccessToken.getCurrentAccessToken().getUserId(), this.current.getFrom_fb_id(), confirm ? "approved" : "denied");
+        if(current!=null)
+            SocialManager.loaderSocialMatch(AccessToken.getCurrentAccessToken().getUserId(), this.current.getFrom_fb_id(), confirm ? "approved" : "denied");
     }
 
     public void onEvent(Success2Model message){
@@ -536,7 +554,11 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                 else
                     this.title = String.format("%s (%d)", getString(R.string.social), socialSize);
             }
-            else this.title = super.getString(R.string.social);
+            else if(socialSize <= 0)
+            {
+                socialSize = 0;
+                this.title = super.getString(R.string.social);
+            }
             this.homeMain.onTabTitleChanged(this);
         }
     }
