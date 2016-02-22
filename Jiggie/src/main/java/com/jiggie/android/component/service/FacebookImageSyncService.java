@@ -127,6 +127,7 @@ public class FacebookImageSyncService extends Service {
                         // download the image from facebook
                         if ((id != null) && (!files.contains(id))) {
                             final URL imgUrl = new URL(String.format("%s%s/picture?type=normal&access_token=%s", GRAPH_URL, id, token.getToken()));
+                            //String d = imgUrl.toString();
                             inputStream = imgUrl.openConnection().getInputStream();
                             outputStream = new FileOutputStream(path + id);
 
@@ -202,6 +203,8 @@ public class FacebookImageSyncService extends Service {
             // user sign out while the image is being uploaded
             return;
         }
+
+        int size = images.size();
 
         params.put(Common.FIELD_FACEBOOK_ID, accessToken.getUserId());
         for(String img : images) {

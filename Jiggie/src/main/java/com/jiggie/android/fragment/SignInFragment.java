@@ -259,7 +259,7 @@ public class SignInFragment extends Fragment {
                 loginModel.setDevice_type("2");
                 //------------
 
-                String sd = String.valueOf(new Gson().toJson(loginModel));
+                //String sd = String.valueOf(new Gson().toJson(loginModel));
 
                 AccountManager.loaderLogin(loginModel);
 

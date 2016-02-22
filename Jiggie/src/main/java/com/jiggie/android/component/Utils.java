@@ -33,6 +33,9 @@ public class Utils {
     public static String FROM_SETUP_TAGS = "setup_tags";
     public static String FROM_GUEST_CONNECT = "guest_connect";
     public static String FROM_VERIFY_VERIFICATION_CODE = "verify_verification_code";
+    public static String FROM_PRODUCT_LIST = "product_list";
+
+
     public static String ACCESS_TOKEN = "access_token";
 
     public static boolean SHOW_WALKTHROUGH_EVENT = true;
@@ -98,6 +101,8 @@ public class Utils {
     public final static String URL_ADD_CHAT = BASE_URL + "app/v3/messages/add";
     public final static String URL_VERIFY_PHONE_NUMBER = BASE_URL + "app/v3/user/phone/verification/send/{fb_id}/{phone}";
     public final static String URL_VERIFY_VERIFICATION_CODE = BASE_URL + "app/v3/user/phone/verification/validate/{fb_id}/{token}";
+
+    public final static String URL_PRODUCT_LIST = BASE_URL + "app/v3/product/list/{event_id}";
 
     public static void d(final String title, final String text) {
         Log.d(title, text);
