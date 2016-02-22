@@ -1,8 +1,10 @@
 package com.jiggie.android.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,14 +16,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jiggie.android.R;
+import com.jiggie.android.activity.profile.FilterActivity;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by rangg on 21/10/2015.
@@ -31,6 +38,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     @Bind(R.id.viewpager) ViewPager viewPager;
     @Bind(R.id.toolbar) Toolbar toolbar;
     @Bind(R.id.tab) TabLayout tab;
+    @Bind(R.id.fab) FloatingActionButton fab;
 
     private TabFragment lastSelectedFragment;
     private PageAdapter adapter;
@@ -48,7 +56,13 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         ButterKnife.bind(this, this.rootView);
 
         final AppCompatActivity activity = (AppCompatActivity) super.getActivity();
-        this.toolbar.setTitle(R.string.app_name);
+        //this.toolbar.setNavigationIcon(R.drawable.logo);
+        //this.toolbar.getLogo().set;
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        final ImageView imgView = (ImageView) toolbar.findViewById(R.id.logo_image);
+        imgView.setImageDrawable(getResources().getDrawable(R.drawable.logo2));
+
+        this.toolbar.setTitle("");
         activity.setSupportActionBar(toolbar);
 
         this.adapter = new PageAdapter(this, activity.getSupportFragmentManager());
@@ -73,6 +87,48 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
 
         if ((super.getArguments() != null) && (super.getArguments().getBoolean("chat", false)))
             this.viewPager.setCurrentItem(2);
+
+        setupTabIcons();
+
+        //Load animation
+        makeOutAnimation = AnimationUtils.loadAnimation(this.getActivity(),
+                R.anim.slide_down);
+
+        makeInAnimation = AnimationUtils.loadAnimation(this.getActivity(),
+                R.anim.slide_up);
+
+
+        /*makeInAnimation = AnimationUtils.makeInAnimation(this.getActivity(), false);
+        makeOutAnimation = AnimationUtils.makeOutAnimation(this.getActivity(), true);
+
+        makeInAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+                fab.setVisibility(View.VISIBLE);
+            }
+        });
+        makeOutAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                fab.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+        });*/
     }
 
     @Override
@@ -89,7 +145,29 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     public void onPageSelected(int position) {
         this.lastSelectedFragment = (TabFragment) this.adapter.fragments[position];
         this.lastSelectedFragment.onTabSelected();
+
+        if(position == 0)
+        {
+            //fab.setVisibility(View.VISIBLE);
+            if(fab.getVisibility() == View.GONE)
+            {
+                fab.startAnimation(makeInAnimation);
+                fab.setVisibility(View.VISIBLE);
+            }
+
+        }
+        else {
+            //fab.setVisibility(View.GONE);
+            if (fab.getVisibility() == View.VISIBLE)
+            {
+                fab.startAnimation(makeOutAnimation);
+                fab.setVisibility(View.GONE);
+            }
+        }
     }
+
+    Animation makeInAnimation, makeOutAnimation;
+
 
     @Override
     public void onTabTitleChanged(TabFragment fragment) {
@@ -106,15 +184,16 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         public PageAdapter(HomeMain homeMain, FragmentManager fm) {
             super(fm);
             this.fragments = new Fragment[] {
-                    new EventTabFragment(),
-                    new SocialTabFragment(),
-                    new ChatTabFragment(),
-                    new MoreTabFragment()
+                    //new EventTabFragment()
+                    new EventsFragment()
+                    ,new ChatTabFragment()
+                    ,new SocialTabFragment()
+                    //,new MoreTabFragment()
             };
             ((TabFragment)this.fragments[0]).setHomeMain(homeMain);
             ((TabFragment)this.fragments[1]).setHomeMain(homeMain);
             ((TabFragment)this.fragments[2]).setHomeMain(homeMain);
-            ((TabFragment)this.fragments[3]).setHomeMain(homeMain);
+            //((TabFragment)this.fragments[3]).setHomeMain(homeMain);
         }
 
         @Override
@@ -134,5 +213,33 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
 
             return -1;
         }
+    }
+
+    private void setupTabIcons()
+    {
+        TextView tabOne = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.tab_custom, null);
+        tabOne.setText(adapter.getPageTitle(0));
+        tabOne.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_event_white_24dp, 0, 0);
+        tab.getTabAt(0).setCustomView(tabOne);
+
+        TextView tabTwo = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.tab_custom, null);
+        tabTwo.setText(adapter.getPageTitle(1));
+        tabTwo.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_chat_white_24dp, 0, 0);
+        tab.getTabAt(1).setCustomView(tabTwo);
+
+        TextView tabThree = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.tab_custom, null);
+        tabThree.setText(adapter.getPageTitle(2));
+        tabThree.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_visibility_white_24dp, 0, 0);
+        tab.getTabAt(2).setCustomView(tabThree);
+    }
+
+    @OnClick(R.id.fab)
+    void onFabClick()
+    {
+        Intent i = new Intent(this.getActivity(), FilterActivity.class);
+        startActivity(i);
+
+        //AccountManager.getAccessToken();
+        //ProductManager.getProductList("56b1a0bf89bfed03005c50f0");
     }
 }

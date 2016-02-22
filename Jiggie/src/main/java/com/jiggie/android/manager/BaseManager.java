@@ -21,6 +21,8 @@ import retrofit.Retrofit;
  */
 public abstract class BaseManager {
     public static final String TAG = BaseManager.class.getSimpleName();
+    private Callback callback;
+    public CustomCallback customCallback;
 
     public static OkHttpClient getHttpClient() {
         final String accessToken = App.getInstance()
@@ -31,6 +33,7 @@ public abstract class BaseManager {
                 && !AccessToken.getCurrentAccessToken().getToken().equals("")
                 && AccessToken.getCurrentAccessToken().getToken() != null)
         {
+
         }
         else
         {*/
@@ -64,7 +67,4 @@ public abstract class BaseManager {
         }
         return retrofit;
     }
-
-    private Callback callback;
-    public CustomCallback customCallback;
 }

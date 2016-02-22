@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.MainActivity;
@@ -21,7 +22,6 @@ import com.jiggie.android.component.activity.BaseActivity;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.MemberSettingModel;
-import com.facebook.AccessToken;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.Success2Model;
 
@@ -47,7 +47,6 @@ public class SetupLocationActivity extends BaseActivity {
         super.setContentView(R.layout.activity_setup_location);
         super.bindView();
 
-        AccountManager.initAccountService();
         EventBus.getDefault().register(this);
 
         final Bitmap background = BitmapUtility.getBitmapResource(R.mipmap.signup1);
@@ -61,12 +60,26 @@ public class SetupLocationActivity extends BaseActivity {
     @OnClick(R.id.btnDone)
     @SuppressWarnings("unused")
     void btnDoneOnClick() {
+        final ProgressDialog dialog = App.showProgressDialog(this);
+        final Intent intent = super.getIntent();
+
+        final MemberSettingModel memberSettingModel = new MemberSettingModel();
+        final SettingModel currentSettingModel = AccountManager.loadSetting();
+        memberSettingModel.setAccount_type(currentSettingModel.getData().getAccount_type());
+        memberSettingModel.setLocation(this.switchView.isChecked() ? 1 : 0);
+        memberSettingModel.setGender(currentSettingModel.getData().getGender());
+        memberSettingModel.setGender_interest(currentSettingModel.getData().getGender_interest());
+        memberSettingModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
+        memberSettingModel.setChat(intent.getBooleanExtra(SetupNotificationActivity.PARAM_NOTIFICATION, true) ? 1 : 0);
+        memberSettingModel.setFeed(intent.getBooleanExtra(SetupNotificationActivity.PARAM_NOTIFICATION, true) ? 1 : 0);
+        memberSettingModel.setExperiences(TextUtils.join(",", intent.getStringArrayExtra(SetupTagsActivity.PARAM_EXPERIENCES)));
+
+        AccountManager.loaderMemberSetting(memberSettingModel);
         if(this.switchView.isChecked()){
             showLocationDialog();
         }else{
             actionDone(this.switchView.isChecked());
         }
-
     }
 
     public void onEvent(Success2Model message){

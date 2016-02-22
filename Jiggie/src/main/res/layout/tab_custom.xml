@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tab"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/custom_tab_height"
+    android:layout_gravity="center_horizontal"
+    android:gravity="center_horizontal"
+    android:textColor="@android:color/white"
+    android:layout_marginTop="@dimen/custom_tab_padding_top"
+    android:layout_marginBottom="@dimen/custom_tab_padding_bottom"
+    android:textSize="14sp" />

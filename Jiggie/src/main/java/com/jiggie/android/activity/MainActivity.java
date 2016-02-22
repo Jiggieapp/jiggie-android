@@ -13,12 +13,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.appsflyer.AppsFlyerConversionListener;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.profile.FilterActivity;
 import com.jiggie.android.activity.setup.SetupTagsActivity;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.gcm.GCMRegistrationService;
@@ -66,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
             final String str = GoogleApiAvailability.getInstance().getErrorString(code);
             Toast.makeText(this, str, Toast.LENGTH_LONG).show();
         }
+        /*Intent i = new Intent(this, FilterActivity.class);
+        startActivity(i);*/
     }
 
     @Override
@@ -193,7 +198,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    protected boolean isActive() { return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) ? !super.isDestroyed() : this.active; }
+    protected boolean isActive()
+    {
+        return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) ?
+            !super.isDestroyed() : this.active;
+    }
 
     @Override
     protected void onDestroy() {
@@ -202,5 +211,12 @@ public class MainActivity extends AppCompatActivity {
             App.mixpanelAPI.flush();
         }
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_chat, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 }

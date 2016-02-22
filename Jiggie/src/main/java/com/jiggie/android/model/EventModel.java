@@ -59,6 +59,11 @@ public class EventModel {
 
             }
 
+            public Events()
+            {
+
+            }
+
             @Override
             public int describeContents() { return 0; }
 
