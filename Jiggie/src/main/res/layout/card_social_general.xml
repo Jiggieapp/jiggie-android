@@ -1,0 +1,89 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical">
+
+    <ImageButton
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="?attr/selectableItemBackground"
+        android:id="@+id/imageUserGeneral"
+        android:contentDescription="@null"
+        android:scaleType="centerCrop"/>
+
+    <FrameLayout
+        android:background="@drawable/bg_circle_accent"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="-32dp"
+        android:layout_height="64dp"
+        android:layout_width="64dp">
+
+        <ImageView
+            android:layout_margin="@dimen/padding_standard"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:src="@mipmap/ic_chat"/>
+    </FrameLayout>
+
+    <TextView
+        android:layout_marginTop="@dimen/padding_standard"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:gravity="center_horizontal"
+        android:text="@string/user_viewing"
+        android:id="@+id/txtUserGeneral"/>
+
+    <TextView
+        android:text="@string/location_viewing"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="5dp"
+        android:id="@+id/txtEventGeneral"/>
+
+    <TextView
+        android:layout_marginTop="@dimen/padding_standard_half"
+        android:layout_marginBottom="@dimen/padding_standard"
+        android:textColor="@android:color/black"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="@string/connect_with"
+        android:gravity="center_horizontal"
+        android:id="@+id/txtConnectGeneral"/>
+
+    <LinearLayout
+        android:background="@color/colorAccent"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:background="?attr/selectableItemBackground"
+            android:textColor="@android:color/white"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:layout_width="0dp"
+            android:text="@string/no"
+            android:textStyle="bold"
+            android:id="@+id/btnNoGeneral"/>
+
+        <View
+            android:background="@android:color/white"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_width="0.5dp"/>
+
+        <Button
+            android:background="?attr/selectableItemBackground"
+            android:textColor="@android:color/white"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:layout_width="0dp"
+            android:text="@string/yes"
+            android:textStyle="bold"
+            android:id="@+id/btnYesGeneral"/>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent" android:background="#E6000000"
+    android:id="@+id/layout_walkthrough">
+
+    <ImageView
+        android:id="@+id/img_wk"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/wk_event"
+        android:layout_marginTop="45dp"
+        android:layout_marginBottom="25dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"/>
+
+    <TextView
+        android:id="@+id/txt_wk_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/txt_wk_title"
+        android:textColor="@color/background"
+        android:layout_alignRight="@id/img_wk"
+        android:textSize="10sp"
+        />
+
+    <TextView
+        android:id="@+id/txt_wk_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/img_wk"
+        android:textColor="@color/background"
+        android:text="@string/wk_event_title"
+        android:layout_marginLeft="@dimen/margin_text_walkthrough"
+        android:layout_marginRight="@dimen/margin_text_walkthrough"
+        android:layout_marginTop="20dip"/>
+
+    <TextView
+        android:id="@+id/txt_wk_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/txt_wk_title"
+        android:textColor="@color/background"
+        android:text="@string/wk_event_desc"
+        android:textSize="12sp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="@dimen/margin_text_walkthrough"
+        android:layout_marginRight="@dimen/margin_text_walkthrough"
+        android:layout_above="@+id/btn_wk_got_it"/>
+
+    <ImageView
+        android:id="@+id/btn_wk_got_it"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/button_gotit"
+        android:layout_marginRight="25dp"
+        android:layout_marginBottom="45dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        />
+
+</RelativeLayout>

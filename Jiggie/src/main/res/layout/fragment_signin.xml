@@ -1,0 +1,58 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <ImageView
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:contentDescription="@null"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/signup1"
+        android:id="@+id/placeHolder"/>
+
+    <ImageView
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:contentDescription="@null"
+        android:scaleType="centerCrop"
+        android:src="@mipmap/signup1"
+        android:id="@+id/imageView"/>
+
+    <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v4.view.ViewPager
+            android:layout_marginTop="@dimen/padding_standard"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/imageViewPager"/>
+
+        <it.sephiroth.android.library.widget.HListView
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="@dimen/padding_standard"
+            android:layout_width="wrap_content"
+            android:layout_height="5dp"
+            android:id="@+id/imagePagerIndicator"/>
+
+        <TextView
+            android:layout_margin="@dimen/padding_standard"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textColor="@android:color/white"
+            android:text="@string/we_dont_post"
+            android:gravity="center_horizontal"
+            android:textSize="16sp"/>
+
+        <Button
+            android:textColor="@android:color/white"
+            android:text="@string/sign_in_facebook"
+            android:background="@drawable/btn_next"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/btnSignIn"/>
+    </LinearLayout>
+</RelativeLayout>

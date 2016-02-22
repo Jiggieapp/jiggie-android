@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background">@android:color/white</color>
+    <color name="colorPrimaryDark">@color/purpleDark</color>
+    <color name="colorPrimary">@color/purple</color>
+    <color name="colorAccentDark">#245BF2</color>
+    <color name="colorLight">#F1F0F0</color>
+    <color name="colorAccent">#03A9F4</color>
+    <color name="purpleDark">#8D0BA7</color>
+    <color name="purple">#BD10E0</color>
+    <color name="grayLight">#F7F7F7</color>
+    <color name="textDarkGray">#353535</color>
+    <color name="setup_blue">#901E0058</color>
+
+    <color name="translucent_scrim_top">#26000000</color>
+    <color name="translucent_scrim_top_center">#0C000000</color>
+    <color name="translucent_scrim_bottom">#2A000000</color>
+    <color name="translucent_scrim_bottom_center">#0D000000</color>
+</resources>
