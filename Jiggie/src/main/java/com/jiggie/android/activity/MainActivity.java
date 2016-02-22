@@ -16,12 +16,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.appsflyer.AppsFlyerConversionListener;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.profile.FilterActivity;
+import com.jiggie.android.activity.profile.ProfileSettingActivity;
 import com.jiggie.android.activity.setup.SetupTagsActivity;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.gcm.GCMRegistrationService;
@@ -41,6 +43,32 @@ public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_GOOGLE_PLAY_SERVICES = 1972;
     private boolean active;
 
+    private boolean isFirstRun()
+    {
+        final SharedPreferences pref = App.getSharedPreferences();
+        if(getVersion() < 1021) //1021 is 22-02-2016 build
+        {
+            //clear all
+            App.getSharedPreferences().edit().clear().apply();
+            return false;
+        }
+        else
+        {
+            boolean isFirstRun = pref.getBoolean(Utils.IS_FIRST_RUN, true);
+            return isFirstRun;
+        }
+    }
+
+    public int getVersion() {
+        int v = 0;
+        try {
+            v = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            // Huh? Really?
+        }
+        return v;
+    }
+
     @Override
     @SuppressWarnings("StatementWithEmptyBody")
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +77,8 @@ public class MainActivity extends AppCompatActivity {
         super.setContentView(R.layout.activity_main);
         this.active = true;
 
-        final SharedPreferences pref = App.getSharedPreferences();
-        boolean isFirstRun = pref.getBoolean(Utils.IS_FIRST_RUN, true);
-        if(isFirstRun){
+        if(isFirstRun()){
+            final SharedPreferences pref = App.getSharedPreferences();
             pref.edit().putBoolean(Utils.IS_FIRST_RUN, false).commit();
             App.getInstance().trackMixPanelEvent("Install");
         }
@@ -218,5 +245,17 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_chat, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.action_settings:
+                Intent i = new Intent(this, ProfileSettingActivity.class);
+                startActivity(i);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

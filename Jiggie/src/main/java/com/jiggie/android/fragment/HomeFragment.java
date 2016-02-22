@@ -25,6 +25,7 @@ import com.jiggie.android.R;
 import com.jiggie.android.activity.profile.FilterActivity;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
+import com.jiggie.android.component.Utils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -43,6 +44,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     private TabFragment lastSelectedFragment;
     private PageAdapter adapter;
     private View rootView;
+    private final String TAG = HomeFragment.class.getSimpleName();
 
     @Nullable
     @Override
@@ -70,7 +72,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         this.viewPager.setAdapter(this.adapter);
 
         this.tab.setupWithViewPager(this.viewPager);
-        /*this.tab.getTabAt(1).setCustomView(R.layout.custom_tab);
+        /*this.tab.getTabAt(1).setCustomView(R.layout.tab_custom_with_badge);
         TextView txtView = (TextView) tab.findViewById(R.id.tab_badge);
         txtView.setText("99");*/
         this.viewPager.addOnPageChangeListener(this);
@@ -172,11 +174,34 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     @Override
     public void onTabTitleChanged(TabFragment fragment) {
         final int position = this.adapter.getFragmentPosition(fragment);
-        final TabLayout.Tab tab = position >= 0 ? this.tab.getTabAt(position) : null;
+        final TabLayout.Tab tab = position >= 0
+                ? this.tab.getTabAt(position) : null;
 
         if (tab != null)
-            tab.setText(fragment.getTitle());
+        {
+            if(position < 2)
+            {
+                tab.setText(fragment.getTitle());
+            }
+            else
+            {
+                TextView lblBadge = (TextView) tab.getCustomView().findViewById(R.id.tab_badge);
+                final String badgeCount = fragment.getTitle();
+                Utils.d(TAG, badgeCount + " badgeCount");
+                if(badgeCount.equals("0"))
+                {
+                    lblBadge.setVisibility(View.GONE);
+                }
+                else
+                {
+                    lblBadge.setVisibility(View.VISIBLE);
+                    lblBadge.setText(fragment.getTitle());
+                }
+
+            }
+        }
     }
+
 
     private static class PageAdapter extends FragmentPagerAdapter {
         private final Fragment[] fragments;
@@ -227,9 +252,18 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         tabTwo.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_chat_white_24dp, 0, 0);
         tab.getTabAt(1).setCustomView(tabTwo);
 
-        TextView tabThree = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.tab_custom, null);
+        /* TextView tabThree = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.tab_custom_with_badge, null);
         tabThree.setText(adapter.getPageTitle(2));
         tabThree.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_visibility_white_24dp, 0, 0);
+        */
+        View tabThree = LayoutInflater.from(getActivity())
+                .inflate(R.layout.tab_custom_with_badge, null);
+        TextView tabThreeTitle = (TextView) tabThree.findViewById(R.id.tab);
+        tabThreeTitle.setText(adapter.getPageTitle(2));
+        tabThreeTitle.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_visibility_white_24dp, 0, 0);
+        TextView tabThreeBadge = (TextView) tabThree.findViewById(R.id.tab_badge);
+        tabThreeBadge.setText("99");
+
         tab.getTabAt(2).setCustomView(tabThree);
     }
 
