@@ -25,6 +25,8 @@ import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.GuestModel;
 import com.jiggie.android.model.MemberInfoModel;
 
+import java.util.HashSet;
+
 import butterknife.Bind;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
@@ -60,6 +62,7 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
     String fb_id;
     public static final String TAG = ProfileDetailActivity.class
             .getSimpleName();
+    private boolean isMe = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +87,7 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
         fb_id = super.getIntent().getStringExtra(Common.FIELD_FACEBOOK_ID);
         if (fb_id == null) {
             fb_id = AccessToken.getCurrentAccessToken().getUserId();
+            isMe = true;
         }
 
         this.onRefresh();
@@ -109,9 +113,20 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
         txtLocation.setText(message.getData().getMemberinfo().getLocation());
         txtDescription.setText(message.getData().getMemberinfo().getAbout());
 
-        final String dataPath = App.getInstance().getDataPath(Common.PREF_IMAGES);
-        final String[] photos = message.getData().getMemberinfo().getPhotos().toArray(new String[message.getData().getMemberinfo().getPhotos().size()]);
-        final int size = photos.length;
+        //Added by Aga 22-2-2016--------
+        String[] photos;
+        if(isMe){
+            final String dataPath = App.getInstance().getDataPath(Common.PREF_IMAGES);
+            final HashSet<String> profileImages = (HashSet<String>) App.getSharedPreferences().getStringSet(Common.PREF_IMAGES, new HashSet<String>());
+            photos = profileImages.toArray(new String[profileImages.size()]);
+            final int size = photos.length;
+
+            for (int i = 0; i < size; i++)
+                photos[i] = String.format("file:///%s%s", dataPath, photos[i]);
+        }else{
+            photos = message.getData().getMemberinfo().getPhotos().toArray(new String[message.getData().getMemberinfo().getPhotos().size()]);
+        }
+        //-----------------------
 
         this.pagerIndicatorAdapter.setImages(photos);
 
