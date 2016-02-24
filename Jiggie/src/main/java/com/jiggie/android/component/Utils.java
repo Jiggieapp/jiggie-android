@@ -34,6 +34,7 @@ public class Utils {
     public static String FROM_GUEST_CONNECT = "guest_connect";
     public static String FROM_VERIFY_VERIFICATION_CODE = "verify_verification_code";
     public static String FROM_PRODUCT_LIST = "product_list";
+    public static String FROM_SUMMARY = "summary";
 
 
     public static String ACCESS_TOKEN = "access_token";
@@ -103,6 +104,7 @@ public class Utils {
     public final static String URL_VERIFY_VERIFICATION_CODE = BASE_URL + "app/v3/user/phone/verification/validate/{fb_id}/{token}";
 
     public final static String URL_PRODUCT_LIST = BASE_URL + "app/v3/product/list/{event_id}";
+    public final static String URL_SUMMARY = BASE_URL + "app/v3/product/summary";
 
     public static void d(final String title, final String text) {
         Log.d(title, text);

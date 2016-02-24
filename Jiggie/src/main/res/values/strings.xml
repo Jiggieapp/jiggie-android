@@ -160,6 +160,14 @@
     <string name="title_dialog_location">Allow share location?</string>
     <string name="msg_dialog_location">System will allow this app to get information about your phone location.</string>
 
+
+    <string name="msg_dummy">Lorem ipsum</string>
+    <string name="msg_dummy_price">Rp 2.000K</string>
+    <string name="msg_dummy_title">AFRO JACK LIVE IN JAKARTA</string>
+    <string name="msg_dummy_title_info">Sun, 29 Feb 2016 - Gelora Bung Karno</string>
+    <string name="section_ticket">TICKETS</string>
+    <string name="section_table">RESERVE TABLE</string>
+
     <plurals name="guest_count">
         <item quantity="one">%1$d Guest</item>
         <item quantity="other">%1$d Guests</item>

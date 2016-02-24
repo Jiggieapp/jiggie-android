@@ -114,7 +114,6 @@ public class EventTabListAdapter
         @Bind(R.id.txtDate) TextView txtDate;
         @Bind(R.id.image) ImageView image;
 
-
         //private EventTagArrayAdapter eventTagAdapter;
         private ViewSelectedListener listener;
         private EventModel.Data.Events event;

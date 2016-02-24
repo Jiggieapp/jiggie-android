@@ -23,6 +23,7 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.WindowManager;
 
 import com.appsflyer.AppsFlyerProperties;
@@ -207,8 +208,14 @@ public class App extends Application {
         //------------
 
         json.putString("Carrier", this.getSimOperatorName());
-        json.putString("City", locations[0].trim());
-        json.putString("Country", locations[1].trim());
+
+        try {
+            json.putString("City", locations[0].trim());
+            json.putString("Country", locations[1].trim());
+        }catch (Exception e){
+            Log.d("Mixpanel exception",e.toString());
+        }
+
         json.putString("Device Model", Build.MODEL);
         json.putString("Manufacturer", Build.MANUFACTURER);
 
@@ -223,8 +230,12 @@ public class App extends Application {
         json.putString("Operating System", "Android");
         json.putString("Mixpanel Library", "Android");
         //json.putString("Library Version", "");
-        json.putString("Region", locations[0]);
 
+        try {
+            json.putString("Region", locations[0]);
+        }catch (Exception e){
+            Log.d("Mixpanel exception",e.toString());
+        }
 
         if(login!=null){
             json.putString("Distinct Id", login.getFb_id());
