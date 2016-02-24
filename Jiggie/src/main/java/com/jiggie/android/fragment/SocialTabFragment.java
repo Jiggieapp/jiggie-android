@@ -190,8 +190,19 @@ public class SocialTabFragment extends Fragment implements TabFragment {
 
         currentSetting = AccountManager.loadSetting();
 
-        this.switchSocialize.setChecked(currentSetting.isMatchme());
+        //wandy 22-02-2016
+        currentSetting = null;
+
+        if(currentSetting != null)
+        {
+            this.switchSocialize.setChecked(currentSetting.isMatchme());
+         }
+        else
+        {
+            this.switchSocialize.setChecked(true);
+        }
         this.switchSocialize.setOnCheckedChangeListener(this.socializeChanged);
+
         App.getInstance().registerReceiver(this.socialReceiver, new IntentFilter(super.getString(R.string.broadcast_social)));
 
     }
@@ -405,7 +416,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     @OnClick(R.id.btnYesInbound)
     void btnYesInboundOnClick() {
         this.btnYesOnClick();
-        socialSize++;
+        socialSize-=1;
         setHomeTitle();
     }
 
@@ -549,15 +560,22 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             //final int unreadCount = this.adapter.countUnread();
             if (socialSize > 0)
             {
-                if(socialSize > 99)
+                /*if(socialSize > 99)
                     this.title = String.format("%s (%d)", getString(R.string.social), 99);
                 else
                     this.title = String.format("%s (%d)", getString(R.string.social), socialSize);
+                */
+                if(socialSize >= 99)
+                    this.title =  "99";
+                else
+                    this.title = socialSize + "";
+
             }
             else if(socialSize <= 0)
             {
                 socialSize = 0;
-                this.title = super.getString(R.string.social);
+                //this.title = super.getString(R.string.social);
+                this.title="0";
             }
             this.homeMain.onTabTitleChanged(this);
         }
