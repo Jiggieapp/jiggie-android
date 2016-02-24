@@ -44,6 +44,8 @@ public class Utils {
     public static String FROM_SETUP_TAGS = "setup_tags";
     public static String FROM_GUEST_CONNECT = "guest_connect";
     public static String FROM_VERIFY_VERIFICATION_CODE = "verify_verification_code";
+    public static String FROM_PRODUCT_LIST = "product_list";
+    public static String FROM_SUMMARY = "summary";
 
     public static boolean SHOW_WALKTHROUGH_EVENT = true;
     public static boolean SHOW_WALKTHROUGH_SOCIAL = true;
@@ -106,13 +108,15 @@ public class Utils {
     public final static String URL_SOCIAL_MATCH = BASE_URL + "app/v3/partyfeed_socialmatch/match/{fb_id}/{from_id}/{type}";
     public final static String URL_EDIT_ABOUT = BASE_URL + "app/v3/updateuserabout";
     public final static String URL_GET_ACCESS_TOKEN = BASE_URL + "app/v3/userlogin";
-    public static final String URL_GET_PRODUCT_LIST = BASE_URL + "app/v3/product/list/{event_id}";
     public final static String URL_TAGSLIST = BASE_URL + "app/v3/user/tagslist";
     public final static String URL_BLOCK_CHAT = BASE_URL + "app/v3/blockuserwithfbid";
     public final static String URL_DELETE_CHAT = BASE_URL + "app/v3/deletemessageswithfbid";
     public final static String URL_ADD_CHAT = BASE_URL + "app/v3/messages/add";
     public final static String URL_VERIFY_PHONE_NUMBER = BASE_URL + "app/v3/user/phone/verification/send/{fb_id}/{phone}";
     public final static String URL_VERIFY_VERIFICATION_CODE = BASE_URL + "app/v3/user/phone/verification/validate/{fb_id}/{token}";
+
+    public final static String URL_PRODUCT_LIST = BASE_URL + "app/v3/product/list/{event_id}";
+    public final static String URL_SUMMARY = BASE_URL + "app/v3/product/summary";
 
     public static void d(final String tag, final String value) {
         Log.d(tag, value);
