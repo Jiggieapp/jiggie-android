@@ -81,7 +81,7 @@
         android:layout_margin="@dimen/fab_margin"
         android:src="@android:drawable/ic_dialog_email" />-->
 
-    <android.support.design.widget.FloatingActionButton
+    <!--<android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -89,5 +89,5 @@
         android:layout_margin="@dimen/fab_margin"
         app:layout_behavior="com.jiggie.android.component.behavior.ScrollingFABBehavior"
         android:background="@color/colorPrimary"
-        android:src="@drawable/ic_filter_list_white_24dp"/>
+        android:src="@drawable/ic_filter_list_white_24dp"/>-->
 </android.support.design.widget.CoordinatorLayout>

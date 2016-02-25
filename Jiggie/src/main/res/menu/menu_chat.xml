@@ -10,17 +10,32 @@
     <item
         android:id="@+id/action_profile"
         android:title="@string/account"
-        app:showAsAction="never" />
+        app:showAsAction="never"
+        android:orderInCategory="2"/>
+
+    <item
+        android:id="@+id/action_invite"
+        android:title="@string/invite"
+        app:showAsAction="never"
+        android:orderInCategory="3"/>
 
     <item
         android:id="@+id/action_settings"
         android:title="@string/settings"
-        app:showAsAction="never" />
+        app:showAsAction="never"
+        android:orderInCategory="4"/>
 
     <item
-        android:id="@+id/action_clear"
+        android:id="@+id/action_support"
         android:title="@string/support"
-        app:showAsAction="never" />
+        app:showAsAction="never"
+        android:orderInCategory="5"/>
+
+    <item
+        android:id="@+id/action_logout"
+        android:title="@string/logout"
+        app:showAsAction="never"
+        android:orderInCategory="6"/>
 </menu>
 
     <!--

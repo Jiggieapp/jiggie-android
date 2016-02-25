@@ -90,7 +90,6 @@ public class AccountManager extends BaseManager{
                     Utils.d(TAG, responses);
 
                     if (response.code() == Utils.CODE_SUCCESS) {
-
                         LoginResultModel dataLogin = (LoginResultModel) response.body();
                         SettingModel dataTemp = setSettingModelFromLogin(dataLogin);
 
@@ -117,9 +116,6 @@ public class AccountManager extends BaseManager{
             postMemberSetting(memberSettingModel, new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
-                    /*String responses = new Gson().toJson(response.body());
-                    Utils.d("res", responses);*/
-
                     if (response.code() == Utils.CODE_SUCCESS) {
                         Success2Model dataTemp = (Success2Model) response.body();
                         EventBus.getDefault().post(dataTemp);
@@ -134,13 +130,10 @@ public class AccountManager extends BaseManager{
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         } catch (IOException e){
-            Utils.d(TAG, "memberSetting " + new Gson().toJson(memberSettingModel));
-            Utils.d("exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
@@ -153,6 +146,7 @@ public class AccountManager extends BaseManager{
                     /*String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);*/
                     if (response.code() == Utils.CODE_SUCCESS) {
+                        Utils.d(TAG, "response " +  Utils.print(response));
                         MemberInfoModel dataTemp = (MemberInfoModel) response.body();
                         EventBus.getDefault().post(dataTemp);
                     } else {
@@ -162,7 +156,6 @@ public class AccountManager extends BaseManager{
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_DETAIL, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });

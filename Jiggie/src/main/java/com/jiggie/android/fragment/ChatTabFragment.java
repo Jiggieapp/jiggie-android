@@ -102,7 +102,6 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
                 showWalkthroughDialog();
             }
         }
-
     }
 
     @Nullable
@@ -137,8 +136,6 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
                 onRefresh();
             }
         });
-
-
     }
 
     @Override
@@ -159,7 +156,6 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     }
 
     public void onEvent(ChatListModel message){
-
         adapter.clear();
 
         for (int i = 0; i < message.getData().getChat_lists().size(); i++)
@@ -269,7 +265,6 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
 
             }
         }
-
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -422,9 +417,7 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
                     }
                 });
         dialogLongClick = builder.create();
-
         dialogLongClick.show();
-
     }
 
 }

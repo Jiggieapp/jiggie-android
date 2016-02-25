@@ -80,6 +80,15 @@
                     android:textSize="22sp"/>
 
                 <TextView
+                    android:id="@+id/lblPhoneNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:text=""
+                    android:textColor="@android:color/holo_blue_dark"
+                    android:textStyle=""/>
+
+                <TextView
                     android:id="@+id/txtLocation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>

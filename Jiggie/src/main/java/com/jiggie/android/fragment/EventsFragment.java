@@ -1,5 +1,7 @@
 package com.jiggie.android.fragment;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -22,6 +24,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.facebook.AccessToken;
 import com.jiggie.android.R;
@@ -73,6 +77,7 @@ public class EventsFragment extends Fragment
     @Override
     public void onTabSelected() {
         //onRefresh();
+        showTab();
     }
 
     public void setHomeMain(HomeMain homeMain) {
@@ -93,10 +98,12 @@ public class EventsFragment extends Fragment
 
     }
 
+    private int currentPosition = 0;
     @Override
     public void onPageSelected(int position) {
         this.lastSelectedFragment = (TabFragment) this.pageAdapter.fragments[position];
         this.lastSelectedFragment.onTabSelected();
+        currentPosition = position;
     }
 
     @Override
@@ -193,6 +200,11 @@ public class EventsFragment extends Fragment
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         EventBus.getDefault().register(this);
@@ -279,7 +291,7 @@ public class EventsFragment extends Fragment
         final MenuItem searchMenu = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenu);
         final Handler handler = new Handler();
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return true;
@@ -288,27 +300,52 @@ public class EventsFragment extends Fragment
             @Override
             public boolean onQueryTextChange(String query) {
                 searchText = ((TextUtils.isEmpty(query)) || (query.trim().length() == 0)) ? null : query.trim();
+
                 handler.removeCallbacksAndMessages(null);
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                            filter(searchText);
+                        filter(searchText, true);
                     }
                 }, getResources().getInteger(R.integer.event_search_delay));
                 return true;
             }
-        });
+        });*/
 
         MenuItemCompat.setOnActionExpandListener(searchMenu, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
+                hideTab();
+                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        return true;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String query) {
+                        searchText = ((TextUtils.isEmpty(query)) || (query.trim().length() == 0)) ? null : query.trim();
+
+                        handler.removeCallbacksAndMessages(null);
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                filter(searchText, true);
+                            }
+                        }, getResources().getInteger(R.integer.event_search_delay));
+                        return true;
+                    }
+                });
                 return true;
             }
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 searchText = null;
-                //filter(true);
+                showTab();
+                Utils.d(TAG, "collapse");
+                filter("", false);
+                searchView.setOnQueryTextListener(null);
                 return true;
             }
         });
@@ -325,7 +362,7 @@ public class EventsFragment extends Fragment
         this.events = events;
     }
 
-    private void filter(String searchText)
+    private void filter(String searchText, boolean isSearch)
     {
         if(getEvents() != null)
         {
@@ -342,21 +379,84 @@ public class EventsFragment extends Fragment
                         || tempEvent.getTags().toString().toLowerCase().contains(searchText)
                         || searchText.equals(""))
                 {
-                    final String diffDays = Utils.calculateTime(tempEvent.getStart_datetime());
-                    if (diffDays.equals(Utils.DATE_TODAY)) {
-                        todayEvents.add(tempEvent);
-                    } else if (diffDays.equals(Utils.DATE_TOMORROW)) {
-                        tomorrowEvents.add(tempEvent);
-                    } else if (diffDays.equals(Utils.DATE_UPCOMING)) {
-                        upcomingEvents.add(tempEvent);
+                    Utils.d(TAG, "" + isSearch);
+                    if(!isSearch)
+                    {
+                        final String diffDays = Utils.calculateTime(tempEvent.getStart_datetime());
+                        if (diffDays.equals(Utils.DATE_TODAY)) {
+                            todayEvents.add(tempEvent);
+                        } else if (diffDays.equals(Utils.DATE_TOMORROW)) {
+                            tomorrowEvents.add(tempEvent);
+                        } else if (diffDays.equals(Utils.DATE_UPCOMING)) {
+                            upcomingEvents.add(tempEvent);
+                        }
+                        todayFragment.onEvent(todayEvents);
+                        tomorrowFragment.onEvent(tomorrowEvents);
+                        upcomingFragment.onEvent(upcomingEvents);
+                    }
+                    else
+                    {
+                        switch (currentPosition)
+                        {
+                            case 0:
+                                todayEvents.add(tempEvent);
+                                todayFragment.onEvent(todayEvents);
+                                break;
+                            case 1:
+                                tomorrowEvents.add(tempEvent);
+                                tomorrowFragment.onEvent(tomorrowEvents);
+                                break;
+                            case 2:
+                                upcomingEvents.add(tempEvent);
+                                upcomingFragment.onEvent(upcomingEvents);
+                                break;
+                        }
                     }
                 }
             }
-
-            todayFragment.onEvent(todayEvents);
-            tomorrowFragment.onEvent(tomorrowEvents);
-            upcomingFragment.onEvent(upcomingEvents);
         }
+    }
+
+    private void filter(String searchText)
+    {
+        filter(searchText, false);
+    }
+
+    protected void showTab()
+    {
+        if(timeTab.getVisibility() == View.GONE)
+        {
+            timeTab.animate()
+                    .translationY(0)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            timeTab.setVisibility(View.VISIBLE);
+                        }
+                    });
+        }
+
+    }
+
+    protected void hideTab()
+    {
+        if(timeTab.getVisibility() == View.VISIBLE)
+        {
+            timeTab.animate()
+                    .translationY(-timeTab.getMeasuredHeight())
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            timeTab.setVisibility(View.GONE);
+                        }
+                    });
+            /*Animation makeInAnimation = AnimationUtils.loadAnimation(this.getActivity(),
+                    R.anim.slide_up);
+            timeTab.startAnimation(makeInAnimation);*/
+        }
+
     }
 
 }

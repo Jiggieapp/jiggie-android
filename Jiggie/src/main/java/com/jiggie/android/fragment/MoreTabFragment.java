@@ -15,14 +15,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
-
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.MainActivity;
@@ -34,23 +30,15 @@ import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.MoreTabListAdapter;
-import com.jiggie.android.component.volley.VolleyHandler;
-import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.ShareManager;
 import com.jiggie.android.model.ExceptionModel;
-import com.jiggie.android.model.MemberSettingResultModel;
 import com.jiggie.android.model.SettingModel;
-import com.jiggie.android.model.ShareLink;
-import com.android.volley.VolleyError;
-import com.facebook.AccessToken;
-import com.facebook.login.LoginManager;
 import com.jiggie.android.model.ShareLinkModel;
 
-import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by rangg on 21/10/2015.

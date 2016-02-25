@@ -24,7 +24,10 @@ import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.GuestModel;
 import com.jiggie.android.model.MemberInfoModel;
+import com.jiggie.android.model.SettingModel;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import butterknife.Bind;
@@ -54,6 +57,8 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
     TextView txtUser;
     @Bind(R.id.txtTitleDescription)
     TextView txtTitleDescription;
+    @Bind(R.id.lblPhoneNumber)
+    TextView lblPhoneNumber;
 
     private ImagePagerIndicatorAdapter pagerIndicatorAdapter;
     //private UserProfile currentProfile;
@@ -106,24 +111,37 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
         memberInfoModel = message;
 
         final String age = StringUtility.getAge2(message.getData().getMemberinfo().getBirthday());
-        //added by wandy 12-02-2016
-        //final String age = StringUtility.getAge3(message.getData().getMemberinfo().getBirthday());
-
 
         txtLocation.setText(message.getData().getMemberinfo().getLocation());
         txtDescription.setText(message.getData().getMemberinfo().getAbout());
 
         //Added by Aga 22-2-2016--------
         String[] photos;
+
         if(isMe){
             final String dataPath = App.getInstance().getDataPath(Common.PREF_IMAGES);
             final HashSet<String> profileImages = (HashSet<String>) App.getSharedPreferences().getStringSet(Common.PREF_IMAGES, new HashSet<String>());
             photos = profileImages.toArray(new String[profileImages.size()]);
             final int size = photos.length;
+            if(size > 0)
+            {
+                for (int i = 0; i < size; i++)
+                {
+                    photos[i] = String.format("file:///%s%s", dataPath, photos[i]);
+                }
+            }
+            else
+            {
+                final ArrayList<String> userPhotos = message.getData().getMemberinfo().getPhotos();
+                photos = new String[userPhotos.size()];
+                for (int i = 0; i < userPhotos.size(); i++)
+                {
+                    photos[i] = userPhotos.get(i);
+                }
+            }
 
-            for (int i = 0; i < size; i++)
-                photos[i] = String.format("file:///%s%s", dataPath, photos[i]);
-        }else{
+        }
+        else{
             photos = message.getData().getMemberinfo().getPhotos().toArray(new String[message.getData().getMemberinfo().getPhotos().size()]);
         }
         //-----------------------
@@ -145,12 +163,21 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
         else Utils.d(TAG, "guest tidak null");
         btnEdit.setVisibility(guest == null ? View.VISIBLE : View.GONE);*/
 
-        Utils.d(TAG, message.getData().getMemberinfo().get_id() + " koosong "
-                + AccountManager.loadLogin().getUserId());
-        if (message.getData().getMemberinfo().getFb_id().equals(
-                AccountManager.loadLogin().getFb_id())) //saya
+        if (/*message.getData().getMemberinfo().getFb_id().equals(
+                AccountManager.loadLogin().getFb_id())*/ isMe) //saya
         {
             btnEdit.setVisibility(View.VISIBLE);
+            lblPhoneNumber.setVisibility(View.VISIBLE);
+            SettingModel settingModel = AccountManager.loadSetting();
+            final String phoneNo = settingModel.getData().getPhone();
+            if(phoneNo == null || phoneNo.isEmpty())
+            {
+                lblPhoneNumber.setText(getResources().getString(R.string.verify_your_phone_number));
+            }
+            else
+            {
+                lblPhoneNumber.setText(phoneNo);
+            }
         } else //guest
         {
             btnEdit.setVisibility(View.GONE);
@@ -191,5 +218,12 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
     protected void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+    @OnClick(R.id.lblPhoneNumber)
+    @SuppressWarnings("unused")
+    public void onVerifyPhoneNumberClick() {
+        Intent i = new Intent(this, VerifyPhoneNumberActivity.class);
+        startActivity(i);
     }
 }
