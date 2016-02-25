@@ -142,18 +142,17 @@ public class Utils {
             c.set(Calendar.MINUTE, 0);
             c.set(Calendar.SECOND, 0);
             c.set(Calendar.MILLISECOND, 0);
-            long diff = (c.getTimeInMillis()-System.currentTimeMillis());
-            if(diff < (24 * 60 * 60 * 1000))
+            long diff = d1.getTime() - c.getTimeInMillis();
+            if(diff < 0)
             {
                 return DATE_TODAY;
             }
-            else if(diff < (2 * 24 * 60 * 60 * 1000))
+            else if(diff < (24 * 60 * 60 * 1000))
             {
                 return DATE_TOMORROW;
             }
             else return DATE_UPCOMING;
             /*long diff = Math.abs(d1.getTime() - midnight.getTime());
-
             long diffDays = diff / (24 * 60 * 60 * 1000);
             if (diffDays == 0)
                 return DATE_TODAY;
@@ -162,8 +161,6 @@ public class Utils {
             else
                 return DATE_UPCOMING;
             */
-
-
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -216,4 +213,6 @@ public class Utils {
     public static void loadImage(Object object, ImageView target, DiskCacheStrategy cacheStrategy) {
         Glide.with(App.getInstance().getApplicationContext()).load(object).diskCacheStrategy(cacheStrategy).into(target);
     }
+
+
 }
