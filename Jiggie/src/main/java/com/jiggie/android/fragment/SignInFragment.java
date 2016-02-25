@@ -238,9 +238,9 @@ public class SignInFragment extends Fragment {
 
                 //Added by Aga 2-2-2016
                 LoginModel loginModel = new LoginModel();
-                loginModel.setVersion("1.1.0");
-                //String v = App.getVersionName(getActivity());
-                //loginModel.setVersion(v);
+                //loginModel.setVersion("1.1.0");
+                String v = App.getVersionName(getActivity());
+                loginModel.setVersion(v);
                 loginModel.setUser_first_name(object.optString("first_name"));
                 loginModel.setAbout(object.optString("bio"));
                 loginModel.setApn_token(gcmId);
@@ -258,7 +258,7 @@ public class SignInFragment extends Fragment {
                 loginModel.setDevice_type("2");
                 //------------
 
-                String sd = String.valueOf(new Gson().toJson(loginModel));
+                //String sd = String.valueOf(new Gson().toJson(loginModel));
 
                 AccountManager.loaderLogin(loginModel);
 
