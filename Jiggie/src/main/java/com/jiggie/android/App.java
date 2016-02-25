@@ -27,18 +27,22 @@ import android.view.WindowManager;
 
 import com.appsflyer.AppsFlyerProperties;
 import com.crashlytics.android.Crashlytics;
+import com.google.gson.Gson;
 import com.jiggie.android.component.SimpleJSONObject;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.database.DatabaseConnection;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.manager.TrackManager;
 import com.jiggie.android.model.Common;
 import com.android.volley.VolleyError;
 import com.appsflyer.AppsFlyerLib;
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
 import com.jiggie.android.model.LoginModel;
+import com.jiggie.android.model.PostAppsFlyerModel;
+import com.jiggie.android.model.PostMixpanelModel;
 import com.jiggie.android.model.SettingModel;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
@@ -194,12 +198,22 @@ public class App extends Application {
         final LoginModel login = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin();
         final SettingModel settingModel = AccountManager.loadSetting() == null ? null : AccountManager.loadSetting();
 
-        if(!Utils.AFmedia_source.equals(""))
+        if(!Utils.AFmedia_source.equals(Utils.BLANK)){
             json.putString("AFmedia_source", Utils.AFmedia_source);
-        if(!Utils.AFcampaign.equals(""))
+        }else{
+            json.putString("AFmedia_source", Utils.AF_ORGANIC);
+        }
+        if(!Utils.AFcampaign.equals(Utils.BLANK)){
             json.putString("AFcampaign", Utils.AFcampaign);
-        if(!Utils.AFinstall_type.equals(""))
+        }else{
+            json.putString("AFcampaign", Utils.AF_ORGANIC);
+        }
+        if(!Utils.AFinstall_type.equals(Utils.BLANK)){
             json.putString("AFinstall_type", Utils.AFinstall_type);
+        }else {
+            json.putString("AFinstall_type", Utils.AF_ORGANIC);
+        }
+
 
         //Added by Aga
         json.putString("App Release", getVersionName(this));
@@ -249,10 +263,14 @@ public class App extends Application {
             getInstanceMixpanel().alias(login.getFb_id(), null);
             setPeopleMixpanel(login, settingModel);
             setSuperPropertiesMixpanel(login, settingModel);
+            setSyncMixpanel(login, settingModel);
+            setAppsFlyer(login);
         }else if(eventName.equals("Log In")){
             getInstanceMixpanel().identify(mixpanelAPI.getDistinctId());
             setPeopleMixpanel(login, settingModel);
             setSuperPropertiesMixpanel(login, settingModel);
+            setSyncMixpanel(login, settingModel);
+            setAppsFlyer(login);
         }
         getInstanceMixpanel().track(eventName, json);
     }
@@ -285,8 +303,59 @@ public class App extends Application {
 
         json.putString("os_version", this.getDeviceOSName());
         json.putString("device_type", Build.MODEL);
-        json.putString("app_ersion", getVersionCode(this));
+        json.putString("app_version", getVersionCode(this));
         getInstanceMixpanel().registerSuperProperties(json);
+
+
+
+    }
+
+    public void setSyncMixpanel(LoginModel login, SettingModel settingModel){
+        //sync mixpanel API
+        PostMixpanelModel postMixpanelModel = new PostMixpanelModel();
+        postMixpanelModel.setDevice_type(Build.MODEL);
+        postMixpanelModel.setOs_version(this.getDeviceOSName());
+        postMixpanelModel.setApp_version(getVersionCode(this));
+        if(login!=null){
+            postMixpanelModel.setFb_id(login.getFb_id());
+            postMixpanelModel.setLocation(login.getLocation());
+            postMixpanelModel.setName_and_fb_id(login.getUser_first_name() + "_" + login.getUser_last_name() + "_" + login.getFb_id());
+            postMixpanelModel.setEmail(login.getEmail());
+            postMixpanelModel.setLast_name(login.getUser_last_name());
+            postMixpanelModel.setBirthday(login.getBirthday());
+            postMixpanelModel.setFirst_name(login.getUser_first_name());
+            try {
+                postMixpanelModel.setAge(StringUtility.getAge2(login.getBirthday()));
+            }catch (Exception e) {
+
+            }
+        }
+
+        if(settingModel != null) {
+            postMixpanelModel.setGender(settingModel.getData().getGender());
+            postMixpanelModel.setGender_interest(settingModel.getData().getGender_interest());
+        }
+
+        if(login!=null){
+            TrackManager.loaderMixpanel(login.getFb_id(), postMixpanelModel);
+        }
+        //-----------------
+    }
+
+    public void setAppsFlyer(LoginModel login){
+        if(login!=null){
+            PostAppsFlyerModel postAppsFlyerModel = new PostAppsFlyerModel();
+            postAppsFlyerModel.setFb_id(login.getFb_id());
+            //String appsflyer = "{\n  \\\"af_status\\\" : \\\""+Utils.AFinstall_type+"\\\",\\n  \\\"media_source\\\" : \\\""+Utils.AFmedia_source+"\\\",\\n  \\\"campaign\\\" : \\\""+Utils.AFcampaign+"\\\"\\n}";
+
+            String appsflyer = "{  \"af_status\" : \""+Utils.AFinstall_type+"\",  \"media_source\" : \""+Utils.AFmedia_source+"\",  \"campaign\" : \""+Utils.AFcampaign+"\"}";
+
+            postAppsFlyerModel.setAppsflyer(appsflyer);
+
+            String sd = String.valueOf(new Gson().toJson(postAppsFlyerModel));
+
+            TrackManager.loaderAppsFlyer(postAppsFlyerModel);
+        }
     }
 
     public void setPeopleMixpanel(LoginModel login, SettingModel settingModel){

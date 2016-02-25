@@ -171,6 +171,10 @@ public class MainActivity extends AppCompatActivity {
                     Utils.AFcampaign = campaign;
                 if(af_status!=null)
                     Utils.AFinstall_type = af_status;
+
+                /*String d = map.toString();
+                String a = Utils.AFmedia_source+" "+Utils.AFcampaign+" "+Utils.AFinstall_type;
+                Toast.makeText(MainActivity.this, a, Toast.LENGTH_LONG).show();*/
             }
 
             @Override
