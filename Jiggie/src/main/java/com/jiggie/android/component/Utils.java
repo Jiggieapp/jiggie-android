@@ -23,7 +23,6 @@ import java.util.Locale;
  * Created by LTE on 1/29/2016.
  */
 public class Utils {
-
     public static String FROM_SIGN_IN = "sign_in";
     public static String FROM_MEMBER_SETTING = "member_setting";
     //public static String FROM_GET_MEMBER_SETTING = "get_member_setting";
@@ -123,6 +122,8 @@ public class Utils {
     public static final String DATE_TOMORROW = "tomorrow";
     public static final String DATE_UPCOMING = "upcoming";
 
+    public static final String TAG = Utils.class.getSimpleName();
+
     public static String calculateTime(String date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         //SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
@@ -138,18 +139,17 @@ public class Utils {
             c.set(Calendar.MINUTE, 0);
             c.set(Calendar.SECOND, 0);
             c.set(Calendar.MILLISECOND, 0);
-            long diff = (c.getTimeInMillis()-System.currentTimeMillis());
-            if(diff < (24 * 60 * 60 * 1000))
+            long diff = d1.getTime() - c.getTimeInMillis();
+            if(diff < 0)
             {
                 return DATE_TODAY;
             }
-            else if(diff < (2 * 24 * 60 * 60 * 1000))
+            else if(diff < (24 * 60 * 60 * 1000))
             {
                 return DATE_TOMORROW;
             }
             else return DATE_UPCOMING;
             /*long diff = Math.abs(d1.getTime() - midnight.getTime());
-
             long diffDays = diff / (24 * 60 * 60 * 1000);
             if (diffDays == 0)
                 return DATE_TODAY;
@@ -158,8 +158,6 @@ public class Utils {
             else
                 return DATE_UPCOMING;
             */
-
-
         } catch (ParseException e) {
             e.printStackTrace();
         }

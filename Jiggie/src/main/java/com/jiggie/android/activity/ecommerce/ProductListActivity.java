@@ -99,7 +99,6 @@ public class ProductListActivity extends ToolbarActivity
         SimpleSectionedRecycleViewAdapter mSectionedAdapter = new
                 SimpleSectionedRecycleViewAdapter(this,R.layout.section,R.id.section_text, adapter);
         mSectionedAdapter.setSections(sections.toArray(dummy));
-
         recyclerView.setAdapter(mSectionedAdapter);
     }
 

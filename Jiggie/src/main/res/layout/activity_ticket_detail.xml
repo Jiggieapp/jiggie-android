@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="com.jiggie.android.activity.ticket.TicketDetailActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <!--<include layout="@layout/toolbar_with_dots"/>-->
+
+        <com.jiggie.android.view.CustomToolbar
+            android:id="@+id/customToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </android.support.design.widget.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/appBar">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <RelativeLayout
+                android:id="@+id/header_container"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@color/colorPrimaryDark"
+                android:padding="@dimen/padding_standard">
+
+                <TextView
+                    android:id="@+id/lblEventName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="left|center_vertical"
+                    android:paddingLeft="@dimen/huge_padding"
+                    android:text="Afro Jack Brother"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/font_body_size" />
+
+                <TextView
+                    android:id="@+id/lblEventLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lblEventName"
+                    android:layout_centerInParent="true"
+                    android:gravity="left|center_vertical"
+                    android:paddingLeft="@dimen/huge_padding"
+                    android:text="Sun 29 Feb, GBK"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/font_caption_size" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/container_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/header_container"
+                >
+
+                <TextView
+                    android:id="@+id/lblType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:text="Regular Class"
+                    android:textAllCaps="true"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="@dimen/font_body_size"
+                    android:textStyle="bold"
+                    android:paddingTop="@dimen/padding_standard"
+                    android:paddingLeft="@dimen/padding_standard"/>
+
+                <TextView
+                    android:id="@+id/lblTypeCaption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/lblType"
+                    android:text="Information about regular class"
+                    android:textAllCaps="true"
+                    android:textColor="@color/text_grey_caption"
+                    android:textSize="@dimen/font_caption_size"
+                    android:paddingLeft="@dimen/padding_standard"/>
+
+                <TextView
+                    android:id="@+id/lblTypePrice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_toRightOf="@+id/lblType"
+                    android:gravity="right"
+                    android:text="IDR 2000K"
+                    android:textAllCaps="true"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="@dimen/font_body_size"
+                    android:textStyle="bold"
+                    android:paddingRight="@dimen/padding_standard"
+                    android:paddingTop="@dimen/padding_standard"/>
+
+                <TextView
+                    android:id="@+id/lblTypeCaptionPerson"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/lblType"
+                    android:layout_toRightOf="@id/lblTypeCaption"
+                    android:gravity="right"
+                    android:text="1 Person"
+                    android:textAllCaps="true"
+                    android:textColor="@color/text_grey_caption"
+                    android:textSize="@dimen/font_caption_size"
+                    android:paddingRight="@dimen/padding_standard"
+                    android:paddingBottom="@dimen/padding_standard"/>
+
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@+id/lblTypeCaptionPerson"
+                    android:background="@android:color/darker_gray" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/divider"
+                    android:orientation="vertical"
+                    android:padding="@dimen/padding_standard">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Regular Caps Info"
+                        android:textAllCaps="true"
+                        android:textColor="?android:attr/textColorPrimary"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Lorem ipsum dolor sir amet amit amit jabang bayi yuk kita ngopi brother paling enak sih memang klo kita ngopi di starbucks ditemani sama cewe2 cantik seksi bahenol mantap cuyyyy"
+                        android:textAllCaps="true" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/padding_standard"
+                        android:text="How does it work?"
+                        android:textAllCaps="true"
+                        android:textColor="?android:attr/textColorPrimary"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Lorem ipsum dolor sir amet amit amit jabang bayi yuk kita ngopi brother paling enak sih memang klo kita ngopi di starbucks ditemani sama cewe2 cantik seksi bahenol mantap cuyyyy"
+                        android:textAllCaps="true" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="@dimen/padding_standard"
+                        android:text="Terms and Conditions"
+                        android:textAllCaps="true"
+                        android:textColor="?android:attr/textColorPrimary"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Lorem ipsum dolor sir amet amit amit jabang bayi yuk kita ngopi brother paling enak sih memang klo kita ngopi di starbucks ditemani sama cewe2 cantik seksi bahenol mantap cuyyyy"
+                        android:textAllCaps="true" />
+                </LinearLayout>
+            </RelativeLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/string_continue"
+        android:textAllCaps="true"
+        android:textColor="@android:color/white"
+        android:layout_alignParentBottom="true"/>
+</RelativeLayout>
+

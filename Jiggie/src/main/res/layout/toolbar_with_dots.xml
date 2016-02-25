@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary"
+    app:layout_scrollFlags="scroll|enterAlways"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+    app:titleTextColor="@android:color/white">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/lblTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lorem ipsum"
+                android:textColor="@android:color/white" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lblTitle"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingTop="3dp">
+
+                <View
+                    android:id="@+id/first_circle"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:background="@drawable/white_dot" />
+
+                <View
+                    android:id="@+id/first_connector"
+                    android:layout_width="40dp"
+                    android:layout_height="2dp"
+                    android:background="@drawable/gray_connector" />
+
+                <View
+                    android:id="@+id/second_circle"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:background="@drawable/grey_dot" />
+
+                <View
+                    android:id="@+id/second_connector"
+                    android:layout_width="40dp"
+                    android:layout_height="2dp"
+                    android:background="@drawable/gray_connector" />
+
+                <View
+                    android:id="@+id/third_circle"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:background="@drawable/grey_dot" />
+            </LinearLayout>
+        </RelativeLayout>
+    </FrameLayout>
+</android.support.v7.widget.Toolbar>
