@@ -313,7 +313,7 @@ public class App extends Application {
             json.putString("gender_interest", settingModel.getData().getGender_interest());
         }
 
-        json.putString("app_ersion", getVersionCode(this));
+        json.putString("app_version", getVersionCode(this));
 
         getInstanceMixpanel().getPeople().set(json);
     }

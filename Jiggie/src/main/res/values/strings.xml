@@ -211,5 +211,7 @@
     <string name="msg_dummy_title_info">Sun, 29 Feb 2016 - Gelora Bung Karno</string>
     <string name="section_ticket">TICKETS</string>
     <string name="section_table">RESERVE TABLE</string>
+    <string name="section_credit_card">CREDIT CARD</string>
+    <string name="section_va">VIRTUAL BANK TRANSFER</string>
 
 </resources>
