@@ -25,6 +25,8 @@ import retrofit.Response;
  */
 public class Utils {
 
+    public static String BLANK = "";
+
     public static String FROM_SIGN_IN = "sign_in";
     public static String FROM_MEMBER_SETTING = "member_setting";
     //public static String FROM_GET_MEMBER_SETTING = "get_member_setting";
@@ -48,6 +50,9 @@ public class Utils {
     public static String FROM_VERIFY_VERIFICATION_CODE = "verify_verification_code";
     public static String FROM_PRODUCT_LIST = "product_list";
     public static String FROM_SUMMARY = "summary";
+
+    public static String FROM_APPSFLYER = "appsflyer";
+    public static String FROM_MIXPANEL = "mixpanel";
 
     public static boolean SHOW_WALKTHROUGH_EVENT = true;
     public static boolean SHOW_WALKTHROUGH_SOCIAL = true;
@@ -82,6 +87,7 @@ public class Utils {
     public static String AFinstall_type = "";
     public static String AFcampaign = "";
     public static String AFmedia_source = "";
+    public static String AF_ORGANIC = "Organic";
     //------------------------
 
     public static int myPixel(Activity a, int dip) {
@@ -116,6 +122,9 @@ public class Utils {
     public final static String URL_ADD_CHAT = BASE_URL + "app/v3/messages/add";
     public final static String URL_VERIFY_PHONE_NUMBER = BASE_URL + "app/v3/user/phone/verification/send/{fb_id}/{phone}";
     public final static String URL_VERIFY_VERIFICATION_CODE = BASE_URL + "app/v3/user/phone/verification/validate/{fb_id}/{token}";
+
+    public final static String URL_APPSFLYER = BASE_URL + "app/v3/appsflyerinfo";
+    public final static String URL_MIXPANEL = BASE_URL + "app/v3/user/sync/superproperties/";
 
     public final static String URL_PRODUCT_LIST = BASE_URL + "app/v3/product/list/{event_id}";
     public final static String URL_SUMMARY = BASE_URL + "app/v3/product/summary";
