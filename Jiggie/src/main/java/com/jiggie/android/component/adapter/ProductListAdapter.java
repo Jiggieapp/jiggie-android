@@ -1,101 +1,97 @@
 package com.jiggie.android.component.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jiggie.android.R;
-import com.jiggie.android.component.Utils;
-import com.jiggie.android.model.ProductModel;
-
-import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
- * Created by wandywijayanto on 2/11/16.
+ * Created by LTE on 2/24/2016.
  */
-public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.ViewHolder>{
+public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.ViewHolder> {
 
-    public static final String TAG = ProductListAdapter.class.getSimpleName();
+    private final ViewSelectedListener listener;
 
-    private ArrayList<ProductModel.Data.Product_lists.Purchase> items;
-    private ArrayList<ProductModel.Data.Product_lists.Purchase> purchases;
-    private ArrayList<ProductModel.Data.Product_lists.Reservation> reservations;
+    private Context context;
 
-    public ProductListAdapter()
-    {
-        items = new ArrayList<>();
-        purchases = new ArrayList<>();
-        reservations = new ArrayList<>();
+    public ProductListAdapter(ViewSelectedListener listener) {
+        this.listener = listener;
     }
-
-    public void clear()
-    {
-        this.purchases.clear();
-        this.reservations.clear();
-    }
-
-    public void addPurchases(ArrayList<ProductModel.Data.Product_lists.Purchase> data)
-    {
-        items.addAll(data);
-        purchases.addAll(data);
-    }
-    public void add(ProductModel.Data.Product_lists.Purchase data)
-    {
-        purchases.add(data);
-        items.add(data);
-    }
-
-    public void addReservations(ArrayList<ProductModel.Data.Product_lists.Reservation> data)
-    {
-        //reservations.addAll(data);
-        for(int i=0;i<data.size();i++)
-        {
-
-            ProductModel.Data.Product_lists.Purchase temp
-                    = new ProductModel.Data.Product_lists.Purchase(data.get(i));
-            //temp.setEvent_id(reservations.g);
-            Utils.d(TAG, "data get i " + temp.getName()
-                    + " " + temp.getTicket_type());
-            items.add(temp);
-            notifyDataSetChanged();
-        }
-    }
-
-
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        ViewHolder holder = new ViewHolder(
-                LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.item_product_list, parent, false));
-        return holder;
+        this.context = parent.getContext();
+        return new ViewHolder(LayoutInflater.from(this.context).inflate(R.layout.item_product_list, parent, false), this.listener);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final ProductModel.Data.Product_lists.Purchase product
-                = items.get(position);
-        holder.productName.setText(product.getName());
+        /*try {
+
+        }catch (ParseException e){
+            throw new RuntimeException(App.getErrorMessage(e), e);
+        }*/
+        holder.txtTicketName.setText(context.getString(R.string.msg_dummy));
+        if (position == 0) {
+            holder.txtSectionTicket.setText(context.getString(R.string.section_ticket));
+            holder.linSection.setVisibility(View.VISIBLE);
+        } else if (position == 3) {
+            holder.txtSectionTicket.setText(context.getString(R.string.section_table));
+            holder.linSection.setVisibility(View.VISIBLE);
+        } else {
+            holder.linSection.setVisibility(View.GONE);
+        }
+        //holder.txtTicketInfo.setVisibility(View.GONE);
     }
 
     @Override
     public int getItemCount() {
-        return purchases.size();
+        return 9;
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder
-    {
-        @Bind(R.id.product_name)
-        TextView productName;
+    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        @Bind(R.id.lin_section)
+        LinearLayout linSection;
+        @Bind(R.id.txt_ticket_name)
+        TextView txtTicketName;
+        @Bind(R.id.txt_ticket_info)
+        TextView txtTicketInfo;
+        @Bind(R.id.txt_price)
+        TextView txtPrice;
+        @Bind(R.id.txt_price_info)
+        TextView txtPriceInfo;
+        @Bind(R.id.txt_section_ticket)
+        TextView txtSectionTicket;
 
-        public ViewHolder(View itemView) {
+        private ViewSelectedListener listener;
+        //private EventModel.Data.Events event;
+
+        public ViewHolder(View itemView, ViewSelectedListener listener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
+            if ((this.listener = listener) != null)
+                itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (listener != null) {
+                //listener.onViewSelected(this.event);
+            }
         }
     }
+
+    public interface ViewSelectedListener {
+        void onViewSelected();
+    }
+
 }
