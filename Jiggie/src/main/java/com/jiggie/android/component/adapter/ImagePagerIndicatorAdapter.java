@@ -13,8 +13,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.jiggie.android.R;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.Common;
 import com.bumptech.glide.Glide;
+
+import java.io.File;
 
 /**
  * Created by rangga on 17/08/2014.
@@ -119,7 +122,10 @@ public class ImagePagerIndicatorAdapter extends FragmentPagerAdapter {
         public void onActivityCreated(@Nullable Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
             final String url = super.getArguments().getString(Common.BUNDLE_IMAGE);
+
             Glide.with(this).load(url).centerCrop().into(this.imageView);
         }
     }
+
+    public static final String TAG = ImagePagerIndicatorAdapter.class.getSimpleName() ;
 }

@@ -188,7 +188,6 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             SettingModel settingModel = AccountManager.loadSetting();
             final String phoneNo = settingModel.getData().getPhone();
-            Utils.d(TAG, "phoneNo " + phoneNo);
             if (phoneNo == null || phoneNo.isEmpty())
             {
                 txtVerifyPhoneNumber.setVisibility(View.VISIBLE);

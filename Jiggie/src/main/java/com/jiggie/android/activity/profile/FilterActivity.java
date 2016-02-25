@@ -97,7 +97,9 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
     public void onEvent(ExceptionModel exceptionModel) {
         Toast.makeText(this, exceptionModel.getMessage(), Toast.LENGTH_SHORT).show();
         this.progressBar.setVisibility(View.GONE);
-        this.failedView.setVisibility(View.VISIBLE);
+        //this.failedView.setVisibility(View.VISIBLE);
+
+        hideProgressDialog();
     }
 
     public void onEvent(ArrayList<String> result) {
@@ -268,9 +270,18 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
         progressDialog.show();
     }
 
+    private void hideProgressDialog()
+    {
+        if(progressDialog != null && progressDialog.isShowing())
+        {
+            progressDialog.dismiss();
+        }
+    }
+
     @OnClick(R.id.btnRetry)
     @SuppressWarnings("unused")
     public void onBtnRetryOnClick() {
         loadData();
     }
+
 }

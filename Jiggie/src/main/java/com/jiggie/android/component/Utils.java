@@ -11,13 +11,14 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
-import com.squareup.okhttp.Response;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
+import retrofit.Response;
 
 /**
  * Created by LTE on 1/29/2016.

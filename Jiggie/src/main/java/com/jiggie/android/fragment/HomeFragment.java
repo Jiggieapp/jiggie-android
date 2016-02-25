@@ -39,7 +39,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     @Bind(R.id.viewpager) ViewPager viewPager;
     @Bind(R.id.toolbar) Toolbar toolbar;
     @Bind(R.id.tab) TabLayout tab;
-    @Bind(R.id.fab) FloatingActionButton fab;
+    //@Bind(R.id.fab) FloatingActionButton fab;
 
     private TabFragment lastSelectedFragment;
     private PageAdapter adapter;
@@ -148,9 +148,8 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         this.lastSelectedFragment = (TabFragment) this.adapter.fragments[position];
         this.lastSelectedFragment.onTabSelected();
 
-        if(position == 0)
+        /*if(position == 0)
         {
-            //fab.setVisibility(View.VISIBLE);
             if(fab.getVisibility() == View.GONE)
             {
                 fab.startAnimation(makeInAnimation);
@@ -159,13 +158,12 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
 
         }
         else {
-            //fab.setVisibility(View.GONE);
             if (fab.getVisibility() == View.VISIBLE)
             {
                 fab.startAnimation(makeOutAnimation);
                 fab.setVisibility(View.GONE);
             }
-        }
+        }*/
     }
 
     Animation makeInAnimation, makeOutAnimation;
@@ -267,13 +265,10 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         tab.getTabAt(2).setCustomView(tabThree);
     }
 
-    @OnClick(R.id.fab)
+    /*@OnClick(R.id.fab)
     void onFabClick()
     {
         Intent i = new Intent(this.getActivity(), FilterActivity.class);
         startActivity(i);
-
-        //AccountManager.getAccessToken();
-        //ProductManager.getProductList("56b1a0bf89bfed03005c50f0");
-    }
+    }*/
 }
