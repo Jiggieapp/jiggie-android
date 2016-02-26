@@ -191,7 +191,15 @@ public class App extends Application {
     public void trackMixPanelEvent(String eventName) { this.trackMixPanelEvent(eventName, new SimpleJSONObject()); }
     public void trackMixPanelEvent(String eventName, SimpleJSONObject json) {
         final String location = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin().getLocation();
-        final String[] locations = TextUtils.isEmpty(location) ? new String[] { "", "" } : location.split(",");
+
+        String[] locations = null;
+        try {
+            locations = TextUtils.isEmpty(location) ? new String[] { "", "" } : location.split(",");
+        }catch (Exception e){
+
+        }
+
+
         final ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         final NetworkInfo network = connManager.getActiveNetworkInfo();
 
@@ -221,8 +229,20 @@ public class App extends Application {
         //------------
 
         json.putString("Carrier", this.getSimOperatorName());
-        json.putString("City", locations[0].trim());
-        json.putString("Country", locations[1].trim());
+
+        try {
+            json.putString("City", locations[0].trim());
+        }catch (Exception e){
+            json.putString("City", Utils.BLANK);
+        }
+
+        try {
+            json.putString("Country", locations[1].trim());
+        }catch (Exception e){
+            json.putString("Country", Utils.BLANK);
+        }
+
+
         json.putString("Device Model", Build.MODEL);
         json.putString("Manufacturer", Build.MANUFACTURER);
 
@@ -237,7 +257,14 @@ public class App extends Application {
         json.putString("Operating System", "Android");
         json.putString("Mixpanel Library", "Android");
         //json.putString("Library Version", "");
-        json.putString("Region", locations[0]);
+
+        try {
+            json.putString("Region", locations[0]);
+        }catch (Exception e){
+            json.putString("Region", Utils.BLANK);
+        }
+
+
 
 
         if(login!=null){
