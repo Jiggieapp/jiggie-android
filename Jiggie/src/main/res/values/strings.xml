@@ -218,6 +218,13 @@
     <string name="va_mandiri">Mandiri Virtual Account</string>
     <string name="va_bca">BCA Virtual Account</string>
     <string name="other_bank">Other Banks</string>
+
+    <string name="cc_name_hint">Card Holder Name</string>
+    <string name="cc_number_hint">Credit Card Number</string>
+    <string name="cc_date_hint">MM/YYYY</string>
+    <string name="cc_cvv_hint">CVV</string>
+    <string name="cc_save">SAVE CARD</string>
+    <string name="title_cc">ADD CREDIT CARD</string>
     <!--END HERE-->
 
 </resources>
