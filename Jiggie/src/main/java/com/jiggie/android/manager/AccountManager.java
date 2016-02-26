@@ -146,7 +146,7 @@ public class AccountManager extends BaseManager{
                     /*String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);*/
                     if (response.code() == Utils.CODE_SUCCESS) {
-                        Utils.d(TAG, "response " +  Utils.print(response));
+                        //Utils.d(TAG, "response " +  Utils.print(response));
                         MemberInfoModel dataTemp = (MemberInfoModel) response.body();
                         EventBus.getDefault().post(dataTemp);
                     } else {

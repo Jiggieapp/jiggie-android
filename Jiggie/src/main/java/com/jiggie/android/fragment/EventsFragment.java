@@ -65,7 +65,7 @@ public class EventsFragment extends Fragment
     private String title;
     private HomeMain homeMain;
     private TabFragment lastSelectedFragment;
-    private final String TAG = EventsFragment.class.getSimpleName();
+    public final static String TAG = EventsFragment.class.getSimpleName();
     private boolean isLoading;
     private String searchText;
 
@@ -269,9 +269,9 @@ public class EventsFragment extends Fragment
 
     public void onEvent(ExceptionModel exceptionModel)
     {
-        Snackbar snackbar = Snackbar
+        /*Snackbar snackbar = Snackbar
                 .make(coordinatorLayout, "Welcome to AndroidHive", Snackbar.LENGTH_LONG);
-        snackbar.show();
+        snackbar.show();*/
 
         this.isLoading = false;
         this.refreshLayout.setRefreshing(false);
@@ -374,12 +374,13 @@ public class EventsFragment extends Fragment
             ArrayList<EventModel.Data.Events> upcomingEvents = new ArrayList<>();
             for (EventModel.Data.Events tempEvent : getEvents()) {
                 //new Date(event.getDate_day());
+                Utils.d(TAG, "" + tempEvent.getTags().toString() + " " + searchText
+                        + " " + isSearch);
                 if(tempEvent.getTitle().toLowerCase().contains(searchText)
                         || tempEvent.getVenue_name().toLowerCase().contains(searchText)
                         || tempEvent.getTags().toString().toLowerCase().contains(searchText)
                         || searchText.equals(""))
                 {
-                    Utils.d(TAG, "" + isSearch);
                     if(!isSearch)
                     {
                         final String diffDays = Utils.calculateTime(tempEvent.getStart_datetime());
@@ -390,9 +391,9 @@ public class EventsFragment extends Fragment
                         } else if (diffDays.equals(Utils.DATE_UPCOMING)) {
                             upcomingEvents.add(tempEvent);
                         }
-                        todayFragment.onEvent(todayEvents);
+                        /*todayFragment.onEvent(todayEvents);
                         tomorrowFragment.onEvent(tomorrowEvents);
-                        upcomingFragment.onEvent(upcomingEvents);
+                        upcomingFragment.onEvent(upcomingEvents);*/
                     }
                     else
                     {
@@ -400,20 +401,24 @@ public class EventsFragment extends Fragment
                         {
                             case 0:
                                 todayEvents.add(tempEvent);
-                                todayFragment.onEvent(todayEvents);
+                                //todayFragment.onEvent(todayEvents);
                                 break;
                             case 1:
                                 tomorrowEvents.add(tempEvent);
-                                tomorrowFragment.onEvent(tomorrowEvents);
+                                //tomorrowFragment.onEvent(tomorrowEvents);
                                 break;
                             case 2:
                                 upcomingEvents.add(tempEvent);
-                                upcomingFragment.onEvent(upcomingEvents);
+                                //upcomingFragment.onEvent(upcomingEvents);
                                 break;
                         }
                     }
                 }
+                todayFragment.onEvent(todayEvents);
+                tomorrowFragment.onEvent(tomorrowEvents);
+                upcomingFragment.onEvent(upcomingEvents);
             }
+
         }
     }
 
@@ -459,4 +464,11 @@ public class EventsFragment extends Fragment
 
     }
 
+    public void onEvent(final String tag)
+    {
+        if(TAG.equalsIgnoreCase(tag))
+        {
+            onRefresh();
+        }
+    }
 }

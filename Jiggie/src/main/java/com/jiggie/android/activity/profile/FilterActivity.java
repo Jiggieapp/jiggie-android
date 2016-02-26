@@ -15,9 +15,12 @@ import android.widget.Toast;
 
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.component.FlowLayout;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
+import com.jiggie.android.fragment.EventsFragment;
+import com.jiggie.android.fragment.HomeFragment;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.MemberSettingModel;
@@ -217,8 +220,6 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
     @OnClick(R.id.btnApply)
     @SuppressWarnings("unused")
     void onClickBtnApply() {
-        for (String item : selectedItems)
-            Utils.d(TAG, "item " + item);
 
         if (selectedItems.size() > 0) {
             MemberSettingModel memberSettingModel = AccountManager.loadMemberSetting();
@@ -232,16 +233,10 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
     }
 
     public void onEvent(Success2Model message) {
-        /*dialog = App.showProgressDialog(this);
-
-        if (isActive()) {
-            dialog.dismiss();
-            finish();
-        }*/
-        // Start new activity from app context instead of current activity. This prevent crash when activity has been destroyed.
-        //final App app = App.getInstance();
         if (progressDialog != null && progressDialog.isShowing())
             progressDialog.dismiss();
+
+        EventBus.getDefault().post(EventsFragment.TAG);
     }
 
     private void showConfirmationDialog() {

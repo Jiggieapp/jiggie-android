@@ -44,7 +44,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     private TabFragment lastSelectedFragment;
     private PageAdapter adapter;
     private View rootView;
-    private final String TAG = HomeFragment.class.getSimpleName();
+    public final String TAG = HomeFragment.class.getSimpleName();
 
     @Nullable
     @Override

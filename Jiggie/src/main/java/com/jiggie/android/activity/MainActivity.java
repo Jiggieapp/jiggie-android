@@ -50,6 +50,7 @@ import de.greenrobot.event.EventBus;
 public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_GOOGLE_PLAY_SERVICES = 1972;
     private boolean active;
+    public static final String TAG = MainActivity.class.getSimpleName();
 
     private boolean isFirstRun()
     {
@@ -104,8 +105,6 @@ public class MainActivity extends AppCompatActivity {
             final String str = GoogleApiAvailability.getInstance().getErrorString(code);
             Toast.makeText(this, str, Toast.LENGTH_LONG).show();
         }
-        /*Intent i = new Intent(this, FilterActivity.class);
-        startActivity(i);*/
 
     }
 
@@ -366,4 +365,5 @@ public class MainActivity extends AppCompatActivity {
         }
         hideProgressDialog();
     }
+
 }

@@ -144,7 +144,6 @@ public class Utils {
         try {
             Date d1 = format.parse(date);
             Long current = new Date().getTime();
-            Date midnight = new Date(current - current % (24 * 60 * 60 * 1000));
 
             Calendar c = Calendar.getInstance();
             c.add(Calendar.DAY_OF_MONTH, 1);

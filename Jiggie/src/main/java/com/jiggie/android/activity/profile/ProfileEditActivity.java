@@ -72,7 +72,6 @@ public class ProfileEditActivity extends ToolbarActivity {
         aboutModel.setAbout(this.textView.getText().toString());
 
         String sd = String.valueOf(new Gson().toJson(aboutModel));
-
         AccountManager.loaderEditAbout(aboutModel);
     }
 

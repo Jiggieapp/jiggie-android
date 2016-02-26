@@ -23,6 +23,7 @@ import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.GuestModel;
+import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.MemberInfoModel;
 import com.jiggie.android.model.SettingModel;
 
@@ -112,8 +113,6 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
 
         final String age = StringUtility.getAge2(message.getData().getMemberinfo().getBirthday());
 
-        txtLocation.setText(message.getData().getMemberinfo().getLocation());
-        txtDescription.setText(message.getData().getMemberinfo().getAbout());
 
         //Added by Aga 22-2-2016--------
         String[] photos;
@@ -140,20 +139,48 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
                 }
             }
 
+            final LoginModel loginModel = AccountManager.loadLogin();
+
+
+
+            if (TextUtils.isEmpty(loginModel.getLocation()))
+            {
+                txtLocation.setVisibility(View.GONE);
+            }
+            else if (loginModel.getLocation().equalsIgnoreCase("n/a"))
+            {
+                txtLocation.setVisibility(View.GONE);
+            }
+            else
+            {
+                txtLocation.setText(loginModel.getLocation());
+            }
+
+            if (TextUtils.isEmpty(loginModel.getAbout()))
+                txtDescription.setVisibility(View.GONE);
+            else
+            {
+                txtDescription.setText(loginModel.getAbout());
+            }
         }
         else{
             photos = message.getData().getMemberinfo().getPhotos().toArray(new String[message.getData().getMemberinfo().getPhotos().size()]);
+            txtLocation.setText(message.getData().getMemberinfo().getLocation());
+            //AccountManager.loadLogin().getAbout()
+            txtDescription.setText(message.getData().getMemberinfo().getAbout());
+
+            if (TextUtils.isEmpty(message.getData().getMemberinfo().getLocation()))
+                txtLocation.setVisibility(View.GONE);
+            else if (message.getData().getMemberinfo().getLocation().equalsIgnoreCase("n/a"))
+                txtLocation.setVisibility(View.GONE);
+            if (TextUtils.isEmpty(message.getData().getMemberinfo().getAbout()))
+                txtDescription.setVisibility(View.GONE);
         }
         //-----------------------
 
         this.pagerIndicatorAdapter.setImages(photos);
 
-        if (TextUtils.isEmpty(message.getData().getMemberinfo().getLocation()))
-            txtLocation.setVisibility(View.GONE);
-        else if (message.getData().getMemberinfo().getLocation().equalsIgnoreCase("n/a"))
-            txtLocation.setVisibility(View.GONE);
-        if (TextUtils.isEmpty(message.getData().getMemberinfo().getAbout()))
-            txtDescription.setVisibility(View.GONE);
+
 
         String name = message.getData().getMemberinfo().getFirst_name() + " " + message.getData().getMemberinfo().getLast_name();
 

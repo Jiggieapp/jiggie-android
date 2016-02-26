@@ -147,15 +147,14 @@ public class EventTabFragment extends Fragment
         this.events = new ArrayList<>();
         super.setHasOptionsMenu(true);
 
-        //wandy 18-02-2015
+        //wandy 18-02-2016
         /*if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_EVENT, false)) {
             layoutWalkthrough.setVisibility(View.VISIBLE);
             imgWk.setImageResource(R.drawable.wk_img_event);
             txtWkAction.setVisibility(View.GONE);
             txtWkTitle.setText(R.string.wk_event_title);
             txtWkDesc.setText(R.string.wk_event_desc);
-        }
-        */
+        }*/
         this.onTabSelected();
     }
 
