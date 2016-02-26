@@ -2,6 +2,9 @@ package com.jiggie.android.fragment;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -24,10 +27,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.facebook.AccessToken;
+import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
@@ -68,6 +77,7 @@ public class EventsFragment extends Fragment
     public final static String TAG = EventsFragment.class.getSimpleName();
     private boolean isLoading;
     private String searchText;
+    private Dialog dialogWalkthrough;
 
     @Override
     public String getTitle() {
@@ -78,6 +88,9 @@ public class EventsFragment extends Fragment
     public void onTabSelected() {
         //onRefresh();
         showTab();
+        if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_EVENT, false)) {
+            showWalkthroughDialog();
+        }
     }
 
     public void setHomeMain(HomeMain homeMain) {
@@ -232,8 +245,10 @@ public class EventsFragment extends Fragment
 
     //Added by Aga
     public void onEvent(EventModel eventModel) {
+
         ArrayList<EventModel.Data.Events> message = eventModel.getData().getEvents();
         int size = message.size();
+
         setEvents(message);
         /*ArrayList<EventModel.Data.Events> todayEvents = new ArrayList<>();
         ArrayList<EventModel.Data.Events> tomorrowEvents = new ArrayList<>();
@@ -273,6 +288,12 @@ public class EventsFragment extends Fragment
                 .make(coordinatorLayout, "Welcome to AndroidHive", Snackbar.LENGTH_LONG);
         snackbar.show();*/
 
+        if(exceptionModel.getMessage().equalsIgnoreCase(Utils.MSG_EMPTY_DATA))
+        {
+            setEvents(null);
+            //onRefresh();
+            filter("");
+        }
         this.isLoading = false;
         this.refreshLayout.setRefreshing(false);
     }
@@ -364,15 +385,16 @@ public class EventsFragment extends Fragment
 
     private void filter(String searchText, boolean isSearch)
     {
+        ArrayList<EventModel.Data.Events> todayEvents = new ArrayList<>();
+        ArrayList<EventModel.Data.Events> tomorrowEvents = new ArrayList<>();
+        ArrayList<EventModel.Data.Events> upcomingEvents = new ArrayList<>();
+
         if(getEvents() != null)
         {
             if(searchText == null)
                 searchText = "";
             searchText = searchText.toLowerCase();
-            ArrayList<EventModel.Data.Events> todayEvents = new ArrayList<>();
-            ArrayList<EventModel.Data.Events> tomorrowEvents = new ArrayList<>();
-            ArrayList<EventModel.Data.Events> upcomingEvents = new ArrayList<>();
-            for (EventModel.Data.Events tempEvent : getEvents()) {
+             for (EventModel.Data.Events tempEvent : getEvents()) {
                 //new Date(event.getDate_day());
                 Utils.d(TAG, "" + tempEvent.getTags().toString() + " " + searchText
                         + " " + isSearch);
@@ -414,12 +436,12 @@ public class EventsFragment extends Fragment
                         }
                     }
                 }
-                todayFragment.onEvent(todayEvents);
-                tomorrowFragment.onEvent(tomorrowEvents);
-                upcomingFragment.onEvent(upcomingEvents);
             }
-
         }
+
+        todayFragment.onEvent(todayEvents);
+        tomorrowFragment.onEvent(tomorrowEvents);
+        upcomingFragment.onEvent(upcomingEvents);
     }
 
     private void filter(String searchText)
@@ -471,4 +493,43 @@ public class EventsFragment extends Fragment
             onRefresh();
         }
     }
+
+    private void showWalkthroughDialog() {
+        dialogWalkthrough = new Dialog(getActivity());
+        dialogWalkthrough.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialogWalkthrough.setContentView(R.layout.walkthrough_screen);
+        dialogWalkthrough.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialogWalkthrough.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
+
+        RelativeLayout layout = (RelativeLayout)dialogWalkthrough.findViewById(R.id.layout_walkthrough);
+        ImageView imgWk = (ImageView)dialogWalkthrough.findViewById(R.id.img_wk);
+        TextView txtWkAction = (TextView)dialogWalkthrough.findViewById(R.id.txt_wk_action);
+        TextView txtWkTitle = (TextView)dialogWalkthrough.findViewById(R.id.txt_wk_title);
+        TextView txtWkDesc = (TextView)dialogWalkthrough.findViewById(R.id.txt_wk_desc);
+        imgWk.setImageResource(R.drawable.wk_event);
+        txtWkAction.setVisibility(View.GONE);
+        txtWkTitle.setText(R.string.wk_event_title);
+        txtWkDesc.setText(R.string.wk_event_desc);
+
+        dialogWalkthrough.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                Utils.SHOW_WALKTHROUGH_EVENT = false;
+                App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, false).commit();
+            }
+        });
+
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.SHOW_WALKTHROUGH_EVENT = false;
+                App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, false).commit();
+                dialogWalkthrough.dismiss();
+            }
+        });
+
+        dialogWalkthrough.show();
+    }
+
 }
