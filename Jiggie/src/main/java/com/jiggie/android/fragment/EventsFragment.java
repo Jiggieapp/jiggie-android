@@ -23,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -357,6 +358,13 @@ public class EventsFragment extends Fragment
                             @Override
                             public void run() {
                                 filter(searchText, true);
+                                viewPagerEvents.setOnTouchListener(new View.OnTouchListener() {
+                                    @Override
+                                    public boolean onTouch(View v, MotionEvent event) {
+                                        return false;
+                                    }
+                                });
+
                             }
                         }, getResources().getInteger(R.integer.event_search_delay));
                         return true;
@@ -372,6 +380,8 @@ public class EventsFragment extends Fragment
                 handler.removeCallbacksAndMessages(null);
                 filter("", false);
                 searchView.setOnQueryTextListener(null);
+
+                viewPagerEvents.setpagin
                 return true;
             }
         });
