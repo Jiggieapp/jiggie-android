@@ -94,13 +94,14 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     @Override
     public void onTabSelected() {
         App.getInstance().trackMixPanelEvent("Conversations List");
+
+        if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_CHAT, false)) {
+            showWalkthroughDialog();
+        }
+
         //if ((this.adapter != null) && (this.adapter.getItemCount() == 0)||ChatManager.NEED_REFRESH_CHATLIST)
         if ((this.adapter != null) && (this.adapter.getItemCount() == 0)){
             this.onRefresh();
-
-            if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_CHAT, false)) {
-                showWalkthroughDialog();
-            }
         }
     }
 

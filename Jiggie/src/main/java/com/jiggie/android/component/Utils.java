@@ -60,6 +60,7 @@ public class Utils {
     public static String SET_WALKTHROUGH_EVENT = "walkthrough_event";
     public static String SET_WALKTHROUGH_SOCIAL = "walkthrough_social";
     public static String SET_WALKTHROUGH_CHAT = "walkthrough_chat";
+    public static boolean FIRST_INSTALL = false;
 
     //ERROR CODE & MESSAGE
     //public static String MSG_EXCEPTION = "Failed: ";

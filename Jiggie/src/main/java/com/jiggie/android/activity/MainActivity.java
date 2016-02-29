@@ -91,6 +91,8 @@ public class MainActivity extends AppCompatActivity {
             final SharedPreferences pref = App.getSharedPreferences();
             pref.edit().putBoolean(Utils.IS_FIRST_RUN, false).commit();
             App.getInstance().trackMixPanelEvent("Install");
+
+            Utils.FIRST_INSTALL = true;
         }
 
         // validate GCM Version and update if necessary
