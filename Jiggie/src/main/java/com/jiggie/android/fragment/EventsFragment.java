@@ -276,11 +276,10 @@ public class EventsFragment extends Fragment
         tomorrowFragment.onEvent(tomorrowEvents);
         upcomingFragment.onEvent(upcomingEvents);*/
         boolean isExpanded = false;
-        if(searchView.isIconified())
+        if(searchText != null  /* && !searchText.isEmpty()*/)
         {
             isExpanded = true;
         }
-        Utils.d(TAG, isExpanded + " isExpanded");
         filter(searchText, isExpanded);
         this.isLoading = false;
         this.refreshLayout.setRefreshing(false);
@@ -367,8 +366,10 @@ public class EventsFragment extends Fragment
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
+                Utils.d(TAG, "onmenuitemactioncollapse");
                 searchText = null;
                 showTab();
+                handler.removeCallbacksAndMessages(null);
                 filter("", false);
                 searchView.setOnQueryTextListener(null);
                 return true;
@@ -389,8 +390,6 @@ public class EventsFragment extends Fragment
 
     private void filter(String searchText, boolean isSearch)
     {
-        Utils.d(TAG, "masuk sini events "
-                + searchText+ "searchText " + isSearch);
         ArrayList<EventModel.Data.Events> todayEvents = new ArrayList<>();
         ArrayList<EventModel.Data.Events> tomorrowEvents = new ArrayList<>();
         ArrayList<EventModel.Data.Events> upcomingEvents = new ArrayList<>();
@@ -399,6 +398,7 @@ public class EventsFragment extends Fragment
         {
             if(searchText == null)
                 searchText = "";
+            Utils.d(TAG, "getEvents tidak null " + isSearch);
             searchText = searchText.toLowerCase();
              for (EventModel.Data.Events tempEvent : getEvents()) {
                 //new Date(event.getDate_day());
@@ -407,7 +407,6 @@ public class EventsFragment extends Fragment
                         || tempEvent.getTags().toString().toLowerCase().contains(searchText)
                         || searchText.equals(""))
                 {
-                    Utils.d(TAG, tempEvent.getTitle() + " " + searchText);
                     if(!isSearch)
                     {
                         final String diffDays = Utils.calculateTime(tempEvent.getStart_datetime());
@@ -442,6 +441,10 @@ public class EventsFragment extends Fragment
                     }
                 }
             }
+        }
+        else
+        {
+            Utils.d(TAG, "getEvents null");
         }
 
         todayFragment.onEvent(todayEvents);
@@ -492,7 +495,6 @@ public class EventsFragment extends Fragment
 
     public void onEvent(final String tag)
     {
-        Utils.d(TAG, "masuk sini onEvents " + tag);
         if(TAG.equalsIgnoreCase(tag))
         {
             onRefresh();
