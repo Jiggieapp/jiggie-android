@@ -361,7 +361,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         }else{
             if (isActive()) {
                 //if(progressDialog!=null&&progressDialog.isShowing()){
-                    progressDialog.dismiss();
+                progressDialog.dismiss();
                 //}
 
                 if(!message.getMessage().equals(Utils.RESPONSE_FAILED + " " + "empty data")){
