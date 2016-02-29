@@ -78,6 +78,7 @@ public class EventsFragment extends Fragment
     private boolean isLoading;
     private String searchText;
     private Dialog dialogWalkthrough;
+    SearchView searchView;
 
     @Override
     public String getTitle() {
@@ -245,7 +246,6 @@ public class EventsFragment extends Fragment
 
     //Added by Aga
     public void onEvent(EventModel eventModel) {
-
         ArrayList<EventModel.Data.Events> message = eventModel.getData().getEvents();
         int size = message.size();
 
@@ -275,9 +275,13 @@ public class EventsFragment extends Fragment
         todayFragment.onEvent(todayEvents);
         tomorrowFragment.onEvent(tomorrowEvents);
         upcomingFragment.onEvent(upcomingEvents);*/
-
-        filter(searchText);
-
+        boolean isExpanded = false;
+        if(searchView.isIconified())
+        {
+            isExpanded = true;
+        }
+        Utils.d(TAG, isExpanded + " isExpanded");
+        filter(searchText, isExpanded);
         this.isLoading = false;
         this.refreshLayout.setRefreshing(false);
     }
@@ -288,7 +292,8 @@ public class EventsFragment extends Fragment
                 .make(coordinatorLayout, "Welcome to AndroidHive", Snackbar.LENGTH_LONG);
         snackbar.show();*/
 
-        if(exceptionModel.getMessage().equalsIgnoreCase(Utils.MSG_EMPTY_DATA))
+        if(exceptionModel.getMessage().equalsIgnoreCase(Utils.MSG_EMPTY_DATA) &&
+                exceptionModel.getFrom().equalsIgnoreCase(Utils.FROM_EVENT))
         {
             setEvents(null);
             //onRefresh();
@@ -310,7 +315,7 @@ public class EventsFragment extends Fragment
         //super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_event, menu);
         final MenuItem searchMenu = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenu);
+        searchView = (SearchView) MenuItemCompat.getActionView(searchMenu);
         final Handler handler = new Handler();
         /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -364,7 +369,6 @@ public class EventsFragment extends Fragment
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 searchText = null;
                 showTab();
-                Utils.d(TAG, "collapse");
                 filter("", false);
                 searchView.setOnQueryTextListener(null);
                 return true;
@@ -385,6 +389,8 @@ public class EventsFragment extends Fragment
 
     private void filter(String searchText, boolean isSearch)
     {
+        Utils.d(TAG, "masuk sini events "
+                + searchText+ "searchText " + isSearch);
         ArrayList<EventModel.Data.Events> todayEvents = new ArrayList<>();
         ArrayList<EventModel.Data.Events> tomorrowEvents = new ArrayList<>();
         ArrayList<EventModel.Data.Events> upcomingEvents = new ArrayList<>();
@@ -396,13 +402,12 @@ public class EventsFragment extends Fragment
             searchText = searchText.toLowerCase();
              for (EventModel.Data.Events tempEvent : getEvents()) {
                 //new Date(event.getDate_day());
-                Utils.d(TAG, "" + tempEvent.getTags().toString() + " " + searchText
-                        + " " + isSearch);
                 if(tempEvent.getTitle().toLowerCase().contains(searchText)
                         || tempEvent.getVenue_name().toLowerCase().contains(searchText)
                         || tempEvent.getTags().toString().toLowerCase().contains(searchText)
                         || searchText.equals(""))
                 {
+                    Utils.d(TAG, tempEvent.getTitle() + " " + searchText);
                     if(!isSearch)
                     {
                         final String diffDays = Utils.calculateTime(tempEvent.getStart_datetime());
@@ -463,7 +468,6 @@ public class EventsFragment extends Fragment
                         }
                     });
         }
-
     }
 
     protected void hideTab()
@@ -488,6 +492,7 @@ public class EventsFragment extends Fragment
 
     public void onEvent(final String tag)
     {
+        Utils.d(TAG, "masuk sini onEvents " + tag);
         if(TAG.equalsIgnoreCase(tag))
         {
             onRefresh();
@@ -531,5 +536,4 @@ public class EventsFragment extends Fragment
 
         dialogWalkthrough.show();
     }
-
 }

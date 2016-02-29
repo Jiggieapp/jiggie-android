@@ -98,8 +98,16 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
     }
 
     public void onEvent(ExceptionModel exceptionModel) {
-       // Toast.makeText(this, exceptionModel.getMessage(), Toast.LENGTH_SHORT).show();
-        showToast();
+        //Toast.makeText(this, exceptionModel.getMessage(), Toast.LENGTH_SHORT).show();
+        if(exceptionModel.getMessage()
+                .equalsIgnoreCase(Utils.MSG_EMPTY_DATA))
+        {
+            showToast(getResources().getString(R.string.preferred_experience));
+        }
+        else
+        {
+            showToast(exceptionModel.getMessage());
+        }
         this.progressBar.setVisibility(View.GONE);
         //this.failedView.setVisibility(View.VISIBLE);
 

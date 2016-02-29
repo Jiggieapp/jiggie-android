@@ -191,7 +191,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         currentSetting = AccountManager.loadSetting();
 
         //wandy 22-02-2016
-        currentSetting = null;
+        //currentSetting = null;
 
         if(currentSetting != null)
         {
@@ -202,13 +202,10 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             this.switchSocialize.setChecked(true);
         }
         this.switchSocialize.setOnCheckedChangeListener(this.socializeChanged);
-
         App.getInstance().registerReceiver(this.socialReceiver, new IntentFilter(super.getString(R.string.broadcast_social)));
-
     }
 
     private void onRefresh() {
-
         if(!AccountManager.isInSettingPage){
             if (super.getContext() == null) {
                 // fragment already destroyed.

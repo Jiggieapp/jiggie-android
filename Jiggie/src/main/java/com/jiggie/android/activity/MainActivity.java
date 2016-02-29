@@ -38,6 +38,7 @@ import com.appsflyer.AppsFlyerLib;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.jiggie.android.manager.ShareManager;
+import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.ShareLinkModel;
 
 import java.util.Map;
@@ -364,6 +365,14 @@ public class MainActivity extends AppCompatActivity {
             shareLink = message;
         }
         hideProgressDialog();
+    }
+
+    public void onEvent(ExceptionModel exceptionModel)
+    {
+        if(exceptionModel.getFrom().equalsIgnoreCase(Utils.FROM_SHARE_LINK))
+        {
+            hideProgressDialog();
+        }
     }
 
 }
