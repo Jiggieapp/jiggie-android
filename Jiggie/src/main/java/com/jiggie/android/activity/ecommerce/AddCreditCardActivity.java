@@ -27,7 +27,7 @@ public class AddCreditCardActivity extends ToolbarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_cc2);
+        setContentView(R.layout.activity_add_cc);
         /*ButterKnife.bind(this);
 
         edtCcDate.setOnClickListener(new View.OnClickListener() {

@@ -57,7 +57,9 @@
         android:background="#30000000"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_below="@id/edt_cc_name"/>
+        android:layout_below="@id/edt_cc_name"
+        android:layout_marginLeft="@dimen/padding_standard"
+        android:layout_marginRight="@dimen/padding_standard"/>
 
     <EditText
         android:id="@+id/edt_cc_number"
@@ -78,7 +80,9 @@
         android:background="#30000000"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_below="@id/edt_cc_number"/>
+        android:layout_below="@id/edt_cc_number"
+        android:layout_marginLeft="@dimen/padding_standard"
+        android:layout_marginRight="@dimen/padding_standard"/>
 
     <LinearLayout
         android:id="@+id/lin"
@@ -113,7 +117,8 @@
                 android:background="#30000000"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_below="@id/edt_cc_date"/>
+                android:layout_below="@id/edt_cc_date"
+                android:layout_marginLeft="@dimen/padding_standard"/>
 
         </LinearLayout>
 
@@ -143,7 +148,8 @@
                 android:background="#30000000"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_below="@id/edt_cc_cvv"/>
+                android:layout_below="@id/edt_cc_cvv"
+                android:layout_marginRight="@dimen/padding_standard"/>
 
         </LinearLayout>
 
