@@ -36,14 +36,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.AccessToken;
+import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.manager.EventManager;
+import com.jiggie.android.manager.WalkthroughManager;
 import com.jiggie.android.model.EventModel;
 import com.jiggie.android.model.ExceptionModel;
+import com.jiggie.android.model.PostWalkthroughModel;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -524,6 +527,12 @@ public class EventsFragment extends Fragment
             public void onCancel(DialogInterface dialog) {
                 Utils.SHOW_WALKTHROUGH_EVENT = false;
                 App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, false).commit();
+
+                PostWalkthroughModel postWalkthroughModel = new PostWalkthroughModel(AccessToken.getCurrentAccessToken().getUserId(), Utils.TAB_EVENT, Utils.DEVICE_ID);
+
+                String sd = String.valueOf(new Gson().toJson(postWalkthroughModel));
+
+                WalkthroughManager.loaderPostWalkthrough(postWalkthroughModel);
             }
         });
 
@@ -533,6 +542,12 @@ public class EventsFragment extends Fragment
                 Utils.SHOW_WALKTHROUGH_EVENT = false;
                 App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, false).commit();
                 dialogWalkthrough.dismiss();
+
+                PostWalkthroughModel postWalkthroughModel = new PostWalkthroughModel(AccessToken.getCurrentAccessToken().getUserId(), Utils.TAB_EVENT, Utils.DEVICE_ID);
+
+                String sd = String.valueOf(new Gson().toJson(postWalkthroughModel));
+
+                WalkthroughManager.loaderPostWalkthrough(postWalkthroughModel);
             }
         });
 

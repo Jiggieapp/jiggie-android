@@ -91,6 +91,16 @@ public class AccountManager extends BaseManager{
 
                     if (response.code() == Utils.CODE_SUCCESS) {
                         LoginResultModel dataLogin = (LoginResultModel) response.body();
+
+                        //Added by Aga 29-2-2015-----
+                        boolean a = dataLogin.getData().getLogin().getShow_walkthrough_new().isEvent();
+                        boolean b = dataLogin.getData().getLogin().getShow_walkthrough_new().isChat();
+                        boolean c = dataLogin.getData().getLogin().getShow_walkthrough_new().isSocial();
+                        App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, dataLogin.getData().getLogin().getShow_walkthrough_new().isEvent()).commit();
+                        App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_SOCIAL, dataLogin.getData().getLogin().getShow_walkthrough_new().isSocial()).commit();
+                        App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_CHAT, dataLogin.getData().getLogin().getShow_walkthrough_new().isChat()).commit();
+                        //-------------
+
                         SettingModel dataTemp = setSettingModelFromLogin(dataLogin);
 
                         EventBus.getDefault().post(dataTemp);
@@ -305,7 +315,8 @@ public class AccountManager extends BaseManager{
         model.setHelp_phone(login.getHelp_phone());
         model.setMatchme(login.isMatchme());
         model.setDevice_type(login.getDevice_type());
-        model.setShow_walkthrough(login.isShow_walkthrough());
+        //model.setShow_walkthrough(login.isShow_walkthrough());
+        model.setShow_walkthrough(false);
 
         return model;
     }

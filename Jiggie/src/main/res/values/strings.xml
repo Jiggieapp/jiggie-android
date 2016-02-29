@@ -145,7 +145,7 @@
     <string name="wk_request_title">CONNECTION REQUEST</string>
     <string name="wk_chat_title">CHAT</string>
     <string name="wk_event_desc">Scroll through our curated list of the best events in Jakarta. If you see an event you like, tap on it for more details.</string>
-    <string name="wk_match_desc">We suggest matches with fun people who like the same events you do.\nTap <b>YES</b> if you want to connect with them.\nIf they also Tap <b>YES</b> then you can start chatting.</string>
+    <string name="wk_match_desc">We suggest matches with other guests.\nTap <b>YES</b> if you want to connect with them.\nIf they also Tap <b>YES</b> then a chat starts.</string>
     <string name="wk_request_desc">This card means they want to connect with you.\nTap <b>YES</b> to start chatting right away.</string>
     <string name="wk_chat_desc">When you both tap <b>YES</b> a chat connection begins.\nStart chatting and make plans to go to events together!</string>
 

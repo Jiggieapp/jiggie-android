@@ -39,12 +39,14 @@ import com.jiggie.android.component.adapter.ChatTabListAdapter;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.manager.ChatManager;
+import com.jiggie.android.manager.WalkthroughManager;
 import com.jiggie.android.model.ChatActionModel;
 import com.jiggie.android.model.ChatListModel;
 import com.jiggie.android.model.Conversation;
 import com.android.volley.VolleyError;
 import com.facebook.AccessToken;
 import com.jiggie.android.model.ExceptionModel;
+import com.jiggie.android.model.PostWalkthroughModel;
 
 import org.json.JSONArray;
 
@@ -376,6 +378,9 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
             public void onCancel(DialogInterface dialog) {
                 Utils.SHOW_WALKTHROUGH_CHAT = false;
                 App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_CHAT, false).commit();
+
+                PostWalkthroughModel postWalkthroughModel = new PostWalkthroughModel(AccessToken.getCurrentAccessToken().getUserId(), Utils.TAB_CHAT, Utils.DEVICE_ID);
+                WalkthroughManager.loaderPostWalkthrough(postWalkthroughModel);
             }
         });
 
@@ -385,6 +390,9 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
                 Utils.SHOW_WALKTHROUGH_CHAT = false;
                 App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_CHAT, false).commit();
                 dialogWalkthrough.dismiss();
+
+                PostWalkthroughModel postWalkthroughModel = new PostWalkthroughModel(AccessToken.getCurrentAccessToken().getUserId(), Utils.TAB_CHAT, Utils.DEVICE_ID);
+                WalkthroughManager.loaderPostWalkthrough(postWalkthroughModel);
             }
         });
 
