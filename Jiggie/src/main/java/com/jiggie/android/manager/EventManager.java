@@ -74,10 +74,14 @@ public class EventManager {
                     if(response.code()==Utils.CODE_SUCCESS){
                         EventModel dataTemp = (EventModel) response.body();
                         EventBus.getDefault().post(dataTemp);
-                    }else{
+                    }
+                    else if(response.code() == Utils.CODE_EMPTY_DATA)
+                    {
+                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT, Utils.MSG_EMPTY_DATA));
+                    }
+                    else{
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT, Utils.RESPONSE_FAILED));
                     }
-
                 }
 
                 @Override
