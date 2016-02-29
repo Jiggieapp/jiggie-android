@@ -256,6 +256,8 @@ public class SignInFragment extends Fragment {
                 loginModel.setDevice_type("2");
                 //------------
 
+                loginModel.setDevice_id(Utils.DEVICE_ID);
+
                 //String sd = String.valueOf(new Gson().toJson(loginModel));
 
                 AccountManager.loaderLogin(loginModel);
@@ -285,7 +287,8 @@ public class SignInFragment extends Fragment {
         progressDialog.dismiss();
 
         AccountManager.saveSetting(message);
-        setupWalkthrough(message.is_new_user(), message.isShow_walkthrough());
+
+        //setupWalkthrough(message.is_new_user(), message.isShow_walkthrough());
 
         if (App.getSharedPreferences().getBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, false)&&!message.is_new_user()) {
             app.trackMixPanelEvent("Log In");
@@ -310,7 +313,7 @@ public class SignInFragment extends Fragment {
     }
 
     //must use unit test
-    private void setupWalkthrough(boolean isNewUser, boolean isShowWalkthrough){
+    /*private void setupWalkthrough(boolean isNewUser, boolean isShowWalkthrough){
         if(isNewUser){
             App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, true).commit();
             App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_SOCIAL, true).commit();
@@ -328,20 +331,13 @@ public class SignInFragment extends Fragment {
 
             }
             else{
-                if(Utils.FIRST_INSTALL){
-                    App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, true).commit();
-                    App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_SOCIAL, true).commit();
-                    App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_CHAT, true).commit();
-                    Utils.FIRST_INSTALL = false;
-                }else{
-                    App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, false).commit();
-                    App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_SOCIAL, false).commit();
-                    App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_CHAT, false).commit();
-                }
-
+                App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, false).commit();
+                App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_SOCIAL, false).commit();
+                App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_CHAT, false).commit();
             }
         }
-    }
+    }*/
+
 
     @Override
     public void onDestroy() {

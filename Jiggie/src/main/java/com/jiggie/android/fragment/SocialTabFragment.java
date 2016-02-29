@@ -52,11 +52,13 @@ import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.manager.SocialManager;
+import com.jiggie.android.manager.WalkthroughManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.Conversation;
 import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.LoginModel;
+import com.jiggie.android.model.PostWalkthroughModel;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.SocialModel;
 import com.jiggie.android.model.Success2Model;
@@ -602,6 +604,10 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                     Utils.SHOW_WALKTHROUGH_SOCIAL = false;
                     App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_SOCIAL, false).commit();
                     dismissWalkthroughDialog();
+
+                    PostWalkthroughModel postWalkthroughModel = new PostWalkthroughModel(AccessToken.getCurrentAccessToken().getUserId(), Utils.TAB_SOCIAL, Utils.DEVICE_ID);
+                    WalkthroughManager.loaderPostWalkthrough(postWalkthroughModel);
+
                 } else {
                     imgWk.setImageResource(R.drawable.wk_img_connection);
                     txtWkAction.setPadding(0, 0, Utils.myPixel(getActivity(), 30), Utils.myPixel(getActivity(), 22));
@@ -621,6 +627,10 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                     Utils.SHOW_WALKTHROUGH_SOCIAL = false;
                     App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_SOCIAL, false).commit();
                     dismissWalkthroughDialog();
+
+                    PostWalkthroughModel postWalkthroughModel = new PostWalkthroughModel(AccessToken.getCurrentAccessToken().getUserId(), Utils.TAB_SOCIAL, Utils.DEVICE_ID);
+                    WalkthroughManager.loaderPostWalkthrough(postWalkthroughModel);
+
                 } else {
                     imgWk.setImageResource(R.drawable.wk_img_connection);
                     txtWkAction.setPadding(0, 0, Utils.myPixel(getActivity(), 30), Utils.myPixel(getActivity(), 22));

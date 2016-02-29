@@ -48,8 +48,10 @@ public class Utils {
     public static String FROM_SETUP_TAGS = "setup_tags";
     public static String FROM_GUEST_CONNECT = "guest_connect";
     public static String FROM_VERIFY_VERIFICATION_CODE = "verify_verification_code";
+    public static String FROM_WALKTHROUGH = "walkthrough";
     public static String FROM_PRODUCT_LIST = "product_list";
     public static String FROM_SUMMARY = "summary";
+
 
     public static String FROM_APPSFLYER = "appsflyer";
     public static String FROM_MIXPANEL = "mixpanel";
@@ -60,7 +62,9 @@ public class Utils {
     public static String SET_WALKTHROUGH_EVENT = "walkthrough_event";
     public static String SET_WALKTHROUGH_SOCIAL = "walkthrough_social";
     public static String SET_WALKTHROUGH_CHAT = "walkthrough_chat";
-    public static boolean FIRST_INSTALL = false;
+    public static String TAB_EVENT = "event";
+    public static String TAB_CHAT = "chat";
+    public static String TAB_SOCIAL = "social";
 
     //ERROR CODE & MESSAGE
     //public static String MSG_EXCEPTION = "Failed: ";
@@ -83,6 +87,7 @@ public class Utils {
     public static String PREFERENCE_TAGLIST = "taglist";
     public static String TAGLIST_MODEL = "taglist_model";
     public static String IS_FIRST_RUN = "is_first_run";
+    public static String DEVICE_ID = "";
 
     //AppsFlyer properties----
     public static String AFinstall_type = "";
@@ -123,6 +128,7 @@ public class Utils {
     public final static String URL_ADD_CHAT = BASE_URL + "app/v3/messages/add";
     public final static String URL_VERIFY_PHONE_NUMBER = BASE_URL + "app/v3/user/phone/verification/send/{fb_id}/{phone}";
     public final static String URL_VERIFY_VERIFICATION_CODE = BASE_URL + "app/v3/user/phone/verification/validate/{fb_id}/{token}";
+    public final static String URL_WALKTHROUGH = BASE_URL + "app/v3/count_walkthrough";
 
     public final static String URL_APPSFLYER = BASE_URL + "app/v3/appsflyerinfo";
     public final static String URL_MIXPANEL = BASE_URL + "app/v3/user/sync/superproperties/";
