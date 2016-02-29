@@ -130,7 +130,6 @@ public class EventManager {
             getTagsList(new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
-
                     //String header = String.valueOf(response.code());
                     /*String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);*/
@@ -141,7 +140,6 @@ public class EventManager {
                     }else{
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SETUP_TAGS, Utils.RESPONSE_FAILED));
                     }
-
                 }
 
                 @Override

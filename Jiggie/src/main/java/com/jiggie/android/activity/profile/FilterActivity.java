@@ -141,11 +141,10 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
             //selectedItems.add(holder.text);
             flowLayout.addView(view);
             if (result.contains(res))
-            //if(settingModel.getData().getExperiences().contains(res))
             {
-                //setSelected(holder.container, holder.textView, true);
                 selectedItems.add(res);
-                holder.checkView.setVisibility(View.GONE);
+                //holder.checkView.setVisibility(View.GONE);
+                holder.checkView.setVisibility(View.INVISIBLE);
             } else {
                 //setSelected(holder.container, holder.textView, false);
                 holder.checkView.setVisibility(View.VISIBLE);
@@ -222,7 +221,7 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
             holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_grey));
             holder.textView.setTextColor(getResources().getColor(R.color.textDarkGray));
         }
-        holder.checkView.setVisibility(selected ? View.VISIBLE : View.GONE);
+        holder.checkView.setVisibility(selected ? View.VISIBLE : View.INVISIBLE);
         hasChanged = true;
     }
 

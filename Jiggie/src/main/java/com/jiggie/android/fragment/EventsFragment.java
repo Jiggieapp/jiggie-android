@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -29,8 +28,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -45,9 +42,7 @@ import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.model.EventModel;
 import com.jiggie.android.model.ExceptionModel;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -87,8 +82,6 @@ public class EventsFragment extends Fragment
 
     @Override
     public void onTabSelected() {
-        //onRefresh();
-        showTab();
         if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_EVENT, false)) {
             showWalkthroughDialog();
         }
@@ -283,6 +276,8 @@ public class EventsFragment extends Fragment
         filter(searchText, isExpanded);
         this.isLoading = false;
         this.refreshLayout.setRefreshing(false);
+
+        Utils.d(TAG, "success event model");
     }
 
     public void onEvent(ExceptionModel exceptionModel)
@@ -294,10 +289,16 @@ public class EventsFragment extends Fragment
         if(exceptionModel.getMessage().equalsIgnoreCase(Utils.MSG_EMPTY_DATA) &&
                 exceptionModel.getFrom().equalsIgnoreCase(Utils.FROM_EVENT))
         {
+            Utils.d(TAG, "empty model");
             setEvents(null);
             //onRefresh();
             filter("");
         }
+        else
+        {
+            Utils.d(TAG, "empty model " + exceptionModel.getMessage());
+        }
+
         this.isLoading = false;
         this.refreshLayout.setRefreshing(false);
     }
@@ -366,9 +367,8 @@ public class EventsFragment extends Fragment
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                Utils.d(TAG, "onmenuitemactioncollapse");
                 searchText = null;
-                showTab();
+                //showTab();
                 handler.removeCallbacksAndMessages(null);
                 filter("", false);
                 searchView.setOnQueryTextListener(null);
@@ -396,9 +396,10 @@ public class EventsFragment extends Fragment
 
         if(getEvents() != null)
         {
+            Utils.d(TAG, "tidak null " + isSearch);
             if(searchText == null)
                 searchText = "";
-            Utils.d(TAG, "getEvents tidak null " + isSearch);
+            //timeTab.setVisibility(View.VISIBLE);
             searchText = searchText.toLowerCase();
              for (EventModel.Data.Events tempEvent : getEvents()) {
                 //new Date(event.getDate_day());
@@ -409,6 +410,7 @@ public class EventsFragment extends Fragment
                 {
                     if(!isSearch)
                     {
+                        showTab();
                         final String diffDays = Utils.calculateTime(tempEvent.getStart_datetime());
                         if (diffDays.equals(Utils.DATE_TODAY)) {
                             todayEvents.add(tempEvent);
@@ -423,6 +425,7 @@ public class EventsFragment extends Fragment
                     }
                     else
                     {
+                        hideTab();
                         switch (currentPosition)
                         {
                             case 0:
@@ -445,6 +448,8 @@ public class EventsFragment extends Fragment
         else
         {
             Utils.d(TAG, "getEvents null");
+            //timeTab.setVisibility(View.GONE);
+            hideTab();
         }
 
         todayFragment.onEvent(todayEvents);
@@ -469,7 +474,7 @@ public class EventsFragment extends Fragment
                             super.onAnimationEnd(animation);
                             timeTab.setVisibility(View.VISIBLE);
                         }
-                    });
+            });
         }
     }
 

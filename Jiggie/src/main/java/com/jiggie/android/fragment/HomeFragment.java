@@ -26,6 +26,7 @@ import com.jiggie.android.activity.profile.FilterActivity;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
+import com.jiggie.android.model.Common;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -45,6 +46,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     private PageAdapter adapter;
     private View rootView;
     public final String TAG = HomeFragment.class.getSimpleName();
+    Animation makeInAnimation, makeOutAnimation;
 
     @Nullable
     @Override
@@ -62,7 +64,8 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         //this.toolbar.getLogo().set;
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
         final ImageView imgView = (ImageView) toolbar.findViewById(R.id.logo_image);
-        imgView.setImageDrawable(getResources().getDrawable(R.drawable.logo2));
+        //imgView.setImageDrawable(getResources().getDrawable(R.drawable.logo2));
+        imgView.setImageDrawable(getResources().getDrawable(R.drawable.logo));
 
         this.toolbar.setTitle("");
         activity.setSupportActionBar(toolbar);
@@ -87,10 +90,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         super.setHasOptionsMenu(true);
         this.viewPager.getViewTreeObserver().addOnGlobalLayoutListener(this);
 
-        if ((super.getArguments() != null) && (super.getArguments().getBoolean("chat", false)))
-            this.viewPager.setCurrentItem(2);
 
-        setupTabIcons();
 
         //Load animation
         makeOutAnimation = AnimationUtils.loadAnimation(this.getActivity(),
@@ -131,12 +131,24 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
             public void onAnimationStart(Animation animation) {
             }
         });*/
+
+
     }
 
     @Override
     public void onGlobalLayout() {
         this.viewPager.getViewTreeObserver().removeOnGlobalLayoutListener(this);
         this.onPageSelected(0);
+        setupTabIcons();
+        if ((super.getArguments() != null) && (super.getArguments().getBoolean("chat", false)))
+            this.viewPager.setCurrentItem(1);
+        else if ((super.getArguments() != null)
+                && (super.getArguments().getBoolean(Common.TO_TAB_SOCIAL, false)))
+            this.viewPager.setCurrentItem(2);
+        else if ((super.getArguments() != null)
+                && (super.getArguments().getBoolean(Common.TO_TAB_CHAT, false)))
+            this.viewPager.setCurrentItem(1);
+
     }
 
     @Override
@@ -165,9 +177,6 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
             }
         }*/
     }
-
-    Animation makeInAnimation, makeOutAnimation;
-
 
     @Override
     public void onTabTitleChanged(TabFragment fragment) {
