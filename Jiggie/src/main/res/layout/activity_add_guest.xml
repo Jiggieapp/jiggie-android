@@ -12,8 +12,8 @@
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:id="@+id/txt_title_cc"
-            android:text="@string/title_cc"
+            android:id="@+id/txt_title"
+            android:text="@string/title_guest"
             android:layout_alignParentLeft="true"
             android:textColor="@color/purple"
             android:layout_centerVertical="true"
@@ -48,11 +48,11 @@
         android:layout_marginTop="@dimen/padding_standard_half">
 
         <EditText
-            android:id="@+id/edt_cc_name"
+            android:id="@+id/edt_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:hint="@string/cc_name_hint"
+            android:hint="@string/guest_name"
             android:textColorHint="@color/common_plus_signin_btn_text_light_disabled"
             android:textSize="12sp"
             />
@@ -69,11 +69,11 @@
         android:layout_marginTop="@dimen/padding_standard_half">
 
         <EditText
-            android:id="@+id/edt_cc_number"
+            android:id="@+id/edt_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number"
-            android:hint="@string/cc_number_hint"
+            android:hint="@string/guest_email"
             android:textColorHint="@color/common_plus_signin_btn_text_light_disabled"
             android:textSize="12sp"/>
 
@@ -92,14 +92,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/padding_standard_half"
-            android:layout_weight="0.5">
+            android:layout_weight="0.8">
 
             <EditText
-                android:id="@+id/edt_cc_date"
+                android:id="@+id/edt_62"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="date"
-                android:hint="@string/cc_date_hint"
+                android:hint="@string/guest_62"
                 android:textColorHint="@color/common_plus_signin_btn_text_light_disabled"
                 android:textSize="12sp"/>
 
@@ -109,19 +109,32 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/padding_standard_half"
-            android:layout_weight="0.5">
+            android:layout_weight="0.2">
 
             <EditText
-                android:id="@+id/edt_cc_cvv"
+                android:id="@+id/edt_phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
-                android:hint="@string/cc_cvv_hint"
+                android:hint="@string/guest_phone"
                 android:textColorHint="@color/common_plus_signin_btn_text_light_disabled"
                 android:textSize="12sp"/>
 
         </android.support.design.widget.TextInputLayout>
     </LinearLayout>
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:id="@+id/txt_info"
+        android:text="@string/guest_phone_info"
+        android:layout_alignParentLeft="true"
+        android:textColor="@color/common_plus_signin_btn_text_dark_disabled"
+        android:layout_marginTop="@dimen/padding_standard"
+        android:layout_marginRight="@dimen/padding_standard"
+        android:layout_marginBottom="@dimen/padding_standard"
+        android:layout_marginLeft="26dp"
+        android:layout_below="@id/lin"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -133,7 +146,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:id="@+id/txt_save"
-            android:text="@string/cc_save"
+            android:text="@string/guest_save"
             android:layout_centerInParent="true"
             android:textColor="@color/common_plus_signin_btn_text_dark"/>
     </RelativeLayout>
