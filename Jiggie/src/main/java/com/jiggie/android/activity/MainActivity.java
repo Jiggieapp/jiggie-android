@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isFirstRun()
     {
         final SharedPreferences pref = App.getSharedPreferences();
-        if(getVersion() < 1021) //1021 is 22-02-2016 build
+        if(Utils.getVersion(this) < 1021) //1021 is 22-02-2016 build
         {
             //clear all
             App.getSharedPreferences().edit().clear().apply();
@@ -69,15 +69,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public int getVersion() {
-        int v = 0;
-        try {
-            v = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            // Huh? Really?
-        }
-        return v;
-    }
+
 
     @Override
     @SuppressWarnings("StatementWithEmptyBody")

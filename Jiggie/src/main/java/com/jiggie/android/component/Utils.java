@@ -2,6 +2,7 @@ package com.jiggie.android.component;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.util.Log;
 import android.widget.ImageView;
@@ -232,5 +233,14 @@ public class Utils {
         Glide.with(App.getInstance().getApplicationContext()).load(object).diskCacheStrategy(cacheStrategy).into(target);
     }
 
-
+    public static int getVersion(Context context) {
+        int v = 0;
+        try {
+            v = context.getPackageManager().getPackageInfo
+                    (context.getPackageName(), 0).versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            // Huh? Really?
+        }
+        return v;
+    }
 }
