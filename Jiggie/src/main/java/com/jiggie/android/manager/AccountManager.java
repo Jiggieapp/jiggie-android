@@ -93,9 +93,9 @@ public class AccountManager extends BaseManager{
                         LoginResultModel dataLogin = (LoginResultModel) response.body();
 
                         //Added by Aga 29-2-2015-----
-                        boolean a = dataLogin.getData().getLogin().getShow_walkthrough_new().isEvent();
-                        boolean b = dataLogin.getData().getLogin().getShow_walkthrough_new().isChat();
-                        boolean c = dataLogin.getData().getLogin().getShow_walkthrough_new().isSocial();
+                        //boolean a = dataLogin.getData().getLogin().getShow_walkthrough_new().isEvent();
+                        //boolean b = dataLogin.getData().getLogin().getShow_walkthrough_new().isChat();
+                        // c = dataLogin.getData().getLogin().getShow_walkthrough_new().isSocial();
                         App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, dataLogin.getData().getLogin().getShow_walkthrough_new().isEvent()).commit();
                         App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_SOCIAL, dataLogin.getData().getLogin().getShow_walkthrough_new().isSocial()).commit();
                         App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_CHAT, dataLogin.getData().getLogin().getShow_walkthrough_new().isChat()).commit();

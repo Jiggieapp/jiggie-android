@@ -45,6 +45,7 @@ import com.jiggie.android.manager.WalkthroughManager;
 import com.jiggie.android.model.EventModel;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.PostWalkthroughModel;
+import com.jiggie.android.view.NonSwipeableViewPager;
 
 import java.util.ArrayList;
 
@@ -62,7 +63,7 @@ public class EventsFragment extends Fragment
     @Bind(R.id.time_tab)
     TabLayout timeTab;
     @Bind(R.id.viewpagerevents)
-    ViewPager viewPagerEvents;
+    /*ViewPager viewPagerEvents;*/ NonSwipeableViewPager viewPagerEvents;
     @Bind(R.id.swipe_refresh)
     SwipeRefreshLayout refreshLayout;
     @Bind(R.id.coordinatorLayout)
@@ -86,6 +87,8 @@ public class EventsFragment extends Fragment
 
     @Override
     public void onTabSelected() {
+        if(getEvents()!=null)
+            showTab();
         if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_EVENT, false)) {
             showWalkthroughDialog();
         }
@@ -230,6 +233,7 @@ public class EventsFragment extends Fragment
         this.viewPagerEvents.addOnPageChangeListener(this);
 
         this.viewPagerEvents.getViewTreeObserver().addOnGlobalLayoutListener(this);
+        this.viewPagerEvents.setPagingEnabled(true);
         this.refreshLayout.setOnRefreshListener(this);
         super.setHasOptionsMenu(true);
     }
@@ -273,7 +277,8 @@ public class EventsFragment extends Fragment
         tomorrowFragment.onEvent(tomorrowEvents);
         upcomingFragment.onEvent(upcomingEvents);*/
         boolean isExpanded = false;
-        if(searchText != null  /* && !searchText.isEmpty()*/)
+        //if(searchText != null  /* && !searchText.isEmpty()*/)
+        if(!searchView.isIconified())
         {
             isExpanded = true;
         }
@@ -346,9 +351,11 @@ public class EventsFragment extends Fragment
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
                 hideTab();
+                filter("", true);
                 searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
                     public boolean onQueryTextSubmit(String query) {
+                        searchView.clearFocus();
                         return true;
                     }
 
@@ -361,13 +368,6 @@ public class EventsFragment extends Fragment
                             @Override
                             public void run() {
                                 filter(searchText, true);
-                                viewPagerEvents.setOnTouchListener(new View.OnTouchListener() {
-                                    @Override
-                                    public boolean onTouch(View v, MotionEvent event) {
-                                        return false;
-                                    }
-                                });
-
                             }
                         }, getResources().getInteger(R.integer.event_search_delay));
                         return true;
@@ -383,8 +383,6 @@ public class EventsFragment extends Fragment
                 handler.removeCallbacksAndMessages(null);
                 filter("", false);
                 searchView.setOnQueryTextListener(null);
-
-                viewPagerEvents.setpagin
                 return true;
             }
         });
@@ -424,6 +422,7 @@ public class EventsFragment extends Fragment
                     if(!isSearch)
                     {
                         showTab();
+
                         final String diffDays = Utils.calculateTime(tempEvent.getStart_datetime());
                         if (diffDays.equals(Utils.DATE_TODAY)) {
                             todayEvents.add(tempEvent);
@@ -462,6 +461,7 @@ public class EventsFragment extends Fragment
         {
             Utils.d(TAG, "getEvents null");
             //timeTab.setVisibility(View.GONE);
+            viewPagerEvents.setPagingEnabled(false);
             hideTab();
         }
 
@@ -486,6 +486,7 @@ public class EventsFragment extends Fragment
                         public void onAnimationEnd(Animator animation) {
                             super.onAnimationEnd(animation);
                             timeTab.setVisibility(View.VISIBLE);
+                            viewPagerEvents.setPagingEnabled(true);
                         }
             });
         }
@@ -502,6 +503,8 @@ public class EventsFragment extends Fragment
                         public void onAnimationEnd(Animator animation) {
                             super.onAnimationEnd(animation);
                             timeTab.setVisibility(View.GONE);
+                            viewPagerEvents.setPagingEnabled(false
+                            );
                         }
                     });
             /*Animation makeInAnimation = AnimationUtils.loadAnimation(this.getActivity(),

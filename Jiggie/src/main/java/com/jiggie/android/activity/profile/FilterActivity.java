@@ -244,6 +244,7 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
         if (progressDialog != null && progressDialog.isShowing())
             progressDialog.dismiss();
         showToast();
+
         EventBus.getDefault().post(EventsFragment.TAG);
     }
 
