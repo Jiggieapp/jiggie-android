@@ -23,6 +23,7 @@ public abstract class BaseManager {
     public static final String TAG = BaseManager.class.getSimpleName();
     private Callback callback;
     public CustomCallback customCallback;
+    private static Retrofit retrofit;
 
     public static OkHttpClient getHttpClient() {
         final String accessToken = App.getInstance()
@@ -53,15 +54,13 @@ public abstract class BaseManager {
         //}
     }
 
-    private static Retrofit retrofit;
-
     public static Retrofit getRetrofit() {
         if (retrofit == null) {
             //OkHttpClient okHttpClient = getHttpClient();
             retrofit = new Retrofit.Builder()
                     .baseUrl(Utils.BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
-                            //.client(okHttpClient)
+                    //.client(okHttpClient)
                     .build();
 
         }

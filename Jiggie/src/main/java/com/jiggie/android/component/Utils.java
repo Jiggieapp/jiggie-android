@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
 import com.jiggie.android.App;
+import com.jiggie.android.BuildConfig;
 import com.jiggie.android.R;
 
 import java.text.ParseException;
@@ -103,8 +104,9 @@ public class Utils {
     }
     //-----
 
-    public final static String BASE_URL = "http://api-dev.jiggieapp.com/";
+    //public final static String BASE_URL = "http://api-dev.jiggieapp.com/";
     //public final static String BASE_URL = "http://api.jiggieapp.com/";
+    public final static String BASE_URL = BuildConfig.BASE_URL;
     public final static String URL_EVENTS = BASE_URL + "app/v3/events/list/{fb_id}";
 
     public final static String URL_LOGIN = BASE_URL + "app/v3/login";

@@ -25,6 +25,7 @@ android {
         applicationId "com.jiggie.android"
         renderscriptTargetApi 18
         renderscriptSupportModeEnabled true
+        buildConfigField("String", "BASE_URL", "\"http://api.jiggieapp.com/\"")
     }
     signingConfigs {
         configDebug {
@@ -46,6 +47,7 @@ android {
             versionNameSuffix '-Dev'
             resValue "string", "app_name", "Jiggie Dev"
             signingConfig signingConfigs.configDebug
+            buildConfigField("String", "BASE_URL", "\"http://api-dev.jiggieapp.com/\"")
         }
         release {
             minifyEnabled false
@@ -54,6 +56,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    /*productFlavors
+    {
+        staging {
+            applicationIdSuffix ".staging"
+            buildConfigField("boolean", "SHOW_VARIANT", "true")
+            buildConfigField("String", "ENV", "\"http://staging.api.com\"")
+        }
+    }*/
+
     dexOptions {
         incremental true
     }
