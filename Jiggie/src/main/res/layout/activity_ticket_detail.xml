@@ -190,7 +190,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/btn_next"
+        android:background="@color/blue_selector"
         android:text="@string/done"
         android:textColor="@android:color/white" />
 </RelativeLayout>
