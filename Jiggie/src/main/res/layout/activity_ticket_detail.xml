@@ -22,18 +22,18 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/appBar">
+        android:layout_below="@+id/appBar"
+        android:layout_above="@+id/btnDone">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="wrap_content">
 
             <RelativeLayout
                 android:id="@+id/header_container"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:background="@color/colorPrimaryDark"
+                android:background="@color/colorPrimary"
                 android:padding="@dimen/padding_standard">
 
                 <TextView
@@ -65,21 +65,20 @@
                 android:id="@+id/container_body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/header_container"
-                >
+                android:layout_below="@+id/header_container">
 
                 <TextView
                     android:id="@+id/lblType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
+                    android:paddingLeft="@dimen/padding_standard"
+                    android:paddingTop="@dimen/padding_standard"
                     android:text="Regular Class"
                     android:textAllCaps="true"
                     android:textColor="?android:attr/textColorPrimary"
                     android:textSize="@dimen/font_body_size"
-                    android:textStyle="bold"
-                    android:paddingTop="@dimen/padding_standard"
-                    android:paddingLeft="@dimen/padding_standard"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/lblTypeCaption"
@@ -87,11 +86,11 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_below="@+id/lblType"
+                    android:paddingLeft="@dimen/padding_standard"
                     android:text="Information about regular class"
                     android:textAllCaps="true"
                     android:textColor="@color/text_grey_caption"
-                    android:textSize="@dimen/font_caption_size"
-                    android:paddingLeft="@dimen/padding_standard"/>
+                    android:textSize="@dimen/font_caption_size" />
 
                 <TextView
                     android:id="@+id/lblTypePrice"
@@ -100,13 +99,13 @@
                     android:layout_alignParentRight="true"
                     android:layout_toRightOf="@+id/lblType"
                     android:gravity="right"
+                    android:paddingRight="@dimen/padding_standard"
+                    android:paddingTop="@dimen/padding_standard"
                     android:text="IDR 2000K"
                     android:textAllCaps="true"
                     android:textColor="?android:attr/textColorPrimary"
                     android:textSize="@dimen/font_body_size"
-                    android:textStyle="bold"
-                    android:paddingRight="@dimen/padding_standard"
-                    android:paddingTop="@dimen/padding_standard"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/lblTypeCaptionPerson"
@@ -116,12 +115,12 @@
                     android:layout_below="@+id/lblType"
                     android:layout_toRightOf="@id/lblTypeCaption"
                     android:gravity="right"
+                    android:paddingBottom="@dimen/padding_standard"
+                    android:paddingRight="@dimen/padding_standard"
                     android:text="1 Person"
                     android:textAllCaps="true"
                     android:textColor="@color/text_grey_caption"
-                    android:textSize="@dimen/font_caption_size"
-                    android:paddingRight="@dimen/padding_standard"
-                    android:paddingBottom="@dimen/padding_standard"/>
+                    android:textSize="@dimen/font_caption_size" />
 
                 <View
                     android:id="@+id/divider"
@@ -185,12 +184,14 @@
         </RelativeLayout>
     </ScrollView>
 
-    <TextView
+
+    <Button
+        android:id="@+id/btnDone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/string_continue"
-        android:textAllCaps="true"
-        android:textColor="@android:color/white"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/btn_next"
+        android:text="@string/done"
+        android:textColor="@android:color/white" />
 </RelativeLayout>
 
