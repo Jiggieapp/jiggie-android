@@ -375,7 +375,20 @@ public class App extends Application {
             postAppsFlyerModel.setFb_id(login.getFb_id());
             //String appsflyer = "{\n  \\\"af_status\\\" : \\\""+Utils.AFinstall_type+"\\\",\\n  \\\"media_source\\\" : \\\""+Utils.AFmedia_source+"\\\",\\n  \\\"campaign\\\" : \\\""+Utils.AFcampaign+"\\\"\\n}";
 
-            String appsflyer = "{  \"af_status\" : \""+Utils.AFinstall_type+"\",  \"media_source\" : \""+Utils.AFmedia_source+"\",  \"campaign\" : \""+Utils.AFcampaign+"\"}";
+            String media_source = Utils.AFmedia_source;
+            String campaign = Utils.AFcampaign;
+            String install_type = Utils.AFinstall_type;
+            if(media_source.equals(Utils.BLANK)){
+                media_source = Utils.AF_ORGANIC;
+            }
+            if(campaign.equals(Utils.BLANK)){
+                campaign = Utils.AF_ORGANIC;
+            }
+            if(install_type.equals(Utils.BLANK)){
+                install_type = Utils.AF_ORGANIC;
+            }
+
+            String appsflyer = "{  \"af_status\" : \""+install_type+"\",  \"media_source\" : \""+media_source+"\",  \"campaign\" : \""+campaign+"\"}";
 
             postAppsFlyerModel.setAppsflyer(appsflyer);
 
