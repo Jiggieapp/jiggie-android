@@ -32,6 +32,7 @@ import com.jiggie.android.component.database.ChatTable;
 import com.jiggie.android.component.service.ChatSendService;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
+import com.jiggie.android.fragment.ChatTabFragment;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.ChatManager;
 import com.jiggie.android.model.Chat;
@@ -126,8 +127,11 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
             }
         });
 
-        super.registerReceiver(this.notificationReceived, new IntentFilter(super.getString(R.string.broadcast_notification)));
+        Intent i = new Intent(ChatTabFragment.TAG);
+        i.putExtra(Conversation.FIELD_FACEBOOK_ID, toId);
+        sendBroadcast(i);
 
+        super.registerReceiver(this.notificationReceived, new IntentFilter(super.getString(R.string.broadcast_notification)));
     }
 
     @Override

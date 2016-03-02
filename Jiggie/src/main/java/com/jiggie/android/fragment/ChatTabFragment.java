@@ -82,6 +82,7 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     private Dialog dialogWalkthrough;
     private Dialog dialogLongClick;
     private ChatListModel.Data.ChatLists conversation;
+    public static final String TAG = ChatTabFragment.class.getSimpleName();
 
     @Override
     public void setHomeMain(HomeMain homeMain) {
@@ -137,6 +138,8 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         final App app = App.getInstance();
         app.registerReceiver(this.notificationReceived, new IntentFilter(super.getString(R.string.broadcast_notification)));
         app.registerReceiver(this.socialChatReceiver, new IntentFilter(super.getString(R.string.broadcast_social_chat)));
+        app.registerReceiver(chatCounterBroadCastReceiver
+                , new IntentFilter(TAG));
 
         this.refreshLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -369,6 +372,7 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         final App app = App.getInstance();
         app.unregisterReceiver(this.notificationReceived);
         app.unregisterReceiver(this.socialChatReceiver);
+        app.unregisterReceiver(this.chatCounterBroadCastReceiver);
         EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
@@ -452,5 +456,21 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         dialogLongClick = builder.create();
         dialogLongClick.show();
     }
+
+
+    BroadcastReceiver chatCounterBroadCastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String facebookId  = intent.getStringExtra(Conversation.FIELD_FACEBOOK_ID);
+            if(!facebookId.equals(""))
+            {
+                Utils.d(TAG, "masuk di chatcounterbroadcastreceiver " + facebookId);
+                final ChatListModel.Data.ChatLists conversation = facebookId == null ? null : adapter.find(facebookId);
+                conversation.setUnread(0);
+                adapter.notifyDataSetChanged();
+                setHomeTitle();
+            }
+        }
+    };
 
 }
