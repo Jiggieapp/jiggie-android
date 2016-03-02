@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         super.setContentView(R.layout.activity_main);
         this.active = true;
 
-        //AppsFlyerLib.sendTracking(MainActivity.this);
+        AppsFlyerLib.sendTracking(MainActivity.this);
 
         if(isFirstRun()){
             final SharedPreferences pref = App.getSharedPreferences();

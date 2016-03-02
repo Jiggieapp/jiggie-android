@@ -93,12 +93,12 @@ public class TestActivity extends ToolbarActivity{
                 final String appsfl = "media_source = "+Utils.AFmedia_source + ", campaign = " + Utils.AFcampaign + ", install_type = " + Utils.AFinstall_type + "**" + media_source + " " + campaign + " " + af_status;
                 //Toast.makeText(MainActivity.this, appsfl, Toast.LENGTH_LONG).show();
                 Log.d("123appsflyer", appsfl);
-                /*runOnUiThread(new Runnable() {
+                runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         txt.setText(s);
                     }
-                });*/
+                });
 
 
                 /*AlertDialog al = new AlertDialog.Builder(MainActivity.this).setMessage(a).create();
@@ -119,13 +119,6 @@ public class TestActivity extends ToolbarActivity{
                 //Toast.makeText(MainActivity.this, "b", Toast.LENGTH_LONG).show();
                 Log.d("123appsflyer", "b");
                 final String s = map.toString();
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        txt.setText(s);
-                    }
-                });
             }
 
             @Override
