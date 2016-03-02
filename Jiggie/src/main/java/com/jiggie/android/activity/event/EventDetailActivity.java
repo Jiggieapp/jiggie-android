@@ -542,7 +542,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
     private void shareEvent() throws UnsupportedEncodingException {
         if (this.shareLinkModel != null) {
-            App.getInstance().trackMixPanelEvent("Share Event");
+            App.getInstance().trackMixPanelViewEventDetail("Share Event", eventDetail);
             /*Utils.d(TAG, Build.VERSION.SDK_INT + " " + Build.VERSION_CODES.LOLLIPOP_MR1);
             if (android.os.Build.VERSION.SDK_INT
                     < Build.VERSION_CODES.LOLLIPOP_MR1) {
