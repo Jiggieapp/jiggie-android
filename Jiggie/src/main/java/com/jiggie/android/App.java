@@ -593,4 +593,15 @@ public class App extends Application {
         }
         sharedPreferencesEditor.apply();
     }
+
+    private static String idChatActive = "";
+    public static void setIdChatActive(String id)
+    {
+        idChatActive = id;
+    }
+
+    public static String getIdChatActive()
+    {
+        return idChatActive;
+    }
 }

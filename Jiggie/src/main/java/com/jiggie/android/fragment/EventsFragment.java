@@ -87,8 +87,18 @@ public class EventsFragment extends Fragment
 
     @Override
     public void onTabSelected() {
+        App.getInstance().trackMixPanelEvent("View Events");
         if(getEvents()!=null)
+        {
+            /*boolean isExpanded = false;
+            if(!searchView.isIconified())
+            {
+                isExpanded = true;
+            }
+            filter("", isExpanded);*/
             showTab();
+        }
+
         if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_EVENT, false)) {
             showWalkthroughDialog();
         }
@@ -285,8 +295,6 @@ public class EventsFragment extends Fragment
         filter(searchText, isExpanded);
         this.isLoading = false;
         this.refreshLayout.setRefreshing(false);
-
-        Utils.d(TAG, "success event model");
     }
 
     public void onEvent(ExceptionModel exceptionModel)
@@ -298,14 +306,9 @@ public class EventsFragment extends Fragment
         if(exceptionModel.getMessage().equalsIgnoreCase(Utils.MSG_EMPTY_DATA) &&
                 exceptionModel.getFrom().equalsIgnoreCase(Utils.FROM_EVENT))
         {
-            Utils.d(TAG, "empty model");
             setEvents(null);
             //onRefresh();
             filter("");
-        }
-        else
-        {
-            Utils.d(TAG, "empty model " + exceptionModel.getMessage());
         }
 
         this.isLoading = false;
@@ -367,7 +370,9 @@ public class EventsFragment extends Fragment
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                filter(searchText, true);
+                                if(searchText != null)
+                                    filter(searchText, true);
+                                else filter("", false);
                             }
                         }, getResources().getInteger(R.integer.event_search_delay));
                         return true;
@@ -401,13 +406,13 @@ public class EventsFragment extends Fragment
 
     private void filter(String searchText, boolean isSearch)
     {
+
         ArrayList<EventModel.Data.Events> todayEvents = new ArrayList<>();
         ArrayList<EventModel.Data.Events> tomorrowEvents = new ArrayList<>();
         ArrayList<EventModel.Data.Events> upcomingEvents = new ArrayList<>();
 
         if(getEvents() != null)
         {
-            Utils.d(TAG, "tidak null " + isSearch);
             if(searchText == null)
                 searchText = "";
             //timeTab.setVisibility(View.VISIBLE);
@@ -422,7 +427,6 @@ public class EventsFragment extends Fragment
                     if(!isSearch)
                     {
                         showTab();
-
                         final String diffDays = Utils.calculateTime(tempEvent.getStart_datetime());
                         if (diffDays.equals(Utils.DATE_TODAY)) {
                             todayEvents.add(tempEvent);
@@ -459,7 +463,6 @@ public class EventsFragment extends Fragment
         }
         else
         {
-            Utils.d(TAG, "getEvents null");
             //timeTab.setVisibility(View.GONE);
             viewPagerEvents.setPagingEnabled(false);
             hideTab();

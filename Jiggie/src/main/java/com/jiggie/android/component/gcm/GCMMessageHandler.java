@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.view.View;
 
 import com.google.android.gms.gcm.GcmListenerService;
 import com.jiggie.android.App;
@@ -36,7 +37,7 @@ public class GCMMessageHandler extends GcmListenerService {
 
         String fromId = "";
 
-        Utils.d(TAG, "gcm message handler " +  data.toString());
+        //Utils.d(TAG, "gcm message handler " +  data.toString());
         //Bundle[{Jiggie=cui cui cui cui BARUU
         // , type=general, collapse_key=do_not_collapse}]
 
@@ -96,23 +97,18 @@ public class GCMMessageHandler extends GcmListenerService {
         String key = Common.KEY;
         final String type = data.getString(Common.KEY_TYPE);
         String message = data.getString(Common.KEY, "");
+        String too = "";
 
-
-        if(type.equalsIgnoreCase(Common.PUSH_NOTIFICATIONS_TYPE_GENERAL))
-        {
+        if (type.equalsIgnoreCase(Common.PUSH_NOTIFICATIONS_TYPE_GENERAL)) {
             intent = new Intent(App.getInstance(), MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        }
-        else if(type.equalsIgnoreCase(Common.PUSH_NOTIFICATIONS_TYPE_EVENT))
-        {
+        } else if (type.equalsIgnoreCase(Common.PUSH_NOTIFICATIONS_TYPE_EVENT)) {
             final String eventId = data.getString(Common.KEY_EVENT_ID, "");
             intent = new Intent(App.getInstance(), EventDetailActivity.class);
             intent.putExtra(Common.FIELD_EVENT_ID, eventId);
-        }
-        else if(type.equalsIgnoreCase(Common.PUSH_NOTIFICATIONS_TYPE_MATCH))
-        {
+        } else if (type.equalsIgnoreCase(Common.PUSH_NOTIFICATIONS_TYPE_MATCH)) {
             final String fromm = data.getString(Common.PUSH_NOTIFICATIONS_FROM_NAME);
-            final String too = data.getString(Common.PUSH_NOTIFICATIONS_FROM_ID);
+            too = data.getString(Common.PUSH_NOTIFICATIONS_FROM_ID);
             intent = new Intent(App.getInstance(), ChatActivity.class);
             intent.putExtra(Conversation.FIELD_FROM_NAME, fromm);
             intent.putExtra(Conversation.FIELD_FACEBOOK_ID, too);
@@ -123,31 +119,27 @@ public class GCMMessageHandler extends GcmListenerService {
         //[{Jiggie=cui cui cui cui BARUU,
         //        fromId=10153418311072858, fromName=wandy
         // , toId=140679782985703, type=message, collapse_key=do_not_collapse}]
-        else if(type.equalsIgnoreCase(Common.PUSH_NOTIFICATIONS_TYPE_MESSAGE))
-        {
+        else if (type.equalsIgnoreCase(Common.PUSH_NOTIFICATIONS_TYPE_MESSAGE)) {
             final String fromName = data.getString(Common.PUSH_NOTIFICATIONS_FROM_NAME);
-            final String too = data.getString(Common.PUSH_NOTIFICATIONS_FROM_ID);
+            too = data.getString(Common.PUSH_NOTIFICATIONS_FROM_ID);
             intent = new Intent(App.getInstance(), ChatActivity.class);
             intent.putExtra(Conversation.FIELD_FROM_NAME, fromName);
             intent.putExtra(Conversation.FIELD_FACEBOOK_ID, too);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                    //| Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    | Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+                            | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                            //Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+            );
 
             //set title and body text for push notifications
             final String[] values = message.split(":");
             message = values.length > 1 ? values[1].trim() : message;
             key = values.length > 1 ? values[0].trim() : getString(R.string.app_name);
-        }
-        else if(type.equalsIgnoreCase(Common.PUSH_NOTIFICATIONS_TYPE_SOCIAL))
-        {
+        } else if (type.equalsIgnoreCase(Common.PUSH_NOTIFICATIONS_TYPE_SOCIAL)) {
             intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra(Common.TO_TAB_SOCIAL, true);
-        }
-        else if(type.equalsIgnoreCase(Common.PUSH_NOTIFICATIONS_TYPE_CHAT))
-        {
+        } else if (type.equalsIgnoreCase(Common.PUSH_NOTIFICATIONS_TYPE_CHAT)) {
             intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -183,19 +175,29 @@ public class GCMMessageHandler extends GcmListenerService {
             intent.putExtra("chat", chat);
         }*/
 
-        if(intent != null)
-        {
-            final PendingIntent pendingIntent = PendingIntent.getActivity(App.getInstance(), Integer.MIN_VALUE, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-            final Notification notif = new NotificationCompat.BigTextStyle(new NotificationCompat.Builder(this)
-                    .setLargeIcon(BitmapFactory.decodeResource(super.getResources(), R.mipmap.ic_launcher))
-                    .setSmallIcon(R.mipmap.ic_notification)
-                    .setContentIntent(pendingIntent)
-                    .setContentText(message)
-                    .setContentTitle(key)
-                    .setAutoCancel(true))
-                    .bigText(message)
-                    .build();
-            notificationManager.notify(0, notif);
+        if (intent != null) {
+            if (!type.equalsIgnoreCase(Common.PUSH_NOTIFICATIONS_TYPE_MESSAGE) ||
+                    (type.equalsIgnoreCase(Common.PUSH_NOTIFICATIONS_TYPE_MESSAGE)
+                        && !App.getInstance().getIdChatActive().equalsIgnoreCase(too))) {
+                final PendingIntent pendingIntent = PendingIntent.getActivity(App.getInstance(), Integer.MIN_VALUE, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+                final Notification notif = new NotificationCompat.BigTextStyle
+                        (new NotificationCompat.Builder(this)
+                                //.setCategory(Notification.CATEGORY_PROMO)
+                                .setPriority(Notification.PRIORITY_HIGH)
+                                .setLargeIcon(BitmapFactory.decodeResource(super.getResources(), R.mipmap.ic_launcher))
+                                .setSmallIcon(R.mipmap.ic_notification)
+                                .setContentIntent(pendingIntent)
+                                .setContentText(message)
+                                .setContentTitle(key)
+                                .setAutoCancel(true)
+                                .setVisibility(View.VISIBLE)
+                                .setVibrate(new long[]{0, 0, 0, 0, 0}))
+                        .bigText(message)
+                        .build();
+
+                notificationManager.notify(0, notif);
+            }
             super.sendBroadcast(new Intent(super.getString(R.string.broadcast_notification)));
         }
     }

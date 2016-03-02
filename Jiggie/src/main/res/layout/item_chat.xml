@@ -28,7 +28,7 @@
 
         <TextView
             android:id="@+id/txtMessage"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/padding_standard_half"
             android:layout_marginRight="@dimen/padding_standard_half"
