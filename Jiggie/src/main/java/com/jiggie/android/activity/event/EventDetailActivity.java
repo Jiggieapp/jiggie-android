@@ -176,7 +176,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         this.imagePagerIndicator.setAdapter(this.imagePagerIndicatorAdapter.getIndicatorAdapter());
 
         super.registerReceiver(this.guestInvitedReceiver, new IntentFilter(super.getString(R.string.broadcastGuestInvited)));
-        App.getInstance().trackMixPanelEvent("View Event Details");
+
         if(file!= null && file.exists())
             file.delete();
     }
@@ -222,6 +222,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         if (message.getFrom().equalsIgnoreCase(TAG)) {
             try {
                 eventDetail = message.getData().getEvents_detail();
+                App.getInstance().trackMixPanelViewEventDetail("View Event Details", eventDetail);
 
                 if (event_name == null) {
                     super.setToolbarTitle(eventDetail.getTitle().toUpperCase(), true);
