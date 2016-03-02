@@ -53,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean active;
     public static final String TAG = MainActivity.class.getSimpleName();
 
+    String appsfl = "";
+
     private boolean isFirstRun()
     {
         final SharedPreferences pref = App.getSharedPreferences();
@@ -78,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_main);
         this.active = true;
+
+        //AppsFlyerLib.sendTracking(MainActivity.this);
 
         if(isFirstRun()){
             final SharedPreferences pref = App.getSharedPreferences();
@@ -149,7 +153,9 @@ public class MainActivity extends AppCompatActivity {
             // Track AppsFlyer Install
             AppsFlyerLib.sendTracking(super.getApplicationContext());
 
+
             registerAppsFlyerConversion();
+            //Toast.makeText(MainActivity.this, appsfl, Toast.LENGTH_LONG).show();
 
             if (!App.getInstance().isUserLoggedIn()) {
                 final SignInFragment fragment = new SignInFragment();
@@ -188,21 +194,33 @@ public class MainActivity extends AppCompatActivity {
                 /*String d = map.toString();
                 String a = Utils.AFmedia_source+" "+Utils.AFcampaign+" "+Utils.AFinstall_type;
                 Toast.makeText(MainActivity.this, a, Toast.LENGTH_LONG).show();*/
+
+                //appsfl = Utils.AFmedia_source+" "+Utils.AFcampaign+" "+Utils.AFinstall_type+"**"+media_source+" "+campaign+" "+af_status;
+                //Toast.makeText(MainActivity.this, appsfl, Toast.LENGTH_LONG).show();
+                Log.d("123appsflyer", appsfl);
+
+                /*AlertDialog al = new AlertDialog.Builder(MainActivity.this).setMessage(a).create();
+                al.show();*/
+
+
             }
 
             @Override
             public void onInstallConversionFailure(String s) {
-
+                //Toast.makeText(MainActivity.this, "a", Toast.LENGTH_LONG).show();
+                Log.d("123appsflyer", "a");
             }
 
             @Override
             public void onAppOpenAttribution(Map<String, String> map) {
-
+                //Toast.makeText(MainActivity.this, "b", Toast.LENGTH_LONG).show();
+                Log.d("123appsflyer", "b");
             }
 
             @Override
             public void onAttributionFailure(String s) {
-
+                //Toast.makeText(MainActivity.this, "c", Toast.LENGTH_LONG).show();
+                Log.d("123appsflyer", "c");
             }
         });
     }
