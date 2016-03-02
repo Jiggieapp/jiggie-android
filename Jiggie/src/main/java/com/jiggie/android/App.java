@@ -401,58 +401,174 @@ public class App extends Application {
             }
         }
 
-        if(eventDetail!=null){
-            try{
-                json.putString("Event Description", eventDetail.getDescription());
-            }catch (Exception e){
-                json.putString("Event Description", Utils.BLANK);
-            }
-            try{
-                json.putString("Event Name", eventDetail.getTitle());
-            }catch (Exception e){
-                json.putString("Event Name", Utils.BLANK);
-            }
-            try{
-                json.putString("Event Tags", eventDetail.getTags().toString());
-            }catch (Exception e){
-                json.putString("Event Tags", Utils.BLANK);
-            }
-            try{
-                json.putString("Event Venue Description", eventDetail.getVenue().getDescription());
-            }catch (Exception e){
-                json.putString("Event Venue Description", Utils.BLANK);
-            }
-            try{
-                json.putString("Event Description", eventDetail.getVenue().getNeighborhood());
-            }catch (Exception e){
-                json.putString("Event Description", Utils.BLANK);
-            }
-            try{
-                json.putString("Event End Time", eventDetail.getEnd_datetime());
-            }catch (Exception e){
-                json.putString("Event End Time", Utils.BLANK);
-            }
-            try{
-                json.putString("Event Start Time", eventDetail.getStart_datetime());
-            }catch (Exception e){
-                json.putString("Event Start Time", Utils.BLANK);
-            }
-            try{
-                json.putString("Event Venue City", eventDetail.getVenue().getCity());
-            }catch (Exception e){
-                json.putString("Event Venue City", Utils.BLANK);
-            }
-            try{
-                json.putString("Event Venue Name", eventDetail.getVenue_name());
-            }catch (Exception e){
-                json.putString("Event Venue Name", Utils.BLANK);
-            }
-            try{
-                json.putString("Event End Time", eventDetail.getVenue().getZip());
-            }catch (Exception e){
-                json.putString("Event End Time", Utils.BLANK);
-            }
+        if(eventName.equals("View Event Details")){
+            if(eventDetail!=null){
+                try{
+                    json.putString("Event Description", eventDetail.getDescription());
+                }catch (Exception e){
+                    json.putString("Event Description", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Name", eventDetail.getTitle());
+                }catch (Exception e){
+                    json.putString("Event Name", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Tags", eventDetail.getTags().toString());
+                }catch (Exception e){
+                    json.putString("Event Tags", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Venue Description", eventDetail.getVenue().getDescription());
+                }catch (Exception e){
+                    json.putString("Event Venue Description", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Venue Neighborhood", eventDetail.getVenue().getNeighborhood());
+                }catch (Exception e){
+                    json.putString("Event Venue Neighborhood", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event End Time", eventDetail.getEnd_datetime());
+                }catch (Exception e){
+                    json.putString("Event End Time", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Start Time", eventDetail.getStart_datetime());
+                }catch (Exception e){
+                    json.putString("Event Start Time", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Venue City", eventDetail.getVenue().getCity());
+                }catch (Exception e){
+                    json.putString("Event Venue City", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Venue Name", eventDetail.getVenue_name());
+                }catch (Exception e){
+                    json.putString("Event Venue Name", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Venue Zip", eventDetail.getVenue().getZip());
+                }catch (Exception e){
+                    json.putString("Event Venue Zip", Utils.BLANK);
+                }
 
+            }
+        }else if(eventName.equals("Share Event")){
+            if(eventDetail!=null){
+                try{
+                    json.putString("Event Description", eventDetail.getDescription());
+                }catch (Exception e){
+                    json.putString("Event Description", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Id", eventDetail.get_id());
+                }catch (Exception e){
+                    json.putString("Event Id", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Name", eventDetail.getTitle());
+                }catch (Exception e){
+                    json.putString("Event Name", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Tags", eventDetail.getTags().toString());
+                }catch (Exception e){
+                    json.putString("Event Tags", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Venue Description", eventDetail.getVenue().getDescription());
+                }catch (Exception e){
+                    json.putString("Event Venue Description", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Venue Neighborhood", eventDetail.getVenue().getNeighborhood());
+                }catch (Exception e){
+                    json.putString("Event Venue Neighborhood", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event End Time", eventDetail.getEnd_datetime());
+                }catch (Exception e){
+                    json.putString("Event End Time", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Start Time", eventDetail.getStart_datetime());
+                }catch (Exception e){
+                    json.putString("Event Start Time", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Venue City", eventDetail.getVenue().getCity());
+                }catch (Exception e){
+                    json.putString("Event Venue City", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Venue Name", eventDetail.getVenue_name());
+                }catch (Exception e){
+                    json.putString("Event Venue Name", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Venue Zip", eventDetail.getVenue().getZip());
+                }catch (Exception e){
+                    json.putString("Event Venue Zip", Utils.BLANK);
+                }
+                try{
+                    if(login!=null){
+                        json.putString("Inviter Email", login.getEmail());
+                    }
+
+                }catch (Exception e){
+                    json.putString("Inviter Email", Utils.BLANK);
+                }
+                try{
+                    if(login!=null){
+                        json.putString("Inviter First Name", login.getUser_first_name());
+                    }
+
+                }catch (Exception e){
+                    json.putString("Inviter First Name", Utils.BLANK);
+                }
+                try{
+                    if(login!=null){
+                        json.putString("Inviter Last Name", login.getUser_last_name());
+                    }
+
+                }catch (Exception e){
+                    json.putString("Inviter Last Name", Utils.BLANK);
+                }
+                try{
+                    if(login!=null){
+                        json.putString("Inviter Birthday", login.getBirthday());
+                    }
+
+                }catch (Exception e){
+                    json.putString("Inviter Birthday", Utils.BLANK);
+                }
+                try{
+                    if(login!=null){
+                        json.putString("Inviter FB ID", login.getFb_id());
+                    }
+
+                }catch (Exception e){
+                    json.putString("Inviter FB ID", Utils.BLANK);
+                }
+                try{
+                    if(settingModel!=null){
+                        json.putString("Inviter Gender", settingModel.getData().getGender());
+                    }
+
+                }catch (Exception e){
+                    json.putString("Inviter Gender", Utils.BLANK);
+                }
+                try{
+                    if(login!=null){
+                        json.putString("Inviter Whole Name", login.getUser_first_name()+" "+login.getUser_last_name());
+                    }
+
+                }catch (Exception e){
+                    json.putString("Inviter Whole Name", Utils.BLANK);
+                }
+            }
         }
 
         getInstanceMixpanel().track(eventName, json);
