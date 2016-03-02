@@ -316,7 +316,6 @@ public class App extends Application {
 
         }
 
-
         final ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         final NetworkInfo network = connManager.getActiveNetworkInfo();
 
@@ -452,7 +451,6 @@ public class App extends Application {
             }catch (Exception e){
                 json.putString("Event End Time", Utils.BLANK);
             }
-
         }
 
         getInstanceMixpanel().track(eventName, json);

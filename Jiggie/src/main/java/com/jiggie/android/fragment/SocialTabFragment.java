@@ -477,48 +477,56 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             SocialManager.loaderSocialMatch(AccessToken.getCurrentAccessToken().getUserId(), this.current.getFrom_fb_id(), confirm ? "approved" : "denied");
     }
 
-    public void onEvent(Success2Model message){
-        final App app = App.getInstance();
-        final Context context = getContext();
-        final SocialModel.Data.SocialFeeds socialMatch = current;
-        final LoginModel login = AccountManager.loadLogin();
-        final SettingModel setting = AccountManager.loadSetting();
+    public void onEvent(Success2Model message) {
+        if(message.getFrom().equals(SocialManager.TAG))
+        {
+            final App app = App.getInstance();
+            final Context context = getContext();
+            final SocialModel.Data.SocialFeeds socialMatch = current;
+            final LoginModel login = AccountManager.loadLogin();
+            final SettingModel setting = AccountManager.loadSetting();
 
-        progressBar.setVisibility(View.GONE);
-        enableButton(true);
-        current = null;
+            progressBar.setVisibility(View.GONE);
+            enableButton(true);
+            current = null;
 
-        onRefresh();
+            onRefresh();
 
-        if (confirm) {
-            final SimpleJSONObject json = new SimpleJSONObject();
-            json.putString("ABTestChat:Connect", "Connect");
-            json.putString("name_and_fb_id", String.format("%s_%s_%s", login.getUser_first_name(), login.getUser_last_name(), AccessToken.getCurrentAccessToken().getUserId()));
-            json.putString("age", StringUtility.getAge2(login.getBirthday()));
-            json.putString("app_version", String.valueOf(BuildConfig.VERSION_CODE));
-            json.putString("birthday", login.getBirthday());
-            json.putString("device_type", Build.MODEL);
-            json.putString("email", login.getEmail());
-            json.putString("feed_item_type", "viewed");
-            json.putString("first_name", login.getUser_first_name());
-            json.putString("gender", setting.getData().getGender());
-            json.putString("gender_interest", setting.getData().getGender_interest());
-            json.putString("last_name", login.getUser_last_name());
-            json.putString("location", login.getLocation());
-            json.putString("os_version", app.getDeviceOSName());
-            app.trackMixPanelEvent("Accept Feed Item", json);
+            if (confirm) {
+                Utils.d(TAG, "pass feed item confirm");
+                final SimpleJSONObject json = new SimpleJSONObject();
+                json.putString("ABTestChat:Connect", "Connect");
+                json.putString("name_and_fb_id", String.format("%s_%s_%s", login.getUser_first_name(), login.getUser_last_name(), AccessToken.getCurrentAccessToken().getUserId()));
+                json.putString("age", StringUtility.getAge2(login.getBirthday()));
+                json.putString("app_version", String.valueOf(BuildConfig.VERSION_CODE));
+                json.putString("birthday", login.getBirthday());
+                json.putString("device_type", Build.MODEL);
+                json.putString("email", login.getEmail());
+                json.putString("feed_item_type", "viewed");
+                json.putString("first_name", login.getUser_first_name());
+                json.putString("gender", setting.getData().getGender());
+                json.putString("gender_interest", setting.getData().getGender_interest());
+                json.putString("last_name", login.getUser_last_name());
+                json.putString("location", login.getLocation());
+                json.putString("os_version", app.getDeviceOSName());
+                app.trackMixPanelEvent("Accept Feed Item", json);
 
-            if ((SocialManager.Type.isInbound(socialMatch)) && (context != null)) {
-                final Intent intent = new Intent(context, ChatActivity.class);
-                intent.putExtra(Conversation.FIELD_FROM_NAME, socialMatch.getFrom_first_name());
-                intent.putExtra(Conversation.FIELD_FACEBOOK_ID, socialMatch.getFrom_fb_id());
-                context.sendBroadcast(new Intent(getString(R.string.broadcast_social_chat)));
-                startActivity(intent);
+                if ((SocialManager.Type.isInbound(socialMatch)) && (context != null)) {
+                    final Intent intent = new Intent(context, ChatActivity.class);
+                    intent.putExtra(Conversation.FIELD_FROM_NAME, socialMatch.getFrom_first_name());
+                    intent.putExtra(Conversation.FIELD_FACEBOOK_ID, socialMatch.getFrom_fb_id());
+                    context.sendBroadcast(new Intent(getString(R.string.broadcast_social_chat)));
+                    startActivity(intent);
+                }
+
+                dismissProgressDialog();
             }
-
-            dismissProgressDialog();
-        } else
-            app.trackMixPanelEvent("Passed Feed Item");
+            else
+            {
+                Utils.d(TAG, "pass feed item");
+                app.trackMixPanelEvent("Passed Feed Item");
+            }
+        }
     }
 
     @Override

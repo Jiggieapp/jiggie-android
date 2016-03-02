@@ -24,7 +24,7 @@ import retrofit.Retrofit;
 public class SocialManager {
 
     private static SocialInterface socialInterface;
-    //
+    public static final String TAG = SocialManager.class.getSimpleName() ;
 
     public static void iniSocialService(){
         Retrofit retrofit = new Retrofit.Builder()
@@ -118,6 +118,7 @@ public class SocialManager {
 
                     if(response.code()==Utils.CODE_SUCCESS){
                         Success2Model dataTemp = (Success2Model) response.body();
+                        dataTemp.setFrom(TAG);
                         EventBus.getDefault().post(dataTemp);
                     }else{
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_MATCH, Utils.RESPONSE_FAILED));
