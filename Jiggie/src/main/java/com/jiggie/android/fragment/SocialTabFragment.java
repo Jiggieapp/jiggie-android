@@ -566,11 +566,6 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             //final int unreadCount = this.adapter.countUnread();
             if (socialSize > 0)
             {
-                /*if(socialSize > 99)
-                    this.title = String.format("%s (%d)", getString(R.string.social), 99);
-                else
-                    this.title = String.format("%s (%d)", getString(R.string.social), socialSize);
-                */
                 if(socialSize >= 99)
                     this.title =  "99";
                 else
@@ -580,7 +575,6 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             else if(socialSize <= 0)
             {
                 socialSize = 0;
-                //this.title = super.getString(R.string.social);
                 this.title="0";
             }
             this.homeMain.onTabTitleChanged(this);

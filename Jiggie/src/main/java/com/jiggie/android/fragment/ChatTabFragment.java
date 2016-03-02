@@ -271,12 +271,30 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    private int unreadCount = 0;
     private void setHomeTitle() {
         if (this.homeMain != null) {
-            final int unreadCount = this.adapter.countUnread();
-            if (unreadCount > 0)
-                this.title = String.format("%s (%d)", getString(R.string.chat), unreadCount);
-            else this.title = super.getString(R.string.chat);
+            unreadCount = this.adapter.countUnread();
+            /*if (unreadCount > 0)
+                this.title = String.format("%s (%d)", getString(R.string.chat), unreadCount);*/
+            if(unreadCount > 0)
+            {
+                if(unreadCount > 99)
+                {
+                    this.title = "99";
+                }
+                else
+                {
+                    this.title = unreadCount + "";
+                }
+            }
+            else if(unreadCount <= 0)
+            {
+                unreadCount = 0;
+                this.title = "0";
+            }
+
+            //else this.title = super.getString(R.string.chat);
             this.homeMain.onTabTitleChanged(this);
         }
     }
