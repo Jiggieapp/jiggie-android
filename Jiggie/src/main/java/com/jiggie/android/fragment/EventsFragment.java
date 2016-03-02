@@ -86,6 +86,12 @@ public class EventsFragment extends Fragment
     }
 
     @Override
+    public int getIcon()
+    {
+        return R.drawable.ic_event_white_24dp;
+    }
+
+    @Override
     public void onTabSelected() {
         App.getInstance().trackMixPanelEvent("View Events");
         if(getEvents()!=null)

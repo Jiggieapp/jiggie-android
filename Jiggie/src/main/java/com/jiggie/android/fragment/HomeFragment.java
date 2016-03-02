@@ -222,8 +222,9 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
             this.fragments = new Fragment[] {
                     //new EventTabFragment()
                     new EventsFragment()
-                    ,new ChatTabFragment()
                     ,new SocialTabFragment()
+                    ,new ChatTabFragment()
+
                     //,new MoreTabFragment()
             };
             ((TabFragment)this.fragments[0]).setHomeMain(homeMain);
@@ -239,6 +240,11 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         @Override
         public CharSequence getPageTitle(int position) { return ((TabFragment)this.fragments[position]).getTitle(); }
 
+        public int getIcon(int position)
+        {
+            return ((TabFragment)this.fragments[position]).getIcon();
+        }
+
         public int getFragmentPosition(Object fragment) {
             final int length = this.fragments.length;
             for (int i = 0; i < length; i++) {
@@ -253,14 +259,15 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     {
         TextView tabOne = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.tab_custom, null);
         tabOne.setText(adapter.getPageTitle(0));
-        tabOne.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_event_white_24dp, 0, 0);
+        tabOne.setCompoundDrawablesWithIntrinsicBounds(0, adapter.getIcon(0), 0, 0);
         tab.getTabAt(0).setCustomView(tabOne);
 
         View tabTwo = LayoutInflater.from(getActivity())
                 .inflate(R.layout.tab_custom_with_badge, null);
         TextView tabTwoTitle = (TextView) tabTwo.findViewById(R.id.tab);
         tabTwoTitle.setText(adapter.getPageTitle(1));
-        tabTwoTitle.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_chat_white_24dp, 0, 0);
+        //tabTwoTitle.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_chat_white_24dp, 0, 0);
+        tabTwoTitle.setCompoundDrawablesWithIntrinsicBounds(0, adapter.getIcon(1), 0, 0);
         TextView tabTwoBadge = (TextView) tabTwo.findViewById(R.id.tab_badge);
         tabTwoBadge.setText("99");
         tab.getTabAt(1).setCustomView(tabTwo);
@@ -269,7 +276,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
                 .inflate(R.layout.tab_custom_with_badge, null);
         TextView tabThreeTitle = (TextView) tabThree.findViewById(R.id.tab);
         tabThreeTitle.setText(adapter.getPageTitle(2));
-        tabThreeTitle.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_visibility_white_24dp, 0, 0);
+        tabThreeTitle.setCompoundDrawablesWithIntrinsicBounds(0, adapter.getIcon(2), 0, 0);
         TextView tabThreeBadge = (TextView) tabThree.findViewById(R.id.tab_badge);
         tabThreeBadge.setText("99");
 

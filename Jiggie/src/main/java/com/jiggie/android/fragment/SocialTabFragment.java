@@ -134,6 +134,12 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     }
 
     @Override
+    public int getIcon()
+    {
+        return R.drawable.ic_visibility_white_24dp;
+    }
+
+    @Override
     public void setHomeMain(HomeMain homeMain) {
         this.homeMain = homeMain;
     }

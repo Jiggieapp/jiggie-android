@@ -94,6 +94,12 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     }
 
     @Override
+    public int getIcon()
+    {
+        return R.drawable.ic_chat_white_24dp;
+    }
+
+    @Override
     public void onTabSelected() {
         App.getInstance().trackMixPanelEvent("Conversations List");
 
