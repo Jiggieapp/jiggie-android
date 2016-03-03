@@ -8,13 +8,13 @@
     tools:context=".activity.ticket.TicketDetailActivity">
 
 
-<!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:context="com.jiggie.android.activity.ticket.TicketDetailActivity">
--->
+
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appBar"
             android:layout_width="match_parent"
@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_scrollFlags="scroll|enterAlways"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
         </android.support.design.widget.AppBarLayout>
 
         <ScrollView
@@ -42,6 +42,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <RelativeLayout
                     android:id="@+id/header_container"
                     android:layout_width="match_parent"
@@ -282,5 +283,5 @@
             android:enabled="false"
             android:text="@string/done"
             android:textColor="@android:color/white" />
-    <!--</RelativeLayout>-->
+    </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>
