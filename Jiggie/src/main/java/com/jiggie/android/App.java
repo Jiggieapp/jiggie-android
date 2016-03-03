@@ -87,7 +87,7 @@ public class App extends Application {
         //region Initialize third party libraries
 
         FacebookSdk.sdkInitialize(this);
-        AppsFlyerLib.setAppsFlyerKey(super.getString(R.string.appsflyer_devkey));
+        //AppsFlyerLib.setAppsFlyerKey(super.getString(R.string.appsflyer_devkey));
         //Fabric.with(this, new Crashlytics());
 
         //endregion
