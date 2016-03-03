@@ -146,11 +146,10 @@ public class SocialTabFragment extends Fragment implements TabFragment {
 
     @Override
     public void onTabSelected() {
-
-        currentSetting = AccountManager.loadSetting();
+        //wandy 03-03-2016
+        //currentSetting = AccountManager.loadSetting();
 
         boolean a = AccountManager.anySettingChange;
-
         if (this.current == null){
             if (switchSocialize.isChecked()) {
                 txtSocialize.setText(R.string.socialize_description);
@@ -210,11 +209,16 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             this.switchSocialize.setChecked(true);
         }
         this.switchSocialize.setOnCheckedChangeListener(this.socializeChanged);
-        App.getInstance().registerReceiver(this.socialReceiver, new IntentFilter(super.getString(R.string.broadcast_social)));
+        App.getInstance().registerReceiver(this.socialReceiver
+                , new IntentFilter(super.getString(R.string.broadcast_social)));
+        App.getInstance().registerReceiver(this.refreshSocialReceiver
+                , new IntentFilter(SocialTabFragment.TAG));
     }
 
     private void onRefresh() {
+
         if(!AccountManager.isInSettingPage){
+            currentSetting = AccountManager.loadSetting();
             if (super.getContext() == null) {
                 // fragment already destroyed.
                 return;
@@ -229,9 +233,9 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             this.progressBar.setVisibility(View.VISIBLE);
 
             //showProgressDialog();
-            SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId(), currentSetting.getData().getGender_interest());
+            SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId()
+                    , currentSetting.getData().getGender_interest());
         }
-
     }
 
     public void onEvent(SocialModel message){
@@ -484,7 +488,8 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     }
 
     public void onEvent(Success2Model message) {
-        if(message.getFrom().equals(SocialManager.TAG))
+        if(message.getFrom().equalsIgnoreCase(SocialManager.TAG)
+                /*|| message.getFrom().equalsIgnoreCase(Utils.FROM_PROFILE_SETTING)*/)
         {
             final App app = App.getInstance();
             final Context context = getContext();
@@ -536,6 +541,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     @Override
     public void onDestroy() {
         App.getInstance().unregisterReceiver(this.socialReceiver);
+        App.getInstance().unregisterReceiver(this.refreshSocialReceiver);
         EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
@@ -553,8 +559,16 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                     layoutSocialize.setVisibility(View.VISIBLE);
                     txtSocialize.setText(R.string.socialize_description_off);
                 }
-
                 //onRefresh();
+            }
+        }
+    };
+
+    private BroadcastReceiver refreshSocialReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (getContext() != null) {
+                onRefresh();
             }
         }
     };
