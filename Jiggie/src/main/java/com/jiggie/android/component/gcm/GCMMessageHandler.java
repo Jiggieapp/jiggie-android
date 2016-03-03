@@ -129,7 +129,6 @@ public class GCMMessageHandler extends GcmListenerService {
                             | Intent.FLAG_ACTIVITY_CLEAR_TOP
                             //Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
             );
-
             //set title and body text for push notifications
             final String[] values = message.split(":");
             message = values.length > 1 ? values[1].trim() : message;

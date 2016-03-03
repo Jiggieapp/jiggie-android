@@ -499,7 +499,6 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             onRefresh();
 
             if (confirm) {
-                Utils.d(TAG, "pass feed item confirm");
                 final SimpleJSONObject json = new SimpleJSONObject();
                 json.putString("ABTestChat:Connect", "Connect");
                 json.putString("name_and_fb_id", String.format("%s_%s_%s", login.getUser_first_name(), login.getUser_last_name(), AccessToken.getCurrentAccessToken().getUserId()));
@@ -529,7 +528,6 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             }
             else
             {
-                Utils.d(TAG, "pass feed item");
                 app.trackMixPanelEvent("Passed Feed Item");
             }
         }

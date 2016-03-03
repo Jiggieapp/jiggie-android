@@ -53,7 +53,7 @@ public class Utils {
     public static String FROM_WALKTHROUGH = "walkthrough";
     public static String FROM_PRODUCT_LIST = "product_list";
     public static String FROM_SUMMARY = "summary";
-
+    public static String FROM_COMPLETING_WALKTHROUGH_LOCATION = "complete_walkthrough_location";
     public static String FROM_APPSFLYER = "appsflyer";
     public static String FROM_MIXPANEL = "mixpanel";
 
