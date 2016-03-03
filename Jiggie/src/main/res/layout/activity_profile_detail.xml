@@ -86,7 +86,8 @@
                     android:visibility="gone"
                     android:text=""
                     android:textColor="@android:color/holo_blue_dark"
-                    android:textStyle=""/>
+                    android:textStyle=""
+                    />
 
                 <TextView
                     android:id="@+id/txtLocation"

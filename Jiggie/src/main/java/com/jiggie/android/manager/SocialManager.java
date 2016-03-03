@@ -144,7 +144,9 @@ public class SocialManager {
 
         public static boolean isInbound(SocialModel.Data.SocialFeeds value)
         {
-            return APPROVED.equalsIgnoreCase(value.getType());
+            if(value != null)
+                return APPROVED.equalsIgnoreCase(value.getType());
+            else return false;
         }
     }
 

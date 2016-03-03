@@ -154,6 +154,8 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             if (switchSocialize.isChecked()) {
                 txtSocialize.setText(R.string.socialize_description);
                 this.onRefresh();
+                if(this.cardEmpty.getVisibility() == View.GONE)
+                    this.progressBar.setVisibility(View.VISIBLE);
             }else{
                 this.layoutSocialize.setVisibility(View.VISIBLE);
                 txtSocialize.setText(R.string.socialize_description_off);
@@ -230,7 +232,10 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         /*if(current==null){
             this.layoutSocialize.setVisibility(View.GONE);
         }*/
-            this.progressBar.setVisibility(View.VISIBLE);
+
+            //wandy 03-03-2016
+            //this.progressBar.setVisibility(View.VISIBLE);
+            this.progressBar.setVisibility(View.GONE);
 
             //showProgressDialog();
             SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId()
@@ -241,6 +246,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     public void onEvent(SocialModel message){
         current = null;
         socialSize = 0;
+        Utils.d(TAG, "on socialmodel " + message.getData().getSocial_feeds().size());
         for(SocialModel.Data.SocialFeeds item : message.getData().getSocial_feeds())
         {
             if(SocialManager.Type.isInbound(item))
@@ -269,6 +275,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             if(ex.equals(Utils.RESPONSE_FAILED+" "+"empty data")){
                 this.layoutSocialize.setVisibility(View.GONE);
                 this.cardEmpty.setVisibility(View.VISIBLE);
+                dismissProgressDialog();
                 this.cardGeneral.setVisibility(View.GONE);
                 this.cardInbound.setVisibility(View.GONE);
                 this.progressBar.setVisibility(View.GONE);
@@ -293,6 +300,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         if ((super.getContext() != null) && (value == null)) {
             this.layoutSocialize.setVisibility(View.GONE);
             this.cardEmpty.setVisibility(View.VISIBLE);
+            dismissProgressDialog();
             this.cardGeneral.setVisibility(View.GONE);
             this.cardInbound.setVisibility(View.GONE);
             this.progressBar.setVisibility(View.GONE);
@@ -332,7 +340,9 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                 this.layoutSocialize.setVisibility(View.VISIBLE);
 
                 // we need to get venue name from event detail api
-                this.progressBar.setVisibility(View.VISIBLE);
+                //changed by wandy 03-03-2016, to make progressbar always gone
+                //this.progressBar.setVisibility(View.VISIBLE);
+                this.progressBar.setVisibility(View.GONE);
 
                 EventManager.loaderEventDetail(current.getEvent_id()
                         , AccessToken.getCurrentAccessToken().getUserId()
@@ -478,7 +488,9 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     }
 
     private void match(final boolean confirms) {
-        this.progressBar.setVisibility(View.VISIBLE);
+        //wandy 03-03-2016
+        //this.progressBar.setVisibility(View.VISIBLE);
+        this.progressBar.setVisibility(View.GONE);
         this.enableButton(false);
 
         confirm = confirms;
