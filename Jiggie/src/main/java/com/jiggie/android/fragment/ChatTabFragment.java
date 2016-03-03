@@ -82,6 +82,7 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     private Dialog dialogWalkthrough;
     private Dialog dialogLongClick;
     private ChatListModel.Data.ChatLists conversation;
+    public static final String TAG = ChatTabFragment.class.getSimpleName();
 
     @Override
     public void setHomeMain(HomeMain homeMain) {
@@ -91,6 +92,12 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     @Override
     public String getTitle() {
         return this.title == null ? (this.title = this.homeMain.getContext().getString(R.string.chat)) : this.title;
+    }
+
+    @Override
+    public int getIcon()
+    {
+        return R.drawable.ic_chat_white_24dp;
     }
 
     @Override
@@ -131,6 +138,8 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         final App app = App.getInstance();
         app.registerReceiver(this.notificationReceived, new IntentFilter(super.getString(R.string.broadcast_notification)));
         app.registerReceiver(this.socialChatReceiver, new IntentFilter(super.getString(R.string.broadcast_social_chat)));
+        app.registerReceiver(chatCounterBroadCastReceiver
+                , new IntentFilter(TAG));
 
         this.refreshLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -271,12 +280,30 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    private int unreadCount = 0;
     private void setHomeTitle() {
         if (this.homeMain != null) {
-            final int unreadCount = this.adapter.countUnread();
-            if (unreadCount > 0)
-                this.title = String.format("%s (%d)", getString(R.string.chat), unreadCount);
-            else this.title = super.getString(R.string.chat);
+            unreadCount = this.adapter.countUnread();
+            /*if (unreadCount > 0)
+                this.title = String.format("%s (%d)", getString(R.string.chat), unreadCount);*/
+            if(unreadCount > 0)
+            {
+                if(unreadCount > 99)
+                {
+                    this.title = "99";
+                }
+                else
+                {
+                    this.title = unreadCount + "";
+                }
+            }
+            else if(unreadCount <= 0)
+            {
+                unreadCount = 0;
+                this.title = "0";
+            }
+
+            //else this.title = super.getString(R.string.chat);
             this.homeMain.onTabTitleChanged(this);
         }
     }
@@ -345,6 +372,7 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         final App app = App.getInstance();
         app.unregisterReceiver(this.notificationReceived);
         app.unregisterReceiver(this.socialChatReceiver);
+        app.unregisterReceiver(this.chatCounterBroadCastReceiver);
         EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
@@ -428,5 +456,25 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         dialogLongClick = builder.create();
         dialogLongClick.show();
     }
+
+
+    BroadcastReceiver chatCounterBroadCastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String facebookId  = intent.getStringExtra(Conversation.FIELD_FACEBOOK_ID);
+            if(!facebookId.equals(""))
+            {
+                Utils.d(TAG, "masuk di chatcounterbroadcastreceiver " + facebookId);
+
+                final ChatListModel.Data.ChatLists conversation = facebookId == null ? null : adapter.find(facebookId);
+                if(conversation != null)
+                {
+                    conversation.setUnread(0);
+                    adapter.notifyDataSetChanged();
+                    setHomeTitle();
+                }
+            }
+        }
+    };
 
 }

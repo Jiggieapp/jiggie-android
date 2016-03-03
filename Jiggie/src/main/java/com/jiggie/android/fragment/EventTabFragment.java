@@ -122,6 +122,11 @@ public class EventTabFragment extends Fragment
         this.homeMain = homeMain;
     }
 
+    @Override
+    public int getIcon() {
+        return 0;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

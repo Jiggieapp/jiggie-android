@@ -86,9 +86,25 @@ public class EventsFragment extends Fragment
     }
 
     @Override
+    public int getIcon()
+    {
+        return R.drawable.ic_event_white_24dp;
+    }
+
+    @Override
     public void onTabSelected() {
+        App.getInstance().trackMixPanelEvent("View Events");
         if(getEvents()!=null)
+        {
+            /*boolean isExpanded = false;
+            if(!searchView.isIconified())
+            {
+                isExpanded = true;
+            }
+            filter("", isExpanded);*/
             showTab();
+        }
+
         if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_EVENT, false)) {
             showWalkthroughDialog();
         }
@@ -278,15 +294,17 @@ public class EventsFragment extends Fragment
         upcomingFragment.onEvent(upcomingEvents);*/
         boolean isExpanded = false;
         //if(searchText != null  /* && !searchText.isEmpty()*/)
-        if(!searchView.isIconified())
+        if(searchView == null)
+        {
+            isExpanded = false;
+        }
+        else if(!searchView.isIconified())
         {
             isExpanded = true;
         }
         filter(searchText, isExpanded);
         this.isLoading = false;
         this.refreshLayout.setRefreshing(false);
-
-        Utils.d(TAG, "success event model");
     }
 
     public void onEvent(ExceptionModel exceptionModel)
@@ -298,14 +316,9 @@ public class EventsFragment extends Fragment
         if(exceptionModel.getMessage().equalsIgnoreCase(Utils.MSG_EMPTY_DATA) &&
                 exceptionModel.getFrom().equalsIgnoreCase(Utils.FROM_EVENT))
         {
-            Utils.d(TAG, "empty model");
             setEvents(null);
             //onRefresh();
             filter("");
-        }
-        else
-        {
-            Utils.d(TAG, "empty model " + exceptionModel.getMessage());
         }
 
         this.isLoading = false;
@@ -367,7 +380,9 @@ public class EventsFragment extends Fragment
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                filter(searchText, true);
+                                if (searchText != null)
+                                    filter(searchText, true);
+                                else filter("", false);
                             }
                         }, getResources().getInteger(R.integer.event_search_delay));
                         return true;
@@ -401,13 +416,13 @@ public class EventsFragment extends Fragment
 
     private void filter(String searchText, boolean isSearch)
     {
+
         ArrayList<EventModel.Data.Events> todayEvents = new ArrayList<>();
         ArrayList<EventModel.Data.Events> tomorrowEvents = new ArrayList<>();
         ArrayList<EventModel.Data.Events> upcomingEvents = new ArrayList<>();
 
         if(getEvents() != null)
         {
-            Utils.d(TAG, "tidak null " + isSearch);
             if(searchText == null)
                 searchText = "";
             //timeTab.setVisibility(View.VISIBLE);
@@ -422,7 +437,6 @@ public class EventsFragment extends Fragment
                     if(!isSearch)
                     {
                         showTab();
-
                         final String diffDays = Utils.calculateTime(tempEvent.getStart_datetime());
                         if (diffDays.equals(Utils.DATE_TODAY)) {
                             todayEvents.add(tempEvent);
@@ -459,7 +473,6 @@ public class EventsFragment extends Fragment
         }
         else
         {
-            Utils.d(TAG, "getEvents null");
             //timeTab.setVisibility(View.GONE);
             viewPagerEvents.setPagingEnabled(false);
             hideTab();
@@ -470,8 +483,7 @@ public class EventsFragment extends Fragment
         upcomingFragment.onEvent(upcomingEvents);
     }
 
-    private void filter(String searchText)
-    {
+    private void filter(String searchText) {
         filter(searchText, false);
     }
 
@@ -528,7 +540,6 @@ public class EventsFragment extends Fragment
         dialogWalkthrough.setContentView(R.layout.walkthrough_screen);
         dialogWalkthrough.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialogWalkthrough.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-
 
         RelativeLayout layout = (RelativeLayout)dialogWalkthrough.findViewById(R.id.layout_walkthrough);
         ImageView imgWk = (ImageView)dialogWalkthrough.findViewById(R.id.img_wk);

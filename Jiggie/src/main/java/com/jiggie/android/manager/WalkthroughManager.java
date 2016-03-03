@@ -24,6 +24,7 @@ import retrofit.Retrofit;
 public class WalkthroughManager {
 
     private static WalkthroughInterface walkthroughInterface;
+    static final String TAG = WalkthroughManager.class.getSimpleName();
 
     public static void initWalkthroughService(){
         Retrofit retrofit = new Retrofit.Builder()
@@ -56,6 +57,7 @@ public class WalkthroughManager {
 
                     if (response.code() == Utils.CODE_SUCCESS) {
                         Success2Model dataTemp = (Success2Model) response.body();
+                        dataTemp.setFrom(TAG);
                         EventBus.getDefault().post(dataTemp);
                     }
                     /*else {

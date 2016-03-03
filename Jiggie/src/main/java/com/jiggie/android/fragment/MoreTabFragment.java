@@ -68,6 +68,12 @@ public class MoreTabFragment extends Fragment implements TabFragment, MoreTabLis
     }
     @Override
     public void setHomeMain(HomeMain homeMain) { this.homeMain = homeMain; }
+
+    @Override
+    public int getIcon() {
+        return 0;
+    }
+
     @Override
     public String getTitle() { return this.title == null ? (this.title = this.homeMain.getContext().getString(R.string.more)) : this.title; }
 

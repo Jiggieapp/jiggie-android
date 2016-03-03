@@ -141,14 +141,13 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         this.onPageSelected(0);
         setupTabIcons();
         if ((super.getArguments() != null) && (super.getArguments().getBoolean("chat", false)))
-            this.viewPager.setCurrentItem(1);
-        else if ((super.getArguments() != null)
-                && (super.getArguments().getBoolean(Common.TO_TAB_SOCIAL, false)))
             this.viewPager.setCurrentItem(2);
         else if ((super.getArguments() != null)
-                && (super.getArguments().getBoolean(Common.TO_TAB_CHAT, false)))
+                && (super.getArguments().getBoolean(Common.TO_TAB_SOCIAL, false)))
             this.viewPager.setCurrentItem(1);
-
+        else if ((super.getArguments() != null)
+                && (super.getArguments().getBoolean(Common.TO_TAB_CHAT, false)))
+            this.viewPager.setCurrentItem(2);
     }
 
     @Override
@@ -186,15 +185,21 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
 
         if (tab != null)
         {
-            if(position < 2)
+            if(position == 0)
             {
+
                 tab.setText(fragment.getTitle());
             }
+            /*else if(position == 1)
+            {
+
+            }*/
             else
             {
+                Utils.d(TAG, "fragment.getTitle() " + fragment.getTitle());
                 TextView lblBadge = (TextView) tab.getCustomView().findViewById(R.id.tab_badge);
-                final String badgeCount = fragment.getTitle();
-                Utils.d(TAG, badgeCount + " badgeCount");
+                final String badgeCount = fragment.getTitle() /*"13"*/;
+
                 if(badgeCount.equals("0"))
                 {
                     lblBadge.setVisibility(View.GONE);
@@ -204,11 +209,9 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
                     lblBadge.setVisibility(View.VISIBLE);
                     lblBadge.setText(fragment.getTitle());
                 }
-
             }
         }
     }
-
 
     private static class PageAdapter extends FragmentPagerAdapter {
         private final Fragment[] fragments;
@@ -218,8 +221,9 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
             this.fragments = new Fragment[] {
                     //new EventTabFragment()
                     new EventsFragment()
-                    ,new ChatTabFragment()
                     ,new SocialTabFragment()
+                    ,new ChatTabFragment()
+
                     //,new MoreTabFragment()
             };
             ((TabFragment)this.fragments[0]).setHomeMain(homeMain);
@@ -235,14 +239,17 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         @Override
         public CharSequence getPageTitle(int position) { return ((TabFragment)this.fragments[position]).getTitle(); }
 
+        public int getIcon(int position)
+        {
+            return ((TabFragment)this.fragments[position]).getIcon();
+        }
+
         public int getFragmentPosition(Object fragment) {
             final int length = this.fragments.length;
-
             for (int i = 0; i < length; i++) {
                 if (fragment == this.fragments[i])
                     return i;
             }
-
             return -1;
         }
     }
@@ -251,23 +258,24 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     {
         TextView tabOne = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.tab_custom, null);
         tabOne.setText(adapter.getPageTitle(0));
-        tabOne.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_event_white_24dp, 0, 0);
+        tabOne.setCompoundDrawablesWithIntrinsicBounds(0, adapter.getIcon(0), 0, 0);
         tab.getTabAt(0).setCustomView(tabOne);
 
-        TextView tabTwo = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.tab_custom, null);
-        tabTwo.setText(adapter.getPageTitle(1));
-        tabTwo.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_chat_white_24dp, 0, 0);
+        View tabTwo = LayoutInflater.from(getActivity())
+                .inflate(R.layout.tab_custom_with_badge, null);
+        TextView tabTwoTitle = (TextView) tabTwo.findViewById(R.id.tab);
+        tabTwoTitle.setText(adapter.getPageTitle(1));
+        //tabTwoTitle.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_chat_white_24dp, 0, 0);
+        tabTwoTitle.setCompoundDrawablesWithIntrinsicBounds(0, adapter.getIcon(1), 0, 0);
+        TextView tabTwoBadge = (TextView) tabTwo.findViewById(R.id.tab_badge);
+        tabTwoBadge.setText("99");
         tab.getTabAt(1).setCustomView(tabTwo);
 
-        /* TextView tabThree = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.tab_custom_with_badge, null);
-        tabThree.setText(adapter.getPageTitle(2));
-        tabThree.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_visibility_white_24dp, 0, 0);
-        */
         View tabThree = LayoutInflater.from(getActivity())
                 .inflate(R.layout.tab_custom_with_badge, null);
         TextView tabThreeTitle = (TextView) tabThree.findViewById(R.id.tab);
         tabThreeTitle.setText(adapter.getPageTitle(2));
-        tabThreeTitle.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_visibility_white_24dp, 0, 0);
+        tabThreeTitle.setCompoundDrawablesWithIntrinsicBounds(0, adapter.getIcon(2), 0, 0);
         TextView tabThreeBadge = (TextView) tabThree.findViewById(R.id.tab_badge);
         tabThreeBadge.setText("99");
 
