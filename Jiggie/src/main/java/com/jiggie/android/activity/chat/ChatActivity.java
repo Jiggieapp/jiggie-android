@@ -131,7 +131,8 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
         i.putExtra(Conversation.FIELD_FACEBOOK_ID, toId);
         sendBroadcast(i);
 
-        super.registerReceiver(this.notificationReceived, new IntentFilter(super.getString(R.string.broadcast_notification)));
+        super.registerReceiver(this.notificationReceived
+                , new IntentFilter(super.getString(R.string.broadcast_notification)));
     }
 
     @Override

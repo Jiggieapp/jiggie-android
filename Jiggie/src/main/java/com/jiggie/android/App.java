@@ -603,9 +603,6 @@ public class App extends Application {
         json.putString("device_type", Build.MODEL);
         json.putString("app_version", getVersionCode(this));
         getInstanceMixpanel().registerSuperProperties(json);
-
-
-
     }
 
     public void setSyncMixpanel(LoginModel login, SettingModel settingModel){

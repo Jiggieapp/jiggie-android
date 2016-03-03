@@ -465,10 +465,14 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
             if(!facebookId.equals(""))
             {
                 Utils.d(TAG, "masuk di chatcounterbroadcastreceiver " + facebookId);
+
                 final ChatListModel.Data.ChatLists conversation = facebookId == null ? null : adapter.find(facebookId);
-                conversation.setUnread(0);
-                adapter.notifyDataSetChanged();
-                setHomeTitle();
+                if(conversation != null)
+                {
+                    conversation.setUnread(0);
+                    adapter.notifyDataSetChanged();
+                    setHomeTitle();
+                }
             }
         }
     };
