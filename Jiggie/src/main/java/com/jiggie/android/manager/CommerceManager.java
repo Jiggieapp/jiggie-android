@@ -7,8 +7,10 @@ import com.jiggie.android.api.CommerceInterface;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.callback.CustomCallback;
 import com.jiggie.android.model.ExceptionModel;
+import com.jiggie.android.model.PostPaymentModel;
 import com.jiggie.android.model.PostSummaryModel;
 import com.jiggie.android.model.ProductListModel;
+import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SummaryModel;
 
 import java.io.IOException;
@@ -47,6 +49,10 @@ public class CommerceManager {
 
     private static void postSummary(PostSummaryModel postSummaryModel, Callback callback) throws IOException {
         getInstance().postSummary(Utils.URL_SUMMARY, postSummaryModel).enqueue(callback);
+    }
+
+    private static void postPayment(PostPaymentModel postPaymentModel, Callback callback) throws IOException {
+        getInstance().postPayment(Utils.URL_PAYMENT, postPaymentModel).enqueue(callback);
     }
 
     public static void loaderProductList(String event_id){
@@ -108,6 +114,37 @@ public class CommerceManager {
         }catch (IOException e){
             Log.d("Exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SUMMARY, Utils.MSG_EXCEPTION + e.toString()));
+        }
+    }
+
+    public static void loaderPayment(PostPaymentModel postPaymentModel){
+        try {
+            postPayment(postPaymentModel, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+
+                    //String header = String.valueOf(response.code());
+                    String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);
+
+                    if (response.code() == Utils.CODE_SUCCESS) {
+                        Success2Model dataTemp = (Success2Model) response.body();
+                        //EventBus.getDefault().post(dataTemp);
+                    } else {
+                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PAYMENT, Utils.RESPONSE_FAILED));
+                    }
+
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    Log.d("Failure", t.toString());
+                    EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PAYMENT, Utils.MSG_EXCEPTION + t.toString()));
+                }
+            });
+        }catch (IOException e){
+            Log.d("Exception", e.toString());
+            EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PAYMENT, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 

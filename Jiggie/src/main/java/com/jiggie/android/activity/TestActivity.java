@@ -6,7 +6,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
 
+import com.google.gson.Gson;
 import com.jiggie.android.component.activity.ToolbarActivity;
+import com.jiggie.android.manager.CommerceManager;
+import com.jiggie.android.model.PostPaymentModel;
 
 import id.co.veritrans.android.api.VTDirect;
 import id.co.veritrans.android.api.VTInterface.ITokenCallback;
@@ -45,7 +48,7 @@ public class TestActivity extends ToolbarActivity{
 
         //set true or false to enable or disable 3dsecure
         cardDetails.setSecure(true);
-        cardDetails.setGross_amount("10000");
+        cardDetails.setGross_amount("4000");
 
         //Set VTCardDetails to VTDirect
         vtDirect.setCard_details(cardDetails);
@@ -83,6 +86,13 @@ public class TestActivity extends ToolbarActivity{
                 //print or send token
                 String a = token.toString();
                 Log.d("token", token.getToken_id());
+
+                PostPaymentModel postPaymentModel = new PostPaymentModel("cc", "1", "1456992450540", token.getToken_id());
+
+                String sd = String.valueOf(new Gson().toJson(postPaymentModel));
+
+                CommerceManager.loaderPayment(postPaymentModel);
+
             }
 
             @Override
