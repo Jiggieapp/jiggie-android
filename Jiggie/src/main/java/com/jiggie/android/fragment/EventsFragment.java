@@ -294,7 +294,11 @@ public class EventsFragment extends Fragment
         upcomingFragment.onEvent(upcomingEvents);*/
         boolean isExpanded = false;
         //if(searchText != null  /* && !searchText.isEmpty()*/)
-        if(!searchView.isIconified())
+        if(searchView == null)
+        {
+            isExpanded = false;
+        }
+        else if(!searchView.isIconified())
         {
             isExpanded = true;
         }
@@ -376,7 +380,7 @@ public class EventsFragment extends Fragment
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                if(searchText != null)
+                                if (searchText != null)
                                     filter(searchText, true);
                                 else filter("", false);
                             }
@@ -479,8 +483,7 @@ public class EventsFragment extends Fragment
         upcomingFragment.onEvent(upcomingEvents);
     }
 
-    private void filter(String searchText)
-    {
+    private void filter(String searchText) {
         filter(searchText, false);
     }
 
@@ -537,7 +540,6 @@ public class EventsFragment extends Fragment
         dialogWalkthrough.setContentView(R.layout.walkthrough_screen);
         dialogWalkthrough.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialogWalkthrough.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-
 
         RelativeLayout layout = (RelativeLayout)dialogWalkthrough.findViewById(R.id.layout_walkthrough);
         ImageView imgWk = (ImageView)dialogWalkthrough.findViewById(R.id.img_wk);
