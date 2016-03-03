@@ -61,7 +61,7 @@
                 android:contentDescription="@null"
                 android:scaleType="centerCrop"
                 android:id="@+id/img"
-                android:src="@drawable/ic_keyboard_arrow_right"
+                android:src="@drawable/purple_arrow2x"
                 />
 
             <TextView

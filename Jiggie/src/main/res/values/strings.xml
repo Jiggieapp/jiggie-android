@@ -258,15 +258,17 @@
     <string name="vor_total">TOTAL</string>
     <string name="vor_total_fill">Rp3.650.000</string>
     <string name="vor_instruction">INSTRUCTIONS</string>
-    <string name="vor_instruction_fill">When you get to the venue look for the ticket booth. Lorem ipsum dolor sit amet, lorem ipsum copy in various charsets and languages for layouts.\nIf you have any questions please don\'t hestitate to text or WA us at +62111111111</string>
+    <string name="vor_instruction_fill">When you get to the venue look for the ticket booth. Lorem ipsum dolor sit amet, lorem ipsum copy in various charsets and languages for layouts.\nIf you have any questions please don\'t hestitate to text or WA us at <b>+62111111111</b></string>
     <string name="vor_ticket_inc">This Ticket Include:</string>
     <string name="vor_ticket_inc_fill1">1. Lorem ipsum dolor sit amet copy in various charsets and languages for layouts.</string>
     <string name="vor_ticket_inc_fill2">2. Lorem ipsum dolor sit amet copy in various charsets and languages for layouts.</string>
     <string name="vor_ticket_inc_fill3">3. Lorem ipsum dolor sit amet copy in various charsets and languages for layouts.</string>
+    <string name="vor_ticket_inc_fill">1. Lorem ipsum dolor sit amet copy in various charsets and languages for layouts.\n2. Lorem ipsum dolor sit amet copy in various charsets and languages for layouts.\n3. Lorem ipsum dolor sit amet copy in various charsets and languages for layouts.</string>
     <string name="vor_event_hour">19:00 - 23:00</string>
     <string name="vor_event_place">GELORA BUNG KARNO</string>
     <string name="vor_tap_info">*Tap "Orders" from the "More" tab to return to this screen</string>
-    <string name="vor_view_ticlet">*Tap "Orders" from the "More" tab to return to this screen</string>
+    <string name="vor_view_ticket">VIEW TICKET</string>
+    <string name="vor_fine_print">Fine Print :</string>
     <!--END HERE-->
 
 </resources>
