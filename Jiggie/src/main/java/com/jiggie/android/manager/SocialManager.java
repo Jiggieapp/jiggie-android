@@ -82,10 +82,9 @@ public class SocialManager {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
                     //String header = String.valueOf(response.code());
-                    String responses = new Gson().toJson(response.body());
-                    Utils.d("res", responses);
+                    /*String responses = new Gson().toJson(response.body());
+                    Utils.d("res", responses);*/
 
-                    int response_code = response.code();
 
                     if(response.code()==Utils.CODE_SUCCESS){
                         SocialModel dataTemp = (SocialModel) response.body();
@@ -145,7 +144,9 @@ public class SocialManager {
 
         public static boolean isInbound(SocialModel.Data.SocialFeeds value)
         {
-            return APPROVED.equalsIgnoreCase(value.getType());
+            if(value != null)
+                return APPROVED.equalsIgnoreCase(value.getType());
+            else return false;
         }
     }
 

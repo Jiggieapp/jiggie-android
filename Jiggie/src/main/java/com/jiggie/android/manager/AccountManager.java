@@ -111,12 +111,10 @@ public class AccountManager extends BaseManager{
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SIGN_IN, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
-            Utils.d("exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SIGN_IN, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
@@ -128,6 +126,7 @@ public class AccountManager extends BaseManager{
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
                     if (response.code() == Utils.CODE_SUCCESS) {
                         Success2Model dataTemp = (Success2Model) response.body();
+                        dataTemp.setFrom(Utils.FROM_PROFILE_SETTING);
                         EventBus.getDefault().post(dataTemp);
                         AccountManager.saveMemberSetting(memberSettingModel);
 

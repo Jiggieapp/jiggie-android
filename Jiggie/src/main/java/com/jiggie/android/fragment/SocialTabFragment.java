@@ -146,15 +146,16 @@ public class SocialTabFragment extends Fragment implements TabFragment {
 
     @Override
     public void onTabSelected() {
-
-        currentSetting = AccountManager.loadSetting();
+        //wandy 03-03-2016
+        //currentSetting = AccountManager.loadSetting();
 
         boolean a = AccountManager.anySettingChange;
-
         if (this.current == null){
             if (switchSocialize.isChecked()) {
                 txtSocialize.setText(R.string.socialize_description);
                 this.onRefresh();
+                if(this.cardEmpty.getVisibility() == View.GONE)
+                    this.progressBar.setVisibility(View.VISIBLE);
             }else{
                 this.layoutSocialize.setVisibility(View.VISIBLE);
                 txtSocialize.setText(R.string.socialize_description_off);
@@ -210,11 +211,16 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             this.switchSocialize.setChecked(true);
         }
         this.switchSocialize.setOnCheckedChangeListener(this.socializeChanged);
-        App.getInstance().registerReceiver(this.socialReceiver, new IntentFilter(super.getString(R.string.broadcast_social)));
+        App.getInstance().registerReceiver(this.socialReceiver
+                , new IntentFilter(super.getString(R.string.broadcast_social)));
+        App.getInstance().registerReceiver(this.refreshSocialReceiver
+                , new IntentFilter(SocialTabFragment.TAG));
     }
 
     private void onRefresh() {
+
         if(!AccountManager.isInSettingPage){
+            currentSetting = AccountManager.loadSetting();
             if (super.getContext() == null) {
                 // fragment already destroyed.
                 return;
@@ -226,17 +232,21 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         /*if(current==null){
             this.layoutSocialize.setVisibility(View.GONE);
         }*/
-            this.progressBar.setVisibility(View.VISIBLE);
+
+            //wandy 03-03-2016
+            //this.progressBar.setVisibility(View.VISIBLE);
+            this.progressBar.setVisibility(View.GONE);
 
             //showProgressDialog();
-            SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId(), currentSetting.getData().getGender_interest());
+            SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId()
+                    , currentSetting.getData().getGender_interest());
         }
-
     }
 
     public void onEvent(SocialModel message){
         current = null;
         socialSize = 0;
+        Utils.d(TAG, "on socialmodel " + message.getData().getSocial_feeds().size());
         for(SocialModel.Data.SocialFeeds item : message.getData().getSocial_feeds())
         {
             if(SocialManager.Type.isInbound(item))
@@ -265,6 +275,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             if(ex.equals(Utils.RESPONSE_FAILED+" "+"empty data")){
                 this.layoutSocialize.setVisibility(View.GONE);
                 this.cardEmpty.setVisibility(View.VISIBLE);
+                dismissProgressDialog();
                 this.cardGeneral.setVisibility(View.GONE);
                 this.cardInbound.setVisibility(View.GONE);
                 this.progressBar.setVisibility(View.GONE);
@@ -289,6 +300,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         if ((super.getContext() != null) && (value == null)) {
             this.layoutSocialize.setVisibility(View.GONE);
             this.cardEmpty.setVisibility(View.VISIBLE);
+            dismissProgressDialog();
             this.cardGeneral.setVisibility(View.GONE);
             this.cardInbound.setVisibility(View.GONE);
             this.progressBar.setVisibility(View.GONE);
@@ -328,7 +340,9 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                 this.layoutSocialize.setVisibility(View.VISIBLE);
 
                 // we need to get venue name from event detail api
-                this.progressBar.setVisibility(View.VISIBLE);
+                //changed by wandy 03-03-2016, to make progressbar always gone
+                //this.progressBar.setVisibility(View.VISIBLE);
+                this.progressBar.setVisibility(View.GONE);
 
                 EventManager.loaderEventDetail(current.getEvent_id()
                         , AccessToken.getCurrentAccessToken().getUserId()
@@ -474,7 +488,9 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     }
 
     private void match(final boolean confirms) {
-        this.progressBar.setVisibility(View.VISIBLE);
+        //wandy 03-03-2016
+        //this.progressBar.setVisibility(View.VISIBLE);
+        this.progressBar.setVisibility(View.GONE);
         this.enableButton(false);
 
         confirm = confirms;
@@ -484,7 +500,8 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     }
 
     public void onEvent(Success2Model message) {
-        if(message.getFrom().equals(SocialManager.TAG))
+        if(message.getFrom().equalsIgnoreCase(SocialManager.TAG)
+                /*|| message.getFrom().equalsIgnoreCase(Utils.FROM_PROFILE_SETTING)*/)
         {
             final App app = App.getInstance();
             final Context context = getContext();
@@ -536,6 +553,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     @Override
     public void onDestroy() {
         App.getInstance().unregisterReceiver(this.socialReceiver);
+        App.getInstance().unregisterReceiver(this.refreshSocialReceiver);
         EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
@@ -553,8 +571,16 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                     layoutSocialize.setVisibility(View.VISIBLE);
                     txtSocialize.setText(R.string.socialize_description_off);
                 }
-
                 //onRefresh();
+            }
+        }
+    };
+
+    private BroadcastReceiver refreshSocialReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (getContext() != null) {
+                onRefresh();
             }
         }
     };
