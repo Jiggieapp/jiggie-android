@@ -211,14 +211,13 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             this.switchSocialize.setChecked(true);
         }
         this.switchSocialize.setOnCheckedChangeListener(this.socializeChanged);
-        App.getInstance().registerReceiver(this.socialReceiver
-                , new IntentFilter(super.getString(R.string.broadcast_social)));
+        /*App.getInstance().registerReceiver(this.socialReceiver
+                , new IntentFilter(super.getString(R.string.broadcast_social)));*/
         App.getInstance().registerReceiver(this.refreshSocialReceiver
                 , new IntentFilter(SocialTabFragment.TAG));
     }
 
     private void onRefresh() {
-
         if(!AccountManager.isInSettingPage){
             currentSetting = AccountManager.loadSetting();
             if (super.getContext() == null) {
@@ -229,13 +228,9 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                 return;
             }
 
-        /*if(current==null){
-            this.layoutSocialize.setVisibility(View.GONE);
-        }*/
-
-            //wandy 03-03-2016
-            //this.progressBar.setVisibility(View.VISIBLE);
-            this.progressBar.setVisibility(View.GONE);
+            /*if(current==null){
+                this.layoutSocialize.setVisibility(View.GONE);
+            }*/
 
             //showProgressDialog();
             SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId()
@@ -246,7 +241,6 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     public void onEvent(SocialModel message){
         current = null;
         socialSize = 0;
-        Utils.d(TAG, "on socialmodel " + message.getData().getSocial_feeds().size());
         for(SocialModel.Data.SocialFeeds item : message.getData().getSocial_feeds())
         {
             if(SocialManager.Type.isInbound(item))
@@ -254,6 +248,10 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                 socialSize++;
             }
         }
+        //wandy 03-03-2016
+        //this.progressBar.setVisibility(View.VISIBLE);
+        if(this.progressBar.getVisibility() == View.VISIBLE)
+            this.progressBar.setVisibility(View.GONE);
         dismissProgressDialog();
 
         for (int i = 0; i < message.getData().getSocial_feeds().size(); i++) {
@@ -271,6 +269,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
 
     public void onEvent(ExceptionModel message){
         String ex = message.getMessage();
+        //Utils.d(TAG, "exception " + ex);
         if(message.getFrom().equals(Utils.FROM_SOCIAL_FEED)||message.getFrom().equals(Utils.FROM_SOCIAL_MATCH)||message.getFrom().equals(Utils.FROM_EVENT_DETAIL)){
             if(ex.equals(Utils.RESPONSE_FAILED+" "+"empty data")){
                 this.layoutSocialize.setVisibility(View.GONE);
@@ -290,7 +289,6 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                     }
                 }
             }
-
         }
     }
 
@@ -347,13 +345,13 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                 EventManager.loaderEventDetail(current.getEvent_id()
                         , AccessToken.getCurrentAccessToken().getUserId()
                         , currentSetting.getData().getGender_interest()
-                        ,TAG);
+                        , TAG);
             }
         }
     }
 
     public void onEvent(EventDetailModel message){
-        if (getContext() != null && message.getFrom().equalsIgnoreCase(TAG)) {
+        if (message != null && getContext() != null && message.getFrom().equalsIgnoreCase(TAG)) {
             dismissProgressDialog();
             generalTxtEvent.setText(getString(R.string.location_viewing, message.getData().getEvents_detail().getTitle(), message.getData().getEvents_detail().getVenue_name()));
             progressBar.setVisibility(View.GONE);
@@ -367,6 +365,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             final String url = String.format("partyfeed/settings/%s/%s", AccessToken.getCurrentAccessToken().getUserId(), isChecked ? "yes" : "no");
             final ProgressDialog dialog = App.showProgressDialog(getContext());
 
+            currentSetting = AccountManager.loadSetting();
             VolleyHandler.getInstance().createVolleyRequest(url, new VolleyRequestListener<Void, JSONObject>() {
                 @Override
                 public Void onResponseAsync(JSONObject jsonObject) {
@@ -552,13 +551,13 @@ public class SocialTabFragment extends Fragment implements TabFragment {
 
     @Override
     public void onDestroy() {
-        App.getInstance().unregisterReceiver(this.socialReceiver);
+        //App.getInstance().unregisterReceiver(this.socialReceiver);
         App.getInstance().unregisterReceiver(this.refreshSocialReceiver);
         EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
 
-    private BroadcastReceiver socialReceiver = new BroadcastReceiver() {
+    /*private BroadcastReceiver socialReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (getContext() != null) {
@@ -571,16 +570,26 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                     layoutSocialize.setVisibility(View.VISIBLE);
                     txtSocialize.setText(R.string.socialize_description_off);
                 }
+                Utils.d(TAG, "onRefresh di social receiver");
                 //onRefresh();
             }
         }
-    };
+    };*/
 
     private BroadcastReceiver refreshSocialReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (getContext() != null) {
-                onRefresh();
+                if (switchSocialize.isChecked()) {
+                    txtSocialize.setText(R.string.socialize_description);
+                    card.setVisibility(View.GONE);
+                    onRefresh();
+                    progressBar.setVisibility(View.VISIBLE);
+                }else{
+                    layoutSocialize.setVisibility(View.VISIBLE);
+                    txtSocialize.setText(R.string.socialize_description_off);
+                }
+                //onRefresh();
             }
         }
     };

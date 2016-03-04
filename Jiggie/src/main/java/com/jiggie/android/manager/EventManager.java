@@ -104,8 +104,8 @@ public class EventManager {
             getEventDetail(_id, fb_id, gender_interest, new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
-                    String responses = new Gson().toJson(response.body());
-                    Utils.d("res", responses);
+                    /*String responses = new Gson().toJson(response.body());
+                    Utils.d("res", responses);*/
 
                     if (response.code() == Utils.CODE_SUCCESS) {
                         EventDetailModel dataTemp = (EventDetailModel) response.body();
