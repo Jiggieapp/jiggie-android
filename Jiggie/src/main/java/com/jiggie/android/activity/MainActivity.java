@@ -184,23 +184,22 @@ public class MainActivity extends AppCompatActivity {
                 String media_source = map.get("media_source") == null ? null : map.get("media_source");
                 String campaign = map.get("campaign") == null ? null : map.get("campaign");
                 String af_status = map.get("af_status") == null ? null : map.get("af_status");
+                String click_time = map.get("click_time") == null ? null : map.get("click_time");
+                String install_time = map.get("install_time") == null ? null : map.get("install_time");
+                String af_sub1 = map.get("af_sub1") == null ? null : map.get("af_sub1");
+
                 if (media_source != null)
                     Utils.AFmedia_source = media_source;
                 if (campaign != null)
                     Utils.AFcampaign = campaign;
                 if (af_status != null)
                     Utils.AFinstall_type = af_status;
-
-                /*String d = map.toString();
-                String a = Utils.AFmedia_source+" "+Utils.AFcampaign+" "+Utils.AFinstall_type;
-                Toast.makeText(MainActivity.this, a, Toast.LENGTH_LONG).show();*/
-
-                //appsfl = Utils.AFmedia_source+" "+Utils.AFcampaign+" "+Utils.AFinstall_type+"**"+media_source+" "+campaign+" "+af_status;
-                //Toast.makeText(MainActivity.this, appsfl, Toast.LENGTH_LONG).show();
-                Log.d("123appsflyer", appsfl);
-
-                /*AlertDialog al = new AlertDialog.Builder(MainActivity.this).setMessage(a).create();
-                al.show();*/
+                if (click_time != null)
+                    Utils.AFclick_time = click_time;
+                if (install_time != null)
+                    Utils.AFinstall_time = install_time;
+                if (af_sub1 != null)
+                    Utils.AFsub1 = af_sub1;
 
 
             }
@@ -208,13 +207,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onInstallConversionFailure(String s) {
                 //Toast.makeText(MainActivity.this, "a", Toast.LENGTH_LONG).show();
-                Log.d("123appsflyer", "a");
+                Utils.d("123appsflyer", "a");
             }
 
             @Override
             public void onAppOpenAttribution(Map<String, String> map) {
                 //Toast.makeText(MainActivity.this, "b", Toast.LENGTH_LONG).show();
-                Log.d("123appsflyer", "b");
+                Utils.d("123appsflyer", "b");
             }
 
             @Override

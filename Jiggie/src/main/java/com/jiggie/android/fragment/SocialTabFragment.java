@@ -582,6 +582,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             if (getContext() != null) {
                 if (switchSocialize.isChecked()) {
                     txtSocialize.setText(R.string.socialize_description);
+                    cardEmpty.setVisibility(View.GONE);
                     card.setVisibility(View.GONE);
                     onRefresh();
                     progressBar.setVisibility(View.VISIBLE);

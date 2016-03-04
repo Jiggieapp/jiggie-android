@@ -180,8 +180,6 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
         setting.getData().getNotifications().setChat(this.switchChat.isChecked());
         setting.getData().getNotifications().setFeed(this.switchSocial.isChecked());
 
-        Utils.d(SocialTabFragment.TAG
-                , "gender intereset di profile setting" + memberSettingModel.getGender_interest());
         AccountManager.saveSetting(setting);
     }
 
