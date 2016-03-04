@@ -11,6 +11,8 @@ import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.model.PostPaymentModel;
 
+import java.net.URLEncoder;
+
 import id.co.veritrans.android.api.VTDirect;
 import id.co.veritrans.android.api.VTInterface.ITokenCallback;
 import id.co.veritrans.android.api.VTModel.VTCardDetails;
@@ -43,12 +45,17 @@ public class TestActivity extends ToolbarActivity{
         //this is a sample
         cardDetails.setCard_number("4811111111111114"); // 3DS Dummy CC
         cardDetails.setCard_cvv("123");
-        cardDetails.setCard_exp_month(1);
+        cardDetails.setCard_exp_month(01);
         cardDetails.setCard_exp_year(2020);
+
+        /*cardDetails.setCard_number("5211 1111 1111 1117"); // 3DS Dummy CC
+        cardDetails.setCard_cvv("123");
+        cardDetails.setCard_exp_month(12);
+        cardDetails.setCard_exp_year(2020);*/
 
         //set true or false to enable or disable 3dsecure
         cardDetails.setSecure(true);
-        cardDetails.setGross_amount("4000");
+        cardDetails.setGross_amount("52");
 
         //Set VTCardDetails to VTDirect
         vtDirect.setCard_details(cardDetails);
@@ -87,7 +94,7 @@ public class TestActivity extends ToolbarActivity{
                 String a = token.toString();
                 Log.d("token", token.getToken_id());
 
-                PostPaymentModel postPaymentModel = new PostPaymentModel("cc", "1", "1456992450540", token.getToken_id());
+                PostPaymentModel postPaymentModel = new PostPaymentModel("cc", "1", "1457063010209", token.getToken_id());
 
                 String sd = String.valueOf(new Gson().toJson(postPaymentModel));
 

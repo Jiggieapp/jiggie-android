@@ -125,7 +125,7 @@ public class CommerceManager {
 
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
+                    Log.d("res", response.toString());
 
                     if (response.code() == Utils.CODE_SUCCESS) {
                         Success2Model dataTemp = (Success2Model) response.body();
