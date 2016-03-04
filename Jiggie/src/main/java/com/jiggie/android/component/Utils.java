@@ -94,6 +94,11 @@ public class Utils {
     public static String AFinstall_type = "";
     public static String AFcampaign = "";
     public static String AFmedia_source = "";
+
+    public static String AFclick_time = "";
+    public static String AFinstall_time = "";
+    public static String AFsub1 = "";
+
     public static String AF_ORGANIC = "Organic";
     //------------------------
 

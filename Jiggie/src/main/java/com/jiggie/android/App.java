@@ -87,7 +87,7 @@ public class App extends Application {
         //region Initialize third party libraries
 
         FacebookSdk.sdkInitialize(this);
-        //AppsFlyerLib.setAppsFlyerKey(super.getString(R.string.appsflyer_devkey));
+        AppsFlyerLib.setAppsFlyerKey(super.getString(R.string.appsflyer_devkey));
         //Fabric.with(this, new Crashlytics());
 
         //endregion
@@ -211,7 +211,6 @@ public class App extends Application {
 
 
 
-
         //Added by Aga
         json.putString("App Release", getVersionName(this));
         json.putString("App Version", getVersionCode(this));
@@ -252,9 +251,6 @@ public class App extends Application {
         }catch (Exception e){
             json.putString("Region", Utils.BLANK);
         }
-
-
-
 
         if(login!=null){
             json.putString("Distinct Id", login.getFb_id());
@@ -615,6 +611,11 @@ public class App extends Application {
             String media_source = Utils.AFmedia_source;
             String campaign = Utils.AFcampaign;
             String install_type = Utils.AFinstall_type;
+
+            String click_time = Utils.AFclick_time;
+            String install_time = Utils.AFinstall_time;
+            String af_sub1 = Utils.AFsub1;
+
             if(media_source.equals(Utils.BLANK)){
                 media_source = Utils.AF_ORGANIC;
             }
@@ -625,7 +626,9 @@ public class App extends Application {
                 install_type = Utils.AF_ORGANIC;
             }
 
-            String appsflyer = "{  \"af_status\" : \""+install_type+"\",  \"media_source\" : \""+media_source+"\",  \"campaign\" : \""+campaign+"\"}";
+            //String appsflyer = "{  \"af_status\" : \""+install_type+"\",  \"media_source\" : \""+media_source+"\",  \"campaign\" : \""+campaign+"\"}";
+            String appsflyer = "{  \"af_status\" : \""+install_type+"\",  \"media_source\" : \""+media_source+"\",  \"campaign\" : \""+campaign+"\", \"click_time\" : \""+click_time+"\", \"install_time\" : \""+install_time+"\", \"af_sub1\" : \""+af_sub1+"\"}";
+
 
             postAppsFlyerModel.setAppsflyer(appsflyer);
 
@@ -675,7 +678,7 @@ public class App extends Application {
             json.putString("gender_interest", settingModel.getData().getGender_interest());
         }
 
-        json.putString("app_ersion", getVersionCode(this));
+        json.putString("app_version", getVersionCode(this));
 
         getInstanceMixpanel().getPeople().set(json);
     }
