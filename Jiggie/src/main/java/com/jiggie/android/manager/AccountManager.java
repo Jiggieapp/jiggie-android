@@ -230,18 +230,6 @@ public class AccountManager extends BaseManager{
         }
     }
 
-    public static void saveSetting(SettingModel settingModel){
-        String model = new Gson().toJson(settingModel);
-        App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
-                .putString(Utils.SETTING_MODEL, model).apply();
-    }
-
-    private static void saveMemberSetting(MemberSettingModel memberSettingModel) {
-        String model = new Gson().toJson(memberSettingModel);
-        App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
-                .putString(Utils.MEMBER_SETTING_MODEL, model).apply();
-    }
-
     private static void saveTagsList()
     {
 
@@ -270,7 +258,23 @@ public class AccountManager extends BaseManager{
     {
         MemberSettingModel memberSettingModel = new Gson().fromJson(App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING,
                 Context.MODE_PRIVATE).getString(Utils.MEMBER_SETTING_MODEL, ""), MemberSettingModel.class);
+        if(memberSettingModel.getFb_id() == null)
+            memberSettingModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
         return memberSettingModel;
+    }
+
+    private static void saveMemberSetting(MemberSettingModel memberSettingModel) {
+        if(memberSettingModel.getFb_id() == null)
+            memberSettingModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
+        String model = new Gson().toJson(memberSettingModel);
+        App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
+                .putString(Utils.MEMBER_SETTING_MODEL, model).apply();
+    }
+
+    public static void saveSetting(SettingModel settingModel){
+        String model = new Gson().toJson(settingModel);
+        App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
+                .putString(Utils.SETTING_MODEL, model).apply();
     }
 
     private static void getUserTagList(Callback callback)
