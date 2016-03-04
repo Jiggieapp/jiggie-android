@@ -360,7 +360,6 @@ public class EventsFragment extends Fragment
                 searchText = "";
                 filter(searchText, true);
 
-
                 searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
                     public boolean onQueryTextSubmit(String query) {
@@ -381,7 +380,13 @@ public class EventsFragment extends Fragment
                                 if (searchText != null) {
                                     filter(searchText, true);
                                 } else {
-                                    filter(searchText, false);
+                                    boolean isExpanded = false;
+                                    if(searchView != null && !searchView.isIconified())
+                                    {
+                                        isExpanded = true;
+                                    }
+                                    filter("", isExpanded);
+                                    //filter(searchText, false);
                                 }
                             }
                         }, getResources().getInteger(R.integer.event_search_delay));
