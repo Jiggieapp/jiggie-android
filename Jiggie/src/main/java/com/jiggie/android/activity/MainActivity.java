@@ -212,9 +212,6 @@ public class MainActivity extends AppCompatActivity {
                 /*AlertDialog al = new AlertDialog.Builder(MainActivity.this).setMessage(a).create();
                 al.show();*/
 
-
-
-
             }
 
             @Override
