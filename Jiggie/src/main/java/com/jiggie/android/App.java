@@ -88,8 +88,7 @@ public class App extends Application {
 
         FacebookSdk.sdkInitialize(this);
         AppsFlyerLib.setAppsFlyerKey(super.getString(R.string.appsflyer_devkey));
-        //Fabric.with(this, new Crashlytics());
-
+        Fabric.with(this, new Crashlytics());
         //endregion
 
         this.database = new DatabaseConnection(this);
@@ -209,8 +208,6 @@ public class App extends Application {
         final LoginModel login = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin();
         final SettingModel settingModel = AccountManager.loadSetting() == null ? null : AccountManager.loadSetting();
 
-
-
         //Added by Aga
         json.putString("App Release", getVersionName(this));
         json.putString("App Version", getVersionCode(this));
@@ -251,6 +248,9 @@ public class App extends Application {
         }catch (Exception e){
             json.putString("Region", Utils.BLANK);
         }
+
+
+
 
         if(login!=null){
             json.putString("Distinct Id", login.getFb_id());
@@ -678,7 +678,7 @@ public class App extends Application {
             json.putString("gender_interest", settingModel.getData().getGender_interest());
         }
 
-        json.putString("app_version", getVersionCode(this));
+        json.putString("app_ersion", getVersionCode(this));
 
         getInstanceMixpanel().getPeople().set(json);
     }

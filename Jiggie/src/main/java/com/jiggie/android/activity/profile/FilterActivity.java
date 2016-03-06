@@ -261,7 +261,6 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
     @OnClick(R.id.btnApply)
     @SuppressWarnings("unused")
     void onClickBtnApply() {
-
         if (selectedItems.size() > 0) {
             MemberSettingModel memberSettingModel = AccountManager.loadMemberSetting();
             final String experiences = TextUtils.join(",", selectedItems.toArray(new String[this.selectedItems.size()]));

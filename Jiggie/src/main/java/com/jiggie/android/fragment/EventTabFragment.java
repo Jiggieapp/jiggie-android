@@ -326,7 +326,6 @@ public class EventTabFragment extends Fragment
     //Added by Aga
     public void onEvent(ArrayList<EventModel.Data.Events> message) {
         int size = message.size();
-        Utils.d(TAG, "events size " + size);
         if (searchText == null) {
             events = message;
             filter(true);

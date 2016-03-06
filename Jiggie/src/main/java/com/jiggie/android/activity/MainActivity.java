@@ -201,29 +201,19 @@ public class MainActivity extends AppCompatActivity {
                 if (af_sub1 != null)
                     Utils.AFsub1 = af_sub1;
 
-                /*String d = map.toString();
-                String a = Utils.AFmedia_source+" "+Utils.AFcampaign+" "+Utils.AFinstall_type;
-                Toast.makeText(MainActivity.this, a, Toast.LENGTH_LONG).show();*/
-
-                //appsfl = Utils.AFmedia_source+" "+Utils.AFcampaign+" "+Utils.AFinstall_type+"**"+media_source+" "+campaign+" "+af_status;
-                //Toast.makeText(MainActivity.this, appsfl, Toast.LENGTH_LONG).show();
-                Log.d("123appsflyer", appsfl);
-
-                /*AlertDialog al = new AlertDialog.Builder(MainActivity.this).setMessage(a).create();
-                al.show();*/
 
             }
 
             @Override
             public void onInstallConversionFailure(String s) {
                 //Toast.makeText(MainActivity.this, "a", Toast.LENGTH_LONG).show();
-                Log.d("123appsflyer", "a");
+                Utils.d("123appsflyer", "a");
             }
 
             @Override
             public void onAppOpenAttribution(Map<String, String> map) {
                 //Toast.makeText(MainActivity.this, "b", Toast.LENGTH_LONG).show();
-                Log.d("123appsflyer", "b");
+                Utils.d("123appsflyer", "b");
             }
 
             @Override

@@ -44,7 +44,6 @@
                 android:layout_below="@+id/time_tab"
                 app:borderWidth="0dp"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
         </RelativeLayout>
 
     </android.support.v4.widget.SwipeRefreshLayout>

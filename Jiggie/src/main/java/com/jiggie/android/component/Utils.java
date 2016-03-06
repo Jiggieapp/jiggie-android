@@ -90,18 +90,6 @@ public class Utils {
     public static String IS_FIRST_RUN = "is_first_run";
     public static String DEVICE_ID = "";
 
-    //AppsFlyer properties----
-    public static String AFinstall_type = "";
-    public static String AFcampaign = "";
-    public static String AFmedia_source = "";
-
-    public static String AFclick_time = "";
-    public static String AFinstall_time = "";
-    public static String AFsub1 = "";
-
-    public static String AF_ORGANIC = "Organic";
-    //------------------------
-
     public static int myPixel(Activity a, int dip) {
         float scale = a.getResources().getDisplayMetrics().density;
         int pixel = (int) ((dip - 0.5f) * scale);
@@ -150,6 +138,18 @@ public class Utils {
     public static final String DATE_TODAY = "today";
     public static final String DATE_TOMORROW = "tomorrow";
     public static final String DATE_UPCOMING = "upcoming";
+
+    //AppsFlyer properties----
+    public static String AFinstall_type = "";
+    public static String AFcampaign = "";
+    public static String AFmedia_source = "";
+
+    public static String AFclick_time = "";
+    public static String AFinstall_time = "";
+    public static String AFsub1 = "";
+
+    public static String AF_ORGANIC = "Organic";
+    //------------------------
 
     public static String calculateTime(String date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
