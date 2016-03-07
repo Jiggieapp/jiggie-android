@@ -35,14 +35,14 @@
             android:layout_margin="@dimen/padding_standard">
 
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:contentDescription="@null"
                 android:scaleType="centerCrop"
                 android:id="@+id/img_right"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/ic_keyboard_arrow_right"
+                android:src="@drawable/purple_arrow2x"
                 />
 
             <LinearLayout
@@ -72,7 +72,7 @@
             </LinearLayout>
 
             <TextView
-                android:layout_marginRight="@dimen/padding_standard_half"
+                android:layout_marginRight="@dimen/padding_standard"
                 android:layout_marginBottom="@dimen/padding_standard_half"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
@@ -84,7 +84,7 @@
                 android:layout_alignParentTop="true"/>
 
             <TextView
-                android:layout_marginRight="@dimen/padding_standard_half"
+                android:layout_marginRight="@dimen/padding_standard"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:id="@+id/txt_price_info"

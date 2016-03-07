@@ -2,6 +2,7 @@ package com.jiggie.android.component.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,13 +81,16 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 
             if ((this.listener = listener) != null)
                 itemView.setOnClickListener(this);
+
         }
 
         @Override
         public void onClick(View v) {
             if (listener != null) {
                 //listener.onViewSelected(this.event);
+
             }
+            Log.d("myclick", "yes");
         }
     }
 

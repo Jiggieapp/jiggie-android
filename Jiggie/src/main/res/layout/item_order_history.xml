@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_margin="@dimen/padding_standard"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:id="@+id/txt_event"
+        android:text="@string/his_ev1"
+        android:textColor="@color/textDarkGray"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_alignParentTop="true"/>
+
+    <RelativeLayout
+        android:id="@+id/rel_venue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/padding_standard"
+        android:layout_marginBottom="@dimen/padding_standard"
+        android:layout_below="@id/txt_event">
+        <ImageView
+            android:id="@+id/img_venue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_map_gr"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"/>
+
+        <TextView
+            android:layout_marginLeft="@dimen/padding_standard_half"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/txt_venue"
+            android:text="@string/his_ven1"
+            android:textSize="@dimen/normal_text_size"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/img_venue"
+            />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rel_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/padding_standard"
+        android:layout_marginBottom="@dimen/padding_standard"
+        android:layout_below="@id/rel_venue">
+        <ImageView
+            android:id="@+id/img_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_clock_gr"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"/>
+
+        <TextView
+            android:layout_marginLeft="@dimen/padding_standard_half"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/txt_date"
+            android:text="@string/his_dt1"
+            android:textSize="@dimen/normal_text_size"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/img_date"
+            />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/img_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/bdg_expired"
+        android:layout_marginLeft="@dimen/padding_standard"
+        android:layout_marginBottom="@dimen/padding_standard_half"
+        android:layout_below="@id/rel_date"/>
+
+    <View
+        android:background="@android:color/darker_gray"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_below="@id/img_badge"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/purple_arrow2x"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/padding_standard"
+        android:layout_centerVertical="true"/>
+
+</RelativeLayout>
