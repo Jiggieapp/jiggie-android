@@ -14,6 +14,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by rangg on 17/11/2015.
@@ -146,5 +147,13 @@ public class StringUtility {
             query_pairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"), URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
         }
         return query_pairs;
+    }
+
+    public static String getTimeFormat(long milisecond){
+        String time = String.format("%02d:%02d:%02d",
+                TimeUnit.MILLISECONDS.toHours(milisecond),
+                TimeUnit.MILLISECONDS.toMinutes(milisecond),
+                TimeUnit.MILLISECONDS.toSeconds(milisecond));
+        return time;
     }
 }

@@ -8,18 +8,16 @@ import android.support.v7.widget.Toolbar;
 
 import com.jiggie.android.R;
 import com.jiggie.android.component.activity.ToolbarActivity;
-import com.jiggie.android.component.adapter.PaymentMethodAdapter;
+import com.jiggie.android.component.adapter.OrderHistoryAdapter;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 
 /**
- * Created by LTE on 2/25/2016.
+ * Created by LTE on 3/6/2016.
  */
-public class PaymentMethodActivity extends ToolbarActivity implements PaymentMethodAdapter.ViewSelectedListener{
+public class PurchaseHistoryActivity extends ToolbarActivity implements OrderHistoryAdapter.ViewSelectedListener {
 
-    @Bind(R.id.toolbar)
-    Toolbar toolbar;
+
     @Bind(R.id.recycler_view)
     RecyclerView recyclerView;
     @Bind(R.id.swipe_refresh)
@@ -28,19 +26,17 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        super.setContentView(R.layout.activity_payment_method);
+        super.setContentView(R.layout.activity_purchase_history);
         super.bindView();
-        super.setToolbarTitle(getResources().getString(R.string.select_payment), true);
+        super.setToolbarTitle(getResources().getString(R.string.his_title), true);
 
-        this.recyclerView.setAdapter(new PaymentMethodAdapter(PaymentMethodActivity.this, this));
+        this.recyclerView.setAdapter(new OrderHistoryAdapter(this));
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         this.recyclerView.setLayoutManager(layoutManager);
-
     }
 
     @Override
     public void onViewSelected() {
 
     }
-
 }
