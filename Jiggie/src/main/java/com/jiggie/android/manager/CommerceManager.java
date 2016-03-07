@@ -110,5 +110,4 @@ public class CommerceManager {
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SUMMARY, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
-
 }
