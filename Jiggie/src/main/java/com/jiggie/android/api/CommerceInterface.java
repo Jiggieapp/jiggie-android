@@ -30,7 +30,10 @@ public interface CommerceInterface {
     @POST
     Call<Success2Model> postPayment(@Url String url, @Body PostPaymentModel postPaymentModel);
 
+    /*@GET(Utils.URL_GET_CC)
+    Observable<CCModel> getCC(@Path("fb_id") String fb_id);*/
+
     @GET(Utils.URL_GET_CC)
-    Observable<CCModel> getCC(@Path("fb_id") String fb_id);
+    Call<CCModel> getCC(@Path("fb_id") String fb_id);
 
 }

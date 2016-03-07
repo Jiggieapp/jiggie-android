@@ -54,8 +54,13 @@ public class TestActivity extends ToolbarActivity implements CommerceManager.Loa
         final TextView txt_token = (TextView)findViewById(R.id.txt_token);
         Button btn = (Button)findViewById(R.id.btn);
 
-        CommerceManager.loaderCCList(this);
+        //CommerceManager.loaderCCList("123456", this);
 
+        PostPaymentModel postPaymentModel = new PostPaymentModel("va", "", Long.parseLong("1457346333975"), "");
+
+        String sd = String.valueOf(new Gson().toJson(postPaymentModel));
+
+        CommerceManager.loaderPayment(postPaymentModel);
 
         //VTPART--------------------------------------------
         //set environment
@@ -154,7 +159,7 @@ public class TestActivity extends ToolbarActivity implements CommerceManager.Loa
     }
 
     @Override
-    public void onLoadCC(CCModel ccModel) {
+    public void onLoadCC(int status, String message, CCModel ccModel) {
         String sd = String.valueOf(new Gson().toJson(ccModel));
 
         Log.d("fill", sd);

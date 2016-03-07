@@ -37,7 +37,7 @@ public class CommerceManager {
 
     public static void initCommerceService(){
         Retrofit retrofit = new Retrofit.Builder()
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                //.addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .baseUrl(Utils.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -55,6 +55,10 @@ public class CommerceManager {
 
     private static void getProductList(String event_id, Callback callback) throws IOException {
         getInstance().getProductList(event_id).enqueue(callback);
+    }
+
+    private static void getCCList(String fb_id, Callback callback) throws IOException {
+        getInstance().getCC(fb_id).enqueue(callback);
     }
 
     private static void postSummary(PostSummaryModel postSummaryModel, Callback callback) throws IOException {
@@ -158,7 +162,7 @@ public class CommerceManager {
         }
     }
 
-    public static void loaderCCList(final LoadCCListener loadCCListener){
+    /*public static void loaderCCList(final LoadCCListener loadCCListener){
 
         getInstance().getCC("123456").subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<CCModel>() {
             @Override
@@ -176,21 +180,43 @@ public class CommerceManager {
                 loadCCListener.onLoadCC(ccModel);
             }
         });
-        /*getInstance().getCC("123456").subscribe(new Action1<CCModel>() {
-            @Override
-            public void call(CCModel ccModel) {
-                loadCCListener.onLoadCC(ccModel);
-            }
-        }, new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
-                Log.d("error",throwable.toString());
-            }
-        });*/
+    }*/
+
+    public static void loaderCCList(String fb_id, final LoadCCListener loadCCListener){
+
+        try {
+            getCCList(fb_id, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+
+                    //String header = String.valueOf(response.code());
+                    String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);
+
+                    int code = response.code();
+                    if (code == Utils.CODE_SUCCESS) {
+                        CCModel dataTemp = (CCModel) response.body();
+                        loadCCListener.onLoadCC(Utils.CODE_SUCCESS, Utils.MSG_SUCCESS, dataTemp);
+                    } else {
+                        loadCCListener.onLoadCC(code, Utils.RESPONSE_FAILED, null);
+                    }
+
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    Log.d("Failure", t.toString());
+                    loadCCListener.onLoadCC(Utils.CODE_FAILED, t, null);
+                }
+            });
+        }catch (IOException e){
+            Log.d("Exception", e.toString());
+            loadCCListener.onLoadCC(Utils.CODE_FAILED, e.toString(), null);
+        }
     }
 
     public interface LoadCCListener{
-        void onLoadCC(CCModel ccModel);
+        void onLoadCC(int status, String message, CCModel ccModel);
     }
 
 }
