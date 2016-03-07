@@ -27,8 +27,6 @@ public class HowToPayActivity extends ToolbarActivity{
         setContentView(R.layout.activity_howtopay);
 
         txt_t_limit_fill = (TextView)findViewById(R.id.txt_t_limit_fill);
-        String formatTime = "HH:mm:ss";
-        final SimpleDateFormat dateFormat = new SimpleDateFormat(formatTime, Locale.getDefault());
         countDownTimer = new CountDownTimer(5000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {

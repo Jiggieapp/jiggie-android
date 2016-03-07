@@ -22,6 +22,7 @@ import butterknife.ButterKnife;
 public class AddCreditCardActivity extends ToolbarActivity {
 
     EditText edt_cvv, edt_date;
+    TextView txt_cancel;
 
 
     @Override
@@ -42,6 +43,7 @@ public class AddCreditCardActivity extends ToolbarActivity {
 
         edt_cvv = (EditText)findViewById(R.id.edt_cc_cvv);
         edt_date = (EditText)findViewById(R.id.edt_cc_date);
+        txt_cancel = (TextView)findViewById(R.id.txt_cancel);
         //edt_cvv.setError("error message");
 
         edt_date.setOnClickListener(new View.OnClickListener() {
@@ -49,6 +51,13 @@ public class AddCreditCardActivity extends ToolbarActivity {
             public void onClick(View v) {
                 DatePickerDialog datePickerDialog = createDialogWithoutDateField();
                 datePickerDialog.show();
+            }
+        });
+
+        txt_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }

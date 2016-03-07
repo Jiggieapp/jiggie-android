@@ -14,8 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.HowToPayActivity;
@@ -30,13 +32,15 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
 
     private final ViewSelectedListener listener;
     int section2Start = 3;
+
     private Activity a;
 
     private Context context;
 
-    public PaymentMethodAdapter(Activity a, ViewSelectedListener listener) {
+    public PaymentMethodAdapter(Activity a, ViewSelectedListener listener, int section2Start) {
         this.a = a;
         this.listener = listener;
+        this.section2Start = section2Start;
     }
 
     @Override
@@ -47,11 +51,7 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        /*try {
-
-        }catch (ParseException e){
-            throw new RuntimeException(App.getErrorMessage(e), e);
-        }*/
+        holder.position = position;
         if (position == 0) {
             holder.txtSection.setText(context.getString(R.string.section_credit_card));
             holder.linSection.setVisibility(View.VISIBLE);
@@ -60,7 +60,7 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
             holder.img.setImageResource(R.drawable.logo_visa);
             holder.txtPaymentName.setText("• • • • • 12345");
 
-        }else if (position == section2Start) {
+        } else if (position == section2Start) {
             String sectionClick = "HOW IT WORKS?";
             holder.txtSection.setText(context.getString(R.string.section_va));
             holder.linSection.setVisibility(View.VISIBLE);
@@ -80,18 +80,18 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
         } else {
             holder.linSection.setVisibility(View.GONE);
 
-            if(position==(section2Start+1)){
+            if (position == (section2Start + 1)) {
                 holder.img.setImageResource(R.drawable.logo_bca2);
                 holder.txtPaymentName.setText(context.getString(R.string.va_bca));
-            }else if(position==(section2Start+2)){
+            } else if (position == (section2Start + 2)) {
                 holder.img.setVisibility(View.GONE);
                 holder.txtPaymentName.setText(context.getString(R.string.other_bank));
-            }else if(position == (section2Start-1)){
+            } else if (position == (section2Start - 1)) {
                 holder.img.setImageResource(R.drawable.ic_plus);
                 holder.txtPaymentName.setText(context.getString(R.string.vor_payment_cc_new));
                 holder.txtPaymentName.setTextColor(context.getResources().getColor(R.color.purple));
                 holder.txtPaymentName.setTypeface(holder.txtPaymentName.getTypeface(), Typeface.BOLD);
-            }else if(position == 1){
+            } else if (position == 1) {
                 holder.img.setImageResource(R.drawable.logo_mastercard);
                 holder.txtPaymentName.setText("\u2022 \u2022 \u2022 \u2022 \u2022 35341");
             }
@@ -104,7 +104,7 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
         return 6;
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @Bind(R.id.txt_section)
         TextView txtSection;
         @Bind(R.id.txt_how)
@@ -115,28 +115,30 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
         ImageView img;
         @Bind(R.id.txt_payment_name)
         TextView txtPaymentName;
+        @Bind(R.id.lin_item)
+        LinearLayout linItem;
 
         private ViewSelectedListener listener;
-        //private EventModel.Data.Events event;
+        private int position;
 
         public ViewHolder(View itemView, ViewSelectedListener listener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-
-            if ((this.listener = listener) != null)
-                itemView.setOnClickListener(this);
+            //if ((this.listener = listener) != null)
+            this.listener = listener;
+            linItem.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             if (listener != null) {
-                //listener.onViewSelected(this.event);
+                listener.onViewSelected(this.position);
             }
         }
     }
 
     public interface ViewSelectedListener {
-        void onViewSelected();
+        void onViewSelected(int position);
     }
 
     public class ClickableURLSpan extends URLSpan {

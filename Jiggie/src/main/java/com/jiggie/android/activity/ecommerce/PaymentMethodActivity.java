@@ -1,10 +1,12 @@
 package com.jiggie.android.activity.ecommerce;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import com.jiggie.android.R;
 import com.jiggie.android.component.activity.ToolbarActivity;
@@ -24,6 +26,8 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
     RecyclerView recyclerView;
     @Bind(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefresh;
+    private int section2Start = 3;
+    private PaymentMethodAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,15 +36,17 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
         super.bindView();
         super.setToolbarTitle(getResources().getString(R.string.select_payment), true);
 
-        this.recyclerView.setAdapter(new PaymentMethodAdapter(PaymentMethodActivity.this, this));
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         this.recyclerView.setLayoutManager(layoutManager);
+        this.recyclerView.setAdapter(adapter = new PaymentMethodAdapter(PaymentMethodActivity.this, this, section2Start));
+
 
     }
 
     @Override
-    public void onViewSelected() {
-
+    public void onViewSelected(int position) {
+        if(position==(section2Start-1)){
+            startActivity(new Intent(PaymentMethodActivity.this, AddCreditCardActivity.class));
+        }
     }
-
 }
