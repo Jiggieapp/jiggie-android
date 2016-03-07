@@ -107,6 +107,7 @@ public class Utils {
     public final static String URL_PRODUCT_LIST = BASE_URL + "app/v3/product/list/{event_id}";
     public final static String URL_SUMMARY = BASE_URL + "app/v3/product/summary";
     public final static String URL_PAYMENT = BASE_URL + "app/v3/product/payment";
+    public final static String URL_GET_CC = BASE_URL + "app/v3/product/credit_card/{fb_id}";
 
     public static void d(final String title, final String text) {
         Log.d(title, text);

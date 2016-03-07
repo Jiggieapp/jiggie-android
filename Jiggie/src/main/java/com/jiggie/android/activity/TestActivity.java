@@ -1,14 +1,23 @@
 package com.jiggie.android.activity;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.jiggie.android.R;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.manager.CommerceManager;
+import com.jiggie.android.model.CCModel;
 import com.jiggie.android.model.PostPaymentModel;
 
 import java.net.URLEncoder;
@@ -22,14 +31,35 @@ import id.co.veritrans.android.api.VTUtil.VTConfig;
 /**
  * Created by LTE on 2/1/2016.
  */
-public class TestActivity extends ToolbarActivity{
+public class TestActivity extends ToolbarActivity implements CommerceManager.LoadCCListener{
+
+    AlertDialog dialog3ds;
+    String tokens;
+
+    public final static String PAYMENT_API = "https://api.veritrans.co.id/v2/token";
+
+    public final static String PAYMENT_API_SANDBOX = "https://api.sandbox.veritrans.co.id/v2/token";
+
+    public static String getPaymentApiUrl(){
+        if(VTConfig.VT_IsProduction){
+            return PAYMENT_API;
+        }
+        return PAYMENT_API_SANDBOX;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_test);
+        final TextView txt_token = (TextView)findViewById(R.id.txt_token);
+        Button btn = (Button)findViewById(R.id.btn);
 
+        CommerceManager.loaderCCList(this);
+
+
+        //VTPART--------------------------------------------
         //set environment
-        VTConfig.VT_IsProduction = false;
+        /*VTConfig.VT_IsProduction = false;
 
         //set client key
         VTConfig.CLIENT_KEY = "VT-client-gJRBbRZC0t_-JXUD";
@@ -48,14 +78,10 @@ public class TestActivity extends ToolbarActivity{
         cardDetails.setCard_exp_month(01);
         cardDetails.setCard_exp_year(2020);
 
-        /*cardDetails.setCard_number("5211 1111 1111 1117"); // 3DS Dummy CC
-        cardDetails.setCard_cvv("123");
-        cardDetails.setCard_exp_month(12);
-        cardDetails.setCard_exp_year(2020);*/
-
         //set true or false to enable or disable 3dsecure
         cardDetails.setSecure(true);
-        cardDetails.setGross_amount("52");
+        final String price = "52";
+        cardDetails.setGross_amount(price);
 
         //Set VTCardDetails to VTDirect
         vtDirect.setCard_details(cardDetails);
@@ -88,17 +114,32 @@ public class TestActivity extends ToolbarActivity{
                             return false;
                         }
                     });
+                    webView.setWebChromeClient(new WebChromeClient());
+                    webView.setWebViewClient(new VtWebViewClient(token.getToken_id(), price));
                     webView.loadUrl(token.getRedirect_url());
+
+                    AlertDialog.Builder alertBuilder = new AlertDialog.Builder(TestActivity.this);
+                    dialog3ds = alertBuilder.create();
+
+
+                    dialog3ds.setTitle("3D Secure Veritrans");
+                    dialog3ds.setView(webView);
+                    webView.requestFocus(View.FOCUS_DOWN);
+                    alertBuilder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                    dialog3ds.show();
                 }
                 //print or send token
-                String a = token.toString();
+                tokens = token.toString();
+                txt_token.setText(tokens);
                 Log.d("token", token.getToken_id());
 
-                PostPaymentModel postPaymentModel = new PostPaymentModel("cc", "1", "1457063010209", token.getToken_id());
 
-                String sd = String.valueOf(new Gson().toJson(postPaymentModel));
-
-                CommerceManager.loaderPayment(postPaymentModel);
 
             }
 
@@ -107,6 +148,64 @@ public class TestActivity extends ToolbarActivity{
 
                 //Something is wrong, get details message by print e.getMessage()
             }
-        });
+        });*/
+        //END of VTPART--------------------------
+
+    }
+
+    @Override
+    public void onLoadCC(CCModel ccModel) {
+        String sd = String.valueOf(new Gson().toJson(ccModel));
+
+        Log.d("fill", sd);
+    }
+
+    private class VtWebViewClient extends WebViewClient {
+
+        String token;
+        String price;
+
+        public VtWebViewClient(String token, String price){
+            this.token = token;
+            this.price = price;
+        }
+
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            view.loadUrl(url);
+            return true;
+        }
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+
+            Log.d("VtLog", url);
+
+            if (url.startsWith(getPaymentApiUrl() + "/callback/")) {
+                //PostPaymentModel postPaymentModel = new PostPaymentModel("cc", "1", Long.parseLong("1457335721926"), tokens);
+                PostPaymentModel postPaymentModel = new PostPaymentModel("cc", "1", Long.parseLong("1457335721926"), "481111b43bce6a-4913-42d5-8f21-5d1e701b265b");
+
+                String sd = String.valueOf(new Gson().toJson(postPaymentModel));
+
+                //CommerceManager.loaderPayment(postPaymentModel);
+
+                //send token to server
+                /*SendTokenAsync sendTokenAsync = new SendTokenAsync();
+                sendTokenAsync.execute(token,price);*/
+                //close web dialog
+                dialog3ds.dismiss();
+                //show loading dialog
+                //ProgressDialog.show(TestActivity.this, "", "Sending Data to Server. Please Wait...", true);
+
+            } else if (url.startsWith(getPaymentApiUrl() + "/redirect/") || url.contains("3dsecure")) {
+                 //Do nothing
+            } else {
+                if(dialog3ds != null){
+                    dialog3ds.dismiss();
+                }
+            }
+        }
+
     }
 }
