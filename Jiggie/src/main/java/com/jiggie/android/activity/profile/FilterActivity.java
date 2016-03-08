@@ -22,10 +22,12 @@ import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.fragment.EventsFragment;
 import com.jiggie.android.fragment.HomeFragment;
 import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.Success2Model;
+import com.jiggie.android.model.TagsListModel;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -53,6 +55,7 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
     private final static String TAG = FilterActivity.class.getSimpleName();
     private boolean hasChanged;
     ProgressDialog progressDialog;
+    private Set<String> tags;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +80,20 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
     }
 
     private void loadData() {
-        AccountManager.getUserTagList();
+
+        if(getTags() == null)
+        {
+            Utils.d(TAG, "getTags null");
+            //showProgressDialog();
+            this.progressBar.setVisibility(View.VISIBLE);
+            this.btnApply.setVisibility(View.GONE);
+            EventManager.loaderTagsList();
+        }
+        else
+        {
+            Utils.d(TAG, "getTags tidak null");
+            AccountManager.getUserTagList();
+        }
     }
 
     @Override
@@ -94,6 +110,11 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
 
     public void onEvent(FilterMessageEvent filterMessageEvent) {
         Utils.d(TAG, filterMessageEvent.getMessageEvent());
+    }
+
+    public void onEvent(TagsListModel message){
+        //EventManager.saveTags(message.getData().getTagslist());
+        setTags(message);
     }
 
     public void onEvent(ExceptionModel exceptionModel) {
@@ -115,10 +136,11 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
 
     public void onEvent(ArrayList<String> result) {
         this.progressBar.setVisibility(View.GONE);
+        //hideProgressDialog();
         this.failedView.setVisibility(View.GONE);
         this.btnApply.setVisibility(View.VISIBLE);
 
-        SettingModel settingModel = AccountManager.loadSetting();
+        //SettingModel settingModel = AccountManager.loadSetting();
         /*for(String already : settingModel.getData().getExperiences())
         {
             Utils.d(TAG, "already " + already);
@@ -126,11 +148,9 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
 
         //fetch all experiences from server
 
-        Set<String> tags = App.getInstance()
-                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
-                .getStringSet(Utils.TAGS_LIST, null);
 
-        for (String res : tags /*settingModel.getData().getExperiences() *//*result*/) {
+
+        for (String res : getTags() /*settingModel.getData().getExperiences() *//*result*/) {
             final View view = getLayoutInflater().inflate(R.layout.item_setup_tag, flowLayout, false);
             final ViewHolder holder = new ViewHolder(FilterActivity.this, view, res);
 
@@ -140,11 +160,10 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
             //selectedItems.add(holder.text);
             flowLayout.addView(view);
             if (result.contains(res))
-            //if(settingModel.getData().getExperiences().contains(res))
             {
-                //setSelected(holder.container, holder.textView, true);
                 selectedItems.add(res);
-                holder.checkView.setVisibility(View.GONE);
+                //holder.checkView.setVisibility(View.GONE);
+                holder.checkView.setVisibility(View.INVISIBLE);
             } else {
                 //setSelected(holder.container, holder.textView, false);
                 holder.checkView.setVisibility(View.VISIBLE);
@@ -161,6 +180,19 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
                 }
             });
         }
+    }
+
+    public Set<String> getTags() {
+        Set<String> tags = App.getInstance()
+                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                .getStringSet(Utils.TAGS_LIST, null);
+        return tags;
+        //return null;
+    }
+
+    public void setTags(TagsListModel message) {
+        EventManager.saveTags(message.getData().getTagslist());
+        AccountManager.getUserTagList();
     }
 
     static class ViewHolder {
@@ -221,14 +253,13 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
             holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_grey));
             holder.textView.setTextColor(getResources().getColor(R.color.textDarkGray));
         }
-        holder.checkView.setVisibility(selected ? View.VISIBLE : View.GONE);
+        holder.checkView.setVisibility(selected ? View.VISIBLE : View.INVISIBLE);
         hasChanged = true;
     }
 
     @OnClick(R.id.btnApply)
     @SuppressWarnings("unused")
     void onClickBtnApply() {
-
         if (selectedItems.size() > 0) {
             MemberSettingModel memberSettingModel = AccountManager.loadMemberSetting();
             final String experiences = TextUtils.join(",", selectedItems.toArray(new String[this.selectedItems.size()]));
@@ -244,6 +275,7 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
         if (progressDialog != null && progressDialog.isShowing())
             progressDialog.dismiss();
         showToast();
+
         EventBus.getDefault().post(EventsFragment.TAG);
     }
 

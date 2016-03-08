@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -24,13 +23,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -47,10 +45,9 @@ import com.jiggie.android.manager.WalkthroughManager;
 import com.jiggie.android.model.EventModel;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.PostWalkthroughModel;
+import com.jiggie.android.view.NonSwipeableViewPager;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -61,12 +58,11 @@ import de.greenrobot.event.EventBus;
  */
 public class EventsFragment extends Fragment
         implements ViewPager.OnPageChangeListener, HomeMain
-        , ViewTreeObserver.OnGlobalLayoutListener, TabFragment, SwipeRefreshLayout.OnRefreshListener
-{
+        , ViewTreeObserver.OnGlobalLayoutListener, TabFragment, SwipeRefreshLayout.OnRefreshListener {
     @Bind(R.id.time_tab)
     TabLayout timeTab;
     @Bind(R.id.viewpagerevents)
-    ViewPager viewPagerEvents;
+    /*ViewPager viewPagerEvents;*/ NonSwipeableViewPager viewPagerEvents;
     @Bind(R.id.swipe_refresh)
     SwipeRefreshLayout refreshLayout;
     @Bind(R.id.coordinatorLayout)
@@ -89,9 +85,23 @@ public class EventsFragment extends Fragment
     }
 
     @Override
+    public int getIcon() {
+        return R.drawable.ic_event_white_24dp;
+    }
+
+    @Override
     public void onTabSelected() {
-        //onRefresh();
-        showTab();
+        App.getInstance().trackMixPanelEvent("View Events");
+        if (getEvents() != null) {
+            /*boolean isExpanded = false;
+            if(!searchView.isIconified())
+            {
+                isExpanded = true;
+            }
+            filter("", isExpanded);*/
+            showTab();
+        }
+
         if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_EVENT, false)) {
             showWalkthroughDialog();
         }
@@ -116,6 +126,7 @@ public class EventsFragment extends Fragment
     }
 
     private int currentPosition = 0;
+
     @Override
     public void onPageSelected(int position) {
         this.lastSelectedFragment = (TabFragment) this.pageAdapter.fragments[position];
@@ -236,6 +247,7 @@ public class EventsFragment extends Fragment
         this.viewPagerEvents.addOnPageChangeListener(this);
 
         this.viewPagerEvents.getViewTreeObserver().addOnGlobalLayoutListener(this);
+        this.viewPagerEvents.setPagingEnabled(true);
         this.refreshLayout.setOnRefreshListener(this);
         super.setHasOptionsMenu(true);
     }
@@ -279,8 +291,10 @@ public class EventsFragment extends Fragment
         tomorrowFragment.onEvent(tomorrowEvents);
         upcomingFragment.onEvent(upcomingEvents);*/
         boolean isExpanded = false;
-        if(searchText != null  /* && !searchText.isEmpty()*/)
-        {
+        //if(searchText != null  /* && !searchText.isEmpty()*/)
+        if (searchView == null) {
+            isExpanded = false;
+        } else if (!searchView.isIconified()) {
             isExpanded = true;
         }
         filter(searchText, isExpanded);
@@ -288,19 +302,18 @@ public class EventsFragment extends Fragment
         this.refreshLayout.setRefreshing(false);
     }
 
-    public void onEvent(ExceptionModel exceptionModel)
-    {
+    public void onEvent(ExceptionModel exceptionModel) {
         /*Snackbar snackbar = Snackbar
                 .make(coordinatorLayout, "Welcome to AndroidHive", Snackbar.LENGTH_LONG);
         snackbar.show();*/
 
-        if(exceptionModel.getMessage().equalsIgnoreCase(Utils.MSG_EMPTY_DATA) &&
-                exceptionModel.getFrom().equalsIgnoreCase(Utils.FROM_EVENT))
-        {
+        if (exceptionModel.getMessage().equalsIgnoreCase(Utils.MSG_EMPTY_DATA) &&
+                exceptionModel.getFrom().equalsIgnoreCase(Utils.FROM_EVENT)) {
             setEvents(null);
             //onRefresh();
             filter("");
         }
+
         this.isLoading = false;
         this.refreshLayout.setRefreshing(false);
     }
@@ -344,23 +357,40 @@ public class EventsFragment extends Fragment
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
                 hideTab();
+                searchText = "";
+                filter(searchText, true);
+
                 searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                     @Override
                     public boolean onQueryTextSubmit(String query) {
+                        searchView.clearFocus();
                         return true;
                     }
 
                     @Override
                     public boolean onQueryTextChange(String query) {
-                        searchText = ((TextUtils.isEmpty(query)) || (query.trim().length() == 0)) ? null : query.trim();
+                        searchText = ((TextUtils.isEmpty(query)) || (query.trim().length() == 0))
+                                ? null : query.trim();
 
                         handler.removeCallbacksAndMessages(null);
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                filter(searchText, true);
+                                Utils.d(TAG, "searchtext " + searchText);
+                                if (searchText != null) {
+                                    filter(searchText, true);
+                                } else {
+                                    boolean isExpanded = false;
+                                    if(searchView != null && !searchView.isIconified())
+                                    {
+                                        isExpanded = true;
+                                    }
+                                    filter("", isExpanded);
+                                    //filter(searchText, false);
+                                }
                             }
                         }, getResources().getInteger(R.integer.event_search_delay));
+
                         return true;
                     }
                 });
@@ -369,9 +399,8 @@ public class EventsFragment extends Fragment
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                Utils.d(TAG, "onmenuitemactioncollapse");
                 searchText = null;
-                showTab();
+                //showTab();
                 handler.removeCallbacksAndMessages(null);
                 filter("", false);
                 searchView.setOnQueryTextListener(null);
@@ -382,7 +411,8 @@ public class EventsFragment extends Fragment
         this.searchText = null;
     }
 
-    private  ArrayList<EventModel.Data.Events> events;
+    private ArrayList<EventModel.Data.Events> events;
+
     public ArrayList<EventModel.Data.Events> getEvents() {
         return events;
     }
@@ -391,27 +421,24 @@ public class EventsFragment extends Fragment
         this.events = events;
     }
 
-    private void filter(String searchText, boolean isSearch)
-    {
+    private void filter(String searchText, boolean isSearch) {
         ArrayList<EventModel.Data.Events> todayEvents = new ArrayList<>();
         ArrayList<EventModel.Data.Events> tomorrowEvents = new ArrayList<>();
         ArrayList<EventModel.Data.Events> upcomingEvents = new ArrayList<>();
 
-        if(getEvents() != null)
-        {
-            if(searchText == null)
+        if (getEvents() != null) {
+            if (searchText == null)
                 searchText = "";
-            Utils.d(TAG, "getEvents tidak null " + isSearch);
+            //timeTab.setVisibility(View.VISIBLE);
             searchText = searchText.toLowerCase();
-             for (EventModel.Data.Events tempEvent : getEvents()) {
+            for (EventModel.Data.Events tempEvent : getEvents()) {
                 //new Date(event.getDate_day());
-                if(tempEvent.getTitle().toLowerCase().contains(searchText)
+                if (tempEvent.getTitle().toLowerCase().contains(searchText)
                         || tempEvent.getVenue_name().toLowerCase().contains(searchText)
                         || tempEvent.getTags().toString().toLowerCase().contains(searchText)
-                        || searchText.equals(""))
-                {
-                    if(!isSearch)
-                    {
+                        || searchText.equals("")) {
+                    if (!isSearch) {
+                        showTab();
                         final String diffDays = Utils.calculateTime(tempEvent.getStart_datetime());
                         if (diffDays.equals(Utils.DATE_TODAY)) {
                             todayEvents.add(tempEvent);
@@ -423,11 +450,9 @@ public class EventsFragment extends Fragment
                         /*todayFragment.onEvent(todayEvents);
                         tomorrowFragment.onEvent(tomorrowEvents);
                         upcomingFragment.onEvent(upcomingEvents);*/
-                    }
-                    else
-                    {
-                        switch (currentPosition)
-                        {
+                    } else {
+                        hideTab();
+                        switch (currentPosition) {
                             case 0:
                                 todayEvents.add(tempEvent);
                                 //todayFragment.onEvent(todayEvents);
@@ -444,10 +469,10 @@ public class EventsFragment extends Fragment
                     }
                 }
             }
-        }
-        else
-        {
-            Utils.d(TAG, "getEvents null");
+        } else {
+            //timeTab.setVisibility(View.GONE);
+            viewPagerEvents.setPagingEnabled(false);
+            hideTab();
         }
 
         todayFragment.onEvent(todayEvents);
@@ -455,15 +480,12 @@ public class EventsFragment extends Fragment
         upcomingFragment.onEvent(upcomingEvents);
     }
 
-    private void filter(String searchText)
-    {
+    private void filter(String searchText) {
         filter(searchText, false);
     }
 
-    protected void showTab()
-    {
-        if(timeTab.getVisibility() == View.GONE)
-        {
+    protected void showTab() {
+        if (timeTab.getVisibility() == View.GONE) {
             timeTab.animate()
                     .translationY(0)
                     .setListener(new AnimatorListenerAdapter() {
@@ -471,15 +493,14 @@ public class EventsFragment extends Fragment
                         public void onAnimationEnd(Animator animation) {
                             super.onAnimationEnd(animation);
                             timeTab.setVisibility(View.VISIBLE);
+                            viewPagerEvents.setPagingEnabled(true);
                         }
                     });
         }
     }
 
-    protected void hideTab()
-    {
-        if(timeTab.getVisibility() == View.VISIBLE)
-        {
+    protected void hideTab() {
+        if (timeTab.getVisibility() == View.VISIBLE) {
             timeTab.animate()
                     .translationY(-timeTab.getMeasuredHeight())
                     .setListener(new AnimatorListenerAdapter() {
@@ -487,6 +508,8 @@ public class EventsFragment extends Fragment
                         public void onAnimationEnd(Animator animation) {
                             super.onAnimationEnd(animation);
                             timeTab.setVisibility(View.GONE);
+                            viewPagerEvents.setPagingEnabled(false
+                            );
                         }
                     });
             /*Animation makeInAnimation = AnimationUtils.loadAnimation(this.getActivity(),
@@ -496,10 +519,8 @@ public class EventsFragment extends Fragment
 
     }
 
-    public void onEvent(final String tag)
-    {
-        if(TAG.equalsIgnoreCase(tag))
-        {
+    public void onEvent(final String tag) {
+        if (TAG.equalsIgnoreCase(tag)) {
             onRefresh();
         }
     }
@@ -511,12 +532,11 @@ public class EventsFragment extends Fragment
         dialogWalkthrough.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialogWalkthrough.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 
-
-        RelativeLayout layout = (RelativeLayout)dialogWalkthrough.findViewById(R.id.layout_walkthrough);
-        ImageView imgWk = (ImageView)dialogWalkthrough.findViewById(R.id.img_wk);
-        TextView txtWkAction = (TextView)dialogWalkthrough.findViewById(R.id.txt_wk_action);
-        TextView txtWkTitle = (TextView)dialogWalkthrough.findViewById(R.id.txt_wk_title);
-        TextView txtWkDesc = (TextView)dialogWalkthrough.findViewById(R.id.txt_wk_desc);
+        RelativeLayout layout = (RelativeLayout) dialogWalkthrough.findViewById(R.id.layout_walkthrough);
+        ImageView imgWk = (ImageView) dialogWalkthrough.findViewById(R.id.img_wk);
+        TextView txtWkAction = (TextView) dialogWalkthrough.findViewById(R.id.txt_wk_action);
+        TextView txtWkTitle = (TextView) dialogWalkthrough.findViewById(R.id.txt_wk_title);
+        TextView txtWkDesc = (TextView) dialogWalkthrough.findViewById(R.id.txt_wk_desc);
         imgWk.setImageResource(R.drawable.wk_event);
         txtWkAction.setVisibility(View.GONE);
         txtWkTitle.setText(R.string.wk_event_title);

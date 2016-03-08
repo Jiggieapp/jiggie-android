@@ -93,7 +93,7 @@ public class SetupTagsActivity extends BaseActivity implements ViewTreeObserver.
 
     public void onEvent(TagsListModel message){
         if (isActive()) {
-            saveTags(message.getData().getTagslist());
+            EventManager.saveTags(message.getData().getTagslist());
 
             final LayoutInflater inflater = getLayoutInflater();
             final int length = message.getData().getTagslist().size();
@@ -122,27 +122,6 @@ public class SetupTagsActivity extends BaseActivity implements ViewTreeObserver.
         }
     }
 
-    private void saveTags(ArrayList<String> jsonArray)
-    {
-        final int length = jsonArray.size();
-        final String[] values = new String[length];
-        final Set<String> setValues = new HashSet<String>();
-        for (int i = 0; i < length; i++)
-            values[i] = jsonArray.get(i);
-
-        for(String temp : values)
-        {
-            setValues.add(temp);
-        }
-       /* App.getInstance()
-                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
-                .edit()
-                //.putString(Utils.TAGS_LIST, Arrays.toString(values));
-                .putStringSet(Utils.TAGS_LIST, setValues)
-                .apply();*/
-
-        App.getInstance().savePreference(Utils.TAGS_LIST, setValues);
-    }
 
     public void onEvent(ExceptionModel message){
         if(message.getFrom().equals(Utils.FROM_SETUP_TAGS)){

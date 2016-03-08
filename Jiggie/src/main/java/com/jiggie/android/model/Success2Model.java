@@ -8,6 +8,16 @@ public class Success2Model {
     int response;
     String msg;
 
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
+
+    String from;
+
     public int getResponse() {
         return response;
     }
@@ -23,4 +33,6 @@ public class Success2Model {
     public void setMsg(String msg) {
         this.msg = msg;
     }
+
+
 }

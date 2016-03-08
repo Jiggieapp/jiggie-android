@@ -40,6 +40,7 @@ import com.jiggie.android.component.adapter.ImagePagerIndicatorAdapter;
 import com.jiggie.android.component.volley.SimpleVolleyRequestListener;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
+import com.jiggie.android.fragment.SocialTabFragment;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.manager.GuestManager;
@@ -254,6 +255,9 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 txtGuestCount.setText(getResources().getQuantityString(R.plurals.guest_count, guestCount, guestCount));
 
                 if (guestCount > 0) {
+                    Intent intent = new Intent(SocialTabFragment.TAG);
+                    sendBroadcast(intent);
+
                     final int width = imageGuest1.getWidth() * 2;
                     guestCount = guestCount > imageGuests.length ? imageGuests.length : guestCount;
 

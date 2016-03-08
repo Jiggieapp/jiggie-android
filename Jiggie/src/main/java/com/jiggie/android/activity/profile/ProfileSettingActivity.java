@@ -18,6 +18,7 @@ import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
+import com.jiggie.android.fragment.SocialTabFragment;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.MemberSettingModel;
@@ -92,7 +93,10 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) { this.sendServerSetting(); }
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+    {
+        this.sendServerSetting();
+    }
 
     @SuppressWarnings("unused")
     @OnClick(R.id.layoutGender)
@@ -235,7 +239,6 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
         }else{
             gOutput = "Both";
         }
-
         return gOutput;
     }
 
@@ -243,5 +246,11 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
     protected void onDestroy() {
         super.onDestroy();
         AccountManager.isInSettingPage = false;
+        if(AccountManager.anySettingChange)
+        {
+            AccountManager.anySettingChange = false;
+            Intent i = new Intent(SocialTabFragment.TAG);
+            sendBroadcast(i);
+        }
     }
 }

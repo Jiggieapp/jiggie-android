@@ -2,6 +2,7 @@ package com.jiggie.android.component;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.util.Log;
 import android.widget.ImageView;
@@ -10,6 +11,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
 import com.jiggie.android.App;
+import com.jiggie.android.BuildConfig;
 import com.jiggie.android.R;
 
 import java.text.ParseException;
@@ -49,8 +51,7 @@ public class Utils {
     public static String FROM_WALKTHROUGH = "walkthrough";
     public static String FROM_PRODUCT_LIST = "product_list";
     public static String FROM_SUMMARY = "summary";
-
-
+    public static String FROM_COMPLETING_WALKTHROUGH_LOCATION = "complete_walkthrough_location";
     public static String FROM_APPSFLYER = "appsflyer";
     public static String FROM_MIXPANEL = "mixpanel";
 
@@ -87,13 +88,6 @@ public class Utils {
     public static String IS_FIRST_RUN = "is_first_run";
     public static String DEVICE_ID = "";
 
-    //AppsFlyer properties----
-    public static String AFinstall_type = "";
-    public static String AFcampaign = "";
-    public static String AFmedia_source = "";
-    public static String AF_ORGANIC = "Organic";
-    //------------------------
-
     public static int myPixel(Activity a, int dip) {
         float scale = a.getResources().getDisplayMetrics().density;
         int pixel = (int) ((dip - 0.5f) * scale);
@@ -101,8 +95,9 @@ public class Utils {
     }
     //-----
 
-    public final static String BASE_URL = "http://api-dev.jiggieapp.com/";
+    //public final static String BASE_URL = "http://api-dev.jiggieapp.com/";
     //public final static String BASE_URL = "http://api.jiggieapp.com/";
+    public final static String BASE_URL = BuildConfig.BASE_URL;
     public final static String URL_EVENTS = BASE_URL + "app/v3/events/list/{fb_id}";
 
     public final static String URL_LOGIN = BASE_URL + "app/v3/login";
@@ -143,6 +138,17 @@ public class Utils {
     public static final String DATE_UPCOMING = "upcoming";
 
     public static final String TAG = Utils.class.getSimpleName();
+    //AppsFlyer properties----
+    public static String AFinstall_type = "";
+    public static String AFcampaign = "";
+    public static String AFmedia_source = "";
+
+    public static String AFclick_time = "";
+    public static String AFinstall_time = "";
+    public static String AFsub1 = "";
+
+    public static String AF_ORGANIC = "Organic";
+    //------------------------
 
     public static String calculateTime(String date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -230,5 +236,14 @@ public class Utils {
         Glide.with(App.getInstance().getApplicationContext()).load(object).diskCacheStrategy(cacheStrategy).into(target);
     }
 
-
+    public static int getVersion(Context context) {
+        int v = 0;
+        try {
+            v = context.getPackageManager().getPackageInfo
+                    (context.getPackageName(), 0).versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            // Huh? Really?
+        }
+        return v;
+    }
 }

@@ -220,8 +220,6 @@ public class SignInFragment extends Fragment {
         public void onCompleted(JSONObject object, GraphResponse response) {
 
             String c = object.toString();
-
-
             if (getContext() == null) {
                 // fragment already destroyed
                 return;

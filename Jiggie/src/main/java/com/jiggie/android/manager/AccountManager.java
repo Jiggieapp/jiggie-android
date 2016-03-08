@@ -93,9 +93,9 @@ public class AccountManager extends BaseManager{
                         LoginResultModel dataLogin = (LoginResultModel) response.body();
 
                         //Added by Aga 29-2-2015-----
-                        boolean a = dataLogin.getData().getLogin().getShow_walkthrough_new().isEvent();
-                        boolean b = dataLogin.getData().getLogin().getShow_walkthrough_new().isChat();
-                        boolean c = dataLogin.getData().getLogin().getShow_walkthrough_new().isSocial();
+                        //boolean a = dataLogin.getData().getLogin().getShow_walkthrough_new().isEvent();
+                        //boolean b = dataLogin.getData().getLogin().getShow_walkthrough_new().isChat();
+                        // c = dataLogin.getData().getLogin().getShow_walkthrough_new().isSocial();
                         App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, dataLogin.getData().getLogin().getShow_walkthrough_new().isEvent()).commit();
                         App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_SOCIAL, dataLogin.getData().getLogin().getShow_walkthrough_new().isSocial()).commit();
                         App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_CHAT, dataLogin.getData().getLogin().getShow_walkthrough_new().isChat()).commit();
@@ -111,12 +111,10 @@ public class AccountManager extends BaseManager{
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SIGN_IN, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
-            Utils.d("exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SIGN_IN, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
@@ -128,6 +126,7 @@ public class AccountManager extends BaseManager{
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
                     if (response.code() == Utils.CODE_SUCCESS) {
                         Success2Model dataTemp = (Success2Model) response.body();
+                        dataTemp.setFrom(Utils.FROM_PROFILE_SETTING);
                         EventBus.getDefault().post(dataTemp);
                         AccountManager.saveMemberSetting(memberSettingModel);
 
@@ -231,18 +230,6 @@ public class AccountManager extends BaseManager{
         }
     }
 
-    public static void saveSetting(SettingModel settingModel){
-        String model = new Gson().toJson(settingModel);
-        App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
-                .putString(Utils.SETTING_MODEL, model).apply();
-    }
-
-    private static void saveMemberSetting(MemberSettingModel memberSettingModel) {
-        String model = new Gson().toJson(memberSettingModel);
-        App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
-                .putString(Utils.MEMBER_SETTING_MODEL, model).apply();
-    }
-
     private static void saveTagsList()
     {
 
@@ -271,7 +258,23 @@ public class AccountManager extends BaseManager{
     {
         MemberSettingModel memberSettingModel = new Gson().fromJson(App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING,
                 Context.MODE_PRIVATE).getString(Utils.MEMBER_SETTING_MODEL, ""), MemberSettingModel.class);
+        if(memberSettingModel.getFb_id() == null)
+            memberSettingModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
         return memberSettingModel;
+    }
+
+    private static void saveMemberSetting(MemberSettingModel memberSettingModel) {
+        if(memberSettingModel.getFb_id() == null)
+            memberSettingModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
+        String model = new Gson().toJson(memberSettingModel);
+        App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
+                .putString(Utils.MEMBER_SETTING_MODEL, model).apply();
+    }
+
+    public static void saveSetting(SettingModel settingModel){
+        String model = new Gson().toJson(settingModel);
+        App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
+                .putString(Utils.SETTING_MODEL, model).apply();
     }
 
     private static void getUserTagList(Callback callback)

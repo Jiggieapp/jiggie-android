@@ -122,6 +122,11 @@ public class EventTabFragment extends Fragment
         this.homeMain = homeMain;
     }
 
+    @Override
+    public int getIcon() {
+        return 0;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -321,7 +326,6 @@ public class EventTabFragment extends Fragment
     //Added by Aga
     public void onEvent(ArrayList<EventModel.Data.Events> message) {
         int size = message.size();
-        Utils.d(TAG, "events size " + size);
         if (searchText == null) {
             events = message;
             filter(true);

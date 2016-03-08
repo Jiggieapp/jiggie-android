@@ -89,11 +89,15 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
     public void onGlobalLayout() {
         this.refreshLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
-        App.getInstance().trackMixPanelEvent("View Member Profile");
         fb_id = super.getIntent().getStringExtra(Common.FIELD_FACEBOOK_ID);
         if (fb_id == null) {
             fb_id = AccessToken.getCurrentAccessToken().getUserId();
             isMe = true;
+        }
+
+        if(!isMe)
+        {
+            App.getInstance().trackMixPanelEvent("View Member Profile");
         }
 
         this.onRefresh();
@@ -194,7 +198,9 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
                 AccountManager.loadLogin().getFb_id())*/ isMe) //saya
         {
             btnEdit.setVisibility(View.VISIBLE);
-            lblPhoneNumber.setVisibility(View.VISIBLE);
+            //wandy 0-03-2016
+            //lblPhoneNumber.setVisibility(View.VISIBLE);
+            lblPhoneNumber.setVisibility(View.GONE);
             SettingModel settingModel = AccountManager.loadSetting();
             final String phoneNo = settingModel.getData().getPhone();
             if(phoneNo == null || phoneNo.isEmpty())

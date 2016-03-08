@@ -88,8 +88,7 @@ public class App extends Application {
 
         FacebookSdk.sdkInitialize(this);
         AppsFlyerLib.setAppsFlyerKey(super.getString(R.string.appsflyer_devkey));
-        //Fabric.with(this, new Crashlytics());
-
+        Fabric.with(this, new Crashlytics());
         //endregion
 
         this.database = new DatabaseConnection(this);
@@ -209,23 +208,6 @@ public class App extends Application {
         final LoginModel login = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin();
         final SettingModel settingModel = AccountManager.loadSetting() == null ? null : AccountManager.loadSetting();
 
-        if(!Utils.AFmedia_source.equals(Utils.BLANK)){
-            json.putString("AFmedia_source", Utils.AFmedia_source);
-        }else{
-            json.putString("AFmedia_source", Utils.AF_ORGANIC);
-        }
-        if(!Utils.AFcampaign.equals(Utils.BLANK)){
-            json.putString("AFcampaign", Utils.AFcampaign);
-        }else{
-            json.putString("AFcampaign", Utils.AF_ORGANIC);
-        }
-        if(!Utils.AFinstall_type.equals(Utils.BLANK)){
-            json.putString("AFinstall_type", Utils.AFinstall_type);
-        }else {
-            json.putString("AFinstall_type", Utils.AF_ORGANIC);
-        }
-
-
         //Added by Aga
         json.putString("App Release", getVersionName(this));
         json.putString("App Version", getVersionCode(this));
@@ -316,29 +298,11 @@ public class App extends Application {
 
         }
 
-
         final ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         final NetworkInfo network = connManager.getActiveNetworkInfo();
 
         final LoginModel login = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin();
         final SettingModel settingModel = AccountManager.loadSetting() == null ? null : AccountManager.loadSetting();
-
-        if(!Utils.AFmedia_source.equals(Utils.BLANK)){
-            json.putString("AFmedia_source", Utils.AFmedia_source);
-        }else{
-            json.putString("AFmedia_source", Utils.AF_ORGANIC);
-        }
-        if(!Utils.AFcampaign.equals(Utils.BLANK)){
-            json.putString("AFcampaign", Utils.AFcampaign);
-        }else{
-            json.putString("AFcampaign", Utils.AF_ORGANIC);
-        }
-        if(!Utils.AFinstall_type.equals(Utils.BLANK)){
-            json.putString("AFinstall_type", Utils.AFinstall_type);
-        }else {
-            json.putString("AFinstall_type", Utils.AF_ORGANIC);
-        }
-
 
         //Added by Aga
         json.putString("App Release", getVersionName(this));
@@ -604,9 +568,6 @@ public class App extends Application {
         json.putString("device_type", Build.MODEL);
         json.putString("app_version", getVersionCode(this));
         getInstanceMixpanel().registerSuperProperties(json);
-
-
-
     }
 
     public void setSyncMixpanel(LoginModel login, SettingModel settingModel){
@@ -650,6 +611,11 @@ public class App extends Application {
             String media_source = Utils.AFmedia_source;
             String campaign = Utils.AFcampaign;
             String install_type = Utils.AFinstall_type;
+
+            String click_time = Utils.AFclick_time;
+            String install_time = Utils.AFinstall_time;
+            String af_sub1 = Utils.AFsub1;
+
             if(media_source.equals(Utils.BLANK)){
                 media_source = Utils.AF_ORGANIC;
             }
@@ -660,7 +626,9 @@ public class App extends Application {
                 install_type = Utils.AF_ORGANIC;
             }
 
-            String appsflyer = "{  \"af_status\" : \""+install_type+"\",  \"media_source\" : \""+media_source+"\",  \"campaign\" : \""+campaign+"\"}";
+            //String appsflyer = "{  \"af_status\" : \""+install_type+"\",  \"media_source\" : \""+media_source+"\",  \"campaign\" : \""+campaign+"\"}";
+            String appsflyer = "{  \"af_status\" : \""+install_type+"\",  \"media_source\" : \""+media_source+"\",  \"campaign\" : \""+campaign+"\", \"click_time\" : \""+click_time+"\", \"install_time\" : \""+install_time+"\", \"af_sub1\" : \""+af_sub1+"\"}";
+
 
             postAppsFlyerModel.setAppsflyer(appsflyer);
 
@@ -687,6 +655,22 @@ public class App extends Application {
             }catch (Exception e){
 
             }
+        }
+
+        if(!Utils.AFmedia_source.equals(Utils.BLANK)){
+            json.putString("AFmedia_source", Utils.AFmedia_source);
+        }else{
+            json.putString("AFmedia_source", Utils.AF_ORGANIC);
+        }
+        if(!Utils.AFcampaign.equals(Utils.BLANK)){
+            json.putString("AFcampaign", Utils.AFcampaign);
+        }else{
+            json.putString("AFcampaign", Utils.AF_ORGANIC);
+        }
+        if(!Utils.AFinstall_type.equals(Utils.BLANK)){
+            json.putString("AFinstall_type", Utils.AFinstall_type);
+        }else {
+            json.putString("AFinstall_type", Utils.AF_ORGANIC);
         }
 
         if(settingModel!=null){
@@ -864,5 +848,16 @@ public class App extends Application {
             sharedPreferencesEditor.putStringSet(key, (Set<String>) object);
         }
         sharedPreferencesEditor.apply();
+    }
+
+    private static String idChatActive = "";
+    public static void setIdChatActive(String id)
+    {
+        idChatActive = id;
+    }
+
+    public static String getIdChatActive()
+    {
+        return idChatActive;
     }
 }

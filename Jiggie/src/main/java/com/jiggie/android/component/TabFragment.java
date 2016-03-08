@@ -7,4 +7,5 @@ public interface TabFragment {
     String getTitle();
     void onTabSelected();
     void setHomeMain(HomeMain homeMain);
+    int getIcon();
 }

@@ -53,10 +53,12 @@ public class MainActivity extends AppCompatActivity {
     private boolean active;
     public static final String TAG = MainActivity.class.getSimpleName();
 
+    String appsfl = "";
+
     private boolean isFirstRun()
     {
         final SharedPreferences pref = App.getSharedPreferences();
-        if(getVersion() < 1021) //1021 is 22-02-2016 build
+        if(Utils.getVersion(this) < 1021) //1021 is 22-02-2016 build
         {
             //clear all
             App.getSharedPreferences().edit().clear().apply();
@@ -69,15 +71,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public int getVersion() {
-        int v = 0;
-        try {
-            v = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            // Huh? Really?
-        }
-        return v;
-    }
+
 
     @Override
     @SuppressWarnings("StatementWithEmptyBody")
@@ -86,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_main);
         this.active = true;
+
+        AppsFlyerLib.sendTracking(MainActivity.this);
 
         if(isFirstRun()){
             final SharedPreferences pref = App.getSharedPreferences();
@@ -157,7 +153,9 @@ public class MainActivity extends AppCompatActivity {
             // Track AppsFlyer Install
             AppsFlyerLib.sendTracking(super.getApplicationContext());
 
+
             registerAppsFlyerConversion();
+            //Toast.makeText(MainActivity.this, appsfl, Toast.LENGTH_LONG).show();
 
             if (!App.getInstance().isUserLoggedIn()) {
                 final SignInFragment fragment = new SignInFragment();
@@ -186,31 +184,42 @@ public class MainActivity extends AppCompatActivity {
                 String media_source = map.get("media_source") == null ? null : map.get("media_source");
                 String campaign = map.get("campaign") == null ? null : map.get("campaign");
                 String af_status = map.get("af_status") == null ? null : map.get("af_status");
+                String click_time = map.get("click_time") == null ? null : map.get("click_time");
+                String install_time = map.get("install_time") == null ? null : map.get("install_time");
+                String af_sub1 = map.get("af_sub1") == null ? null : map.get("af_sub1");
+
                 if (media_source != null)
                     Utils.AFmedia_source = media_source;
                 if (campaign != null)
                     Utils.AFcampaign = campaign;
                 if (af_status != null)
                     Utils.AFinstall_type = af_status;
+                if (click_time != null)
+                    Utils.AFclick_time = click_time;
+                if (install_time != null)
+                    Utils.AFinstall_time = install_time;
+                if (af_sub1 != null)
+                    Utils.AFsub1 = af_sub1;
 
-                /*String d = map.toString();
-                String a = Utils.AFmedia_source+" "+Utils.AFcampaign+" "+Utils.AFinstall_type;
-                Toast.makeText(MainActivity.this, a, Toast.LENGTH_LONG).show();*/
+
             }
 
             @Override
             public void onInstallConversionFailure(String s) {
-
+                //Toast.makeText(MainActivity.this, "a", Toast.LENGTH_LONG).show();
+                Utils.d("123appsflyer", "a");
             }
 
             @Override
             public void onAppOpenAttribution(Map<String, String> map) {
-
+                //Toast.makeText(MainActivity.this, "b", Toast.LENGTH_LONG).show();
+                Utils.d("123appsflyer", "b");
             }
 
             @Override
             public void onAttributionFailure(String s) {
-
+                //Toast.makeText(MainActivity.this, "c", Toast.LENGTH_LONG).show();
+                Log.d("123appsflyer", "c");
             }
         });
     }
@@ -268,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_chat, menu);
+        inflater.inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
