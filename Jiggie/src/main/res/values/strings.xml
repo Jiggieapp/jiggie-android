@@ -204,7 +204,6 @@
     <string name="description_validation_code">Enter the 6 digit code we just sent to your number</string>
     <string name="verification_success">Your phone number has been successfully verified</string>
     <string name="verification_failed">Plese check the number and try again</string>
-<<<<<<< HEAD
 
     <!--COMMERCE STRING VALUE-->
     <string name="msg_dummy">Lorem ipsum</string>
