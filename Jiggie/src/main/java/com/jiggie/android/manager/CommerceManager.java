@@ -37,7 +37,7 @@ public class CommerceManager {
 
     public static void initCommerceService(){
         Retrofit retrofit = new Retrofit.Builder()
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                //.addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .baseUrl(Utils.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -143,7 +143,7 @@ public class CommerceManager {
 
                     if (response.code() == Utils.CODE_SUCCESS) {
                         Success2Model dataTemp = (Success2Model) response.body();
-                        //EventBus.getDefault().post(dataTemp);
+                        EventBus.getDefault().post(dataTemp);
                     } else {
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PAYMENT, Utils.RESPONSE_FAILED));
                     }
