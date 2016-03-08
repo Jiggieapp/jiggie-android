@@ -50,4 +50,5 @@
     <style name="fullHeightDialog" parent="android:style/Theme.Material.Light.Dialog.Alert">
         <item name="android:windowNoTitle">true</item>
     </style>
+
 </resources>

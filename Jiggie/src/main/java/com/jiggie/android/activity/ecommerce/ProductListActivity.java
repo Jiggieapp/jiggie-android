@@ -53,7 +53,16 @@ public class ProductListActivity extends ToolbarActivity implements ProductListA
 
     @Override
     public void onViewSelected() {
-
+        /*sections.add(new SimpleSectionedRecycleViewAdapter.Section(12,"Section 3"));
+        sections.add(new SimpleSectionedRecycleViewAdapter.Section(14,"Section 4"));
+        sections.add(new SimpleSectionedRecycleViewAdapter.Section(20,"Section 5"));
+        */
+        //Add your adapter to the sectionAdapter
+        SimpleSectionedRecycleViewAdapter.Section[] dummy = new SimpleSectionedRecycleViewAdapter.Section[sections.size()];
+        SimpleSectionedRecycleViewAdapter mSectionedAdapter = new
+                SimpleSectionedRecycleViewAdapter(this,R.layout.section,R.id.section_text, adapter);
+        mSectionedAdapter.setSections(sections.toArray(dummy));
+        recyclerView.setAdapter(mSectionedAdapter);
     }
 
     @Override

@@ -24,9 +24,7 @@ import retrofit.Response;
  * Created by LTE on 1/29/2016.
  */
 public class Utils {
-
     public static String BLANK = "";
-
     public static String FROM_SIGN_IN = "sign_in";
     public static String FROM_MEMBER_SETTING = "member_setting";
     //public static String FROM_GET_MEMBER_SETTING = "get_member_setting";
@@ -143,6 +141,8 @@ public class Utils {
     public static final String DATE_TODAY = "today";
     public static final String DATE_TOMORROW = "tomorrow";
     public static final String DATE_UPCOMING = "upcoming";
+
+    public static final String TAG = Utils.class.getSimpleName();
 
     public static String calculateTime(String date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");

@@ -173,7 +173,6 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
             setting.getData().setGender_interest(gender_interest);
         }
 
-
         setting.getData().getNotifications().setChat(this.switchChat.isChecked());
         setting.getData().getNotifications().setFeed(this.switchSocial.isChecked());
 
@@ -224,7 +223,6 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
         }else{
             gOutput = "both";
         }
-
         return gOutput;
     }
 

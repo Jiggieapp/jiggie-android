@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/coordinatorLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <!--<include layout="@layout/toolbar_with_dots"/>-->
+
+            <com.jiggie.android.view.CustomToolbar
+                android:id="@+id/customToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        </android.support.design.widget.AppBarLayout>
+
+        <ScrollView
+            android:id="@+id/scrollContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/customerDataContainer"
+            android:layout_below="@+id/appBar"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:id="@+id/header_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:background="@color/colorPrimary"
+                    android:padding="@dimen/padding_standard_half">
+
+                    <TextView
+                        android:id="@+id/lblEventName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:gravity="left|center_vertical"
+                        android:paddingLeft="@dimen/huge_padding"
+                        android:text="Afro Jack Brother"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/font_body_size" />
+
+                    <TextView
+                        android:id="@+id/lblEventLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/lblEventName"
+                        android:layout_centerInParent="true"
+                        android:gravity="left|center_vertical"
+                        android:paddingLeft="@dimen/huge_padding"
+                        android:text="Sun 29 Feb, GBK"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/font_caption_size" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/container_body"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/header_container">
+
+                    <TextView
+                        android:id="@+id/lblType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:paddingLeft="@dimen/padding_standard"
+                        android:paddingTop="@dimen/padding_standard_half"
+                        android:text="Regular Class"
+                        android:textAllCaps="true"
+                        android:textColor="?android:attr/textColorPrimary"
+                        android:textSize="@dimen/font_body_size"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/lblTypeCaption"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_below="@+id/lblType"
+                        android:paddingLeft="@dimen/padding_standard"
+                        android:text="Lorem ipsum"
+                        android:textAllCaps="true"
+                        android:textColor="@color/text_grey_caption"
+                        android:textSize="@dimen/font_caption_size" />
+
+                    <TextView
+                        android:id="@+id/lblTypePrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_toRightOf="@+id/lblType"
+                        android:gravity="right"
+                        android:paddingRight="@dimen/padding_standard_half"
+                        android:paddingTop="@dimen/padding_standard_half"
+                        android:text="IDR 2000K"
+                        android:textAllCaps="true"
+                        android:textColor="?android:attr/textColorPrimary"
+                        android:textSize="@dimen/font_body_size"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/lblTypePriceCaption"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@+id/lblType"
+                        android:layout_toRightOf="@id/lblTypeCaption"
+                        android:gravity="right"
+                        android:paddingBottom="@dimen/padding_standard_half"
+                        android:paddingRight="@dimen/padding_standard_half"
+                        android:text="1"
+                        android:textAllCaps="true"
+                        android:textColor="@color/text_grey_caption"
+                        android:textSize="@dimen/font_caption_size" />
+
+                    <View
+                        android:id="@+id/divider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@+id/lblTypePriceCaption"
+                        android:background="@android:color/darker_gray" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/divider"
+                        android:orientation="vertical"
+                        android:padding="@dimen/padding_standard">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Regular Caps Info"
+                            android:textAllCaps="true"
+                            android:textColor="?android:attr/textColorPrimary"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Lorem ipsum dolor sir amet amit amit jabang bayi yuk kita ngopi brother paling enak sih memang klo kita ngopi di starbucks ditemani sama cewe2 cantik seksi bahenol mantap cuyyyy"
+                            android:textAllCaps="true" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/padding_standard_half"
+                            android:text="How does it work?"
+                            android:textAllCaps="true"
+                            android:textColor="?android:attr/textColorPrimary"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Lorem ipsum dolor sir amet amit amit jabang bayi yuk kita ngopi brother paling enak sih memang klo kita ngopi di starbucks ditemani sama cewe2 cantik seksi bahenol mantap cuyyyy"
+                            android:textAllCaps="true" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="@dimen/padding_standard_half"
+                            android:text="Terms and Conditions"
+                            android:textAllCaps="true"
+                            android:textColor="?android:attr/textColorPrimary"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Lorem ipsum dolor sir amet amit amit jabang bayi yuk kita ngopi brother paling enak sih memang klo kita ngopi di starbucks ditemani sama cewe2 cantik seksi bahenol mantap cuyyyy"
+                            android:textAllCaps="true" />
+                    </LinearLayout>
+                </RelativeLayout>
+            </RelativeLayout>
+        </ScrollView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_above="@+id/customerDataContainer"
+            android:background="@android:color/darker_gray" />
+
+        <LinearLayout
+            android:id="@+id/customerDataContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/purchaseContainer"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/padding_standard_half"
+            android:paddingTop="@dimen/padding_standard_half"
+            android:paddingLeft="@dimen/padding_standard">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/lblEstimatedCost"
+                android:text="Han Kao"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="@dimen/font_body_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="han@jiggieapp.com"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="@dimen/font_caption_size" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_above="@+id/purchaseContainer"
+            android:background="@android:color/darker_gray" />
+
+        <LinearLayout
+            android:id="@+id/purchaseContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/btnDone"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/padding_standard_half"
+            android:paddingRight="@dimen/padding_standard"
+            android:paddingTop="@dimen/padding_standard_half"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/lblEstimatedCostCaption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/padding_standard"
+                    android:text="Lorem"
+                    android:textAllCaps="true"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="@dimen/font_body_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/lblEstimatedCost"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lblEstimatedCostCaption"
+                    android:paddingLeft="@dimen/padding_standard"
+                    android:text="Rp 3000K"
+                    android:textAllCaps="true"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="@dimen/font_body_size_huge"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="0"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:gravity="right">
+
+                <TextView
+                    android:id="@+id/lblTicketCaption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text=""
+                    android:textAllCaps="true"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="@dimen/font_body_size"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/lblTicketCaption"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:id="@+id/minus_button"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_below="@+id/lblTicketCaption"
+                        android:layout_toLeftOf="@+id/lblQuantity"
+                        android:layout_weight="1"
+                        android:background="@drawable/circle_with_minus"
+                        android:gravity="center_horizontal|center_vertical" />
+
+                    <TextView
+                        android:id="@+id/lblQuantity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/lblTicketCaption"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:paddingLeft="@dimen/padding_standard_half"
+                        android:paddingRight="@dimen/padding_standard_half"
+                        android:text="0"
+                        android:textAllCaps="true"
+                        android:textColor="?android:attr/textColorPrimary"
+                        android:textSize="@dimen/font_body_size_huge"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:id="@+id/plus_button"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/circle_with_plus"
+                        android:gravity="center_horizontal|center_vertical" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <Button
+            android:id="@+id/btnDone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/bg_button_ticket_detail"
+            android:enabled="false"
+            android:text="@string/done"
+            android:textColor="@android:color/white" />
+    </RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>
