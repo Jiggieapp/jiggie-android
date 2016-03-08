@@ -5,11 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-   <!-- <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appBar"
@@ -44,7 +44,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     android:background="@color/colorPrimary"
-                    android:padding="@dimen/padding_standard">
+                    android:padding="@dimen/padding_standard_half">
 
                     <TextView
                         android:id="@+id/lblEventName"
@@ -83,7 +83,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:paddingLeft="@dimen/padding_standard"
-                        android:paddingTop="@dimen/padding_standard"
+                        android:paddingTop="@dimen/padding_standard_half"
                         android:text="Regular Class"
                         android:textAllCaps="true"
                         android:textColor="?android:attr/textColorPrimary"
@@ -97,7 +97,7 @@
                         android:layout_alignParentLeft="true"
                         android:layout_below="@+id/lblType"
                         android:paddingLeft="@dimen/padding_standard"
-                        android:text="Information about regular class"
+                        android:text="Lorem ipsum"
                         android:textAllCaps="true"
                         android:textColor="@color/text_grey_caption"
                         android:textSize="@dimen/font_caption_size" />
@@ -109,8 +109,8 @@
                         android:layout_alignParentRight="true"
                         android:layout_toRightOf="@+id/lblType"
                         android:gravity="right"
-                        android:paddingRight="@dimen/padding_standard"
-                        android:paddingTop="@dimen/padding_standard"
+                        android:paddingRight="@dimen/padding_standard_half"
+                        android:paddingTop="@dimen/padding_standard_half"
                         android:text="IDR 2000K"
                         android:textAllCaps="true"
                         android:textColor="?android:attr/textColorPrimary"
@@ -118,16 +118,16 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/lblTypeCaptionPerson"
+                        android:id="@+id/lblTypePriceCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_below="@+id/lblType"
                         android:layout_toRightOf="@id/lblTypeCaption"
                         android:gravity="right"
-                        android:paddingBottom="@dimen/padding_standard"
-                        android:paddingRight="@dimen/padding_standard"
-                        android:text="1 Person"
+                        android:paddingBottom="@dimen/padding_standard_half"
+                        android:paddingRight="@dimen/padding_standard_half"
+                        android:text="1"
                         android:textAllCaps="true"
                         android:textColor="@color/text_grey_caption"
                         android:textSize="@dimen/font_caption_size" />
@@ -136,7 +136,7 @@
                         android:id="@+id/divider"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_below="@+id/lblTypeCaptionPerson"
+                        android:layout_below="@+id/lblTypePriceCaption"
                         android:background="@android:color/darker_gray" />
 
                     <LinearLayout
@@ -163,7 +163,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingTop="@dimen/padding_standard"
+                            android:paddingTop="@dimen/padding_standard_half"
                             android:text="How does it work?"
                             android:textAllCaps="true"
                             android:textColor="?android:attr/textColorPrimary"
@@ -178,7 +178,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingTop="@dimen/padding_standard"
+                            android:paddingTop="@dimen/padding_standard_half"
                             android:text="Terms and Conditions"
                             android:textAllCaps="true"
                             android:textColor="?android:attr/textColorPrimary"
@@ -206,16 +206,15 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/purchaseContainer"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/padding_standard"
-            android:paddingTop="@dimen/padding_standard">
+            android:paddingBottom="@dimen/padding_standard_half"
+            android:paddingTop="@dimen/padding_standard_half"
+            android:paddingLeft="@dimen/padding_standard">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/lblEstimatedCost"
-                android:paddingLeft="@dimen/padding_standard"
                 android:text="Han Kao"
-                android:textAllCaps="true"
                 android:textColor="?android:attr/textColorPrimary"
                 android:textSize="@dimen/font_body_size"
                 android:textStyle="bold" />
@@ -223,9 +222,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/padding_standard"
                 android:text="han@jiggieapp.com"
-                android:textAllCaps="true"
                 android:textColor="?android:attr/textColorPrimary"
                 android:textSize="@dimen/font_caption_size" />
         </LinearLayout>
@@ -233,7 +230,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_above="@id/purchaseContainer"
+            android:layout_above="@+id/purchaseContainer"
             android:background="@android:color/darker_gray" />
 
         <LinearLayout
@@ -241,33 +238,107 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@+id/btnDone"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/padding_standard"
-            android:paddingTop="@dimen/padding_standard">
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/padding_standard_half"
+            android:paddingRight="@dimen/padding_standard"
+            android:paddingTop="@dimen/padding_standard_half"
+            >
 
-            <TextView
-                android:id="@+id/lblEstimatedCostCaption"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/lblEstimatedCostCaption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/padding_standard"
+                    android:text="Lorem"
+                    android:textAllCaps="true"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="@dimen/font_body_size"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/lblEstimatedCost"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lblEstimatedCostCaption"
+                    android:paddingLeft="@dimen/padding_standard"
+                    android:text="Rp 3000K"
+                    android:textAllCaps="true"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="@dimen/font_body_size_huge"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/lblEstimatedCost"
-                android:paddingLeft="@dimen/padding_standard"
-                android:text="Gila sekali"
-                android:textAllCaps="true"
-                android:textColor="?android:attr/textColorPrimary"
-                android:textSize="@dimen/font_body_size"
-                android:textStyle="bold" />
+                android:orientation="vertical"
+                android:layout_weight="0"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:gravity="right">
 
-            <TextView
-                android:id="@+id/lblEstimatedCost"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/padding_standard"
-                android:text="Rp 3000K"
-                android:textAllCaps="true"
-                android:textColor="?android:attr/textColorPrimary"
-                android:textSize="@dimen/font_body_size"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/lblTicketCaption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:text=""
+                    android:textAllCaps="true"
+                    android:textColor="?android:attr/textColorPrimary"
+                    android:textSize="@dimen/font_body_size"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/lblTicketCaption"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:id="@+id/minus_button"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_below="@+id/lblTicketCaption"
+                        android:layout_toLeftOf="@+id/lblQuantity"
+                        android:layout_weight="1"
+                        android:background="@drawable/circle_with_minus"
+                        android:gravity="center_horizontal|center_vertical" />
+
+                    <TextView
+                        android:id="@+id/lblQuantity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/lblTicketCaption"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:paddingLeft="@dimen/padding_standard_half"
+                        android:paddingRight="@dimen/padding_standard_half"
+                        android:text="0"
+                        android:textAllCaps="true"
+                        android:textColor="?android:attr/textColorPrimary"
+                        android:textSize="@dimen/font_body_size_huge"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:id="@+id/plus_button"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/circle_with_plus"
+                        android:gravity="center_horizontal|center_vertical" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
+
 
         <Button
             android:id="@+id/btnDone"
@@ -278,5 +349,5 @@
             android:enabled="false"
             android:text="@string/done"
             android:textColor="@android:color/white" />
-    <!--</RelativeLayout>-->
+    </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

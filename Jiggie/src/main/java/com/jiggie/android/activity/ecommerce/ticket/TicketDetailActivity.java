@@ -1,11 +1,6 @@
-package com.jiggie.android.activity.ticket;
-
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+package com.jiggie.android.activity.ecommerce.ticket;
 
 import com.jiggie.android.R;
-import com.jiggie.android.view.CustomToolbar;
 
 public class TicketDetailActivity extends AbstractTicketDetailActivity {
 
@@ -25,5 +20,26 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
     @Override
     protected int getCurrentStep() {
         return 2;
+    }
+
+    @Override
+    public String getEventCaption() {
+        //return getResources().getString("Information about regular classs");
+        return "Information about regular classs";
+    }
+
+    @Override
+    public String getTypePriceCaption() {
+        return "1 Person";
+    }
+
+    @Override
+    public String getEstimatedCostCaption() {
+        return "Estimated Costs";
+    }
+
+    @Override
+    public String getTicketCaption() {
+        return "Tickets";
     }
 }

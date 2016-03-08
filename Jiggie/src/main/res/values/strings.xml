@@ -206,4 +206,7 @@
     <string name="verification_failed">Plese check the number and try again</string>
     <string name="ticket_detail">Ticket Details</string>
     <string name="string_continue">Continue</string>
+    <string name="estimated_cost">Estimated Cost</string>
+    <string name="tickets">Tickets</string>
+    <string name="table_details">Table Details</string>
 </resources>
