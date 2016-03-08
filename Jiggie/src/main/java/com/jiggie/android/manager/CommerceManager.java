@@ -37,7 +37,7 @@ public class CommerceManager {
 
     public static void initCommerceService(){
         Retrofit retrofit = new Retrofit.Builder()
-                //.addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .baseUrl(Utils.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -57,9 +57,9 @@ public class CommerceManager {
         getInstance().getProductList(event_id).enqueue(callback);
     }
 
-    private static void getCCList(String fb_id, Callback callback) throws IOException {
+    /*private static void getCCList(String fb_id, Callback callback) throws IOException {
         getInstance().getCC(fb_id).enqueue(callback);
-    }
+    }*/
 
     private static void postSummary(PostSummaryModel postSummaryModel, Callback callback) throws IOException {
         getInstance().postSummary(Utils.URL_SUMMARY, postSummaryModel).enqueue(callback);
@@ -162,10 +162,10 @@ public class CommerceManager {
         }
     }
 
-    /*public static void loaderCCList(final LoadCCListener loadCCListener){
+    public static void loaderCCList(final LoadCCListener loadCCListener){
 
-        getInstance().getCC("123456").subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<CCModel>() {
-            @Override
+        getInstance().getCC("123456").subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Response>() {
+            /*@Override
             public void onCompleted() {
                 Log.d("yoo","complete");
             }
@@ -178,11 +178,31 @@ public class CommerceManager {
             @Override
             public void onNext(CCModel ccModel) {
                 loadCCListener.onLoadCC(ccModel);
+            }*/
+
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Response response) {
+                String responses = new Gson().toJson(response.body());
+                Log.d("res", responses);
+
+                CCModel dataTemp = (CCModel) response.body();
+                loadCCListener.onLoadCC(Utils.CODE_SUCCESS, Utils.MSG_SUCCESS, dataTemp);
+
             }
         });
-    }*/
+    }
 
-    public static void loaderCCList(String fb_id, final LoadCCListener loadCCListener){
+    /*public static void loaderCCList(String fb_id, final LoadCCListener loadCCListener){
 
         try {
             getCCList(fb_id, new CustomCallback() {
@@ -213,7 +233,7 @@ public class CommerceManager {
             Log.d("Exception", e.toString());
             loadCCListener.onLoadCC(Utils.CODE_FAILED, e.toString(), null);
         }
-    }
+    }*/
 
     public interface LoadCCListener{
         void onLoadCC(int status, String message, CCModel ccModel);

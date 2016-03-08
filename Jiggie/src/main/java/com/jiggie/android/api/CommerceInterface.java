@@ -9,6 +9,7 @@ import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SummaryModel;
 
 import retrofit.Call;
+import retrofit.Response;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
@@ -30,10 +31,10 @@ public interface CommerceInterface {
     @POST
     Call<Success2Model> postPayment(@Url String url, @Body PostPaymentModel postPaymentModel);
 
-    /*@GET(Utils.URL_GET_CC)
-    Observable<CCModel> getCC(@Path("fb_id") String fb_id);*/
-
     @GET(Utils.URL_GET_CC)
-    Call<CCModel> getCC(@Path("fb_id") String fb_id);
+    Observable<Response> getCC(@Path("fb_id") String fb_id);
+
+    /*@GET(Utils.URL_GET_CC)
+    Call<CCModel> getCC(@Path("fb_id") String fb_id);*/
 
 }
