@@ -1,5 +1,6 @@
 package com.jiggie.android.activity.setup;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -29,6 +30,8 @@ import com.jiggie.android.model.TagsListModel;
 
 import org.json.JSONArray;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -52,6 +55,7 @@ public class SetupTagsActivity extends BaseActivity implements ViewTreeObserver.
     @Bind(R.id.root) View root;
 
     private Set<String> selectedItems;
+    private static final String TAG = SetupTagsActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +93,8 @@ public class SetupTagsActivity extends BaseActivity implements ViewTreeObserver.
 
     public void onEvent(TagsListModel message){
         if (isActive()) {
+            EventManager.saveTags(message.getData().getTagslist());
+
             final LayoutInflater inflater = getLayoutInflater();
             final int length = message.getData().getTagslist().size();
             selectedItems.clear();
@@ -115,6 +121,7 @@ public class SetupTagsActivity extends BaseActivity implements ViewTreeObserver.
             btnNext.setVisibility(View.VISIBLE);
         }
     }
+
 
     public void onEvent(ExceptionModel message){
         if(message.getFrom().equals(Utils.FROM_SETUP_TAGS)){
@@ -155,8 +162,11 @@ public class SetupTagsActivity extends BaseActivity implements ViewTreeObserver.
     @OnClick(R.id.btnNext)
     @SuppressWarnings("unused")
     void btnNextOnClick() {
-        App.getInstance().trackMixPanelEvent("Walkthrough Tags");
-        super.startActivity(new Intent(this, SetupNotificationActivity.class).putExtra(PARAM_EXPERIENCES, this.selectedItems.toArray(new String[this.selectedItems.size()])));
+        final String[] tags = this.selectedItems.toArray(new String[this.selectedItems.size()]);
+                App.getInstance().trackMixPanelEvent("Walkthrough Tags");
+
+        super.startActivity(new Intent(this, SetupNotificationActivity.class)
+                .putExtra(PARAM_EXPERIENCES, tags));
     }
 
     static class ViewHolder {

@@ -20,6 +20,7 @@ public class LoginModel {
     String user_first_name;
     String email;
     String gender;
+    String device_id;
 
     public String getVersion() {
         return version;
@@ -139,5 +140,13 @@ public class LoginModel {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    public String getDevice_id() {
+        return device_id;
+    }
+
+    public void setDevice_id(String device_id) {
+        this.device_id = device_id;
     }
 }

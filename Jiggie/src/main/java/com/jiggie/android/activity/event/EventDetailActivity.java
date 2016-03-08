@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.ecommerce.ProductListActivity;
 import com.jiggie.android.component.FlowLayout;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
@@ -39,6 +40,7 @@ import com.jiggie.android.component.adapter.ImagePagerIndicatorAdapter;
 import com.jiggie.android.component.volley.SimpleVolleyRequestListener;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
+import com.jiggie.android.fragment.SocialTabFragment;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.manager.GuestManager;
@@ -154,7 +156,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                     e.printStackTrace();
                 }
             }
-
         }
 
         if(event_name!=null){
@@ -176,10 +177,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         this.imagePagerIndicator.setAdapter(this.imagePagerIndicatorAdapter.getIndicatorAdapter());
 
         super.registerReceiver(this.guestInvitedReceiver, new IntentFilter(super.getString(R.string.broadcastGuestInvited)));
-        App.getInstance().trackMixPanelEvent("View Event Details");
 
-        file = new File(Environment.getExternalStorageDirectory() + "event.png");
-        if(file.exists())
+        if(file!= null && file.exists())
             file.delete();
     }
 
@@ -224,6 +223,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         if (message.getFrom().equalsIgnoreCase(TAG)) {
             try {
                 eventDetail = message.getData().getEvents_detail();
+                App.getInstance().trackMixPanelViewEventDetail("View Event Details", eventDetail);
 
                 if (event_name == null) {
                     super.setToolbarTitle(eventDetail.getTitle().toUpperCase(), true);
@@ -255,6 +255,9 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 txtGuestCount.setText(getResources().getQuantityString(R.plurals.guest_count, guestCount, guestCount));
 
                 if (guestCount > 0) {
+                    Intent intent = new Intent(SocialTabFragment.TAG);
+                    sendBroadcast(intent);
+
                     final int width = imageGuest1.getWidth() * 2;
                     guestCount = guestCount > imageGuests.length ? imageGuests.length : guestCount;
 
@@ -274,20 +277,20 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                     }
 
                     //not finished yet----
-                /*for (int i = guestCount; i > 0; i--) {
-                    final String url = App.getFacebookImage(guestArr.get(guestCount - i).getFb_id(), width);
-                    Glide.with(EventDetailActivity.this).load(url).asBitmap().centerCrop().into(new BitmapImageViewTarget(imageGuests[i]) {
-                        @Override
-                        protected void setResource(Bitmap resource) {
-                            final Resources resources = getResources();
-                            if (resources != null) {
-                                final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(resources, resource);
-                                circularBitmapDrawable.setCircular(true);
-                                super.getView().setImageDrawable(circularBitmapDrawable);
+                    /*for (int i = guestCount; i > 0; i--) {
+                        final String url = App.getFacebookImage(guestArr.get(guestCount - i).getFb_id(), width);
+                        Glide.with(EventDetailActivity.this).load(url).asBitmap().centerCrop().into(new BitmapImageViewTarget(imageGuests[i]) {
+                            @Override
+                            protected void setResource(Bitmap resource) {
+                                final Resources resources = getResources();
+                                if (resources != null) {
+                                    final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(resources, resource);
+                                    circularBitmapDrawable.setCircular(true);
+                                    super.getView().setImageDrawable(circularBitmapDrawable);
+                                }
                             }
-                        }
-                    });
-                }*/
+                        });
+                    }*/
                     //-----------------------
                 }
 
@@ -315,17 +318,34 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 invalidateOptionsMenu();
                 populateTags();
 
-                if (StringUtility.isEquals(EventManager.FullfillmentTypes.PHONE_NUMBER, message.getData().getEvents_detail().getFullfillment_type(), true)) {
+                final String fullfillmentType = message.getData().getEvents_detail().getFullfillment_type();
+                btnBook.setVisibility(
+                        StringUtility.isEquals(EventManager.FullfillmentTypes.NONE, message.getData().getEvents_detail().getFullfillment_type(), true)
+                                ? View.GONE : View.VISIBLE);
+                /*if(EventManager.FullfillmentTypes.NONE.equals(fullfillmentType))
+                {
+                    btnBook.setVisibility(View.GONE);
+                }
+                else if(EventManager.FullfillmentTypes.TICKET.equals(fullfillmentType))
+                {
+                    btnBook.setVisibility(View.VISIBLE);
+                }
+                else btnBook.setVisibility(View.VISIBLE);*/
+
+
+                if (StringUtility.isEquals(EventManager.FullfillmentTypes.PHONE_NUMBER, fullfillmentType, true)) {
                     txtExternalSite.setVisibility(View.GONE);
                     txtBookNow.setText(R.string.call);
-                } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.RESERVATION, message.getData().getEvents_detail().getFullfillment_type(), true)) {
+                } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.RESERVATION, fullfillmentType, true)) {
                     txtExternalSite.setVisibility(View.GONE);
                     txtBookNow.setText(R.string.reserve);
-                } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.PURCHASE, message.getData().getEvents_detail().getFullfillment_type(), true)) {
+                } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.PURCHASE, fullfillmentType, true)) {
                     txtExternalSite.setVisibility(View.GONE);
                     txtBookNow.setText(R.string.purchase);
+                } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.TICKET, fullfillmentType, true)) {
+                    txtExternalSite.setVisibility(View.GONE);
+                    txtBookNow.setText(getResources().getString(R.string.purchase_ticket));
                 }
-
                 //Changed by Aga 16-2-2016
                 else if (StringUtility.isEquals(EventManager.FullfillmentTypes.LINK, message.getData().getEvents_detail().getFullfillment_type(), true)) {
                     txtExternalSite.setVisibility(View.VISIBLE);
@@ -346,7 +366,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         }else{
             if (isActive()) {
                 //if(progressDialog!=null&&progressDialog.isShowing()){
-                    progressDialog.dismiss();
+                progressDialog.dismiss();
                 //}
 
                 if(!message.getMessage().equals(Utils.RESPONSE_FAILED + " " + "empty data")){
@@ -438,6 +458,12 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
             }else if (StringUtility.isEquals(EventManager.FullfillmentTypes.NONE, this.eventDetail.getFullfillment_type(), true))
                 Toast.makeText(this, R.string.no_fullfillment, Toast.LENGTH_SHORT).show();
+            else if(StringUtility.isEquals(EventManager.FullfillmentTypes.TICKET, this.eventDetail.getFullfillment_type(), true))
+            {
+                Intent i = new Intent(this, ProductListActivity.class);
+                i.putExtra(Common.FIELD_EVENT_ID, this.eventDetail.get_id());
+                startActivity(i);
+            }
             else
                 Toast.makeText(this, R.string.book_error, Toast.LENGTH_SHORT).show();
         }
@@ -520,7 +546,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
     private void shareEvent() throws UnsupportedEncodingException {
         if (this.shareLinkModel != null) {
-            App.getInstance().trackMixPanelEvent("Share Event");
+            App.getInstance().trackMixPanelViewEventDetail("Share Event", eventDetail);
             /*Utils.d(TAG, Build.VERSION.SDK_INT + " " + Build.VERSION_CODES.LOLLIPOP_MR1);
             if (android.os.Build.VERSION.SDK_INT
                     < Build.VERSION_CODES.LOLLIPOP_MR1) {

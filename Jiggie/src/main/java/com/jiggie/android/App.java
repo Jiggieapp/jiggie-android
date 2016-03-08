@@ -27,18 +27,23 @@ import android.view.WindowManager;
 
 import com.appsflyer.AppsFlyerProperties;
 import com.crashlytics.android.Crashlytics;
+import com.google.gson.Gson;
 import com.jiggie.android.component.SimpleJSONObject;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.database.DatabaseConnection;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.manager.TrackManager;
 import com.jiggie.android.model.Common;
 import com.android.volley.VolleyError;
 import com.appsflyer.AppsFlyerLib;
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
+import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.LoginModel;
+import com.jiggie.android.model.PostAppsFlyerModel;
+import com.jiggie.android.model.PostMixpanelModel;
 import com.jiggie.android.model.SettingModel;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
@@ -83,8 +88,7 @@ public class App extends Application {
 
         FacebookSdk.sdkInitialize(this);
         AppsFlyerLib.setAppsFlyerKey(super.getString(R.string.appsflyer_devkey));
-        //Fabric.with(this, new Crashlytics());
-
+        Fabric.with(this, new Crashlytics());
         //endregion
 
         this.database = new DatabaseConnection(this);
@@ -184,29 +188,25 @@ public class App extends Application {
         }
     }
 
-    public void trackMixPanelEvent(String eventName) { this.trackMixPanelEvent(eventName, new SimpleJSONObject()); }
+    public void trackMixPanelEvent(String eventName) {
+        this.trackMixPanelEvent(eventName, new SimpleJSONObject());
+    }
     public void trackMixPanelEvent(String eventName, SimpleJSONObject json) {
         final String location = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin().getLocation();
-        String[] locations = null;
 
+        String[] locations = null;
         try {
             locations = TextUtils.isEmpty(location) ? new String[] { "", "" } : location.split(",");
         }catch (Exception e){
 
         }
 
+
         final ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         final NetworkInfo network = connManager.getActiveNetworkInfo();
 
         final LoginModel login = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin();
         final SettingModel settingModel = AccountManager.loadSetting() == null ? null : AccountManager.loadSetting();
-
-        if(!Utils.AFmedia_source.equals(""))
-            json.putString("AFmedia_source", Utils.AFmedia_source);
-        if(!Utils.AFcampaign.equals(""))
-            json.putString("AFcampaign", Utils.AFcampaign);
-        if(!Utils.AFinstall_type.equals(""))
-            json.putString("AFinstall_type", Utils.AFinstall_type);
 
         //Added by Aga
         json.putString("App Release", getVersionName(this));
@@ -218,13 +218,13 @@ public class App extends Application {
         try {
             json.putString("City", locations[0].trim());
         }catch (Exception e){
-            json.putString("City", "");
+            json.putString("City", Utils.BLANK);
         }
 
         try {
             json.putString("Country", locations[1].trim());
         }catch (Exception e){
-            json.putString("Country", "");
+            json.putString("Country", Utils.BLANK);
         }
 
 
@@ -242,11 +242,13 @@ public class App extends Application {
         json.putString("Operating System", "Android");
         json.putString("Mixpanel Library", "Android");
         //json.putString("Library Version", "");
+
         try {
             json.putString("Region", locations[0]);
         }catch (Exception e){
-            json.putString("Region", "");
+            json.putString("Region", Utils.BLANK);
         }
+
 
 
 
@@ -273,11 +275,266 @@ public class App extends Application {
             getInstanceMixpanel().alias(login.getFb_id(), null);
             setPeopleMixpanel(login, settingModel);
             setSuperPropertiesMixpanel(login, settingModel);
+            setSyncMixpanel(login, settingModel);
+            setAppsFlyer(login);
         }else if(eventName.equals("Log In")){
             getInstanceMixpanel().identify(mixpanelAPI.getDistinctId());
             setPeopleMixpanel(login, settingModel);
             setSuperPropertiesMixpanel(login, settingModel);
+            setSyncMixpanel(login, settingModel);
+            setAppsFlyer(login);
         }
+        getInstanceMixpanel().track(eventName, json);
+    }
+
+    public void trackMixPanelViewEventDetail(String eventName, EventDetailModel.Data.EventDetail eventDetail) {
+        SimpleJSONObject json = new SimpleJSONObject();
+        final String location = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin().getLocation();
+
+        String[] locations = null;
+        try {
+            locations = TextUtils.isEmpty(location) ? new String[] { "", "" } : location.split(",");
+        }catch (Exception e){
+
+        }
+
+        final ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        final NetworkInfo network = connManager.getActiveNetworkInfo();
+
+        final LoginModel login = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin();
+        final SettingModel settingModel = AccountManager.loadSetting() == null ? null : AccountManager.loadSetting();
+
+        //Added by Aga
+        json.putString("App Release", getVersionName(this));
+        json.putString("App Version", getVersionCode(this));
+        //------------
+
+        json.putString("Carrier", this.getSimOperatorName());
+
+        try {
+            json.putString("City", locations[0].trim());
+        }catch (Exception e){
+            json.putString("City", Utils.BLANK);
+        }
+
+        try {
+            json.putString("Country", locations[1].trim());
+        }catch (Exception e){
+            json.putString("Country", Utils.BLANK);
+        }
+
+
+        json.putString("Device Model", Build.MODEL);
+        json.putString("Manufacturer", Build.MANUFACTURER);
+
+        json.putString("Model", Build.MODEL);
+        json.putString("OS Version", this.getDeviceOSName());
+        json.putString("Radio", this.getPhoneType());
+        json.putString("Screen Height", String.valueOf(this.getDisplayMetrics().heightPixels));
+        json.putString("Screen Width", String.valueOf(this.getDisplayMetrics().widthPixels));
+        json.putBoolean("Wifi", (network != null) && (network.getType() == ConnectivityManager.TYPE_WIFI));
+        json.putString("Time", Common.ISO8601_DATE_FORMAT_UTC.format(new Date()));
+        json.putString("iOS IFA", this.getDeviceId());
+        json.putString("Operating System", "Android");
+        json.putString("Mixpanel Library", "Android");
+        //json.putString("Library Version", "");
+
+        try {
+            json.putString("Region", locations[0]);
+        }catch (Exception e){
+            json.putString("Region", Utils.BLANK);
+        }
+
+
+        if(login!=null){
+            json.putString("Distinct Id", login.getFb_id());
+            try {
+                json.putString("age", StringUtility.getAge2(login.getBirthday()));
+            }catch (Exception e){
+
+            }
+            json.putString("birthday", login.getBirthday());
+            json.putString("email", login.getEmail());
+            json.putString("first_name", login.getUser_first_name());
+            json.putString("last_name", login.getUser_last_name());
+            json.putString("name_and_fb_id", login.getUser_first_name()+"_"+login.getUser_last_name()+"_"+login.getFb_id());
+
+            if(settingModel!=null){
+                json.putString("gender", settingModel.getData().getGender());
+                json.putString("gender_interest", settingModel.getData().getGender_interest());
+            }
+        }
+
+        if(eventName.equals("View Event Details")){
+            if(eventDetail!=null){
+                try{
+                    json.putString("Event Description", eventDetail.getDescription());
+                }catch (Exception e){
+                    json.putString("Event Description", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Name", eventDetail.getTitle());
+                }catch (Exception e){
+                    json.putString("Event Name", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Tags", eventDetail.getTags().toString());
+                }catch (Exception e){
+                    json.putString("Event Tags", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Venue Description", eventDetail.getVenue().getDescription());
+                }catch (Exception e){
+                    json.putString("Event Venue Description", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Venue Neighborhood", eventDetail.getVenue().getNeighborhood());
+                }catch (Exception e){
+                    json.putString("Event Venue Neighborhood", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event End Time", eventDetail.getEnd_datetime());
+                }catch (Exception e){
+                    json.putString("Event End Time", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Start Time", eventDetail.getStart_datetime());
+                }catch (Exception e){
+                    json.putString("Event Start Time", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Venue City", eventDetail.getVenue().getCity());
+                }catch (Exception e){
+                    json.putString("Event Venue City", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Venue Name", eventDetail.getVenue_name());
+                }catch (Exception e){
+                    json.putString("Event Venue Name", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Venue Zip", eventDetail.getVenue().getZip());
+                }catch (Exception e){
+                    json.putString("Event Venue Zip", Utils.BLANK);
+                }
+
+            }
+        }else if(eventName.equals("Share Event")){
+            if(eventDetail!=null){
+                try{
+                    json.putString("Event Description", eventDetail.getDescription());
+                }catch (Exception e){
+                    json.putString("Event Description", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Id", eventDetail.get_id());
+                }catch (Exception e){
+                    json.putString("Event Id", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Name", eventDetail.getTitle());
+                }catch (Exception e){
+                    json.putString("Event Name", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Tags", eventDetail.getTags().toString());
+                }catch (Exception e){
+                    json.putString("Event Tags", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Venue Description", eventDetail.getVenue().getDescription());
+                }catch (Exception e){
+                    json.putString("Event Venue Description", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Venue Neighborhood", eventDetail.getVenue().getNeighborhood());
+                }catch (Exception e){
+                    json.putString("Event Venue Neighborhood", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event End Time", eventDetail.getEnd_datetime());
+                }catch (Exception e){
+                    json.putString("Event End Time", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Start Time", eventDetail.getStart_datetime());
+                }catch (Exception e){
+                    json.putString("Event Start Time", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Venue City", eventDetail.getVenue().getCity());
+                }catch (Exception e){
+                    json.putString("Event Venue City", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Venue Name", eventDetail.getVenue_name());
+                }catch (Exception e){
+                    json.putString("Event Venue Name", Utils.BLANK);
+                }
+                try{
+                    json.putString("Event Venue Zip", eventDetail.getVenue().getZip());
+                }catch (Exception e){
+                    json.putString("Event Venue Zip", Utils.BLANK);
+                }
+                try{
+                    if(login!=null){
+                        json.putString("Inviter Email", login.getEmail());
+                    }
+
+                }catch (Exception e){
+                    json.putString("Inviter Email", Utils.BLANK);
+                }
+                try{
+                    if(login!=null){
+                        json.putString("Inviter First Name", login.getUser_first_name());
+                    }
+
+                }catch (Exception e){
+                    json.putString("Inviter First Name", Utils.BLANK);
+                }
+                try{
+                    if(login!=null){
+                        json.putString("Inviter Last Name", login.getUser_last_name());
+                    }
+
+                }catch (Exception e){
+                    json.putString("Inviter Last Name", Utils.BLANK);
+                }
+                try{
+                    if(login!=null){
+                        json.putString("Inviter Birthday", login.getBirthday());
+                    }
+
+                }catch (Exception e){
+                    json.putString("Inviter Birthday", Utils.BLANK);
+                }
+                try{
+                    if(login!=null){
+                        json.putString("Inviter FB ID", login.getFb_id());
+                    }
+
+                }catch (Exception e){
+                    json.putString("Inviter FB ID", Utils.BLANK);
+                }
+                try{
+                    if(settingModel!=null){
+                        json.putString("Inviter Gender", settingModel.getData().getGender());
+                    }
+
+                }catch (Exception e){
+                    json.putString("Inviter Gender", Utils.BLANK);
+                }
+                try{
+                    if(login!=null){
+                        json.putString("Inviter Whole Name", login.getUser_first_name()+" "+login.getUser_last_name());
+                    }
+
+                }catch (Exception e){
+                    json.putString("Inviter Whole Name", Utils.BLANK);
+                }
+            }
+        }
+
         getInstanceMixpanel().track(eventName, json);
     }
 
@@ -309,8 +566,76 @@ public class App extends Application {
 
         json.putString("os_version", this.getDeviceOSName());
         json.putString("device_type", Build.MODEL);
-        json.putString("app_ersion", getVersionCode(this));
+        json.putString("app_version", getVersionCode(this));
         getInstanceMixpanel().registerSuperProperties(json);
+    }
+
+    public void setSyncMixpanel(LoginModel login, SettingModel settingModel){
+        //sync mixpanel API
+        PostMixpanelModel postMixpanelModel = new PostMixpanelModel();
+        postMixpanelModel.setDevice_type(Build.MODEL);
+        postMixpanelModel.setOs_version(this.getDeviceOSName());
+        postMixpanelModel.setApp_version(getVersionCode(this));
+        if(login!=null){
+            postMixpanelModel.setFb_id(login.getFb_id());
+            postMixpanelModel.setLocation(login.getLocation());
+            postMixpanelModel.setName_and_fb_id(login.getUser_first_name() + "_" + login.getUser_last_name() + "_" + login.getFb_id());
+            postMixpanelModel.setEmail(login.getEmail());
+            postMixpanelModel.setLast_name(login.getUser_last_name());
+            postMixpanelModel.setBirthday(login.getBirthday());
+            postMixpanelModel.setFirst_name(login.getUser_first_name());
+            try {
+                postMixpanelModel.setAge(StringUtility.getAge2(login.getBirthday()));
+            }catch (Exception e) {
+
+            }
+        }
+
+        if(settingModel != null) {
+            postMixpanelModel.setGender(settingModel.getData().getGender());
+            postMixpanelModel.setGender_interest(settingModel.getData().getGender_interest());
+        }
+
+        if(login!=null){
+            TrackManager.loaderMixpanel(login.getFb_id(), postMixpanelModel);
+        }
+        //-----------------
+    }
+
+    public void setAppsFlyer(LoginModel login){
+        if(login!=null){
+            PostAppsFlyerModel postAppsFlyerModel = new PostAppsFlyerModel();
+            postAppsFlyerModel.setFb_id(login.getFb_id());
+            //String appsflyer = "{\n  \\\"af_status\\\" : \\\""+Utils.AFinstall_type+"\\\",\\n  \\\"media_source\\\" : \\\""+Utils.AFmedia_source+"\\\",\\n  \\\"campaign\\\" : \\\""+Utils.AFcampaign+"\\\"\\n}";
+
+            String media_source = Utils.AFmedia_source;
+            String campaign = Utils.AFcampaign;
+            String install_type = Utils.AFinstall_type;
+
+            String click_time = Utils.AFclick_time;
+            String install_time = Utils.AFinstall_time;
+            String af_sub1 = Utils.AFsub1;
+
+            if(media_source.equals(Utils.BLANK)){
+                media_source = Utils.AF_ORGANIC;
+            }
+            if(campaign.equals(Utils.BLANK)){
+                campaign = Utils.AF_ORGANIC;
+            }
+            if(install_type.equals(Utils.BLANK)){
+                install_type = Utils.AF_ORGANIC;
+            }
+
+            //String appsflyer = "{  \"af_status\" : \""+install_type+"\",  \"media_source\" : \""+media_source+"\",  \"campaign\" : \""+campaign+"\"}";
+            String appsflyer = "{  \"af_status\" : \""+install_type+"\",  \"media_source\" : \""+media_source+"\",  \"campaign\" : \""+campaign+"\", \"click_time\" : \""+click_time+"\", \"install_time\" : \""+install_time+"\", \"af_sub1\" : \""+af_sub1+"\"}";
+
+
+            postAppsFlyerModel.setAppsflyer(appsflyer);
+
+            String sd = String.valueOf(new Gson().toJson(postAppsFlyerModel));
+
+            TrackManager.loaderAppsFlyer(postAppsFlyerModel);
+        }
     }
 
     public void setPeopleMixpanel(LoginModel login, SettingModel settingModel){
@@ -330,6 +655,22 @@ public class App extends Application {
             }catch (Exception e){
 
             }
+        }
+
+        if(!Utils.AFmedia_source.equals(Utils.BLANK)){
+            json.putString("AFmedia_source", Utils.AFmedia_source);
+        }else{
+            json.putString("AFmedia_source", Utils.AF_ORGANIC);
+        }
+        if(!Utils.AFcampaign.equals(Utils.BLANK)){
+            json.putString("AFcampaign", Utils.AFcampaign);
+        }else{
+            json.putString("AFcampaign", Utils.AF_ORGANIC);
+        }
+        if(!Utils.AFinstall_type.equals(Utils.BLANK)){
+            json.putString("AFinstall_type", Utils.AFinstall_type);
+        }else {
+            json.putString("AFinstall_type", Utils.AF_ORGANIC);
         }
 
         if(settingModel!=null){
@@ -431,6 +772,7 @@ public class App extends Application {
             this.deviceId = Settings.Secure.getString(getApplicationContext().getContentResolver(),
                     Settings.Secure.ANDROID_ID);
         }
+        Utils.DEVICE_ID = this.deviceId;
         return this.deviceId;
     }
 
@@ -506,5 +848,16 @@ public class App extends Application {
             sharedPreferencesEditor.putStringSet(key, (Set<String>) object);
         }
         sharedPreferencesEditor.apply();
+    }
+
+    private static String idChatActive = "";
+    public static void setIdChatActive(String id)
+    {
+        idChatActive = id;
+    }
+
+    public static String getIdChatActive()
+    {
+        return idChatActive;
     }
 }

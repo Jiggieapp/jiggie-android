@@ -59,4 +59,21 @@ public class Common {
     /*Social Feeds*/
     public static final String SOCIAL_FEED_TYPE_APPROVED = "approved";
     public static final String PHONE_NUMBER = "phone_number";
+
+    //push notifications
+    public static final String KEY = "Jiggie";
+    public static final String PUSH_NOTIFICATIONS_FROM_ID = "fromId";
+    public static final String PUSH_NOTIFICATIONS_FROM_NAME = "fromName";
+    public static final String PUSH_NOTIFICATIONS_TO_ID= "toId";
+    public static final String PUSH_NOTIFICATIONS_TYPE_GENERAL = "general";
+    public static final String PUSH_NOTIFICATIONS_TYPE_EVENT = "event";
+    public static final String PUSH_NOTIFICATIONS_TYPE_MATCH = "match";
+    public static final String PUSH_NOTIFICATIONS_TYPE_MESSAGE = "message";
+    public static final String PUSH_NOTIFICATIONS_TYPE_SOCIAL = "social";
+    public static final String PUSH_NOTIFICATIONS_TYPE_CHAT = "chat";
+    public static final String KEY_EVENT_ID = "event_id";
+    public static final String KEY_TYPE = "type";
+
+    public static final String TO_TAB_SOCIAL = "to_tab_social";
+    public static final String TO_TAB_CHAT = "to_tab_chat";
 }

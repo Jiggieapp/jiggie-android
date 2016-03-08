@@ -7,8 +7,19 @@
     <dimen name="tag_spacing">3dp</dimen>
 
     <dimen name="margin_text_walkthrough">45dp</dimen>
-    <dimen name="badgeSizeHome">20dp</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="footer_height">48dp</dimen>
+    <dimen name="custom_tab_height">60dp</dimen>
+    <dimen name="custom_tab_padding_top">10dp</dimen>
+    <dimen name="custom_tab_padding_bottom">8dp</dimen>
+
+    <dimen name="tabsHeight">48dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="jiggie_logo_width">63dp</dimen>
+    <dimen name="jiggie_logo_height">24dp</dimen>
+    <dimen name="badgeSizeHome">20dp</dimen>
 </resources>

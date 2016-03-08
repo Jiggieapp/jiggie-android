@@ -3,6 +3,7 @@ package com.jiggie.android.activity.profile;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -17,6 +18,7 @@ import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
+import com.jiggie.android.fragment.SocialTabFragment;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.MemberSettingModel;
@@ -41,6 +43,8 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
     @Bind(R.id.txtGender) TextView txtGender;
     @Bind(R.id.switchChat) Switch switchChat;
     @Bind(R.id.layoutError) View layoutError;
+
+    public final static String TAG = ProfileSettingActivity.class.getSimpleName();
 
     SettingModel setting;
     ProgressDialog dialog;
@@ -89,7 +93,10 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) { this.sendServerSetting(); }
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+    {
+        this.sendServerSetting();
+    }
 
     @SuppressWarnings("unused")
     @OnClick(R.id.layoutGender)
@@ -170,7 +177,6 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
             setting.getData().setGender_interest(gender_interest);
         }
 
-
         setting.getData().getNotifications().setChat(this.switchChat.isChecked());
         setting.getData().getNotifications().setFeed(this.switchSocial.isChecked());
 
@@ -221,7 +227,6 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
         }else{
             gOutput = "both";
         }
-
         return gOutput;
     }
 
@@ -234,7 +239,6 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
         }else{
             gOutput = "Both";
         }
-
         return gOutput;
     }
 
@@ -242,5 +246,11 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
     protected void onDestroy() {
         super.onDestroy();
         AccountManager.isInSettingPage = false;
+        if(AccountManager.anySettingChange)
+        {
+            AccountManager.anySettingChange = false;
+            Intent i = new Intent(SocialTabFragment.TAG);
+            sendBroadcast(i);
+        }
     }
 }

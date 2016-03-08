@@ -179,6 +179,7 @@ public class LoginResultModel {
             boolean matchme;
             int device_type;
             boolean show_walkthrough;
+            ShowWalkthroughNew show_walkthrough_new;
 
             public boolean is_new_user() {
                 return is_new_user;
@@ -218,6 +219,44 @@ public class LoginResultModel {
 
             public void setShow_walkthrough(boolean show_walkthrough) {
                 this.show_walkthrough = show_walkthrough;
+            }
+
+            public ShowWalkthroughNew getShow_walkthrough_new() {
+                return show_walkthrough_new;
+            }
+
+            public void setShow_walkthrough_new(ShowWalkthroughNew show_walkthrough_new) {
+                this.show_walkthrough_new = show_walkthrough_new;
+            }
+
+            public class ShowWalkthroughNew{
+                boolean event;
+                boolean chat;
+                boolean social;
+
+                public boolean isEvent() {
+                    return event;
+                }
+
+                public void setEvent(boolean event) {
+                    this.event = event;
+                }
+
+                public boolean isChat() {
+                    return chat;
+                }
+
+                public void setChat(boolean chat) {
+                    this.chat = chat;
+                }
+
+                public boolean isSocial() {
+                    return social;
+                }
+
+                public void setSocial(boolean social) {
+                    this.social = social;
+                }
             }
 
         }

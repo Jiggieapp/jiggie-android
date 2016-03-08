@@ -2,6 +2,7 @@ package com.jiggie.android.activity;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,12 +14,20 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.appsflyer.AppsFlyerConversionListener;
+import com.facebook.AccessToken;
+import com.facebook.login.LoginManager;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.profile.FilterActivity;
+import com.jiggie.android.activity.profile.ProfileDetailActivity;
+import com.jiggie.android.activity.profile.ProfileSettingActivity;
 import com.jiggie.android.activity.setup.SetupTagsActivity;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.gcm.GCMRegistrationService;
@@ -28,8 +37,13 @@ import com.jiggie.android.fragment.SignInFragment;
 import com.appsflyer.AppsFlyerLib;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.jiggie.android.manager.ShareManager;
+import com.jiggie.android.model.ExceptionModel;
+import com.jiggie.android.model.ShareLinkModel;
 
 import java.util.Map;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by rangg on 21/10/2015.
@@ -37,6 +51,27 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_GOOGLE_PLAY_SERVICES = 1972;
     private boolean active;
+    public static final String TAG = MainActivity.class.getSimpleName();
+
+    String appsfl = "";
+
+    private boolean isFirstRun()
+    {
+        final SharedPreferences pref = App.getSharedPreferences();
+        if(Utils.getVersion(this) < 1021) //1021 is 22-02-2016 build
+        {
+            //clear all
+            App.getSharedPreferences().edit().clear().apply();
+            return false;
+        }
+        else
+        {
+            boolean isFirstRun = pref.getBoolean(Utils.IS_FIRST_RUN, true);
+            return isFirstRun;
+        }
+    }
+
+
 
     @Override
     @SuppressWarnings("StatementWithEmptyBody")
@@ -46,9 +81,10 @@ public class MainActivity extends AppCompatActivity {
         super.setContentView(R.layout.activity_main);
         this.active = true;
 
-        final SharedPreferences pref = App.getSharedPreferences();
-        boolean isFirstRun = pref.getBoolean(Utils.IS_FIRST_RUN, true);
-        if(isFirstRun){
+        AppsFlyerLib.sendTracking(MainActivity.this);
+
+        if(isFirstRun()){
+            final SharedPreferences pref = App.getSharedPreferences();
             pref.edit().putBoolean(Utils.IS_FIRST_RUN, false).commit();
             App.getInstance().trackMixPanelEvent("Install");
         }
@@ -66,6 +102,19 @@ public class MainActivity extends AppCompatActivity {
             final String str = GoogleApiAvailability.getInstance().getErrorString(code);
             Toast.makeText(this, str, Toast.LENGTH_LONG).show();
         }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -104,7 +153,9 @@ public class MainActivity extends AppCompatActivity {
             // Track AppsFlyer Install
             AppsFlyerLib.sendTracking(super.getApplicationContext());
 
+
             registerAppsFlyerConversion();
+            //Toast.makeText(MainActivity.this, appsfl, Toast.LENGTH_LONG).show();
 
             if (!App.getInstance().isUserLoggedIn()) {
                 final SignInFragment fragment = new SignInFragment();
@@ -133,27 +184,42 @@ public class MainActivity extends AppCompatActivity {
                 String media_source = map.get("media_source") == null ? null : map.get("media_source");
                 String campaign = map.get("campaign") == null ? null : map.get("campaign");
                 String af_status = map.get("af_status") == null ? null : map.get("af_status");
-                if(media_source!=null)
+                String click_time = map.get("click_time") == null ? null : map.get("click_time");
+                String install_time = map.get("install_time") == null ? null : map.get("install_time");
+                String af_sub1 = map.get("af_sub1") == null ? null : map.get("af_sub1");
+
+                if (media_source != null)
                     Utils.AFmedia_source = media_source;
-                if(campaign!=null)
+                if (campaign != null)
                     Utils.AFcampaign = campaign;
-                if(af_status!=null)
+                if (af_status != null)
                     Utils.AFinstall_type = af_status;
+                if (click_time != null)
+                    Utils.AFclick_time = click_time;
+                if (install_time != null)
+                    Utils.AFinstall_time = install_time;
+                if (af_sub1 != null)
+                    Utils.AFsub1 = af_sub1;
+
+
             }
 
             @Override
             public void onInstallConversionFailure(String s) {
-
+                //Toast.makeText(MainActivity.this, "a", Toast.LENGTH_LONG).show();
+                Utils.d("123appsflyer", "a");
             }
 
             @Override
             public void onAppOpenAttribution(Map<String, String> map) {
-
+                //Toast.makeText(MainActivity.this, "b", Toast.LENGTH_LONG).show();
+                Utils.d("123appsflyer", "b");
             }
 
             @Override
             public void onAttributionFailure(String s) {
-
+                //Toast.makeText(MainActivity.this, "c", Toast.LENGTH_LONG).show();
+                Log.d("123appsflyer", "c");
             }
         });
     }
@@ -193,7 +259,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    protected boolean isActive() { return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) ? !super.isDestroyed() : this.active; }
+    protected boolean isActive()
+    {
+        return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) ?
+            !super.isDestroyed() : this.active;
+    }
 
     @Override
     protected void onDestroy() {
@@ -203,4 +273,115 @@ public class MainActivity extends AppCompatActivity {
         }
         super.onDestroy();
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent i;
+        Class<? extends Activity> target = null;
+        switch (item.getItemId())
+        {
+            case R.id.action_settings:
+                target = ProfileSettingActivity.class;
+                break;
+            case R.id.action_profile:
+                target = ProfileDetailActivity.class;
+                break;
+            case R.id.action_support:
+                mailSupport();
+                break;
+            case R.id.action_filter:
+                target = FilterActivity.class;
+                break;
+            case R.id.action_invite:
+                inviteFriends();
+                break;
+            case R.id.action_logout:
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle(R.string.logout)
+                        .setMessage(R.string.confirmation)
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                App.getSharedPreferences().edit().clear().putBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, true).apply();
+                                LoginManager.getInstance().logOut();
+                                //getActivity().finish();
+
+                                //added by Aga 22-1-2016
+                                Intent i = new Intent(MainActivity.this, MainActivity.class);
+                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(i);
+                                finish();
+                                //----------------------
+
+                            }
+                        }).show();
+                break;
+        }
+        if(target != null)
+        {
+            i = new Intent(this, target);
+            startActivity(i);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void mailSupport() {
+        final Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", super.getString(R.string.support_email), null));
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[] {super.getString(R.string.support_email)}); // hack for android 4.3
+        intent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.support));
+        super.startActivity(Intent.createChooser(intent, super.getString(R.string.support)));
+    }
+
+    private void inviteFriends() {
+        if (this.shareLink != null) {
+            String link = String.format("%s\n\n%s", shareLink.getMessage(), shareLink.getUrl());
+            startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, link).setType("text/plain"), getString(R.string.invite)));
+            App.getInstance().trackMixPanelEvent("Share App");
+
+            //Added 16-2-2016
+            hideProgressDialog();
+            //-------------
+        } else {
+            progressDialog = App.showProgressDialog(MainActivity.this);
+            ShareManager.loaderShareApps(AccessToken.getCurrentAccessToken().getUserId());
+        }
+    }
+
+    private ShareLinkModel shareLink;
+    ProgressDialog progressDialog = null;
+
+    private void hideProgressDialog()
+    {
+        if(progressDialog!=null && progressDialog.isShowing())
+        {
+            progressDialog.dismiss();
+        }
+    }
+
+    public void onEvent(ShareLinkModel message){
+        App.getInstance().trackMixPanelEvent("Share App");
+        if (MainActivity.this != null) {
+            String link = String.format("%s\n\n%s", message.getMessage(), message.getUrl());
+            startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, link).setType("text/plain"), getString(R.string.invite)));
+            shareLink = message;
+        }
+        hideProgressDialog();
+    }
+
+    public void onEvent(ExceptionModel exceptionModel)
+    {
+        if(exceptionModel.getFrom().equalsIgnoreCase(Utils.FROM_SHARE_LINK))
+        {
+            hideProgressDialog();
+        }
+    }
+
 }

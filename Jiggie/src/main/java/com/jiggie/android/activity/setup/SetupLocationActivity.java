@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.MainActivity;
@@ -21,7 +22,6 @@ import com.jiggie.android.component.activity.BaseActivity;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.MemberSettingModel;
-import com.facebook.AccessToken;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.Success2Model;
 
@@ -36,8 +36,10 @@ import de.greenrobot.event.EventBus;
  * Created by rangg on 15/01/2016.
  */
 public class SetupLocationActivity extends BaseActivity {
-    @Bind(R.id.switchView) Switch switchView;
-    @Bind(R.id.root) View root;
+    @Bind(R.id.switchView)
+    Switch switchView;
+    @Bind(R.id.root)
+    View root;
     ProgressDialog dialog = null;
     public static final String TAG = SetupLocationActivity.class.getSimpleName();
 
@@ -47,7 +49,6 @@ public class SetupLocationActivity extends BaseActivity {
         super.setContentView(R.layout.activity_setup_location);
         super.bindView();
 
-        AccountManager.initAccountService();
         EventBus.getDefault().register(this);
 
         final Bitmap background = BitmapUtility.getBitmapResource(R.mipmap.signup1);
@@ -56,21 +57,38 @@ public class SetupLocationActivity extends BaseActivity {
     }
 
     @Override
-    protected int getThemeResource() { return R.style.AppTheme_Setup; }
+    protected int getThemeResource() {
+        return R.style.AppTheme_Setup;
+    }
 
     @OnClick(R.id.btnDone)
     @SuppressWarnings("unused")
     void btnDoneOnClick() {
-        if(this.switchView.isChecked()){
+        final ProgressDialog dialog = App.showProgressDialog(this);
+        final Intent intent = super.getIntent();
+
+        final MemberSettingModel memberSettingModel = new MemberSettingModel();
+        final SettingModel currentSettingModel = AccountManager.loadSetting();
+        if (currentSettingModel == null)
+            Utils.d(TAG, "currentSettingModel " + null);
+        memberSettingModel.setAccount_type(currentSettingModel.getData().getAccount_type());
+        memberSettingModel.setLocation(this.switchView.isChecked() ? 1 : 0);
+        memberSettingModel.setGender(currentSettingModel.getData().getGender());
+        memberSettingModel.setGender_interest(currentSettingModel.getData().getGender_interest());
+        memberSettingModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
+        memberSettingModel.setChat(intent.getBooleanExtra(SetupNotificationActivity.PARAM_NOTIFICATION, true) ? 1 : 0);
+        memberSettingModel.setFeed(intent.getBooleanExtra(SetupNotificationActivity.PARAM_NOTIFICATION, true) ? 1 : 0);
+        memberSettingModel.setExperiences(TextUtils.join(",", intent.getStringArrayExtra(SetupTagsActivity.PARAM_EXPERIENCES)));
+
+        AccountManager.loaderMemberSetting(memberSettingModel);
+        if (this.switchView.isChecked()) {
             showLocationDialog();
-        }else{
+        } else {
             actionDone(this.switchView.isChecked());
         }
-
     }
 
-    public void onEvent(Success2Model message){
-
+    public void onEvent(Success2Model message) {
         if (isActive()) {
             dialog.dismiss();
             finish();
@@ -83,8 +101,8 @@ public class SetupLocationActivity extends BaseActivity {
         app.startActivity(new Intent(App.getInstance(), MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
-    public void onEvent(ExceptionModel message){
-        if(message.getFrom().equals(Utils.FROM_MEMBER_SETTING)){
+    public void onEvent(ExceptionModel message) {
+        if (message.getFrom().equals(Utils.FROM_MEMBER_SETTING)) {
             if (isActive()) {
                 Toast.makeText(SetupLocationActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
@@ -123,7 +141,7 @@ public class SetupLocationActivity extends BaseActivity {
 
     }
 
-    private void actionDone(boolean isChecked){
+    private void actionDone(boolean isChecked) {
         dialog = App.showProgressDialog(this);
         final Intent intent = super.getIntent();
 

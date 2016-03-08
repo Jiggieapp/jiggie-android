@@ -1,6 +1,6 @@
 <resources>
     <!--<string name="app_name">Jiggie</string>-->
-    <string name="server_host">https://jiggie.herokuapp.com/app/v3/</string>
+    <!--<string name="server_host">http://jiggie-dev.herokuapp.com/app/v3/</string>-->
     <!--<string name="server_host">https://jiggie.herokuapp.com/app/v3/</string>-->
 
     <!--<string name="server_host">https://api-dev.jiggieapp.com/app/v3/</string>-->
@@ -68,6 +68,8 @@
     <string name="connect_with">Connect with %1$s?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
     <string name="dash"> - </string>
     <string name="recent">Recent</string>
     <string name="previous">Previous</string>
@@ -143,7 +145,7 @@
     <string name="wk_request_title">CONNECTION REQUEST</string>
     <string name="wk_chat_title">CHAT</string>
     <string name="wk_event_desc">Scroll through our curated list of the best events in Jakarta. If you see an event you like, tap on it for more details.</string>
-    <string name="wk_match_desc">We suggest matches with fun people who like the same events you do.\nTap <b>YES</b> if you want to connect with them.\nIf they also Tap <b>YES</b> then you can start chatting.</string>
+    <string name="wk_match_desc">We suggest matches with other guests.\nTap <b>YES</b> if you want to connect with them.\nIf they also Tap <b>YES</b> then a chat starts.</string>
     <string name="wk_request_desc">This card means they want to connect with you.\nTap <b>YES</b> to start chatting right away.</string>
     <string name="wk_chat_desc">When you both tap <b>YES</b> a chat connection begins.\nStart chatting and make plans to go to events together!</string>
 
@@ -176,12 +178,20 @@
         <item>@string/woman</item>
     </string-array>
 
+    <string name="filter_title">Filter</string>
+    <string name="choose_one_experience">You have to choose at least one experience</string>
+
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="account">Account</string>
+    <string name="please_wait">Updating your experiences</string>
+    <string name="purchase_ticket">Purchase ticket</string>
     <string name="wait">Please wait</string>
 
     <string name="no_internet_connection">Please check your internet connection</string>
     <string name="standard_error_message">Sorry we\'re having some server issues, please check back in a few minutes.</string>
 
-    <string name="ok">OK</string>
     <string name="no_one_will_see_your_phone_number">No one will see your phone number on Jiggie.</string>
     <string name="international">International</string>
     <string name="usa">US_United States</string>
@@ -189,10 +199,17 @@
     <string name="verify_phone_number">Verify Phone Number</string>
     <string name="submit_validation">Submit Validation</string>
     <string name="submit_validation_dialog">We will send a verification code to the phone number : </string>
-    <string name="cancel">Cancel</string>
     <string name="send_code">Send Code</string>
     <string name="hint_validation_code">Validation Code</string>
     <string name="description_validation_code">Enter the 6 digit code we just sent to your number</string>
     <string name="verification_success">Your phone number has been successfully verified</string>
     <string name="verification_failed">Plese check the number and try again</string>
+
+    <string name="msg_dummy">Lorem ipsum</string>
+    <string name="msg_dummy_price">Rp 2.000K</string>
+    <string name="msg_dummy_title">AFRO JACK LIVE IN JAKARTA</string>
+    <string name="msg_dummy_title_info">Sun, 29 Feb 2016 - Gelora Bung Karno</string>
+    <string name="section_ticket">TICKETS</string>
+    <string name="section_table">RESERVE TABLE</string>
+    <string name="preferred_experience">Your preferred experiences have been updated</string>
 </resources>

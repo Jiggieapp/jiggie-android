@@ -11,6 +11,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.jiggie.android.App;
+import com.jiggie.android.R;
+import com.jiggie.android.component.volley.VolleyHandler;
+import com.jiggie.android.model.Common;
+import com.jiggie.android.model.EventModel;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -18,14 +24,6 @@ import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import com.jiggie.android.App;
-import com.jiggie.android.R;
-import com.jiggie.android.component.Utils;
-import com.jiggie.android.component.volley.VolleyHandler;
-import com.jiggie.android.model.Common;
-import com.jiggie.android.model.EventModel;
-
-import it.sephiroth.android.library.widget.HListView;
 
 /**
  * Created by rangg on 03/11/2015.
@@ -74,6 +72,7 @@ public class EventTabListAdapter
                     //item.setImageUrl(imageUrl);
                 }
             }
+
             //String imageUrl = String.format("%simages/event/%s", VolleyHandler.getInstance().getServerHost(), item.get_id());
 
             holder.event = item;
@@ -91,7 +90,11 @@ public class EventTabListAdapter
             holder.tagListView.setAdapter(eventTagAdapter);
             //holder.eventTagAdapter.notifyDataSetChanged();
             holder.txtVenueName.setText(item.getVenue_name());
-            Glide.with(this.fragment).load(imageUrl).into(holder.image);
+            Glide
+                .with(this.fragment)
+                .load(imageUrl)
+                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .into(holder.image);
 
             final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(item.getStart_datetime());
             final Date endDate = Common.ISO8601_DATE_FORMAT_UTC.parse(item.getEnd_datetime());

@@ -9,6 +9,7 @@ import com.jiggie.android.api.AccountInterface;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.callback.CustomCallback;
 import com.jiggie.android.model.AboutModel;
+import com.jiggie.android.model.AccessTokenModel;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.LoginResultModel;
@@ -17,6 +18,7 @@ import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.MemberSettingResultModel;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.Success2Model;
+import com.jiggie.android.model.SuccessModel;
 
 import java.io.IOException;
 
@@ -29,7 +31,7 @@ import retrofit.Retrofit;
 /**
  * Created by LTE on 2/1/2016.
  */
-public class AccountManager {
+public class AccountManager extends BaseManager{
     private static final String TAG = AccountManager.class.getSimpleName();
     static AccountInterface accountInterface;
 
@@ -42,14 +44,22 @@ public class AccountManager {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         accountInterface = retrofit.create(AccountInterface.class);
-
     }
 
     private static AccountInterface getInstance(){
         if(accountInterface == null)
-            initAccountService();
+        {
+            /*accountInterface = retrofitService.createService()
+                    .create(AccountInterface.class);*/
+            accountInterface = getRetrofit().create(AccountInterface.class);
+        }
         return accountInterface;
     }
+
+    /*@Override
+    public AccountInterface getService(Retrofit retrofit) {
+        accountInterface = retrofit.create(AccountInterface.class);
+    }*/
 
     private static void postLogin(LoginModel loginRequestModel, Callback callback) throws IOException {
         getInstance().postLogin(Utils.URL_LOGIN, loginRequestModel).enqueue(callback);
@@ -80,8 +90,17 @@ public class AccountManager {
                     Utils.d(TAG, responses);
 
                     if (response.code() == Utils.CODE_SUCCESS) {
-
                         LoginResultModel dataLogin = (LoginResultModel) response.body();
+
+                        //Added by Aga 29-2-2015-----
+                        //boolean a = dataLogin.getData().getLogin().getShow_walkthrough_new().isEvent();
+                        //boolean b = dataLogin.getData().getLogin().getShow_walkthrough_new().isChat();
+                        // c = dataLogin.getData().getLogin().getShow_walkthrough_new().isSocial();
+                        App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, dataLogin.getData().getLogin().getShow_walkthrough_new().isEvent()).commit();
+                        App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_SOCIAL, dataLogin.getData().getLogin().getShow_walkthrough_new().isSocial()).commit();
+                        App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_CHAT, dataLogin.getData().getLogin().getShow_walkthrough_new().isChat()).commit();
+                        //-------------
+
                         SettingModel dataTemp = setSettingModelFromLogin(dataLogin);
 
                         EventBus.getDefault().post(dataTemp);
@@ -92,27 +111,24 @@ public class AccountManager {
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SIGN_IN, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
-            Utils.d("exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SIGN_IN, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 
-    public static void loaderMemberSetting(MemberSettingModel memberSettingModel){
+    public static void loaderMemberSetting(final MemberSettingModel memberSettingModel){
         try {
             postMemberSetting(memberSettingModel, new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
-                    /*String responses = new Gson().toJson(response.body());
-                    Utils.d("res", responses);*/
-
                     if (response.code() == Utils.CODE_SUCCESS) {
                         Success2Model dataTemp = (Success2Model) response.body();
+                        dataTemp.setFrom(Utils.FROM_PROFILE_SETTING);
                         EventBus.getDefault().post(dataTemp);
+                        AccountManager.saveMemberSetting(memberSettingModel);
 
                         /*MemberSettingResultModel memberSettingModel = (MemberSettingResultModel) response.body();
                         AccountManager.saveMemberSetting(memberSettingModel);*/
@@ -123,12 +139,10 @@ public class AccountManager {
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
-        }catch (IOException e){
-            Utils.d("exception", e.toString());
+        } catch (IOException e){
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
@@ -140,19 +154,17 @@ public class AccountManager {
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
                     /*String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);*/
-
                     if (response.code() == Utils.CODE_SUCCESS) {
+                        //Utils.d(TAG, "response " +  Utils.print(response));
                         MemberInfoModel dataTemp = (MemberInfoModel) response.body();
                         EventBus.getDefault().post(dataTemp);
                     } else {
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_DETAIL, Utils.RESPONSE_FAILED));
                     }
-
                 }
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_DETAIL, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
@@ -169,7 +181,6 @@ public class AccountManager {
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
                     String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);
-
                     if (response.code() == Utils.CODE_SUCCESS) {
                         MemberSettingResultModel data = (MemberSettingResultModel) response.body();
                         App.getInstance().savePreference(Utils.MEMBER_SETTING_MODEL, new Gson().toJson(response.body()));
@@ -183,7 +194,6 @@ public class AccountManager {
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_SETTING, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
@@ -200,7 +210,6 @@ public class AccountManager {
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
                     /*String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);*/
-
                     if (response.code() == Utils.CODE_SUCCESS) {
                         Success2Model dataTemp = (Success2Model) response.body();
                         EventBus.getDefault().post(dataTemp);
@@ -221,10 +230,9 @@ public class AccountManager {
         }
     }
 
-    public static void saveSetting(SettingModel settingModel){
-        String model = new Gson().toJson(settingModel);
-        App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
-                .putString(Utils.SETTING_MODEL, model).apply();
+    private static void saveTagsList()
+    {
+
     }
 
     public static SettingModel loadSetting(){
@@ -246,6 +254,53 @@ public class AccountManager {
         return loginModel;
     }
 
+    public static MemberSettingModel loadMemberSetting()
+    {
+        MemberSettingModel memberSettingModel = new Gson().fromJson(App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING,
+                Context.MODE_PRIVATE).getString(Utils.MEMBER_SETTING_MODEL, ""), MemberSettingModel.class);
+        if(memberSettingModel.getFb_id() == null)
+            memberSettingModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
+        return memberSettingModel;
+    }
+
+    private static void saveMemberSetting(MemberSettingModel memberSettingModel) {
+        if(memberSettingModel.getFb_id() == null)
+            memberSettingModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
+        String model = new Gson().toJson(memberSettingModel);
+        App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
+                .putString(Utils.MEMBER_SETTING_MODEL, model).apply();
+    }
+
+    public static void saveSetting(SettingModel settingModel){
+        String model = new Gson().toJson(settingModel);
+        App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
+                .putString(Utils.SETTING_MODEL, model).apply();
+    }
+
+    private static void getUserTagList(Callback callback)
+    {
+        getInstance().getUserTagList(AccessToken.getCurrentAccessToken()
+                .getUserId()).enqueue(callback);
+    }
+
+    public static void getUserTagList()
+    {
+        getUserTagList(new CustomCallback() {
+            @Override
+            public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                MemberSettingResultModel memberSettingResultModel = (MemberSettingResultModel) response.body();
+                EventBus.getDefault().post(memberSettingResultModel.getData().getMembersettings().getExperiences());
+            }
+
+            @Override
+            public void onCustomCallbackFailure(String t) {
+                Utils.d(TAG, "response fail" + t);
+                ExceptionModel exceptionModel = new ExceptionModel(TAG, t);
+                EventBus.getDefault().post(exceptionModel);
+            }
+        });
+    }
+
     private static SettingModel setSettingModelFromLogin(LoginResultModel data){
         boolean success = true;
         LoginResultModel.Data.Login login = data.getData().getLogin();
@@ -263,7 +318,8 @@ public class AccountManager {
         model.setHelp_phone(login.getHelp_phone());
         model.setMatchme(login.isMatchme());
         model.setDevice_type(login.getDevice_type());
-        model.setShow_walkthrough(login.isShow_walkthrough());
+        //model.setShow_walkthrough(login.isShow_walkthrough());
+        model.setShow_walkthrough(false);
 
         return model;
     }
@@ -291,8 +347,6 @@ public class AccountManager {
 
     public static void verifyPhoneNumber(final String phoneNumber, Callback callback)
     {
-        Utils.d(TAG, AccessToken.getCurrentAccessToken().getUserId() + " " +
-                phoneNumber);
         getInstance().verifyPhoneNumber(AccessToken.getCurrentAccessToken().getUserId()
                 , phoneNumber).enqueue(callback);
     }
@@ -335,6 +389,42 @@ public class AccountManager {
 
             }
         });
+    }
+
+
+    public static void getAccessToken()
+    {
+        getAccessToken(new CustomCallback() {
+            @Override
+            public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                /*String responses = new Gson().toJson(response.body());
+                Utils.d(TAG, "response " + responses);*/
+
+                SuccessModel successModel = (SuccessModel) response.body();
+                App.getInstance()
+                        .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                        .edit()
+                        .putString(Utils.ACCESS_TOKEN, successModel.getToken())
+                        .apply();
+
+                //AccessTokenModel accessTokenModel = (AccessTokenModel) response.body();
+                //Utils.d(TAG, accessTokenModel.getToken());
+            }
+
+            @Override
+            public void onCustomCallbackFailure(String t) {
+                Utils.d(TAG, "failure " + t.toString());
+            }
+        });
+    }
+
+    private static void getAccessToken(Callback callback)
+    {
+        final String fb_token = AccessToken.getCurrentAccessToken().getToken();
+        AccessTokenModel accessTokenModel = new AccessTokenModel();
+        accessTokenModel.setToken(fb_token);
+        getInstance().getAccessToken(Utils.URL_GET_ACCESS_TOKEN,
+                accessTokenModel).enqueue(callback);
     }
 
     private static void verifyVerificationCode(final String verificationCode, Callback callback)

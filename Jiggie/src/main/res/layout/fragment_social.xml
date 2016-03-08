@@ -1,98 +1,105 @@
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/grayLight"
+<!--<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
 
-    <LinearLayout
-        android:layout_height="match_parent"
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:padding="@dimen/padding_standard">
+        android:layout_height="match_parent"
+        android:background="@color/grayLight">
 
         <LinearLayout
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:id="@+id/layoutSocialize"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_standard">
 
-            <Switch
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:id="@+id/switchSocialize"
-                android:text="@string/socialize"
-                android:textSize="16sp"/>
-
-            <TextView
+            <LinearLayout
+                android:id="@+id/layoutSocialize"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="50dp"
-                android:layout_marginRight="50dp"
-                android:text="@string/socialize_description"
-                android:id="@+id/txtSocialize"/>
+                android:orientation="vertical">
+
+                <Switch
+                    android:id="@+id/switchSocialize"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/socialize"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/txtSocialize"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="50dp"
+                    android:layout_marginRight="50dp"
+                    android:text="@string/socialize_description" />
+            </LinearLayout>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/card"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginBottom="?attr/actionBarSize"
+                android:layout_marginTop="@dimen/padding_standard"
+                android:layout_weight="1">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/white">
+
+                    <FrameLayout
+                        android:id="@+id/cardGeneral"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:visibility="gone">
+
+                        <include layout="@layout/card_social_general" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/cardInbound"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:visibility="gone">
+
+                        <include layout="@layout/card_social_inbound" />
+                    </FrameLayout>
+                </RelativeLayout>
+            </android.support.v7.widget.CardView>
         </LinearLayout>
 
-        <android.support.v7.widget.CardView
-            android:layout_marginTop="@dimen/padding_standard"
-            android:layout_marginBottom="?attr/actionBarSize"
+        <FrameLayout
+            android:id="@+id/cardEmpty"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:id="@+id/card">
+            android:layout_height="match_parent"
+            android:padding="@dimen/padding_standard">
 
-            <RelativeLayout
-                android:background="@android:color/white"
-                android:layout_height="match_parent"
-                android:layout_width="match_parent">
+            <include layout="@layout/card_social_empty" />
+        </FrameLayout>
 
-                <FrameLayout
-                    android:background="?attr/selectableItemBackground"
-                    android:layout_height="match_parent"
-                    android:layout_width="match_parent"
-                    android:id="@+id/cardGeneral"
-                    android:visibility="gone"
-                    android:clickable="true">
+        <ProgressBar
+            android:id="@id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:indeterminate="true" />
 
-                    <include layout="@layout/card_social_general"/>
-                </FrameLayout>
+        <FrameLayout
+            android:id="@+id/layout_walkthrough"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
 
-                <FrameLayout
-                    android:background="?attr/selectableItemBackground"
-                    android:layout_height="match_parent"
-                    android:layout_width="match_parent"
-                    android:id="@+id/cardInbound"
-                    android:visibility="gone"
-                    android:clickable="true">
-
-                    <include layout="@layout/card_social_inbound"/>
-                </FrameLayout>
-            </RelativeLayout>
-        </android.support.v7.widget.CardView>
-    </LinearLayout>
-
-    <FrameLayout
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        android:id="@+id/cardEmpty"
-        android:padding="@dimen/padding_standard">
-
-        <include layout="@layout/card_social_empty"/>
-    </FrameLayout>
-
-    <ProgressBar
-        android:layout_centerInParent="true"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:indeterminate="true"
-        android:id="@id/progressBar"/>
-
-    <FrameLayout
-        android:id="@+id/layout_walkthrough"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
-
-        <include layout="@layout/walkthrough_screen"></include>
-    </FrameLayout>
-
-</RelativeLayout>
+            <include layout="@layout/walkthrough_screen"></include>
+        </FrameLayout>
+    </RelativeLayout>
+<!--
+</ScrollView>-->

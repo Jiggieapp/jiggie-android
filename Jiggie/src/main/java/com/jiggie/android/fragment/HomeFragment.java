@@ -1,8 +1,10 @@
 package com.jiggie.android.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,14 +16,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jiggie.android.R;
+import com.jiggie.android.activity.profile.FilterActivity;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
+import com.jiggie.android.component.Utils;
+import com.jiggie.android.model.Common;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by rangg on 21/10/2015.
@@ -31,10 +40,13 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     @Bind(R.id.viewpager) ViewPager viewPager;
     @Bind(R.id.toolbar) Toolbar toolbar;
     @Bind(R.id.tab) TabLayout tab;
+    //@Bind(R.id.fab) FloatingActionButton fab;
 
     private TabFragment lastSelectedFragment;
     private PageAdapter adapter;
     private View rootView;
+    public final String TAG = HomeFragment.class.getSimpleName();
+    Animation makeInAnimation, makeOutAnimation;
 
     @Nullable
     @Override
@@ -48,7 +60,14 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         ButterKnife.bind(this, this.rootView);
 
         final AppCompatActivity activity = (AppCompatActivity) super.getActivity();
-        this.toolbar.setTitle(R.string.app_name);
+        //this.toolbar.setNavigationIcon(R.drawable.logo);
+        //this.toolbar.getLogo().set;
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        final ImageView imgView = (ImageView) toolbar.findViewById(R.id.logo_image);
+        //imgView.setImageDrawable(getResources().getDrawable(R.drawable.logo2));
+        imgView.setImageDrawable(getResources().getDrawable(R.drawable.logo));
+
+        this.toolbar.setTitle("");
         activity.setSupportActionBar(toolbar);
 
         this.adapter = new PageAdapter(this, activity.getSupportFragmentManager());
@@ -56,7 +75,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         this.viewPager.setAdapter(this.adapter);
 
         this.tab.setupWithViewPager(this.viewPager);
-        /*this.tab.getTabAt(1).setCustomView(R.layout.custom_tab);
+        /*this.tab.getTabAt(1).setCustomView(R.layout.tab_custom_with_badge);
         TextView txtView = (TextView) tab.findViewById(R.id.tab_badge);
         txtView.setText("99");*/
         this.viewPager.addOnPageChangeListener(this);
@@ -71,14 +90,64 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         super.setHasOptionsMenu(true);
         this.viewPager.getViewTreeObserver().addOnGlobalLayoutListener(this);
 
-        if ((super.getArguments() != null) && (super.getArguments().getBoolean("chat", false)))
-            this.viewPager.setCurrentItem(2);
+
+
+        //Load animation
+        makeOutAnimation = AnimationUtils.loadAnimation(this.getActivity(),
+                R.anim.slide_down);
+
+        makeInAnimation = AnimationUtils.loadAnimation(this.getActivity(),
+                R.anim.slide_up);
+
+
+        /*makeInAnimation = AnimationUtils.makeInAnimation(this.getActivity(), false);
+        makeOutAnimation = AnimationUtils.makeOutAnimation(this.getActivity(), true);
+
+        makeInAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+                fab.setVisibility(View.VISIBLE);
+            }
+        });
+        makeOutAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                fab.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+        });*/
+
+
     }
 
     @Override
     public void onGlobalLayout() {
         this.viewPager.getViewTreeObserver().removeOnGlobalLayoutListener(this);
         this.onPageSelected(0);
+        setupTabIcons();
+        if ((super.getArguments() != null) && (super.getArguments().getBoolean("chat", false)))
+            this.viewPager.setCurrentItem(2);
+        else if ((super.getArguments() != null)
+                && (super.getArguments().getBoolean(Common.TO_TAB_SOCIAL, false)))
+            this.viewPager.setCurrentItem(1);
+        else if ((super.getArguments() != null)
+                && (super.getArguments().getBoolean(Common.TO_TAB_CHAT, false)))
+            this.viewPager.setCurrentItem(2);
     }
 
     @Override
@@ -89,15 +158,59 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     public void onPageSelected(int position) {
         this.lastSelectedFragment = (TabFragment) this.adapter.fragments[position];
         this.lastSelectedFragment.onTabSelected();
+
+        /*if(position == 0)
+        {
+            if(fab.getVisibility() == View.GONE)
+            {
+                fab.startAnimation(makeInAnimation);
+                fab.setVisibility(View.VISIBLE);
+            }
+
+        }
+        else {
+            if (fab.getVisibility() == View.VISIBLE)
+            {
+                fab.startAnimation(makeOutAnimation);
+                fab.setVisibility(View.GONE);
+            }
+        }*/
     }
 
     @Override
     public void onTabTitleChanged(TabFragment fragment) {
         final int position = this.adapter.getFragmentPosition(fragment);
-        final TabLayout.Tab tab = position >= 0 ? this.tab.getTabAt(position) : null;
+        final TabLayout.Tab tab = position >= 0
+                ? this.tab.getTabAt(position) : null;
 
         if (tab != null)
-            tab.setText(fragment.getTitle());
+        {
+            if(position == 0)
+            {
+
+                tab.setText(fragment.getTitle());
+            }
+            /*else if(position == 1)
+            {
+
+            }*/
+            else
+            {
+                Utils.d(TAG, "fragment.getTitle() " + fragment.getTitle());
+                TextView lblBadge = (TextView) tab.getCustomView().findViewById(R.id.tab_badge);
+                final String badgeCount = fragment.getTitle() /*"13"*/;
+
+                if(badgeCount.equals("0"))
+                {
+                    lblBadge.setVisibility(View.GONE);
+                }
+                else
+                {
+                    lblBadge.setVisibility(View.VISIBLE);
+                    lblBadge.setText(fragment.getTitle());
+                }
+            }
+        }
     }
 
     private static class PageAdapter extends FragmentPagerAdapter {
@@ -106,15 +219,17 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         public PageAdapter(HomeMain homeMain, FragmentManager fm) {
             super(fm);
             this.fragments = new Fragment[] {
-                    new EventTabFragment(),
-                    new SocialTabFragment(),
-                    new ChatTabFragment(),
-                    new MoreTabFragment()
+                    //new EventTabFragment()
+                    new EventsFragment()
+                    ,new SocialTabFragment()
+                    ,new ChatTabFragment()
+
+                    //,new MoreTabFragment()
             };
             ((TabFragment)this.fragments[0]).setHomeMain(homeMain);
             ((TabFragment)this.fragments[1]).setHomeMain(homeMain);
             ((TabFragment)this.fragments[2]).setHomeMain(homeMain);
-            ((TabFragment)this.fragments[3]).setHomeMain(homeMain);
+            //((TabFragment)this.fragments[3]).setHomeMain(homeMain);
         }
 
         @Override
@@ -124,15 +239,53 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         @Override
         public CharSequence getPageTitle(int position) { return ((TabFragment)this.fragments[position]).getTitle(); }
 
+        public int getIcon(int position)
+        {
+            return ((TabFragment)this.fragments[position]).getIcon();
+        }
+
         public int getFragmentPosition(Object fragment) {
             final int length = this.fragments.length;
-
             for (int i = 0; i < length; i++) {
                 if (fragment == this.fragments[i])
                     return i;
             }
-
             return -1;
         }
     }
+
+    private void setupTabIcons()
+    {
+        TextView tabOne = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.tab_custom, null);
+        tabOne.setText(adapter.getPageTitle(0));
+        tabOne.setCompoundDrawablesWithIntrinsicBounds(0, adapter.getIcon(0), 0, 0);
+        tab.getTabAt(0).setCustomView(tabOne);
+
+        View tabTwo = LayoutInflater.from(getActivity())
+                .inflate(R.layout.tab_custom_with_badge, null);
+        TextView tabTwoTitle = (TextView) tabTwo.findViewById(R.id.tab);
+        tabTwoTitle.setText(adapter.getPageTitle(1));
+        //tabTwoTitle.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_chat_white_24dp, 0, 0);
+        tabTwoTitle.setCompoundDrawablesWithIntrinsicBounds(0, adapter.getIcon(1), 0, 0);
+        TextView tabTwoBadge = (TextView) tabTwo.findViewById(R.id.tab_badge);
+        tabTwoBadge.setText("99");
+        tab.getTabAt(1).setCustomView(tabTwo);
+
+        View tabThree = LayoutInflater.from(getActivity())
+                .inflate(R.layout.tab_custom_with_badge, null);
+        TextView tabThreeTitle = (TextView) tabThree.findViewById(R.id.tab);
+        tabThreeTitle.setText(adapter.getPageTitle(2));
+        tabThreeTitle.setCompoundDrawablesWithIntrinsicBounds(0, adapter.getIcon(2), 0, 0);
+        TextView tabThreeBadge = (TextView) tabThree.findViewById(R.id.tab_badge);
+        tabThreeBadge.setText("99");
+
+        tab.getTabAt(2).setCustomView(tabThree);
+    }
+
+    /*@OnClick(R.id.fab)
+    void onFabClick()
+    {
+        Intent i = new Intent(this.getActivity(), FilterActivity.class);
+        startActivity(i);
+    }*/
 }
