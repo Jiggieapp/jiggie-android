@@ -13,9 +13,7 @@ import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.ProductListAdapter;
 import com.jiggie.android.component.adapter.SimpleSectionedRecycleViewAdapter;
-import com.jiggie.android.manager.ProductManager;
 import com.jiggie.android.model.Common;
-import com.jiggie.android.model.ProductModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +25,7 @@ import de.greenrobot.event.EventBus;
 public class ProductListActivity extends ToolbarActivity
     implements ViewTreeObserver.OnGlobalLayoutListener, SwipeRefreshLayout.OnRefreshListener
 {
-    @Bind(R.id.recycler_view_product) RecyclerView recyclerView;
+    //@Bind(R.id.recycler_view_product) RecyclerView recyclerView;
     @Bind(R.id.swipe_refresh) SwipeRefreshLayout swipeRefreshLayout;
     ProductListAdapter adapter;
 
@@ -46,23 +44,23 @@ public class ProductListActivity extends ToolbarActivity
         final Intent intent = getIntent();
         eventId = intent.getStringExtra(Common.FIELD_EVENT_ID);
 
-        adapter = new ProductListAdapter();
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        //adapter = new ProductListAdapter();
+        //recyclerView.setLayoutManager(new LinearLayoutManager(this));
         //recyclerView.addItemDecoration(new DividerItemDecoration(this,LinearLayoutManager.VERTICAL));
-        recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(this);
+        //recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(this);
         swipeRefreshLayout.setOnRefreshListener(this);
         this.isLoading = false;
         //onRefresh();
         Utils.d(TAG, "eventId " + eventId);
-        loadData(eventId);
+        //loadData(eventId);
     }
 
-    private void loadData(final String eventId)
+    /*private void loadData(final String eventId)
     {
         ProductManager.getProductList(eventId);
-    }
+    }*/
 
-    public void onEvent(ProductModel productModel)
+    /*public void onEvent(ProductModel productModel)
     {
         this.isLoading = false;
         swipeRefreshLayout.setRefreshing(false);
@@ -90,17 +88,17 @@ public class ProductListActivity extends ToolbarActivity
         }
         adapter.notifyDataSetChanged();
 
-        /*sections.add(new SimpleSectionedRecycleViewAdapter.Section(12,"Section 3"));
+        *//*sections.add(new SimpleSectionedRecycleViewAdapter.Section(12,"Section 3"));
         sections.add(new SimpleSectionedRecycleViewAdapter.Section(14,"Section 4"));
         sections.add(new SimpleSectionedRecycleViewAdapter.Section(20,"Section 5"));
-*/
+*//*
         //Add your adapter to the sectionAdapter
         SimpleSectionedRecycleViewAdapter.Section[] dummy = new SimpleSectionedRecycleViewAdapter.Section[sections.size()];
         SimpleSectionedRecycleViewAdapter mSectionedAdapter = new
                 SimpleSectionedRecycleViewAdapter(this,R.layout.section,R.id.section_text, adapter);
         mSectionedAdapter.setSections(sections.toArray(dummy));
         recyclerView.setAdapter(mSectionedAdapter);
-    }
+    }*/
 
     @Override
     protected void onDestroy() {
@@ -111,7 +109,7 @@ public class ProductListActivity extends ToolbarActivity
 
     @Override
     public void onGlobalLayout() {
-        this.recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+        //this.recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
     }
 
     @Override
@@ -121,6 +119,6 @@ public class ProductListActivity extends ToolbarActivity
             return;
         }
         this.isLoading = true;
-        loadData(eventId);
+        //loadData(eventId);
     }
 }

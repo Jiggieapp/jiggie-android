@@ -209,4 +209,102 @@
     <string name="estimated_cost">Estimated Cost</string>
     <string name="tickets">Tickets</string>
     <string name="table_details">Table Details</string>
+
+    <!--COMMERCE STRING VALUE-->
+    <string name="msg_dummy">Lorem ipsum</string>
+    <string name="msg_dummy_price">Rp 2.000K</string>
+    <string name="msg_dummy_title">AFRO JACK LIVE IN JAKARTA</string>
+    <string name="msg_dummy_title_info">Sun, 29 Feb 2016 - Gelora Bung Karno</string>
+    <string name="section_ticket">TICKETS</string>
+    <string name="section_table">RESERVE TABLE</string>
+    <string name="section_credit_card">CREDIT CARD</string>
+    <string name="section_va">VIRTUAL BANK TRANSFER</string>
+    <string name="select_payment">SELECT PAYMENT METHOD</string>
+    <string name="va_mandiri">Mandiri Virtual Account</string>
+    <string name="va_bca">BCA Virtual Account</string>
+    <string name="other_bank">Other Banks</string>
+
+    <string name="cc_name_hint">Card Holder Name</string>
+    <string name="cc_number_hint">Credit Card Number</string>
+    <string name="cc_date_hint">MM/YYYY</string>
+    <string name="cc_cvv_hint">CVV</string>
+    <string name="cc_save">SAVE CARD</string>
+    <string name="title_cc">ADD CREDIT CARD</string>
+
+    <string name="title_guest">GUEST DETAIL</string>
+    <string name="guest_name">Guest name</string>
+    <string name="guest_email">Email</string>
+    <string name="guest_62">+62</string>
+    <string name="guest_phone">Phone number</string>
+    <string name="guest_phone_info">*Please verify your information is correct so we can keep you updated on your order</string>
+    <string name="guest_save">SAVE</string>
+    <string name="cancel_caps">CANCEL</string>
+
+    <string name="vor_congrats">Congratulations Disky!</string>
+    <string name="vor_congrats_info">You have successfully placed an order for</string>
+    <string name="vor_event_title">AFRO JACK LIFE IN JAKARTA 2016</string>
+    <string name="vor_event_date">Sun, 29 Feb 2016</string>
+    <string name="vor_order_number">ORDER NUMBER</string>
+    <string name="vor_order_number_fill">6GBF991</string>
+    <string name="vor_guest_name">GUEST NAME</string>
+    <string name="vor_guest_name_fill">BUSY PUTRI</string>
+    <string name="vor_status">STATUS</string>
+    <string name="vor_status_paid">PAID</string>
+    <string name="vor_payment_cc_new">ADD NEW CREDIT CARD</string>
+    <string name="vor_payment_method">PAYMENT METHOD</string>
+    <string name="vor_payment_method_fill">MANDIRI VIRTUAL ACCOUNT</string>
+    <string name="vor_order_summary">ORDER SUMMARY</string>
+    <string name="vor_order_summary_date">15 January 2016 - 16:12:49</string>
+    <string name="vor_reg_ticket">REGULAR TICKET (x3)</string>
+    <string name="vor_reg_ticket_fill">Rp3.000.000</string>
+    <string name="vor_ad_fee">ADMINISTRATIVE FEE</string>
+    <string name="vor_ad_fee_fill">Rp500.000</string>
+    <string name="vor_tax">TAX</string>
+    <string name="vor_tax_fill">Rp150.000</string>
+    <string name="vor_total">TOTAL</string>
+    <string name="vor_total_fill">Rp3.650.000</string>
+    <string name="vor_instruction">INSTRUCTIONS</string>
+    <string name="vor_instruction_fill">When you get to the venue look for the ticket booth. Lorem ipsum dolor sit amet, lorem ipsum copy in various charsets and languages for layouts.\nIf you have any questions please don\'t hestitate to text or WA us at <b>+62111111111</b></string>
+    <string name="vor_ticket_inc">This Ticket Include:</string>
+    <string name="vor_ticket_inc_fill1">1. Lorem ipsum dolor sit amet copy in various charsets and languages for layouts.</string>
+    <string name="vor_ticket_inc_fill2">2. Lorem ipsum dolor sit amet copy in various charsets and languages for layouts.</string>
+    <string name="vor_ticket_inc_fill3">3. Lorem ipsum dolor sit amet copy in various charsets and languages for layouts.</string>
+    <string name="vor_ticket_inc_fill">1. Lorem ipsum dolor sit amet copy in various charsets and languages for layouts.\n2. Lorem ipsum dolor sit amet copy in various charsets and languages for layouts.\n3. Lorem ipsum dolor sit amet copy in various charsets and languages for layouts.</string>
+    <string name="vor_event_hour">19:00 - 23:00</string>
+    <string name="vor_event_place">GELORA BUNG KARNO</string>
+    <string name="vor_tap_info">*Tap "Orders" from the "More" tab to return to this screen</string>
+    <string name="vor_view_ticket">VIEW TICKET</string>
+    <string name="vor_fine_print">Fine Print :</string>
+
+    <string name="howtp_title">HOW TO PAY</string>
+    <string name="howtp_close">Close</string>
+    <string name="howtp_trlimit">Transfer time limit</string>
+    <string name="howtp_trlimit_fill">1h 4m</string>
+    <string name="howtp_trlamo">Transfer amount</string>
+    <string name="howtp_trlamo_fill">Rpx.xxxK</string>
+    <string name="howtp_trto">Transfer to</string>
+    <string name="howtp_trto_fill">xxxx - xxxx - xxxx - xxxx</string>
+    <string name="howtp_jg">JIGGIE Teknologi Indonesia</string>
+    <string name="howtp_ste">Step for Mandiri virtual account transfer</string>
+    <string name="howtp_s1">Go to ATM</string>
+    <string name="howtp_s2">Choose "Transfer" from the menu</string>
+    <string name="howtp_s3">Input the number provide above</string>
+    <string name="howtp_s4">Choose "Pay"</string>
+    <string name="howtp_s5">Open JIGGIE and go to "more" -> "order"</string>
+    <string name="howtp_s6">Your order status will show "Paid"</string>
+    <string name="howtp_star">*</string>
+    <string name="howtp_info"> we have also emailed you with these steps along with our Virtual Account number</string>
+    <string name="howtp_vo">VIEW ORDERS</string>
+
+    <string name="his_title">Purchase History</string>
+    <string name="his_ev1">AFROJACK LIVE IN JAKARTA 2016</string>
+    <string name="his_ven1">Gelora Bung Karno, Jakarta, Indonesia</string>
+    <string name="his_dt1">Sunday, 29 February 2016</string>
+    <string name="his_ev2">SUNDAY BRUNCH WITH LION</string>
+    <string name="his_ven2">Cafetaria, Jakarta, Indonesia</string>
+    <string name="his_dt2">Monday, 21 February 2016</string>
+    <string name="his_ev3">BREAKFAST WITH HORSE</string>
+    <string name="his_ven3">Balai Kartini, Jakarta, Indonesia</string>
+    <string name="his_dt3">Wednesday, 5 March 2016</string>
+    <!--END HERE-->
 </resources>
