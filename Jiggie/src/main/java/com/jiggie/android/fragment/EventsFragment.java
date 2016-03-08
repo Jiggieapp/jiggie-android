@@ -47,7 +47,6 @@ public class EventsFragment extends Fragment
         implements ViewPager.OnPageChangeListener, HomeMain
         , ViewTreeObserver.OnGlobalLayoutListener, TabFragment, SwipeRefreshLayout.OnRefreshListener
 {
-
     @Bind(R.id.time_tab)
     TabLayout timeTab;
     @Bind(R.id.viewpagerevents)

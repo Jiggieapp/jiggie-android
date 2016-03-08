@@ -24,4 +24,9 @@
     <dimen name="jiggie_logo_width">63dp</dimen>
     <dimen name="jiggie_logo_height">24dp</dimen>
     <dimen name="badgeSizeHome">20dp</dimen>
+
+    <dimen name="font_body_size">15sp</dimen>
+    <dimen name="font_body_size_huge">20sp</dimen>
+    <dimen name="font_caption_size">12sp</dimen>
+    <dimen name="huge_padding">56dp</dimen>
 </resources>

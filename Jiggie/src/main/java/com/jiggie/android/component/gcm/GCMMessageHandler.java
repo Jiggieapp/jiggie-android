@@ -7,31 +7,55 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
+import com.google.android.gms.gcm.GcmListenerService;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.MainActivity;
-import com.google.android.gms.gcm.GcmListenerService;
 import com.jiggie.android.activity.chat.ChatActivity;
+import com.jiggie.android.activity.event.EventDetailActivity;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.manager.ChatManager;
+import com.jiggie.android.model.Common;
 import com.jiggie.android.model.Conversation;
 
 /**
  * Created by rangg on 09/09/2015.
  */
 public class GCMMessageHandler extends GcmListenerService {
+
+    public static final String TAG = GCMMessageHandler.class.getSimpleName();
+
     @Override
     public void onMessageReceived(String from, Bundle data) {
         super.onMessageReceived(from, data);
-        String name = "Jiggie";
-        String message = "";
+
+        //String name = "Jiggie";
+        //String message = "";
         boolean chat = false;
+        boolean event = false;
 
         String fromId = "";
         String toId = "";
 
-        for (String key : data.keySet()) {
+        Utils.d(TAG, "gcm message handler " +  data.toString());
+        //Bundle[{Jiggie=cui cui cui cui BARUU
+        // , type=general, collapse_key=do_not_collapse}]
+
+        //[{Jiggie=cui cui cui cui BARUU, type=event
+        //        , event_id=56b996e8f474090300ff4f9b, collapse_key=do_not_collapse}]
+
+        //[{Jiggie=cui cui cui cui BARUU, fromId=10153418311072858
+        //        , toId=140679782985703, type=match, collapse_key=do_not_collapse}]
+
+        //[{Jiggie=cui cui cui cui BARUU, fromId=10153418311072858,
+        // toId=140679782985703, type=message, collapse_key=do_not_collapse}]
+
+        //lama
+        //[{Jiggie=wandy:Cukup, fromId=10153418311072858
+        //      , toId=140679782985703, collapse_key=do_not_collapse}]
+
+        /*for (String key : data.keySet()) {
             if (key.equalsIgnoreCase("Jiggie")) {
                 final String content = data.getString(key);
                 if (content != null) {
@@ -55,12 +79,45 @@ public class GCMMessageHandler extends GcmListenerService {
                 final String content = data.getString(key);
                 toId = content;
             }
-        }
+        }*/
 
         final NotificationManager notificationManager = (NotificationManager) super.getSystemService(NOTIFICATION_SERVICE);
 
         Intent intent;
-        if(chat){
+        //final String key = data.getString("", "Jiggie");
+        /*data.putString("Jiggie", "mantap eh");
+        data.putString("type", "match");
+        data.putString("fromId", "10153418311072858");
+        data.putString("toId", "140679782985703");*/
+        final String key = Common.KEY;
+        final String type = data.getString(Common.KEY_TYPE);
+        final String message = data.getString(Common.KEY, "");
+
+
+        if(type.equalsIgnoreCase(Common.PUSH_NOTIFICATIONS_TYPE_GENERAL))
+        {
+            intent = new Intent(App.getInstance(), MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        }
+        else if(type.equalsIgnoreCase(Common.PUSH_NOTIFICATIONS_TYPE_EVENT))
+        {
+            final String eventId = data.getString(Common.KEY_EVENT_ID, "");
+            intent = new Intent(App.getInstance(), EventDetailActivity.class);
+            intent.putExtra(Common.FIELD_EVENT_ID, eventId);
+            //intent.putExtra(Common.FIELD_EVENT_NAME, event.getTitle());
+        }
+        else if(type.equalsIgnoreCase(Common.PUSH_NOTIFICATIONS_TYPE_MATCH))
+        {
+            final String fromm = data.getString(Common.PUSH_NOTIFICATIONS_FROM_ID);
+            final String too = data.getString(Common.PUSH_NOTIFICATIONS_TO_ID);
+            intent = new Intent(App.getInstance(), ChatActivity.class);
+            intent.putExtra(Conversation.FIELD_FROM_NAME, fromm);
+            intent.putExtra(Conversation.FIELD_FACEBOOK_ID, fromm);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                    | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        }
+        else if(chat){
             String profil_image="";
             for(int i=0;i< ChatManager.dataChatList.size();i++){
                 if(ChatManager.dataChatList.get(i).getFb_id().equals(fromId)){
@@ -71,7 +128,7 @@ public class GCMMessageHandler extends GcmListenerService {
             intent = new Intent(App.getInstance(), ChatActivity.class);
             //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.putExtra(Conversation.FIELD_PROFILE_IMAGE, profil_image);
-            intent.putExtra(Conversation.FIELD_FROM_NAME, name);
+            intent.putExtra(Conversation.FIELD_FROM_NAME, key);
             intent.putExtra(Conversation.FIELD_FACEBOOK_ID, fromId);
             intent.putExtra("chat", chat);
         }else{
@@ -80,9 +137,8 @@ public class GCMMessageHandler extends GcmListenerService {
             try {
                 fromName = message.substring(message.indexOf("with ")+5, message.length());
             }catch (Exception e){
-                Log.d("error String Arr", e.toString());
+                Utils.d("error String Arr", e.toString());
             }
-
 
             intent = new Intent(App.getInstance(), ChatActivity.class);
             intent.putExtra(Conversation.FIELD_FROM_NAME, fromName);
@@ -96,7 +152,7 @@ public class GCMMessageHandler extends GcmListenerService {
                 .setSmallIcon(R.mipmap.ic_notification)
                 .setContentIntent(pendingIntent)
                 .setContentText(message)
-                .setContentTitle(name)
+                .setContentTitle(key)
                 .setAutoCancel(true))
                 .bigText(message)
                 .build();

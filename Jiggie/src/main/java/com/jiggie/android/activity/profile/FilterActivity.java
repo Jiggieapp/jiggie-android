@@ -71,7 +71,6 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
     @Override
     public void onGlobalLayout() {
         this.flowLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-
     }
 
     private void loadData() {

@@ -137,7 +137,6 @@ public class EventTabFragment extends Fragment
         //ButterKnife.bind(this, this.rootView);
         //EventBus.getDefault().register(this);
         //EventManager.initEventService();
-
         //EventBus.getDefault().register(this);
 
         this.recyclerView.setAdapter(this.adapter = new EventTabListAdapter(this, this));
@@ -287,6 +286,8 @@ public class EventTabFragment extends Fragment
         });
         super.onCreateOptionsMenu(menu, inflater);
         this.searchText = null;*/
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     /*@Override
@@ -329,7 +330,7 @@ public class EventTabFragment extends Fragment
         //refreshLayout.setRefreshing(false);
     }
 
-    public void onEvent(EventModel message){
+    public void onEvent(EventModel message) {
         events.clear();
         events = message.getData().getEvents();
 
@@ -357,7 +358,7 @@ public class EventTabFragment extends Fragment
     @Override
     public void onViewSelected(EventModel.Data.Events event) {
         Intent i = new Intent(super.getActivity(), EventDetailActivity.class);
-        i.putExtra(Common.FIELD_EVENT_ID, event.get_id() /*"56b1a0bf89bfed03005c50f0"*/);
+        i.putExtra(Common.FIELD_EVENT_ID, event.get_id());
         i.putExtra(Common.FIELD_EVENT_NAME, event.getTitle());
         super.startActivity(i);
     }
@@ -496,12 +497,11 @@ public class EventTabFragment extends Fragment
         dialogWalkthrough.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialogWalkthrough.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 
-
-        RelativeLayout layout = (RelativeLayout)dialogWalkthrough.findViewById(R.id.layout_walkthrough);
-        ImageView imgWk = (ImageView)dialogWalkthrough.findViewById(R.id.img_wk);
-        TextView txtWkAction = (TextView)dialogWalkthrough.findViewById(R.id.txt_wk_action);
-        TextView txtWkTitle = (TextView)dialogWalkthrough.findViewById(R.id.txt_wk_title);
-        TextView txtWkDesc = (TextView)dialogWalkthrough.findViewById(R.id.txt_wk_desc);
+        RelativeLayout layout = (RelativeLayout) dialogWalkthrough.findViewById(R.id.layout_walkthrough);
+        ImageView imgWk = (ImageView) dialogWalkthrough.findViewById(R.id.img_wk);
+        TextView txtWkAction = (TextView) dialogWalkthrough.findViewById(R.id.txt_wk_action);
+        TextView txtWkTitle = (TextView) dialogWalkthrough.findViewById(R.id.txt_wk_title);
+        TextView txtWkDesc = (TextView) dialogWalkthrough.findViewById(R.id.txt_wk_desc);
         imgWk.setImageResource(R.drawable.wk_event);
         txtWkAction.setVisibility(View.GONE);
         txtWkTitle.setText(R.string.wk_event_title);

@@ -15,6 +15,7 @@ import com.squareup.okhttp.Response;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -22,7 +23,6 @@ import java.util.Locale;
  * Created by LTE on 1/29/2016.
  */
 public class Utils {
-
     public static String FROM_SIGN_IN = "sign_in";
     public static String FROM_MEMBER_SETTING = "member_setting";
     //public static String FROM_GET_MEMBER_SETTING = "get_member_setting";
@@ -126,17 +126,34 @@ public class Utils {
     public static final String DATE_TOMORROW = "tomorrow";
     public static final String DATE_UPCOMING = "upcoming";
 
+    public static final String TAG = Utils.class.getSimpleName();
+
     public static String calculateTime(String date) {
-        //SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        //SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
         //format.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {
             Date d1 = format.parse(date);
             Long current = new Date().getTime();
             Date midnight = new Date(current - current % (24 * 60 * 60 * 1000));
 
-            long diff = Math.abs(d1.getTime() - midnight.getTime());
-
+            Calendar c = Calendar.getInstance();
+            c.add(Calendar.DAY_OF_MONTH, 1);
+            c.set(Calendar.HOUR_OF_DAY, 0);
+            c.set(Calendar.MINUTE, 0);
+            c.set(Calendar.SECOND, 0);
+            c.set(Calendar.MILLISECOND, 0);
+            long diff = d1.getTime() - c.getTimeInMillis();
+            if(diff < 0)
+            {
+                return DATE_TODAY;
+            }
+            else if(diff < (24 * 60 * 60 * 1000))
+            {
+                return DATE_TOMORROW;
+            }
+            else return DATE_UPCOMING;
+            /*long diff = Math.abs(d1.getTime() - midnight.getTime());
             long diffDays = diff / (24 * 60 * 60 * 1000);
             if (diffDays == 0)
                 return DATE_TODAY;
@@ -144,8 +161,7 @@ public class Utils {
                 return DATE_TOMORROW;
             else
                 return DATE_UPCOMING;
-
-
+            */
         } catch (ParseException e) {
             e.printStackTrace();
         }
