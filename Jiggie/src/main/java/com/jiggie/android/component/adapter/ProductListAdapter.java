@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jiggie.android.R;
@@ -20,7 +21,6 @@ import butterknife.ButterKnife;
 public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.ViewHolder> {
 
     private final ViewSelectedListener listener;
-
     private Context context;
 
     public ProductListAdapter(ViewSelectedListener listener) {
@@ -44,6 +44,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         if (position == 0) {
             holder.txtSectionTicket.setText(context.getString(R.string.section_ticket));
             holder.linSection.setVisibility(View.VISIBLE);
+            holder.headerContainer.setVisibility(View.VISIBLE);
         } else if (position == 3) {
             holder.txtSectionTicket.setText(context.getString(R.string.section_table));
             holder.linSection.setVisibility(View.VISIBLE);
@@ -55,10 +56,18 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 
     @Override
     public int getItemCount() {
-        return 9;
+        return 2;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        @Bind(R.id.lblEventName)
+        TextView lblEventName;
+        @Bind(R.id.lblEventLocation)
+        TextView lblEventLocation;
+        @Bind(R.id.header_container)
+        RelativeLayout headerContainer;
+        @Bind(R.id.txt_section_ticket)
+        TextView txtSectionTicket;
         @Bind(R.id.lin_section)
         LinearLayout linSection;
         @Bind(R.id.txt_ticket_name)
@@ -69,28 +78,26 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         TextView txtPrice;
         @Bind(R.id.txt_price_info)
         TextView txtPriceInfo;
-        @Bind(R.id.txt_section_ticket)
-        TextView txtSectionTicket;
-
+        @Bind(R.id.lin_item)
+        LinearLayout linItem;
         private ViewSelectedListener listener;
-        //private EventModel.Data.Events event;
 
         public ViewHolder(View itemView, ViewSelectedListener listener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 
             if ((this.listener = listener) != null)
-                itemView.setOnClickListener(this);
+                linItem.setOnClickListener(this);
 
         }
 
         @Override
         public void onClick(View v) {
             if (listener != null) {
-                //listener.onViewSelected(this.event);
+                //should pass data
+                listener.onViewSelected();
 
             }
-            Log.d("myclick", "yes");
         }
     }
 

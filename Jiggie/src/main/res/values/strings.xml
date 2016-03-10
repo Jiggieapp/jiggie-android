@@ -204,7 +204,7 @@
     <string name="description_validation_code">Enter the 6 digit code we just sent to your number</string>
     <string name="verification_success">Your phone number has been successfully verified</string>
     <string name="verification_failed">Plese check the number and try again</string>
-    <string name="ticket_detail">Ticket Details</string>
+    <string name="ticket_detail">TICKET DETAILS</string>
     <string name="string_continue">Continue</string>
     <string name="estimated_cost">Estimated Cost</string>
     <string name="tickets">Tickets</string>
@@ -236,7 +236,7 @@
     <string name="guest_email">Email</string>
     <string name="guest_62">+62</string>
     <string name="guest_phone">Phone number</string>
-    <string name="guest_phone_info">*Please verify your information is correct so we can keep you updated on your order</string>
+    <string name="guest_phone_info">Please verify your information is correct so we can keep you updated on your order</string>
     <string name="guest_save">SAVE</string>
     <string name="cancel_caps">CANCEL</string>
 
@@ -306,5 +306,30 @@
     <string name="his_ev3">BREAKFAST WITH HORSE</string>
     <string name="his_ven3">Balai Kartini, Jakarta, Indonesia</string>
     <string name="his_dt3">Wednesday, 5 March 2016</string>
+
+    <string name="tikdet_cl">REGULAR CLASS INFO</string>
+    <string name="tikdet_how_title">HOW DOES IT WORK?</string>
+    <string name="tikdet_cl_info">Book your ticket and enjoy entry to this event.</string>
+    <string name="tikdet_how">Book your ticket through the app.\nShow up to venue and show the your ticket - found under booking list of the app or via link your confirmation email, bring your e-ticket or print your booking receipt for entry to the venue.</string>
+    <string name="tikdet_terms">This event is 21+\nThis ticket is subject to processing fee\nNo alcohol permitted on permises other than that\nserved by licensed vendors of this event.\nCredit does not apply to tickets.</string>
+
+    <string name="pci_agree">I Agree That ...</string>
+    <string name="pci_c1">All booking are final</string>
+    <string name="pci_c2">I will be charged the full amount</string>
+    <string name="pci_c3">I will show up at the event</string>
+    <string name="pci_c4">This purchase is not refundable</string>
+    <string name="pci_f1">Regular Ticket (3x)</string>
+    <string name="pci_f2">Administrative Fee</string>
+    <string name="pci_f3">Tax</string>
+
+    <string name="pci_f1_fill">Rp3.000K</string>
+    <string name="pci_f2_fill">Rp500K</string>
+    <string name="pci_f3_fill">Rp150K</string>
+
+    <string name="pci_total">Total Price</string>
+    <string name="pci_total_fill">Rp3.650K</string>
+    <string name="pci_payment">CHOOSE PAYMENT METHOD</string>
+    <string name="pci_slide">SLIDE TO PAY >></string>
+
     <!--END HERE-->
 </resources>

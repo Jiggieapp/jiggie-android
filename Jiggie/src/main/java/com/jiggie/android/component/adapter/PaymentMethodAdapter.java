@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.HowToPayActivity;
+import com.jiggie.android.activity.ecommerce.ProductListActivity;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -124,7 +125,6 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
         public ViewHolder(View itemView, ViewSelectedListener listener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            //if ((this.listener = listener) != null)
             this.listener = listener;
             linItem.setOnClickListener(this);
         }
