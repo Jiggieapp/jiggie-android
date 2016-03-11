@@ -47,6 +47,8 @@ public class Common {
     public static final SimpleDateFormat SIMPLE_24_HOUR_FORMAT_UTC = new SimpleDateFormat("HH:mm a", Locale.getDefault());
     public static final SimpleDateFormat SHORT_DATE_FORMAT_UTC = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
+    public static final SimpleDateFormat SERVER_DATE_FORMAT_COMM = new SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault());
+
     static {
         final TimeZone utcTimeZone = TimeZone.getTimeZone("UTC");
         ISO8601_DATE_FORMAT_UTC.setTimeZone(utcTimeZone);

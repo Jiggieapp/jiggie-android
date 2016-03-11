@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.AddGuestActivity;
@@ -18,7 +19,13 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
     RelativeLayout relGuest;
     @Bind(R.id.btnDone)
     Button btnDone;
-
+    @Bind(R.id.minus_button)
+    View minusButton;
+    @Bind(R.id.plus_button)
+    View plusButton;
+    int quantity = 0;
+    @Bind(R.id.lblQuantity)
+    TextView lblQuantity;
 
     @Override
     protected void onCreate() {
@@ -36,6 +43,27 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(TicketDetailActivity.this, AddGuestActivity.class));
+            }
+        });
+
+        minusButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (quantity > 0) {
+                    quantity--;
+                    lblQuantity.setText(String.valueOf(quantity));
+                }
+
+            }
+        });
+
+        plusButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (quantity >= 0) {
+                    quantity++;
+                    lblQuantity.setText(String.valueOf(quantity));
+                }
             }
         });
     }

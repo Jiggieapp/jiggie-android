@@ -162,5 +162,4 @@
             android:textColor="@color/common_plus_signin_btn_text_dark"/>
     </RelativeLayout>
 
-
 </RelativeLayout>

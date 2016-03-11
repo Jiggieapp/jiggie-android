@@ -10,6 +10,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -29,15 +30,21 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
     ViewPager pagerSlide;
     @Bind(R.id.rel_payment)
     RelativeLayout relPayment;
-
+    @Bind(R.id.img_check1)
+    ImageView imgCheck1;
+    @Bind(R.id.img_check2)
+    ImageView imgCheck2;
+    @Bind(R.id.img_check3)
+    ImageView imgCheck3;
+    @Bind(R.id.img_check4)
+    ImageView imgCheck4;
 
     @Override
     protected void onCreate() {
         setContentView(R.layout.activity_purchase_info);
         ButterKnife.bind(this);
 
-        pagerSlide.setAdapter(new SlideAdapter(getSupportFragmentManager(), pagerSlide));
-        pagerSlide.setCurrentItem(1);
+        preDefined();
 
         relPayment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,6 +52,59 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
                 startActivity(new Intent(PurchaseInfoActivity.this, PaymentMethodActivity.class));
             }
         });
+
+        imgCheck1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(v.isSelected()){
+                    v.setSelected(false);
+                }else{
+                    v.setSelected(true);
+                }
+            }
+        });
+
+        imgCheck2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(v.isSelected()){
+                    v.setSelected(false);
+                }else{
+                    v.setSelected(true);
+                }
+            }
+        });
+
+        imgCheck3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(v.isSelected()){
+                    v.setSelected(false);
+                }else{
+                    v.setSelected(true);
+                }
+            }
+        });
+
+        imgCheck4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(v.isSelected()){
+                    v.setSelected(false);
+                }else{
+                    v.setSelected(true);
+                }
+            }
+        });
+    }
+
+    private void preDefined(){
+        pagerSlide.setAdapter(new SlideAdapter(getSupportFragmentManager(), pagerSlide));
+        pagerSlide.setCurrentItem(1);
+        imgCheck1.setSelected(true);
+        imgCheck2.setSelected(true);
+        imgCheck3.setSelected(true);
+        imgCheck4.setSelected(true);
     }
 
     @Override

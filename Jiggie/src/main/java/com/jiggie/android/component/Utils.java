@@ -60,6 +60,7 @@ public class Utils {
     public static String MSG_EXCEPTION = "";
     public static String RESPONSE_FAILED = "Failed response";
     public static String MSG_EMPTY_DATA = "Empty data";
+    public static int CODE_FAILED = 0;
     public static int CODE_SUCCESS = 200;
     public static int CODE_EMPTY_DATA = 204;
     //--------------------
