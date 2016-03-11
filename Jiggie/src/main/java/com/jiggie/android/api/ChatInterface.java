@@ -1,18 +1,22 @@
 package com.jiggie.android.api;
 
 import com.jiggie.android.component.Utils;
+import com.jiggie.android.component.callback.CustomCallback;
+import com.jiggie.android.component.callback.NewCallback;
 import com.jiggie.android.model.ChatAddModel;
 import com.jiggie.android.model.ChatConversationModel;
 import com.jiggie.android.model.ChatListModel;
 import com.jiggie.android.model.Success2Model;
 
 import retrofit.Call;
+import retrofit.Response;
 import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import retrofit.http.Url;
+import rx.Observable;
 
 /**
  * Created by LTE on 2/3/2016.

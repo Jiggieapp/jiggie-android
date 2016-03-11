@@ -32,12 +32,14 @@ import android.widget.Toast;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.chat.ChatActivity;
+import com.jiggie.android.api.OnResponseListener;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.ChatTabListAdapter;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
+import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.ChatManager;
 import com.jiggie.android.manager.WalkthroughManager;
 import com.jiggie.android.model.ChatActionModel;
@@ -55,7 +57,6 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * Created by rangg on 21/10/2015.
@@ -74,7 +75,6 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     private boolean isLoading;
     private HomeMain homeMain;
     private View failedView;
-    private Handler handler;
     private View emptyView;
     private View rootView;
     private String title;
@@ -83,6 +83,8 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     private Dialog dialogLongClick;
     private ChatListModel.Data.ChatLists conversation;
     public static final String TAG = ChatTabFragment.class.getSimpleName();
+    private final static int INTERVAL = 1000 *5; //5 detik
+    private Handler handler;
 
     @Override
     public void setHomeMain(HomeMain homeMain) {
@@ -112,6 +114,8 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         if ((this.adapter != null) && (this.adapter.getItemCount() == 0)){
             this.onRefresh();
         }
+
+        //startRepeatingTask();
     }
 
     @Nullable
@@ -127,8 +131,6 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ButterKnife.bind(this, this.rootView);
-
-        EventBus.getDefault().register(this);
 
         this.recyclerView.setLayoutManager(new LinearLayoutManager(super.getContext()));
         this.recyclerView.setAdapter(this.adapter = new ChatTabListAdapter(this, this, this));
@@ -164,20 +166,38 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         this.refreshLayout.setRefreshing(true);
         this.getFailedView().setVisibility(View.GONE);
 
-        ChatManager.loaderChatList(AccessToken.getCurrentAccessToken().getUserId());
+        fetchChat();
+    }
+
+    private void fetchChat()
+    {
+        //ChatManager.loaderChatList(AccessToken.getCurrentAccessToken().getUserId());
+        ChatManager.loaderChatList2(AccessToken.getCurrentAccessToken().getUserId()
+                , new OnResponseListener() {
+            @Override
+            public void onSuccess(Object object) {
+                onEvent((ChatListModel) object);
+                Intent i = new Intent(Utils.CHECK_NEW_MESSAGE_RECEIVER);
+                getActivity().sendBroadcast(i);
+            }
+
+            @Override
+            public void onFailure(ExceptionModel exceptionModel) {
+                onEvent(exceptionModel);
+            }
+        });
     }
 
     public void onEvent(ChatListModel message){
         adapter.clear();
-
         for (int i = 0; i < message.getData().getChat_lists().size(); i++)
             adapter.add(message.getData().getChat_lists().get(i));
-
         isLoading = false;
         if (getContext() != null) {
             getEmptyView().setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
             recyclerView.setVisibility(adapter.getItemCount() == 0 ? View.GONE : View.VISIBLE);
-            refreshLayout.setRefreshing(false);
+            if(refreshLayout.isRefreshing())
+                refreshLayout.setRefreshing(false);
             adapter.notifyDataSetChanged();
             setHomeTitle();
         }
@@ -196,7 +216,6 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
             conversation.setUnread(0);
 
             this.adapter.remove(conversation);
-
             changed = true;
         }
         if(changed){
@@ -218,7 +237,8 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
                     getFailedView().setVisibility(View.VISIBLE);
                 }
                 recyclerView.setVisibility(View.GONE);
-                refreshLayout.setRefreshing(false);
+                if(refreshLayout.isRefreshing())
+                    refreshLayout.setRefreshing(false);
             }
         }else if(from.equals(Utils.FROM_BLOCK_CHAT)||from.equals(Utils.FROM_DELETE_CHAT)){
             Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
@@ -373,7 +393,6 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         app.unregisterReceiver(this.notificationReceived);
         app.unregisterReceiver(this.socialChatReceiver);
         app.unregisterReceiver(this.chatCounterBroadCastReceiver);
-        EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
 
@@ -433,7 +452,7 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         String block = "Block "+conversation.getFromName();
         String[] menu = {block, "Delete Chat"};
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.fullHeightDialog)
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity()/*, R.style.fullHeightDialog*/)
                 .setItems(menu, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -464,8 +483,6 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
             final String facebookId  = intent.getStringExtra(Conversation.FIELD_FACEBOOK_ID);
             if(!facebookId.equals(""))
             {
-                Utils.d(TAG, "masuk di chatcounterbroadcastreceiver " + facebookId);
-
                 final ChatListModel.Data.ChatLists conversation = facebookId == null ? null : adapter.find(facebookId);
                 if(conversation != null)
                 {
@@ -476,5 +493,27 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
             }
         }
     };
+
+    Runnable mHandlerTask = new Runnable()
+    {
+        @Override
+        public void run() {
+            fetchChat();
+            if(handler == null)
+                handler = new Handler();
+            handler.postDelayed(mHandlerTask, INTERVAL);
+        }
+    };
+
+    void startRepeatingTask()
+    {
+        mHandlerTask.run();
+    }
+
+    void stopRepeatingTask()
+    {
+        handler.removeCallbacks(mHandlerTask);
+    }
+
 
 }

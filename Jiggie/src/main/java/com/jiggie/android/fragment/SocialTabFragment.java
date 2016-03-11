@@ -15,7 +15,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +40,6 @@ import com.jiggie.android.R;
 import com.jiggie.android.activity.chat.ChatActivity;
 import com.jiggie.android.activity.event.EventDetailActivity;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
-import com.jiggie.android.activity.profile.ProfileSettingActivity;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.SimpleJSONObject;
 import com.jiggie.android.component.StringUtility;
@@ -50,12 +48,10 @@ import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.manager.AccountManager;
-import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.manager.WalkthroughManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.Conversation;
-import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.PostWalkthroughModel;
@@ -215,6 +211,10 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                 , new IntentFilter(super.getString(R.string.broadcast_social)));*/
         App.getInstance().registerReceiver(this.refreshSocialReceiver
                 , new IntentFilter(SocialTabFragment.TAG));
+
+        //wandy 11-03-206
+        //generalTxtEvent.setTextColor(getActivity().getResources().getColor(R.color.));
+
     }
 
     private void onRefresh() {
@@ -342,22 +342,25 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                 //this.progressBar.setVisibility(View.VISIBLE);
                 this.progressBar.setVisibility(View.GONE);
 
-                EventManager.loaderEventDetail(current.getEvent_id()
+                //wandy 08-03-2016, we dont want the venue place any longer
+                /*EventManager.loaderEventDetail(current.getEvent_id()
                         , AccessToken.getCurrentAccessToken().getUserId()
                         , currentSetting.getData().getGender_interest()
-                        , TAG);
+                        , TAG);*/
+                dismissProgressDialog();
+                enableButton(true);
             }
         }
     }
 
-    public void onEvent(EventDetailModel message){
+    /*public void onEvent(EventDetailModel message){
         if (message != null && getContext() != null && message.getFrom().equalsIgnoreCase(TAG)) {
             dismissProgressDialog();
             generalTxtEvent.setText(getString(R.string.location_viewing, message.getData().getEvents_detail().getTitle(), message.getData().getEvents_detail().getVenue_name()));
             progressBar.setVisibility(View.GONE);
             enableButton(true);
         }
-    }
+    }*/
 
     private CompoundButton.OnCheckedChangeListener socializeChanged = new CompoundButton.OnCheckedChangeListener() {
         @Override

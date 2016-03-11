@@ -215,6 +215,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         this.btnBook.setVisibility(View.GONE);
         this.swipeRefresh.setRefreshing(true);
 
+        Utils.d(TAG, event_id + " " +  AccessToken.getCurrentAccessToken().getUserId() + " "
+            + AccountManager.loadSetting().getData().getGender_interest());
         EventManager.loaderEventDetail(event_id, AccessToken.getCurrentAccessToken().getUserId()
                 , AccountManager.loadSetting().getData().getGender_interest(), TAG);
     }
