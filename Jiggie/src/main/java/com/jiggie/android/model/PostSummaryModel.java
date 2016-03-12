@@ -1,13 +1,11 @@
 package com.jiggie.android.model;
 
-import android.os.Parcelable;
-
 import java.util.ArrayList;
 
 /**
  * Created by LTE on 2/22/2016.
  */
-public final class PostSummaryModel implements Parcelable{
+public final class PostSummaryModel {
     public final String fb_id;
     public final String event_id;
     public final ArrayList<Product_list> product_list;
