@@ -34,6 +34,7 @@ public class ProductListActivity extends ToolbarWithDotActivity
     String eventId = "56b1a0bf89bfed03005c50f0";
     boolean isTwoType = false;
     int section2Start = 0;
+    String eventName, venueName, startTime;
 
     private boolean isLoading;
 
@@ -63,19 +64,29 @@ public class ProductListActivity extends ToolbarWithDotActivity
 
     @Override
     public void onViewSelected(int position, Object object) {
+        Intent i = new Intent(ProductListActivity.this, TicketDetailActivity.class);
+        i.putExtra(Common.FIELD_EVENT_ID, eventId);
+        i.putExtra(Common.FIELD_EVENT_NAME, eventName);
+        i.putExtra(Common.FIELD_VENUE_NAME, venueName);
+        i.putExtra(Common.FIELD_STARTTIME, startTime);
+
 
         if(isTwoType){
             if(position<section2Start){
                 ProductListModel.Data.ProductList.Purchase itemData = (ProductListModel.Data.ProductList.Purchase)object;
-                Log.d("desc",itemData.getDescription());
+                i.putExtra(Common.FIELD_TRANS_TYPE, itemData.getTicket_type());
+                i.putExtra(itemData.getClass().getName(), itemData);
             }else{
                 ProductListModel.Data.ProductList.Reservation itemData = (ProductListModel.Data.ProductList.Reservation)object;
-                Log.d("desc",itemData.getDescription());
+                i.putExtra(Common.FIELD_TRANS_TYPE, itemData.getTicket_type());
+                i.putExtra(itemData.getClass().getName(), itemData);
             }
         }else{
             ProductListModel.Data.ProductList.Purchase itemData = (ProductListModel.Data.ProductList.Purchase)object;
             Log.d("desc",itemData.getDescription());
         }
+
+        startActivity(i);
     }
 
     @Override
@@ -105,9 +116,9 @@ public class ProductListActivity extends ToolbarWithDotActivity
             @Override
             public void onSuccess(Object object) {
                 ProductListModel data = (ProductListModel) object;
-                String eventName = data.getData().getProduct_lists().getEvent_name();
-                String venueName = data.getData().getProduct_lists().getVenue_name();
-                String startTime = data.getData().getProduct_lists().getStart_datetime();
+                eventName = data.getData().getProduct_lists().getEvent_name();
+                venueName = data.getData().getProduct_lists().getVenue_name();
+                startTime = data.getData().getProduct_lists().getStart_datetime();
                 ArrayList<ProductListModel.Data.ProductList.Purchase> dataPurchase = data.getData().getProduct_lists().getPurchase();
                 ArrayList<ProductListModel.Data.ProductList.Reservation> dataReservation = data.getData().getProduct_lists().getReservation();
 

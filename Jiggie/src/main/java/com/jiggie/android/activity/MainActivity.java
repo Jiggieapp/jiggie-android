@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.appsflyer.AppsFlyerConversionListener;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.ecommerce.ProductListActivity;
 import com.jiggie.android.activity.profile.FilterActivity;
 import com.jiggie.android.activity.profile.ProfileSettingActivity;
 import com.jiggie.android.activity.setup.SetupTagsActivity;
@@ -88,7 +89,6 @@ public class MainActivity extends AppCompatActivity {
         int code = api.isGooglePlayServicesAvailable(this);
 
         if (code == ConnectionResult.SUCCESS) {
-            App.getInstance().trackMixPanelEvent("Log In");
             this.onActivityResult(REQUEST_GOOGLE_PLAY_SERVICES, Activity.RESULT_OK, null);
         } else if (api.isUserResolvableError(code) && api.showErrorDialogFragment(this, code, REQUEST_GOOGLE_PLAY_SERVICES)) {
             // wait for onActivityResult call (see below)
@@ -119,14 +119,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void navigateToHome() {
-        final FragmentManager fragmentManager = super.getSupportFragmentManager();
+        startActivity(new Intent(MainActivity.this, ProductListActivity.class));
+
+        /*final FragmentManager fragmentManager = super.getSupportFragmentManager();
         final int fragmentCount = fragmentManager.getBackStackEntryCount();
         for (int i = 0; i < fragmentCount; i++)
             fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
         final Fragment fragment = new HomeFragment();
         fragment.setArguments(super.getIntent().getExtras());
-        fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();*/
     }
 
     @Override

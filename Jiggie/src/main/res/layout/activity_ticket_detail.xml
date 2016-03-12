@@ -242,9 +242,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Phone Number"
-                android:textColor="@android:color/holo_red_light"
                 android:textSize="@dimen/font_caption_size"
                 android:layout_below="@id/txt_guest_name"
+                android:textColor="@android:color/darker_gray"
                 android:layout_toRightOf="@id/txt_guest_email"/>
 
             <ImageView
@@ -297,7 +297,6 @@
                     android:paddingLeft="@dimen/padding_standard"
                     android:layout_marginTop="@dimen/padding_standard_half"
                     android:text="Rp 3000K"
-                    android:textAllCaps="true"
                     android:textColor="?android:attr/textColorPrimary"
                     android:textSize="@dimen/font_body_size_huge"
                     android:textStyle="bold"

@@ -1,5 +1,8 @@
 package com.jiggie.android.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
 /**
@@ -82,7 +85,7 @@ public class ProductListModel {
                 return reservation;
             }
 
-            public static class Purchase{
+            public static class Purchase implements Parcelable{
                 String ticket_id;
                 String name;
                 String ticket_type;
@@ -96,8 +99,9 @@ public class ProductListModel {
                 String total_price;
                 String description;
                 String max_purchase;
+                int payment_timelimit;
 
-                public Purchase(String ticket_id, String name, String ticket_type, int quantity, String admin_fee, String tax_percent, String tax_amount, String tip_percent, String tip_amount, String price, String total_price, String description, String max_purchase){
+                public Purchase(String ticket_id, String name, String ticket_type, int quantity, String admin_fee, String tax_percent, String tax_amount, String tip_percent, String tip_amount, String price, String total_price, String description, String max_purchase, int payment_timelimit){
                     this.ticket_id = ticket_id;
                     this.name = name;
                     this.ticket_type = ticket_type;
@@ -111,7 +115,55 @@ public class ProductListModel {
                     this.total_price = total_price;
                     this.description = description;
                     this.max_purchase = max_purchase;
+                    this.payment_timelimit = payment_timelimit;
                 }
+
+                protected Purchase(Parcel in) {
+                    this.ticket_id = in.readString();
+                    this.name = in.readString();
+                    this.ticket_type = in.readString();
+                    this.quantity = in.readInt();
+                    this.admin_fee = in.readString();
+                    this.tax_percent = in.readString();
+                    this.tax_amount = in.readString();
+                    this.tip_percent = in.readString();
+                    this.tip_amount = in.readString();
+                    this.price = in.readString();
+                    this.total_price = in.readString();
+                    this.description = in.readString();
+                    this.max_purchase = in.readString();
+                    this.payment_timelimit = in.readInt();
+                }
+
+                @Override
+                public int describeContents() {
+                    return 0;
+                }
+
+                @Override
+                public void writeToParcel(Parcel dest, int flags) {
+                    dest.writeString(this.ticket_id);
+                    dest.writeString(this.name);
+                    dest.writeString(this.ticket_type);
+                    dest.writeInt(this.quantity);
+                    dest.writeString(this.admin_fee);
+                    dest.writeString(this.tax_percent);
+                    dest.writeString(this.tax_amount);
+                    dest.writeString(this.tip_percent);
+                    dest.writeString(this.tip_amount);
+                    dest.writeString(this.price);
+                    dest.writeString(this.total_price);
+                    dest.writeString(this.description);
+                    dest.writeString(this.max_purchase);
+                    dest.writeInt(this.payment_timelimit);
+                }
+
+                public static final Creator<Purchase> CREATOR = new Creator<Purchase>() {
+                    @Override
+                    public Purchase createFromParcel(Parcel in) { return new Purchase(in); }
+                    @Override
+                    public Purchase[] newArray(int size) { return new Purchase[size]; }
+                };
 
                 public String getTicket_id() {
                     return ticket_id;
@@ -164,9 +216,13 @@ public class ProductListModel {
                 public String getMax_purchase() {
                     return max_purchase;
                 }
+
+                public int getPayment_timelimit() {
+                    return payment_timelimit;
+                }
             }
 
-            public static class Reservation{
+            public static class Reservation implements Parcelable{
                 String ticket_id;
                 String name;
                 String ticket_type;
@@ -180,8 +236,9 @@ public class ProductListModel {
                 String total_price;
                 String description;
                 String max_guests;
+                int payment_timelimit;
 
-                public Reservation(String ticket_id, String name, String ticket_type, int quantity, String admin_fee, String tax_percent, String tax_amount, String tip_percent, String tip_amount, String price, String total_price, String description, String max_guests){
+                public Reservation(String ticket_id, String name, String ticket_type, int quantity, String admin_fee, String tax_percent, String tax_amount, String tip_percent, String tip_amount, String price, String total_price, String description, String max_guests, int payment_timelimit){
                     this.ticket_id = ticket_id;
                     this.name = name;
                     this.ticket_type = ticket_type;
@@ -195,7 +252,55 @@ public class ProductListModel {
                     this.total_price = total_price;
                     this.description = description;
                     this.max_guests = max_guests;
+                    this.payment_timelimit = payment_timelimit;
                 }
+
+                protected Reservation(Parcel in) {
+                    this.ticket_id = in.readString();
+                    this.name = in.readString();
+                    this.ticket_type = in.readString();
+                    this.quantity = in.readInt();
+                    this.admin_fee = in.readString();
+                    this.tax_percent = in.readString();
+                    this.tax_amount = in.readString();
+                    this.tip_percent = in.readString();
+                    this.tip_amount = in.readString();
+                    this.price = in.readString();
+                    this.total_price = in.readString();
+                    this.description = in.readString();
+                    this.max_guests = in.readString();
+                    this.payment_timelimit = in.readInt();
+                }
+
+                @Override
+                public int describeContents() {
+                    return 0;
+                }
+
+                @Override
+                public void writeToParcel(Parcel dest, int flags) {
+                    dest.writeString(this.ticket_id);
+                    dest.writeString(this.name);
+                    dest.writeString(this.ticket_type);
+                    dest.writeInt(this.quantity);
+                    dest.writeString(this.admin_fee);
+                    dest.writeString(this.tax_percent);
+                    dest.writeString(this.tax_amount);
+                    dest.writeString(this.tip_percent);
+                    dest.writeString(this.tip_amount);
+                    dest.writeString(this.price);
+                    dest.writeString(this.total_price);
+                    dest.writeString(this.description);
+                    dest.writeString(this.max_guests);
+                    dest.writeInt(this.payment_timelimit);
+                }
+
+                public static final Creator<Reservation> CREATOR = new Creator<Reservation>() {
+                    @Override
+                    public Reservation createFromParcel(Parcel in) { return new Reservation(in); }
+                    @Override
+                    public Reservation[] newArray(int size) { return new Reservation[size]; }
+                };
 
                 public String getTicket_id() {
                     return ticket_id;
@@ -247,6 +352,10 @@ public class ProductListModel {
 
                 public String getMax_guests() {
                     return max_guests;
+                }
+
+                public int getPayment_timelimit() {
+                    return payment_timelimit;
                 }
             }
 
