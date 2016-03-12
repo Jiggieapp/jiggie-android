@@ -5,49 +5,38 @@ import java.util.ArrayList;
 /**
  * Created by LTE on 2/22/2016.
  */
-public class PostSummaryModel {
+public final class PostSummaryModel {
+    public final String fb_id;
+    public final String event_id;
+    public final ArrayList<Product_list> product_list;
+    public final Guest_detail guest_detail;
 
-    String fb_id;
-    String event_id;
-    ArrayList<ProductList> product_list;
-
-    public PostSummaryModel(String fb_id, String event_id, ArrayList<ProductList> product_list){
+    public PostSummaryModel(String fb_id, String event_id, ArrayList<Product_list> product_list, Guest_detail guest_detail){
         this.fb_id = fb_id;
         this.event_id = event_id;
         this.product_list = product_list;
+        this.guest_detail = guest_detail;
     }
 
-    public static class ProductList{
-        String ticket_id;
-        String name;
-        String ticket_type;
-        int quantity;
-        String admin_fee;
-        String tax_percent;
-        String tax_amount;
-        String tip_percent;
-        String tip_amount;
-        String price;
-        String total_price;
-        int num_buy;
+    public static final class Product_list {
+        public final String ticket_id;
+        public final long num_buy;
 
-        public ProductList(String ticket_id, String name, String ticket_type, int quantity, String admin_fee, String tax_percent, String tax_amount, String tip_percent,
-                           String tip_amount, String price, String total_price, int num_buy){
-
+        public Product_list(String ticket_id, long num_buy){
             this.ticket_id = ticket_id;
-            this.name = name;
-            this.ticket_type = ticket_type;
-            this.quantity = quantity;
-            this.admin_fee = admin_fee;
-            this.tax_percent = tax_percent;
-            this.tax_amount = tax_amount;
-            this.tip_percent = tip_percent;
-            this.tip_amount = tip_amount;
-            this.price = price;
-            this.total_price = total_price;
             this.num_buy = num_buy;
-
         }
     }
 
+    public static final class Guest_detail {
+        public final String name;
+        public final String email;
+        public final String phone;
+
+        public Guest_detail(String name, String email, String phone){
+            this.name = name;
+            this.email = email;
+            this.phone = phone;
+        }
+    }
 }

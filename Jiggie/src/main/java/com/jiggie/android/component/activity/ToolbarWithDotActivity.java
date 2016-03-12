@@ -23,6 +23,8 @@ public abstract class ToolbarWithDotActivity extends ToolbarActivity{
         setSupportActionBar(tb);
         tb.setTitle(getToolbarTitle());
         tb.setSelected(getCurrentStep());
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setElevation(0f);
     }
 
     protected abstract void onCreate();

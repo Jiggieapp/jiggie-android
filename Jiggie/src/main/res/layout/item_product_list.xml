@@ -4,13 +4,46 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <RelativeLayout
+        android:id="@+id/header_container"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@color/colorPrimary"
+        android:padding="@dimen/padding_standard_half"
+        android:visibility="gone"
+        android:clickable="false">
+
+        <TextView
+            android:id="@+id/lblEventName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="@dimen/huge_padding"
+            android:text="@string/msg_dummy_title"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/lblEventLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lblEventName"
+            android:layout_centerInParent="true"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="@dimen/huge_padding"
+            android:text="@string/msg_dummy_title_info"
+            android:textColor="@android:color/white"/>
+
+    </RelativeLayout>
+
     <LinearLayout
         android:id="@+id/lin_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:visibility="gone"
-        android:background="#10000000">
+        android:clickable="false">
         <TextView
             android:layout_margin="@dimen/padding_standard_half"
             android:layout_height="wrap_content"
@@ -24,10 +57,11 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/lin_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="?android:attr/selectableItemBackground"
+        android:background="@drawable/item_click"
         android:clickable="true">
         <RelativeLayout
             android:layout_width="match_parent"

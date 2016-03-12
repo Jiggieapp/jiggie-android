@@ -271,7 +271,7 @@ public class App extends Application {
             }
         }
 
-        if(eventName.equals("Sign Up")){
+        /*if(eventName.equals("Sign Up")){
             getInstanceMixpanel().alias(login.getFb_id(), null);
             setPeopleMixpanel(login, settingModel);
             setSuperPropertiesMixpanel(login, settingModel);
@@ -284,7 +284,7 @@ public class App extends Application {
             setSyncMixpanel(login, settingModel);
             setAppsFlyer(login);
         }
-        getInstanceMixpanel().track(eventName, json);
+        getInstanceMixpanel().track(eventName, json);*/
     }
 
     public void trackMixPanelViewEventDetail(String eventName, EventDetailModel.Data.EventDetail eventDetail) {
