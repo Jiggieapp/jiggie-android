@@ -10,9 +10,9 @@ import butterknife.Bind;
 
 public abstract class AbstractTicketDetailActivity extends ToolbarWithDotActivity {
 
-    @Bind(R.id.lblTypeCaption)
+    /*@Bind(R.id.lblTypeCaption)
     TextView lblEventCaption;
-    @Bind(R.id.lblTypePriceCaption) TextView lblTypePriceCaption;
+    @Bind(R.id.lblTypePriceCaption) TextView lblTypePriceCaption;*/
     @Bind(R.id.lblEstimatedCostCaption) TextView lblEstimatedCostCaption;
     @Bind(R.id.lblTicketCaption) TextView lblTicketCaption;
 
@@ -23,14 +23,14 @@ public abstract class AbstractTicketDetailActivity extends ToolbarWithDotActivit
         //tb.setTitle(getResources().getString(R.string.ticket_detail));
         super.bindView();
 
-        lblEventCaption.setText(getEventCaption());
-        lblTypePriceCaption.setText(getTypePriceCaption());
+        //lblEventCaption.setText(getEventCaption());
+        //lblTypePriceCaption.setText(getTypePriceCaption());
         lblEstimatedCostCaption.setText(getEstimatedCostCaption());
         lblTicketCaption.setText(getTicketCaption());
     }
 
-    public abstract String getEventCaption();
-    public abstract String getTypePriceCaption();
+    /*public abstract String getEventCaption();
+    public abstract String getTypePriceCaption();*/
     public abstract String getEstimatedCostCaption();
     public abstract String getTicketCaption();
 }

@@ -24,7 +24,21 @@ public class Common {
 
     public static String FIELD_EVENT_NAME = "event_name";
     public static String FIELD_EVENT_ID = "event_id";
+    public static String FIELD_VENUE_NAME = "venue_name";
+    public static String FIELD_STARTTIME = "starttime";
     public static String FIELD_ABOUT = "about";
+
+    public static String FIELD_TRANS_TYPE = "type";
+    public static String TYPE_PURCHASE = "purchase";
+    public static String TYPE_RESERVATION = "reservation";
+    public static String FIELD_GUEST_NAME = "guest_name";
+    public static String FIELD_GUEST_EMAIL = "guest_email";
+    public static String FIELD_GUEST_PHONE = "about";
+    /*public static String FIELD_TICKET_ID = "ticket_id";
+    public static String FIELD_TICKET_NAME = "ticket_name";
+    public static String FIELD_TICKET_DESC = "ticket_desc";
+    public static String FIELD_MAX_PURCHASE = "max_purchase";
+    public static String FIELD_PRICE = "price";*/
 
     public static final String PREF_IMAGES_UPLOADED = "images-uploaded";
     public static final String PREF_FACEBOOK_ID = FIELD_FACEBOOK_ID;
@@ -46,6 +60,8 @@ public class Common {
     public static final SimpleDateFormat SIMPLE_12_HOUR_FORMAT_UTC = new SimpleDateFormat("h:mm a", Locale.getDefault());
     public static final SimpleDateFormat SIMPLE_24_HOUR_FORMAT_UTC = new SimpleDateFormat("HH:mm a", Locale.getDefault());
     public static final SimpleDateFormat SHORT_DATE_FORMAT_UTC = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+    public static final SimpleDateFormat SERVER_DATE_FORMAT_COMM = new SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault());
 
     static {
         final TimeZone utcTimeZone = TimeZone.getTimeZone("UTC");

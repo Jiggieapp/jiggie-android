@@ -7,9 +7,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.model.Common;
+import com.jiggie.android.model.ProductListModel;
+
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -20,11 +28,25 @@ import butterknife.ButterKnife;
 public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.ViewHolder> {
 
     private final ViewSelectedListener listener;
-
     private Context context;
 
-    public ProductListAdapter(ViewSelectedListener listener) {
+    private String eventName;
+    private String venueName;
+    private String startTime;
+    private boolean isTwoType;
+    private int section2Start;
+    private ArrayList<ProductListModel.Data.ProductList.Purchase> dataPurchase = new ArrayList<>();
+    private ArrayList<ProductListModel.Data.ProductList.Reservation> dataReservation = new ArrayList<>();
+
+    public ProductListAdapter(String eventName, String venueName, String startTime, boolean isTwoType, int section2Start, ArrayList<ProductListModel.Data.ProductList.Purchase> dataPurchase, ArrayList<ProductListModel.Data.ProductList.Reservation> dataReservation, ViewSelectedListener listener) {
         this.listener = listener;
+        this.eventName = eventName;
+        this.venueName = venueName;
+        this.startTime = startTime;
+        this.isTwoType = isTwoType;
+        this.section2Start = section2Start;
+        this.dataPurchase = dataPurchase;
+        this.dataReservation = dataReservation;
     }
 
     @Override
@@ -35,30 +57,113 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        /*try {
 
+        ProductListModel.Data.ProductList.Purchase itemPurchases = null;
+        ProductListModel.Data.ProductList.Reservation itemReservations = null;
+
+        holder.position = position;
+        holder.isTwoType = isTwoType;
+        holder.section2Start = section2Start;
+
+
+        if(isTwoType){
+            if(position<section2Start){
+                itemPurchases = dataPurchase.get(position);
+                holder.itemPurchase = itemPurchases;
+            }else{
+                int index = position-section2Start;
+                itemReservations = dataReservation.get(index);
+                holder.itemReservation = itemReservations;
+            }
+        }else{
+            itemPurchases = dataPurchase.get(position);
+            holder.itemPurchase = itemPurchases;
+        }
+
+        holder.lblEventName.setText(eventName);
+
+        try {
+            final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(startTime);
+            holder.lblEventLocation.setText(Common.SERVER_DATE_FORMAT_COMM.format(startDate)+" - "+venueName);
         }catch (ParseException e){
             throw new RuntimeException(App.getErrorMessage(e), e);
-        }*/
-        holder.txtTicketName.setText(context.getString(R.string.msg_dummy));
+        }
+
+
+        if(isTwoType){
+            if(position<section2Start){
+                holder.txtTicketName.setText(itemPurchases.getName());
+                holder.txtTicketInfo.setText(itemPurchases.getDescription());
+                holder.txtPrice.setText(itemPurchases.getPrice());
+                holder.txtPriceInfo.setText(context.getString(R.string.pr_max_purchase)+" "+itemPurchases.getMax_purchase());
+                if (position == 0) {
+                    holder.txtSectionTicket.setText(context.getString(R.string.section_ticket));
+                    holder.linSection.setVisibility(View.VISIBLE);
+                    holder.headerContainer.setVisibility(View.VISIBLE);
+                }else {
+                    holder.linSection.setVisibility(View.GONE);
+                }
+            }else{
+                holder.txtTicketName.setText(itemReservations.getName());
+                holder.txtTicketInfo.setText(itemReservations.getDescription());
+                holder.txtPrice.setText(itemReservations.getPrice());
+                holder.txtPriceInfo.setText(context.getString(R.string.pr_max_guest)+" "+itemReservations.getMax_guests());
+                if ((position-section2Start) == 0) {
+                    holder.txtSectionTicket.setText(context.getString(R.string.section_table));
+                    holder.linSection.setVisibility(View.VISIBLE);
+                }else {
+                    holder.linSection.setVisibility(View.GONE);
+                }
+            }
+        }else{
+            holder.txtTicketName.setText(itemPurchases.getName());
+            holder.txtTicketInfo.setText(itemPurchases.getDescription());
+            holder.txtPrice.setText(itemPurchases.getPrice());
+            holder.txtPriceInfo.setText(context.getString(R.string.pr_max_purchase)+" "+itemPurchases.getMax_purchase());
+            if (position == 0) {
+                holder.txtSectionTicket.setText(context.getString(R.string.section_ticket));
+                holder.linSection.setVisibility(View.VISIBLE);
+                holder.headerContainer.setVisibility(View.VISIBLE);
+            }else {
+                holder.linSection.setVisibility(View.GONE);
+            }
+        }
+
+
+        /*holder.txtTicketName.setText(context.getString(R.string.msg_dummy));
         if (position == 0) {
             holder.txtSectionTicket.setText(context.getString(R.string.section_ticket));
             holder.linSection.setVisibility(View.VISIBLE);
+            holder.headerContainer.setVisibility(View.VISIBLE);
         } else if (position == 3) {
             holder.txtSectionTicket.setText(context.getString(R.string.section_table));
             holder.linSection.setVisibility(View.VISIBLE);
         } else {
             holder.linSection.setVisibility(View.GONE);
-        }
+        }*/
         //holder.txtTicketInfo.setVisibility(View.GONE);
     }
 
     @Override
     public int getItemCount() {
-        return 9;
+        int size = 0;
+        if(isTwoType){
+            size = dataPurchase.size()+dataReservation.size();
+        }else{
+            size = dataPurchase.size();
+        }
+        return size;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        @Bind(R.id.lblEventName)
+        TextView lblEventName;
+        @Bind(R.id.lblEventLocation)
+        TextView lblEventLocation;
+        @Bind(R.id.header_container)
+        RelativeLayout headerContainer;
+        @Bind(R.id.txt_section_ticket)
+        TextView txtSectionTicket;
         @Bind(R.id.lin_section)
         LinearLayout linSection;
         @Bind(R.id.txt_ticket_name)
@@ -69,33 +174,52 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         TextView txtPrice;
         @Bind(R.id.txt_price_info)
         TextView txtPriceInfo;
-        @Bind(R.id.txt_section_ticket)
-        TextView txtSectionTicket;
+        @Bind(R.id.lin_item)
+        LinearLayout linItem;
 
         private ViewSelectedListener listener;
-        //private EventModel.Data.Events event;
+        private int position;
+        private boolean isTwoType;
+        private int section2Start;
+        private ProductListModel.Data.ProductList.Purchase itemPurchase;
+        private ProductListModel.Data.ProductList.Reservation itemReservation;
+
 
         public ViewHolder(View itemView, ViewSelectedListener listener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 
-            if ((this.listener = listener) != null)
-                itemView.setOnClickListener(this);
+            this.listener = listener;
+            /*this.position = position;
+            this.isTwoType = isTwoType;
+            this.section2Start = section2Start;
+            this.itemPurchase = itemPurchase;
+            this.itemReservation = itemReservation;*/
+
+
+            linItem.setOnClickListener(this);
 
         }
 
         @Override
         public void onClick(View v) {
             if (listener != null) {
-                //listener.onViewSelected(this.event);
-
+                //should pass data
+                if(isTwoType){
+                    if(position<section2Start){
+                        listener.onViewSelected(this.position, this.itemPurchase);
+                    }else{
+                        listener.onViewSelected(this.position, this.itemReservation);
+                    }
+                }else{
+                    listener.onViewSelected(this.position, this.itemPurchase);
+                }
             }
-            Log.d("myclick", "yes");
         }
     }
 
     public interface ViewSelectedListener {
-        void onViewSelected();
+        void onViewSelected(int position, Object object);
     }
 
 }

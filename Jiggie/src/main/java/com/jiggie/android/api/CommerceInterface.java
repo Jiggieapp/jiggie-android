@@ -1,8 +1,10 @@
 package com.jiggie.android.api;
 
 import com.jiggie.android.component.Utils;
+import com.jiggie.android.model.PostPaymentModel;
 import com.jiggie.android.model.PostSummaryModel;
 import com.jiggie.android.model.ProductListModel;
+import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SummaryModel;
 
 import retrofit.Call;
@@ -22,5 +24,8 @@ public interface CommerceInterface {
 
     @POST
     Call<SummaryModel> postSummary(@Url String url, @Body PostSummaryModel postSummaryModel);
+
+    @POST
+    Call<Success2Model> postPayment(@Url String url, @Body PostPaymentModel postPaymentModel);
 
 }
