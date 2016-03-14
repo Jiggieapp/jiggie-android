@@ -98,12 +98,10 @@ public class CommerceManager {
 
                     int responseCode = response.code();
                     if (responseCode == Utils.CODE_SUCCESS) {
-                        SummaryModel dataTemp = (SummaryModel) response.body();
-                        onResponseListener.onSuccess(dataTemp);
+                        onResponseListener.onSuccess(response.body());
                     } else {
                         onResponseListener.onFailure(responseCode, Utils.RESPONSE_FAILED);
                     }
-
                 }
 
                 @Override

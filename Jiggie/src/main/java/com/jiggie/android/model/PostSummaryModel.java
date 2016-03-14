@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by LTE on 2/22/2016.
  */
-public final class PostSummaryModel {
+public final class PostSummaryModel{
     public final String fb_id;
     public final String event_id;
     public final ArrayList<Product_list> product_list;
@@ -20,9 +20,9 @@ public final class PostSummaryModel {
 
     public static final class Product_list {
         public final String ticket_id;
-        public final long num_buy;
+        public final int num_buy;
 
-        public Product_list(String ticket_id, long num_buy){
+        public Product_list(String ticket_id, int num_buy){
             this.ticket_id = ticket_id;
             this.num_buy = num_buy;
         }
