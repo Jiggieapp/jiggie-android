@@ -1,73 +1,147 @@
 package com.jiggie.android.activity.ecommerce;
 
-import android.os.Bundle;
+import android.content.Intent;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ViewTreeObserver;
 
-import com.google.gson.Gson;
 import com.jiggie.android.R;
-import com.jiggie.android.component.Utils;
-import com.jiggie.android.component.activity.ToolbarActivity;
+import com.jiggie.android.activity.ecommerce.ticket.TicketDetailActivity;
+import com.jiggie.android.component.activity.ToolbarWithDotActivity;
 import com.jiggie.android.component.adapter.ProductListAdapter;
-import com.jiggie.android.model.ExceptionModel;
+import com.jiggie.android.manager.CommerceManager;
+import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ProductListModel;
+
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import de.greenrobot.event.EventBus;
 
-/**
- * Created by LTE on 2/22/2016.
- */
-public class ProductListActivity extends ToolbarActivity implements ProductListAdapter.ViewSelectedListener {
+public class ProductListActivity extends ToolbarWithDotActivity
+        implements ViewTreeObserver.OnGlobalLayoutListener, SwipeRefreshLayout.OnRefreshListener, ProductListAdapter.ViewSelectedListener {
 
+    ProductListAdapter adapter;
 
-    @Bind(R.id.recycler_view_ticket)
-    RecyclerView recyclerViewTicket;
+    public static final String TAG = ProductListActivity.class.getSimpleName();
+    @Bind(R.id.recycler_view)
+    RecyclerView recyclerView;
+    @Bind(R.id.swipe_refresh)
+    SwipeRefreshLayout swipeRefresh;
+
+    String eventId = "56b1a0bf89bfed03005c50f0";
+    boolean isTwoType = false;
+    int section2Start = 0;
+    String eventName, venueName, startTime;
+
+    private boolean isLoading;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        super.setContentView(R.layout.activity_product_list);
+    protected int getCurrentStep() {
+        return 1;
+    }
+
+    @Override
+    protected void onCreate() {
+        setContentView(R.layout.activity_product_list);
         ButterKnife.bind(this);
-        EventBus.getDefault().register(this);
-        //CommerceManager.loaderProductList("56b1a0bf89bfed03005c50f0");
+        super.bindView();
+        final Intent intent = getIntent();
+        //eventId = intent.getStringExtra(Common.FIELD_EVENT_ID);
 
-        this.recyclerViewTicket.setAdapter(new ProductListAdapter(this));
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        this.recyclerViewTicket.setLayoutManager(layoutManager);
-
-    }
-
-    public void onEvent(ProductListModel message) {
-        String sd = String.valueOf(new Gson().toJson(message));
-        Log.d("sd", sd);
-    }
-
-    public void onEvent(ExceptionModel message) {
-        if (message.getFrom().equals(Utils.FROM_PRODUCT_LIST)) {
-
-        }
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(this);
+        swipeRefresh.setOnRefreshListener(this);
+        this.isLoading = false;
     }
 
     @Override
-    public void onViewSelected() {
-        /*sections.add(new SimpleSectionedRecycleViewAdapter.Section(12,"Section 3"));
-        sections.add(new SimpleSectionedRecycleViewAdapter.Section(14,"Section 4"));
-        sections.add(new SimpleSectionedRecycleViewAdapter.Section(20,"Section 5"));
-        */
-        //Add your adapter to the sectionAdapter
-        SimpleSectionedRecycleViewAdapter.Section[] dummy = new SimpleSectionedRecycleViewAdapter.Section[sections.size()];
-        SimpleSectionedRecycleViewAdapter mSectionedAdapter = new
-                SimpleSectionedRecycleViewAdapter(this,R.layout.section,R.id.section_text, adapter);
-        mSectionedAdapter.setSections(sections.toArray(dummy));
-        recyclerView.setAdapter(mSectionedAdapter);
+    protected String getToolbarTitle() {
+        return "CHOOSE ADMISSION";
+    }
+
+    @Override
+    public void onViewSelected(int position, Object object) {
+        Intent i = new Intent(ProductListActivity.this, TicketDetailActivity.class);
+        i.putExtra(Common.FIELD_EVENT_ID, eventId);
+        i.putExtra(Common.FIELD_EVENT_NAME, eventName);
+        i.putExtra(Common.FIELD_VENUE_NAME, venueName);
+        i.putExtra(Common.FIELD_STARTTIME, startTime);
+
+
+        if(isTwoType){
+            if(position<section2Start){
+                ProductListModel.Data.ProductList.Purchase itemData = (ProductListModel.Data.ProductList.Purchase)object;
+                i.putExtra(Common.FIELD_TRANS_TYPE, itemData.getTicket_type());
+                i.putExtra(itemData.getClass().getName(), itemData);
+            }else{
+                ProductListModel.Data.ProductList.Reservation itemData = (ProductListModel.Data.ProductList.Reservation)object;
+                i.putExtra(Common.FIELD_TRANS_TYPE, itemData.getTicket_type());
+                i.putExtra(itemData.getClass().getName(), itemData);
+            }
+        }else{
+            ProductListModel.Data.ProductList.Purchase itemData = (ProductListModel.Data.ProductList.Purchase)object;
+            Log.d("desc",itemData.getDescription());
+        }
+
+        startActivity(i);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
+        ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onGlobalLayout() {
+        this.recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+        this.loadData(eventId);
+    }
+
+    @Override
+    public void onRefresh() {
+        if (this.isLoading) {
+            // refresh is ongoing
+            return;
+        }
+        this.isLoading = true;
+        loadData(eventId);
+    }
+
+    private void loadData(String eventId){
+        CommerceManager.loaderProductList(eventId, new CommerceManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object) {
+                ProductListModel data = (ProductListModel) object;
+                eventName = data.getData().getProduct_lists().getEvent_name();
+                venueName = data.getData().getProduct_lists().getVenue_name();
+                startTime = data.getData().getProduct_lists().getStart_datetime();
+                ArrayList<ProductListModel.Data.ProductList.Purchase> dataPurchase = data.getData().getProduct_lists().getPurchase();
+                ArrayList<ProductListModel.Data.ProductList.Reservation> dataReservation = data.getData().getProduct_lists().getReservation();
+
+
+                if (dataReservation.size() > 0) {
+                    isTwoType = true;
+                    section2Start = dataPurchase.size();
+                }
+
+
+
+                setsAdapter(eventName, venueName, startTime, isTwoType, section2Start, dataPurchase, dataReservation);
+            }
+
+            @Override
+            public void onFailure(int responseCode, String message) {
+                Log.d(String.valueOf(responseCode), message);
+            }
+        });
+    }
+
+    private void setsAdapter(String eventName, String venueName, String startTime, boolean isTwoType, int section2Start, ArrayList<ProductListModel.Data.ProductList.Purchase> dataPurchase, ArrayList<ProductListModel.Data.ProductList.Reservation> dataReservation){
+        adapter = new ProductListAdapter(eventName, venueName, startTime, isTwoType, section2Start, dataPurchase, dataReservation, this);
+        recyclerView.setAdapter(adapter);
     }
 }

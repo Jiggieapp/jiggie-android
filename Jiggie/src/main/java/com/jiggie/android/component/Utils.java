@@ -26,7 +26,6 @@ import retrofit.Response;
  * Created by LTE on 1/29/2016.
  */
 public class Utils {
-    public static String BLANK = "";
     public static String FROM_SIGN_IN = "sign_in";
     public static String FROM_MEMBER_SETTING = "member_setting";
     //public static String FROM_GET_MEMBER_SETTING = "get_member_setting";

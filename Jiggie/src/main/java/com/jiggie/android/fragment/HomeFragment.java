@@ -74,13 +74,11 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         Utils.d(TAG, "isNeedToBeRedirected " + isNeedToBeRedirected);
         if (isNeedToBeRedirected) {
             String afSub1 = Utils.AFsub2;
-            //Utils.d(TAG, Utils.AFsub1 + " sub 1 bro");
+            Utils.d(TAG, Utils.AFsub1 + " sub 1 bro");
             pref.edit().putBoolean(Utils.IS_NEED_TO_BE_REDIRECTED_TO_EVENT_DETAIL, false);
             return (isNeedToBeRedirected && !afSub1.isEmpty());
         } else return false;
-
         //return true;
-
     }
 
     @Override
