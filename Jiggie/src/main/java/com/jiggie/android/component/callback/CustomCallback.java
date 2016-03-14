@@ -21,6 +21,7 @@ public abstract class CustomCallback implements Callback{
     @Override
     public void onFailure(Throwable t) {
         ExceptionModel exceptionModel;
+        String d = t.toString();
         if(t instanceof java.net.UnknownHostException)
         {
             onCustomCallbackFailure(App.getInstance().getResources().getString(R.string.no_internet_connection));

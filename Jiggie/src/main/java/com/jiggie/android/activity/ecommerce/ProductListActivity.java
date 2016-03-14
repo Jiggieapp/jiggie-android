@@ -128,8 +128,6 @@ public class ProductListActivity extends ToolbarWithDotActivity
                     section2Start = dataPurchase.size();
                 }
 
-
-
                 setsAdapter(eventName, venueName, startTime, isTwoType, section2Start, dataPurchase, dataReservation);
             }
 

@@ -1,22 +1,30 @@
 package com.jiggie.android.activity.ecommerce.ticket;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.AddGuestActivity;
 import com.jiggie.android.activity.ecommerce.PurchaseInfoActivity;
+import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.LoginModel;
+import com.jiggie.android.model.PostSummaryModel;
 import com.jiggie.android.model.ProductListModel;
+import com.jiggie.android.model.SummaryModel;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 
 import butterknife.Bind;
@@ -32,7 +40,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
     View minusButton;
     @Bind(R.id.plus_button)
     View plusButton;
-    int quantity = 0;
+    int quantity = 1;
     @Bind(R.id.lblQuantity)
     TextView lblQuantity;
 
@@ -63,8 +71,9 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
     TextView lblTicketCaption;
 
 
-    String eventId, eventName, venueName, startTime, guestName, guestEmail, guestPhone;
+    String eventId, eventName, venueName, startTime, guestName, guestEmail, guestPhone, ticketId;
     int max = 0, price;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate() {
@@ -76,7 +85,43 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
         btnDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(TicketDetailActivity.this, PurchaseInfoActivity.class));
+                initLoadingDialog();
+
+                PostSummaryModel.Product_list product_list = new PostSummaryModel.Product_list(ticketId, quantity);
+                ArrayList<PostSummaryModel.Product_list> arrProductList = new ArrayList<PostSummaryModel.Product_list>();
+                arrProductList.add(product_list);
+                PostSummaryModel.Guest_detail guest_detail = new PostSummaryModel.Guest_detail(guestName, guestEmail, guestPhone);
+                PostSummaryModel postSummaryModel = new PostSummaryModel("321321", eventId, arrProductList, guest_detail);
+
+                String sd = String.valueOf(new Gson().toJson(postSummaryModel));
+
+                CommerceManager.loaderSummary(postSummaryModel, new CommerceManager.OnResponseListener() {
+                    @Override
+                    public void onSuccess(Object object) {
+                        SummaryModel dataTemp = (SummaryModel) object;
+                        SummaryModel.Data.Product_summary productSummary = dataTemp.getData().getProduct_summary();
+
+                        String responses = new Gson().toJson(dataTemp);
+                        Log.d("res", responses);
+
+                        dismissLoadingDialog();
+
+                        Intent i = new Intent(TicketDetailActivity.this, PurchaseInfoActivity.class);
+                        i.putExtra(Common.FIELD_EVENT_ID, eventId);
+                        i.putExtra(Common.FIELD_EVENT_NAME, eventName);
+                        i.putExtra(Common.FIELD_VENUE_NAME, venueName);
+                        i.putExtra(Common.FIELD_STARTTIME, startTime);
+                        i.putExtra(productSummary.getClass().getName(), productSummary);
+
+                        startActivity(i);
+                    }
+
+                    @Override
+                    public void onFailure(int responseCode, String message) {
+                        dismissLoadingDialog();
+                        Log.d(String.valueOf(responseCode), message);
+                    }
+                });
             }
         });
 
@@ -97,7 +142,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                 if (quantity > 1) {
                     quantity--;
                     lblQuantity.setText(String.valueOf(quantity));
-                    lblEstimatedCost.setText(getRupiahFormat(String.valueOf(quantity * price)));
+                    lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(quantity * price)));
                 }
 
             }
@@ -109,41 +154,10 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                 if (quantity > 0 && quantity<max) {
                     quantity++;
                     lblQuantity.setText(String.valueOf(quantity));
-                    lblEstimatedCost.setText(getRupiahFormat(String.valueOf(quantity * price)));
+                    lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(quantity * price)));
                 }
             }
         });
-    }
-
-    public static String getRupiahFormat(String number) {
-        String displayedString = "";
-
-        if (number.length() == 0) {
-            displayedString = "Rp0K";
-        } else {
-            if (number.length() > 3) {
-                int length = number.length();
-
-                for (int i = length; i > 0; i -= 3) {
-                    if (i > 3) {
-                        String myStringPrt1 = number.substring(0, i - 3);
-                        String myStringPrt2 = number.substring(i - 3);
-
-                        String combinedString;
-
-                        combinedString = myStringPrt1 + ".";
-
-                        combinedString += myStringPrt2;
-                        number = combinedString;
-
-                        displayedString = "Rp" + combinedString+"K";
-                    }
-                }
-            } else {
-                displayedString = "Rp" + number+"K";
-            }
-        }
-        return displayedString;
     }
 
     private void preDefined() {
@@ -168,26 +182,28 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
         }catch (ParseException e){
             throw new RuntimeException(App.getErrorMessage(e), e);
         }
-        lblQuantity.setText(String.valueOf(max));
+        lblQuantity.setText(String.valueOf(quantity));
 
         if (isTicketTransaction) {
             max = Integer.parseInt(detailPurchase.getMax_purchase());
             price = Integer.parseInt(detailPurchase.getPrice());
+            ticketId = detailPurchase.getTicket_id();
 
             lblType.setText(detailPurchase.getName());
             lblTypeCaption.setText(detailPurchase.getDescription());
             lblTypePrice.setText(detailPurchase.getPrice());
             lblTypePriceCaption.setText(getString(R.string.pr_max_purchase)+" "+max);
-            lblEstimatedCost.setText(getRupiahFormat(String.valueOf(price)));
+            lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(price)));
         } else {
             max = Integer.parseInt(detailReservation.getMax_guests());
             price = Integer.parseInt(detailReservation.getPrice());
+            ticketId = detailReservation.getTicket_id();
 
             lblType.setText(detailReservation.getName());
             lblTypeCaption.setText(detailReservation.getDescription());
             lblTypePrice.setText(detailReservation.getPrice());
             lblTypePriceCaption.setText(getString(R.string.pr_max_guest)+" "+max);
-            lblEstimatedCost.setText(getRupiahFormat(String.valueOf(price)));
+            lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(price)));
         }
 
         LoginModel loginModel = AccountManager.loadLogin();
@@ -241,10 +257,27 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK){
+            guestName = data.getStringExtra(Common.FIELD_GUEST_NAME);
+            guestEmail = data.getStringExtra(Common.FIELD_GUEST_EMAIL);
+            guestPhone = data.getStringExtra(Common.FIELD_GUEST_PHONE);
             txtGuestName.setText(data.getStringExtra(Common.FIELD_GUEST_NAME));
-            txtGuestEmail.setText(data.getStringExtra(Common.FIELD_GUEST_EMAIL)+" | ");
-            txtGuestPhone.setText(data.getStringExtra(Common.FIELD_GUEST_PHONE));
+            txtGuestEmail.setText(guestEmail+" | ");
+            txtGuestPhone.setText(guestPhone);
             txtGuestPhone.setTextColor(getResources().getColor(android.R.color.darker_gray));
         }
+    }
+
+    private void initLoadingDialog(){
+        if(progressDialog==null){
+            progressDialog = new ProgressDialog(TicketDetailActivity.this);
+            progressDialog.setMessage(getString(R.string.loading));
+        }
+
+        progressDialog.show();
+    }
+
+    private void dismissLoadingDialog(){
+        if(progressDialog!=null&progressDialog.isShowing())
+            progressDialog.dismiss();
     }
 }
