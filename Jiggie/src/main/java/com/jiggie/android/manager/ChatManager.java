@@ -135,8 +135,6 @@ public class ChatManager extends BaseManager{
 
                     if(responseCode==Utils.CODE_SUCCESS){
                         ChatListModel dataTemp = (ChatListModel) response.body();
-                        dataChatList = dataTemp.getData().getChat_lists();
-
                         //EventBus.getDefault().post(dataTemp);
                         onResponseListener.onSuccess(dataTemp);
                     }else if(responseCode==Utils.CODE_EMPTY_DATA){
@@ -239,7 +237,6 @@ public class ChatManager extends BaseManager{
                     }else{
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_DELETE_CHAT, Utils.RESPONSE_FAILED));
                     }
-
                 }
 
                 @Override

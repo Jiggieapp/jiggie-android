@@ -177,8 +177,11 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
             @Override
             public void onSuccess(Object object) {
                 onEvent((ChatListModel) object);
-                Intent i = new Intent(Utils.CHECK_NEW_MESSAGE_RECEIVER);
-                getActivity().sendBroadcast(i);
+                if(getContext() != null)
+                {
+                    Intent i = new Intent(Utils.CHECK_NEW_MESSAGE_RECEIVER);
+                    getActivity().sendBroadcast(i);
+                }
             }
 
             @Override
@@ -393,6 +396,8 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         app.unregisterReceiver(this.notificationReceived);
         app.unregisterReceiver(this.socialChatReceiver);
         app.unregisterReceiver(this.chatCounterBroadCastReceiver);
+        /*if(handler != null)
+            handler.removeCallbacks(mHandlerTask);*/
         super.onDestroy();
     }
 
