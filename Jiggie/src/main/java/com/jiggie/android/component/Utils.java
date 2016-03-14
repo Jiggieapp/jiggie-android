@@ -86,6 +86,8 @@ public class Utils {
     public static String PREFERENCE_TAGLIST = "taglist";
     public static String TAGLIST_MODEL = "taglist_model";
     public static String IS_FIRST_RUN = "is_first_run";
+    public static String IS_NEED_TO_BE_REDIRECTED_TO_EVENT_DETAIL
+            = "is_already_redirected_to_event_detail";
     public static String DEVICE_ID = "";
 
     public static int myPixel(Activity a, int dip) {
@@ -146,6 +148,7 @@ public class Utils {
     public static String AFclick_time = "";
     public static String AFinstall_time = "";
     public static String AFsub1 = "";
+    public static String AFsub2 = "";
 
     public static String AF_ORGANIC = "Organic";
     //------------------------
@@ -246,4 +249,10 @@ public class Utils {
         }
         return v;
     }
+
+    //broadcast receiver
+    public static final String CHECK_NEW_MESSAGE_RECEIVER = "check_new_message_receiver";
+    public static final String FETCH_CHAT_RECEIVER = "fetch_chat_receiver";
+
+    public static final String IS_ON = "is_on";
 }

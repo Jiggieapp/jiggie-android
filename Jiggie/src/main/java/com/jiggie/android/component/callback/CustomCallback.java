@@ -2,6 +2,8 @@ package com.jiggie.android.component.callback;
 
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.component.Utils;
+import com.jiggie.android.manager.ChatManager;
 import com.jiggie.android.model.ExceptionModel;
 
 import retrofit.Callback;
@@ -12,10 +14,13 @@ import retrofit.Retrofit;
  * Created by Wandy on 2/12/2016.
  */
 public abstract class CustomCallback implements Callback{
+    //public Response response;
+
 
     @Override
     public void onResponse(Response response, Retrofit retrofit) {
         onCustomCallbackResponse(response, retrofit);
+        //this.response = response;
     }
 
     @Override
@@ -33,5 +38,4 @@ public abstract class CustomCallback implements Callback{
 
     public abstract void onCustomCallbackResponse(Response response, Retrofit retrofit);
     public abstract void onCustomCallbackFailure(String t);
-
 }

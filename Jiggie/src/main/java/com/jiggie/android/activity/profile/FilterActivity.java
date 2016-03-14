@@ -25,6 +25,7 @@ import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.MemberSettingModel;
+import com.jiggie.android.model.MemberSettingResultModel;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.TagsListModel;
@@ -262,8 +263,12 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
     void onClickBtnApply() {
         if (selectedItems.size() > 0) {
             MemberSettingModel memberSettingModel = AccountManager.loadMemberSetting();
+            //MemberSettingModel memberSettingModel = new MemberSettingModel();
+            //MemberSettingResultModel memberSettingModel = AccountManager.loadMemberSetting();
+
             final String experiences = TextUtils.join(",", selectedItems.toArray(new String[this.selectedItems.size()]));
             memberSettingModel.setExperiences(experiences);
+            //memberSettingModel.getData().getMembersettings().setExperiences(selectedItems);
             showProgressDialog();
             AccountManager.loaderMemberSetting(memberSettingModel);
         } else {

@@ -40,13 +40,12 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:gravity="center_horizontal"
-        android:layout_marginBottom="5dp"
-        android:id="@+id/txtEventGeneral"/>
+        android:id="@+id/txtEventGeneral"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold"/>
 
     <TextView
-        android:layout_marginTop="@dimen/padding_standard_half"
         android:layout_marginBottom="@dimen/padding_standard"
-        android:textColor="@android:color/black"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:text="@string/connect_with"

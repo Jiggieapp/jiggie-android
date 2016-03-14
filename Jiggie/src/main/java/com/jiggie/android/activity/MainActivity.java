@@ -187,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
                 String click_time = map.get("click_time") == null ? null : map.get("click_time");
                 String install_time = map.get("install_time") == null ? null : map.get("install_time");
                 String af_sub1 = map.get("af_sub1") == null ? null : map.get("af_sub1");
+                String af_sub2 = map.get("af_sub2") == null ? null : map.get("af_sub2");
 
                 if (media_source != null)
                     Utils.AFmedia_source = media_source;
@@ -200,8 +201,8 @@ public class MainActivity extends AppCompatActivity {
                     Utils.AFinstall_time = install_time;
                 if (af_sub1 != null)
                     Utils.AFsub1 = af_sub1;
-
-
+                if (af_sub2 != null)
+                    Utils.AFsub2 = af_sub2;
             }
 
             @Override

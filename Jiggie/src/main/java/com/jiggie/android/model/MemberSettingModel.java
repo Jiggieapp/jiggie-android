@@ -12,7 +12,6 @@ import java.util.ArrayList;
  * Created by LTE on 2/2/2016.
  */
 public class MemberSettingModel {
-
     String gender;
     String fb_id;
     int location;
@@ -95,4 +94,28 @@ public class MemberSettingModel {
         this.photos = photos;
     }
 
+    public MemberSettingModel()
+    {}
+
+    public MemberSettingModel(MemberSettingResultModel memberSettingResultModel)
+    {
+        final MemberSettingResultModel.Data data = memberSettingResultModel.getData();
+        final MemberSettingResultModel.Data.MemberSettings memberSettings = data.getMembersettings();
+        final MemberSettingResultModel.Data.MemberSettings.Notifications notifications = memberSettings.getNotifications();
+
+        ArrayList<String> exp = memberSettings.getExperiences();
+        //ArrayList<String> photos = memberSettings.
+        final String experiences = TextUtils.join(","
+                , exp.toArray(new String[exp.size()]));
+
+        setGender(memberSettingResultModel.getData().getMembersettings().getGender());
+        setFb_id(memberSettingResultModel.getData().getMembersettings().getFb_id());
+        setAccount_type(memberSettingResultModel.getData().getMembersettings().getAccount_type());
+        setChat(memberSettingResultModel.getData().getMembersettings().getNotifications().isChat() ? 1 : 0);
+        setExperiences(experiences);
+        setFeed(memberSettingResultModel.getData().getMembersettings().getNotifications().isFeed() ? 1 : 0);
+        setGender_interest(memberSettingResultModel.getData().getMembersettings().getGender_interest());
+        //setPhotos(photos);
+        setLocation(memberSettingResultModel.getData().getMembersettings().getNotifications().isLocation()? 1 : 0);
+    }
 }
