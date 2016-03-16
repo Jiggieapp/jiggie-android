@@ -237,6 +237,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/pci_payment"
                 android:textColor="@color/purple"
+                android:textStyle="bold"
                 android:textSize="@dimen/normal_text_size"
                 android:layout_toRightOf="@id/img_payment"
                 android:layout_centerVertical="true"

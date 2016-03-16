@@ -81,12 +81,12 @@ public class CustomToolbar extends Toolbar {
         switch (index) {
             case 1:
                 firstConnector.setBackground(
-                        context.getResources().getDrawable(R.drawable.gray_connector));
+                        context.getResources().getDrawable(R.drawable.white_connector));
                 secondConnector.setBackground(
                         context.getResources().getDrawable(R.drawable.gray_connector));
 
                 secondCircle.setBackground(
-                        context.getResources().getDrawable(R.drawable.grey_dot));
+                        context.getResources().getDrawable(R.drawable.white_dot));
                 thirdCircle.setBackground(
                         context.getResources().getDrawable(R.drawable.grey_dot));
                 break;
@@ -116,10 +116,10 @@ public class CustomToolbar extends Toolbar {
                                 context.getResources().getDrawable(R.drawable.white_dot));
                         firstConnector.setBackground(
                                 context.getResources().getDrawable(R.drawable.white_connector));
-                        /*thirdCircle.setBackground(
-                                context.getResources().getDrawable(R.drawable.grey_dot));
+                        thirdCircle.setBackground(
+                                context.getResources().getDrawable(R.drawable.white_dot));
                         secondConnector.setBackground(
-                                context.getResources().getDrawable(R.drawable.gray_connector));*/
+                                context.getResources().getDrawable(R.drawable.white_connector));
                     }
                 });
 

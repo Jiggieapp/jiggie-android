@@ -240,7 +240,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
 
     @Override
     protected int getCurrentStep() {
-        return 2;
+        return 1;
     }
 
     @Override
