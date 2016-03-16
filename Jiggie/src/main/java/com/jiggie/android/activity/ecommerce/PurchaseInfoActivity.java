@@ -3,6 +3,7 @@ package com.jiggie.android.activity.ecommerce;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -83,7 +84,7 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
     @Bind(R.id.lin_terms)
     LinearLayout linTerms;
     ArrayList<TermsItemView> arrTermItemView = new ArrayList<>();
-    String is_new_card, cc_type, cc_token_id = Utils.BLANK, cc_card_id, paymentType = Utils.BLANK, urlRedirectToken, name_cc = Utils.BLANK;
+    String is_new_card, cc_token_id = Utils.BLANK, cc_card_id, paymentType = Utils.BLANK, name_cc = Utils.BLANK;
     boolean is_verified;
 
     AlertDialog dialog3ds;
@@ -127,6 +128,37 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
         startTime = a.getStringExtra(Common.FIELD_STARTTIME);
         productSummary = a.getParcelableExtra(SummaryModel.Data.Product_summary.class.getName());
         SummaryModel.Data.Product_summary.Product_list dataProduct = productSummary.getProduct_list().get(0);
+
+        SummaryModel.Data.Product_summary.LastPayment lastPayment = productSummary.getLast_payment();
+        if(!lastPayment.isEmpty()){
+            paymentType = productSummary.getLast_payment().getPayment_type();
+            txtPayment.setTextColor(getResources().getColor(R.color.textDarkGray));
+            if(paymentType.equals(Utils.TYPE_CC)){
+                is_verified = true;
+                cc_token_id = productSummary.getLast_payment().getSaved_token_id();
+                cc_card_id = productSummary.getLast_payment().getMasked_card();
+
+                txtPayment.setText("• • • • " + cc_card_id.substring(cc_card_id.indexOf("-") + 1, cc_card_id.length()));
+                imgPayment.setVisibility(View.VISIBLE);
+                String headCC = cc_card_id.substring(0, 1);
+                if(headCC.equals("4")){
+                    imgPayment.setImageResource(R.drawable.logo_visa);
+                }else{
+                    imgPayment.setImageResource(R.drawable.logo_mastercard);
+                }
+            }else if(paymentType.equals(Utils.TYPE_VA)){
+                imgPayment.setVisibility(View.GONE);
+                txtPayment.setText(getString(R.string.other_bank));
+                txtPayment.setTypeface(null, Typeface.NORMAL);
+            }else if(paymentType.equals(Utils.TYPE_BP)){
+                imgPayment.setVisibility(View.VISIBLE);
+                imgPayment.setImageResource(R.drawable.logo_mandiri);
+                txtPayment.setText(getString(R.string.va_mandiri));
+                txtPayment.setTypeface(null, Typeface.NORMAL);
+            }
+
+
+        }
 
         totalPrice = dataProduct.getTotal_price_all();
         txtEventName.setText(eventName);
@@ -241,10 +273,16 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
     }
 
     private void slidePay(){
-        if(is_verified){
-
+        if(paymentType.equals(Utils.TYPE_CC)){
+            if(is_verified){
+                PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, "0", productSummary.getOrder_id(), cc_token_id, name_cc);
+                doPayment(postPaymentModel);
+            }else{
+                access3dSecure();
+            }
         }else{
-            access3dSecure();
+            PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, Utils.BLANK, productSummary.getOrder_id(), Utils.BLANK, Utils.BLANK);
+            doPayment(postPaymentModel);
         }
     }
 
@@ -399,9 +437,9 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
 
                     txtPayment.setText("• • • • " + cc_card_id.substring(cc_card_id.length() - 4, cc_card_id.length()));
                 }
-                cc_type = creditcardInformation.getCreditcardInformation().getPayment_type();
 
                 String headCC = cc_card_id.substring(0, 1);
+                imgPayment.setVisibility(View.VISIBLE);
                 if(headCC.equals("4")){
                     imgPayment.setImageResource(R.drawable.logo_visa);
                 }else{
@@ -409,10 +447,13 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
                 }
             }else if(paymentType.equals(Utils.TYPE_BP)){
                 txtPayment.setText(getString(R.string.va_mandiri));
+                imgPayment.setVisibility(View.VISIBLE);
                 imgPayment.setImageResource(R.drawable.logo_mandiri);
+                txtPayment.setTypeface(null, Typeface.NORMAL);
             }else if(paymentType.equals(Utils.TYPE_VA)){
                 txtPayment.setText(getString(R.string.other_bank));
                 imgPayment.setVisibility(View.GONE);
+                txtPayment.setTypeface(null, Typeface.NORMAL);
             }
         }
     }
@@ -441,26 +482,11 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
 
             if (url.startsWith(getPaymentApiUrl() + "/callback/")) {
                 PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, "1", productSummary.getOrder_id(), token, name_cc);
-                //PostPaymentModel postPaymentModel = new PostPaymentModel("cc", "1", Long.parseLong("1457335721926"), "481111b43bce6a-4913-42d5-8f21-5d1e701b265b");
 
                 String sd = String.valueOf(new Gson().toJson(postPaymentModel));
-                //close web dialog
                 dialog3ds.dismiss();
 
-                CommerceManager.loaderPayment(postPaymentModel, new CommerceManager.OnResponseListener() {
-                    @Override
-                    public void onSuccess(Object object) {
-                        dismissLoadingDialog();
-                        startActivity(new Intent(PurchaseInfoActivity.this, HowToPayActivity.class));
-                    }
-
-                    @Override
-                    public void onFailure(int responseCode, String message) {
-
-                    }
-                });
-
-                initLoadingDialog();
+                doPayment(postPaymentModel);
 
             } else if (url.startsWith(getPaymentApiUrl() + "/redirect/") || url.contains("3dsecure")) {
                 //Do nothing
@@ -470,6 +496,23 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
                 }
             }
         }
+    }
+
+    private void doPayment(PostPaymentModel postPaymentModel){
+        CommerceManager.loaderPayment(postPaymentModel, new CommerceManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object) {
+                dismissLoadingDialog();
+                startActivity(new Intent(PurchaseInfoActivity.this, HowToPayActivity.class));
+            }
+
+            @Override
+            public void onFailure(int responseCode, String message) {
+
+            }
+        });
+
+        initLoadingDialog();
     }
 
     private void initLoadingDialog(){

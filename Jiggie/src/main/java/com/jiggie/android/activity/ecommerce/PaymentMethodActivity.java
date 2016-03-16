@@ -157,8 +157,8 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
                         @Override
                         public void onSuccess(Object object) {
                             CommerceManager.arrCCScreen.remove(position);
-                            adapter.notifyDataSetChanged();
-                            //refreshData();
+                            section2Start = CommerceManager.arrCCScreen.size() + 1;
+                            setAdapters(section2Start, CommerceManager.arrCCScreen);
                         }
 
                         @Override
@@ -168,9 +168,9 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
                     });
                 }else{
                     CommerceManager.arrCCScreen.remove(position);
-                    adapter.notifyDataSetChanged();
+                    section2Start = CommerceManager.arrCCScreen.size() + 1;
+                    setAdapters(section2Start, CommerceManager.arrCCScreen);
                 }
-
             }
         });
         dialogLongClick = builder.create();
@@ -188,10 +188,13 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
     }
 
     private void refreshData(){
-        isLoading = false;
-        swipeRefresh.setRefreshing(true);
         if(CommerceManager.arrCCScreen.size()==0){
+            isLoading = false;
+            swipeRefresh.setRefreshing(true);
             this.onRefresh();
+        }else{
+            section2Start = CommerceManager.arrCCScreen.size() + 1;
+            setAdapters(section2Start, CommerceManager.arrCCScreen);
         }
     }
 }

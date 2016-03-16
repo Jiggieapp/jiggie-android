@@ -98,7 +98,6 @@ public class ProductListActivity extends ToolbarWithDotActivity
     @Override
     public void onGlobalLayout() {
         this.recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-        //this.loadData(eventId);
         this.onRefresh();
     }
 
