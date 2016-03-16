@@ -34,11 +34,18 @@ public class Common {
     public static String FIELD_GUEST_NAME = "guest_name";
     public static String FIELD_GUEST_EMAIL = "guest_email";
     public static String FIELD_GUEST_PHONE = "about";
+    public static String FIELD_PRICE = "price";
+    public static String FIELD_PAYMENT_TYPE = "payment_type";
     /*public static String FIELD_TICKET_ID = "ticket_id";
     public static String FIELD_TICKET_NAME = "ticket_name";
     public static String FIELD_TICKET_DESC = "ticket_desc";
     public static String FIELD_MAX_PURCHASE = "max_purchase";
     public static String FIELD_PRICE = "price";*/
+
+    /*"is_new_card": "",
+            "type": "bp",
+            "token_id": "",
+            "order_id": 1457668217795*/
 
     public static final String PREF_IMAGES_UPLOADED = "images-uploaded";
     public static final String PREF_FACEBOOK_ID = FIELD_FACEBOOK_ID;

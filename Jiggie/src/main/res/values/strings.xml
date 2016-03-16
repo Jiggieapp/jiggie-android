@@ -21,6 +21,7 @@
     <!--<string name="mixpanel_token">0a94cf8d4142e2803752e9ca812a8e53</string>-->
 
     <string name="mixpanel_token">39ae6be779ffea77ea2b2a898305f560</string>
+    <string name="vt_client_key">VT-client-gJRBbRZC0t_-JXUD</string>
 
     <string name="broadcast_notification">jiggie.broadcast.notification</string>
     <string name="broadcast_social">jiggie.broadcast.social</string>

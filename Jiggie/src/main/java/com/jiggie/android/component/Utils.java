@@ -90,6 +90,12 @@ public class Utils {
     public static String IS_FIRST_RUN = "is_first_run";
     public static String DEVICE_ID = "";
 
+    //Ecommerce var-----------
+    public static String TYPE_CC = "cc";
+    public static String TYPE_VA = "va";
+    public static String TYPE_BP = "bp";
+    //------------------------
+
     public static int myPixel(Activity a, int dip) {
         float scale = a.getResources().getDisplayMetrics().density;
         int pixel = (int) ((dip - 0.5f) * scale);
@@ -132,6 +138,8 @@ public class Utils {
     public final static String URL_SUMMARY = BASE_URL + "app/v3/product/summary";
     public final static String URL_PAYMENT = BASE_URL + "app/v3/product/payment";
     public final static String URL_GET_CC = BASE_URL + "app/v3/product/credit_card/{fb_id}";
+    public final static String URL_POST_CC = BASE_URL + "app/v3/product/post_cc";
+    public final static String URL_DELETE_CC = BASE_URL + "app/v3/product/delete_cc";
 
     public static void d(final String tag, final String value) {
         Log.d(tag, value);

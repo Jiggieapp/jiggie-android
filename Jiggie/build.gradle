@@ -80,6 +80,15 @@ android {
     }
 }
 
+allprojects {
+    repositories {
+        jcenter()
+        flatDir {
+            dirs 'libs'
+        }
+    }
+}
+
 dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
@@ -108,4 +117,5 @@ dependencies {
     //compile 'com.anton46:stepsview:0.0.2'
     compile 'io.reactivex:rxandroid:1.1.0'
     compile 'io.reactivex:rxjava:1.1.0'
+    compile (name : 'VTAndroidAPI', ext: 'aar')
 }

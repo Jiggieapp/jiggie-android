@@ -46,13 +46,21 @@ public class TermsItemView extends RelativeLayout {
         ButterKnife.bind(this);
 
         txtTerm.setText(text);
+        imgCheck.setSelected(true);
         imgCheck.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                imgCheck.setSelected(true);
+                if (imgCheck.isSelected()) {
+                    imgCheck.setSelected(false);
+                } else {
+                    imgCheck.setSelected(true);
+                }
             }
         });
     }
 
+    public ImageView getImgCheck() {
+        return imgCheck;
+    }
 
 }

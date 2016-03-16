@@ -124,6 +124,7 @@
     </LinearLayout>
 
     <RelativeLayout
+        android:id="@+id/rel_save"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_gravity="bottom"
@@ -132,7 +133,6 @@
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:id="@+id/txt_save"
             android:text="@string/cc_save"
             android:layout_centerInParent="true"
             android:textColor="@color/common_plus_signin_btn_text_dark"/>
