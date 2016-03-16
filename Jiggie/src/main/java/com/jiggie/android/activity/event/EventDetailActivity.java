@@ -136,7 +136,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         EventBus.getDefault().register(this);
 
         Intent a = super.getIntent();
-
         event_id = a.getStringExtra(Common.FIELD_EVENT_ID);
         event_name = a.getStringExtra(Common.FIELD_EVENT_NAME);
 
@@ -146,15 +145,21 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             super.setToolbarTitle("", true);
 
             if(event_id==null){
+
                 Uri data = a.getData();
                 try {
                     Map<String, String> tamp = StringUtility.splitQuery(new URL(data.toString()));
                     event_id = tamp.get("af_sub2");
+                    Utils.d(TAG, "oi null ini eventid nya " + event_id);
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
+            }
+            else
+            {
+                Utils.d(TAG, "oi tidak null ini eventid nya");
             }
         }
 

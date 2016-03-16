@@ -114,7 +114,6 @@ public class GCMMessageHandler extends GcmListenerService {
             intent.putExtra(Conversation.FIELD_FACEBOOK_ID, too);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                     | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
         }
         //[{Jiggie=cui cui cui cui BARUU,
         //        fromId=10153418311072858, fromName=wandy

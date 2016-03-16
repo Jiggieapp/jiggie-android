@@ -71,14 +71,13 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     private boolean isNeedToBeRedirected() {
         final SharedPreferences pref = App.getSharedPreferences();
         boolean isNeedToBeRedirected = pref.getBoolean(Utils.IS_NEED_TO_BE_REDIRECTED_TO_EVENT_DETAIL, true);
-        Utils.d(TAG, "isNeedToBeRedirected " + isNeedToBeRedirected);
+
         if (isNeedToBeRedirected) {
             String afSub1 = Utils.AFsub2;
-            Utils.d(TAG, Utils.AFsub1 + " sub 1 bro");
-            pref.edit().putBoolean(Utils.IS_NEED_TO_BE_REDIRECTED_TO_EVENT_DETAIL, false);
+            pref.edit().putBoolean(Utils.IS_NEED_TO_BE_REDIRECTED_TO_EVENT_DETAIL, false).commit();
             return (isNeedToBeRedirected && !afSub1.isEmpty());
-        } else return false;
-        //return true;
+        }
+        else return false;
     }
 
     @Override
@@ -117,7 +116,6 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
 
         super.setHasOptionsMenu(true);
         this.viewPager.getViewTreeObserver().addOnGlobalLayoutListener(this);
-
 
         //Load animation
         makeOutAnimation = AnimationUtils.loadAnimation(this.getActivity(),
@@ -166,6 +164,10 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
             //i.putExtra(Common.FIELD_EVENT_NAME, event.getTitle());
             super.startActivity(i);
         }
+        else //app invite
+        {
+
+        }
     }
 
     @Override
@@ -181,6 +183,14 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         else if ((super.getArguments() != null)
                 && (super.getArguments().getBoolean(Common.TO_TAB_CHAT, false)))
             this.viewPager.setCurrentItem(2);
+        /*else if((super.getArguments() != null)
+                && (!super.getArguments().getString(Common.FIELD_EVENT_ID, "").equals("")))
+        {
+            Intent i = new Intent(super.getActivity(), EventDetailActivity.class);
+            final String eventId = super.getArguments().getString(Common.FIELD_EVENT_ID);
+            i.putExtra(Common.FIELD_EVENT_ID, eventId);
+            super.startActivity(i);
+        }*/
     }
 
     @Override
@@ -220,7 +230,6 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
 
         if (tab != null) {
             if (position == EVENT_TAB) {
-
                 tab.setText(fragment.getTitle());
             }
             /*else if(position == 1)
@@ -344,4 +353,6 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
             } else startFetchChat();
         }
     };
+
+
 }
