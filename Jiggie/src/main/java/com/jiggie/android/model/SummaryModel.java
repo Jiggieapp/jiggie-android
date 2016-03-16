@@ -1,11 +1,14 @@
 package com.jiggie.android.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
 /**
  * Created by LTE on 2/22/2016.
  */
-public final class SummaryModel {
+public final class SummaryModel{
     public final int response;
     public final String msg;
     public final Data data;
@@ -39,7 +42,7 @@ public final class SummaryModel {
             return product_summary;
         }
 
-        public static final class Product_summary {
+        public static final class Product_summary implements Parcelable{
             public final String code;
             public final String order_status;
             public final String payment_status;
@@ -53,9 +56,9 @@ public final class SummaryModel {
             public final String total_tip_amount;
             public final String total_adminfee;
             public final String total_price;
-            public final ArrayList<Credit_card> credit_card;
+            public final Credit_card credit_card;
 
-            public Product_summary(String code, String order_status, String payment_status, long order_id, String fb_id, String event_id, String event_name, ArrayList<Product_list> product_list, Guest_detail guest_detail, String total_tax_amount, String total_tip_amount, String total_adminfee, String total_price, ArrayList<Credit_card> credit_card){
+            public Product_summary(String code, String order_status, String payment_status, long order_id, String fb_id, String event_id, String event_name, ArrayList<Product_list> product_list, Guest_detail guest_detail, String total_tax_amount, String total_tip_amount, String total_adminfee, String total_price, Credit_card credit_card){
                 this.code = code;
                 this.order_status = order_status;
                 this.payment_status = payment_status;
@@ -124,11 +127,11 @@ public final class SummaryModel {
                 return total_price;
             }
 
-            public ArrayList<Credit_card> getCredit_card() {
+            public Credit_card getCredit_card() {
                 return credit_card;
             }
 
-            public static final class Product_list {
+            public static final class Product_list implements Parcelable {
                 public final String ticket_id;
                 public final String name;
                 public final String ticket_type;
@@ -241,7 +244,7 @@ public final class SummaryModel {
                     return payment_timelimit;
                 }
 
-                public static final class Term {
+                public static final class Term implements Parcelable {
                     public final String label;
                     public final String body;
 
@@ -257,10 +260,110 @@ public final class SummaryModel {
                     public String getBody() {
                         return body;
                     }
+
+                    protected Term(Parcel in) {
+                        label = in.readString();
+                        body = in.readString();
+                    }
+
+                    @Override
+                    public int describeContents() {
+                        return 0;
+                    }
+
+                    @Override
+                    public void writeToParcel(Parcel dest, int flags) {
+                        dest.writeString(label);
+                        dest.writeString(body);
+                    }
+
+                    @SuppressWarnings("unused")
+                    public static final Parcelable.Creator<Term> CREATOR = new Parcelable.Creator<Term>() {
+                        @Override
+                        public Term createFromParcel(Parcel in) {
+                            return new Term(in);
+                        }
+
+                        @Override
+                        public Term[] newArray(int size) {
+                            return new Term[size];
+                        }
+                    };
                 }
+
+                protected Product_list(Parcel in) {
+                    ticket_id = in.readString();
+                    name = in.readString();
+                    ticket_type = in.readString();
+                    max_buy = in.readString();
+                    quantity = in.readString();
+                    admin_fee = in.readString();
+                    tax_percent = in.readString();
+                    tax_amount = in.readString();
+                    tip_percent = in.readString();
+                    tip_amount = in.readString();
+                    price = in.readString();
+                    currency = in.readString();
+                    total_price = in.readString();
+                    total_price_aftertax = in.readString();
+                    num_buy = in.readString();
+                    total_price_all = in.readString();
+                    if (in.readByte() == 0x01) {
+                        terms = new ArrayList<Term>();
+                        in.readList(terms, Term.class.getClassLoader());
+                    } else {
+                        terms = null;
+                    }
+                    payment_timelimit = in.readInt();
+                }
+
+                @Override
+                public int describeContents() {
+                    return 0;
+                }
+
+                @Override
+                public void writeToParcel(Parcel dest, int flags) {
+                    dest.writeString(ticket_id);
+                    dest.writeString(name);
+                    dest.writeString(ticket_type);
+                    dest.writeString(max_buy);
+                    dest.writeString(quantity);
+                    dest.writeString(admin_fee);
+                    dest.writeString(tax_percent);
+                    dest.writeString(tax_amount);
+                    dest.writeString(tip_percent);
+                    dest.writeString(tip_amount);
+                    dest.writeString(price);
+                    dest.writeString(currency);
+                    dest.writeString(total_price);
+                    dest.writeString(total_price_aftertax);
+                    dest.writeString(num_buy);
+                    dest.writeString(total_price_all);
+                    if (terms == null) {
+                        dest.writeByte((byte) (0x00));
+                    } else {
+                        dest.writeByte((byte) (0x01));
+                        dest.writeList(terms);
+                    }
+                    dest.writeInt(payment_timelimit);
+                }
+
+                @SuppressWarnings("unused")
+                public static final Parcelable.Creator<Product_list> CREATOR = new Parcelable.Creator<Product_list>() {
+                    @Override
+                    public Product_list createFromParcel(Parcel in) {
+                        return new Product_list(in);
+                    }
+
+                    @Override
+                    public Product_list[] newArray(int size) {
+                        return new Product_list[size];
+                    }
+                };
             }
 
-            public static final class Guest_detail {
+            public static final class Guest_detail implements Parcelable {
                 public final String name;
                 public final String email;
                 public final String phone;
@@ -282,13 +385,136 @@ public final class SummaryModel {
                 public String getPhone() {
                     return phone;
                 }
+
+                protected Guest_detail(Parcel in) {
+                    name = in.readString();
+                    email = in.readString();
+                    phone = in.readString();
+                }
+
+                @Override
+                public int describeContents() {
+                    return 0;
+                }
+
+                @Override
+                public void writeToParcel(Parcel dest, int flags) {
+                    dest.writeString(name);
+                    dest.writeString(email);
+                    dest.writeString(phone);
+                }
+
+                @SuppressWarnings("unused")
+                public static final Parcelable.Creator<Guest_detail> CREATOR = new Parcelable.Creator<Guest_detail>() {
+                    @Override
+                    public Guest_detail createFromParcel(Parcel in) {
+                        return new Guest_detail(in);
+                    }
+
+                    @Override
+                    public Guest_detail[] newArray(int size) {
+                        return new Guest_detail[size];
+                    }
+                };
             }
 
-            public static final class Credit_card {
+            public static final class Credit_card implements Parcelable {
 
                 public Credit_card(){
                 }
+
+
+
+                protected Credit_card(Parcel in) {
+
+                }
+
+                @Override
+                public int describeContents() {
+                    return 0;
+                }
+
+                @Override
+                public void writeToParcel(Parcel dest, int flags) {
+
+                }
+
+                @SuppressWarnings("unused")
+                public static final Parcelable.Creator<Credit_card> CREATOR = new Parcelable.Creator<Credit_card>() {
+                    @Override
+                    public Credit_card createFromParcel(Parcel in) {
+                        return new Credit_card(in);
+                    }
+
+                    @Override
+                    public Credit_card[] newArray(int size) {
+                        return new Credit_card[size];
+                    }
+                };
             }
+
+            protected Product_summary(Parcel in) {
+                code = in.readString();
+                order_status = in.readString();
+                payment_status = in.readString();
+                order_id = in.readLong();
+                fb_id = in.readString();
+                event_id = in.readString();
+                event_name = in.readString();
+                if (in.readByte() == 0x01) {
+                    product_list = new ArrayList<Product_list>();
+                    in.readList(product_list, Product_list.class.getClassLoader());
+                } else {
+                    product_list = null;
+                }
+                guest_detail = (Guest_detail) in.readValue(Guest_detail.class.getClassLoader());
+                total_tax_amount = in.readString();
+                total_tip_amount = in.readString();
+                total_adminfee = in.readString();
+                total_price = in.readString();
+                credit_card = (Credit_card) in.readValue(Credit_card.class.getClassLoader());
+            }
+
+            @Override
+            public int describeContents() {
+                return 0;
+            }
+
+            @Override
+            public void writeToParcel(Parcel dest, int flags) {
+                dest.writeString(code);
+                dest.writeString(order_status);
+                dest.writeString(payment_status);
+                dest.writeLong(order_id);
+                dest.writeString(fb_id);
+                dest.writeString(event_id);
+                dest.writeString(event_name);
+                if (product_list == null) {
+                    dest.writeByte((byte) (0x00));
+                } else {
+                    dest.writeByte((byte) (0x01));
+                    dest.writeList(product_list);
+                }
+                dest.writeValue(guest_detail);
+                dest.writeString(total_tax_amount);
+                dest.writeString(total_tip_amount);
+                dest.writeString(total_adminfee);
+                dest.writeString(total_price);
+                dest.writeValue(credit_card);
+            }
+
+            @SuppressWarnings("unused")
+            public static final Parcelable.Creator<Product_summary> CREATOR = new Parcelable.Creator<Product_summary>() {
+                @Override
+                public Product_summary createFromParcel(Parcel in) {
+                    return new Product_summary(in);
+                }
+
+                @Override
+                public Product_summary[] newArray(int size) {
+                    return new Product_summary[size];
+                }
+            };
         }
     }
 }

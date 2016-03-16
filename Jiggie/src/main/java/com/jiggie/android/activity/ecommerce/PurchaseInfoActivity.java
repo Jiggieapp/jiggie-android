@@ -11,12 +11,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.activity.ToolbarWithDotActivity;
+import com.jiggie.android.model.Common;
+import com.jiggie.android.model.SummaryModel;
+import com.jiggie.android.view.TermsItemView;
+
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -30,14 +39,31 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
     ViewPager pagerSlide;
     @Bind(R.id.rel_payment)
     RelativeLayout relPayment;
-    @Bind(R.id.img_check1)
-    ImageView imgCheck1;
-    @Bind(R.id.img_check2)
-    ImageView imgCheck2;
-    @Bind(R.id.img_check3)
-    ImageView imgCheck3;
-    @Bind(R.id.img_check4)
-    ImageView imgCheck4;
+
+    SummaryModel.Data.Product_summary productSummary;
+    @Bind(R.id.txt_event_name)
+    TextView txtEventName;
+    @Bind(R.id.txt_event_info)
+    TextView txtEventInfo;
+    @Bind(R.id.txt_tik_title)
+    TextView txtTikTitle;
+    @Bind(R.id.txt_tik_fill)
+    TextView txtTikFill;
+    @Bind(R.id.txt_fee_fill)
+    TextView txtFeeFill;
+    @Bind(R.id.txt_tax_fill)
+    TextView txtTaxFill;
+    @Bind(R.id.txt_total_fill)
+    TextView txtTotalFill;
+    @Bind(R.id.img_payment)
+    ImageView imgPayment;
+    @Bind(R.id.txt_payment)
+    TextView txtPayment;
+
+    String eventId, eventName, venueName, startTime;
+    @Bind(R.id.lin_terms)
+    LinearLayout linTerms;
+    ArrayList<TermsItemView> arrTermItemView = new ArrayList<>();
 
     @Override
     protected void onCreate() {
@@ -49,62 +75,47 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
         relPayment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(PurchaseInfoActivity.this, PaymentMethodActivity.class));
-            }
-        });
-
-        imgCheck1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(v.isSelected()){
-                    v.setSelected(false);
-                }else{
-                    v.setSelected(true);
-                }
-            }
-        });
-
-        imgCheck2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(v.isSelected()){
-                    v.setSelected(false);
-                }else{
-                    v.setSelected(true);
-                }
-            }
-        });
-
-        imgCheck3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(v.isSelected()){
-                    v.setSelected(false);
-                }else{
-                    v.setSelected(true);
-                }
-            }
-        });
-
-        imgCheck4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(v.isSelected()){
-                    v.setSelected(false);
-                }else{
-                    v.setSelected(true);
-                }
+                Intent i = new Intent(PurchaseInfoActivity.this, PaymentMethodActivity.class);
+                startActivityForResult(i, 0);
             }
         });
     }
 
-    private void preDefined(){
+    private void preDefined() {
         pagerSlide.setAdapter(new SlideAdapter(getSupportFragmentManager(), pagerSlide));
         pagerSlide.setCurrentItem(1);
-        imgCheck1.setSelected(true);
-        imgCheck2.setSelected(true);
-        imgCheck3.setSelected(true);
-        imgCheck4.setSelected(true);
+
+        Intent a = getIntent();
+        eventId = a.getStringExtra(Common.FIELD_EVENT_ID);
+        eventName = a.getStringExtra(Common.FIELD_EVENT_NAME);
+        venueName = a.getStringExtra(Common.FIELD_VENUE_NAME);
+        startTime = a.getStringExtra(Common.FIELD_STARTTIME);
+        productSummary = a.getParcelableExtra(SummaryModel.Data.Product_summary.class.getName());
+        SummaryModel.Data.Product_summary.Product_list dataProduct = productSummary.getProduct_list().get(0);
+
+        txtEventName.setText(eventName);
+        try {
+            final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(startTime);
+            txtEventInfo.setText(Common.SERVER_DATE_FORMAT_COMM.format(startDate) + " - " + venueName);
+        } catch (ParseException e) {
+            throw new RuntimeException(App.getErrorMessage(e), e);
+        }
+        txtTikTitle.setText(dataProduct.getName() + " Ticket (" + dataProduct.getNum_buy() + ")");
+        txtTikFill.setText(StringUtility.getRupiahFormat(dataProduct.getTotal_price()));
+        txtFeeFill.setText(StringUtility.getRupiahFormat(dataProduct.getAdmin_fee()));
+        txtTaxFill.setText(StringUtility.getRupiahFormat(dataProduct.getTax_amount()));
+        txtTotalFill.setText(StringUtility.getRupiahFormat(dataProduct.getTotal_price_all()));
+
+        initTermView(dataProduct);
+    }
+
+    private void initTermView(SummaryModel.Data.Product_summary.Product_list dataProduct){
+        int size = dataProduct.getTerms().size();
+        for(int i=0; i<dataProduct.getTerms().size();i++){
+            TermsItemView termsItemView = new TermsItemView(PurchaseInfoActivity.this, dataProduct.getTerms().get(i).getBody());
+            linTerms.addView(termsItemView);
+            arrTermItemView.add(termsItemView);
+        }
     }
 
     @Override
@@ -126,6 +137,7 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
                     //action
                     if (position == 0) {
                         startActivity(new Intent(PurchaseInfoActivity.this, HowToPayActivity.class));
+                        //startActivityForResult();
                     }
 
                     super.onPageSelected(position);
