@@ -26,7 +26,6 @@ import retrofit.Response;
  * Created by LTE on 1/29/2016.
  */
 public class Utils {
-    public static String BLANK = "";
     public static String FROM_SIGN_IN = "sign_in";
     public static String FROM_MEMBER_SETTING = "member_setting";
     //public static String FROM_GET_MEMBER_SETTING = "get_member_setting";
@@ -88,6 +87,8 @@ public class Utils {
     public static String PREFERENCE_TAGLIST = "taglist";
     public static String TAGLIST_MODEL = "taglist_model";
     public static String IS_FIRST_RUN = "is_first_run";
+    public static String IS_NEED_TO_BE_REDIRECTED_TO_EVENT_DETAIL
+            = "is_already_redirected_to_event_detail";
     public static String DEVICE_ID = "";
 
     //Ecommerce var-----------
@@ -158,6 +159,7 @@ public class Utils {
     public static String AFclick_time = "";
     public static String AFinstall_time = "";
     public static String AFsub1 = "";
+    public static String AFsub2 = "";
 
     public static String AF_ORGANIC = "Organic";
     //------------------------
@@ -258,4 +260,10 @@ public class Utils {
         }
         return v;
     }
+
+    //broadcast receiver
+    public static final String CHECK_NEW_MESSAGE_RECEIVER = "check_new_message_receiver";
+    public static final String FETCH_CHAT_RECEIVER = "fetch_chat_receiver";
+
+    public static final String IS_ON = "is_on";
 }

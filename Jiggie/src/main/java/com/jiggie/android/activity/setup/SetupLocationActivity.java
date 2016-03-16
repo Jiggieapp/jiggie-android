@@ -70,8 +70,6 @@ public class SetupLocationActivity extends BaseActivity {
 
         final MemberSettingModel memberSettingModel = new MemberSettingModel();
         final SettingModel currentSettingModel = AccountManager.loadSetting();
-        if (currentSettingModel == null)
-            Utils.d(TAG, "currentSettingModel " + null);
         memberSettingModel.setAccount_type(currentSettingModel.getData().getAccount_type());
         memberSettingModel.setLocation(this.switchView.isChecked() ? 1 : 0);
         memberSettingModel.setGender(currentSettingModel.getData().getGender());

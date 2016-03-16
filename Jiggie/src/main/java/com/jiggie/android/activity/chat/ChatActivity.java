@@ -133,6 +133,8 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
 
         super.registerReceiver(this.notificationReceived
                 , new IntentFilter(super.getString(R.string.broadcast_notification)));
+        super.registerReceiver(checkNewMessageReceiver
+                , new IntentFilter(Utils.CHECK_NEW_MESSAGE_RECEIVER));
     }
 
     @Override
@@ -324,6 +326,14 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
         }
     };
 
+
+    private BroadcastReceiver checkNewMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            fetchData();
+        }
+    };
+
     private Runnable checkNewMessageRunnable = new Runnable() {
         @Override
         public void run() {
@@ -338,6 +348,11 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
         this.failedView.setVisibility(View.GONE);
         this.progressBar.setVisibility(View.VISIBLE);
 
+        fetchData();
+    }
+
+    private void fetchData()
+    {
         ChatManager.loaderChatConversations(AccessToken.getCurrentAccessToken().getUserId(), toId, ChatManager.FROM_LOAD);
     }
 
@@ -349,7 +364,6 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
     }
 
     public void onEvent(ChatResponseModel message){
-
         if(message.getFromFunction().equals(ChatManager.FROM_LOAD)){
             final List<Chat> failedItems = ChatTable.getUnProcessedItems(App.getInstance().getDatabase(), toId);
             final int length = message.getData().getMessages() == null ? 0 : message.getData().getMessages().size();
@@ -380,6 +394,7 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
                 setResult(RESULT_OK, new Intent().putExtra(Conversation.FIELD_FACEBOOK_ID, toId));
             }
         }else if(message.getFromFunction().equals(ChatManager.FROM_CHECK_NEW)){
+            Utils.d(TAG, "fetch chat new message suksesbrother");
             final int length = message.getData().getMessages() == null ? 0 : message.getData().getMessages().size();
 
             for (int i = 0; i < length; i++) {
@@ -396,7 +411,6 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
             }
             this.isChecking = false;
         }
-
     }
 
     public void onEvent(ChatActionModel message){
@@ -464,6 +478,7 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
     @Override
     protected void onDestroy() {
         super.unregisterReceiver(this.notificationReceived);
+        super.unregisterReceiver(this.checkNewMessageReceiver);
         EventBus.getDefault().unregister(this);
 
         super.onDestroy();
