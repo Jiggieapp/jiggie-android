@@ -29,6 +29,7 @@ import com.jiggie.android.activity.profile.FilterActivity;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
 import com.jiggie.android.activity.profile.ProfileSettingActivity;
 import com.jiggie.android.activity.setup.SetupTagsActivity;
+import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.gcm.GCMRegistrationService;
 import com.jiggie.android.component.service.FacebookImageSyncService;
@@ -38,9 +39,13 @@ import com.appsflyer.AppsFlyerLib;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.jiggie.android.manager.ShareManager;
+import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.ShareLinkModel;
 
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Map;
 
 import de.greenrobot.event.EventBus;
@@ -141,8 +146,29 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < fragmentCount; i++)
             fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
+        Intent a = super.getIntent();
         final Fragment fragment = new HomeFragment();
-        fragment.setArguments(super.getIntent().getExtras());
+
+        /*if(a != null)
+        {
+            String event_id = a.getStringExtra(Common.FIELD_EVENT_ID);
+            final String event_name = a.getStringExtra(Common.FIELD_EVENT_NAME);
+            if(event_id == null)
+            {
+                Uri data = a.getData();
+                try {
+                    Map<String, String> tamp = StringUtility.splitQuery(new URL(data.toString()));
+                    event_id = tamp.get("af_sub2");
+                    a.putExtra(Common.FIELD_EVENT_ID, event_id);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }*/
+
+        fragment.setArguments(a.getExtras());
         fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
     }
 
