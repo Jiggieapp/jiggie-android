@@ -21,7 +21,7 @@
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:titleTextColor="@android:color/white"
-            ></android.support.v7.widget.Toolbar>
+            />
 
     </android.support.design.widget.AppBarLayout>
 

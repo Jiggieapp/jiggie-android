@@ -35,7 +35,7 @@
                 android:layout_below="@+id/time_tab"
                 app:borderWidth="0dp"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-        -->
+            -->
 
             <com.jiggie.android.view.NonSwipeableViewPager
                 android:id="@+id/viewpagerevents"

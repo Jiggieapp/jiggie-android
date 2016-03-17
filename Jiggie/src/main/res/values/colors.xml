@@ -26,4 +26,6 @@
     <color name="text_grey_caption">#9E9E9E</color>
 
     <color name="light_grey">#10000000</color>
+    <color name="red_void">#F44336</color>
+    <color name="yellow_warning">#FFB300</color>
 </resources>
