@@ -43,7 +43,7 @@ android {
     }
     buildTypes {
         debug {
-            applicationIdSuffix ".debug"
+            //applicationIdSuffix ".debug"
             versionNameSuffix '-Dev'
             resValue "string", "app_name", "Jiggie Dev"
             signingConfig signingConfigs.configDebug
