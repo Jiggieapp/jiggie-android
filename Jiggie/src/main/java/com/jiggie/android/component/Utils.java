@@ -256,4 +256,11 @@ public class Utils {
     public static final String FETCH_CHAT_RECEIVER = "fetch_chat_receiver";
 
     public static final String IS_ON = "is_on";
+
+    private static final String SCHEME = "jiggie://";
+    private static final String SCHEME_HOST_EVENT_DETAIL = "event_detail";
+    private static final String SCHEME_HOST_EVENT_LIST = "event_list";
+    public static final String[] JIGGIE_URLS =
+            { SCHEME + SCHEME_HOST_EVENT_LIST
+            , SCHEME + SCHEME_HOST_EVENT_DETAIL };
 }

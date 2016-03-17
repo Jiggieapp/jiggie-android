@@ -8,7 +8,6 @@ import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.AppBarLayout;
@@ -29,6 +28,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.facebook.AccessToken;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.ProductListActivity;
@@ -39,7 +47,6 @@ import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.ImagePagerIndicatorAdapter;
 import com.jiggie.android.component.volley.SimpleVolleyRequestListener;
 import com.jiggie.android.component.volley.VolleyHandler;
-import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.fragment.SocialTabFragment;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.EventManager;
@@ -49,17 +56,6 @@ import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.GuestModel;
-import com.jiggie.android.model.ShareLink;
-import com.android.volley.VolleyError;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.facebook.AccessToken;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.jiggie.android.model.ShareLinkModel;
 
 import org.json.JSONObject;
@@ -145,21 +141,36 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             super.setToolbarTitle("", true);
 
             if(event_id==null){
+                //wandy 17-03-2016
+                //contoh working scheme
+                //jiggie://event_detail/<event_id>&af_chrome_lp=true&af_deeplink=true&app-id=1630402100&campaign=None&media_source=App_Invite
+                //end of contoh working scheme
 
-                Uri data = a.getData();
-                try {
-                    Map<String, String> tamp = StringUtility.splitQuery(new URL(data.toString()));
-                    event_id = tamp.get("af_sub2");
-                    Utils.d(TAG, "oi null ini eventid nya " + event_id);
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
+                String dataString = a.getDataString();
+                final boolean isJiggieUrl = isJiggieUrl(dataString);
+                if(isJiggieUrl)
+                {
+                    Uri inputUri = Uri.parse(dataString);
+                    /*event_id = inputUri.getQueryParameter("af_sub2");
+                    for(String segment : inputUri.getPathSegments())
+                    {
+                        Utils.d(TAG, "segment " + segment);
+                    }*/
+                    event_id = inputUri.getPathSegments().get(0);
                 }
-            }
-            else
-            {
-                Utils.d(TAG, "oi tidak null ini eventid nya");
+                else {
+                    Uri data = a.getData();
+                    try {
+                        Map<String, String> tamp = StringUtility.splitQuery(new URL(data.toString()));
+                        event_id = tamp.get("af_sub2");
+                        //Utils.d(TAG, "event_id oiii " + event_id + " " + data.toString());
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
+                }
+                //end of wandy 17-03-2016
             }
         }
 
@@ -185,6 +196,20 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
         if(file!= null && file.exists())
             file.delete();
+    }
+
+    private static boolean isJiggieUrl(String dataString) {
+
+        if (dataString == null) {
+            return false;
+        }
+
+        for (String url : Utils.JIGGIE_URLS) {
+            if (dataString.startsWith(url)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -218,7 +243,13 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     @Override
     public void onRefresh() {
         this.btnBook.setVisibility(View.GONE);
-        this.swipeRefresh.setRefreshing(true);
+        swipeRefresh.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefresh.setRefreshing(true);
+            }
+        });
+        //this.swipeRefresh.setRefreshing(true);
 
         EventManager.loaderEventDetail(event_id, AccessToken.getCurrentAccessToken().getUserId()
                 , AccountManager.loadSetting().getData().getGender_interest(), TAG);
@@ -540,7 +571,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             }
             else
             {
-                Utils.d(TAG, "file exists ");
                 return f;
             }
         } catch (IOException e) {
@@ -578,16 +608,18 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 @Override
                 public void call(Subscriber subscriber) {
                     try {
-                        Utils.d(TAG, "pic url " + eventDetail.getPhotos()
-                                .get(0));
                         Bitmap bmp = Glide.with(EventDetailActivity.this)
                                 .load(eventDetail.getPhotos()
                                         .get(0)).asBitmap().into(200, 200).get();
                         file = createFile(bmp);
                         subscriber.onNext(file);
                     } catch (InterruptedException e) {
+                        if(progressDialog!= null && progressDialog.isShowing())
+                            progressDialog.dismiss();
                         e.printStackTrace();
                     } catch (ExecutionException e) {
+                        if(progressDialog!= null && progressDialog.isShowing())
+                            progressDialog.dismiss();
                         e.printStackTrace();
                     }
                 }

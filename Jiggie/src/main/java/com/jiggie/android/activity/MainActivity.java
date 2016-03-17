@@ -107,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
             final String str = GoogleApiAvailability.getInstance().getErrorString(code);
             Toast.makeText(this, str, Toast.LENGTH_LONG).show();
         }
-
     }
 
     @Override
