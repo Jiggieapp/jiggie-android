@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     @SuppressWarnings("StatementWithEmptyBody")
     protected void onCreate(Bundle savedInstanceState) {
-        super.setTheme(R.style.AppTheme);
+        super.setTheme(R.style.SplashTheme);
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_main);
         this.active = true;
@@ -245,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAttributionFailure(String s) {
                 //Toast.makeText(MainActivity.this, "c", Toast.LENGTH_LONG).show();
-                Log.d("123appsflyer", "c");
+                Utils.d("123appsflyer", "c");
             }
         });
     }

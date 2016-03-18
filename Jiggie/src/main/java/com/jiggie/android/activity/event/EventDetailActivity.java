@@ -39,6 +39,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.activity.ecommerce.ProductListActivity;
 import com.jiggie.android.component.FlowLayout;
 import com.jiggie.android.component.StringUtility;
@@ -140,7 +141,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             this.txtVenue.setText("");
             super.setToolbarTitle("", true);
 
-            if(event_id==null){
+            if(event_id == null || event_id.equalsIgnoreCase("null")){
                 //wandy 17-03-2016
                 //contoh working scheme
                 //jiggie://event_detail/<event_id>&af_chrome_lp=true&af_deeplink=true&app-id=1630402100&campaign=None&media_source=App_Invite
@@ -713,5 +714,12 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         }
     };
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent i = new Intent(this, MainActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+        finish();
+    }
 }

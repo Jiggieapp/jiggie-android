@@ -99,14 +99,16 @@ public class EventManager {
         }
     }
 
-    public static void loaderEventDetail(String _id, String fb_id, String gender_interest, final String TAG){
+    public static void loaderEventDetail(final String _id, final String fb_id, String gender_interest, final String TAG){
         try {
             getEventDetail(_id, fb_id, gender_interest, new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
                     /*String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);*/
-
+                    Utils.d(TAG, "response eventmanager "
+                            + Utils.print(response) + " " + _id
+                            + " " + fb_id);
                     if (response.code() == Utils.CODE_SUCCESS) {
                         EventDetailModel dataTemp = (EventDetailModel) response.body();
                         dataTemp.setFrom(TAG);
