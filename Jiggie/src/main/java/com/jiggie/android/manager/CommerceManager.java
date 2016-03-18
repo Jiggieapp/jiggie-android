@@ -72,6 +72,14 @@ public class CommerceManager {
         getInstance().deleteCC(Utils.URL_DELETE_CC, postDeleteCCModel).enqueue(callback);
     }
 
+    private static void getSuccessScreenVABP(String order_id, Callback callback) throws IOException {
+        getInstance().getSucScreenVABP(order_id).enqueue(callback);
+    }
+
+    private static void getSuccessScreenWalkthrough(Callback callback) throws IOException {
+        getInstance().getSucScreenWalkthrough().enqueue(callback);
+    }
+
     public static void loaderProductList(String event_id, final OnResponseListener onResponseListener){
         try {
             getProductList(event_id, new CustomCallback() {
@@ -231,6 +239,66 @@ public class CommerceManager {
     public static void loaderDeleteCC(PostDeleteCCModel postDeleteCCModel, final OnResponseListener onResponseListener){
         try {
             deleteCC(postDeleteCCModel, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+
+                    String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);
+
+                    int responseCode = response.code();
+                    if (responseCode == Utils.CODE_SUCCESS) {
+                        onResponseListener.onSuccess(response.body());
+                    } else {
+                        onResponseListener.onFailure(responseCode, Utils.RESPONSE_FAILED);
+                    }
+
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    Log.d("Failure", t.toString());
+                    onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+                }
+            });
+        }catch (IOException e){
+            Log.d("Exception", e.toString());
+            onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
+        }
+    }
+
+    public static void loaderSucScreenVABP(String order_id, final OnResponseListener onResponseListener){
+        try {
+            getSuccessScreenVABP(order_id, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+
+                    String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);
+
+                    int responseCode = response.code();
+                    if (responseCode == Utils.CODE_SUCCESS) {
+                        onResponseListener.onSuccess(response.body());
+                    } else {
+                        onResponseListener.onFailure(responseCode, Utils.RESPONSE_FAILED);
+                    }
+
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    Log.d("Failure", t.toString());
+                    onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+                }
+            });
+        }catch (IOException e){
+            Log.d("Exception", e.toString());
+            onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
+        }
+    }
+
+    public static void loaderSucScreenWalkthrough(final OnResponseListener onResponseListener){
+        try {
+            getSuccessScreenWalkthrough(new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 

@@ -86,6 +86,7 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
     ArrayList<TermsItemView> arrTermItemView = new ArrayList<>();
     String is_new_card, cc_token_id = Utils.BLANK, cc_card_id, paymentType = Utils.BLANK, name_cc = Utils.BLANK;
     boolean is_verified;
+    long order_id;
 
     AlertDialog dialog3ds;
     ProgressDialog progressDialog;
@@ -111,6 +112,8 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(PurchaseInfoActivity.this, PaymentMethodActivity.class);
+                i.putExtra(Common.FIELD_ORDER_ID, order_id);
+                i.putExtra(Common.FIELD_PAYMENT_TYPE, paymentType);
                 i.putExtra(Common.FIELD_PRICE, totalPrice);
                 startActivityForResult(i, 0);
             }
@@ -127,6 +130,7 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
         venueName = a.getStringExtra(Common.FIELD_VENUE_NAME);
         startTime = a.getStringExtra(Common.FIELD_STARTTIME);
         productSummary = a.getParcelableExtra(SummaryModel.Data.Product_summary.class.getName());
+        order_id = productSummary.getOrder_id();
         SummaryModel.Data.Product_summary.Product_list dataProduct = productSummary.getProduct_list().get(0);
 
         SummaryModel.Data.Product_summary.LastPayment lastPayment = productSummary.getLast_payment();
@@ -156,11 +160,9 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
                 txtPayment.setText(getString(R.string.va_mandiri));
                 txtPayment.setTypeface(null, Typeface.NORMAL);
             }
-
-
         }
 
-        totalPrice = dataProduct.getTotal_price_all();
+        totalPrice = productSummary.getTotal_price();
         txtEventName.setText(eventName);
         try {
             final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(startTime);
@@ -179,7 +181,7 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
 
     private void initTermView(SummaryModel.Data.Product_summary.Product_list dataProduct){
         int size = dataProduct.getTerms().size();
-        for(int i=0; i<dataProduct.getTerms().size();i++){
+        for(int i=0; i<size;i++){
             TermsItemView termsItemView = new TermsItemView(PurchaseInfoActivity.this, dataProduct.getTerms().get(i).getBody());
             linTerms.addView(termsItemView);
             arrTermItemView.add(termsItemView);
@@ -204,8 +206,6 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
                 public void onPageSelected(int position) {
                     //action
                     if (position == 0) {
-                        /*Intent i = new Intent(PurchaseInfoActivity.this, HowToPayActivity.class);
-                        startActivity(i);*/
 
                         if(canPay()){
                             slidePay();
@@ -503,7 +503,16 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
             @Override
             public void onSuccess(Object object) {
                 dismissLoadingDialog();
-                startActivity(new Intent(PurchaseInfoActivity.this, HowToPayActivity.class));
+                Intent i;
+                if(paymentType.equals(Utils.TYPE_CC)){
+                    i = new Intent(PurchaseInfoActivity.this, CongratsActivity.class);
+                }else{
+                    i = new Intent(PurchaseInfoActivity.this, HowToPayActivity.class);
+                    i.putExtra(Common.FIELD_WALKTHROUGH_PAYMENT, false);
+                }
+                i.putExtra(Common.FIELD_ORDER_ID, order_id);
+                i.putExtra(Common.FIELD_PAYMENT_TYPE, paymentType);
+                startActivity(i);
             }
 
             @Override

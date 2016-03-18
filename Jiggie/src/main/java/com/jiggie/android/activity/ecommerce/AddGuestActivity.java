@@ -2,6 +2,9 @@ package com.jiggie.android.activity.ecommerce;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -51,13 +54,83 @@ public class AddGuestActivity extends ToolbarActivity {
                 String guestPhoneN = edt_phone.getText().toString();
                 String guestPhone = guest62+guestPhoneN;
 
-                if(!guestName.isEmpty() && !guestEmail.isEmpty() && !guest62.isEmpty() && !guestPhoneN.isEmpty()){
-                    App.getSharedPreferences().edit().putString(Common.FIELD_GUEST_NAME, guestName).putString(Common.FIELD_GUEST_EMAIL, guestEmail).putString(Common.FIELD_GUEST_PHONE, guestPhone).commit();
-                    setResult(RESULT_OK, new Intent().putExtra(Common.FIELD_GUEST_NAME, guestName).putExtra(Common.FIELD_GUEST_EMAIL, guestEmail).putExtra(Common.FIELD_GUEST_PHONE, guestPhone));
-                    finish();
-                }else{
-                    //error handling
+                if(!isFieldError(guestName, guestEmail, guest62, guestPhoneN)){
+                    if(!guestName.isEmpty() && !guestEmail.isEmpty() && !guest62.isEmpty() && !guestPhoneN.isEmpty()){
+                        App.getSharedPreferences().edit().putString(Common.FIELD_GUEST_NAME, guestName).putString(Common.FIELD_GUEST_EMAIL, guestEmail).putString(Common.FIELD_GUEST_PHONE, guestPhone).commit();
+                        setResult(RESULT_OK, new Intent().putExtra(Common.FIELD_GUEST_NAME, guestName).putExtra(Common.FIELD_GUEST_EMAIL, guestEmail).putExtra(Common.FIELD_GUEST_PHONE, guestPhone));
+                        finish();
+                    }else{
+                        //error handling
+                    }
                 }
+            }
+        });
+
+        edt_name.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                edt_name.setTextColor(getResources().getColor(R.color.textDarkGray));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        edt_email.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                edt_email.setTextColor(getResources().getColor(R.color.textDarkGray));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        edt_62.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                edt_62.setTextColor(getResources().getColor(R.color.textDarkGray));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        edt_phone.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                edt_phone.setTextColor(getResources().getColor(R.color.textDarkGray));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
     }
@@ -74,6 +147,28 @@ public class AddGuestActivity extends ToolbarActivity {
             edt_phone.setText(phoneN);
         }
 
+    }
+
+    private boolean isFieldError(String name, String email, String str62, String phone){
+        boolean isError = false;
+        if(name.isEmpty()){
+            isError = true;
+            edt_name.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+            edt_name.setError(Utils.BLANK);
+        }if(email.isEmpty()){
+            isError = true;
+            edt_email.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+            edt_email.setError(Utils.BLANK);
+        }if(str62.isEmpty()){
+            isError = true;
+            edt_62.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+            edt_62.setError(Utils.BLANK);
+        }if(phone.isEmpty()){
+            isError = true;
+            edt_phone.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+            edt_phone.setError(Utils.BLANK);
+        }
+        return isError;
     }
 
 }

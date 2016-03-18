@@ -267,12 +267,16 @@ public class EventDetailModel {
                 this.venue = venue;
             }
 
-            public static class GuestViewed{
+            public static class GuestViewed implements Parcelable {
 
                 String fb_id;
                 String first_name;
                 String gender;
-
+                protected GuestViewed(Parcel in) {
+                    fb_id = in.readString();
+                    first_name = in.readString();
+                    gender = in.readString();
+                }
 
                 public String getFb_id() {
                     return fb_id;
@@ -297,6 +301,31 @@ public class EventDetailModel {
                 public void setGender(String gender) {
                     this.gender = gender;
                 }
+
+                @Override
+                public int describeContents() {
+                    return 0;
+                }
+
+                @Override
+                public void writeToParcel(Parcel dest, int flags) {
+                    dest.writeString(fb_id);
+                    dest.writeString(first_name);
+                    dest.writeString(gender);
+                }
+
+                @SuppressWarnings("unused")
+                public static final Parcelable.Creator<GuestViewed> CREATOR = new Parcelable.Creator<GuestViewed>() {
+                    @Override
+                    public GuestViewed createFromParcel(Parcel in) {
+                        return new GuestViewed(in);
+                    }
+
+                    @Override
+                    public GuestViewed[] newArray(int size) {
+                        return new GuestViewed[size];
+                    }
+                };
             }
 
             public static class Venue implements Parcelable {

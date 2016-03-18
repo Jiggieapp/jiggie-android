@@ -187,7 +187,13 @@ public class App extends Application {
     public void trackMixPanelEvent(String eventName) { this.trackMixPanelEvent(eventName, new SimpleJSONObject()); }
     public void trackMixPanelEvent(String eventName, SimpleJSONObject json) {
         final String location = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin().getLocation();
-        final String[] locations = TextUtils.isEmpty(location) ? new String[] { "", "" } : location.split(",");
+
+        String[] locations = null;
+        try {
+            locations = TextUtils.isEmpty(location) ? new String[] { "", "" } : location.split(",");
+        }catch (Exception e){
+
+        }
         final ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         final NetworkInfo network = connManager.getActiveNetworkInfo();
 
@@ -207,8 +213,17 @@ public class App extends Application {
         //------------
 
         json.putString("Carrier", this.getSimOperatorName());
-        json.putString("City", locations[0].trim());
-        json.putString("Country", locations[1].trim());
+        try {
+            json.putString("City", locations[0].trim());
+        }catch (Exception e){
+            json.putString("City", Utils.BLANK);
+        }
+
+        try {
+            json.putString("Country", locations[1].trim());
+        }catch (Exception e){
+            json.putString("Country", Utils.BLANK);
+        }
         json.putString("Device Model", Build.MODEL);
         json.putString("Manufacturer", Build.MANUFACTURER);
 
@@ -245,7 +260,7 @@ public class App extends Application {
             }
         }
 
-        /*if(eventName.equals("Sign Up")){
+        if(eventName.equals("Sign Up")){
             getInstanceMixpanel().alias(login.getFb_id(), null);
             setPeopleMixpanel(login, settingModel);
             setSuperPropertiesMixpanel(login, settingModel);
@@ -254,7 +269,69 @@ public class App extends Application {
             setPeopleMixpanel(login, settingModel);
             setSuperPropertiesMixpanel(login, settingModel);
         }
-        getInstanceMixpanel().track(eventName, json);*/
+        getInstanceMixpanel().track(eventName, json);
+    }
+
+    public void trackMixPanelCommerce(String eventName) {
+
+        //USER PART-----------
+        LoginModel login = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin();
+        SettingModel settingModel = AccountManager.loadSetting() == null ? null : AccountManager.loadSetting();
+        setPeopleMixpanelComm(login, settingModel);
+        //END OF USER PART---------
+
+        //EVENT PART--------------
+
+        //END OF EVENT PART-------
+
+    }
+
+    private void setEventMixpanelComm(LoginModel login, SettingModel settingModel){
+        SimpleJSONObject json = new SimpleJSONObject();
+        if(login!=null){
+            json.putString("First Name", login.getUser_first_name());
+            json.putString("Last Name", login.getUser_last_name());
+            json.putString("Location", login.getLocation().toString());
+        }
+    }
+
+    public void setPeopleMixpanelComm(LoginModel login, SettingModel settingModel){
+        getInstanceMixpanel().getPeople().identify(mixpanelAPI.getDistinctId());
+
+        SimpleJSONObject json = new SimpleJSONObject();
+        if(login!=null){
+            json.putString("FB ID", login.getFb_id());
+            json.putString("First Name", login.getUser_first_name());
+            json.putString("Last Name", login.getUser_last_name());
+            json.putString("Device", Build.DEVICE);
+            json.putString("Birthday", login.getBirthday());
+            json.putString("City Country", login.getBirthday());
+
+            final String location = login == null ? null : login.getLocation();
+            String[] locations = null;
+            try {
+                locations = TextUtils.isEmpty(location) ? new String[] { "", "" } : location.split(",");
+            }catch (Exception e){
+
+            }
+            try {
+                json.putString("City Country", locations[0].trim()+" "+locations[1].trim());
+            }catch (Exception e){
+                json.putString("City Country", locations[0].trim());
+            }
+            json.putString("Email", login.getEmail());
+
+            if(settingModel!=null){
+                json.putString("Gender", settingModel.getData().getGender());
+                json.putString("Gender Interest", settingModel.getData().getGender_interest());
+            }
+
+            json.putString("Name and FB ID", login.getUser_first_name()+"_"+login.getUser_last_name()+"_"+login.getFb_id());
+        }
+        json.putString("App Version", getVersionCode(this));
+        json.putString("OS", "Android");
+        json.putString("OS Version", this.getDeviceOSName());
+        getInstanceMixpanel().getPeople().set(json);
     }
 
     public MixpanelAPI getInstanceMixpanel(){

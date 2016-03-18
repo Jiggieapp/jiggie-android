@@ -504,7 +504,7 @@ public final class SummaryModel{
 
                 public boolean isEmpty(){
                     boolean empty = false;
-                    if(masked_card==null||saved_token_id==null||payment_type==null||saved_token_id_expired_at==null){
+                    if(payment_type==null){
                         empty = true;
                     }
                     return empty;

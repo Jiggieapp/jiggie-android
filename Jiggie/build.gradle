@@ -99,4 +99,5 @@ dependencies {
     // explicitly depend on RxJava's latest version for bug fixes and new features.
     compile 'io.reactivex:rxjava:1.1.0'
     compile (name : 'VTAndroidAPI', ext: 'aar')
+    compile 'com.rengwuxian.materialedittext:library:2.1.4'
 }

@@ -46,7 +46,8 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
     private String totalPrice;
     private Dialog dialogLongClick;
 
-    String fb_id = "321321";
+    String fb_id = "321321", payment_type;
+    long order_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,8 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
 
         Intent a = getIntent();
         totalPrice = a.getStringExtra(Common.FIELD_PRICE);
+        order_id = a.getLongExtra(Common.FIELD_ORDER_ID, 0);
+        payment_type = a.getStringExtra(Common.FIELD_PAYMENT_TYPE);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(this);
@@ -105,7 +108,7 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
     }
 
     private void setAdapters(int section2Start, ArrayList<CCScreenModel> dataCredit){
-        adapter = new PaymentMethodAdapter(PaymentMethodActivity.this, this, this, section2Start, dataCredit);
+        adapter = new PaymentMethodAdapter(PaymentMethodActivity.this, this, this, section2Start, dataCredit, order_id, payment_type);
         recyclerView.setAdapter(adapter);
     }
 

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -38,89 +40,78 @@
         android:layout_height="0.5dp"
         android:layout_below="@id/rel_title"/>
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/til_1"
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/edt_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/guest_name"
+        app:met_baseColor="@color/textDarkGray"
+        app:met_primaryColor="@color/skyBlue"
+        app:met_textColorHint="@color/common_plus_signin_btn_text_light_disabled"
+        app:met_errorColor="@android:color/holo_red_light"
         android:layout_below="@id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/padding_standard"
-        android:layout_marginLeft="@dimen/padding_standard"
-        android:layout_marginTop="@dimen/padding_standard_half">
-
-        <EditText
-            android:id="@+id/edt_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="text"
-            android:hint="@string/guest_name"
-            android:textColorHint="@color/common_plus_signin_btn_text_light_disabled"
-            android:textSize="12sp"
-            />
-
-    </android.support.design.widget.TextInputLayout>
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/til_2"
-        android:layout_below="@id/til_1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:textSize="12sp"
         android:layout_marginLeft="@dimen/padding_standard"
         android:layout_marginRight="@dimen/padding_standard"
-        android:layout_marginTop="@dimen/padding_standard_half">
+        android:layout_marginTop="@dimen/padding_standard_half"/>
 
-        <EditText
-            android:id="@+id/edt_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
-            android:hint="@string/guest_email"
-            android:textColorHint="@color/common_plus_signin_btn_text_light_disabled"
-            android:textSize="12sp"/>
-
-    </android.support.design.widget.TextInputLayout>
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/edt_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/guest_email"
+        android:inputType="textEmailAddress"
+        app:met_baseColor="@color/textDarkGray"
+        app:met_primaryColor="@color/skyBlue"
+        app:met_textColorHint="@color/common_plus_signin_btn_text_light_disabled"
+        app:met_errorColor="@android:color/holo_red_light"
+        android:layout_below="@id/edt_name"
+        android:textSize="12sp"
+        android:layout_marginLeft="@dimen/padding_standard"
+        android:layout_marginRight="@dimen/padding_standard"
+        android:layout_marginTop="@dimen/padding_standard_half"/>
 
     <LinearLayout
         android:id="@+id/lin"
-        android:layout_below="@id/til_2"
+        android:layout_below="@id/edt_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginLeft="@dimen/padding_standard"
         android:layout_marginRight="@dimen/padding_standard"
         android:layout_marginTop="@dimen/padding_standard_half">
-        <android.support.design.widget.TextInputLayout
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/edt_62"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/guest_62"
+            app:met_baseColor="@color/textDarkGray"
+            app:met_primaryColor="@color/skyBlue"
+            app:met_textColorHint="@color/common_plus_signin_btn_text_light_disabled"
+            app:met_errorColor="@android:color/holo_red_light"
+            android:layout_below="@id/divider"
+            android:textSize="12sp"
             android:layout_marginRight="@dimen/padding_standard_half"
-            android:layout_weight="0.8">
+            android:layout_marginTop="@dimen/padding_standard_half"
+            android:layout_weight="0.8"
+            android:inputType="number"/>
 
-            <EditText
-                android:id="@+id/edt_62"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="date"
-                android:hint="@string/guest_62"
-                android:textColorHint="@color/common_plus_signin_btn_text_light_disabled"
-                android:textSize="12sp"/>
-
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/edt_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/guest_phone"
+            app:met_baseColor="@color/textDarkGray"
+            app:met_primaryColor="@color/skyBlue"
+            app:met_textColorHint="@color/common_plus_signin_btn_text_light_disabled"
+            app:met_errorColor="@android:color/holo_red_light"
+            android:layout_below="@id/divider"
+            android:textSize="12sp"
             android:layout_marginLeft="@dimen/padding_standard_half"
-            android:layout_weight="0.2">
-
-            <EditText
-                android:id="@+id/edt_phone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:hint="@string/guest_phone"
-                android:textColorHint="@color/common_plus_signin_btn_text_light_disabled"
-                android:textSize="12sp"/>
-
-        </android.support.design.widget.TextInputLayout>
+            android:layout_marginRight="@dimen/padding_standard"
+            android:layout_marginTop="@dimen/padding_standard_half"
+            android:layout_weight="0.2"
+            android:inputType="number"/>
     </LinearLayout>
 
     <TextView
