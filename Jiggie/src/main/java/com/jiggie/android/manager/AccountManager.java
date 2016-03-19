@@ -21,7 +21,6 @@ import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SuccessModel;
 
 import java.io.IOException;
-import java.lang.reflect.Member;
 
 import de.greenrobot.event.EventBus;
 import retrofit.Callback;

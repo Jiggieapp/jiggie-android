@@ -6,6 +6,8 @@ import com.jiggie.android.component.Utils;
 import com.jiggie.android.manager.ChatManager;
 import com.jiggie.android.model.ExceptionModel;
 
+import java.net.SocketTimeoutException;
+
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
@@ -15,7 +17,7 @@ import retrofit.Retrofit;
  */
 public abstract class CustomCallback implements Callback{
     //public Response response;
-
+    private final String TAG = CustomCallback.class.getSimpleName();
 
     @Override
     public void onResponse(Response response, Retrofit retrofit) {
@@ -30,6 +32,10 @@ public abstract class CustomCallback implements Callback{
         if(t instanceof java.net.UnknownHostException)
         {
             onCustomCallbackFailure(App.getInstance().getResources().getString(R.string.no_internet_connection));
+        }
+        else if(t instanceof SocketTimeoutException)
+        {
+            onCustomCallbackFailure(App.getInstance().getResources().getString(R.string.socket_timeout_exception));
         }
         else
         {

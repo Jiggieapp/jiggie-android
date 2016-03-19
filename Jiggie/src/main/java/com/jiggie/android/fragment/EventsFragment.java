@@ -23,7 +23,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -222,8 +221,7 @@ public class EventsFragment extends Fragment
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        this.rootView
-                = inflater.inflate(R.layout.fragment_events, container, false);
+        this.rootView = inflater.inflate(R.layout.fragment_events, container, false);
         return this.rootView;
     }
 

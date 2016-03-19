@@ -133,6 +133,7 @@ public class Utils {
     public final static String URL_VERIFY_PHONE_NUMBER = BASE_URL + "app/v3/user/phone/verification/send/{fb_id}/{phone}";
     public final static String URL_VERIFY_VERIFICATION_CODE = BASE_URL + "app/v3/user/phone/verification/validate/{fb_id}/{token}";
     public final static String URL_WALKTHROUGH = BASE_URL + "app/v3/count_walkthrough";
+    public final static String URL_GET_ORDER_LIST = BASE_URL + "app/v3/product/order_list/{fb_id}";
 
     public final static String URL_APPSFLYER = BASE_URL + "app/v3/appsflyerinfo";
     public final static String URL_MIXPANEL = BASE_URL + "app/v3/user/sync/superproperties/";
@@ -281,4 +282,10 @@ public class Utils {
     public static final String FETCH_CHAT_RECEIVER = "fetch_chat_receiver";
 
     public static final String IS_ON = "is_on";
+
+    public static final String PAYMENT_STATUS_AWAITING_PAYMENT = "awaiting_payment";
+    public static final String PAYMENT_STATUS_EXPIRE = "expire";
+    public static final String PAYMENT_STATUS_PAID = "paid";
+    public static final String PAYMENT_STATUS_VOID = "void";
+    public static final String PAYMENT_STATUS_REFUND = "refund";
 }

@@ -150,7 +150,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 try {
                     Map<String, String> tamp = StringUtility.splitQuery(new URL(data.toString()));
                     event_id = tamp.get("af_sub2");
-                    Utils.d(TAG, "oi null ini eventid nya " + event_id);
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 } catch (MalformedURLException e) {
@@ -220,8 +219,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         this.btnBook.setVisibility(View.GONE);
         this.swipeRefresh.setRefreshing(true);
 
-        Utils.d(TAG, event_id + " " +  AccessToken.getCurrentAccessToken().getUserId() + " "
-            + AccountManager.loadSetting().getData().getGender_interest());
         EventManager.loaderEventDetail(event_id, AccessToken.getCurrentAccessToken().getUserId()
                 , AccountManager.loadSetting().getData().getGender_interest(), TAG);
     }

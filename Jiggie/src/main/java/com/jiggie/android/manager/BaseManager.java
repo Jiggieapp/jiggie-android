@@ -15,7 +15,7 @@ import java.io.IOException;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
-import retrofit.RxJavaCallAdapterFactory;
+//import retrofit.RxJavaCallAdapterFactory;
 
 /**
  * Created by Wandy on 2/10/2016.
@@ -59,7 +59,7 @@ public abstract class BaseManager {
             //OkHttpClient okHttpClient = getHttpClient();
             retrofit = new Retrofit.Builder()
                     .baseUrl(Utils.BASE_URL)
-                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                    //.addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
                     //.client(okHttpClient)
                     .build();
