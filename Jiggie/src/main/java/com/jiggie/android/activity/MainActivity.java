@@ -119,16 +119,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void navigateToHome() {
-        startActivity(new Intent(MainActivity.this, ProductListActivity.class));
 
-        /*final FragmentManager fragmentManager = super.getSupportFragmentManager();
+        final FragmentManager fragmentManager = super.getSupportFragmentManager();
         final int fragmentCount = fragmentManager.getBackStackEntryCount();
         for (int i = 0; i < fragmentCount; i++)
             fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
         final Fragment fragment = new HomeFragment();
         fragment.setArguments(super.getIntent().getExtras());
-        fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();*/
+        fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
     }
 
     @Override

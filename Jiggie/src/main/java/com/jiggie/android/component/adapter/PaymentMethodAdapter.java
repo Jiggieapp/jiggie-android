@@ -25,6 +25,8 @@ import com.jiggie.android.activity.ecommerce.ProductListActivity;
 import com.jiggie.android.model.CCModel;
 import com.jiggie.android.model.CCScreenModel;
 import com.jiggie.android.model.Common;
+import com.jiggie.android.model.EventDetailModel;
+import com.jiggie.android.model.SummaryModel;
 
 import java.util.ArrayList;
 
@@ -46,8 +48,11 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
     private Context context;
     private ArrayList<CCScreenModel> arrDataCredit = new ArrayList<>();
     private String paymentType;
+    EventDetailModel.Data.EventDetail eventDetail;
+    SummaryModel.Data.Product_summary productSummary;
 
-    public PaymentMethodAdapter(Activity a, ViewSelectedListener clickListener, LongClickListener longClickListener, int section2Start, ArrayList<CCScreenModel> arrDataCredit, long order_id, String paymentType) {
+    public PaymentMethodAdapter(Activity a, ViewSelectedListener clickListener, LongClickListener longClickListener, int section2Start, ArrayList<CCScreenModel> arrDataCredit,
+                                long order_id, String paymentType, SummaryModel.Data.Product_summary productSummary, EventDetailModel.Data.EventDetail eventDetail) {
         this.a = a;
         this.clickListener = clickListener;
         this.longClickListener = longClickListener;
@@ -55,6 +60,8 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
         this.arrDataCredit = arrDataCredit;
         this.order_id = order_id;
         this.paymentType = paymentType;
+        this.productSummary = productSummary;
+        this.eventDetail = eventDetail;
     }
 
     @Override
@@ -222,6 +229,8 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
             i.putExtra(Common.FIELD_WALKTHROUGH_PAYMENT, true);
             i.putExtra(Common.FIELD_ORDER_ID, order_id);
             i.putExtra(Common.FIELD_PAYMENT_TYPE, paymentType);
+            i.putExtra(productSummary.getClass().getName(), productSummary);
+            i.putExtra(eventDetail.getClass().getName(), eventDetail);
             a.startActivity(i);
 
         }

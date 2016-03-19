@@ -33,11 +33,13 @@ import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.database.DatabaseConnection;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.model.CommEventMixpanelModel;
 import com.jiggie.android.model.Common;
 import com.android.volley.VolleyError;
 import com.appsflyer.AppsFlyerLib;
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
+import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.SettingModel;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
@@ -272,7 +274,7 @@ public class App extends Application {
         getInstanceMixpanel().track(eventName, json);
     }
 
-    public void trackMixPanelCommerce(String eventName) {
+    public void trackMixPanelCommerce(String eventName, CommEventMixpanelModel commEventMixpanelModel) {
 
         //USER PART-----------
         LoginModel login = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin();
@@ -281,18 +283,67 @@ public class App extends Application {
         //END OF USER PART---------
 
         //EVENT PART--------------
-
+        setEventMixpanelComm(eventName, login, commEventMixpanelModel);
         //END OF EVENT PART-------
 
     }
 
-    private void setEventMixpanelComm(LoginModel login, SettingModel settingModel){
+    private void setEventMixpanelComm(String eventName, LoginModel login, CommEventMixpanelModel commEventMixpanelModel){
         SimpleJSONObject json = new SimpleJSONObject();
         if(login!=null){
             json.putString("First Name", login.getUser_first_name());
             json.putString("Last Name", login.getUser_last_name());
-            json.putString("Location", login.getLocation().toString());
+            final String location = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin().getLocation();
+
+            String[] locations = null;
+            try {
+                locations = TextUtils.isEmpty(location) ? new String[] { "", "" } : location.split(",");
+            }catch (Exception e){
+
+            }
+            String city, country;
+            try {
+                city = locations[0].trim();
+            }catch (Exception e){
+                city = Utils.BLANK;
+            }
+            try {
+                country = locations[1].trim();
+            }catch (Exception e){
+                country = Utils.BLANK;
+            }
+            json.putString("Location", city+" "+country);
+
         }
+
+        if(!eventName.equals(Utils.COMM_ORDER_LIST)){
+            json.putString("Event Name", commEventMixpanelModel.getEventName());
+            json.putString("Event Venue Name", commEventMixpanelModel.getEventVenueName());
+            json.putString("Event Venue City", commEventMixpanelModel.getEventVenueCity());
+            json.putString("Event Start Date", commEventMixpanelModel.getEventStartDate());
+            json.putString("Event End Date", commEventMixpanelModel.getEventEndDate());
+            json.putString("Event Tags", commEventMixpanelModel.getTag().toString());
+            json.putString("Event Description", commEventMixpanelModel.getEventDescription());
+        }
+
+        if(!eventName.equals(Utils.COMM_PRODUCT_LIST)&&!eventName.equals(Utils.COMM_ORDER_LIST)){
+            json.putString("Ticket Name", commEventMixpanelModel.getTicketName());
+            json.putString("Ticket Type", commEventMixpanelModel.getTicketType());
+            json.putString("Ticket Price", commEventMixpanelModel.getTicketPrice());
+            json.putString("Ticket Max Per Guest", commEventMixpanelModel.getTicketMaxPerGuest());
+        }
+
+        if(eventName.equals(Utils.COMM_FINISH_VA)||eventName.equals(Utils.COMM_FINISH)){
+            json.putString("Purchase Quantity", commEventMixpanelModel.getPurchaseQuantity());
+            json.putString("Purchase Amount", commEventMixpanelModel.getPurchaseAmount());
+            json.putString("Purchase Discount", commEventMixpanelModel.getPurchaseDiscount());
+            json.putString("Purchase Payment", commEventMixpanelModel.getPurchasePayment());
+            json.putString("Purchase Quantity", commEventMixpanelModel.getPurchaseQuantity());
+            if(commEventMixpanelModel.isReservation()){
+                json.putString("Total Guest", commEventMixpanelModel.getTotalGuest());
+            }
+        }
+        getInstanceMixpanel().track(eventName, json);
     }
 
     public void setPeopleMixpanelComm(LoginModel login, SettingModel settingModel){

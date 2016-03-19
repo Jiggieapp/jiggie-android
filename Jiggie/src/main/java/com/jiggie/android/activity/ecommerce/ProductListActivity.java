@@ -7,12 +7,16 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.ViewTreeObserver;
 
+import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.ticket.TicketDetailActivity;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarWithDotActivity;
 import com.jiggie.android.component.adapter.ProductListAdapter;
 import com.jiggie.android.manager.CommerceManager;
+import com.jiggie.android.model.CommEventMixpanelModel;
 import com.jiggie.android.model.Common;
+import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.ProductListModel;
 
 import java.util.ArrayList;
@@ -31,12 +35,14 @@ public class ProductListActivity extends ToolbarWithDotActivity
     @Bind(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefresh;
 
-    String eventId = "56b1a0bf89bfed03005c50f0";
+    //String eventId = "56b1a0bf89bfed03005c50f0";
+    String eventId;
     boolean isTwoType = false;
     int section2Start = 0;
     String eventName, venueName, startTime;
 
     private boolean isLoading;
+    EventDetailModel.Data.EventDetail eventDetail;
 
     @Override
     protected int getCurrentStep() {
@@ -49,12 +55,20 @@ public class ProductListActivity extends ToolbarWithDotActivity
         ButterKnife.bind(this);
         super.bindView();
         final Intent intent = getIntent();
-        //eventId = intent.getStringExtra(Common.FIELD_EVENT_ID);
+        eventId = intent.getStringExtra(Common.FIELD_EVENT_ID);
+        eventDetail = intent.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
+        sendMixpanel(eventDetail);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(this);
         swipeRefresh.setOnRefreshListener(this);
         this.isLoading = false;
+    }
+
+    private void sendMixpanel(EventDetailModel.Data.EventDetail eventDetail){
+        CommEventMixpanelModel commEventMixpanelModel = new CommEventMixpanelModel(eventDetail.getTitle(), eventDetail.getVenue_name(), eventDetail.getVenue().getCity(), eventDetail.getStart_datetime_str(),
+                eventDetail.getEnd_datetime_str(), eventDetail.getTags(), eventDetail.getDescription());
+        App.getInstance().trackMixPanelCommerce(Utils.COMM_PRODUCT_LIST, commEventMixpanelModel);
     }
 
     @Override
@@ -69,6 +83,7 @@ public class ProductListActivity extends ToolbarWithDotActivity
         i.putExtra(Common.FIELD_EVENT_NAME, eventName);
         i.putExtra(Common.FIELD_VENUE_NAME, venueName);
         i.putExtra(Common.FIELD_STARTTIME, startTime);
+        i.putExtra(eventDetail.getClass().getName(), eventDetail);
 
 
         if(isTwoType){
@@ -83,7 +98,8 @@ public class ProductListActivity extends ToolbarWithDotActivity
             }
         }else{
             ProductListModel.Data.ProductList.Purchase itemData = (ProductListModel.Data.ProductList.Purchase)object;
-            Log.d("desc",itemData.getDescription());
+            i.putExtra(Common.FIELD_TRANS_TYPE, itemData.getTicket_type());
+            i.putExtra(itemData.getClass().getName(), itemData);
         }
 
         startActivity(i);

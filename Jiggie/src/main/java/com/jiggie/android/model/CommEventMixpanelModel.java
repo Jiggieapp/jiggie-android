@@ -23,6 +23,7 @@ public class CommEventMixpanelModel {
     String purchaseDiscount;
     String purchasePayment;
     String totalGuest;
+    boolean isReservation;
 
     public CommEventMixpanelModel(String eventName, String eventVenueName, String eventVenueCity, String eventStartDate, String eventEndDate, ArrayList<String> tag, String eventDescription){
         this.eventName = eventName;
@@ -51,28 +52,7 @@ public class CommEventMixpanelModel {
 
     public CommEventMixpanelModel(String eventName, String eventVenueName, String eventVenueCity, String eventStartDate, String eventEndDate, ArrayList<String> tag, String eventDescription,
                                   String ticketName, String ticketType, String ticketPrice, String ticketMaxPerGuest, String dateTime, String purchaseQuantity, String purchaseAmount,
-                                  String purchaseDiscount, String purchasePayment){
-        this.eventName = eventName;
-        this.eventVenueName = eventVenueName;
-        this.eventVenueCity = eventVenueCity;
-        this.eventStartDate = eventStartDate;
-        this.eventEndDate = eventEndDate;
-        this.tag = tag;
-        this.eventDescription = eventDescription;
-        this.ticketName = ticketName;
-        this.ticketType = ticketType;
-        this.ticketPrice = ticketPrice;
-        this.ticketMaxPerGuest = ticketMaxPerGuest;
-        this.dateTime = dateTime;
-        this.purchaseQuantity = purchaseQuantity;
-        this.purchaseAmount = purchaseAmount;
-        this.purchaseDiscount = purchaseDiscount;
-        this.purchasePayment = purchasePayment;
-    }
-
-    public CommEventMixpanelModel(String eventName, String eventVenueName, String eventVenueCity, String eventStartDate, String eventEndDate, ArrayList<String> tag, String eventDescription,
-                                  String ticketName, String ticketType, String ticketPrice, String ticketMaxPerGuest, String dateTime, String purchaseQuantity, String purchaseAmount,
-                                  String purchaseDiscount, String purchasePayment, String totalGuest){
+                                  String purchaseDiscount, String purchasePayment, String totalGuest, boolean isResevation){
         this.eventName = eventName;
         this.eventVenueName = eventVenueName;
         this.eventVenueCity = eventVenueCity;
@@ -90,6 +70,7 @@ public class CommEventMixpanelModel {
         this.purchaseDiscount = purchaseDiscount;
         this.purchasePayment = purchasePayment;
         this.totalGuest = totalGuest;
+        this.isReservation = isResevation;
     }
 
     public String getEventName() {
@@ -158,5 +139,9 @@ public class CommEventMixpanelModel {
 
     public String getTotalGuest() {
         return totalGuest;
+    }
+
+    public boolean isReservation() {
+        return isReservation;
     }
 }

@@ -13,8 +13,11 @@ import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.CommerceManager;
+import com.jiggie.android.model.CommEventMixpanelModel;
 import com.jiggie.android.model.Common;
+import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.SucScreenCCModel;
+import com.jiggie.android.model.SummaryModel;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -76,6 +79,7 @@ public class CongratsActivity extends ToolbarActivity {
             @Override
             public void onSuccess(Object object) {
                 SucScreenCCModel sucScreenCCModel = (SucScreenCCModel)object;
+                sendMixpanel(sucScreenCCModel);
                 SucScreenCCModel.Data.Success_screen.Event event = sucScreenCCModel.getData().getSuccess_screen().getEvent();
                 SucScreenCCModel.Data.Success_screen.Summary summary = sucScreenCCModel.getData().getSuccess_screen().getSummary();
                 SucScreenCCModel.Data.Success_screen.Summary.Vt_response vt_response = summary.getVt_response();
@@ -132,5 +136,17 @@ public class CongratsActivity extends ToolbarActivity {
 
             }
         });
+    }
+
+    private void sendMixpanel(SucScreenCCModel sucScreenCCModel){
+        CommEventMixpanelModel commEventMixpanelModel = null;
+        SucScreenCCModel.Data.Success_screen successScreen = sucScreenCCModel.getData().getSuccess_screen();
+        SucScreenCCModel.Data.Success_screen.Event event = sucScreenCCModel.getData().getSuccess_screen().getEvent();
+        SucScreenCCModel.Data.Success_screen.Summary.Product_list productList = successScreen.getSummary().getProduct_list().get(0);
+        commEventMixpanelModel = new CommEventMixpanelModel(event.getTitle(), event.getVenue_name(), event.getLocation(), event.getStart_datetime_str(),
+                event.getEnd_datetime_str(), event.getTags(), event.getDescription(), productList.getName(), productList.getTicket_type(),
+                successScreen.getSummary().getTotal_price(), productList.getMax_buy(), successScreen.getSummary().getCreated_at(), productList.getNum_buy(),
+                successScreen.getSummary().getTotal_price(), "0", successScreen.getType(), Utils.BLANK, false);
+        App.getInstance().trackMixPanelCommerce(Utils.COMM_FINISH, commEventMixpanelModel);
     }
 }

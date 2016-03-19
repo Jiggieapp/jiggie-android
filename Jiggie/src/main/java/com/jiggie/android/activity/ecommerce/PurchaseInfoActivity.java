@@ -33,7 +33,9 @@ import com.jiggie.android.component.activity.ToolbarWithDotActivity;
 import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.model.CCModel;
 import com.jiggie.android.model.CCScreenModel;
+import com.jiggie.android.model.CommEventMixpanelModel;
 import com.jiggie.android.model.Common;
+import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.PostPaymentModel;
 import com.jiggie.android.model.SummaryModel;
 import com.jiggie.android.view.TermsItemView;
@@ -61,6 +63,7 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
     RelativeLayout relPayment;
 
     SummaryModel.Data.Product_summary productSummary;
+    EventDetailModel.Data.EventDetail eventDetail;
     @Bind(R.id.txt_event_name)
     TextView txtEventName;
     @Bind(R.id.txt_event_info)
@@ -115,6 +118,8 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
                 i.putExtra(Common.FIELD_ORDER_ID, order_id);
                 i.putExtra(Common.FIELD_PAYMENT_TYPE, paymentType);
                 i.putExtra(Common.FIELD_PRICE, totalPrice);
+                i.putExtra(productSummary.getClass().getName(), productSummary);
+                i.putExtra(eventDetail.getClass().getName(), eventDetail);
                 startActivityForResult(i, 0);
             }
         });
@@ -130,8 +135,11 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
         venueName = a.getStringExtra(Common.FIELD_VENUE_NAME);
         startTime = a.getStringExtra(Common.FIELD_STARTTIME);
         productSummary = a.getParcelableExtra(SummaryModel.Data.Product_summary.class.getName());
+        eventDetail = a.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
         order_id = productSummary.getOrder_id();
         SummaryModel.Data.Product_summary.Product_list dataProduct = productSummary.getProduct_list().get(0);
+
+        sendMixpanel(productSummary, eventDetail);
 
         SummaryModel.Data.Product_summary.LastPayment lastPayment = productSummary.getLast_payment();
         if(!lastPayment.isEmpty()){
@@ -177,6 +185,13 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
         txtTotalFill.setText(StringUtility.getRupiahFormat(dataProduct.getTotal_price_all()));
 
         initTermView(dataProduct);
+    }
+
+    private void sendMixpanel(SummaryModel.Data.Product_summary productSummary, EventDetailModel.Data.EventDetail eventDetail){
+        CommEventMixpanelModel commEventMixpanelModel = new CommEventMixpanelModel(eventDetail.getTitle(), eventDetail.getVenue_name(), eventDetail.getVenue().getCity(), eventDetail.getStart_datetime_str(),
+                eventDetail.getEnd_datetime_str(), eventDetail.getTags(), eventDetail.getDescription(), productSummary.getProduct_list().get(0).getName(), productSummary.getProduct_list().get(0).getTicket_type(),
+                productSummary.getTotal_price(), productSummary.getProduct_list().get(0).getMax_buy());
+        App.getInstance().trackMixPanelCommerce(Utils.COMM_PURCHASE_CONFIRMATION, commEventMixpanelModel);
     }
 
     private void initTermView(SummaryModel.Data.Product_summary.Product_list dataProduct){
@@ -509,6 +524,8 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
                 }else{
                     i = new Intent(PurchaseInfoActivity.this, HowToPayActivity.class);
                     i.putExtra(Common.FIELD_WALKTHROUGH_PAYMENT, false);
+                    i.putExtra(productSummary.getClass().getName(), productSummary);
+                    i.putExtra(eventDetail.getClass().getName(), eventDetail);
                 }
                 i.putExtra(Common.FIELD_ORDER_ID, order_id);
                 i.putExtra(Common.FIELD_PAYMENT_TYPE, paymentType);

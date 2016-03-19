@@ -8,14 +8,18 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.manager.CommerceManager;
+import com.jiggie.android.model.CommEventMixpanelModel;
 import com.jiggie.android.model.Common;
+import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.SucScreenVABPModel;
 import com.jiggie.android.model.SucScreenWalkthroughModel;
+import com.jiggie.android.model.SummaryModel;
 import com.jiggie.android.view.ContainerStepView;
 import com.jiggie.android.view.StepView;
 
@@ -37,6 +41,9 @@ public class HowToPayActivity extends ToolbarActivity{
     long order_id;
     boolean isWalkthrough;
     String payment_type;
+    EventDetailModel.Data.EventDetail eventDetail;
+    SummaryModel.Data.Product_summary productSummary;
+    SucScreenVABPModel sucScreenVABPModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +53,8 @@ public class HowToPayActivity extends ToolbarActivity{
         Intent a = getIntent();
         isWalkthrough = a.getBooleanExtra(Common.FIELD_WALKTHROUGH_PAYMENT, false);
         order_id = a.getLongExtra(Common.FIELD_ORDER_ID, 0);
+        productSummary = a.getParcelableExtra(SummaryModel.Data.Product_summary.class.getName());
+        eventDetail = a.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
         //payment_type = a.getStringExtra(Common.FIELD_PAYMENT_TYPE);
 
         initView();
@@ -67,6 +76,7 @@ public class HowToPayActivity extends ToolbarActivity{
         });
 
         if(isWalkthrough){
+            sendMixpanel(productSummary, eventDetail);
             rel_view_orders.setVisibility(View.GONE);
             CommerceManager.loaderSucScreenWalkthrough(new CommerceManager.OnResponseListener() {
                 @Override
@@ -99,11 +109,11 @@ public class HowToPayActivity extends ToolbarActivity{
                 }
             });
         }else{
-
             CommerceManager.loaderSucScreenVABP(String.valueOf(order_id), new CommerceManager.OnResponseListener() {
                 @Override
                 public void onSuccess(Object object) {
-                    SucScreenVABPModel sucScreenVABPModel = (SucScreenVABPModel)object;
+                    sucScreenVABPModel = (SucScreenVABPModel)object;
+                    sendMixpanel(sucScreenVABPModel);
                     ArrayList<SucScreenVABPModel.Data.SuccessScreen.StepPayment> stepPayment = sucScreenVABPModel.getData().getSuccess_screen().getStep_payment();
                     txt_t_amount_fill.setText(StringUtility.getRupiahFormat(sucScreenVABPModel.getData().getSuccess_screen().getAmount()));
 
@@ -169,6 +179,23 @@ public class HowToPayActivity extends ToolbarActivity{
         }
 
 
+    }
+
+    private void sendMixpanel(SummaryModel.Data.Product_summary productSummary, EventDetailModel.Data.EventDetail eventDetail){
+        CommEventMixpanelModel commEventMixpanelModel = new CommEventMixpanelModel(eventDetail.getTitle(), eventDetail.getVenue_name(), eventDetail.getVenue().getCity(), eventDetail.getStart_datetime_str(),
+                eventDetail.getEnd_datetime_str(), eventDetail.getTags(), eventDetail.getDescription(), productSummary.getProduct_list().get(0).getName(), productSummary.getProduct_list().get(0).getTicket_type(),
+                productSummary.getTotal_price(), productSummary.getProduct_list().get(0).getMax_buy());
+        App.getInstance().trackMixPanelCommerce(Utils.COMM_VA_INSTRUCTION, commEventMixpanelModel);
+    }
+
+    private void sendMixpanel(SucScreenVABPModel sucScreenVABPModel){
+        SucScreenVABPModel.Data.SuccessScreen successScreen = sucScreenVABPModel.getData().getSuccess_screen();
+        //reservation type not handle yet
+        CommEventMixpanelModel commEventMixpanelModel = new CommEventMixpanelModel(eventDetail.getTitle(), eventDetail.getVenue_name(), eventDetail.getVenue().getCity(), eventDetail.getStart_datetime_str(),
+                eventDetail.getEnd_datetime_str(), eventDetail.getTags(), eventDetail.getDescription(), productSummary.getProduct_list().get(0).getName(), productSummary.getProduct_list().get(0).getTicket_type(),
+                productSummary.getTotal_price(), productSummary.getProduct_list().get(0).getMax_buy(), successScreen.getCreated_at(), productSummary.getProduct_list().get(0).getNum_buy(),
+                successScreen.getAmount(), "0", successScreen.getType(), Utils.BLANK, false);
+        App.getInstance().trackMixPanelCommerce(Utils.COMM_FINISH_VA, commEventMixpanelModel);
     }
 
     @Override

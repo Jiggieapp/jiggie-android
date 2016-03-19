@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.ViewTreeObserver;
 
 import com.google.gson.Gson;
+import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
@@ -21,8 +22,11 @@ import com.jiggie.android.component.adapter.PaymentMethodAdapter;
 import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.model.CCModel;
 import com.jiggie.android.model.CCScreenModel;
+import com.jiggie.android.model.CommEventMixpanelModel;
 import com.jiggie.android.model.Common;
+import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.PostDeleteCCModel;
+import com.jiggie.android.model.SummaryModel;
 
 import java.util.ArrayList;
 
@@ -48,6 +52,8 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
 
     String fb_id = "321321", payment_type;
     long order_id;
+    EventDetailModel.Data.EventDetail eventDetail;
+    SummaryModel.Data.Product_summary productSummary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,12 +66,23 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
         totalPrice = a.getStringExtra(Common.FIELD_PRICE);
         order_id = a.getLongExtra(Common.FIELD_ORDER_ID, 0);
         payment_type = a.getStringExtra(Common.FIELD_PAYMENT_TYPE);
+        productSummary = a.getParcelableExtra(SummaryModel.Data.Product_summary.class.getName());
+        eventDetail = a.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
+
+        sendMixpanel(productSummary, eventDetail);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(this);
         swipeRefresh.setOnRefreshListener(this);
         this.isLoading = false;
 
+    }
+
+    private void sendMixpanel(SummaryModel.Data.Product_summary productSummary, EventDetailModel.Data.EventDetail eventDetail){
+        CommEventMixpanelModel commEventMixpanelModel = new CommEventMixpanelModel(eventDetail.getTitle(), eventDetail.getVenue_name(), eventDetail.getVenue().getCity(), eventDetail.getStart_datetime_str(),
+                eventDetail.getEnd_datetime_str(), eventDetail.getTags(), eventDetail.getDescription(), productSummary.getProduct_list().get(0).getName(), productSummary.getProduct_list().get(0).getTicket_type(),
+                productSummary.getTotal_price(), productSummary.getProduct_list().get(0).getMax_buy());
+        App.getInstance().trackMixPanelCommerce(Utils.COMM_PAYMENT_SELECTION, commEventMixpanelModel);
     }
 
     @Override
@@ -108,7 +125,7 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
     }
 
     private void setAdapters(int section2Start, ArrayList<CCScreenModel> dataCredit){
-        adapter = new PaymentMethodAdapter(PaymentMethodActivity.this, this, this, section2Start, dataCredit, order_id, payment_type);
+        adapter = new PaymentMethodAdapter(PaymentMethodActivity.this, this, this, section2Start, dataCredit, order_id, payment_type, productSummary, eventDetail);
         recyclerView.setAdapter(adapter);
     }
 
@@ -118,6 +135,8 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
             //add new CC
             Intent i = new Intent(PaymentMethodActivity.this, AddCreditCardActivity.class);
             i.putExtra(Common.FIELD_PRICE, totalPrice);
+            i.putExtra(productSummary.getClass().getName(), productSummary);
+            i.putExtra(eventDetail.getClass().getName(), eventDetail);
             startActivityForResult(i, 0);
         }else if(position == (section2Start + 1)){
             //other bank
