@@ -66,10 +66,10 @@
                 android:scaleType="centerCrop"
                 android:id="@+id/img"
                 android:src="@drawable/purple_arrow2x"
+                android:layout_marginRight="@dimen/padding_standard"
                 />
 
             <TextView
-                android:layout_marginLeft="@dimen/padding_standard"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:id="@+id/txt_payment_name"

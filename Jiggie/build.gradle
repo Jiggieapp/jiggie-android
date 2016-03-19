@@ -118,4 +118,5 @@ dependencies {
     compile 'io.reactivex:rxandroid:1.1.0'
     compile 'io.reactivex:rxjava:1.1.0'
     compile (name : 'VTAndroidAPI', ext: 'aar')
+    compile 'com.rengwuxian.materialedittext:library:2.1.4'
 }

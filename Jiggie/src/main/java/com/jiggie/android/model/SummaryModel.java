@@ -56,9 +56,9 @@ public final class SummaryModel{
             public final String total_tip_amount;
             public final String total_adminfee;
             public final String total_price;
-            public final Credit_card credit_card;
+            public final LastPayment last_payment;
 
-            public Product_summary(String code, String order_status, String payment_status, long order_id, String fb_id, String event_id, String event_name, ArrayList<Product_list> product_list, Guest_detail guest_detail, String total_tax_amount, String total_tip_amount, String total_adminfee, String total_price, Credit_card credit_card){
+            public Product_summary(String code, String order_status, String payment_status, long order_id, String fb_id, String event_id, String event_name, ArrayList<Product_list> product_list, Guest_detail guest_detail, String total_tax_amount, String total_tip_amount, String total_adminfee, String total_price, LastPayment last_payment){
                 this.code = code;
                 this.order_status = order_status;
                 this.payment_status = payment_status;
@@ -72,7 +72,7 @@ public final class SummaryModel{
                 this.total_tip_amount = total_tip_amount;
                 this.total_adminfee = total_adminfee;
                 this.total_price = total_price;
-                this.credit_card = credit_card;
+                this.last_payment = last_payment;
             }
 
             public String getCode() {
@@ -127,8 +127,8 @@ public final class SummaryModel{
                 return total_price;
             }
 
-            public Credit_card getCredit_card() {
-                return credit_card;
+            public LastPayment getLast_payment() {
+                return last_payment;
             }
 
             public static final class Product_list implements Parcelable {
@@ -418,41 +418,6 @@ public final class SummaryModel{
                 };
             }
 
-            public static final class Credit_card implements Parcelable {
-
-                public Credit_card(){
-                }
-
-
-
-                protected Credit_card(Parcel in) {
-
-                }
-
-                @Override
-                public int describeContents() {
-                    return 0;
-                }
-
-                @Override
-                public void writeToParcel(Parcel dest, int flags) {
-
-                }
-
-                @SuppressWarnings("unused")
-                public static final Parcelable.Creator<Credit_card> CREATOR = new Parcelable.Creator<Credit_card>() {
-                    @Override
-                    public Credit_card createFromParcel(Parcel in) {
-                        return new Credit_card(in);
-                    }
-
-                    @Override
-                    public Credit_card[] newArray(int size) {
-                        return new Credit_card[size];
-                    }
-                };
-            }
-
             protected Product_summary(Parcel in) {
                 code = in.readString();
                 order_status = in.readString();
@@ -472,7 +437,78 @@ public final class SummaryModel{
                 total_tip_amount = in.readString();
                 total_adminfee = in.readString();
                 total_price = in.readString();
-                credit_card = (Credit_card) in.readValue(Credit_card.class.getClassLoader());
+                last_payment = (LastPayment) in.readValue(LastPayment.class.getClassLoader());
+            }
+
+            public static class LastPayment implements Parcelable {
+                String masked_card;
+                String saved_token_id;
+                String payment_type;
+                String saved_token_id_expired_at;
+
+                public LastPayment(String masked_card, String saved_token_id, String payment_type, String saved_token_id_expired_at){
+                    this.masked_card = masked_card;
+                    this.saved_token_id = saved_token_id;
+                    this.payment_type = payment_type;
+                    this.saved_token_id_expired_at = saved_token_id_expired_at;
+                }
+
+                public String getMasked_card() {
+                    return masked_card;
+                }
+
+                public String getSaved_token_id() {
+                    return saved_token_id;
+                }
+
+                public String getPayment_type() {
+                    return payment_type;
+                }
+
+                public String getSaved_token_id_expired_at() {
+                    return saved_token_id_expired_at;
+                }
+
+                protected LastPayment(Parcel in) {
+                    masked_card = in.readString();
+                    saved_token_id = in.readString();
+                    payment_type = in.readString();
+                    saved_token_id_expired_at = in.readString();
+                }
+
+                @Override
+                public int describeContents() {
+                    return 0;
+                }
+
+                @Override
+                public void writeToParcel(Parcel dest, int flags) {
+                    dest.writeString(masked_card);
+                    dest.writeString(saved_token_id);
+                    dest.writeString(payment_type);
+                    dest.writeString(saved_token_id_expired_at);
+                }
+
+                @SuppressWarnings("unused")
+                public static final Parcelable.Creator<LastPayment> CREATOR = new Parcelable.Creator<LastPayment>() {
+                    @Override
+                    public LastPayment createFromParcel(Parcel in) {
+                        return new LastPayment(in);
+                    }
+
+                    @Override
+                    public LastPayment[] newArray(int size) {
+                        return new LastPayment[size];
+                    }
+                };
+
+                public boolean isEmpty(){
+                    boolean empty = false;
+                    if(payment_type==null){
+                        empty = true;
+                    }
+                    return empty;
+                }
             }
 
             @Override
@@ -500,7 +536,7 @@ public final class SummaryModel{
                 dest.writeString(total_tip_amount);
                 dest.writeString(total_adminfee);
                 dest.writeString(total_price);
-                dest.writeValue(credit_card);
+                dest.writeValue(last_payment);
             }
 
             @SuppressWarnings("unused")
