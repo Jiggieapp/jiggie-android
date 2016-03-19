@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ProductListModel;
 
@@ -94,7 +95,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
             if(position<section2Start){
                 holder.txtTicketName.setText(itemPurchases.getName());
                 holder.txtTicketInfo.setText(itemPurchases.getDescription());
-                holder.txtPrice.setText(itemPurchases.getPrice());
+                holder.txtPrice.setText(StringUtility.getRupiahFormat(itemPurchases.getPrice()));
                 holder.txtPriceInfo.setText(context.getString(R.string.pr_max_purchase)+" "+itemPurchases.getMax_purchase());
                 if (position == 0) {
                     holder.txtSectionTicket.setText(context.getString(R.string.section_ticket));
@@ -106,7 +107,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
             }else{
                 holder.txtTicketName.setText(itemReservations.getName());
                 holder.txtTicketInfo.setText(itemReservations.getDescription());
-                holder.txtPrice.setText(itemReservations.getPrice());
+                holder.txtPrice.setText(StringUtility.getRupiahFormat(itemReservations.getPrice()));
                 holder.txtPriceInfo.setText(context.getString(R.string.pr_max_guest)+" "+itemReservations.getMax_guests());
                 if ((position-section2Start) == 0) {
                     holder.txtSectionTicket.setText(context.getString(R.string.section_table));
@@ -118,7 +119,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         }else{
             holder.txtTicketName.setText(itemPurchases.getName());
             holder.txtTicketInfo.setText(itemPurchases.getDescription());
-            holder.txtPrice.setText(itemPurchases.getPrice());
+            holder.txtPrice.setText(StringUtility.getRupiahFormat(itemPurchases.getPrice()));
             holder.txtPriceInfo.setText(context.getString(R.string.pr_max_purchase)+" "+itemPurchases.getMax_purchase());
             if (position == 0) {
                 holder.txtSectionTicket.setText(context.getString(R.string.section_ticket));

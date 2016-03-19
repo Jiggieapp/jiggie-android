@@ -469,6 +469,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             {
                 Intent i = new Intent(this, ProductListActivity.class);
                 i.putExtra(Common.FIELD_EVENT_ID, this.eventDetail.get_id());
+                i.putExtra(eventDetail.getClass().getName(), eventDetail);
                 startActivity(i);
             }
             else

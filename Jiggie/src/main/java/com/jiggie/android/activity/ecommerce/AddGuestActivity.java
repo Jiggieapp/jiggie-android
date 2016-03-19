@@ -15,7 +15,11 @@ import com.jiggie.android.R;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
+import com.jiggie.android.model.CommEventMixpanelModel;
 import com.jiggie.android.model.Common;
+import com.jiggie.android.model.EventDetailModel;
+import com.jiggie.android.model.ProductListModel;
+import com.jiggie.android.model.SummaryModel;
 
 /**
  * Created by LTE on 2/29/2016.
@@ -25,6 +29,8 @@ public class AddGuestActivity extends ToolbarActivity {
     TextView txt_cancel;
     EditText edt_name, edt_email, edt_62, edt_phone;
     RelativeLayout rel_save;
+    ProductListModel.Data.ProductList.Purchase detailPurchase = null;
+    ProductListModel.Data.ProductList.Reservation detailReservation = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,8 +143,12 @@ public class AddGuestActivity extends ToolbarActivity {
 
     private void preDefined(){
         Intent a = getIntent();
+        String type_transaction = a.getStringExtra(Common.FIELD_TRANS_TYPE);
+
+        EventDetailModel.Data.EventDetail eventDetail = a.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
         edt_name.setText(a.getStringExtra(Common.FIELD_GUEST_NAME));
         edt_email.setText(a.getStringExtra(Common.FIELD_GUEST_EMAIL));
+
         String phone = a.getStringExtra(Common.FIELD_GUEST_PHONE);
         if(!phone.equals(Utils.BLANK)){
            String s62 = phone.substring(0, 2);
@@ -147,6 +157,23 @@ public class AddGuestActivity extends ToolbarActivity {
             edt_phone.setText(phoneN);
         }
 
+        sendMixpanel(a, type_transaction, eventDetail);
+
+    }
+
+    private void sendMixpanel(Intent a, String type_transaction, EventDetailModel.Data.EventDetail eventDetail){
+        CommEventMixpanelModel commEventMixpanelModel = null;
+        if (type_transaction.equals(Common.TYPE_PURCHASE)) {
+            detailPurchase = a.getParcelableExtra(ProductListModel.Data.ProductList.Purchase.class.getName());
+            commEventMixpanelModel = new CommEventMixpanelModel(eventDetail.getTitle(), eventDetail.getVenue_name(), eventDetail.getVenue().getCity(), eventDetail.getStart_datetime_str(),
+                    eventDetail.getEnd_datetime_str(), eventDetail.getTags(), eventDetail.getDescription(), detailPurchase.getName(), detailPurchase.getTicket_type(), detailPurchase.getTotal_price(), detailPurchase.getMax_purchase());
+        } else if (type_transaction.equals(Common.TYPE_RESERVATION)) {
+            detailReservation = a.getParcelableExtra(ProductListModel.Data.ProductList.Reservation.class.getName());
+            commEventMixpanelModel = new CommEventMixpanelModel(eventDetail.getTitle(), eventDetail.getVenue_name(), eventDetail.getVenue().getCity(), eventDetail.getStart_datetime_str(),
+                    eventDetail.getEnd_datetime_str(), eventDetail.getTags(), eventDetail.getDescription(), detailReservation.getName(), detailReservation.getTicket_type(), detailReservation.getTotal_price(), detailReservation.getMax_guests());
+        }
+
+        App.getInstance().trackMixPanelCommerce(Utils.COMM_GUEST_INFO, commEventMixpanelModel);
     }
 
     private boolean isFieldError(String name, String email, String str62, String phone){

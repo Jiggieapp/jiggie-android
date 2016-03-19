@@ -17,7 +17,9 @@ import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.CommerceManager;
+import com.jiggie.android.model.CommEventMixpanelModel;
 import com.jiggie.android.model.Common;
+import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.PostSummaryModel;
 import com.jiggie.android.model.ProductListModel;
@@ -71,8 +73,10 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
     TextView lblTicketCaption;
 
 
-    String eventId, eventName, venueName, startTime, guestName, guestEmail, guestPhone, ticketId;
+    String eventId, eventName, venueName, startTime, guestName, guestEmail, guestPhone, ticketId, type_transaction;
     int max = 0, price;
+    EventDetailModel.Data.EventDetail eventDetail;
+    SummaryModel.Data.Product_summary productSummary;
     ProgressDialog progressDialog;
 
     @Override
@@ -99,7 +103,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                     @Override
                     public void onSuccess(Object object) {
                         SummaryModel dataTemp = (SummaryModel) object;
-                        SummaryModel.Data.Product_summary productSummary = dataTemp.getData().getProduct_summary();
+                        productSummary = dataTemp.getData().getProduct_summary();
 
                         String responses = new Gson().toJson(dataTemp);
                         Log.d("res", responses);
@@ -112,6 +116,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                         i.putExtra(Common.FIELD_VENUE_NAME, venueName);
                         i.putExtra(Common.FIELD_STARTTIME, startTime);
                         i.putExtra(productSummary.getClass().getName(), productSummary);
+                        i.putExtra(eventDetail.getClass().getName(), eventDetail);
 
                         startActivity(i);
                     }
@@ -132,6 +137,13 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                 i.putExtra(Common.FIELD_GUEST_NAME, guestName);
                 i.putExtra(Common.FIELD_GUEST_EMAIL, guestEmail);
                 i.putExtra(Common.FIELD_GUEST_PHONE, guestPhone);
+                i.putExtra(Common.FIELD_TRANS_TYPE, type_transaction);
+                if(type_transaction.equals(Common.TYPE_PURCHASE)){
+                    i.putExtra(detailPurchase.getClass().getName(), detailPurchase);
+                }else if(type_transaction.equals(Common.TYPE_RESERVATION)){
+                    i.putExtra(detailReservation.getClass().getName(), detailReservation);
+                }
+                i.putExtra(eventDetail.getClass().getName(), eventDetail);
                 startActivityForResult(i, 0);
             }
         });
@@ -166,7 +178,8 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
         eventName = a.getStringExtra(Common.FIELD_EVENT_NAME);
         venueName = a.getStringExtra(Common.FIELD_VENUE_NAME);
         startTime = a.getStringExtra(Common.FIELD_STARTTIME);
-        String type_transaction = a.getStringExtra(Common.FIELD_TRANS_TYPE);
+        eventDetail = a.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
+        type_transaction = a.getStringExtra(Common.FIELD_TRANS_TYPE);
         if (type_transaction.equals(Common.TYPE_PURCHASE)) {
             isTicketTransaction = true;
             detailPurchase = a.getParcelableExtra(ProductListModel.Data.ProductList.Purchase.class.getName());
@@ -174,6 +187,8 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
             isTicketTransaction = false;
             detailReservation = a.getParcelableExtra(ProductListModel.Data.ProductList.Reservation.class.getName());
         }
+
+        sendMixpanel(type_transaction, eventDetail);
 
         lblEventName.setText(eventName);
         try {
@@ -231,6 +246,19 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
         txtGuestEmail.setText(guestEmail+" | ");
         txtGuestPhone.setText(guestPhone);
 
+    }
+
+    private void sendMixpanel(String type_transaction, EventDetailModel.Data.EventDetail eventDetail){
+        CommEventMixpanelModel commEventMixpanelModel = null;
+        if (type_transaction.equals(Common.TYPE_PURCHASE)) {
+            commEventMixpanelModel = new CommEventMixpanelModel(eventDetail.getTitle(), eventDetail.getVenue_name(), eventDetail.getVenue().getCity(), eventDetail.getStart_datetime_str(),
+                    eventDetail.getEnd_datetime_str(), eventDetail.getTags(), eventDetail.getDescription(), detailPurchase.getName(), detailPurchase.getTicket_type(), detailPurchase.getTotal_price(), detailPurchase.getMax_purchase());
+        } else if (type_transaction.equals(Common.TYPE_RESERVATION)) {
+            commEventMixpanelModel = new CommEventMixpanelModel(eventDetail.getTitle(), eventDetail.getVenue_name(), eventDetail.getVenue().getCity(), eventDetail.getStart_datetime_str(),
+                    eventDetail.getEnd_datetime_str(), eventDetail.getTags(), eventDetail.getDescription(), detailReservation.getName(), detailReservation.getTicket_type(), detailReservation.getTotal_price(), detailReservation.getMax_guests());
+        }
+
+        App.getInstance().trackMixPanelCommerce(Utils.COMM_PRODUCT_DETAIL, commEventMixpanelModel);
     }
 
     @Override

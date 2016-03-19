@@ -20,14 +20,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.jiggie.android.App;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.R;
 import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.model.CCModel;
 import com.jiggie.android.model.CCScreenModel;
+import com.jiggie.android.model.CommEventMixpanelModel;
 import com.jiggie.android.model.Common;
+import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.PostCCModel;
+import com.jiggie.android.model.SummaryModel;
 
 import java.lang.reflect.Field;
 import java.util.Calendar;
@@ -52,6 +56,8 @@ public class AddCreditCardActivity extends ToolbarActivity {
     String totalPrice;
     private int month, year;
     DatePickerDialog datePickerDialog;
+    EventDetailModel.Data.EventDetail eventDetail;
+    SummaryModel.Data.Product_summary productSummary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +66,17 @@ public class AddCreditCardActivity extends ToolbarActivity {
 
         Intent a = getIntent();
         totalPrice = a.getStringExtra(Common.FIELD_PRICE);
-
+        productSummary = a.getParcelableExtra(SummaryModel.Data.Product_summary.class.getName());
+        eventDetail = a.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
+        sendMixpanel(productSummary, eventDetail);
         initView();
+    }
+
+    private void sendMixpanel(SummaryModel.Data.Product_summary productSummary, EventDetailModel.Data.EventDetail eventDetail){
+        CommEventMixpanelModel commEventMixpanelModel = new CommEventMixpanelModel(eventDetail.getTitle(), eventDetail.getVenue_name(), eventDetail.getVenue().getCity(), eventDetail.getStart_datetime_str(),
+                eventDetail.getEnd_datetime_str(), eventDetail.getTags(), eventDetail.getDescription(), productSummary.getProduct_list().get(0).getName(), productSummary.getProduct_list().get(0).getTicket_type(),
+                productSummary.getTotal_price(), productSummary.getProduct_list().get(0).getMax_buy());
+        App.getInstance().trackMixPanelCommerce(Utils.COMM_CREDIT_CARD, commEventMixpanelModel);
     }
 
     private void initView(){
