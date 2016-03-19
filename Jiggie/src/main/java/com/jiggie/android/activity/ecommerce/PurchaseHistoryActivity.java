@@ -16,8 +16,6 @@ import butterknife.Bind;
  * Created by LTE on 3/6/2016.
  */
 public class PurchaseHistoryActivity extends ToolbarActivity implements OrderHistoryAdapter.ViewSelectedListener {
-
-
     @Bind(R.id.recycler_view)
     RecyclerView recyclerView;
     @Bind(R.id.swipe_refresh)
