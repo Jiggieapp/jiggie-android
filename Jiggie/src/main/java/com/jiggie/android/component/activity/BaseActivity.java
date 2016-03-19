@@ -30,9 +30,17 @@ public abstract class BaseActivity extends AppCompatActivity {
         this.active = true;
     }
 
-    protected int getThemeResource() { return THEME; }
-    protected void bindView() { ButterKnife.bind(this); }
-    protected boolean isActive() { return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) ? !super.isDestroyed() : this.active; }
+    protected int getThemeResource() {
+        return THEME;
+    }
+
+    protected void bindView() {
+        ButterKnife.bind(this);
+    }
+
+    protected boolean isActive() {
+        return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) ? !super.isDestroyed() : this.active;
+    }
 
     @Override
     public void unregisterReceiver(BroadcastReceiver receiver) {

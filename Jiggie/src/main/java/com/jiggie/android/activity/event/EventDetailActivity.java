@@ -25,6 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -106,6 +107,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     @Bind(R.id.txtVenue) TextView txtVenue;
     @Bind(R.id.txtDate) TextView txtDate;
     @Bind(R.id.btnBook) View btnBook;
+    @Bind(R.id.element_containers)
+    LinearLayout elementContainers;
 
     @Bind(R.id.imageGuest1) ImageView imageGuest1;
     @Bind(R.id.imageGuest2) ImageView imageGuest2;
@@ -119,10 +122,15 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     private EventDetailModel.Data.EventDetail eventDetail;
     String event_id = "";
     String event_name = "";
+    String event_venue_name = "";
+    ArrayList<String> event_tags, event_pics;
+    String event_day = "";
+    String event_end = "";
 
     ProgressDialog progressDialog;
     public static final String TAG = EventDetailActivity.class.getSimpleName();
     private File file;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,11 +143,48 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         Intent a = super.getIntent();
         event_id = a.getStringExtra(Common.FIELD_EVENT_ID);
         event_name = a.getStringExtra(Common.FIELD_EVENT_NAME);
+        event_venue_name = a.getStringExtra(Common.FIELD_EVENT_VENUE_NAME);
+        event_tags = a.getStringArrayListExtra(Common.FIELD_EVENT_TAGS);
+        event_day = a.getStringExtra(Common.FIELD_EVENT_DAY);
+        event_end = a.getStringExtra(Common.FIELD_EVENT_DAY_END);
+        event_pics = a.getStringArrayListExtra(Common.FIELD_EVENT_PICS);
+
+        this.imagePagerIndicatorAdapter = new ImagePagerIndicatorAdapter(super.getSupportFragmentManager(), this.imageViewPager);
+        this.imagePagerIndicator.setAdapter(this.imagePagerIndicatorAdapter.getIndicatorAdapter());
 
         if(a != null)
         {
             this.txtVenue.setText("");
-            super.setToolbarTitle("", true);
+
+            if(event_venue_name != null)
+                this.txtVenue.setText(event_venue_name);
+
+            if(event_tags != null)
+                populateTags(event_tags);
+
+            if(event_name != null)
+                super.setToolbarTitle(event_name, true);
+            else super.setToolbarTitle("", true);
+
+            if(event_day != null && event_name != null)
+            {
+                try {
+                    final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse
+                            (event_day);
+                    final Date endDate = Common.ISO8601_DATE_FORMAT_UTC.parse
+                            (event_end);
+                    String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format, Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));
+                    txtDate.setText(simpleDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if(event_pics != null)
+                fillPhotos(event_pics);
+
+            scrollView.setVisibility(View.VISIBLE);
+            elementContainers.setVisibility(View.INVISIBLE);
 
             if(event_id == null || event_id.equalsIgnoreCase("null")){
                 //wandy 17-03-2016
@@ -183,21 +228,27 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         this.swipeRefresh.setOnRefreshListener(this);
 
         this.txtGuestCounter.setVisibility(View.GONE);
-        this.scrollView.setVisibility(View.INVISIBLE);
+        //this.scrollView.setVisibility(View.INVISIBLE);
         this.collapsingToolbarLayout.setTitleEnabled(false);
         this.imageGuests = new ImageView[]{imageGuest1, imageGuest2, imageGuest3, imageGuest4};
 
         final FragmentManager fragmentManager = super.getSupportFragmentManager();
         ((SupportMapFragment)fragmentManager.findFragmentById(R.id.map)).getMapAsync(this);
 
-        this.imagePagerIndicatorAdapter = new ImagePagerIndicatorAdapter(super.getSupportFragmentManager(), this.imageViewPager);
-        this.imagePagerIndicator.setAdapter(this.imagePagerIndicatorAdapter.getIndicatorAdapter());
 
         super.registerReceiver(this.guestInvitedReceiver, new IntentFilter(super.getString(R.string.broadcastGuestInvited)));
 
         if(file!= null && file.exists())
             file.delete();
     }
+
+    /*<LinearLayout
+    android:id="@+id/element_containers"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    </LinearLayout>*/
 
     private static boolean isJiggieUrl(String dataString) {
 
@@ -250,10 +301,17 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 swipeRefresh.setRefreshing(true);
             }
         });
-        //this.swipeRefresh.setRefreshing(true);
 
         EventManager.loaderEventDetail(event_id, AccessToken.getCurrentAccessToken().getUserId()
                 , AccountManager.loadSetting().getData().getGender_interest(), TAG);
+    }
+
+    private void fillPhotos(ArrayList<String> photoArr)
+    {
+        String[] photo = new String[photoArr.size()];
+        photo = photoArr.toArray(photo);
+
+        imagePagerIndicatorAdapter.setImages(photo);
     }
 
     public void onEvent(EventDetailModel message) {
@@ -261,6 +319,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             try {
                 eventDetail = message.getData().getEvents_detail();
                 App.getInstance().trackMixPanelViewEventDetail("View Event Details", eventDetail);
+                elementContainers.setVisibility(View.VISIBLE);
 
                 if (event_name == null) {
                     super.setToolbarTitle(eventDetail.getTitle().toUpperCase(), true);
@@ -280,11 +339,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 final double lon = Double.parseDouble(message.getData().getEvents_detail().getVenue().getLon());
                 final LatLng lat = new LatLng(latt, lon);
 
-                ArrayList<String> photoArr = message.getData().getEvents_detail().getPhotos();
-                String[] photo = new String[photoArr.size()];
-                photo = photoArr.toArray(photo);
+                fillPhotos(message.getData().getEvents_detail().getPhotos());
 
-                imagePagerIndicatorAdapter.setImages(photo);
                 txtDescription.setText(message.getData().getEvents_detail().getDescription());
                 txtAddress.setText(message.getData().getEvents_detail().getVenue().getAddress());
                 txtGuestCounter.setText(String.format("+%s", guestCount - imageGuests.length));
@@ -415,20 +471,24 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     }
 
     private void populateTags() {
+        populateTags(eventDetail.getTags());
+    }
 
+    private void populateTags(ArrayList<String> tags)
+    {
         if(flowLayout.getChildCount()>0){
             flowLayout.removeAllViews();
         }
 
         final LayoutInflater inflater = super.getLayoutInflater();
-        for (String tag : this.eventDetail.getTags()) {
+        for (String tag : tags) {
             final View view = inflater.inflate(R.layout.item_event_tag_detail, this.flowLayout, false);
             final TextView textView = (TextView) view.findViewById(R.id.txtTag);
             this.flowLayout.addView(view);
             textView.setText(tag);
         }
 
-        if (this.eventDetail.getTags().size() > 2) {
+        if (tags.size() > 2) {
             // hack (buggy flow layout always missing 1 last item).
             final View view = inflater.inflate(R.layout.item_event_tag_detail, this.flowLayout, false);
             final TextView textView = (TextView) view.findViewById(R.id.txtTag);
@@ -615,11 +675,11 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                         file = createFile(bmp);
                         subscriber.onNext(file);
                     } catch (InterruptedException e) {
-                        if(progressDialog!= null && progressDialog.isShowing())
+                        if (progressDialog != null && progressDialog.isShowing())
                             progressDialog.dismiss();
                         e.printStackTrace();
                     } catch (ExecutionException e) {
-                        if(progressDialog!= null && progressDialog.isShowing())
+                        if (progressDialog != null && progressDialog.isShowing())
                             progressDialog.dismiss();
                         e.printStackTrace();
                     }
@@ -646,7 +706,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                             }
 
                             i.setType("text/plain");
-                            if(progressDialog!= null && progressDialog.isShowing())
+                            if (progressDialog != null && progressDialog.isShowing())
                                 progressDialog.dismiss();
 
                             EventDetailActivity.this.startActivity(Intent.createChooser
@@ -717,9 +777,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent i = new Intent(this, MainActivity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
-        finish();
+        redirectToHome();
     }
 }

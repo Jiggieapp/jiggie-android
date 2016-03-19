@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
 import com.jiggie.android.component.SimpleTextWatcher;
 import com.jiggie.android.component.Utils;
@@ -488,5 +489,15 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
     protected void onPause() {
         App.getInstance().setIdChatActive("");
         super.onPause();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent i = new Intent(this, MainActivity.class);
+        //i.putExtra("show_background", false);
+        i.putExtra(Common.TO_TAB_CHAT, true);
+        startActivity(i);
+        finish();
     }
 }

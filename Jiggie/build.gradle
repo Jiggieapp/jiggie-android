@@ -43,11 +43,11 @@ android {
     }
     buildTypes {
         debug {
-            //applicationIdSuffix ".debug"
+            applicationIdSuffix ".debug"
             versionNameSuffix '-Dev'
             resValue "string", "app_name", "Jiggie Dev"
             signingConfig signingConfigs.configDebug
-            buildConfigField("String", "BASE_URL", "\"http://api.jiggieapp.com/\"")
+            buildConfigField("String", "BASE_URL", "\"http://api-dev.jiggieapp.com/\"")
         }
         release {
             minifyEnabled false

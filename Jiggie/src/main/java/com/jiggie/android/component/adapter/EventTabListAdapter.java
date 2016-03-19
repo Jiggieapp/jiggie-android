@@ -26,7 +26,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
- * Created by rangg on 03/11/2015.
+ * Created by rangg on 03/11/2015.Re
  */
 public class EventTabListAdapter
         extends RecyclerView.Adapter<EventTabListAdapter.ViewHolder> {
