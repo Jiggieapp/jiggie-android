@@ -14,6 +14,8 @@ import com.jiggie.android.App;
 import com.jiggie.android.BuildConfig;
 import com.jiggie.android.R;
 
+import org.json.JSONObject;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -142,6 +144,8 @@ public class Utils {
     public final static String URL_GET_CC = BASE_URL + "app/v3/product/credit_card/{fb_id}";
     public final static String URL_POST_CC = BASE_URL + "app/v3/product/post_cc";
     public final static String URL_DELETE_CC = BASE_URL + "app/v3/product/delete_cc";
+    public final static String URL_SUCCESS_SCREEN_VABP = BASE_URL + "app/v3/product/success_screen/{order_id}";
+    public final static String URL_SUCCESS_SCREEN_WALKTHROUGH = BASE_URL + "app/v3/product/walkthrough_payment";
 
     public static void d(final String tag, final String value) {
         Log.d(tag, value);
@@ -150,6 +154,17 @@ public class Utils {
     public static final String DATE_TODAY = "today";
     public static final String DATE_TOMORROW = "tomorrow";
     public static final String DATE_UPCOMING = "upcoming";
+
+    public final static String COMM_PRODUCT_LIST = "Product List";
+    public final static String COMM_PRODUCT_DETAIL = "Product Detail";
+    public final static String COMM_GUEST_INFO = "Guest Info";
+    public final static String COMM_PURCHASE_CONFIRMATION = "Purchase Confirmation";
+    public final static String COMM_PAYMENT_SELECTION = "Payment Selection";
+    public final static String COMM_VA_INSTRUCTION = "VA Instruction";
+    public final static String COMM_CREDIT_CARD = "Credit Card";
+    public final static String COMM_FINISH_VA = "Commerce Finish VA";
+    public final static String COMM_FINISH = "Commerce Finish";
+    public final static String COMM_ORDER_LIST = "Order List";
 
     public static final String TAG = Utils.class.getSimpleName();
     //AppsFlyer properties----

@@ -36,6 +36,8 @@ public class Common {
     public static String FIELD_GUEST_PHONE = "about";
     public static String FIELD_PRICE = "price";
     public static String FIELD_PAYMENT_TYPE = "payment_type";
+    public static String FIELD_ORDER_ID = "order_id";
+    public static String FIELD_WALKTHROUGH_PAYMENT = "walkthrough_payment";
     /*public static String FIELD_TICKET_ID = "ticket_id";
     public static String FIELD_TICKET_NAME = "ticket_name";
     public static String FIELD_TICKET_DESC = "ticket_desc";
@@ -69,6 +71,8 @@ public class Common {
     public static final SimpleDateFormat SHORT_DATE_FORMAT_UTC = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
     public static final SimpleDateFormat SERVER_DATE_FORMAT_COMM = new SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault());
+    public static final SimpleDateFormat FORMAT_COMM_TRANSACTION = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+    public static final SimpleDateFormat FORMAT_COMM_TICKET = new SimpleDateFormat("dd MMMM yyyy - HH:mm:ss", Locale.getDefault());
 
     static {
         final TimeZone utcTimeZone = TimeZone.getTimeZone("UTC");

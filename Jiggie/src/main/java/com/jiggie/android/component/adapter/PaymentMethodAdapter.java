@@ -24,6 +24,7 @@ import com.jiggie.android.activity.ecommerce.HowToPayActivity;
 import com.jiggie.android.activity.ecommerce.ProductListActivity;
 import com.jiggie.android.model.CCModel;
 import com.jiggie.android.model.CCScreenModel;
+import com.jiggie.android.model.Common;
 
 import java.util.ArrayList;
 
@@ -38,18 +39,22 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
     private final ViewSelectedListener clickListener;
     private final LongClickListener longClickListener;
     int section2Start;
+    long order_id;
 
     private Activity a;
 
     private Context context;
     private ArrayList<CCScreenModel> arrDataCredit = new ArrayList<>();
+    private String paymentType;
 
-    public PaymentMethodAdapter(Activity a, ViewSelectedListener clickListener, LongClickListener longClickListener, int section2Start, ArrayList<CCScreenModel> arrDataCredit) {
+    public PaymentMethodAdapter(Activity a, ViewSelectedListener clickListener, LongClickListener longClickListener, int section2Start, ArrayList<CCScreenModel> arrDataCredit, long order_id, String paymentType) {
         this.a = a;
         this.clickListener = clickListener;
         this.longClickListener = longClickListener;
         this.section2Start = section2Start;
         this.arrDataCredit = arrDataCredit;
+        this.order_id = order_id;
+        this.paymentType = paymentType;
     }
 
     @Override
@@ -213,7 +218,11 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
         public void onClick(View widget) {
 
             Log.d("How it works", "click");
-            a.startActivity(new Intent(a, HowToPayActivity.class));
+            Intent i = new Intent(a, HowToPayActivity.class);
+            i.putExtra(Common.FIELD_WALKTHROUGH_PAYMENT, true);
+            i.putExtra(Common.FIELD_ORDER_ID, order_id);
+            i.putExtra(Common.FIELD_PAYMENT_TYPE, paymentType);
+            a.startActivity(i);
 
         }
 

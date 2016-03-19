@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -47,10 +49,9 @@ public class AddCreditCardActivity extends ToolbarActivity {
     TextView txt_cancel;
     RelativeLayout rel_save;
 
-    AlertDialog dialog3ds;
-    String tokens;
     String totalPrice;
-    ProgressDialog progressDialog;
+    private int month, year;
+    DatePickerDialog datePickerDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,30 +61,18 @@ public class AddCreditCardActivity extends ToolbarActivity {
         Intent a = getIntent();
         totalPrice = a.getStringExtra(Common.FIELD_PRICE);
 
-        /*edtCcDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatePickerDialog datePickerDialog = createDialogWithoutDateField();
-                datePickerDialog.show();
-            }
-        });
+        initView();
+    }
 
-        edtCcCvv.setError("error message");*/
+    private void initView(){
         edt_cc_name = (EditText)findViewById(R.id.edt_cc_name);
         edt_cc_number = (EditText)findViewById(R.id.edt_cc_number);
         edt_cvv = (EditText)findViewById(R.id.edt_cc_cvv);
         edt_date = (EditText)findViewById(R.id.edt_cc_date);
         txt_cancel = (TextView)findViewById(R.id.txt_cancel);
         rel_save = (RelativeLayout)findViewById(R.id.rel_save);
-        //edt_cvv.setError("error message");
 
-        edt_date.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DatePickerDialog datePickerDialog = createDialogWithoutDateField();
-                datePickerDialog.show();
-            }
-        });
+        datePickerDialog = createDialogWithoutDateField();
 
         txt_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,44 +81,130 @@ public class AddCreditCardActivity extends ToolbarActivity {
             }
         });
 
+        edt_cc_number.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                edt_cc_number.setTextColor(getResources().getColor(R.color.textDarkGray));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        edt_cvv.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                edt_cvv.setTextColor(getResources().getColor(R.color.textDarkGray));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        edt_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!datePickerDialog.isShowing()) {
+                    datePickerDialog.show();
+                }
+            }
+        });
+
+        edt_date.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus && !datePickerDialog.isShowing()) {
+                    datePickerDialog.show();
+                }
+            }
+        });
+
+        edt_date.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                edt_date.setTextColor(getResources().getColor(R.color.textDarkGray));
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         rel_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String cardNumber = edt_cc_number.getText().toString();
                 String cvv = edt_cvv.getText().toString();
-                saveCC(cardNumber, "123", 01, 2020, totalPrice);
+                String date = edt_date.getText().toString();
+                if (!isFieldError(cardNumber, cvv, date)) {
+                    saveCC(cardNumber, cvv, month, year, totalPrice);
+                }
+
+                //saveCC(cardNumber, "123", 01, 2020, totalPrice);
             }
         });
     }
 
+    private DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int years, int monthOfYear, int dayOfMonth) {
+            String months = String.format("%02d", monthOfYear);
+            month = monthOfYear;
+            year = years;
+            edt_date.setText(months+"/"+String.valueOf(year));
+        }
+    };
+
+    private boolean isFieldError(String cardNumber, String cvv, String date){
+        boolean isError = false;
+        if(cardNumber.isEmpty()){
+            isError = true;
+            edt_cc_number.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+            edt_cc_number.setError(Utils.BLANK);
+        }if(cvv.isEmpty()){
+            isError = true;
+            edt_cvv.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+            edt_cvv.setError(Utils.BLANK);
+        }if(date.isEmpty()){
+            isError = true;
+            edt_date.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+            edt_date.setError(Utils.BLANK);
+        }
+        return isError;
+    }
+
     private void saveCC(final String cardNumber, String cvv, int expMonth, int expYear, final String price){
-        initLoadingDialog();
         String maskedCard = cardNumber.substring(0, cardNumber.length()-4)+"-"+cardNumber.substring(cardNumber.length()-4, cardNumber.length());
 
         CCScreenModel.CardDetails cardDetails = new CCScreenModel.CardDetails(cardNumber, cvv, expMonth, expYear, price);
 
         CommerceManager.arrCCScreen.add(new CCScreenModel(new CCModel.Data.Creditcard_information(maskedCard, Utils.BLANK, Utils.BLANK, Utils.TYPE_CC),
                 cardDetails, edt_cc_name.getText().toString()));
-
-        dismissLoadingDialog();
         setResult(RESULT_OK, new Intent());
         finish();
 
 
-    }
-
-    private void initLoadingDialog(){
-        if(progressDialog==null){
-            progressDialog = new ProgressDialog(AddCreditCardActivity.this);
-            progressDialog.setMessage(getString(R.string.loading));
-        }
-
-        progressDialog.show();
-    }
-
-    private void dismissLoadingDialog(){
-        if(progressDialog!=null&progressDialog.isShowing())
-            progressDialog.dismiss();
     }
 
     private DatePickerDialog createDialogWithoutDateField() {
@@ -139,7 +214,7 @@ public class AddCreditCardActivity extends ToolbarActivity {
         final int month = c.get(Calendar.MONTH);
         final int day = c.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog dpd = new DatePickerDialog(AddCreditCardActivity.this, null, year, month, day);
+        DatePickerDialog dpd = new DatePickerDialog(AddCreditCardActivity.this, dateSetListener, year, month, day);
 
         try {
             Field[] datePickerDialogFields = dpd.getClass().getDeclaredFields();

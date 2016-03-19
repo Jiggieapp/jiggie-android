@@ -113,6 +113,42 @@ public class StringUtility {
         }
     }
 
+    public static long getCountdownTime(String timelimit) {
+        try {
+            if (TextUtils.isEmpty(timelimit))
+                return 0;
+
+            final Date date = Common.ISO8601_DATE_FORMAT.parse(timelimit);
+            final Calendar cal = Calendar.getInstance();
+
+            cal.setTime(date);
+
+            int offset = cal.getTimeZone().getOffset(cal.getTimeInMillis());;
+
+            long timeF = cal.getTimeInMillis() + offset;
+            long timeNow = System.currentTimeMillis();
+            long countdownTime = (timeF - timeNow);
+
+            return countdownTime;
+        } catch (ParseException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    public static String getTimeFormat(long hour, long minute, long second){
+
+        /*long hour = TimeUnit.MILLISECONDS.toHours(milisecond);
+        long minute = (TimeUnit.MILLISECONDS.toMinutes(milisecond)/hour);
+        long second = (TimeUnit.MILLISECONDS.toSeconds(milisecond)/minute);*/
+
+        /*long hour = ((milisecond/1000)/60)/60;
+        long minute = ((milisecond/1000)/60)/3;
+        long second = TimeUnit.MILLISECONDS.toSeconds(minute);*/
+
+        String time = String.format("%02d:%02d:%02d",hour,minute,second);
+        return time;
+    }
+
     //added by Wandy 12-02-2016
     public static String getAge3(String dateBirth) {
         try {
@@ -147,14 +183,6 @@ public class StringUtility {
             query_pairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"), URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
         }
         return query_pairs;
-    }
-
-    public static String getTimeFormat(long milisecond){
-        String time = String.format("%02d:%02d:%02d",
-                TimeUnit.MILLISECONDS.toHours(milisecond),
-                TimeUnit.MILLISECONDS.toMinutes(milisecond),
-                TimeUnit.MILLISECONDS.toSeconds(milisecond));
-        return time;
     }
 
     public static String getRupiahFormat(String number) {
