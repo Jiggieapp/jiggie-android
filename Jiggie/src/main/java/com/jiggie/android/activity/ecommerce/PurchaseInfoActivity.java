@@ -170,7 +170,7 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
         } catch (ParseException e) {
             throw new RuntimeException(App.getErrorMessage(e), e);
         }
-        txtTikTitle.setText(dataProduct.getName() + " Ticket (" + dataProduct.getNum_buy() + ")");
+        txtTikTitle.setText(dataProduct.getName() + " Ticket (" + dataProduct.getNum_buy() + "x)");
         txtTikFill.setText(StringUtility.getRupiahFormat(dataProduct.getTotal_price()));
         txtFeeFill.setText(StringUtility.getRupiahFormat(dataProduct.getAdmin_fee()));
         txtTaxFill.setText(StringUtility.getRupiahFormat(dataProduct.getTax_amount()));

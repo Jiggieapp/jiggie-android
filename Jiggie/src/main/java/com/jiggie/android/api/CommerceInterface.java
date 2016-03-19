@@ -7,6 +7,7 @@ import com.jiggie.android.model.PostDeleteCCModel;
 import com.jiggie.android.model.PostPaymentModel;
 import com.jiggie.android.model.PostSummaryModel;
 import com.jiggie.android.model.ProductListModel;
+import com.jiggie.android.model.SucScreenCCModel;
 import com.jiggie.android.model.SucScreenVABPModel;
 import com.jiggie.android.model.SucScreenWalkthroughModel;
 import com.jiggie.android.model.Success2Model;
@@ -44,6 +45,9 @@ public interface CommerceInterface {
 
     @GET(Utils.URL_SUCCESS_SCREEN_VABP)
     Call<SucScreenVABPModel> getSucScreenVABP(@Path("order_id") String order_id);
+
+    @GET(Utils.URL_SUCCESS_SCREEN_VABP)
+    Call<SucScreenCCModel> getSucScreenCC(@Path("order_id") String order_id);
 
     @GET(Utils.URL_SUCCESS_SCREEN_WALKTHROUGH)
     Call<SucScreenWalkthroughModel> getSucScreenWalkthrough();

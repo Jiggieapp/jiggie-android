@@ -71,6 +71,8 @@ public class Common {
     public static final SimpleDateFormat SHORT_DATE_FORMAT_UTC = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
     public static final SimpleDateFormat SERVER_DATE_FORMAT_COMM = new SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault());
+    public static final SimpleDateFormat FORMAT_COMM_TRANSACTION = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+    public static final SimpleDateFormat FORMAT_COMM_TICKET = new SimpleDateFormat("dd MMMM yyyy - HH:mm:ss", Locale.getDefault());
 
     static {
         final TimeZone utcTimeZone = TimeZone.getTimeZone("UTC");

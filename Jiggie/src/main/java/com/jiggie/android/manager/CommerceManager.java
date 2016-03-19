@@ -76,6 +76,10 @@ public class CommerceManager {
         getInstance().getSucScreenVABP(order_id).enqueue(callback);
     }
 
+    private static void getSuccessScreenCC(String order_id, Callback callback) throws IOException {
+        getInstance().getSucScreenCC(order_id).enqueue(callback);
+    }
+
     private static void getSuccessScreenWalkthrough(Callback callback) throws IOException {
         getInstance().getSucScreenWalkthrough().enqueue(callback);
     }
@@ -299,6 +303,36 @@ public class CommerceManager {
     public static void loaderSucScreenWalkthrough(final OnResponseListener onResponseListener){
         try {
             getSuccessScreenWalkthrough(new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+
+                    String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);
+
+                    int responseCode = response.code();
+                    if (responseCode == Utils.CODE_SUCCESS) {
+                        onResponseListener.onSuccess(response.body());
+                    } else {
+                        onResponseListener.onFailure(responseCode, Utils.RESPONSE_FAILED);
+                    }
+
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    Log.d("Failure", t.toString());
+                    onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+                }
+            });
+        }catch (IOException e){
+            Log.d("Exception", e.toString());
+            onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
+        }
+    }
+
+    public static void loaderSucScreenCC(String order_id, final OnResponseListener onResponseListener){
+        try {
+            getSuccessScreenCC(order_id, new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
