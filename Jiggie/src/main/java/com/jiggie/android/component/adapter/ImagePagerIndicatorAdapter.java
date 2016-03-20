@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.Common;
@@ -123,7 +124,11 @@ public class ImagePagerIndicatorAdapter extends FragmentPagerAdapter {
             super.onActivityCreated(savedInstanceState);
             final String url = super.getArguments().getString(Common.BUNDLE_IMAGE);
 
-            Glide.with(this).load(url).centerCrop().into(this.imageView);
+            Glide.with(this)
+                    .load(url)
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .centerCrop()
+                    .into(this.imageView);
         }
     }
 

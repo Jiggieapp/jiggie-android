@@ -160,7 +160,10 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 this.txtVenue.setText(event_venue_name);
 
             if(event_tags != null)
+            {
                 populateTags(event_tags);
+            }
+
 
             if(event_name != null)
                 super.setToolbarTitle(event_name, true);
