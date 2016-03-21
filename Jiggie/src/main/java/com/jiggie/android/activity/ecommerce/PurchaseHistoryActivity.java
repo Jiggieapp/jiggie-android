@@ -98,8 +98,12 @@ public class PurchaseHistoryActivity extends ToolbarActivity
 
     @Override
     public void onRefresh() {
-        this.swipeRefresh.setRefreshing(true);
-        loadOrderList();
+        swipeRefresh.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefresh.setRefreshing(true);
+            }
+        });
     }
 
     @Override
