@@ -46,7 +46,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat, parent, false));
+        return new ViewHolder(LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_chat, parent, false));
     }
 
     public void clear(boolean notify) {
@@ -65,7 +66,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         try {
             final Chat item = this.items.get(position);
-            holder.txtMessage.setText(item.getMessage());
+            holder.txtMessage.setText(item.getMessage().trim());
             holder.txtLeftTime.setText(item.getSimpleDate());
             holder.txtRightTime.setText(item.getSimpleDate());
             holder.imageView.setVisibility(item.isFromYou() ? View.GONE : View.VISIBLE);
@@ -80,6 +81,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
             if (!item.isFromYou()) {
 
                 //Added by Aga 12-2-2016---
+                //holder.txtMessage.setGravity(Gravity.RIGHT);
                 String urlImage;
                 if(this.profileImage!=null){
                     urlImage = this.profileImage;

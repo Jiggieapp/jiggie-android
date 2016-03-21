@@ -220,8 +220,6 @@ public class SignInFragment extends Fragment {
         public void onCompleted(JSONObject object, GraphResponse response) {
 
             String c = object.toString();
-
-
             if (getContext() == null) {
                 // fragment already destroyed
                 return;
@@ -238,9 +236,9 @@ public class SignInFragment extends Fragment {
 
                 //Added by Aga 2-2-2016
                 LoginModel loginModel = new LoginModel();
-                loginModel.setVersion("1.1.0");
-                //String v = App.getVersionName(getActivity());
-                //loginModel.setVersion(v);
+                //loginModel.setVersion("1.1.0");
+                String v = App.getVersionName(getActivity());
+                loginModel.setVersion(v);
                 loginModel.setUser_first_name(object.optString("first_name"));
                 loginModel.setAbout(object.optString("bio"));
                 loginModel.setApn_token(gcmId);
@@ -258,7 +256,9 @@ public class SignInFragment extends Fragment {
                 loginModel.setDevice_type("2");
                 //------------
 
-                String sd = String.valueOf(new Gson().toJson(loginModel));
+                loginModel.setDevice_id(Utils.DEVICE_ID);
+
+                //String sd = String.valueOf(new Gson().toJson(loginModel));
 
                 AccountManager.loaderLogin(loginModel);
 
@@ -287,7 +287,8 @@ public class SignInFragment extends Fragment {
         progressDialog.dismiss();
 
         AccountManager.saveSetting(message);
-        setupWalkthrough(message.is_new_user(), message.isShow_walkthrough());
+
+        //setupWalkthrough(message.is_new_user(), message.isShow_walkthrough());
 
         if (App.getSharedPreferences().getBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, false)&&!message.is_new_user()) {
             app.trackMixPanelEvent("Log In");
@@ -312,7 +313,7 @@ public class SignInFragment extends Fragment {
     }
 
     //must use unit test
-    private void setupWalkthrough(boolean isNewUser, boolean isShowWalkthrough){
+    /*private void setupWalkthrough(boolean isNewUser, boolean isShowWalkthrough){
         if(isNewUser){
             App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, true).commit();
             App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_SOCIAL, true).commit();
@@ -328,13 +329,15 @@ public class SignInFragment extends Fragment {
                 App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_SOCIAL, wkSocial).commit();
                 App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_CHAT, wkChat).commit();
 
-            }else{
+            }
+            else{
                 App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, false).commit();
                 App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_SOCIAL, false).commit();
                 App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_CHAT, false).commit();
             }
         }
-    }
+    }*/
+
 
     @Override
     public void onDestroy() {

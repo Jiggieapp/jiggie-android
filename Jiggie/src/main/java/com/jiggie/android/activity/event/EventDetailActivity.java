@@ -40,6 +40,7 @@ import com.jiggie.android.component.adapter.ImagePagerIndicatorAdapter;
 import com.jiggie.android.component.volley.SimpleVolleyRequestListener;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
+import com.jiggie.android.fragment.SocialTabFragment;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.manager.GuestManager;
@@ -135,7 +136,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         EventBus.getDefault().register(this);
 
         Intent a = super.getIntent();
-
         event_id = a.getStringExtra(Common.FIELD_EVENT_ID);
         event_name = a.getStringExtra(Common.FIELD_EVENT_NAME);
 
@@ -145,6 +145,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             super.setToolbarTitle("", true);
 
             if(event_id==null){
+
                 Uri data = a.getData();
                 try {
                     Map<String, String> tamp = StringUtility.splitQuery(new URL(data.toString()));
@@ -154,6 +155,10 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 }
+            }
+            else
+            {
+                Utils.d(TAG, "oi tidak null ini eventid nya");
             }
         }
 
@@ -176,7 +181,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         this.imagePagerIndicator.setAdapter(this.imagePagerIndicatorAdapter.getIndicatorAdapter());
 
         super.registerReceiver(this.guestInvitedReceiver, new IntentFilter(super.getString(R.string.broadcastGuestInvited)));
-        App.getInstance().trackMixPanelEvent("View Event Details");
+
         if(file!= null && file.exists())
             file.delete();
     }
@@ -222,6 +227,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         if (message.getFrom().equalsIgnoreCase(TAG)) {
             try {
                 eventDetail = message.getData().getEvents_detail();
+                App.getInstance().trackMixPanelViewEventDetail("View Event Details", eventDetail);
 
                 if (event_name == null) {
                     super.setToolbarTitle(eventDetail.getTitle().toUpperCase(), true);
@@ -253,6 +259,9 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 txtGuestCount.setText(getResources().getQuantityString(R.plurals.guest_count, guestCount, guestCount));
 
                 if (guestCount > 0) {
+                    Intent intent = new Intent(SocialTabFragment.TAG);
+                    sendBroadcast(intent);
+
                     final int width = imageGuest1.getWidth() * 2;
                     guestCount = guestCount > imageGuests.length ? imageGuests.length : guestCount;
 
@@ -361,7 +370,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         }else{
             if (isActive()) {
                 //if(progressDialog!=null&&progressDialog.isShowing()){
-                    progressDialog.dismiss();
+                progressDialog.dismiss();
                 //}
 
                 if(!message.getMessage().equals(Utils.RESPONSE_FAILED + " " + "empty data")){
@@ -542,7 +551,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
     private void shareEvent() throws UnsupportedEncodingException {
         if (this.shareLinkModel != null) {
-            App.getInstance().trackMixPanelEvent("Share Event");
+            App.getInstance().trackMixPanelViewEventDetail("Share Event", eventDetail);
             /*Utils.d(TAG, Build.VERSION.SDK_INT + " " + Build.VERSION_CODES.LOLLIPOP_MR1);
             if (android.os.Build.VERSION.SDK_INT
                     < Build.VERSION_CODES.LOLLIPOP_MR1) {

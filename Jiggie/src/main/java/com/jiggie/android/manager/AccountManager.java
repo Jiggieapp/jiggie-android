@@ -90,8 +90,17 @@ public class AccountManager extends BaseManager{
                     Utils.d(TAG, responses);
 
                     if (response.code() == Utils.CODE_SUCCESS) {
-
                         LoginResultModel dataLogin = (LoginResultModel) response.body();
+
+                        //Added by Aga 29-2-2015-----
+                        //boolean a = dataLogin.getData().getLogin().getShow_walkthrough_new().isEvent();
+                        //boolean b = dataLogin.getData().getLogin().getShow_walkthrough_new().isChat();
+                        // c = dataLogin.getData().getLogin().getShow_walkthrough_new().isSocial();
+                        App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, dataLogin.getData().getLogin().getShow_walkthrough_new().isEvent()).commit();
+                        App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_SOCIAL, dataLogin.getData().getLogin().getShow_walkthrough_new().isSocial()).commit();
+                        App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_CHAT, dataLogin.getData().getLogin().getShow_walkthrough_new().isChat()).commit();
+                        //-------------
+
                         SettingModel dataTemp = setSettingModelFromLogin(dataLogin);
 
                         EventBus.getDefault().post(dataTemp);
@@ -102,12 +111,10 @@ public class AccountManager extends BaseManager{
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SIGN_IN, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         }catch (IOException e){
-            Utils.d("exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SIGN_IN, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
@@ -117,11 +124,9 @@ public class AccountManager extends BaseManager{
             postMemberSetting(memberSettingModel, new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
-                    /*String responses = new Gson().toJson(response.body());
-                    Utils.d("res", responses);*/
-
                     if (response.code() == Utils.CODE_SUCCESS) {
                         Success2Model dataTemp = (Success2Model) response.body();
+                        dataTemp.setFrom(Utils.FROM_PROFILE_SETTING);
                         EventBus.getDefault().post(dataTemp);
                         AccountManager.saveMemberSetting(memberSettingModel);
 
@@ -134,13 +139,10 @@ public class AccountManager extends BaseManager{
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
         } catch (IOException e){
-            Utils.d(TAG, "memberSetting " + new Gson().toJson(memberSettingModel));
-            Utils.d("exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
@@ -153,6 +155,7 @@ public class AccountManager extends BaseManager{
                     /*String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);*/
                     if (response.code() == Utils.CODE_SUCCESS) {
+                        //Utils.d(TAG, "response " +  Utils.print(response));
                         MemberInfoModel dataTemp = (MemberInfoModel) response.body();
                         EventBus.getDefault().post(dataTemp);
                     } else {
@@ -162,7 +165,6 @@ public class AccountManager extends BaseManager{
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_DETAIL, Utils.MSG_EXCEPTION + t.toString()));
                 }
             });
@@ -177,11 +179,14 @@ public class AccountManager extends BaseManager{
             getSetting(fb_id, new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
-                    String responses = new Gson().toJson(response.body());
-                    Utils.d("res", responses);
+                    Utils.d(TAG, "responseresponse " + Utils.print(response));
+
                     if (response.code() == Utils.CODE_SUCCESS) {
                         MemberSettingResultModel data = (MemberSettingResultModel) response.body();
-                        App.getInstance().savePreference(Utils.MEMBER_SETTING_MODEL, new Gson().toJson(response.body()));
+                        MemberSettingModel temp = new MemberSettingModel(data);
+                        saveMemberSetting(temp);
+                        /*App.getInstance().savePreference(Utils.MEMBER_SETTING_MODEL
+                                , new Gson().toJson(response.body()));*/
 
                         SettingModel dataTemp = setSettingModelFromMemberSetting(data);
                         EventBus.getDefault().post(dataTemp);
@@ -228,18 +233,6 @@ public class AccountManager extends BaseManager{
         }
     }
 
-    public static void saveSetting(SettingModel settingModel){
-        String model = new Gson().toJson(settingModel);
-        App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
-                .putString(Utils.SETTING_MODEL, model).apply();
-    }
-
-    private static void saveMemberSetting(MemberSettingModel memberSettingModel) {
-        String model = new Gson().toJson(memberSettingModel);
-        App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
-                .putString(Utils.MEMBER_SETTING_MODEL, model).apply();
-    }
-
     private static void saveTagsList()
     {
 
@@ -268,7 +261,32 @@ public class AccountManager extends BaseManager{
     {
         MemberSettingModel memberSettingModel = new Gson().fromJson(App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING,
                 Context.MODE_PRIVATE).getString(Utils.MEMBER_SETTING_MODEL, ""), MemberSettingModel.class);
+        if(memberSettingModel.getFb_id() == null)
+            memberSettingModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
         return memberSettingModel;
+    }
+
+    /*public static MemberSettingResultModel loadMemberSetting()
+    {
+        MemberSettingResultModel memberSettingModel
+                = new Gson().fromJson(App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING,
+                Context.MODE_PRIVATE).getString(Utils.MEMBER_SETTING_MODEL, ""), MemberSettingResultModel.class);
+        return memberSettingModel;
+    }*/
+
+    private static void saveMemberSetting(MemberSettingModel memberSettingModel) {
+        /*if(memberSettingModel.getFb_id() == null)
+            memberSettingModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
+        */
+        String model = new Gson().toJson(memberSettingModel);
+        App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
+                .putString(Utils.MEMBER_SETTING_MODEL, model).apply();
+    }
+
+    public static void saveSetting(SettingModel settingModel){
+        String model = new Gson().toJson(settingModel);
+        App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
+                .putString(Utils.SETTING_MODEL, model).apply();
     }
 
     private static void getUserTagList(Callback callback)
@@ -312,7 +330,8 @@ public class AccountManager extends BaseManager{
         model.setHelp_phone(login.getHelp_phone());
         model.setMatchme(login.isMatchme());
         model.setDevice_type(login.getDevice_type());
-        model.setShow_walkthrough(login.isShow_walkthrough());
+        //model.setShow_walkthrough(login.isShow_walkthrough());
+        model.setShow_walkthrough(false);
 
         return model;
     }

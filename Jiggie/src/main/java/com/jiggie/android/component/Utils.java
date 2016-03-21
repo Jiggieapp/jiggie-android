@@ -2,6 +2,7 @@ package com.jiggie.android.component;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.util.Log;
 import android.widget.ImageView;
@@ -10,8 +11,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.gson.Gson;
 import com.jiggie.android.App;
+import com.jiggie.android.BuildConfig;
 import com.jiggie.android.R;
-import com.squareup.okhttp.Response;
 
 import org.json.JSONObject;
 
@@ -20,6 +21,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
+import retrofit.Response;
 
 /**
  * Created by LTE on 1/29/2016.
@@ -46,8 +49,12 @@ public class Utils {
     public static String FROM_SETUP_TAGS = "setup_tags";
     public static String FROM_GUEST_CONNECT = "guest_connect";
     public static String FROM_VERIFY_VERIFICATION_CODE = "verify_verification_code";
+    public static String FROM_WALKTHROUGH = "walkthrough";
     public static String FROM_PRODUCT_LIST = "product_list";
     public static String FROM_SUMMARY = "summary";
+    public static String FROM_COMPLETING_WALKTHROUGH_LOCATION = "complete_walkthrough_location";
+    public static String FROM_APPSFLYER = "appsflyer";
+    public static String FROM_MIXPANEL = "mixpanel";
 
     public static boolean SHOW_WALKTHROUGH_EVENT = true;
     public static boolean SHOW_WALKTHROUGH_SOCIAL = true;
@@ -55,6 +62,9 @@ public class Utils {
     public static String SET_WALKTHROUGH_EVENT = "walkthrough_event";
     public static String SET_WALKTHROUGH_SOCIAL = "walkthrough_social";
     public static String SET_WALKTHROUGH_CHAT = "walkthrough_chat";
+    public static String TAB_EVENT = "event";
+    public static String TAB_CHAT = "chat";
+    public static String TAB_SOCIAL = "social";
 
     //ERROR CODE & MESSAGE
     //public static String MSG_EXCEPTION = "Failed: ";
@@ -79,12 +89,9 @@ public class Utils {
     public static String PREFERENCE_TAGLIST = "taglist";
     public static String TAGLIST_MODEL = "taglist_model";
     public static String IS_FIRST_RUN = "is_first_run";
-
-    //AppsFlyer properties----
-    public static String AFinstall_type = "";
-    public static String AFcampaign = "";
-    public static String AFmedia_source = "";
-    //------------------------
+    public static String IS_NEED_TO_BE_REDIRECTED_TO_EVENT_DETAIL
+            = "is_already_redirected_to_event_detail";
+    public static String DEVICE_ID = "";
 
     //Ecommerce var-----------
     public static String TYPE_CC = "cc";
@@ -99,8 +106,9 @@ public class Utils {
     }
     //-----
 
-    public final static String BASE_URL = "http://api-dev.jiggieapp.com/";
+    //public final static String BASE_URL = "http://api-dev.jiggieapp.com/";
     //public final static String BASE_URL = "http://api.jiggieapp.com/";
+    public final static String BASE_URL = BuildConfig.BASE_URL;
     public final static String URL_EVENTS = BASE_URL + "app/v3/events/list/{fb_id}";
 
     public final static String URL_LOGIN = BASE_URL + "app/v3/login";
@@ -124,6 +132,11 @@ public class Utils {
     public final static String URL_ADD_CHAT = BASE_URL + "app/v3/messages/add";
     public final static String URL_VERIFY_PHONE_NUMBER = BASE_URL + "app/v3/user/phone/verification/send/{fb_id}/{phone}";
     public final static String URL_VERIFY_VERIFICATION_CODE = BASE_URL + "app/v3/user/phone/verification/validate/{fb_id}/{token}";
+    public final static String URL_WALKTHROUGH = BASE_URL + "app/v3/count_walkthrough";
+    public final static String URL_GET_ORDER_LIST = BASE_URL + "app/v3/product/order_list/{fb_id}";
+
+    public final static String URL_APPSFLYER = BASE_URL + "app/v3/appsflyerinfo";
+    public final static String URL_MIXPANEL = BASE_URL + "app/v3/user/sync/superproperties/";
 
     public final static String URL_PRODUCT_LIST = BASE_URL + "app/v3/product/list/{event_id}";
     public final static String URL_SUMMARY = BASE_URL + "app/v3/product/summary";
@@ -154,6 +167,18 @@ public class Utils {
     public final static String COMM_ORDER_LIST = "Order List";
 
     public static final String TAG = Utils.class.getSimpleName();
+    //AppsFlyer properties----
+    public static String AFinstall_type = "";
+    public static String AFcampaign = "";
+    public static String AFmedia_source = "";
+
+    public static String AFclick_time = "";
+    public static String AFinstall_time = "";
+    public static String AFsub1 = "";
+    public static String AFsub2 = "";
+
+    public static String AF_ORGANIC = "Organic";
+    //------------------------
 
     public static String calculateTime(String date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -162,7 +187,6 @@ public class Utils {
         try {
             Date d1 = format.parse(date);
             Long current = new Date().getTime();
-            Date midnight = new Date(current - current % (24 * 60 * 60 * 1000));
 
             Calendar c = Calendar.getInstance();
             c.add(Calendar.DAY_OF_MONTH, 1);
@@ -241,4 +265,27 @@ public class Utils {
     public static void loadImage(Object object, ImageView target, DiskCacheStrategy cacheStrategy) {
         Glide.with(App.getInstance().getApplicationContext()).load(object).diskCacheStrategy(cacheStrategy).into(target);
     }
+
+    public static int getVersion(Context context) {
+        int v = 0;
+        try {
+            v = context.getPackageManager().getPackageInfo
+                    (context.getPackageName(), 0).versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            // Huh? Really?
+        }
+        return v;
+    }
+
+    //broadcast receiver
+    public static final String CHECK_NEW_MESSAGE_RECEIVER = "check_new_message_receiver";
+    public static final String FETCH_CHAT_RECEIVER = "fetch_chat_receiver";
+
+    public static final String IS_ON = "is_on";
+
+    public static final String PAYMENT_STATUS_AWAITING_PAYMENT = "awaiting_payment";
+    public static final String PAYMENT_STATUS_EXPIRE = "expire";
+    public static final String PAYMENT_STATUS_PAID = "paid";
+    public static final String PAYMENT_STATUS_VOID = "void";
+    public static final String PAYMENT_STATUS_REFUND = "refund";
 }

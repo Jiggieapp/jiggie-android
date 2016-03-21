@@ -32,6 +32,7 @@ import com.jiggie.android.component.database.ChatTable;
 import com.jiggie.android.component.service.ChatSendService;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
+import com.jiggie.android.fragment.ChatTabFragment;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.ChatManager;
 import com.jiggie.android.model.Chat;
@@ -81,15 +82,31 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
     Chat chat;
     ProgressDialog dialog;
 
+    public static final String TAG = ChatActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_chat);
 
         final Intent intent = super.getIntent();
+        init(intent);
+    }
+
+    /*@Override
+    protected void onNewIntent(Intent intent) {
+        //super.onNewIntent(intent);
+        Utils.d(TAG, "on new intent");
+        init(intent);
+    }*/
+
+    private void init(Intent intent)
+    {
         final String profileImage = intent.getStringExtra(Conversation.FIELD_PROFILE_IMAGE);
         this.toName = intent.getStringExtra(Conversation.FIELD_FROM_NAME);
         this.toId = intent.getStringExtra(Conversation.FIELD_FACEBOOK_ID);
+
+        App.getInstance().setIdChatActive(toId);
 
         super.bindView();
         super.setToolbarTitle(this.toName, true);
@@ -110,7 +127,14 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
             }
         });
 
-        super.registerReceiver(this.notificationReceived, new IntentFilter(super.getString(R.string.broadcast_notification)));
+        Intent i = new Intent(ChatTabFragment.TAG);
+        i.putExtra(Conversation.FIELD_FACEBOOK_ID, toId);
+        sendBroadcast(i);
+
+        super.registerReceiver(this.notificationReceived
+                , new IntentFilter(super.getString(R.string.broadcast_notification)));
+        super.registerReceiver(checkNewMessageReceiver
+                , new IntentFilter(Utils.CHECK_NEW_MESSAGE_RECEIVER));
     }
 
     @Override
@@ -182,7 +206,12 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (this.loaded) {
+            //super.getMenuInflater().inflate(R.menu.menu_chat, menu);
             super.getMenuInflater().inflate(R.menu.menu_chat, menu);
+            final MenuItem menuBlock = menu.findItem(R.id.action_block);
+            final MenuItem menuProfile = menu.findItem(R.id.action_profile);
+            menuBlock.setTitle(super.getString(R.string.user_chat_block, this.toName));
+            menuProfile.setTitle(super.getString(R.string.user_chat_profile, this.toName));
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -297,6 +326,14 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
         }
     };
 
+
+    private BroadcastReceiver checkNewMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            fetchData();
+        }
+    };
+
     private Runnable checkNewMessageRunnable = new Runnable() {
         @Override
         public void run() {
@@ -311,6 +348,11 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
         this.failedView.setVisibility(View.GONE);
         this.progressBar.setVisibility(View.VISIBLE);
 
+        fetchData();
+    }
+
+    private void fetchData()
+    {
         ChatManager.loaderChatConversations(AccessToken.getCurrentAccessToken().getUserId(), toId, ChatManager.FROM_LOAD);
     }
 
@@ -322,7 +364,6 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
     }
 
     public void onEvent(ChatResponseModel message){
-
         if(message.getFromFunction().equals(ChatManager.FROM_LOAD)){
             final List<Chat> failedItems = ChatTable.getUnProcessedItems(App.getInstance().getDatabase(), toId);
             final int length = message.getData().getMessages() == null ? 0 : message.getData().getMessages().size();
@@ -353,6 +394,7 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
                 setResult(RESULT_OK, new Intent().putExtra(Conversation.FIELD_FACEBOOK_ID, toId));
             }
         }else if(message.getFromFunction().equals(ChatManager.FROM_CHECK_NEW)){
+            Utils.d(TAG, "fetch chat new message suksesbrother");
             final int length = message.getData().getMessages() == null ? 0 : message.getData().getMessages().size();
 
             for (int i = 0; i < length; i++) {
@@ -369,7 +411,6 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
             }
             this.isChecking = false;
         }
-
     }
 
     public void onEvent(ChatActionModel message){
@@ -437,7 +478,15 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
     @Override
     protected void onDestroy() {
         super.unregisterReceiver(this.notificationReceived);
+        super.unregisterReceiver(this.checkNewMessageReceiver);
         EventBus.getDefault().unregister(this);
+
         super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        App.getInstance().setIdChatActive("");
+        super.onPause();
     }
 }

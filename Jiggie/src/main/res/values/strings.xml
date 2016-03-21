@@ -64,7 +64,7 @@
     <string name="settings">Settings</string>
     <string name="support">Support</string>
     <string name="logout">Logout</string>
-    <string name="user_viewing">%1$s also interested in</string>
+    <string name="user_viewing">%1$s is also interested in</string>
     <string name="location_viewing">%1$s at %2$s</string>
     <string name="connect_with">Connect with %1$s?</string>
     <string name="yes">Yes</string>
@@ -146,7 +146,7 @@
     <string name="wk_request_title">CONNECTION REQUEST</string>
     <string name="wk_chat_title">CHAT</string>
     <string name="wk_event_desc">Scroll through our curated list of the best events in Jakarta. If you see an event you like, tap on it for more details.</string>
-    <string name="wk_match_desc">We suggest matches with fun people who like the same events you do.\nTap <b>YES</b> if you want to connect with them.\nIf they also Tap <b>YES</b> then you can start chatting.</string>
+    <string name="wk_match_desc">We suggest matches with other guests.\nTap <b>YES</b> if you want to connect with them.\nIf they also Tap <b>YES</b> then a chat starts.</string>
     <string name="wk_request_desc">This card means they want to connect with you.\nTap <b>YES</b> to start chatting right away.</string>
     <string name="wk_chat_desc">When you both tap <b>YES</b> a chat connection begins.\nStart chatting and make plans to go to events together!</string>
 
@@ -191,7 +191,8 @@
     <string name="wait">Please wait</string>
 
     <string name="no_internet_connection">Please check your internet connection</string>
-    <string name="standard_error_message">Sorry we\'re having some server issues, please check back in a few minutes.</string>
+    <string name="standard_error_message">Sorry we\'re having some server issues, please check back in a few minutes</string>
+    <string name="socket_timeout_exception">Sorry, your request has been timed out</string>
 
     <string name="no_one_will_see_your_phone_number">No one will see your phone number on Jiggie.</string>
     <string name="international">International</string>
@@ -204,12 +205,9 @@
     <string name="hint_validation_code">Validation Code</string>
     <string name="description_validation_code">Enter the 6 digit code we just sent to your number</string>
     <string name="verification_success">Your phone number has been successfully verified</string>
-    <string name="verification_failed">Plese check the number and try again</string>
+    <string name="verification_failed">Please check the number and try again</string>
     <string name="ticket_detail">TICKET DETAILS</string>
-    <string name="string_continue">Continue</string>
-    <string name="estimated_cost">Estimated Cost</string>
-    <string name="tickets">Tickets</string>
-    <string name="table_details">Table Details</string>
+    <string name="preferred_experience">Your preferred experiences have been updated</string>
 
     <!--COMMERCE STRING VALUE-->
     <string name="msg_dummy">Lorem ipsum</string>
@@ -334,5 +332,10 @@
     <string name="pci_payment">CHOOSE PAYMENT METHOD</string>
     <string name="pci_slide">SLIDE TO PAY >></string>
 
+    <string name="awaiting_payment">Awaiting Payment</string>
+    <string name="expired">Expired</string>
+    <string name="paid">Paid</string>
+    <string name="is_void">Void</string>
+    <string name="refund">Refund</string>
     <!--END HERE-->
 </resources>

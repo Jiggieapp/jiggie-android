@@ -10,23 +10,36 @@ import android.view.MotionEvent;
  */
 
 public class NonSwipeableViewPager extends ViewPager {
+    private Boolean enabled;
+
     public NonSwipeableViewPager(Context context) {
         super(context);
+        this.enabled = false;
     }
 
     public NonSwipeableViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
-    }
-
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent event) {
-        // Never allow swiping to switch between pages
-        return false;
+        this.enabled = false;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        // Never allow swiping to switch between pages
+        if (this.enabled) {
+            return super.onTouchEvent(event);
+        }
         return false;
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent event) {
+        if (this.enabled) {
+            return super.onInterceptTouchEvent(event);
+        }
+
+        return false;
+    }
+
+    public void setPagingEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

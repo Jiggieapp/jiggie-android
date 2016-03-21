@@ -25,7 +25,8 @@ public class ReservationActivity extends AbstractTicketDetailActivity{
 
     @Override
     protected String getToolbarTitle() {
-        return getResources().getString(R.string.table_details);
+        //return getResources().getString(R.string.ticket);
+        return "";
     }
 
     @Override

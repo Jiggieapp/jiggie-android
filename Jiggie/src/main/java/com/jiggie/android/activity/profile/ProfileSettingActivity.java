@@ -18,6 +18,7 @@ import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
+import com.jiggie.android.fragment.SocialTabFragment;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.MemberSettingModel;
@@ -92,7 +93,10 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) { this.sendServerSetting(); }
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+    {
+        this.sendServerSetting();
+    }
 
     @SuppressWarnings("unused")
     @OnClick(R.id.layoutGender)
@@ -128,6 +132,13 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
     @OnClick(R.id.layoutTerm)
     void layoutTermOnClick() { super.startActivity(new Intent(this, TermOfUseActivity.class)); }
 
+    private void sendBroadcastToFetchChatReceiver(boolean isOn)
+    {
+        Intent i = new Intent(Utils.FETCH_CHAT_RECEIVER);
+        i.putExtra(Utils.IS_ON, isOn);
+        sendBroadcast(i);
+    }
+
     private void sendServerSetting() {
         //membersetting adalah object utk post, settingmodel hasil response
         final MemberSettingModel memberSettingModel = new MemberSettingModel();
@@ -136,6 +147,7 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
         final String[] genders = super.getResources().getStringArray(R.array.items_gender);
         final String[] genderInterest = super.getResources().getStringArray(R.array.items_gender_interest);
         memberSettingModel.setChat(this.switchChat.isChecked() ? 1 : 0);
+
         memberSettingModel.setFeed(this.switchSocial.isChecked() ? 1 : 0);
 
         int index_gender = Arrays.binarySearch(genders, this.txtGender.getText().toString(), String.CASE_INSENSITIVE_ORDER);
@@ -184,6 +196,12 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
             refreshView(setting);
             dialog.dismiss();
             AccountManager.anySettingChange = true;
+
+            //wandy 11-03-2016
+            if(switchChat.isChecked())
+                sendBroadcastToFetchChatReceiver(true);
+            else sendBroadcastToFetchChatReceiver(false);
+            //end of wandy 11-03-2016
         }
     }
 
@@ -235,7 +253,6 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
         }else{
             gOutput = "Both";
         }
-
         return gOutput;
     }
 
@@ -243,5 +260,11 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
     protected void onDestroy() {
         super.onDestroy();
         AccountManager.isInSettingPage = false;
+        if(AccountManager.anySettingChange)
+        {
+            AccountManager.anySettingChange = false;
+            Intent i = new Intent(SocialTabFragment.TAG);
+            sendBroadcast(i);
+        }
     }
 }

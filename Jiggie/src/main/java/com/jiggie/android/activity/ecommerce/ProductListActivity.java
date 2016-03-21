@@ -46,7 +46,7 @@ public class ProductListActivity extends ToolbarWithDotActivity
 
     @Override
     protected int getCurrentStep() {
-        return 0;
+        return 1;
     }
 
     @Override
@@ -114,7 +114,7 @@ public class ProductListActivity extends ToolbarWithDotActivity
     @Override
     public void onGlobalLayout() {
         this.recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-        this.onRefresh();
+        this.loadData(eventId);
     }
 
     @Override
@@ -138,10 +138,13 @@ public class ProductListActivity extends ToolbarWithDotActivity
                 ArrayList<ProductListModel.Data.ProductList.Purchase> dataPurchase = data.getData().getProduct_lists().getPurchase();
                 ArrayList<ProductListModel.Data.ProductList.Reservation> dataReservation = data.getData().getProduct_lists().getReservation();
 
+
                 if (dataReservation.size() > 0) {
                     isTwoType = true;
                     section2Start = dataPurchase.size();
                 }
+
+
 
                 setsAdapter(eventName, venueName, startTime, isTwoType, section2Start, dataPurchase, dataReservation);
             }

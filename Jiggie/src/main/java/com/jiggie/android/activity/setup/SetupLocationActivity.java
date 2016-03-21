@@ -37,8 +37,10 @@ import de.greenrobot.event.EventBus;
  * Created by rangg on 15/01/2016.
  */
 public class SetupLocationActivity extends BaseActivity {
-    @Bind(R.id.switchView) Switch switchView;
-    @Bind(R.id.root) View root;
+    @Bind(R.id.switchView)
+    Switch switchView;
+    @Bind(R.id.root)
+    View root;
     ProgressDialog dialog = null;
     public static final String TAG = SetupLocationActivity.class.getSimpleName();
 
@@ -56,7 +58,9 @@ public class SetupLocationActivity extends BaseActivity {
     }
 
     @Override
-    protected int getThemeResource() { return R.style.AppTheme_Setup; }
+    protected int getThemeResource() {
+        return R.style.AppTheme_Setup;
+    }
 
     @OnClick(R.id.btnDone)
     @SuppressWarnings("unused")
@@ -76,15 +80,14 @@ public class SetupLocationActivity extends BaseActivity {
         memberSettingModel.setExperiences(TextUtils.join(",", intent.getStringArrayExtra(SetupTagsActivity.PARAM_EXPERIENCES)));
 
         AccountManager.loaderMemberSetting(memberSettingModel);
-        if(this.switchView.isChecked()){
+        if (this.switchView.isChecked()) {
             showLocationDialog();
-        }else{
+        } else {
             actionDone(this.switchView.isChecked());
         }
     }
 
-    public void onEvent(Success2Model message){
-
+    public void onEvent(Success2Model message) {
         if (isActive()) {
             dialog.dismiss();
             finish();
@@ -97,8 +100,8 @@ public class SetupLocationActivity extends BaseActivity {
         app.startActivity(new Intent(App.getInstance(), MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
-    public void onEvent(ExceptionModel message){
-        if(message.getFrom().equals(Utils.FROM_MEMBER_SETTING)){
+    public void onEvent(ExceptionModel message) {
+        if (message.getFrom().equals(Utils.FROM_MEMBER_SETTING)) {
             if (isActive()) {
                 Toast.makeText(SetupLocationActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
@@ -137,7 +140,7 @@ public class SetupLocationActivity extends BaseActivity {
 
     }
 
-    private void actionDone(boolean isChecked){
+    private void actionDone(boolean isChecked) {
         dialog = App.showProgressDialog(this);
         final Intent intent = super.getIntent();
 

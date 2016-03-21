@@ -32,19 +32,23 @@ import android.widget.Toast;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.chat.ChatActivity;
+import com.jiggie.android.api.OnResponseListener;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.ChatTabListAdapter;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
+import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.ChatManager;
+import com.jiggie.android.manager.WalkthroughManager;
 import com.jiggie.android.model.ChatActionModel;
 import com.jiggie.android.model.ChatListModel;
 import com.jiggie.android.model.Conversation;
 import com.android.volley.VolleyError;
 import com.facebook.AccessToken;
 import com.jiggie.android.model.ExceptionModel;
+import com.jiggie.android.model.PostWalkthroughModel;
 
 import org.json.JSONArray;
 
@@ -53,7 +57,6 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * Created by rangg on 21/10/2015.
@@ -72,7 +75,6 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     private boolean isLoading;
     private HomeMain homeMain;
     private View failedView;
-    private Handler handler;
     private View emptyView;
     private View rootView;
     private String title;
@@ -80,6 +82,9 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     private Dialog dialogWalkthrough;
     private Dialog dialogLongClick;
     private ChatListModel.Data.ChatLists conversation;
+    public static final String TAG = ChatTabFragment.class.getSimpleName();
+    private final static int INTERVAL = 1000 *5; //5 detik
+    private Handler handler;
 
     @Override
     public void setHomeMain(HomeMain homeMain) {
@@ -92,17 +97,25 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     }
 
     @Override
+    public int getIcon()
+    {
+        return R.drawable.ic_chat_white_24dp;
+    }
+
+    @Override
     public void onTabSelected() {
         App.getInstance().trackMixPanelEvent("Conversations List");
+
+        if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_CHAT, false)) {
+            showWalkthroughDialog();
+        }
+
         //if ((this.adapter != null) && (this.adapter.getItemCount() == 0)||ChatManager.NEED_REFRESH_CHATLIST)
         if ((this.adapter != null) && (this.adapter.getItemCount() == 0)){
             this.onRefresh();
-
-            if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_CHAT, false)) {
-                showWalkthroughDialog();
-            }
         }
 
+        //startRepeatingTask();
     }
 
     @Nullable
@@ -119,8 +132,6 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         super.onActivityCreated(savedInstanceState);
         ButterKnife.bind(this, this.rootView);
 
-        EventBus.getDefault().register(this);
-
         this.recyclerView.setLayoutManager(new LinearLayoutManager(super.getContext()));
         this.recyclerView.setAdapter(this.adapter = new ChatTabListAdapter(this, this, this));
         this.refreshLayout.setOnRefreshListener(this);
@@ -129,6 +140,8 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         final App app = App.getInstance();
         app.registerReceiver(this.notificationReceived, new IntentFilter(super.getString(R.string.broadcast_notification)));
         app.registerReceiver(this.socialChatReceiver, new IntentFilter(super.getString(R.string.broadcast_social_chat)));
+        app.registerReceiver(chatCounterBroadCastReceiver
+                , new IntentFilter(TAG));
 
         this.refreshLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -137,8 +150,6 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
                 onRefresh();
             }
         });
-
-
     }
 
     @Override
@@ -155,21 +166,41 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         this.refreshLayout.setRefreshing(true);
         this.getFailedView().setVisibility(View.GONE);
 
-        ChatManager.loaderChatList(AccessToken.getCurrentAccessToken().getUserId());
+        fetchChat();
+    }
+
+    private void fetchChat()
+    {
+        //ChatManager.loaderChatList(AccessToken.getCurrentAccessToken().getUserId());
+        ChatManager.loaderChatList2(AccessToken.getCurrentAccessToken().getUserId()
+                , new OnResponseListener() {
+            @Override
+            public void onSuccess(Object object) {
+                onEvent((ChatListModel) object);
+                if(getContext() != null)
+                {
+                    Intent i = new Intent(Utils.CHECK_NEW_MESSAGE_RECEIVER);
+                    getActivity().sendBroadcast(i);
+                }
+            }
+
+            @Override
+            public void onFailure(ExceptionModel exceptionModel) {
+                onEvent(exceptionModel);
+            }
+        });
     }
 
     public void onEvent(ChatListModel message){
-
         adapter.clear();
-
         for (int i = 0; i < message.getData().getChat_lists().size(); i++)
             adapter.add(message.getData().getChat_lists().get(i));
-
         isLoading = false;
         if (getContext() != null) {
             getEmptyView().setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
             recyclerView.setVisibility(adapter.getItemCount() == 0 ? View.GONE : View.VISIBLE);
-            refreshLayout.setRefreshing(false);
+            if(refreshLayout.isRefreshing())
+                refreshLayout.setRefreshing(false);
             adapter.notifyDataSetChanged();
             setHomeTitle();
         }
@@ -188,7 +219,6 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
             conversation.setUnread(0);
 
             this.adapter.remove(conversation);
-
             changed = true;
         }
         if(changed){
@@ -210,7 +240,8 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
                     getFailedView().setVisibility(View.VISIBLE);
                 }
                 recyclerView.setVisibility(View.GONE);
-                refreshLayout.setRefreshing(false);
+                if(refreshLayout.isRefreshing())
+                    refreshLayout.setRefreshing(false);
             }
         }else if(from.equals(Utils.FROM_BLOCK_CHAT)||from.equals(Utils.FROM_DELETE_CHAT)){
             Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
@@ -269,16 +300,33 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
 
             }
         }
-
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    private int unreadCount = 0;
     private void setHomeTitle() {
         if (this.homeMain != null) {
-            final int unreadCount = this.adapter.countUnread();
-            if (unreadCount > 0)
-                this.title = String.format("%s (%d)", getString(R.string.chat), unreadCount);
-            else this.title = super.getString(R.string.chat);
+            unreadCount = this.adapter.countUnread();
+            /*if (unreadCount > 0)
+                this.title = String.format("%s (%d)", getString(R.string.chat), unreadCount);*/
+            if(unreadCount > 0)
+            {
+                if(unreadCount > 99)
+                {
+                    this.title = "99";
+                }
+                else
+                {
+                    this.title = unreadCount + "";
+                }
+            }
+            else if(unreadCount <= 0)
+            {
+                unreadCount = 0;
+                this.title = "0";
+            }
+
+            //else this.title = super.getString(R.string.chat);
             this.homeMain.onTabTitleChanged(this);
         }
     }
@@ -347,7 +395,9 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         final App app = App.getInstance();
         app.unregisterReceiver(this.notificationReceived);
         app.unregisterReceiver(this.socialChatReceiver);
-        EventBus.getDefault().unregister(this);
+        app.unregisterReceiver(this.chatCounterBroadCastReceiver);
+        /*if(handler != null)
+            handler.removeCallbacks(mHandlerTask);*/
         super.onDestroy();
     }
 
@@ -380,6 +430,9 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
             public void onCancel(DialogInterface dialog) {
                 Utils.SHOW_WALKTHROUGH_CHAT = false;
                 App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_CHAT, false).commit();
+
+                PostWalkthroughModel postWalkthroughModel = new PostWalkthroughModel(AccessToken.getCurrentAccessToken().getUserId(), Utils.TAB_CHAT, Utils.DEVICE_ID);
+                WalkthroughManager.loaderPostWalkthrough(postWalkthroughModel);
             }
         });
 
@@ -389,6 +442,9 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
                 Utils.SHOW_WALKTHROUGH_CHAT = false;
                 App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_CHAT, false).commit();
                 dialogWalkthrough.dismiss();
+
+                PostWalkthroughModel postWalkthroughModel = new PostWalkthroughModel(AccessToken.getCurrentAccessToken().getUserId(), Utils.TAB_CHAT, Utils.DEVICE_ID);
+                WalkthroughManager.loaderPostWalkthrough(postWalkthroughModel);
             }
         });
 
@@ -401,7 +457,7 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         String block = "Block "+conversation.getFromName();
         String[] menu = {block, "Delete Chat"};
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.fullHeightDialog)
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity()/*, R.style.fullHeightDialog*/)
                 .setItems(menu, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -422,9 +478,47 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
                     }
                 });
         dialogLongClick = builder.create();
-
         dialogLongClick.show();
-
     }
+
+
+    BroadcastReceiver chatCounterBroadCastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String facebookId  = intent.getStringExtra(Conversation.FIELD_FACEBOOK_ID);
+            if(!facebookId.equals(""))
+            {
+                final ChatListModel.Data.ChatLists conversation = facebookId == null ? null : adapter.find(facebookId);
+                if(conversation != null)
+                {
+                    conversation.setUnread(0);
+                    adapter.notifyDataSetChanged();
+                    setHomeTitle();
+                }
+            }
+        }
+    };
+
+    Runnable mHandlerTask = new Runnable()
+    {
+        @Override
+        public void run() {
+            fetchChat();
+            if(handler == null)
+                handler = new Handler();
+            handler.postDelayed(mHandlerTask, INTERVAL);
+        }
+    };
+
+    void startRepeatingTask()
+    {
+        mHandlerTask.run();
+    }
+
+    void stopRepeatingTask()
+    {
+        handler.removeCallbacks(mHandlerTask);
+    }
+
 
 }

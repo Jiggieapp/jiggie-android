@@ -13,6 +13,12 @@ public class ExceptionModel {
         this.message = message;
     }
 
+    public ExceptionModel(String message)
+    {
+        this.message = message;
+        this.from = "";
+    }
+
     public String getMessage() {
         return message;
     }

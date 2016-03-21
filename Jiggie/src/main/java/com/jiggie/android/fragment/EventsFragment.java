@@ -1,10 +1,14 @@
 package com.jiggie.android.fragment;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,19 +26,27 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.facebook.AccessToken;
+import com.google.gson.Gson;
+import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.manager.EventManager;
+import com.jiggie.android.manager.WalkthroughManager;
 import com.jiggie.android.model.EventModel;
 import com.jiggie.android.model.ExceptionModel;
+import com.jiggie.android.model.PostWalkthroughModel;
+import com.jiggie.android.view.NonSwipeableViewPager;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -45,12 +57,11 @@ import de.greenrobot.event.EventBus;
  */
 public class EventsFragment extends Fragment
         implements ViewPager.OnPageChangeListener, HomeMain
-        , ViewTreeObserver.OnGlobalLayoutListener, TabFragment, SwipeRefreshLayout.OnRefreshListener
-{
+        , ViewTreeObserver.OnGlobalLayoutListener, TabFragment, SwipeRefreshLayout.OnRefreshListener {
     @Bind(R.id.time_tab)
     TabLayout timeTab;
     @Bind(R.id.viewpagerevents)
-    ViewPager viewPagerEvents;
+    /*ViewPager viewPagerEvents;*/ NonSwipeableViewPager viewPagerEvents;
     @Bind(R.id.swipe_refresh)
     SwipeRefreshLayout refreshLayout;
     @Bind(R.id.coordinatorLayout)
@@ -61,9 +72,11 @@ public class EventsFragment extends Fragment
     private String title;
     private HomeMain homeMain;
     private TabFragment lastSelectedFragment;
-    private final String TAG = EventsFragment.class.getSimpleName();
+    public final static String TAG = EventsFragment.class.getSimpleName();
     private boolean isLoading;
     private String searchText;
+    private Dialog dialogWalkthrough;
+    SearchView searchView;
 
     @Override
     public String getTitle() {
@@ -71,8 +84,26 @@ public class EventsFragment extends Fragment
     }
 
     @Override
+    public int getIcon() {
+        return R.drawable.ic_event_white_24dp;
+    }
+
+    @Override
     public void onTabSelected() {
-        //onRefresh();
+        App.getInstance().trackMixPanelEvent("View Events");
+        if (getEvents() != null) {
+            /*boolean isExpanded = false;
+            if(!searchView.isIconified())
+            {
+                isExpanded = true;
+            }
+            filter("", isExpanded);*/
+            showTab();
+        }
+
+        if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_EVENT, false)) {
+            showWalkthroughDialog();
+        }
     }
 
     public void setHomeMain(HomeMain homeMain) {
@@ -93,10 +124,13 @@ public class EventsFragment extends Fragment
 
     }
 
+    private int currentPosition = 0;
+
     @Override
     public void onPageSelected(int position) {
         this.lastSelectedFragment = (TabFragment) this.pageAdapter.fragments[position];
         this.lastSelectedFragment.onTabSelected();
+        currentPosition = position;
     }
 
     @Override
@@ -187,9 +221,13 @@ public class EventsFragment extends Fragment
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        this.rootView
-                = inflater.inflate(R.layout.fragment_events, container, false);
+        this.rootView = inflater.inflate(R.layout.fragment_events, container, false);
         return this.rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -207,6 +245,7 @@ public class EventsFragment extends Fragment
         this.viewPagerEvents.addOnPageChangeListener(this);
 
         this.viewPagerEvents.getViewTreeObserver().addOnGlobalLayoutListener(this);
+        this.viewPagerEvents.setPagingEnabled(true);
         this.refreshLayout.setOnRefreshListener(this);
         super.setHasOptionsMenu(true);
     }
@@ -222,6 +261,7 @@ public class EventsFragment extends Fragment
     public void onEvent(EventModel eventModel) {
         ArrayList<EventModel.Data.Events> message = eventModel.getData().getEvents();
         int size = message.size();
+
         setEvents(message);
         /*ArrayList<EventModel.Data.Events> todayEvents = new ArrayList<>();
         ArrayList<EventModel.Data.Events> tomorrowEvents = new ArrayList<>();
@@ -248,18 +288,29 @@ public class EventsFragment extends Fragment
         todayFragment.onEvent(todayEvents);
         tomorrowFragment.onEvent(tomorrowEvents);
         upcomingFragment.onEvent(upcomingEvents);*/
-
-        filter(searchText);
-
+        boolean isExpanded = false;
+        //if(searchText != null  /* && !searchText.isEmpty()*/)
+        if (searchView == null) {
+            isExpanded = false;
+        } else if (!searchView.isIconified()) {
+            isExpanded = true;
+        }
+        filter(searchText, isExpanded);
         this.isLoading = false;
         this.refreshLayout.setRefreshing(false);
     }
 
-    public void onEvent(ExceptionModel exceptionModel)
-    {
-        Snackbar snackbar = Snackbar
+    public void onEvent(ExceptionModel exceptionModel) {
+        /*Snackbar snackbar = Snackbar
                 .make(coordinatorLayout, "Welcome to AndroidHive", Snackbar.LENGTH_LONG);
-        snackbar.show();
+        snackbar.show();*/
+
+        if (exceptionModel.getMessage().equalsIgnoreCase(Utils.MSG_EMPTY_DATA) &&
+                exceptionModel.getFrom().equalsIgnoreCase(Utils.FROM_EVENT)) {
+            setEvents(null);
+            //onRefresh();
+            filter("");
+        }
 
         this.isLoading = false;
         this.refreshLayout.setRefreshing(false);
@@ -277,9 +328,9 @@ public class EventsFragment extends Fragment
         //super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_event, menu);
         final MenuItem searchMenu = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenu);
+        searchView = (SearchView) MenuItemCompat.getActionView(searchMenu);
         final Handler handler = new Handler();
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return true;
@@ -288,27 +339,69 @@ public class EventsFragment extends Fragment
             @Override
             public boolean onQueryTextChange(String query) {
                 searchText = ((TextUtils.isEmpty(query)) || (query.trim().length() == 0)) ? null : query.trim();
+
                 handler.removeCallbacksAndMessages(null);
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                            filter(searchText);
+                        filter(searchText, true);
                     }
                 }, getResources().getInteger(R.integer.event_search_delay));
                 return true;
             }
-        });
+        });*/
 
         MenuItemCompat.setOnActionExpandListener(searchMenu, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
+                hideTab();
+                searchText = "";
+                filter(searchText, true);
+
+                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        searchView.clearFocus();
+                        return true;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String query) {
+                        searchText = ((TextUtils.isEmpty(query)) || (query.trim().length() == 0))
+                                ? null : query.trim();
+
+                        handler.removeCallbacksAndMessages(null);
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.d(TAG, "searchtext " + searchText);
+                                if (searchText != null) {
+                                    filter(searchText, true);
+                                } else {
+                                    boolean isExpanded = false;
+                                    if(searchView != null && !searchView.isIconified())
+                                    {
+                                        isExpanded = true;
+                                    }
+                                    filter("", isExpanded);
+                                    //filter(searchText, false);
+                                }
+                            }
+                        }, getResources().getInteger(R.integer.event_search_delay));
+
+                        return true;
+                    }
+                });
                 return true;
             }
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 searchText = null;
-                //filter(true);
+                //showTab();
+                handler.removeCallbacksAndMessages(null);
+                filter("", false);
+                searchView.setOnQueryTextListener(null);
                 return true;
             }
         });
@@ -316,7 +409,8 @@ public class EventsFragment extends Fragment
         this.searchText = null;
     }
 
-    private  ArrayList<EventModel.Data.Events> events;
+    private ArrayList<EventModel.Data.Events> events;
+
     public ArrayList<EventModel.Data.Events> getEvents() {
         return events;
     }
@@ -325,38 +419,156 @@ public class EventsFragment extends Fragment
         this.events = events;
     }
 
-    private void filter(String searchText)
-    {
-        if(getEvents() != null)
-        {
-            if(searchText == null)
+    private void filter(String searchText, boolean isSearch) {
+        ArrayList<EventModel.Data.Events> todayEvents = new ArrayList<>();
+        ArrayList<EventModel.Data.Events> tomorrowEvents = new ArrayList<>();
+        ArrayList<EventModel.Data.Events> upcomingEvents = new ArrayList<>();
+
+        if (getEvents() != null) {
+            if (searchText == null)
                 searchText = "";
+            //timeTab.setVisibility(View.VISIBLE);
             searchText = searchText.toLowerCase();
-            ArrayList<EventModel.Data.Events> todayEvents = new ArrayList<>();
-            ArrayList<EventModel.Data.Events> tomorrowEvents = new ArrayList<>();
-            ArrayList<EventModel.Data.Events> upcomingEvents = new ArrayList<>();
             for (EventModel.Data.Events tempEvent : getEvents()) {
                 //new Date(event.getDate_day());
-                if(tempEvent.getTitle().toLowerCase().contains(searchText)
+                if (tempEvent.getTitle().toLowerCase().contains(searchText)
                         || tempEvent.getVenue_name().toLowerCase().contains(searchText)
                         || tempEvent.getTags().toString().toLowerCase().contains(searchText)
-                        || searchText.equals(""))
-                {
-                    final String diffDays = Utils.calculateTime(tempEvent.getStart_datetime());
-                    if (diffDays.equals(Utils.DATE_TODAY)) {
-                        todayEvents.add(tempEvent);
-                    } else if (diffDays.equals(Utils.DATE_TOMORROW)) {
-                        tomorrowEvents.add(tempEvent);
-                    } else if (diffDays.equals(Utils.DATE_UPCOMING)) {
-                        upcomingEvents.add(tempEvent);
+                        || searchText.equals("")) {
+                    if (!isSearch) {
+                        showTab();
+                        final String diffDays = Utils.calculateTime(tempEvent.getStart_datetime());
+                        if (diffDays.equals(Utils.DATE_TODAY)) {
+                            todayEvents.add(tempEvent);
+                        } else if (diffDays.equals(Utils.DATE_TOMORROW)) {
+                            tomorrowEvents.add(tempEvent);
+                        } else if (diffDays.equals(Utils.DATE_UPCOMING)) {
+                            upcomingEvents.add(tempEvent);
+                        }
+                        /*todayFragment.onEvent(todayEvents);
+                        tomorrowFragment.onEvent(tomorrowEvents);
+                        upcomingFragment.onEvent(upcomingEvents);*/
+                    } else {
+                        hideTab();
+                        switch (currentPosition) {
+                            case 0:
+                                todayEvents.add(tempEvent);
+                                //todayFragment.onEvent(todayEvents);
+                                break;
+                            case 1:
+                                tomorrowEvents.add(tempEvent);
+                                //tomorrowFragment.onEvent(tomorrowEvents);
+                                break;
+                            case 2:
+                                upcomingEvents.add(tempEvent);
+                                //upcomingFragment.onEvent(upcomingEvents);
+                                break;
+                        }
                     }
                 }
             }
+        } else {
+            //timeTab.setVisibility(View.GONE);
+            viewPagerEvents.setPagingEnabled(false);
+            hideTab();
+        }
 
-            todayFragment.onEvent(todayEvents);
-            tomorrowFragment.onEvent(tomorrowEvents);
-            upcomingFragment.onEvent(upcomingEvents);
+        todayFragment.onEvent(todayEvents);
+        tomorrowFragment.onEvent(tomorrowEvents);
+        upcomingFragment.onEvent(upcomingEvents);
+    }
+
+    private void filter(String searchText) {
+        filter(searchText, false);
+    }
+
+    protected void showTab() {
+        if (timeTab.getVisibility() == View.GONE) {
+            timeTab.animate()
+                    .translationY(0)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            timeTab.setVisibility(View.VISIBLE);
+                            viewPagerEvents.setPagingEnabled(true);
+                        }
+                    });
         }
     }
 
+    protected void hideTab() {
+        if (timeTab.getVisibility() == View.VISIBLE) {
+            timeTab.animate()
+                    .translationY(-timeTab.getMeasuredHeight())
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            timeTab.setVisibility(View.GONE);
+                            viewPagerEvents.setPagingEnabled(false
+                            );
+                        }
+                    });
+            /*Animation makeInAnimation = AnimationUtils.loadAnimation(this.getActivity(),
+                    R.anim.slide_up);
+            timeTab.startAnimation(makeInAnimation);*/
+        }
+
+    }
+
+    public void onEvent(final String tag) {
+        if (TAG.equalsIgnoreCase(tag)) {
+            onRefresh();
+        }
+    }
+
+    private void showWalkthroughDialog() {
+        dialogWalkthrough = new Dialog(getActivity());
+        dialogWalkthrough.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialogWalkthrough.setContentView(R.layout.walkthrough_screen);
+        dialogWalkthrough.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialogWalkthrough.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
+        RelativeLayout layout = (RelativeLayout) dialogWalkthrough.findViewById(R.id.layout_walkthrough);
+        ImageView imgWk = (ImageView) dialogWalkthrough.findViewById(R.id.img_wk);
+        TextView txtWkAction = (TextView) dialogWalkthrough.findViewById(R.id.txt_wk_action);
+        TextView txtWkTitle = (TextView) dialogWalkthrough.findViewById(R.id.txt_wk_title);
+        TextView txtWkDesc = (TextView) dialogWalkthrough.findViewById(R.id.txt_wk_desc);
+        imgWk.setImageResource(R.drawable.wk_event);
+        txtWkAction.setVisibility(View.GONE);
+        txtWkTitle.setText(R.string.wk_event_title);
+        txtWkDesc.setText(R.string.wk_event_desc);
+
+        dialogWalkthrough.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                Utils.SHOW_WALKTHROUGH_EVENT = false;
+                App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, false).commit();
+
+                PostWalkthroughModel postWalkthroughModel = new PostWalkthroughModel(AccessToken.getCurrentAccessToken().getUserId(), Utils.TAB_EVENT, Utils.DEVICE_ID);
+
+                String sd = String.valueOf(new Gson().toJson(postWalkthroughModel));
+
+                WalkthroughManager.loaderPostWalkthrough(postWalkthroughModel);
+            }
+        });
+
+        layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Utils.SHOW_WALKTHROUGH_EVENT = false;
+                App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, false).commit();
+                dialogWalkthrough.dismiss();
+
+                PostWalkthroughModel postWalkthroughModel = new PostWalkthroughModel(AccessToken.getCurrentAccessToken().getUserId(), Utils.TAB_EVENT, Utils.DEVICE_ID);
+
+                String sd = String.valueOf(new Gson().toJson(postWalkthroughModel));
+
+                WalkthroughManager.loaderPostWalkthrough(postWalkthroughModel);
+            }
+        });
+
+        dialogWalkthrough.show();
+    }
 }

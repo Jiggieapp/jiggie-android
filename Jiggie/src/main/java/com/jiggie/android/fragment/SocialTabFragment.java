@@ -15,7 +15,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +40,6 @@ import com.jiggie.android.R;
 import com.jiggie.android.activity.chat.ChatActivity;
 import com.jiggie.android.activity.event.EventDetailActivity;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
-import com.jiggie.android.activity.profile.ProfileSettingActivity;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.SimpleJSONObject;
 import com.jiggie.android.component.StringUtility;
@@ -50,13 +48,13 @@ import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.manager.AccountManager;
-import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.manager.SocialManager;
+import com.jiggie.android.manager.WalkthroughManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.Conversation;
-import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.LoginModel;
+import com.jiggie.android.model.PostWalkthroughModel;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.SocialModel;
 import com.jiggie.android.model.Success2Model;
@@ -132,21 +130,28 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     }
 
     @Override
+    public int getIcon()
+    {
+        return R.drawable.ic_visibility_white_24dp;
+    }
+
+    @Override
     public void setHomeMain(HomeMain homeMain) {
         this.homeMain = homeMain;
     }
 
     @Override
     public void onTabSelected() {
-
-        currentSetting = AccountManager.loadSetting();
+        //wandy 03-03-2016
+        //currentSetting = AccountManager.loadSetting();
 
         boolean a = AccountManager.anySettingChange;
-
         if (this.current == null){
             if (switchSocialize.isChecked()) {
                 txtSocialize.setText(R.string.socialize_description);
                 this.onRefresh();
+                if(this.cardEmpty.getVisibility() == View.GONE)
+                    this.progressBar.setVisibility(View.VISIBLE);
             }else{
                 this.layoutSocialize.setVisibility(View.VISIBLE);
                 txtSocialize.setText(R.string.socialize_description_off);
@@ -191,7 +196,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         currentSetting = AccountManager.loadSetting();
 
         //wandy 22-02-2016
-        currentSetting = null;
+        //currentSetting = null;
 
         if(currentSetting != null)
         {
@@ -202,14 +207,19 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             this.switchSocialize.setChecked(true);
         }
         this.switchSocialize.setOnCheckedChangeListener(this.socializeChanged);
+        /*App.getInstance().registerReceiver(this.socialReceiver
+                , new IntentFilter(super.getString(R.string.broadcast_social)));*/
+        App.getInstance().registerReceiver(this.refreshSocialReceiver
+                , new IntentFilter(SocialTabFragment.TAG));
 
-        App.getInstance().registerReceiver(this.socialReceiver, new IntentFilter(super.getString(R.string.broadcast_social)));
+        //wandy 11-03-206
+        //generalTxtEvent.setTextColor(getActivity().getResources().getColor(R.color.));
 
     }
 
     private void onRefresh() {
-
         if(!AccountManager.isInSettingPage){
+            currentSetting = AccountManager.loadSetting();
             if (super.getContext() == null) {
                 // fragment already destroyed.
                 return;
@@ -218,15 +228,14 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                 return;
             }
 
-        /*if(current==null){
-            this.layoutSocialize.setVisibility(View.GONE);
-        }*/
-            this.progressBar.setVisibility(View.VISIBLE);
+            /*if(current==null){
+                this.layoutSocialize.setVisibility(View.GONE);
+            }*/
 
             //showProgressDialog();
-            SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId(), currentSetting.getData().getGender_interest());
+            SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId()
+                    , currentSetting.getData().getGender_interest());
         }
-
     }
 
     public void onEvent(SocialModel message){
@@ -239,6 +248,10 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                 socialSize++;
             }
         }
+        //wandy 03-03-2016
+        //this.progressBar.setVisibility(View.VISIBLE);
+        if(this.progressBar.getVisibility() == View.VISIBLE)
+            this.progressBar.setVisibility(View.GONE);
         dismissProgressDialog();
 
         for (int i = 0; i < message.getData().getSocial_feeds().size(); i++) {
@@ -256,10 +269,12 @@ public class SocialTabFragment extends Fragment implements TabFragment {
 
     public void onEvent(ExceptionModel message){
         String ex = message.getMessage();
+        //Utils.d(TAG, "exception " + ex);
         if(message.getFrom().equals(Utils.FROM_SOCIAL_FEED)||message.getFrom().equals(Utils.FROM_SOCIAL_MATCH)||message.getFrom().equals(Utils.FROM_EVENT_DETAIL)){
             if(ex.equals(Utils.RESPONSE_FAILED+" "+"empty data")){
                 this.layoutSocialize.setVisibility(View.GONE);
                 this.cardEmpty.setVisibility(View.VISIBLE);
+                dismissProgressDialog();
                 this.cardGeneral.setVisibility(View.GONE);
                 this.cardInbound.setVisibility(View.GONE);
                 this.progressBar.setVisibility(View.GONE);
@@ -274,7 +289,6 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                     }
                 }
             }
-
         }
     }
 
@@ -284,6 +298,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         if ((super.getContext() != null) && (value == null)) {
             this.layoutSocialize.setVisibility(View.GONE);
             this.cardEmpty.setVisibility(View.VISIBLE);
+            dismissProgressDialog();
             this.cardGeneral.setVisibility(View.GONE);
             this.cardInbound.setVisibility(View.GONE);
             this.progressBar.setVisibility(View.GONE);
@@ -323,24 +338,29 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                 this.layoutSocialize.setVisibility(View.VISIBLE);
 
                 // we need to get venue name from event detail api
-                this.progressBar.setVisibility(View.VISIBLE);
+                //changed by wandy 03-03-2016, to make progressbar always gone
+                //this.progressBar.setVisibility(View.VISIBLE);
+                this.progressBar.setVisibility(View.GONE);
 
-                EventManager.loaderEventDetail(current.getEvent_id()
+                //wandy 08-03-2016, we dont want the venue place any longer
+                /*EventManager.loaderEventDetail(current.getEvent_id()
                         , AccessToken.getCurrentAccessToken().getUserId()
                         , currentSetting.getData().getGender_interest()
-                        ,TAG);
+                        , TAG);*/
+                dismissProgressDialog();
+                enableButton(true);
             }
         }
     }
 
-    public void onEvent(EventDetailModel message){
-        if (getContext() != null && message.getFrom().equalsIgnoreCase(TAG)) {
+    /*public void onEvent(EventDetailModel message){
+        if (message != null && getContext() != null && message.getFrom().equalsIgnoreCase(TAG)) {
             dismissProgressDialog();
             generalTxtEvent.setText(getString(R.string.location_viewing, message.getData().getEvents_detail().getTitle(), message.getData().getEvents_detail().getVenue_name()));
             progressBar.setVisibility(View.GONE);
             enableButton(true);
         }
-    }
+    }*/
 
     private CompoundButton.OnCheckedChangeListener socializeChanged = new CompoundButton.OnCheckedChangeListener() {
         @Override
@@ -348,6 +368,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             final String url = String.format("partyfeed/settings/%s/%s", AccessToken.getCurrentAccessToken().getUserId(), isChecked ? "yes" : "no");
             final ProgressDialog dialog = App.showProgressDialog(getContext());
 
+            currentSetting = AccountManager.loadSetting();
             VolleyHandler.getInstance().createVolleyRequest(url, new VolleyRequestListener<Void, JSONObject>() {
                 @Override
                 public Void onResponseAsync(JSONObject jsonObject) {
@@ -469,7 +490,9 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     }
 
     private void match(final boolean confirms) {
-        this.progressBar.setVisibility(View.VISIBLE);
+        //wandy 03-03-2016
+        //this.progressBar.setVisibility(View.VISIBLE);
+        this.progressBar.setVisibility(View.GONE);
         this.enableButton(false);
 
         confirm = confirms;
@@ -478,58 +501,66 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             SocialManager.loaderSocialMatch(AccessToken.getCurrentAccessToken().getUserId(), this.current.getFrom_fb_id(), confirm ? "approved" : "denied");
     }
 
-    public void onEvent(Success2Model message){
-        final App app = App.getInstance();
-        final Context context = getContext();
-        final SocialModel.Data.SocialFeeds socialMatch = current;
-        final LoginModel login = AccountManager.loadLogin();
-        final SettingModel setting = AccountManager.loadSetting();
+    public void onEvent(Success2Model message) {
+        if(message.getFrom().equalsIgnoreCase(SocialManager.TAG)
+                /*|| message.getFrom().equalsIgnoreCase(Utils.FROM_PROFILE_SETTING)*/)
+        {
+            final App app = App.getInstance();
+            final Context context = getContext();
+            final SocialModel.Data.SocialFeeds socialMatch = current;
+            final LoginModel login = AccountManager.loadLogin();
+            final SettingModel setting = AccountManager.loadSetting();
 
-        progressBar.setVisibility(View.GONE);
-        enableButton(true);
-        current = null;
+            progressBar.setVisibility(View.GONE);
+            enableButton(true);
+            current = null;
 
-        onRefresh();
+            onRefresh();
 
-        if (confirm) {
-            final SimpleJSONObject json = new SimpleJSONObject();
-            json.putString("ABTestChat:Connect", "Connect");
-            json.putString("name_and_fb_id", String.format("%s_%s_%s", login.getUser_first_name(), login.getUser_last_name(), AccessToken.getCurrentAccessToken().getUserId()));
-            json.putString("age", StringUtility.getAge2(login.getBirthday()));
-            json.putString("app_version", String.valueOf(BuildConfig.VERSION_CODE));
-            json.putString("birthday", login.getBirthday());
-            json.putString("device_type", Build.MODEL);
-            json.putString("email", login.getEmail());
-            json.putString("feed_item_type", "viewed");
-            json.putString("first_name", login.getUser_first_name());
-            json.putString("gender", setting.getData().getGender());
-            json.putString("gender_interest", setting.getData().getGender_interest());
-            json.putString("last_name", login.getUser_last_name());
-            json.putString("location", login.getLocation());
-            json.putString("os_version", app.getDeviceOSName());
-            app.trackMixPanelEvent("Accept Feed Item", json);
+            if (confirm) {
+                final SimpleJSONObject json = new SimpleJSONObject();
+                json.putString("ABTestChat:Connect", "Connect");
+                json.putString("name_and_fb_id", String.format("%s_%s_%s", login.getUser_first_name(), login.getUser_last_name(), AccessToken.getCurrentAccessToken().getUserId()));
+                json.putString("age", StringUtility.getAge2(login.getBirthday()));
+                json.putString("app_version", String.valueOf(BuildConfig.VERSION_CODE));
+                json.putString("birthday", login.getBirthday());
+                json.putString("device_type", Build.MODEL);
+                json.putString("email", login.getEmail());
+                json.putString("feed_item_type", "viewed");
+                json.putString("first_name", login.getUser_first_name());
+                json.putString("gender", setting.getData().getGender());
+                json.putString("gender_interest", setting.getData().getGender_interest());
+                json.putString("last_name", login.getUser_last_name());
+                json.putString("location", login.getLocation());
+                json.putString("os_version", app.getDeviceOSName());
+                app.trackMixPanelEvent("Accept Feed Item", json);
 
-            if ((SocialManager.Type.isInbound(socialMatch)) && (context != null)) {
-                final Intent intent = new Intent(context, ChatActivity.class);
-                intent.putExtra(Conversation.FIELD_FROM_NAME, socialMatch.getFrom_first_name());
-                intent.putExtra(Conversation.FIELD_FACEBOOK_ID, socialMatch.getFrom_fb_id());
-                context.sendBroadcast(new Intent(getString(R.string.broadcast_social_chat)));
-                startActivity(intent);
+                if ((SocialManager.Type.isInbound(socialMatch)) && (context != null)) {
+                    final Intent intent = new Intent(context, ChatActivity.class);
+                    intent.putExtra(Conversation.FIELD_FROM_NAME, socialMatch.getFrom_first_name());
+                    intent.putExtra(Conversation.FIELD_FACEBOOK_ID, socialMatch.getFrom_fb_id());
+                    context.sendBroadcast(new Intent(getString(R.string.broadcast_social_chat)));
+                    startActivity(intent);
+                }
+
+                dismissProgressDialog();
             }
-
-            dismissProgressDialog();
-        } else
-            app.trackMixPanelEvent("Passed Feed Item");
+            else
+            {
+                app.trackMixPanelEvent("Passed Feed Item");
+            }
+        }
     }
 
     @Override
     public void onDestroy() {
-        App.getInstance().unregisterReceiver(this.socialReceiver);
+        //App.getInstance().unregisterReceiver(this.socialReceiver);
+        App.getInstance().unregisterReceiver(this.refreshSocialReceiver);
         EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
 
-    private BroadcastReceiver socialReceiver = new BroadcastReceiver() {
+    /*private BroadcastReceiver socialReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (getContext() != null) {
@@ -542,10 +573,28 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                     layoutSocialize.setVisibility(View.VISIBLE);
                     txtSocialize.setText(R.string.socialize_description_off);
                 }
-
+                Utils.d(TAG, "onRefresh di social receiver");
                 //onRefresh();
             }
+        }
+    };*/
 
+    private BroadcastReceiver refreshSocialReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (getContext() != null) {
+                if (switchSocialize.isChecked()) {
+                    txtSocialize.setText(R.string.socialize_description);
+                    cardEmpty.setVisibility(View.GONE);
+                    card.setVisibility(View.GONE);
+                    onRefresh();
+                    progressBar.setVisibility(View.VISIBLE);
+                }else{
+                    layoutSocialize.setVisibility(View.VISIBLE);
+                    txtSocialize.setText(R.string.socialize_description_off);
+                }
+                //onRefresh();
+            }
         }
     };
 
@@ -560,11 +609,6 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             //final int unreadCount = this.adapter.countUnread();
             if (socialSize > 0)
             {
-                /*if(socialSize > 99)
-                    this.title = String.format("%s (%d)", getString(R.string.social), 99);
-                else
-                    this.title = String.format("%s (%d)", getString(R.string.social), socialSize);
-                */
                 if(socialSize >= 99)
                     this.title =  "99";
                 else
@@ -574,7 +618,6 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             else if(socialSize <= 0)
             {
                 socialSize = 0;
-                //this.title = super.getString(R.string.social);
                 this.title="0";
             }
             this.homeMain.onTabTitleChanged(this);
@@ -606,6 +649,10 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                     Utils.SHOW_WALKTHROUGH_SOCIAL = false;
                     App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_SOCIAL, false).commit();
                     dismissWalkthroughDialog();
+
+                    PostWalkthroughModel postWalkthroughModel = new PostWalkthroughModel(AccessToken.getCurrentAccessToken().getUserId(), Utils.TAB_SOCIAL, Utils.DEVICE_ID);
+                    WalkthroughManager.loaderPostWalkthrough(postWalkthroughModel);
+
                 } else {
                     imgWk.setImageResource(R.drawable.wk_img_connection);
                     txtWkAction.setPadding(0, 0, Utils.myPixel(getActivity(), 30), Utils.myPixel(getActivity(), 22));
@@ -625,6 +672,10 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                     Utils.SHOW_WALKTHROUGH_SOCIAL = false;
                     App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_SOCIAL, false).commit();
                     dismissWalkthroughDialog();
+
+                    PostWalkthroughModel postWalkthroughModel = new PostWalkthroughModel(AccessToken.getCurrentAccessToken().getUserId(), Utils.TAB_SOCIAL, Utils.DEVICE_ID);
+                    WalkthroughManager.loaderPostWalkthrough(postWalkthroughModel);
+
                 } else {
                     imgWk.setImageResource(R.drawable.wk_img_connection);
                     txtWkAction.setPadding(0, 0, Utils.myPixel(getActivity(), 30), Utils.myPixel(getActivity(), 22));
