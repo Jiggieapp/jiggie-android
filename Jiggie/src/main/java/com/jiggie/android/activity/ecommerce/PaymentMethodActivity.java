@@ -19,6 +19,7 @@ import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.PaymentMethodAdapter;
+import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.model.CCModel;
 import com.jiggie.android.model.CCScreenModel;
@@ -50,7 +51,7 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
     private String totalPrice;
     private Dialog dialogLongClick;
 
-    String fb_id = "321321", payment_type;
+    String payment_type;
     long order_id;
     EventDetailModel.Data.EventDetail eventDetail;
     SummaryModel.Data.Product_summary productSummary;
@@ -98,13 +99,14 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
             return;
         }
         this.isLoading = true;
-        loadData(fb_id);
+        loadData(AccountManager.loadLogin().getFb_id());
     }
 
     private void loadData(String fb_id){
         CommerceManager.loaderCCList(fb_id, new CommerceManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
+                isLoading = false;
                 swipeRefresh.setRefreshing(false);
                 CCModel ccModel = (CCModel) object;
                 ArrayList<CCModel.Data.Creditcard_information> ccInformation = ccModel.getData().getCreditcard_informations();
@@ -119,7 +121,12 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
 
             @Override
             public void onFailure(int responseCode, String message) {
-
+                isLoading = false;
+                swipeRefresh.setRefreshing(false);
+                if(responseCode==Utils.CODE_EMPTY_DATA){
+                    section2Start = 0 + 1;
+                    setAdapters(section2Start, CommerceManager.arrCCScreen);
+                }
             }
         });
     }
@@ -174,7 +181,7 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if(!dataCredit.getSaved_token_id().equals(Utils.BLANK)){
-                    PostDeleteCCModel postDeleteCCModel = new PostDeleteCCModel(fb_id, dataCredit.getMasked_card());
+                    PostDeleteCCModel postDeleteCCModel = new PostDeleteCCModel(AccountManager.loadLogin().getFb_id(), dataCredit.getMasked_card());
                     CommerceManager.loaderDeleteCC(postDeleteCCModel, new CommerceManager.OnResponseListener() {
                         @Override
                         public void onSuccess(Object object) {

@@ -529,6 +529,7 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
                 }
                 i.putExtra(Common.FIELD_ORDER_ID, order_id);
                 i.putExtra(Common.FIELD_PAYMENT_TYPE, paymentType);
+                i.putExtra(Common.FIELD_FROM_ORDER_LIST, false);
                 startActivity(i);
             }
 

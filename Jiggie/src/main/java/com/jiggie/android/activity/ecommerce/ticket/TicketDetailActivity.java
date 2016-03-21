@@ -95,7 +95,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                 ArrayList<PostSummaryModel.Product_list> arrProductList = new ArrayList<PostSummaryModel.Product_list>();
                 arrProductList.add(product_list);
                 PostSummaryModel.Guest_detail guest_detail = new PostSummaryModel.Guest_detail(guestName, guestEmail, guestPhone);
-                PostSummaryModel postSummaryModel = new PostSummaryModel("321321", eventId, arrProductList, guest_detail);
+                PostSummaryModel postSummaryModel = new PostSummaryModel(AccountManager.loadLogin().getFb_id(), eventId, arrProductList, guest_detail);
 
                 String sd = String.valueOf(new Gson().toJson(postSummaryModel));
 
@@ -136,7 +136,12 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                 Intent i = new Intent(TicketDetailActivity.this, AddGuestActivity.class);
                 i.putExtra(Common.FIELD_GUEST_NAME, guestName);
                 i.putExtra(Common.FIELD_GUEST_EMAIL, guestEmail);
-                i.putExtra(Common.FIELD_GUEST_PHONE, guestPhone);
+                if(guestPhone.equals("Phone Number")){
+                    i.putExtra(Common.FIELD_GUEST_PHONE, Utils.BLANK);
+                }else{
+                    i.putExtra(Common.FIELD_GUEST_PHONE, guestPhone);
+                }
+
                 i.putExtra(Common.FIELD_TRANS_TYPE, type_transaction);
                 if(type_transaction.equals(Common.TYPE_PURCHASE)){
                     i.putExtra(detailPurchase.getClass().getName(), detailPurchase);
@@ -206,7 +211,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
 
             lblType.setText(detailPurchase.getName());
             lblTypeCaption.setText(detailPurchase.getDescription());
-            lblTypePrice.setText(detailPurchase.getPrice());
+            lblTypePrice.setText(StringUtility.getRupiahFormat(detailPurchase.getPrice()));
             lblTypePriceCaption.setText(getString(R.string.pr_max_purchase)+" "+max);
             lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(price)));
         } else {
@@ -216,7 +221,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
 
             lblType.setText(detailReservation.getName());
             lblTypeCaption.setText(detailReservation.getDescription());
-            lblTypePrice.setText(detailReservation.getPrice());
+            lblTypePrice.setText(StringUtility.getRupiahFormat(detailReservation.getPrice()));
             lblTypePriceCaption.setText(getString(R.string.pr_max_guest)+" "+max);
             lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(price)));
         }

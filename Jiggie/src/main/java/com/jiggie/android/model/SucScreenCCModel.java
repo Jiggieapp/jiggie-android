@@ -47,8 +47,11 @@ public final class SucScreenCCModel {
             public final String type;
             public final Event event;
             public final Summary summary;
+            public final String instructions;
+            public final ArrayList<String> ticket_include;
+            public final ArrayList<String> fine_print;
 
-            public Success_screen(String order_id, String order_number, String order_status, String payment_status, String type, Event event, Summary summary){
+            public Success_screen(String order_id, String order_number, String order_status, String payment_status, String type, Event event, Summary summary, String instructions, ArrayList<String> ticket_include, ArrayList<String> fine_print){
                 this.order_id = order_id;
                 this.order_number = order_number;
                 this.order_status = order_status;
@@ -56,6 +59,9 @@ public final class SucScreenCCModel {
                 this.type = type;
                 this.event = event;
                 this.summary = summary;
+                this.instructions = instructions;
+                this.ticket_include = ticket_include;
+                this.fine_print = fine_print;
             }
 
             public String getOrder_id() {
@@ -84,6 +90,18 @@ public final class SucScreenCCModel {
 
             public Summary getSummary() {
                 return summary;
+            }
+
+            public String getInstructions() {
+                return instructions;
+            }
+
+            public ArrayList<String> getTicket_include() {
+                return ticket_include;
+            }
+
+            public ArrayList<String> getFine_print() {
+                return fine_print;
             }
 
             public static final class Event {
