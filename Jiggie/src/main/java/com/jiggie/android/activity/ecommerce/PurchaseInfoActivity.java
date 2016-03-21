@@ -154,9 +154,13 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
                 imgPayment.setVisibility(View.VISIBLE);
                 String headCC = cc_card_id.substring(0, 1);
                 if(headCC.equals("4")){
+                    imgPayment.setVisibility(View.VISIBLE);
                     imgPayment.setImageResource(R.drawable.logo_visa);
-                }else{
+                }else if(headCC.equals("5")){
+                    imgPayment.setVisibility(View.VISIBLE);
                     imgPayment.setImageResource(R.drawable.logo_mastercard);
+                }else{
+                    imgPayment.setVisibility(View.GONE);
                 }
             }else if(paymentType.equals(Utils.TYPE_VA)){
                 imgPayment.setVisibility(View.GONE);
@@ -454,11 +458,14 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
                 }
 
                 String headCC = cc_card_id.substring(0, 1);
-                imgPayment.setVisibility(View.VISIBLE);
                 if(headCC.equals("4")){
+                    imgPayment.setVisibility(View.VISIBLE);
                     imgPayment.setImageResource(R.drawable.logo_visa);
-                }else{
+                }else if(headCC.equals("5")){
+                    imgPayment.setVisibility(View.VISIBLE);
                     imgPayment.setImageResource(R.drawable.logo_mastercard);
+                }else{
+                    imgPayment.setVisibility(View.GONE);
                 }
             }else if(paymentType.equals(Utils.TYPE_BP)){
                 txtPayment.setText(getString(R.string.va_mandiri));

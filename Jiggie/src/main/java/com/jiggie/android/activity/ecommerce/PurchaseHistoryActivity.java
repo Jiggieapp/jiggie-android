@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.api.OnResponseListener;
@@ -54,6 +55,7 @@ public class PurchaseHistoryActivity extends ToolbarActivity
         //loadOrderList();
         onRefresh();
 
+        App.getInstance().trackMixPanelCommerce(Utils.COMM_ORDER_LIST, null);
     }
 
     @Override
