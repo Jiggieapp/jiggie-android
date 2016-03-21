@@ -27,6 +27,9 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
     private final ViewSelectedListener listener;
     private Context context;
     ArrayList<PurchaseHistoryModel.Data.Order_list> items;
+    PurchaseHistoryModel.Data.Order_list.Order order;
+    PurchaseHistoryModel.Data.Order_list.Event event;
+    boolean isPaid = false;
 
     public OrderHistoryAdapter(ArrayList<PurchaseHistoryModel.Data.Order_list> items, ViewSelectedListener listener)
     {
@@ -48,32 +51,18 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        /*if(position==0){
-            holder.txtEvent.setText(context.getString(R.string.his_ev1));
-            holder.txtVenue.setText(context.getString(R.string.his_ven1));
-            holder.txtDate.setText(context.getString(R.string.his_dt1));
-            holder.imgBadge.setImageResource(R.drawable.bdg_expired);
-        }
-        else if(position==1){
-            holder.txtEvent.setText(context.getString(R.string.his_ev2));
-            holder.txtVenue.setText(context.getString(R.string.his_ven2));
-            holder.txtDate.setText(context.getString(R.string.his_dt2));
-            holder.imgBadge.setImageResource(R.drawable.bdg_paid);
-        }if(position==2){
-            holder.txtEvent.setText(context.getString(R.string.his_ev3));
-            holder.txtVenue.setText(context.getString(R.string.his_ven3));
-            holder.txtDate.setText(context.getString(R.string.his_dt3));
-            holder.imgBadge.setImageResource(R.drawable.bdg_unpaid);
-        }*/
-
         PurchaseHistoryModel.Data.Order_list item = items.get(position);
         holder.txtEvent.setText(item.getEvent().getTitle());
         holder.txtVenue.setText(item.getEvent().getVenue_name());
         holder.txtDate.setText(item.getEvent().getStart_datetime_str());
 
+        holder.order = item.getOrder();
+        holder.event = item.getEvent();
+
         if(item.getOrder().getPayment_status()
                 .equalsIgnoreCase(Utils.PAYMENT_STATUS_AWAITING_PAYMENT))
         {
+            holder.isPaid = false;
             holder.container.setBackground(
                     App.getInstance().getResources().getDrawable(R.drawable.btn_tag_yellow));
             /*holder.container.setBackground(
@@ -85,6 +74,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         else if(item.getOrder().getPayment_status()
                 .equalsIgnoreCase(Utils.PAYMENT_STATUS_VOID))
         {
+            holder.isPaid = false;
             holder.container.setBackground(
                     App.getInstance().getResources().getDrawable(R.drawable.btn_tag_red));
             holder.lblStatus.setText(
@@ -94,6 +84,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         else if(item.getOrder().getPayment_status()
                 .equalsIgnoreCase(Utils.PAYMENT_STATUS_EXPIRE))
         {
+            holder.isPaid = false;
             holder.container.setBackground(
                     App.getInstance().getResources().getDrawable(R.drawable.btn_tag_red));
             holder.lblStatus.setText(
@@ -103,6 +94,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         else if(item.getOrder().getPayment_status()
                 .equalsIgnoreCase(Utils.PAYMENT_STATUS_PAID))
         {
+            holder.isPaid = true;
             holder.container.setBackground(
                     App.getInstance().getResources().getDrawable(R.drawable.btn_tag_blue));
             holder.lblStatus.setText(
@@ -112,6 +104,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         else if(item.getOrder().getPayment_status()
                 .equalsIgnoreCase(Utils.PAYMENT_STATUS_REFUND))
         {
+            holder.isPaid = false;
             holder.container.setBackground(
                     App.getInstance().getResources().getDrawable(R.drawable.btn_tag_red));
             holder.lblStatus.setText(
@@ -141,6 +134,9 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         TextView lblStatus;
         @Bind(R.id.container)
         LinearLayout container;
+        boolean isPaid;
+        PurchaseHistoryModel.Data.Order_list.Order order;
+        PurchaseHistoryModel.Data.Order_list.Event event;
 
         public ViewHolder(View itemView, ViewSelectedListener listener) {
             super(itemView);
@@ -153,13 +149,13 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         @Override
         public void onClick(View v) {
             if (listener != null) {
-                //listener.onViewSelected(this.event);
+                listener.onViewSelected(this.order, this.event, this.isPaid);
             }
         }
     }
 
     public interface ViewSelectedListener {
-        void onViewSelected();
+        void onViewSelected(PurchaseHistoryModel.Data.Order_list.Order order, PurchaseHistoryModel.Data.Order_list.Event event, boolean isPaid);
     }
 
     public void add(PurchaseHistoryModel.Data.Order_list order_list)

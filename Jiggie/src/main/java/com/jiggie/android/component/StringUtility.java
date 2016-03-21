@@ -189,7 +189,7 @@ public class StringUtility {
         String displayedString = "";
 
         if (number.length() == 0) {
-            displayedString = "Rp0K";
+            displayedString = "Rp0";
         } else {
             if (number.length() > 3) {
                 int length = number.length();
@@ -206,11 +206,11 @@ public class StringUtility {
                         combinedString += myStringPrt2;
                         number = combinedString;
 
-                        displayedString = "Rp" + combinedString+"K";
+                        displayedString = "Rp" + combinedString;
                     }
                 }
             } else {
-                displayedString = "Rp" + number+"K";
+                displayedString = "Rp" + number;
             }
         }
         return displayedString;

@@ -3,11 +3,13 @@ package com.jiggie.android.activity.ecommerce;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
@@ -18,8 +20,10 @@ import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.SucScreenCCModel;
 import com.jiggie.android.model.SummaryModel;
+import com.jiggie.android.view.InstructionItemView;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 
 import butterknife.Bind;
@@ -30,11 +34,13 @@ import butterknife.ButterKnife;
  */
 public class CongratsActivity extends ToolbarActivity {
     TextView txtCongrats, txtEventTitle, txtEventDate, txtTypeNumberFill, txtGuestNameFill, txtStatusFill, txtPaymentFill, txtSummaryDate, txtRegTicketTitle,
-            txtRegTicketFill, txtAdFeeFill, txtTaxFill, txtTotalFill, txtInstrucFill, txtInclude, txtIncludeFill, txtFineprint, txtFineprintFill, txtEventTitle2,
+            txtRegTicketFill, txtAdFeeFill, txtTaxFill, txtTotalFill, txtInstrucFill, txtInclude, txtFineprint, txtEventTitle2,
             txtEventDate2, txtVenueTitle, txtVenueDate;
+    LinearLayout linInclude, lineFineprint;
     RelativeLayout relViewTicket;
 
     long orderId;
+    boolean fromOrderList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +49,7 @@ public class CongratsActivity extends ToolbarActivity {
 
         Intent a = getIntent();
         orderId = a.getLongExtra(Common.FIELD_ORDER_ID, 0);
+        fromOrderList = a.getBooleanExtra(Common.FIELD_FROM_ORDER_LIST, false);
         initView();
         preDefined(String.valueOf(orderId));
 
@@ -64,14 +71,14 @@ public class CongratsActivity extends ToolbarActivity {
         txtTotalFill = (TextView)findViewById(R.id.txt_total_fill);
         txtInstrucFill = (TextView)findViewById(R.id.txt_instruc_fill);
         txtInclude = (TextView)findViewById(R.id.txt_include);
-        txtIncludeFill = (TextView)findViewById(R.id.txt_include_fill);
         txtFineprint = (TextView)findViewById(R.id.txt_fineprint);
-        txtFineprintFill = (TextView)findViewById(R.id.txt_fineprint_fill);
         txtEventTitle2 = (TextView)findViewById(R.id.txt_event_title2);
         txtEventDate2 = (TextView)findViewById(R.id.txt_event_date2);
         txtVenueTitle = (TextView)findViewById(R.id.txt_venue_title);
         txtVenueDate = (TextView)findViewById(R.id.txt_venue_date);
         relViewTicket = (RelativeLayout)findViewById(R.id.rel_view_ticket);
+        linInclude = (LinearLayout)findViewById(R.id.lin_include);
+        lineFineprint = (LinearLayout)findViewById(R.id.lin_fineprint);
     }
 
     private void preDefined(final String orderId){
@@ -83,7 +90,9 @@ public class CongratsActivity extends ToolbarActivity {
                 SucScreenCCModel.Data.Success_screen.Event event = sucScreenCCModel.getData().getSuccess_screen().getEvent();
                 SucScreenCCModel.Data.Success_screen.Summary summary = sucScreenCCModel.getData().getSuccess_screen().getSummary();
                 SucScreenCCModel.Data.Success_screen.Summary.Vt_response vt_response = summary.getVt_response();
-                txtCongrats.setText("Congratulations "+ AccountManager.loadLogin().getUser_first_name()+"!");
+                //txtCongrats.setText("Congratulations "+ AccountManager.loadLogin().getUser_first_name()+"!");
+
+                txtCongrats.setText("Congratulations " + summary.getGuest_detail().getName() + "!");
                 txtEventTitle.setText(event.getTitle());
                 try {
                     final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(event.getStart_datetime());
@@ -91,7 +100,7 @@ public class CongratsActivity extends ToolbarActivity {
                 }catch (ParseException e){
                     throw new RuntimeException(App.getErrorMessage(e), e);
                 }
-                txtTypeNumberFill.setText(String.valueOf(orderId));
+                txtTypeNumberFill.setText(String.valueOf(sucScreenCCModel.getData().getSuccess_screen().getOrder_number()));
                 txtGuestNameFill.setText(summary.getGuest_detail().getName());
                 txtStatusFill.setText(sucScreenCCModel.getData().getSuccess_screen().getPayment_status());
                 String paymentType = sucScreenCCModel.getData().getSuccess_screen().getType();
@@ -129,6 +138,18 @@ public class CongratsActivity extends ToolbarActivity {
                 }catch (ParseException e){
                     throw new RuntimeException(App.getErrorMessage(e), e);
                 }
+
+                txtInstrucFill.setText(sucScreenCCModel.getData().getSuccess_screen().getInstructions());
+                ArrayList<String> arrInclude = sucScreenCCModel.getData().getSuccess_screen().getTicket_include();
+                ArrayList<String> arrFineprint = sucScreenCCModel.getData().getSuccess_screen().getFine_print();
+                for(int i=0;i<arrInclude.size();i++){
+                    InstructionItemView instructionItemView = new InstructionItemView(CongratsActivity.this, String.valueOf(i+1)+".", arrInclude.get(i));
+                    linInclude.addView(instructionItemView);
+                }
+                for(int i=0;i<arrFineprint.size();i++){
+                    InstructionItemView instructionItemView = new InstructionItemView(CongratsActivity.this, String.valueOf(i+1)+".", arrFineprint.get(i));
+                    lineFineprint.addView(instructionItemView);
+                }
             }
 
             @Override
@@ -148,5 +169,18 @@ public class CongratsActivity extends ToolbarActivity {
                 successScreen.getSummary().getTotal_price(), productList.getMax_buy(), successScreen.getSummary().getCreated_at(), productList.getNum_buy(),
                 successScreen.getSummary().getTotal_price(), "0", successScreen.getType(), Utils.BLANK, false);
         App.getInstance().trackMixPanelCommerce(Utils.COMM_FINISH, commEventMixpanelModel);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(!fromOrderList){
+            Intent i = new Intent(CongratsActivity.this, MainActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(i);
+            finish();
+        }else {
+            finish();
+        }
     }
 }

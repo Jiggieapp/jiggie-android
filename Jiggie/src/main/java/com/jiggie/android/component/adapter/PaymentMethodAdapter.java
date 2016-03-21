@@ -231,6 +231,7 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
             i.putExtra(Common.FIELD_PAYMENT_TYPE, paymentType);
             i.putExtra(productSummary.getClass().getName(), productSummary);
             i.putExtra(eventDetail.getClass().getName(), eventDetail);
+            i.putExtra(Common.FIELD_FROM_ORDER_LIST, false);
             a.startActivity(i);
 
         }

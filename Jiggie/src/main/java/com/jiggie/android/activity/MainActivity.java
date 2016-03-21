@@ -25,11 +25,12 @@ import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.ecommerce.ProductListActivity;
+import com.jiggie.android.activity.ecommerce.PurchaseHistoryActivity;
 import com.jiggie.android.activity.profile.FilterActivity;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
 import com.jiggie.android.activity.profile.ProfileSettingActivity;
 import com.jiggie.android.activity.setup.SetupTagsActivity;
-import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.gcm.GCMRegistrationService;
 import com.jiggie.android.component.service.FacebookImageSyncService;
@@ -39,13 +40,9 @@ import com.appsflyer.AppsFlyerLib;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.jiggie.android.manager.ShareManager;
-import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.ShareLinkModel;
 
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Map;
 
 import de.greenrobot.event.EventBus;
@@ -289,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
     protected boolean isActive()
     {
         return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) ?
-            !super.isDestroyed() : this.active;
+                !super.isDestroyed() : this.active;
     }
 
     @Override
@@ -328,6 +325,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.action_invite:
                 inviteFriends();
+                break;
+            case R.id.action_orderlist:
+                startActivity(new Intent(this, PurchaseHistoryActivity.class));
                 break;
             case R.id.action_logout:
                 new AlertDialog.Builder(MainActivity.this)
@@ -410,5 +410,6 @@ public class MainActivity extends AppCompatActivity {
             hideProgressDialog();
         }
     }
+
 
 }
