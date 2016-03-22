@@ -26,7 +26,12 @@ public class Common {
     public static String FIELD_EVENT_ID = "event_id";
     public static String FIELD_VENUE_NAME = "venue_name";
     public static String FIELD_STARTTIME = "starttime";
+    public static String FIELD_EVENT_VENUE_NAME = "venue_name";
+    public static String FIELD_EVENT_TAGS = "tags";
+    public static String FIELD_EVENT_DAY = "date_day";
     public static String FIELD_ABOUT = "about";
+    public static String FIELD_EVENT_DAY_END = "date_end";
+    public static String FIELD_EVENT_PICS = "event_pics";
 
     public static String FIELD_TRANS_TYPE = "type";
     public static String TYPE_PURCHASE = "purchase";

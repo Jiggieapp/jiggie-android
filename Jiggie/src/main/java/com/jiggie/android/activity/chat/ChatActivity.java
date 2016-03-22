@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
 import com.jiggie.android.component.SimpleTextWatcher;
 import com.jiggie.android.component.Utils;
@@ -91,6 +93,10 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
 
         final Intent intent = super.getIntent();
         init(intent);
+
+        /*getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN | WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+    */
     }
 
     /*@Override
@@ -119,6 +125,7 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
         this.failedView.setVisibility(View.GONE);
         this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         this.recyclerView.setAdapter(this.adapter = new ChatAdapter(this, profileImage, toId));
+        this.recyclerView.setScrollContainer(false);
         this.recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(this);
         this.txtMessage.addTextChangedListener(new SimpleTextWatcher() {
             @Override
@@ -135,12 +142,20 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
                 , new IntentFilter(super.getString(R.string.broadcast_notification)));
         super.registerReceiver(checkNewMessageReceiver
                 , new IntentFilter(Utils.CHECK_NEW_MESSAGE_RECEIVER));
+
+        onGlobalLayout();
     }
 
     @Override
     public void onGlobalLayout() {
-        this.recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
         this.loadData();
+        /*getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE |
+                        WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
+                //WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE
+        );*/
+        this.recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
     }
 
     @OnClick(R.id.btnSend)
@@ -488,5 +503,15 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
     protected void onPause() {
         App.getInstance().setIdChatActive("");
         super.onPause();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent i = new Intent(this, MainActivity.class);
+        //i.putExtra("show_background", false);
+        i.putExtra(Common.TO_TAB_CHAT, true);
+        startActivity(i);
+        finish();
     }
 }

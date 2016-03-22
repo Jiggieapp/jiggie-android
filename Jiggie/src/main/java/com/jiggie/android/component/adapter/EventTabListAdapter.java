@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventModel;
@@ -26,7 +27,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
- * Created by rangg on 03/11/2015.
+ * Created by rangg on 03/11/2015.Re
  */
 public class EventTabListAdapter
         extends RecyclerView.Adapter<EventTabListAdapter.ViewHolder> {
@@ -90,10 +91,11 @@ public class EventTabListAdapter
             holder.tagListView.setAdapter(eventTagAdapter);
             //holder.eventTagAdapter.notifyDataSetChanged();
             holder.txtVenueName.setText(item.getVenue_name());
+            Utils.d(TAG, "imageUrl " + imageUrl);
             Glide
                 .with(this.fragment)
                 .load(imageUrl)
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(holder.image);
 
             final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(item.getStart_datetime());

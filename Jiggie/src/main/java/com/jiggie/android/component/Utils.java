@@ -20,7 +20,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import retrofit.Response;
 
@@ -148,7 +150,7 @@ public class Utils {
     public final static String URL_SUCCESS_SCREEN_WALKTHROUGH = BASE_URL + "app/v3/product/walkthrough_payment";
 
     public static void d(final String tag, final String value) {
-        Log.d(tag, value);
+        //Log.d(tag, value);
     }
 
     public static final String DATE_TODAY = "today";
@@ -182,18 +184,18 @@ public class Utils {
 
     public static String calculateTime(String date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        format.setTimeZone(TimeZone.getTimeZone("UTC"));
         //SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
         //format.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {
             Date d1 = format.parse(date);
-            Long current = new Date().getTime();
-
             Calendar c = Calendar.getInstance();
             c.add(Calendar.DAY_OF_MONTH, 1);
             c.set(Calendar.HOUR_OF_DAY, 0);
             c.set(Calendar.MINUTE, 0);
             c.set(Calendar.SECOND, 0);
             c.set(Calendar.MILLISECOND, 0);
+
             long diff = d1.getTime() - c.getTimeInMillis();
             if(diff < 0)
             {
@@ -204,6 +206,28 @@ public class Utils {
                 return DATE_TOMORROW;
             }
             else return DATE_UPCOMING;
+
+            //count midnight
+            // today
+            /*Calendar midnight = new GregorianCalendar();
+            // reset hour, minutes, seconds and millis
+            midnight.set(Calendar.HOUR_OF_DAY, 0);
+            midnight.set(Calendar.MINUTE, 0);
+            midnight.set(Calendar.SECOND, 0);
+            midnight.set(Calendar.MILLISECOND, 0);
+            //end of count midnight
+
+            long diff =  d1.getTime() - midnight.getTimeInMillis();
+            if(diff <= 24 * 60 * 60 * 1000)
+            {
+                return DATE_TODAY;
+            }
+            else if(diff <= 2 * 24 * 60 * 60 * 1000)
+            {
+                return DATE_TOMORROW;
+            }
+            else return DATE_UPCOMING;*/
+
             /*long diff = Math.abs(d1.getTime() - midnight.getTime());
             long diffDays = diff / (24 * 60 * 60 * 1000);
             if (diffDays == 0)
@@ -288,4 +312,10 @@ public class Utils {
     public static final String PAYMENT_STATUS_PAID = "paid";
     public static final String PAYMENT_STATUS_VOID = "void";
     public static final String PAYMENT_STATUS_REFUND = "refund";
+    private static final String SCHEME = "jiggie://";
+    private static final String SCHEME_HOST_EVENT_DETAIL = "event_detail";
+    private static final String SCHEME_HOST_EVENT_LIST = "event_list";
+    public static final String[] JIGGIE_URLS =
+            { SCHEME + SCHEME_HOST_EVENT_LIST
+            , SCHEME + SCHEME_HOST_EVENT_DETAIL };
 }
