@@ -1,10 +1,12 @@
 package com.jiggie.android.component.activity;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.jiggie.android.R;
+import com.jiggie.android.activity.MainActivity;
 
 import butterknife.Bind;
 
@@ -45,5 +47,13 @@ public abstract class ToolbarActivity extends BaseActivity {
     public void onBackPressed() {
         super.onBackPressed();
         super.overridePendingTransition(R.anim.pull_in_left, R.anim.push_out_right);
+    }
+
+    protected void redirectToHome()
+    {
+        Intent i = new Intent(this, MainActivity.class);
+        i.putExtra("show_background", false);
+        startActivity(i);
+        finish();
     }
 }

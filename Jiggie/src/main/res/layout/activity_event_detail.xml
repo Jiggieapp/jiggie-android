@@ -108,93 +108,153 @@
                         android:background="@android:color/darker_gray" />
 
                     <LinearLayout
-                        android:id="@+id/layoutGuests"
+                        android:id="@+id/element_containers"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
+
                         <LinearLayout
-                            android:id="@+id/guestView"
+                            android:id="@+id/layoutGuests"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:background="?attr/selectableItemBackground"
-                            android:baselineAligned="false"
-                            android:clickable="true"
-                            android:orientation="horizontal"
-                            android:paddingBottom="@dimen/padding_standard"
-                            android:paddingLeft="@dimen/padding_standard"
-                            android:paddingRight="@dimen/padding_standard"
-                            android:paddingTop="@dimen/padding_standard">
+                            android:orientation="vertical">
 
                             <LinearLayout
-                                android:layout_width="0dp"
+                                android:id="@+id/guestView"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center_vertical"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
+                                android:background="?attr/selectableItemBackground"
+                                android:baselineAligned="false"
+                                android:clickable="true"
+                                android:orientation="horizontal"
+                                android:paddingBottom="@dimen/padding_standard"
+                                android:paddingLeft="@dimen/padding_standard"
+                                android:paddingRight="@dimen/padding_standard"
+                                android:paddingTop="@dimen/padding_standard">
 
-                                <TextView
-                                    android:id="@+id/txtGuestCount"
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/txtGuestCount"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textAllCaps="true" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/interested"
+                                        android:textAllCaps="true" />
+                                </LinearLayout>
+
+                                <LinearLayout
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textAllCaps="true" />
+                                    android:orientation="horizontal">
 
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/interested"
-                                    android:textAllCaps="true" />
+                                    <ImageView
+                                        android:id="@+id/imageGuest1"
+                                        android:layout_width="32dp"
+                                        android:layout_height="32dp"
+                                        android:layout_marginEnd="@dimen/padding_standard_half"
+                                        android:layout_marginRight="@dimen/padding_standard_half"
+                                        android:contentDescription="@null" />
+
+                                    <ImageView
+                                        android:id="@+id/imageGuest2"
+                                        android:layout_width="32dp"
+                                        android:layout_height="32dp"
+                                        android:layout_marginEnd="@dimen/padding_standard_half"
+                                        android:layout_marginRight="@dimen/padding_standard_half"
+                                        android:contentDescription="@null" />
+
+                                    <ImageView
+                                        android:id="@+id/imageGuest3"
+                                        android:layout_width="32dp"
+                                        android:layout_height="32dp"
+                                        android:layout_marginEnd="@dimen/padding_standard_half"
+                                        android:layout_marginRight="@dimen/padding_standard_half"
+                                        android:contentDescription="@null" />
+
+                                    <ImageView
+                                        android:id="@+id/imageGuest4"
+                                        android:layout_width="32dp"
+                                        android:layout_height="32dp"
+                                        android:layout_marginEnd="@dimen/padding_standard_half"
+                                        android:layout_marginRight="@dimen/padding_standard_half"
+                                        android:contentDescription="@null" />
+
+                                    <TextView
+                                        android:id="@+id/txtGuestCounter"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="34dp"
+                                        android:layout_gravity="end"
+                                        android:background="@drawable/btn_interested"
+                                        android:gravity="center"
+                                        android:singleLine="true"
+                                        android:textColor="@drawable/btn_interested_text"
+                                        android:textSize="12sp" />
+                                </LinearLayout>
                             </LinearLayout>
 
-                            <LinearLayout
-                                android:layout_width="wrap_content"
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:background="@android:color/darker_gray" />
+
+                            <FrameLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal">
+                                android:background="@color/colorLight">
 
-                                <ImageView
-                                    android:id="@+id/imageGuest1"
-                                    android:layout_width="32dp"
-                                    android:layout_height="32dp"
-                                    android:layout_marginEnd="@dimen/padding_standard_half"
-                                    android:layout_marginRight="@dimen/padding_standard_half"
-                                    android:contentDescription="@null" />
+                                <LinearLayout
+                                    android:id="@+id/layoutSeeGuests"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:background="?attr/selectableItemBackground"
+                                    android:clickable="true"
+                                    android:orientation="horizontal"
+                                    android:padding="@dimen/padding_standard">
 
-                                <ImageView
-                                    android:id="@+id/imageGuest2"
-                                    android:layout_width="32dp"
-                                    android:layout_height="32dp"
-                                    android:layout_marginEnd="@dimen/padding_standard_half"
-                                    android:layout_marginRight="@dimen/padding_standard_half"
-                                    android:contentDescription="@null" />
+                                    <TextView
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center_vertical"
+                                        android:layout_weight="1"
+                                        android:gravity="center_horizontal"
+                                        android:text="@string/see_all_guests"
+                                        android:textAllCaps="true"
+                                        android:textColor="@android:color/black" />
 
-                                <ImageView
-                                    android:id="@+id/imageGuest3"
-                                    android:layout_width="32dp"
-                                    android:layout_height="32dp"
-                                    android:layout_marginEnd="@dimen/padding_standard_half"
-                                    android:layout_marginRight="@dimen/padding_standard_half"
-                                    android:contentDescription="@null" />
+                                    <ImageView
+                                        android:layout_width="15dp"
+                                        android:layout_height="33dp"
+                                        android:layout_marginLeft="@dimen/padding_standard_half"
+                                        android:layout_marginStart="@dimen/padding_standard_half"
+                                        android:contentDescription="@null"
+                                        android:src="@mipmap/ic_arrow" />
+                                </LinearLayout>
+                            </FrameLayout>
 
-                                <ImageView
-                                    android:id="@+id/imageGuest4"
-                                    android:layout_width="32dp"
-                                    android:layout_height="32dp"
-                                    android:layout_marginEnd="@dimen/padding_standard_half"
-                                    android:layout_marginRight="@dimen/padding_standard_half"
-                                    android:contentDescription="@null" />
-
-                                <TextView
-                                    android:id="@+id/txtGuestCounter"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="34dp"
-                                    android:layout_gravity="end"
-                                    android:background="@drawable/btn_interested"
-                                    android:gravity="center"
-                                    android:singleLine="true"
-                                    android:textColor="@drawable/btn_interested_text"
-                                    android:textSize="12sp" />
-                            </LinearLayout>
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="0.5dp"
+                                android:background="@android:color/darker_gray" />
                         </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/txtDescription"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:padding="@dimen/padding_standard"
+                            android:textColor="@android:color/black" />
 
                         <View
                             android:layout_width="match_parent"
@@ -207,7 +267,7 @@
                             android:background="@color/colorLight">
 
                             <LinearLayout
-                                android:id="@+id/layoutSeeGuests"
+                                android:id="@+id/layoutAddress"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="?attr/selectableItemBackground"
@@ -216,13 +276,12 @@
                                 android:padding="@dimen/padding_standard">
 
                                 <TextView
+                                    android:id="@+id/txtAddress"
                                     android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
+                                    android:layout_height="match_parent"
                                     android:layout_weight="1"
-                                    android:gravity="center_horizontal"
-                                    android:text="@string/see_all_guests"
-                                    android:textAllCaps="true"
+                                    android:gravity="center"
+                                    android:text="@string/events"
                                     android:textColor="@android:color/black" />
 
                                 <ImageView
@@ -239,64 +298,13 @@
                             android:layout_width="match_parent"
                             android:layout_height="0.5dp"
                             android:background="@android:color/darker_gray" />
-                    </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/txtDescription"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:padding="@dimen/padding_standard"
-                        android:textColor="@android:color/black" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:background="@android:color/darker_gray" />
-
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/colorLight">
-
-                        <LinearLayout
-                            android:id="@+id/layoutAddress"
+                        <fragment
+                            android:id="@+id/map"
+                            class="com.google.android.gms.maps.SupportMapFragment"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:background="?attr/selectableItemBackground"
-                            android:clickable="true"
-                            android:orientation="horizontal"
-                            android:padding="@dimen/padding_standard">
-
-                            <TextView
-                                android:id="@+id/txtAddress"
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:gravity="center"
-                                android:textColor="@android:color/black"
-                                android:text="@string/events"/>
-
-                            <ImageView
-                                android:layout_width="15dp"
-                                android:layout_height="33dp"
-                                android:layout_marginLeft="@dimen/padding_standard_half"
-                                android:layout_marginStart="@dimen/padding_standard_half"
-                                android:contentDescription="@null"
-                                android:src="@mipmap/ic_arrow" />
-                        </LinearLayout>
-                    </FrameLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:background="@android:color/darker_gray" />
-
-                    <fragment
-                        android:id="@+id/map"
-                        class="com.google.android.gms.maps.SupportMapFragment"
-                        android:layout_width="match_parent"
-                        android:layout_height="400dp" />
+                            android:layout_height="400dp" />
+                    </LinearLayout>
                 </LinearLayout>
             </android.support.v4.widget.NestedScrollView>
         </android.support.v4.widget.SwipeRefreshLayout>

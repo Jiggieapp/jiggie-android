@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -77,11 +78,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     @SuppressWarnings("StatementWithEmptyBody")
     protected void onCreate(Bundle savedInstanceState) {
-        super.setTheme(R.style.AppTheme);
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null)
+        {
+            final boolean showBackground = bundle.getBoolean("show_background", false);
+            if(!showBackground)
+            {
+                getWindow().setBackgroundDrawable(null);
+                super.setTheme(R.style.AppTheme);
+            }
+
+        }
+        else
+        {
+            super.setTheme(R.style.AppTheme);
+        }
+
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_main);
         this.active = true;
@@ -107,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
             final String str = GoogleApiAvailability.getInstance().getErrorString(code);
             Toast.makeText(this, str, Toast.LENGTH_LONG).show();
         }
-
     }
 
     @Override
@@ -246,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onAttributionFailure(String s) {
                 //Toast.makeText(MainActivity.this, "c", Toast.LENGTH_LONG).show();
-                Log.d("123appsflyer", "c");
+                Utils.d("123appsflyer", "c");
             }
         });
     }
