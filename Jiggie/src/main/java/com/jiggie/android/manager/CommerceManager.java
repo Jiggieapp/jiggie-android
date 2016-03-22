@@ -350,12 +350,12 @@ public class CommerceManager {
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Log.d("Failure", t.toString());
+                    Utils.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
                 }
             });
         }catch (IOException e){
-            Log.d("Exception", e.toString());
+            Utils.d("Exception", e.toString());
             onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
         }
     }

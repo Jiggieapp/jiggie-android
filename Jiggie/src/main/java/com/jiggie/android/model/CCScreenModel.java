@@ -26,6 +26,12 @@ public class CCScreenModel implements Parcelable {
         int expYear;
         String grossAmount;
 
+
+        public CardDetails()
+        {
+
+        }
+
         public CardDetails(String cardNumber, String cvv, int expMonth, int expYear, String grossAmount){
             this.cardNumber = cardNumber;
             this.cvv = cvv;
@@ -87,6 +93,26 @@ public class CCScreenModel implements Parcelable {
 
         public String getGrossAmount() {
             return grossAmount;
+        }
+
+        public void setCardNumber(String cardNumber) {
+            this.cardNumber = cardNumber;
+        }
+
+        public void setGrossAmount(String grossAmount) {
+            this.grossAmount = grossAmount;
+        }
+
+        public void setCvv(String cvv) {
+            this.cvv = cvv;
+        }
+
+        public void setExpMonth(int expMonth) {
+            this.expMonth = expMonth;
+        }
+
+        public void setExpYear(int expYear) {
+            this.expYear = expYear;
         }
     }
 

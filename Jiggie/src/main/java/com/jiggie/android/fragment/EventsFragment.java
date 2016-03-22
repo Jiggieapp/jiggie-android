@@ -437,8 +437,6 @@ public class EventsFragment extends Fragment
                         || searchText.equals("")) {
                     if (!isSearch) {
                         showTab();
-                        Utils.d(TAG, "calculatetime " + tempEvent.getTitle()
-                                + " " + tempEvent.getStart_datetime());
                         final String diffDays = Utils.calculateTime(tempEvent.getStart_datetime());
                         if (diffDays.equals(Utils.DATE_TODAY)) {
                             todayEvents.add(tempEvent);

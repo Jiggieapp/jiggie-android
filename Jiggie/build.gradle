@@ -25,7 +25,7 @@ android {
         applicationId "com.jiggie.android"
         renderscriptTargetApi 18
         renderscriptSupportModeEnabled true
-        buildConfigField("String", "BASE_URL", "\"http://api.jiggieapp.com/\"")
+        buildConfigField("String", "BASE_URL", "\"https://api.jiggieapp.com/\"")
     }
     signingConfigs {
         configDebug {
@@ -47,7 +47,7 @@ android {
             versionNameSuffix '-Dev'
             resValue "string", "app_name", "Jiggie Dev"
             signingConfig signingConfigs.configDebug
-            buildConfigField("String", "BASE_URL", "\"http://api-dev.jiggieapp.com/\"")
+            buildConfigField("String", "BASE_URL", "\"https://api-dev.jiggieapp.com/\"")
         }
         release {
             minifyEnabled false

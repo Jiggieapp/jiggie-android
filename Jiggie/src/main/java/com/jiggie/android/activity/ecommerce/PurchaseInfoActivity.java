@@ -1,6 +1,8 @@
 package com.jiggie.android.activity.ecommerce;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -11,11 +13,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -92,6 +96,7 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
     long order_id;
 
     AlertDialog dialog3ds;
+    //Dialog dialog3ds;
     ProgressDialog progressDialog;
     public final static String PAYMENT_API = "https://api.veritrans.co.id/v2/token";
     public final static String PAYMENT_API_SANDBOX = "https://api.sandbox.veritrans.co.id/v2/token";
@@ -293,6 +298,8 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
 
     private void slidePay(){
         if(paymentType.equals(Utils.TYPE_CC)){
+
+            //access3dSecure();
             if(is_verified){
                 PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, "0", productSummary.getOrder_id(), cc_token_id, name_cc);
                 doPayment(postPaymentModel);
@@ -313,6 +320,7 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
         VTDirect vtDirect = new VTDirect();
 
         final VTCardDetails vtCardDetails = new VTCardDetails();
+
         //TODO: Set your card details based on user input.
         //this is a sample
         vtCardDetails.setCard_number(cardDetails.getCardNumber()); // 3DS Dummy CC
@@ -336,8 +344,8 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
                 if (token.getRedirect_url() != null) {
 
                     //using 3d secure
-                    WebView webView = new
-                            WebView(PurchaseInfoActivity.this);
+                    MyWebView webView = new
+                            MyWebView(PurchaseInfoActivity.this);
 
                     webView.getSettings().setJavaScriptEnabled(true);
                     webView.setOnTouchListener(new View.OnTouchListener() {
@@ -358,14 +366,13 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
                     webView.setWebChromeClient(new WebChromeClient());
                     webView.setWebViewClient(new VtWebViewClient(token.getToken_id(), totalPrice));
                     webView.loadUrl(token.getRedirect_url());
+                    webView.requestFocus(View.FOCUS_DOWN);
 
                     AlertDialog.Builder alertBuilder = new AlertDialog.Builder(PurchaseInfoActivity.this);
                     dialog3ds = alertBuilder.create();
 
-
                     dialog3ds.setTitle("3D Secure Veritrans");
                     dialog3ds.setView(webView);
-                    webView.requestFocus(View.FOCUS_DOWN);
                     alertBuilder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int id) {
@@ -376,9 +383,7 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
                     dialog3ds.show();
                 }
                 //print or send token
-                Log.d("token", token.getToken_id());
-
-
+                Utils.d("token", token.getToken_id());
             }
 
             @Override
@@ -443,6 +448,17 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
                     is_verified = false;
                 }
 
+                /*is_new_card = "1";
+                cardDetails = creditcardInformation.getCardDetails();
+                cardDetails = new CCScreenModel.CardDetails();
+                cardDetails.setCardNumber("4811111111111114");
+                cardDetails.setCvv("123");
+                cardDetails.setExpMonth(1);
+                cardDetails.setGrossAmount("340000");
+                cardDetails.setExpYear(2020);
+                cc_card_id = cardDetails.getCardNumber();
+                txtPayment.setText("• • • • " + cc_card_id.substring(cc_card_id.length() - 4, cc_card_id.length()));
+                */
                 if(is_verified){
                     is_new_card = "0";
                     cc_token_id = creditcardInformation.getCreditcardInformation().getSaved_token_id();
@@ -500,7 +516,7 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
 
-            Log.d("VtLog", url);
+            Utils.d("VtLog", url);
 
             if (url.startsWith(getPaymentApiUrl() + "/callback/")) {
                 PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, "1", productSummary.getOrder_id(), token, name_cc);
@@ -561,5 +577,30 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
     private void dismissLoadingDialog(){
         if(progressDialog!=null&progressDialog.isShowing())
             progressDialog.dismiss();
+    }
+
+    class MyWebView extends WebView
+    {
+
+        public MyWebView(Context context) {
+            super(context);
+        }
+
+        public MyWebView(Context context, AttributeSet attrs) {
+            super(context, attrs);
+        }
+
+        public MyWebView(Context context, AttributeSet attrs, int defStyleAttr) {
+            super(context, attrs, defStyleAttr);
+        }
+
+        public MyWebView(Context context, AttributeSet attrs, int defStyleAttr, boolean privateBrowsing) {
+            super(context, attrs, defStyleAttr, privateBrowsing);
+        }
+
+        @Override
+        public boolean onCheckIsTextEditor() {
+            return true;
+        }
     }
 }
