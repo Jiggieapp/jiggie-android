@@ -106,9 +106,6 @@ public class EventManager {
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
                     /*String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);*/
-                    Utils.d(TAG, "response eventmanager "
-                            + Utils.print(response) + " " + _id
-                            + " " + fb_id);
                     if (response.code() == Utils.CODE_SUCCESS) {
                         EventDetailModel dataTemp = (EventDetailModel) response.body();
                         dataTemp.setFrom(TAG);

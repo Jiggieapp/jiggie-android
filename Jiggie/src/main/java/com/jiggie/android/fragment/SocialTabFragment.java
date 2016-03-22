@@ -241,30 +241,38 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     public void onEvent(SocialModel message){
         current = null;
         socialSize = 0;
-        for(SocialModel.Data.SocialFeeds item : message.getData().getSocial_feeds())
-        {
-            if(SocialManager.Type.isInbound(item))
-            {
-                socialSize++;
-            }
-        }
-        //wandy 03-03-2016
-        //this.progressBar.setVisibility(View.VISIBLE);
-        if(this.progressBar.getVisibility() == View.VISIBLE)
-            this.progressBar.setVisibility(View.GONE);
-        dismissProgressDialog();
 
-        for (int i = 0; i < message.getData().getSocial_feeds().size(); i++) {
-            final SocialModel.Data.SocialFeeds item = message.getData().getSocial_feeds().get(i);
-            //if(item..equalsIgnoreCase(Common.SOCIAL_FEED_TYPE_APPROVED))
-            if (SocialManager.Type.isInbound(item)) {
-                current = item;
-                break;
-            } else if (current == null)
-                current = item;
+        if(switchSocialize.isChecked())
+        {
+            for(SocialModel.Data.SocialFeeds item : message.getData().getSocial_feeds())
+            {
+                if(SocialManager.Type.isInbound(item))
+                {
+                    socialSize++;
+                }
+            }
+
+            for (int i = 0; i < message.getData().getSocial_feeds().size(); i++) {
+                final SocialModel.Data.SocialFeeds item = message.getData().getSocial_feeds().get(i);
+                //if(item..equalsIgnoreCase(Common.SOCIAL_FEED_TYPE_APPROVED))
+                if (SocialManager.Type.isInbound(item)) {
+                    current = item;
+                    break;
+                } else if (current == null)
+                    current = item;
+            }
+            setHomeTitle();
+            openDetail(current);
         }
-        setHomeTitle();
-        openDetail(current);
+        else
+        {
+            //wandy 03-03-2016
+            //this.progressBar.setVisibility(View.VISIBLE);
+            if(this.progressBar.getVisibility() == View.VISIBLE)
+                this.progressBar.setVisibility(View.GONE);
+            dismissProgressDialog();
+        }
+
     }
 
     public void onEvent(ExceptionModel message){
@@ -351,6 +359,12 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                 enableButton(true);
             }
         }
+
+        //wandy 03-03-2016
+        //this.progressBar.setVisibility(View.VISIBLE);
+        if(this.progressBar.getVisibility() == View.VISIBLE)
+            this.progressBar.setVisibility(View.GONE);
+        dismissProgressDialog();
     }
 
     /*public void onEvent(EventDetailModel message){
@@ -366,7 +380,8 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
             final String url = String.format("partyfeed/settings/%s/%s", AccessToken.getCurrentAccessToken().getUserId(), isChecked ? "yes" : "no");
-            final ProgressDialog dialog = App.showProgressDialog(getContext());
+            //final ProgressDialog dialog = App.showProgressDialog(getContext());
+            showProgressDialog();
 
             currentSetting = AccountManager.loadSetting();
             VolleyHandler.getInstance().createVolleyRequest(url, new VolleyRequestListener<Void, JSONObject>() {
@@ -380,11 +395,11 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                 @Override
                 public void onResponseCompleted(Void value) {
                     if (getContext() != null) {
-                        dialog.dismiss();
                         if (!isChecked) {
                             txtSocialize.setText(R.string.socialize_description_off);
                             cardEmpty.setVisibility(View.GONE);
                             card.setVisibility(View.GONE);
+                            dismissProgressDialog();
                         } else {
                             txtSocialize.setText(R.string.socialize_description);
                             onRefresh();
@@ -400,7 +415,8 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                         switchSocialize.setChecked(!isChecked);
                         switchSocialize.setOnCheckedChangeListener(socializeChanged);
                         txtSocialize.setText(isChecked ? R.string.socialize_description_off : R.string.socialize_description);
-                        dialog.dismiss();
+                        //dialog.dismiss();
+                        dismissProgressDialog();
                     }
                 }
             });
@@ -427,10 +443,14 @@ public class SocialTabFragment extends Fragment implements TabFragment {
 
     @OnClick(R.id.cardInbound)
     void cardOnClick() {
-        Intent i = new Intent(super.getContext(), EventDetailActivity.class);
-        i.putExtra(Common.FIELD_EVENT_ID, current.getEvent_id());
-        i.putExtra(Common.FIELD_EVENT_NAME, current.getEvent_name());
-        super.startActivity(i);
+        if(current != null)
+        {
+            Intent i = new Intent(super.getContext(), EventDetailActivity.class);
+            i.putExtra(Common.FIELD_EVENT_ID, current.getEvent_id());
+            i.putExtra(Common.FIELD_EVENT_NAME, current.getEvent_name());
+            super.startActivity(i);
+        }
+
     }
 
     @SuppressWarnings("unused")
@@ -543,7 +563,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                     startActivity(intent);
                 }
 
-                dismissProgressDialog();
+                //dismissProgressDialog();
             }
             else
             {

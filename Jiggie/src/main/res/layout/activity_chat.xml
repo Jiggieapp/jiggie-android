@@ -1,8 +1,7 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="match_parent"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
@@ -11,66 +10,72 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@android:color/white"
         android:elevation="4dp"
-        app:titleTextColor="@color/colorPrimary"/>
+        app:titleTextColor="@color/colorPrimary" />
 
     <RelativeLayout
-        android:background="@color/grayLight"
+        android:id="@+id/contentView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:id="@+id/contentView">
+        android:background="@color/grayLight">
 
         <android.support.v7.widget.RecyclerView
-            android:layout_height="match_parent"
+            android:id="@+id/recycler"
             android:layout_width="match_parent"
-            android:id="@+id/recycler"/>
+            android:layout_height="match_parent" />
 
         <ProgressBar
-            android:layout_height="wrap_content"
+            android:id="@+id/progressBar"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:indeterminate="true"
-            android:id="@+id/progressBar"/>
+            android:indeterminate="true" />
 
         <FrameLayout
-            android:layout_centerInParent="true"
-            android:layout_height="wrap_content"
+            android:id="@+id/viewFailed"
             android:layout_width="match_parent"
-            android:id="@+id/viewFailed">
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
 
-            <include layout="@layout/view_failed"/>
+            <include layout="@layout/view_failed" />
         </FrameLayout>
     </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@android:color/darker_gray"/>
+        android:background="@android:color/darker_gray" />
 
     <LinearLayout
-        android:layout_height="wrap_content"
+        android:id="@+id/viewChat"
         android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:id="@+id/viewChat">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <EditText
-            android:paddingRight="@dimen/padding_standard_half"
-            android:paddingLeft="@dimen/padding_standard_half"
-            android:layout_height="match_parent"
+            android:id="@+id/txtMessage"
             android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@null"
-            android:id="@+id/txtMessage"
             android:gravity="center_vertical"
+            android:hint="@string/your_message"
             android:inputType="textMultiLine"
-            android:hint="@string/your_message"/>
+            android:paddingLeft="@dimen/padding_standard_half"
+            android:paddingRight="@dimen/padding_standard_half" />
 
         <Button
-            android:background="?attr/selectableItemBackground"
-            android:textColor="@color/btn_chat_send"
-            android:layout_height="wrap_content"
+            android:id="@+id/btnSend"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
             android:text="@string/send"
-            android:id="@+id/btnSend"/>
+            android:textColor="@color/btn_chat_send" />
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@android:color/darker_gray"
+        android:visibility="invisible"/>
 </LinearLayout>
