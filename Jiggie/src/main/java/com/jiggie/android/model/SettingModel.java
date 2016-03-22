@@ -1,5 +1,7 @@
 package com.jiggie.android.model;
 
+import com.jiggie.android.component.Utils;
+
 import java.util.ArrayList;
 
 /**
@@ -167,6 +169,9 @@ public class SettingModel {
         }
 
         public String getPhone() {
+            if(phone==null){
+                phone = Utils.BLANK;
+            }
             return phone;
         }
 
