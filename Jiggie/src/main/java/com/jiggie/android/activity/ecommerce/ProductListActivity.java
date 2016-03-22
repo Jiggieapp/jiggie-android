@@ -46,7 +46,7 @@ public class ProductListActivity extends ToolbarWithDotActivity
 
     @Override
     protected int getCurrentStep() {
-        return 1;
+        return 0;
     }
 
     @Override
