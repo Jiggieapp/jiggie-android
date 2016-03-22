@@ -50,6 +50,12 @@ public class AddGuestActivity extends ToolbarActivity {
         edt_phone = (EditText)findViewById(R.id.edt_phone);
         rel_save = (RelativeLayout)findViewById(R.id.rel_save);
 
+        txt_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         rel_save.setOnClickListener(new View.OnClickListener() {
             @Override

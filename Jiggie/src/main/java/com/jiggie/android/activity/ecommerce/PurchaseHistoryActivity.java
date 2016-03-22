@@ -102,6 +102,7 @@ public class PurchaseHistoryActivity extends ToolbarActivity
             @Override
             public void run() {
                 swipeRefresh.setRefreshing(true);
+                loadOrderList();
             }
         });
     }

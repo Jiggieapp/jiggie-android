@@ -786,6 +786,7 @@ public class App extends Application {
             this.deviceId = Settings.Secure.getString(getApplicationContext().getContentResolver(),
                     Settings.Secure.ANDROID_ID);
         }
+        Utils.DEVICE_ID = deviceId;
         return this.deviceId;
     }
 
