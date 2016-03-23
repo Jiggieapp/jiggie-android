@@ -24,11 +24,13 @@ public class TermsItemView extends RelativeLayout {
     TextView txtTerm;
     private Context context;
     String text;
+    OnCheckTermsListener onCheckTermsListener;
 
-    public TermsItemView(Context context, String text) {
+    public TermsItemView(Context context, String text, OnCheckTermsListener onCheckTermsListener) {
         super(context);
         this.context = context;
         this.text = text;
+        this.onCheckTermsListener = onCheckTermsListener;
         initView();
     }
 
@@ -46,7 +48,7 @@ public class TermsItemView extends RelativeLayout {
         ButterKnife.bind(this);
 
         txtTerm.setText(text);
-        imgCheck.setSelected(true);
+        imgCheck.setSelected(false);
         imgCheck.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,12 +57,17 @@ public class TermsItemView extends RelativeLayout {
                 } else {
                     imgCheck.setSelected(true);
                 }
+                onCheckTermsListener.onCheckTerms();
             }
         });
     }
 
     public ImageView getImgCheck() {
         return imgCheck;
+    }
+
+    public interface OnCheckTermsListener{
+        void onCheckTerms();
     }
 
 }

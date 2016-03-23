@@ -366,7 +366,7 @@
             android:layout_alignParentBottom="true"
             android:background="@drawable/bg_button_ticket_detail"
             android:enabled="true"
-            android:text="@string/done"
+            android:text="@string/continue_str"
             android:textColor="@android:color/white" />
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

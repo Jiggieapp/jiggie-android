@@ -136,7 +136,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                 Intent i = new Intent(TicketDetailActivity.this, AddGuestActivity.class);
                 i.putExtra(Common.FIELD_GUEST_NAME, guestName);
                 i.putExtra(Common.FIELD_GUEST_EMAIL, guestEmail);
-                if(guestPhone.equals("Phone Number")){
+                if(guestPhone.equals(getString(R.string.phone_number))){
                     i.putExtra(Common.FIELD_GUEST_PHONE, Utils.BLANK);
                 }else{
                     i.putExtra(Common.FIELD_GUEST_PHONE, guestPhone);
@@ -241,7 +241,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
         if(guestPhone.equals(Utils.BLANK)){
             guestPhone = AccountManager.loadSetting().getData().getPhone();
             if(guestPhone.equals(Utils.BLANK)){
-                guestPhone = "Phone Number";
+                guestPhone = getString(R.string.phone_number);
                 txtGuestPhone.setTextColor(getResources().getColor(android.R.color.holo_red_light));
             }
 
@@ -251,6 +251,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
         txtGuestEmail.setText(guestEmail+" | ");
         txtGuestPhone.setText(guestPhone);
 
+        checkEnability(guestName, guestEmail, guestPhone);
     }
 
     private void sendMixpanel(String type_transaction, EventDetailModel.Data.EventDetail eventDetail){
@@ -297,6 +298,8 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
             txtGuestEmail.setText(guestEmail+" | ");
             txtGuestPhone.setText(guestPhone);
             txtGuestPhone.setTextColor(getResources().getColor(android.R.color.darker_gray));
+
+            checkEnability(guestName, guestEmail, guestPhone);
         }
     }
 
@@ -312,5 +315,24 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
     private void dismissLoadingDialog(){
         if(progressDialog!=null&progressDialog.isShowing())
             progressDialog.dismiss();
+    }
+
+    private void checkEnability(String name, String email, String phoneNumber){
+        boolean isItEnable = true;
+        if(name.equals(Utils.BLANK)){
+            isItEnable = false;
+        }
+        if(email.equals(Utils.BLANK)){
+            isItEnable = false;
+        }
+        if(phoneNumber.equals(Utils.BLANK)||phoneNumber.equals(getString(R.string.phone_number))){
+            isItEnable = false;
+        }
+
+        if(isItEnable){
+            btnDone.setEnabled(true);
+        }else{
+            btnDone.setEnabled(false);
+        }
     }
 }

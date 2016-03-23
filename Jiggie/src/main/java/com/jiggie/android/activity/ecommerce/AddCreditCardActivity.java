@@ -110,6 +110,7 @@ public class AddCreditCardActivity extends ToolbarActivity {
             @Override
             public void afterTextChanged(Editable s) {
 
+                checkEnability();
             }
         });
 
@@ -127,6 +128,7 @@ public class AddCreditCardActivity extends ToolbarActivity {
             @Override
             public void afterTextChanged(Editable s) {
 
+                checkEnability();
             }
         });
 
@@ -163,6 +165,7 @@ public class AddCreditCardActivity extends ToolbarActivity {
             @Override
             public void afterTextChanged(Editable s) {
 
+                checkEnability();
             }
         });
 
@@ -179,15 +182,20 @@ public class AddCreditCardActivity extends ToolbarActivity {
                 //saveCC(cardNumber, "123", 01, 2020, totalPrice);
             }
         });
+
+
+        checkEnability();
     }
 
     private DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int years, int monthOfYear, int dayOfMonth) {
-            String months = String.format("%02d", monthOfYear);
-            month = monthOfYear;
+            String months = String.format("%02d", monthOfYear+1);
+            month = monthOfYear+1;
             year = years;
             edt_date.setText(months+"/"+String.valueOf(year));
+
+            checkEnability();
         }
     };
 
@@ -257,6 +265,29 @@ public class AddCreditCardActivity extends ToolbarActivity {
         }
         return dpd;
 
+    }
+
+    private void checkEnability(){
+        String cardNumber = edt_cc_number.getText().toString();
+        String cvv = edt_cvv.getText().toString();
+        String date = edt_date.getText().toString();
+        boolean isItEnable = true;
+
+        if(cardNumber.equals(Utils.BLANK)){
+            isItEnable = false;
+        }
+        if(cvv.equals(Utils.BLANK)){
+            isItEnable = false;
+        }
+        if(date.equals(Utils.BLANK)){
+            isItEnable = false;
+        }
+
+        if(isItEnable){
+            rel_save.setEnabled(true);
+        }else{
+            rel_save.setEnabled(false);
+        }
     }
 
 

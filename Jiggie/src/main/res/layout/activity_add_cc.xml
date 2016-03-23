@@ -118,7 +118,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_gravity="bottom"
-        android:background="@color/blue_selector"
+        android:background="@drawable/bg_button_ticket_detail"
         android:layout_alignParentBottom="true">
         <TextView
             android:layout_height="wrap_content"
