@@ -106,7 +106,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                         productSummary = dataTemp.getData().getProduct_summary();
 
                         String responses = new Gson().toJson(dataTemp);
-                        Log.d("res", responses);
+                        Utils.d("res", responses);
 
                         dismissLoadingDialog();
 
@@ -124,7 +124,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                     @Override
                     public void onFailure(int responseCode, String message) {
                         dismissLoadingDialog();
-                        Log.d(String.valueOf(responseCode), message);
+                        Utils.d(String.valueOf(responseCode), message);
                     }
                 });
             }

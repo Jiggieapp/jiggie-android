@@ -150,7 +150,7 @@ public class Utils {
     public final static String URL_SUCCESS_SCREEN_WALKTHROUGH = BASE_URL + "app/v3/product/walkthrough_payment";
 
     public static void d(final String tag, final String value) {
-        //Log.d(tag, value);
+        Log.d(tag, value);
     }
 
     public static final String DATE_TODAY = "today";
