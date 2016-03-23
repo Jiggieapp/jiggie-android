@@ -32,6 +32,8 @@ public class AddGuestActivity extends ToolbarActivity {
     ProductListModel.Data.ProductList.Purchase detailPurchase = null;
     ProductListModel.Data.ProductList.Reservation detailReservation = null;
 
+    boolean textWatchEdited = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,18 +65,18 @@ public class AddGuestActivity extends ToolbarActivity {
                 String guestName = edt_name.getText().toString();
                 String guestEmail = edt_email.getText().toString();
                 String guest62 = edt_62.getText().toString();
-                if(guest62.contains("+")){
+                if (guest62.contains("+")) {
                     guest62 = guest62.substring(1, guest62.length());
                 }
                 String guestPhoneN = edt_phone.getText().toString();
-                String guestPhone = guest62+guestPhoneN;
+                String guestPhone = guest62 + guestPhoneN;
 
-                if(!isFieldError(guestName, guestEmail, guest62, guestPhoneN)){
-                    if(!guestName.isEmpty() && !guestEmail.isEmpty() && !guest62.isEmpty() && !guestPhoneN.isEmpty()){
+                if (!isFieldError(guestName, guestEmail, guest62, guestPhoneN)) {
+                    if (!guestName.isEmpty() && !guestEmail.isEmpty() && !guest62.isEmpty() && !guestPhoneN.isEmpty()) {
                         App.getSharedPreferences().edit().putString(Common.FIELD_GUEST_NAME, guestName).putString(Common.FIELD_GUEST_EMAIL, guestEmail).putString(Common.FIELD_GUEST_PHONE, guestPhone).commit();
                         setResult(RESULT_OK, new Intent().putExtra(Common.FIELD_GUEST_NAME, guestName).putExtra(Common.FIELD_GUEST_EMAIL, guestEmail).putExtra(Common.FIELD_GUEST_PHONE, guestPhone));
                         finish();
-                    }else{
+                    } else {
                         //error handling
                     }
                 }
@@ -115,6 +117,7 @@ public class AddGuestActivity extends ToolbarActivity {
             }
         });
 
+
         edt_62.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -124,11 +127,27 @@ public class AddGuestActivity extends ToolbarActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 edt_62.setTextColor(getResources().getColor(R.color.textDarkGray));
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {
                 //edt_62.setText("+"+edt_62.getText().toString());
+
+                String str = s.toString();
+
+                if (textWatchEdited) {
+                    textWatchEdited = false;
+                    edt_62.setSelection(str.length(), str.length());
+                    return;
+                }
+
+                // do something
+                textWatchEdited = true;
+                if(!str.contains("+")){
+                    str = "+"+str;
+                }
+                edt_62.setText(str);
                 checkEnability();
             }
         });

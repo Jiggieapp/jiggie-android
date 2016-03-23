@@ -37,7 +37,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/common_action_bar_splitter">
+                android:background="@color/grayLight">
 
                 <RelativeLayout
                     android:id="@+id/header_container"
@@ -47,7 +47,7 @@
                     android:padding="@dimen/padding_standard"
                     android:clickable="false"
                     android:layout_alignParentTop="true"
-                    android:minHeight="200dp">
+                    android:minHeight="160dp">
 
                     <TextView
                         android:id="@+id/txt_agree"
@@ -66,7 +66,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:layout_below="@id/txt_agree"></LinearLayout>
+                        android:layout_below="@id/txt_agree"
+                        android:paddingBottom="@dimen/padding_standard"></LinearLayout>
 
                 </RelativeLayout>
 
