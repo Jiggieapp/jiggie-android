@@ -1,13 +1,11 @@
 package com.jiggie.android.activity.ecommerce;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -15,11 +13,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -34,8 +29,8 @@ import com.jiggie.android.R;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarWithDotActivity;
+import com.jiggie.android.fragment.SlideFragment;
 import com.jiggie.android.manager.CommerceManager;
-import com.jiggie.android.model.CCModel;
 import com.jiggie.android.model.CCScreenModel;
 import com.jiggie.android.model.CommEventMixpanelModel;
 import com.jiggie.android.model.Common;
@@ -59,7 +54,7 @@ import id.co.veritrans.android.api.VTUtil.VTConfig;
 /**
  * Created by LTE on 3/9/2016.
  */
-public class PurchaseInfoActivity extends ToolbarWithDotActivity {
+public class PurchaseInfoActivity extends ToolbarWithDotActivity{
 
     @Bind(R.id.pager_slide)
     ViewPager pagerSlide;
@@ -96,14 +91,16 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
     long order_id;
 
     AlertDialog dialog3ds;
-    //Dialog dialog3ds;
     ProgressDialog progressDialog;
     public final static String PAYMENT_API = "https://api.veritrans.co.id/v2/token";
     public final static String PAYMENT_API_SANDBOX = "https://api.sandbox.veritrans.co.id/v2/token";
     CCScreenModel.CardDetails cardDetails;
+    @Bind(R.id.rel_disable)
+    RelativeLayout relDisable;
+    private SlideAdapter slideAdapter;
 
-    public static String getPaymentApiUrl(){
-        if(VTConfig.VT_IsProduction){
+    public static String getPaymentApiUrl() {
+        if (VTConfig.VT_IsProduction) {
             return PAYMENT_API;
         }
         return PAYMENT_API_SANDBOX;
@@ -128,10 +125,12 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
                 startActivityForResult(i, 0);
             }
         });
+
     }
 
     private void preDefined() {
-        pagerSlide.setAdapter(new SlideAdapter(getSupportFragmentManager(), pagerSlide));
+        slideAdapter = new SlideAdapter(getSupportFragmentManager(), pagerSlide);
+        pagerSlide.setAdapter(slideAdapter);
         pagerSlide.setCurrentItem(1);
 
         Intent a = getIntent();
@@ -147,10 +146,10 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
         sendMixpanel(productSummary, eventDetail);
 
         SummaryModel.Data.Product_summary.LastPayment lastPayment = productSummary.getLast_payment();
-        if(!lastPayment.isEmpty()){
+        if (!lastPayment.isEmpty()) {
             paymentType = productSummary.getLast_payment().getPayment_type();
             txtPayment.setTextColor(getResources().getColor(R.color.textDarkGray));
-            if(paymentType.equals(Utils.TYPE_CC)){
+            if (paymentType.equals(Utils.TYPE_CC)) {
                 is_verified = true;
                 cc_token_id = productSummary.getLast_payment().getSaved_token_id();
                 cc_card_id = productSummary.getLast_payment().getMasked_card();
@@ -158,20 +157,20 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
                 txtPayment.setText("• • • • " + cc_card_id.substring(cc_card_id.indexOf("-") + 1, cc_card_id.length()));
                 imgPayment.setVisibility(View.VISIBLE);
                 String headCC = cc_card_id.substring(0, 1);
-                if(headCC.equals("4")){
+                if (headCC.equals("4")) {
                     imgPayment.setVisibility(View.VISIBLE);
                     imgPayment.setImageResource(R.drawable.logo_visa);
-                }else if(headCC.equals("5")){
+                } else if (headCC.equals("5")) {
                     imgPayment.setVisibility(View.VISIBLE);
                     imgPayment.setImageResource(R.drawable.logo_mastercard);
-                }else{
+                } else {
                     imgPayment.setVisibility(View.GONE);
                 }
-            }else if(paymentType.equals(Utils.TYPE_VA)){
+            } else if (paymentType.equals(Utils.TYPE_VA)) {
                 imgPayment.setVisibility(View.GONE);
                 txtPayment.setText(getString(R.string.other_bank));
                 txtPayment.setTypeface(null, Typeface.NORMAL);
-            }else if(paymentType.equals(Utils.TYPE_BP)){
+            } else if (paymentType.equals(Utils.TYPE_BP)) {
                 imgPayment.setVisibility(View.VISIBLE);
                 imgPayment.setImageResource(R.drawable.logo_mandiri);
                 txtPayment.setText(getString(R.string.va_mandiri));
@@ -196,20 +195,27 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
         initTermView(dataProduct);
     }
 
-    private void sendMixpanel(SummaryModel.Data.Product_summary productSummary, EventDetailModel.Data.EventDetail eventDetail){
+    private void sendMixpanel(SummaryModel.Data.Product_summary productSummary, EventDetailModel.Data.EventDetail eventDetail) {
         CommEventMixpanelModel commEventMixpanelModel = new CommEventMixpanelModel(eventDetail.getTitle(), eventDetail.getVenue_name(), eventDetail.getVenue().getCity(), eventDetail.getStart_datetime_str(),
                 eventDetail.getEnd_datetime_str(), eventDetail.getTags(), eventDetail.getDescription(), productSummary.getProduct_list().get(0).getName(), productSummary.getProduct_list().get(0).getTicket_type(),
                 productSummary.getTotal_price(), productSummary.getProduct_list().get(0).getMax_buy());
         App.getInstance().trackMixPanelCommerce(Utils.COMM_PURCHASE_CONFIRMATION, commEventMixpanelModel);
     }
 
-    private void initTermView(SummaryModel.Data.Product_summary.Product_list dataProduct){
+    private void initTermView(SummaryModel.Data.Product_summary.Product_list dataProduct) {
         int size = dataProduct.getTerms().size();
-        for(int i=0; i<size;i++){
-            TermsItemView termsItemView = new TermsItemView(PurchaseInfoActivity.this, dataProduct.getTerms().get(i).getBody());
+        for (int i = 0; i < size; i++) {
+            TermsItemView termsItemView = new TermsItemView(PurchaseInfoActivity.this, dataProduct.getTerms().get(i).getBody(), new TermsItemView.OnCheckTermsListener() {
+                @Override
+                public void onCheckTerms() {
+                    checkEnability(arrTermItemView, txtPayment.getText().toString());
+                }
+            });
             linTerms.addView(termsItemView);
             arrTermItemView.add(termsItemView);
         }
+
+        checkEnability(arrTermItemView, txtPayment.getText().toString());
     }
 
     @Override
@@ -230,11 +236,10 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
                 public void onPageSelected(int position) {
                     //action
                     if (position == 0) {
-
-                        if(canPay()){
+                        if (canPay()) {
                             slidePay();
-                        }else {
-                            Log.d("Pay status","cannot pay");
+                        } else {
+                            Log.d("Pay status", "cannot pay");
                         }
                     }
 
@@ -254,7 +259,7 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
             Fragment fragment = this.fragments[position];
 
             if (fragment == null) {
-                fragment = new SlideFragment();
+                fragment = SlideFragment.newInstance();
                 final Bundle arg = new Bundle();
                 final App app = App.getInstance();
 
@@ -272,23 +277,23 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
         }
     }
 
-    private boolean canPay(){
+    private boolean canPay() {
         boolean can = true;
 
-        for(int i=0;i<arrTermItemView.size();i++){
+        for (int i = 0; i < arrTermItemView.size(); i++) {
             ImageView img = arrTermItemView.get(i).getImgCheck();
-            if(!img.isSelected()){
+            if (!img.isSelected()) {
                 can = false;
                 break;
             }
         }
 
-        if(can){
-            if(paymentType.equals(Utils.TYPE_CC)){
-                if(cc_card_id.isEmpty()){
+        if (can) {
+            if (paymentType.equals(Utils.TYPE_CC)) {
+                if (cc_card_id.isEmpty()) {
                     can = false;
                 }
-            }else if(paymentType.equals(Utils.BLANK)){
+            } else if (paymentType.equals(Utils.BLANK)) {
                 can = false;
             }
         }
@@ -296,23 +301,21 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
         return can;
     }
 
-    private void slidePay(){
-        if(paymentType.equals(Utils.TYPE_CC)){
-
-            //access3dSecure();
-            if(is_verified){
+    private void slidePay() {
+        if (paymentType.equals(Utils.TYPE_CC)) {
+            if (is_verified) {
                 PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, "0", productSummary.getOrder_id(), cc_token_id, name_cc);
                 doPayment(postPaymentModel);
-            }else{
+            } else {
                 access3dSecure();
             }
-        }else{
+        } else {
             PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, Utils.BLANK, productSummary.getOrder_id(), Utils.BLANK, Utils.BLANK);
             doPayment(postPaymentModel);
         }
     }
 
-    private void access3dSecure(){
+    private void access3dSecure() {
         //using 3d secure
         VTConfig.VT_IsProduction = false;
         VTConfig.CLIENT_KEY = "VT-client-gJRBbRZC0t_-JXUD";
@@ -320,7 +323,6 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
         VTDirect vtDirect = new VTDirect();
 
         final VTCardDetails vtCardDetails = new VTCardDetails();
-
         //TODO: Set your card details based on user input.
         //this is a sample
         vtCardDetails.setCard_number(cardDetails.getCardNumber()); // 3DS Dummy CC
@@ -344,8 +346,9 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
                 if (token.getRedirect_url() != null) {
 
                     //using 3d secure
-                    MyWebView webView = new
-                            MyWebView(PurchaseInfoActivity.this);
+                    /*WebView webView = new
+                            WebView(PurchaseInfoActivity.this);*/
+                    MyWebView webView = new MyWebView(PurchaseInfoActivity.this);
 
                     webView.getSettings().setJavaScriptEnabled(true);
                     webView.setOnTouchListener(new View.OnTouchListener() {
@@ -366,13 +369,14 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
                     webView.setWebChromeClient(new WebChromeClient());
                     webView.setWebViewClient(new VtWebViewClient(token.getToken_id(), totalPrice));
                     webView.loadUrl(token.getRedirect_url());
-                    webView.requestFocus(View.FOCUS_DOWN);
 
                     AlertDialog.Builder alertBuilder = new AlertDialog.Builder(PurchaseInfoActivity.this);
                     dialog3ds = alertBuilder.create();
 
+
                     dialog3ds.setTitle("3D Secure Veritrans");
                     dialog3ds.setView(webView);
+                    webView.requestFocus(View.FOCUS_DOWN);
                     alertBuilder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int id) {
@@ -383,7 +387,9 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
                     dialog3ds.show();
                 }
                 //print or send token
-                Utils.d("token", token.getToken_id());
+                Log.d("token", token.getToken_id());
+
+
             }
 
             @Override
@@ -392,34 +398,6 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
                 //Something is wrong, get details message by print e.getMessage()
             }
         });
-    }
-
-    public static class SlideFragment extends Fragment {
-        public static final String ARG_TITLE = "arg-title";
-        @Bind(R.id.txt_pay)
-        TextView txtPay;
-
-        @Nullable
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            final View rootView = inflater.inflate(R.layout.fragment_slidepay, container, false);
-            ButterKnife.bind(this, rootView);
-            return rootView;
-        }
-
-        @Override
-        public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-            super.onActivityCreated(savedInstanceState);
-
-            final Bundle arg = super.getArguments();
-            this.txtPay.setText(arg.getString(ARG_TITLE));
-        }
-
-        @Override
-        public void onDestroyView() {
-            super.onDestroyView();
-            ButterKnife.unbind(this);
-        }
     }
 
     @Override
@@ -435,37 +413,26 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK){
+        if (resultCode == RESULT_OK) {
             paymentType = data.getStringExtra(Common.FIELD_PAYMENT_TYPE);
             txtPayment.setTextColor(getResources().getColor(R.color.textDarkGray));
-            if(paymentType.equals(Utils.TYPE_CC)){
+            if (paymentType.equals(Utils.TYPE_CC)) {
                 CCScreenModel creditcardInformation = data.getParcelableExtra(CCScreenModel.class.getName());
                 name_cc = creditcardInformation.getName_cc();
 
-                if(name_cc.equals(Utils.BLANK)){
+                if (name_cc.equals(Utils.BLANK)) {
                     is_verified = true;
-                }else{
+                } else {
                     is_verified = false;
                 }
 
-                /*is_new_card = "1";
-                cardDetails = creditcardInformation.getCardDetails();
-                cardDetails = new CCScreenModel.CardDetails();
-                cardDetails.setCardNumber("4811111111111114");
-                cardDetails.setCvv("123");
-                cardDetails.setExpMonth(1);
-                cardDetails.setGrossAmount("340000");
-                cardDetails.setExpYear(2020);
-                cc_card_id = cardDetails.getCardNumber();
-                txtPayment.setText("• • • • " + cc_card_id.substring(cc_card_id.length() - 4, cc_card_id.length()));
-                */
-                if(is_verified){
+                if (is_verified) {
                     is_new_card = "0";
                     cc_token_id = creditcardInformation.getCreditcardInformation().getSaved_token_id();
                     cc_card_id = creditcardInformation.getCreditcardInformation().getMasked_card();
 
-                    txtPayment.setText("• • • • "+cc_card_id.substring(cc_card_id.indexOf("-")+1, cc_card_id.length()));
-                }else{
+                    txtPayment.setText("• • • • " + cc_card_id.substring(cc_card_id.indexOf("-") + 1, cc_card_id.length()));
+                } else {
                     is_new_card = "1";
                     cardDetails = creditcardInformation.getCardDetails();
                     cc_card_id = creditcardInformation.getCardDetails().getCardNumber();
@@ -474,25 +441,27 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
                 }
 
                 String headCC = cc_card_id.substring(0, 1);
-                if(headCC.equals("4")){
+                if (headCC.equals("4")) {
                     imgPayment.setVisibility(View.VISIBLE);
                     imgPayment.setImageResource(R.drawable.logo_visa);
-                }else if(headCC.equals("5")){
+                } else if (headCC.equals("5")) {
                     imgPayment.setVisibility(View.VISIBLE);
                     imgPayment.setImageResource(R.drawable.logo_mastercard);
-                }else{
+                } else {
                     imgPayment.setVisibility(View.GONE);
                 }
-            }else if(paymentType.equals(Utils.TYPE_BP)){
+            } else if (paymentType.equals(Utils.TYPE_BP)) {
                 txtPayment.setText(getString(R.string.va_mandiri));
                 imgPayment.setVisibility(View.VISIBLE);
                 imgPayment.setImageResource(R.drawable.logo_mandiri);
                 txtPayment.setTypeface(null, Typeface.NORMAL);
-            }else if(paymentType.equals(Utils.TYPE_VA)){
+            } else if (paymentType.equals(Utils.TYPE_VA)) {
                 txtPayment.setText(getString(R.string.other_bank));
                 imgPayment.setVisibility(View.GONE);
                 txtPayment.setTypeface(null, Typeface.NORMAL);
             }
+
+            checkEnability(arrTermItemView, txtPayment.getText().toString());
         }
     }
 
@@ -516,7 +485,7 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
 
-            Utils.d("VtLog", url);
+            Log.d("VtLog", url);
 
             if (url.startsWith(getPaymentApiUrl() + "/callback/")) {
                 PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, "1", productSummary.getOrder_id(), token, name_cc);
@@ -536,15 +505,15 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
         }
     }
 
-    private void doPayment(PostPaymentModel postPaymentModel){
+    private void doPayment(PostPaymentModel postPaymentModel) {
         CommerceManager.loaderPayment(postPaymentModel, new CommerceManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
                 dismissLoadingDialog();
                 Intent i;
-                if(paymentType.equals(Utils.TYPE_CC)){
+                if (paymentType.equals(Utils.TYPE_CC)) {
                     i = new Intent(PurchaseInfoActivity.this, CongratsActivity.class);
-                }else{
+                } else {
                     i = new Intent(PurchaseInfoActivity.this, HowToPayActivity.class);
                     i.putExtra(Common.FIELD_WALKTHROUGH_PAYMENT, false);
                     i.putExtra(productSummary.getClass().getName(), productSummary);
@@ -565,8 +534,8 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
         initLoadingDialog();
     }
 
-    private void initLoadingDialog(){
-        if(progressDialog==null){
+    private void initLoadingDialog() {
+        if (progressDialog == null) {
             progressDialog = new ProgressDialog(PurchaseInfoActivity.this);
             progressDialog.setMessage(getString(R.string.loading));
         }
@@ -574,33 +543,51 @@ public class PurchaseInfoActivity extends ToolbarWithDotActivity {
         progressDialog.show();
     }
 
-    private void dismissLoadingDialog(){
-        if(progressDialog!=null&progressDialog.isShowing())
+    private void dismissLoadingDialog() {
+        if (progressDialog != null & progressDialog.isShowing())
             progressDialog.dismiss();
     }
 
-    class MyWebView extends WebView
-    {
+    private void checkEnability(ArrayList<TermsItemView> arrTermItemView, String namePayment) {
+        boolean isItEnable = true;
+        for (int i = 0; i < arrTermItemView.size(); i++) {
+            if (!arrTermItemView.get(i).getImgCheck().isSelected()) {
+                isItEnable = false;
+                break;
+            }
+        }
+        if (namePayment.equals(Utils.BLANK) || namePayment.equals(getString(R.string.pci_payment))) {
+            isItEnable = false;
+        }
 
+        if (isItEnable) {
+            pagerSlide.setVisibility(View.VISIBLE);
+            relDisable.setVisibility(View.GONE);
+        } else {
+            pagerSlide.setVisibility(View.GONE);
+            relDisable.setVisibility(View.VISIBLE);
+        }
+    }
+
+    class MyWebView extends WebView{
         public MyWebView(Context context) {
             super(context);
         }
-
         public MyWebView(Context context, AttributeSet attrs) {
-            super(context, attrs);
-        }
-
-        public MyWebView(Context context, AttributeSet attrs, int defStyleAttr) {
-            super(context, attrs, defStyleAttr);
-        }
-
-        public MyWebView(Context context, AttributeSet attrs, int defStyleAttr, boolean privateBrowsing) {
-            super(context, attrs, defStyleAttr, privateBrowsing);
-        }
-
-        @Override
-        public boolean onCheckIsTextEditor() {
-            return true;
-        }
+                        super(context, attrs);
+                    }
+        
+                        public MyWebView(Context context, AttributeSet attrs, int defStyleAttr) {
+                        super(context, attrs, defStyleAttr);
+                    }
+        
+                        public MyWebView(Context context, AttributeSet attrs, int defStyleAttr, boolean privateBrowsing) {
+                        super(context, attrs, defStyleAttr, privateBrowsing);
+                    }
+        
+                        @Override
+                public boolean onCheckIsTextEditor() {
+                        return true;
+                    }
     }
 }

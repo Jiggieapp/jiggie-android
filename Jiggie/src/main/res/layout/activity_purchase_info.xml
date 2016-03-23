@@ -224,7 +224,7 @@
             android:paddingBottom="@dimen/padding_standard"
             android:paddingTop="@dimen/padding_standard"
             android:paddingRight="@dimen/padding_standard"
-            android:layout_above="@+id/pager_slide"
+            android:layout_above="@+id/rel_bottom"
             android:background="?android:attr/selectableItemBackground">
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -261,12 +261,36 @@
                 android:layout_centerVertical="true"/>
         </RelativeLayout>
 
-        <android.support.v4.view.ViewPager
+        <RelativeLayout
+            android:id="@+id/rel_bottom"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:id="@+id/pager_slide"
-            android:layout_alignParentBottom="true"
-            android:enabled="true"/>
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
+            <android.support.v4.view.ViewPager
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:id="@+id/pager_slide"
+                />
+
+            <RelativeLayout
+                android:id="@+id/rel_disable"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/skyBlue"
+                android:clickable="false"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:text="@string/pci_slide"
+                    android:layout_centerInParent="true"
+                    android:textColor="@color/common_plus_signin_btn_text_dark"/>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
 
     </RelativeLayout>
 

@@ -63,6 +63,9 @@ public class AddGuestActivity extends ToolbarActivity {
                 String guestName = edt_name.getText().toString();
                 String guestEmail = edt_email.getText().toString();
                 String guest62 = edt_62.getText().toString();
+                if(guest62.contains("+")){
+                    guest62 = guest62.substring(1, guest62.length());
+                }
                 String guestPhoneN = edt_phone.getText().toString();
                 String guestPhone = guest62+guestPhoneN;
 
@@ -91,7 +94,7 @@ public class AddGuestActivity extends ToolbarActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                checkEnability();
             }
         });
 
@@ -108,7 +111,7 @@ public class AddGuestActivity extends ToolbarActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                checkEnability();
             }
         });
 
@@ -125,7 +128,8 @@ public class AddGuestActivity extends ToolbarActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                //edt_62.setText("+"+edt_62.getText().toString());
+                checkEnability();
             }
         });
 
@@ -142,7 +146,7 @@ public class AddGuestActivity extends ToolbarActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-
+                checkEnability();
             }
         });
     }
@@ -159,12 +163,12 @@ public class AddGuestActivity extends ToolbarActivity {
         if(!phone.equals(Utils.BLANK)){
            String s62 = phone.substring(0, 2);
            String phoneN = phone.substring(2, (phone.length()));
-            edt_62.setText(s62);
+            edt_62.setText("+"+s62);
             edt_phone.setText(phoneN);
         }
 
         sendMixpanel(a, type_transaction, eventDetail);
-
+        checkEnability();
     }
 
     private void sendMixpanel(Intent a, String type_transaction, EventDetailModel.Data.EventDetail eventDetail){
@@ -202,6 +206,33 @@ public class AddGuestActivity extends ToolbarActivity {
             edt_phone.setError(Utils.BLANK);
         }
         return isError;
+    }
+
+    private void checkEnability(){
+        String name = edt_name.getText().toString();
+        String email = edt_email.getText().toString();
+        String s_62 = edt_62.getText().toString();
+        String s_phone = edt_phone.getText().toString();
+        boolean isItEnable = true;
+
+        if(name.equals(Utils.BLANK)){
+            isItEnable = false;
+        }
+        if(email.equals(Utils.BLANK)){
+            isItEnable = false;
+        }
+        if(s_62.equals(Utils.BLANK)){
+            isItEnable = false;
+        }
+        if(s_phone.equals(Utils.BLANK)){
+            isItEnable = false;
+        }
+
+        if(isItEnable){
+            rel_save.setEnabled(true);
+        }else{
+            rel_save.setEnabled(false);
+        }
     }
 
 }

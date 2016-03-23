@@ -3,6 +3,7 @@ package com.jiggie.android.activity.ecommerce;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -79,6 +80,20 @@ public class CongratsActivity extends ToolbarActivity {
         relViewTicket = (RelativeLayout)findViewById(R.id.rel_view_ticket);
         linInclude = (LinearLayout)findViewById(R.id.lin_include);
         lineFineprint = (LinearLayout)findViewById(R.id.lin_fineprint);
+
+        relViewTicket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!fromOrderList){
+                    Intent i = new Intent(CongratsActivity.this, PurchaseHistoryActivity.class);
+                    i.putExtra(Common.FIELD_FROM_HOWTOPAY, true);
+                    startActivity(i);
+                }else{
+                    finish();
+                }
+
+            }
+        });
     }
 
     private void preDefined(final String orderId){

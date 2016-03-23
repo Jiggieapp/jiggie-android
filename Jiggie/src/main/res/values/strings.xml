@@ -225,6 +225,8 @@
     <string name="other_bank">Other Banks</string>
     <string name="pr_max_purchase">Max purchase :</string>
     <string name="pr_max_guest">Max guest :</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="continue_str">Continue</string>
 
     <string name="cc_name_hint">Card Holder Name</string>
     <string name="cc_number_hint">Credit Card Number</string>
