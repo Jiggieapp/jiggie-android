@@ -250,6 +250,10 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
                         }
                     }).show();
         }
+        else if(item.getItemId() == R.id.home)
+        {
+            onBackPressed();
+        }
         /*else if (item.getItemId() == R.id.action_clear) {
             new AlertDialog.Builder(this)
                     .setMessage(R.string.confirmation)
@@ -509,9 +513,10 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
     public void onBackPressed() {
         super.onBackPressed();
         Intent i = new Intent(this, MainActivity.class);
-        //i.putExtra("show_background", false);
         i.putExtra(Common.TO_TAB_CHAT, true);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
         finish();
     }
+
 }

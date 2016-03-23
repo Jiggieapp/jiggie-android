@@ -40,7 +40,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
-import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.activity.ecommerce.ProductListActivity;
 import com.jiggie.android.component.FlowLayout;
 import com.jiggie.android.component.StringUtility;
@@ -109,6 +108,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     @Bind(R.id.btnBook) View btnBook;
     @Bind(R.id.element_containers)
     LinearLayout elementContainers;
+    @Bind(R.id.element_containers2)
+    LinearLayout elementContainers2;
 
     @Bind(R.id.imageGuest1) ImageView imageGuest1;
     @Bind(R.id.imageGuest2) ImageView imageGuest2;
@@ -126,11 +127,11 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     ArrayList<String> event_tags, event_pics;
     String event_day = "";
     String event_end = "";
+    String event_description = "";
 
     ProgressDialog progressDialog;
     public static final String TAG = EventDetailActivity.class.getSimpleName();
     private File file;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +149,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         event_day = a.getStringExtra(Common.FIELD_EVENT_DAY);
         event_end = a.getStringExtra(Common.FIELD_EVENT_DAY_END);
         event_pics = a.getStringArrayListExtra(Common.FIELD_EVENT_PICS);
+        event_description = a.getStringExtra(Common.FIELD_EVENT_DESCRIPTION);
 
         this.imagePagerIndicatorAdapter = new ImagePagerIndicatorAdapter(super.getSupportFragmentManager(), this.imageViewPager);
         this.imagePagerIndicator.setAdapter(this.imagePagerIndicatorAdapter.getIndicatorAdapter());
@@ -186,8 +188,12 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             if(event_pics != null)
                 fillPhotos(event_pics);
 
+            if(event_description != null)
+                txtDescription.setText(event_description);
+
             scrollView.setVisibility(View.VISIBLE);
             elementContainers.setVisibility(View.INVISIBLE);
+            elementContainers2.setVisibility(View.INVISIBLE);
 
             if(event_id == null || event_id.equalsIgnoreCase("null")){
                 //wandy 17-03-2016
@@ -323,6 +329,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 eventDetail = message.getData().getEvents_detail();
                 App.getInstance().trackMixPanelViewEventDetail("View Event Details", eventDetail);
                 elementContainers.setVisibility(View.VISIBLE);
+                elementContainers2.setVisibility(View.VISIBLE);
 
                 if (event_name == null) {
                     super.setToolbarTitle(eventDetail.getTitle().toUpperCase(), true);
@@ -607,6 +614,10 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
+        }
+        else if(item.getItemId() == R.id.home)
+        {
+            redirectToHome();
         }
         return super.onOptionsItemSelected(item);
     }

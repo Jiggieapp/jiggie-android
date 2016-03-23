@@ -78,6 +78,7 @@ public class PurchaseHistoryActivity extends ToolbarActivity
             @Override
             public void onSuccess(Object object) {
                 PurchaseHistoryModel purchaseHistoryModel = (PurchaseHistoryModel) object;
+                adapter.clear();
                 for (PurchaseHistoryModel.Data.Order_list order_list : purchaseHistoryModel.getData().getOrder_lists()) {
                     adapter.add(order_list);
                 }
@@ -110,14 +111,7 @@ public class PurchaseHistoryActivity extends ToolbarActivity
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if(fromHowToPay){
-            Intent i = new Intent(PurchaseHistoryActivity.this, MainActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
-            finish();
-        }else {
-            finish();
-        }
+        redirectToMain();
     }
 
     @Override
@@ -125,17 +119,22 @@ public class PurchaseHistoryActivity extends ToolbarActivity
         switch (item.getItemId())
         {
             case android.R.id.home:
-                if(fromHowToPay){
-                    Intent i = new Intent(PurchaseHistoryActivity.this, MainActivity.class);
-                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(i);
-                    finish();
-                }else{
-                    finish();
-                }
-
+                redirectToMain();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void redirectToMain()
+    {
+        if(fromHowToPay){
+            Intent i = new Intent(PurchaseHistoryActivity.this, MainActivity.class);
+            //i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            //i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+            finish();
+        }else{
+            finish();
+        }
     }
 }

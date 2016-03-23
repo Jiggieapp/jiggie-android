@@ -45,6 +45,7 @@ public class Common {
     public static String FIELD_WALKTHROUGH_PAYMENT = "walkthrough_payment";
     public static String FIELD_FROM_ORDER_LIST = "order_list";
     public static String FIELD_FROM_HOWTOPAY = "how_to_pay";
+    public static String FIELD_EVENT_DESCRIPTION = "field_event_description";
     /*public static String FIELD_TICKET_ID = "ticket_id";
     public static String FIELD_TICKET_NAME = "ticket_name";
     public static String FIELD_TICKET_DESC = "ticket_desc";

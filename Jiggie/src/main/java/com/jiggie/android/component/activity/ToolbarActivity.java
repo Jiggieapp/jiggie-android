@@ -52,7 +52,7 @@ public abstract class ToolbarActivity extends BaseActivity {
     protected void redirectToHome()
     {
         Intent i = new Intent(this, MainActivity.class);
-        i.putExtra("show_background", false);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
         finish();
     }

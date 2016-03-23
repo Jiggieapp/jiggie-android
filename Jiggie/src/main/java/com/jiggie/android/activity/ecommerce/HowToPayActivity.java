@@ -49,6 +49,7 @@ public class HowToPayActivity extends ToolbarActivity{
     SummaryModel.Data.Product_summary productSummary;
     SucScreenVABPModel sucScreenVABPModel;
     PurchaseHistoryModel.Data.Order_list.Order order;
+    private final static String TAG = HowToPayActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +69,8 @@ public class HowToPayActivity extends ToolbarActivity{
             eventDetail = a.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
         }
 
+        Utils.d(TAG, "orderId " + order_id + " fromorderlist " + fromOrderList);
         initView();
-
     }
 
     private void initView(){

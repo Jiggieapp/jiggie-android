@@ -16,7 +16,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <permission
         android:name="com.android.jiggie.permission.C2D_MESSAGE"
@@ -51,35 +51,28 @@
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme"
-            android:launchMode="singleTask">
-            <intent-filter>
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+            <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>-->
 
             <!-- Support zxing://scan/?... like iPhone app -->
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="jiggie"
-                    android:host="event_list"/>
-                <data android:scheme="jiggie"/>
-
-                <!--<data android:scheme="jiggie"
-                    android:host="event_list"/>-->
-            </intent-filter>
-
-            <!--<intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
-                    android:scheme="jiggie"/>
-            </intent-filter>-->
+                    android:host="event_list"
+                    android:scheme="jiggie" />
+                <data android:scheme="jiggie" />
+
+                <!--<data android:scheme="jiggie"
+                    android:host="event_list"/>-->
+            </intent-filter>
         </activity>
         <activity
             android:name=".activity.ecommerce.ticket.TicketDetailActivity"
@@ -90,7 +83,7 @@
             android:name=".activity.ecommerce.PurchaseInfoActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme"/>
+            android:theme="@style/SplashTheme" />
         <activity
             android:name=".activity.ecommerce.PurchaseHistoryActivity"
             android:label="@string/app_name"
@@ -154,39 +147,24 @@
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme" />
 
-        <activity
+        <!--<activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme"
-            android:launchMode="singleTask">
+            android:theme="@style/SplashTheme">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
-            <!-- Support zxing://scan/?... like iPhone app -->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="jiggie"
-                    android:host="event_list"/>
-                <data android:scheme="jiggie"/>
-
-                <!--<data android:scheme="jiggie"
-                    android:host="event_list"/>-->
-            </intent-filter>
-
-            <!--<intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
-                    android:scheme="jiggie"/>
-            </intent-filter>-->
-        </activity>
+                    android:host="event_list"
+                    android:scheme="jiggie" />
+                <data android:scheme="jiggie" />
+            </intent-filter>
+        </activity>-->
 
         <activity
             android:name=".activity.event.EventDetailActivity"
@@ -195,16 +173,18 @@
             android:theme="@style/SplashTheme">
             <!-- Support zxing://scan/?... like iPhone app -->
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
                 <!--<data android:scheme="jiggie"
                     android:host="event_detail"
                     android:pathPrefix="/"/>-->
 
-                <data android:scheme="jiggie"
+                <data
                     android:host="event_detail"
-                    android:pathPattern="/.*"/>
+                    android:pathPattern="/.*"
+                    android:scheme="jiggie" />
             </intent-filter>
 
             <intent-filter>
@@ -260,8 +240,8 @@
             android:name=".activity.chat.ChatActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/SplashTheme" />
+            android:theme="@style/SplashTheme"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activity.profile.FilterActivity"
             android:label="@string/app_name"
@@ -269,7 +249,6 @@
             android:theme="@style/SplashTheme" />
 
         <!-- BroadcastReceivers -->
-
         <receiver
             android:name="com.appsflyer.MultipleInstallBroadcastReceiver"
             android:exported="true">
@@ -301,7 +280,6 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
 
         <!--<receiver
             android:name=".component.InstallReferrerReceiver"
@@ -344,6 +322,7 @@
                 <action android:name="com.google.android.gms.iid.InstanceID" />
             </intent-filter>
         </service>
+
         <activity
             android:name=".activity.profile.VerifyPhoneNumberActivity"
             android:label="" />
@@ -366,6 +345,18 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>-->
+        </activity>
+
+        <activity
+            android:name=".activity.SplashActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 </manifest>

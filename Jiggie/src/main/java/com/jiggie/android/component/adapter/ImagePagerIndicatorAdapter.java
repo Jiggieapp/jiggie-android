@@ -123,7 +123,6 @@ public class ImagePagerIndicatorAdapter extends FragmentPagerAdapter {
         public void onActivityCreated(@Nullable Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
             final String url = super.getArguments().getString(Common.BUNDLE_IMAGE);
-            Utils.d(TAG, "imageUrl " + url);
             Glide.with(this)
                     .load(url)
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)

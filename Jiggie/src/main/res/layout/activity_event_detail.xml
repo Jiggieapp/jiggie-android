@@ -242,24 +242,33 @@
                                 </LinearLayout>
                             </FrameLayout>
 
-                            <View
-                                android:layout_width="match_parent"
-                                android:layout_height="0.5dp"
-                                android:background="@android:color/darker_gray" />
+
                         </LinearLayout>
+                    </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/txtDescription"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:padding="@dimen/padding_standard"
-                            android:textColor="@android:color/black" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@android:color/darker_gray" />
 
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="0.5dp"
-                            android:background="@android:color/darker_gray" />
+                    <TextView
+                        android:id="@+id/txtDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:padding="@dimen/padding_standard"
+                        android:textColor="@android:color/black" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="@android:color/darker_gray" />
+
+                    <LinearLayout
+                        android:id="@+id/element_containers2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
                         <FrameLayout
                             android:layout_width="match_parent"

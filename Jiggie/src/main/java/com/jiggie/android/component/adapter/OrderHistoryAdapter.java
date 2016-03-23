@@ -163,4 +163,9 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
         items.add(order_list);
         notifyDataSetChanged();
     }
+
+    public void clear()
+    {
+        items.clear();
+    }
 }

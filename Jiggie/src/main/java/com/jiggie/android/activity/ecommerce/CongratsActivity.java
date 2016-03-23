@@ -42,6 +42,7 @@ public class CongratsActivity extends ToolbarActivity {
 
     long orderId;
     boolean fromOrderList;
+    private final static String TAG = CongratsActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +54,6 @@ public class CongratsActivity extends ToolbarActivity {
         fromOrderList = a.getBooleanExtra(Common.FIELD_FROM_ORDER_LIST, false);
         initView();
         preDefined(String.valueOf(orderId));
-
     }
 
     private void initView(){
