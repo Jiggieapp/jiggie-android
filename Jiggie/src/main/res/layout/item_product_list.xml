@@ -7,7 +7,7 @@
     <RelativeLayout
         android:id="@+id/header_container"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="160dp"
         android:background="@color/colorPrimary"
         android:padding="@dimen/padding_standard_half"
         android:visibility="gone"
@@ -17,23 +17,22 @@
             android:id="@+id/lblEventName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="left|center_vertical"
             android:paddingLeft="@dimen/huge_padding"
             android:text="@string/msg_dummy_title"
             android:textColor="@android:color/white"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:layout_above="@+id/lblEventLocation"
+            android:textAllCaps="true"/>
 
         <TextView
             android:id="@+id/lblEventLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/lblEventName"
-            android:layout_centerInParent="true"
-            android:gravity="left|center_vertical"
             android:paddingLeft="@dimen/huge_padding"
             android:text="@string/msg_dummy_title_info"
-            android:textColor="@android:color/white"/>
+            android:textColor="@android:color/white"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="28dp"/>
 
     </RelativeLayout>
 
@@ -43,7 +42,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:visibility="gone"
-        android:clickable="false">
+        android:clickable="false"
+        android:background="@color/grayLight">
         <TextView
             android:layout_margin="@dimen/padding_standard_half"
             android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginRight="@dimen/padding_standard_half"
+                android:layout_marginRight="@dimen/padding_standard"
                 android:layout_centerVertical="true">
                 <TextView
                     android:layout_height="wrap_content"
@@ -93,7 +93,9 @@
                     android:textSize="20sp"
                     android:textColor="@android:color/black"
                     android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"/>
+                    android:layout_alignParentTop="true"
+                    android:singleLine="true"
+                    android:maxWidth="190dp"/>
 
                 <TextView
                     android:layout_marginTop="@dimen/padding_standard_half"
@@ -102,7 +104,9 @@
                     android:id="@+id/txt_ticket_info"
                     android:text="@string/msg_dummy"
                     android:layout_alignParentLeft="true"
-                    android:layout_below="@id/txt_ticket_name"/>
+                    android:layout_below="@id/txt_ticket_name"
+                    android:singleLine="true"
+                    android:maxWidth="190dp"/>
             </LinearLayout>
 
             <TextView

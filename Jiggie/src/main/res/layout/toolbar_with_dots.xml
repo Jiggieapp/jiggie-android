@@ -50,8 +50,10 @@
                 <View
                     android:id="@+id/first_connector"
                     android:layout_width="30dp"
-                    android:layout_height="1dp"
-                    android:background="@drawable/gray_connector" />
+                    android:layout_height="1.5dp"
+                    android:background="@drawable/gray_connector"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"/>
 
                 <View
                     android:id="@+id/second_circle"
@@ -62,8 +64,10 @@
                 <View
                     android:id="@+id/second_connector"
                     android:layout_width="30dp"
-                    android:layout_height="1dp"
-                    android:background="@drawable/gray_connector" />
+                    android:layout_height="1.5dp"
+                    android:background="@drawable/gray_connector"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"/>
 
                 <View
                     android:id="@+id/third_circle"

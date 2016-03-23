@@ -100,8 +100,9 @@ public class ProductListModel {
                 String description;
                 String max_purchase;
                 int payment_timelimit;
+                String summary;
 
-                public Purchase(String ticket_id, String name, String ticket_type, int quantity, String admin_fee, String tax_percent, String tax_amount, String tip_percent, String tip_amount, String price, String total_price, String description, String max_purchase, int payment_timelimit){
+                public Purchase(String ticket_id, String name, String ticket_type, int quantity, String admin_fee, String tax_percent, String tax_amount, String tip_percent, String tip_amount, String price, String total_price, String description, String max_purchase, int payment_timelimit, String summary){
                     this.ticket_id = ticket_id;
                     this.name = name;
                     this.ticket_type = ticket_type;
@@ -116,6 +117,7 @@ public class ProductListModel {
                     this.description = description;
                     this.max_purchase = max_purchase;
                     this.payment_timelimit = payment_timelimit;
+                    this.summary = summary;
                 }
 
                 protected Purchase(Parcel in) {
@@ -133,6 +135,7 @@ public class ProductListModel {
                     this.description = in.readString();
                     this.max_purchase = in.readString();
                     this.payment_timelimit = in.readInt();
+                    this.summary = in.readString();
                 }
 
                 @Override
@@ -156,6 +159,7 @@ public class ProductListModel {
                     dest.writeString(this.description);
                     dest.writeString(this.max_purchase);
                     dest.writeInt(this.payment_timelimit);
+                    dest.writeString(this.summary);
                 }
 
                 public static final Creator<Purchase> CREATOR = new Creator<Purchase>() {
@@ -220,6 +224,10 @@ public class ProductListModel {
                 public int getPayment_timelimit() {
                     return payment_timelimit;
                 }
+
+                public String getSummary() {
+                    return summary;
+                }
             }
 
             public static class Reservation implements Parcelable{
@@ -237,8 +245,9 @@ public class ProductListModel {
                 String description;
                 String max_guests;
                 int payment_timelimit;
+                String summary;
 
-                public Reservation(String ticket_id, String name, String ticket_type, int quantity, String admin_fee, String tax_percent, String tax_amount, String tip_percent, String tip_amount, String price, String total_price, String description, String max_guests, int payment_timelimit){
+                public Reservation(String ticket_id, String name, String ticket_type, int quantity, String admin_fee, String tax_percent, String tax_amount, String tip_percent, String tip_amount, String price, String total_price, String description, String max_guests, int payment_timelimit, String summary){
                     this.ticket_id = ticket_id;
                     this.name = name;
                     this.ticket_type = ticket_type;
@@ -253,6 +262,7 @@ public class ProductListModel {
                     this.description = description;
                     this.max_guests = max_guests;
                     this.payment_timelimit = payment_timelimit;
+                    this.summary = summary;
                 }
 
                 protected Reservation(Parcel in) {
@@ -270,6 +280,7 @@ public class ProductListModel {
                     this.description = in.readString();
                     this.max_guests = in.readString();
                     this.payment_timelimit = in.readInt();
+                    this.summary = in.readString();
                 }
 
                 @Override
@@ -293,6 +304,7 @@ public class ProductListModel {
                     dest.writeString(this.description);
                     dest.writeString(this.max_guests);
                     dest.writeInt(this.payment_timelimit);
+                    dest.writeString(this.summary);
                 }
 
                 public static final Creator<Reservation> CREATOR = new Creator<Reservation>() {
@@ -356,6 +368,10 @@ public class ProductListModel {
 
                 public int getPayment_timelimit() {
                     return payment_timelimit;
+                }
+
+                public String getSummary() {
+                    return summary;
                 }
             }
 
