@@ -52,7 +52,6 @@ public class EventDetailModel {
     }
 
     public static class Data{
-
         EventDetail event_detail;
 
         public EventDetail getEvents_detail() {

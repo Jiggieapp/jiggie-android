@@ -13,7 +13,8 @@ import com.jiggie.android.App;
  * Created by rangg on 14/01/2016.
  */
 public class BitmapUtility {
-    private static final RenderScript renderScript = RenderScript.create(App.getInstance());
+    private static final RenderScript renderScript
+            = RenderScript.create(App.getInstance());
     public static final float BLUR_RADIUS_DEFAULT = 15F;
 
     public static Bitmap blur(Bitmap image) {

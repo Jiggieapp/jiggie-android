@@ -363,6 +363,12 @@ public class EventTabFragment extends Fragment
         Intent i = new Intent(super.getActivity(), EventDetailActivity.class);
         i.putExtra(Common.FIELD_EVENT_ID, event.get_id());
         i.putExtra(Common.FIELD_EVENT_NAME, event.getTitle());
+        i.putExtra(Common.FIELD_EVENT_VENUE_NAME, event.getVenue_name());
+        i.putExtra(Common.FIELD_EVENT_TAGS, event.getTags());
+        i.putExtra(Common.FIELD_EVENT_DAY, event.getStart_datetime());
+        i.putExtra(Common.FIELD_EVENT_DAY_END, event.getEnd_datetime());
+        i.putExtra(Common.FIELD_EVENT_PICS, event.getPhotos());
+        //i.putExtra(Co)
         super.startActivity(i);
     }
 

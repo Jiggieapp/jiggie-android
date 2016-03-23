@@ -8,7 +8,6 @@ import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.AppBarLayout;
@@ -26,31 +25,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.jiggie.android.App;
-import com.jiggie.android.R;
-import com.jiggie.android.activity.ecommerce.ProductListActivity;
-import com.jiggie.android.component.FlowLayout;
-import com.jiggie.android.component.StringUtility;
-import com.jiggie.android.component.Utils;
-import com.jiggie.android.component.activity.ToolbarActivity;
-import com.jiggie.android.component.adapter.ImagePagerIndicatorAdapter;
-import com.jiggie.android.component.volley.SimpleVolleyRequestListener;
-import com.jiggie.android.component.volley.VolleyHandler;
-import com.jiggie.android.component.volley.VolleyRequestListener;
-import com.jiggie.android.fragment.SocialTabFragment;
-import com.jiggie.android.manager.AccountManager;
-import com.jiggie.android.manager.EventManager;
-import com.jiggie.android.manager.GuestManager;
-import com.jiggie.android.manager.ShareManager;
-import com.jiggie.android.model.Common;
-import com.jiggie.android.model.EventDetailModel;
-import com.jiggie.android.model.ExceptionModel;
-import com.jiggie.android.model.GuestModel;
-import com.jiggie.android.model.ShareLink;
-import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.facebook.AccessToken;
@@ -60,6 +38,26 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.jiggie.android.App;
+import com.jiggie.android.R;
+import com.jiggie.android.activity.MainActivity;
+import com.jiggie.android.activity.ecommerce.ProductListActivity;
+import com.jiggie.android.component.FlowLayout;
+import com.jiggie.android.component.StringUtility;
+import com.jiggie.android.component.Utils;
+import com.jiggie.android.component.activity.ToolbarActivity;
+import com.jiggie.android.component.adapter.ImagePagerIndicatorAdapter;
+import com.jiggie.android.component.volley.SimpleVolleyRequestListener;
+import com.jiggie.android.component.volley.VolleyHandler;
+import com.jiggie.android.fragment.SocialTabFragment;
+import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.manager.EventManager;
+import com.jiggie.android.manager.GuestManager;
+import com.jiggie.android.manager.ShareManager;
+import com.jiggie.android.model.Common;
+import com.jiggie.android.model.EventDetailModel;
+import com.jiggie.android.model.ExceptionModel;
+import com.jiggie.android.model.GuestModel;
 import com.jiggie.android.model.ShareLinkModel;
 
 import org.json.JSONObject;
@@ -109,6 +107,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     @Bind(R.id.txtVenue) TextView txtVenue;
     @Bind(R.id.txtDate) TextView txtDate;
     @Bind(R.id.btnBook) View btnBook;
+    @Bind(R.id.element_containers)
+    LinearLayout elementContainers;
 
     @Bind(R.id.imageGuest1) ImageView imageGuest1;
     @Bind(R.id.imageGuest2) ImageView imageGuest2;
@@ -122,10 +122,15 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     private EventDetailModel.Data.EventDetail eventDetail;
     String event_id = "";
     String event_name = "";
+    String event_venue_name = "";
+    ArrayList<String> event_tags, event_pics;
+    String event_day = "";
+    String event_end = "";
 
     ProgressDialog progressDialog;
     public static final String TAG = EventDetailActivity.class.getSimpleName();
     private File file;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,27 +143,83 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         Intent a = super.getIntent();
         event_id = a.getStringExtra(Common.FIELD_EVENT_ID);
         event_name = a.getStringExtra(Common.FIELD_EVENT_NAME);
+        event_venue_name = a.getStringExtra(Common.FIELD_EVENT_VENUE_NAME);
+        event_tags = a.getStringArrayListExtra(Common.FIELD_EVENT_TAGS);
+        event_day = a.getStringExtra(Common.FIELD_EVENT_DAY);
+        event_end = a.getStringExtra(Common.FIELD_EVENT_DAY_END);
+        event_pics = a.getStringArrayListExtra(Common.FIELD_EVENT_PICS);
+
+        this.imagePagerIndicatorAdapter = new ImagePagerIndicatorAdapter(super.getSupportFragmentManager(), this.imageViewPager);
+        this.imagePagerIndicator.setAdapter(this.imagePagerIndicatorAdapter.getIndicatorAdapter());
 
         if(a != null)
         {
             this.txtVenue.setText("");
-            super.setToolbarTitle("", true);
 
-            if(event_id==null){
+            if(event_venue_name != null)
+                this.txtVenue.setText(event_venue_name);
 
-                Uri data = a.getData();
+            if(event_tags != null)
+            {
+                populateTags(event_tags);
+            }
+
+
+            if(event_name != null)
+                super.setToolbarTitle(event_name, true);
+            else super.setToolbarTitle("", true);
+
+            if(event_day != null && event_name != null)
+            {
                 try {
-                    Map<String, String> tamp = StringUtility.splitQuery(new URL(data.toString()));
-                    event_id = tamp.get("af_sub2");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                } catch (MalformedURLException e) {
+                    final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse
+                            (event_day);
+                    final Date endDate = Common.ISO8601_DATE_FORMAT_UTC.parse
+                            (event_end);
+                    String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format, Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));
+                    txtDate.setText(simpleDate);
+                } catch (ParseException e) {
                     e.printStackTrace();
                 }
             }
-            else
-            {
-                Utils.d(TAG, "oi tidak null ini eventid nya");
+
+            if(event_pics != null)
+                fillPhotos(event_pics);
+
+            scrollView.setVisibility(View.VISIBLE);
+            elementContainers.setVisibility(View.INVISIBLE);
+
+            if(event_id == null || event_id.equalsIgnoreCase("null")){
+                //wandy 17-03-2016
+                //contoh working scheme
+                //jiggie://event_detail/<event_id>&af_chrome_lp=true&af_deeplink=true&app-id=1630402100&campaign=None&media_source=App_Invite
+                //end of contoh working scheme
+
+                String dataString = a.getDataString();
+                final boolean isJiggieUrl = isJiggieUrl(dataString);
+                if(isJiggieUrl)
+                {
+                    Uri inputUri = Uri.parse(dataString);
+                    /*event_id = inputUri.getQueryParameter("af_sub2");
+                    for(String segment : inputUri.getPathSegments())
+                    {
+                        Utils.d(TAG, "segment " + segment);
+                    }*/
+                    event_id = inputUri.getPathSegments().get(0);
+                }
+                else {
+                    Uri data = a.getData();
+                    try {
+                        Map<String, String> tamp = StringUtility.splitQuery(new URL(data.toString()));
+                        event_id = tamp.get("af_sub2");
+                        //Utils.d(TAG, "event_id oiii " + event_id + " " + data.toString());
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    }
+                }
+                //end of wandy 17-03-2016
             }
         }
 
@@ -170,20 +231,40 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         this.swipeRefresh.setOnRefreshListener(this);
 
         this.txtGuestCounter.setVisibility(View.GONE);
-        this.scrollView.setVisibility(View.INVISIBLE);
+        //this.scrollView.setVisibility(View.INVISIBLE);
         this.collapsingToolbarLayout.setTitleEnabled(false);
         this.imageGuests = new ImageView[]{imageGuest1, imageGuest2, imageGuest3, imageGuest4};
 
         final FragmentManager fragmentManager = super.getSupportFragmentManager();
         ((SupportMapFragment)fragmentManager.findFragmentById(R.id.map)).getMapAsync(this);
 
-        this.imagePagerIndicatorAdapter = new ImagePagerIndicatorAdapter(super.getSupportFragmentManager(), this.imageViewPager);
-        this.imagePagerIndicator.setAdapter(this.imagePagerIndicatorAdapter.getIndicatorAdapter());
 
         super.registerReceiver(this.guestInvitedReceiver, new IntentFilter(super.getString(R.string.broadcastGuestInvited)));
 
         if(file!= null && file.exists())
             file.delete();
+    }
+
+    /*<LinearLayout
+    android:id="@+id/element_containers"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    </LinearLayout>*/
+
+    private static boolean isJiggieUrl(String dataString) {
+
+        if (dataString == null) {
+            return false;
+        }
+
+        for (String url : Utils.JIGGIE_URLS) {
+            if (dataString.startsWith(url)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -217,10 +298,23 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     @Override
     public void onRefresh() {
         this.btnBook.setVisibility(View.GONE);
-        this.swipeRefresh.setRefreshing(true);
+        swipeRefresh.post(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefresh.setRefreshing(true);
+            }
+        });
 
         EventManager.loaderEventDetail(event_id, AccessToken.getCurrentAccessToken().getUserId()
                 , AccountManager.loadSetting().getData().getGender_interest(), TAG);
+    }
+
+    private void fillPhotos(ArrayList<String> photoArr)
+    {
+        String[] photo = new String[photoArr.size()];
+        photo = photoArr.toArray(photo);
+
+        imagePagerIndicatorAdapter.setImages(photo);
     }
 
     public void onEvent(EventDetailModel message) {
@@ -228,6 +322,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             try {
                 eventDetail = message.getData().getEvents_detail();
                 App.getInstance().trackMixPanelViewEventDetail("View Event Details", eventDetail);
+                elementContainers.setVisibility(View.VISIBLE);
 
                 if (event_name == null) {
                     super.setToolbarTitle(eventDetail.getTitle().toUpperCase(), true);
@@ -247,11 +342,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 final double lon = Double.parseDouble(message.getData().getEvents_detail().getVenue().getLon());
                 final LatLng lat = new LatLng(latt, lon);
 
-                ArrayList<String> photoArr = message.getData().getEvents_detail().getPhotos();
-                String[] photo = new String[photoArr.size()];
-                photo = photoArr.toArray(photo);
+                fillPhotos(message.getData().getEvents_detail().getPhotos());
 
-                imagePagerIndicatorAdapter.setImages(photo);
                 txtDescription.setText(message.getData().getEvents_detail().getDescription());
                 txtAddress.setText(message.getData().getEvents_detail().getVenue().getAddress());
                 txtGuestCounter.setText(String.format("+%s", guestCount - imageGuests.length));
@@ -382,20 +474,24 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     }
 
     private void populateTags() {
+        populateTags(eventDetail.getTags());
+    }
 
+    private void populateTags(ArrayList<String> tags)
+    {
         if(flowLayout.getChildCount()>0){
             flowLayout.removeAllViews();
         }
 
         final LayoutInflater inflater = super.getLayoutInflater();
-        for (String tag : this.eventDetail.getTags()) {
+        for (String tag : tags) {
             final View view = inflater.inflate(R.layout.item_event_tag_detail, this.flowLayout, false);
             final TextView textView = (TextView) view.findViewById(R.id.txtTag);
             this.flowLayout.addView(view);
             textView.setText(tag);
         }
 
-        if (this.eventDetail.getTags().size() > 2) {
+        if (tags.size() > 2) {
             // hack (buggy flow layout always missing 1 last item).
             final View view = inflater.inflate(R.layout.item_event_tag_detail, this.flowLayout, false);
             final TextView textView = (TextView) view.findViewById(R.id.txtTag);
@@ -540,7 +636,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             }
             else
             {
-                Utils.d(TAG, "file exists ");
                 return f;
             }
         } catch (IOException e) {
@@ -578,16 +673,18 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 @Override
                 public void call(Subscriber subscriber) {
                     try {
-                        Utils.d(TAG, "pic url " + eventDetail.getPhotos()
-                                .get(0));
                         Bitmap bmp = Glide.with(EventDetailActivity.this)
                                 .load(eventDetail.getPhotos()
                                         .get(0)).asBitmap().into(200, 200).get();
                         file = createFile(bmp);
                         subscriber.onNext(file);
                     } catch (InterruptedException e) {
+                        if (progressDialog != null && progressDialog.isShowing())
+                            progressDialog.dismiss();
                         e.printStackTrace();
                     } catch (ExecutionException e) {
+                        if (progressDialog != null && progressDialog.isShowing())
+                            progressDialog.dismiss();
                         e.printStackTrace();
                     }
                 }
@@ -613,7 +710,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                             }
 
                             i.setType("text/plain");
-                            if(progressDialog!= null && progressDialog.isShowing())
+                            if (progressDialog != null && progressDialog.isShowing())
                                 progressDialog.dismiss();
 
                             EventDetailActivity.this.startActivity(Intent.createChooser
@@ -681,5 +778,9 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         }
     };
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        redirectToHome();
+    }
 }
