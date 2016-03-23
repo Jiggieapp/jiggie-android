@@ -157,7 +157,12 @@ public class CommerceManager {
                     int responseCode = response.code();
                     if (responseCode == Utils.CODE_SUCCESS) {
                         Success2Model dataTemp = (Success2Model) response.body();
-                        onResponseListener.onSuccess(dataTemp);
+                        if(dataTemp.getResponse()==1){
+                            onResponseListener.onSuccess(dataTemp);
+                        }else{
+                            onResponseListener.onFailure(responseCode, dataTemp.getMsg());
+                        }
+
                     } else {
                         onResponseListener.onFailure(responseCode, Utils.RESPONSE_FAILED);
                     }
