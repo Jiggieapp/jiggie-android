@@ -70,7 +70,7 @@
         android:layout_marginLeft="@dimen/padding_standard"
         android:layout_marginRight="@dimen/padding_standard"
         android:layout_marginTop="@dimen/padding_standard_half"
-        android:inputType="number"/>
+        android:inputType="phone"/>
 
     <LinearLayout
         android:id="@+id/lin"

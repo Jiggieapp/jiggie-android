@@ -128,6 +128,7 @@ public class ProductListActivity extends ToolbarWithDotActivity
     }
 
     private void loadData(String eventId){
+        swipeRefresh.setRefreshing(true);
         CommerceManager.loaderProductList(eventId, new CommerceManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
@@ -147,6 +148,9 @@ public class ProductListActivity extends ToolbarWithDotActivity
 
 
                 setsAdapter(eventName, venueName, startTime, isTwoType, section2Start, dataPurchase, dataReservation);
+
+                swipeRefresh.setRefreshing(false);
+                isLoading = false;
             }
 
             @Override
