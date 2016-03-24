@@ -192,7 +192,8 @@ public class CongratsActivity extends ToolbarActivity {
         super.onBackPressed();
         if(!fromOrderList){
             Intent i = new Intent(CongratsActivity.this, MainActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            //i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);
             finish();
         }else {

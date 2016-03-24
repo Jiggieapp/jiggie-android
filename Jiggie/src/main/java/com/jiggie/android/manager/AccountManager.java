@@ -102,7 +102,6 @@ public class AccountManager extends BaseManager{
                         //-------------
 
                         SettingModel dataTemp = setSettingModelFromLogin(dataLogin);
-
                         EventBus.getDefault().post(dataTemp);
                     } else {
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SIGN_IN, Utils.RESPONSE_FAILED));

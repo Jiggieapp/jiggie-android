@@ -135,7 +135,8 @@ public class MoreTabFragment extends Fragment implements TabFragment, MoreTabLis
 
                             //added by Aga 22-1-2016
                             Intent i = new Intent(getActivity(), MainActivity.class);
-                            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            //i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             getActivity().startActivity(i);
                             getActivity().finish();
                             //----------------------

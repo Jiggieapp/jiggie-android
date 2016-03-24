@@ -269,9 +269,7 @@ public class SignInFragment extends Fragment {
                         .putString(Common.PREF_FACEBOOK_NAME, name)
                         .putString(Common.PREF_FACEBOOK_ID, loginModel.getFb_id())
                         .apply();
-
                 AccountManager.saveLogin(loginModel);
-
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
@@ -280,7 +278,7 @@ public class SignInFragment extends Fragment {
 
     public void onEvent(SettingModel message){
         String responses = new Gson().toJson(message);
-        Log.d("res", responses);
+        Utils.d("res", responses);
 
         final MainActivity activity = (MainActivity) getActivity();
         final App app = App.getInstance();
@@ -295,7 +293,7 @@ public class SignInFragment extends Fragment {
             if (activity != null)
                 activity.navigateToHome();
             else
-                app.startActivity(new Intent(App.getInstance(), MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                app.startActivity(new Intent (App.getInstance(), MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
         } else {
             // Start new activity from app context instead of current activity. This prevent crash when activity has been destroyed.
             app.trackMixPanelEvent("Sign Up");
