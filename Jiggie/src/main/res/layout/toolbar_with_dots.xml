@@ -28,7 +28,7 @@
                 android:id="@+id/img_help"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_help"
+                android:src="@drawable/ic_helps"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/padding_standard"/>
