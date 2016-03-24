@@ -39,7 +39,7 @@ public class PurchaseHistoryManager extends BaseManager {
 
             @Override
             public void onCustomCallbackFailure(String t) {
-                Utils.d(TAG, "gagal");
+                Utils.d(TAG, "gagal " + t);
                 onResponseListener.onFailure(new ExceptionModel(t));
             }
         });

@@ -54,10 +54,10 @@ public final class SucScreenVABPModel
             public String created_at;
             public String timelimit;
             public String amount;
-            public String bill_key;
+            public String transfer_to;
             public ArrayList<StepPayment> step_payment;
 
-            public SuccessScreen(String order_id, String order_number, String order_status, String payment_status, String payment_type,String type, String created_at, String timelimit, String amount, String bill_key, ArrayList<StepPayment> step_payment) {
+            public SuccessScreen(String order_id, String order_number, String order_status, String payment_status, String payment_type,String type, String created_at, String timelimit, String amount, String transfer_to, ArrayList<StepPayment> step_payment) {
                 this.order_id = order_id;
                 this.order_number = order_number;
                 this.order_status = order_status;
@@ -67,7 +67,7 @@ public final class SucScreenVABPModel
                 this.created_at = created_at;
                 this.timelimit = timelimit;
                 this.amount = amount;
-                this.bill_key = bill_key;
+                this.transfer_to = transfer_to;
                 this.step_payment = step_payment;
             }
 
@@ -107,8 +107,8 @@ public final class SucScreenVABPModel
                 return amount;
             }
 
-            public String getBill_key() {
-                return bill_key;
+            public String getTransfer_to() {
+                return transfer_to;
             }
 
             public ArrayList<StepPayment> getStep_payment() {

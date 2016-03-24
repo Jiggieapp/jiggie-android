@@ -28,6 +28,7 @@
                 android:layout_below="@+id/img_congrats"
                 android:textStyle="bold"
                 android:textSize="24sp"
+                android:gravity="center_horizontal"
                 android:layout_marginBottom="@dimen/padding_standard_half"/>
 
             <TextView

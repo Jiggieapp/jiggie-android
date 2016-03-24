@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:visibility="gone"
-        android:background="@color/common_action_bar_splitter"
+        android:background="@color/grayLight"
         android:clickable="false">
 
         <TextView

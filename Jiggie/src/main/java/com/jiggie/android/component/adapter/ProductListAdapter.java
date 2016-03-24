@@ -94,7 +94,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         if(isTwoType){
             if(position<section2Start){
                 holder.txtTicketName.setText(itemPurchases.getName());
-                holder.txtTicketInfo.setText(itemPurchases.getDescription());
+                holder.txtTicketInfo.setText(itemPurchases.getSummary());
                 holder.txtPrice.setText(StringUtility.getRupiahFormat(itemPurchases.getPrice()));
                 holder.txtPriceInfo.setText(context.getString(R.string.pr_max_purchase)+" "+itemPurchases.getMax_purchase());
                 if (position == 0) {
@@ -106,7 +106,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
                 }
             }else{
                 holder.txtTicketName.setText(itemReservations.getName());
-                holder.txtTicketInfo.setText(itemReservations.getDescription());
+                holder.txtTicketInfo.setText(itemReservations.getSummary());
                 holder.txtPrice.setText(StringUtility.getRupiahFormat(itemReservations.getPrice()));
                 holder.txtPriceInfo.setText(context.getString(R.string.pr_max_guest)+" "+itemReservations.getMax_guests());
                 if ((position-section2Start) == 0) {
@@ -118,7 +118,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
             }
         }else{
             holder.txtTicketName.setText(itemPurchases.getName());
-            holder.txtTicketInfo.setText(itemPurchases.getDescription());
+            holder.txtTicketInfo.setText(itemPurchases.getSummary());
             holder.txtPrice.setText(StringUtility.getRupiahFormat(itemPurchases.getPrice()));
             holder.txtPriceInfo.setText(context.getString(R.string.pr_max_purchase)+" "+itemPurchases.getMax_purchase());
             if (position == 0) {

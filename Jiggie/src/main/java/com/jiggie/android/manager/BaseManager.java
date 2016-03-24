@@ -144,7 +144,7 @@ public abstract class BaseManager {
         return ks;
     }
 
-    public static Retrofit getRetrofit() {
+    /*public static Retrofit getRetrofit() {
         if (retrofit == null) {
             OkHttpClient okHttpClient = getHttpClient();
             retrofit = new Retrofit.Builder()
@@ -152,6 +152,19 @@ public abstract class BaseManager {
                             //.addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
                     //.client(okHttpClient)
+                    .build();
+        }
+        return retrofit;
+    }*/
+
+    public static Retrofit getRetrofit() {
+        if (retrofit == null) {
+            //OkHttpClient okHttpClient = getHttpClient();
+            retrofit = new Retrofit.Builder()
+                    .baseUrl(Utils.BASE_URL)
+                    //.addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create())
+                            //.client(okHttpClient)
                     .build();
         }
         return retrofit;

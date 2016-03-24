@@ -54,6 +54,7 @@ public class CongratsActivity extends ToolbarActivity {
         fromOrderList = a.getBooleanExtra(Common.FIELD_FROM_ORDER_LIST, false);
         initView();
         preDefined(String.valueOf(orderId));
+
     }
 
     private void initView(){

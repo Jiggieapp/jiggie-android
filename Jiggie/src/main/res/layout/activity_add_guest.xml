@@ -50,7 +50,7 @@
         app:met_textColorHint="@color/common_plus_signin_btn_text_light_disabled"
         app:met_errorColor="@android:color/holo_red_light"
         android:layout_below="@id/divider"
-        android:textSize="12sp"
+        android:textSize="16sp"
         android:layout_marginLeft="@dimen/padding_standard"
         android:layout_marginRight="@dimen/padding_standard"
         android:layout_marginTop="@dimen/padding_standard_half"/>
@@ -66,7 +66,7 @@
         app:met_textColorHint="@color/common_plus_signin_btn_text_light_disabled"
         app:met_errorColor="@android:color/holo_red_light"
         android:layout_below="@id/edt_name"
-        android:textSize="12sp"
+        android:textSize="16sp"
         android:layout_marginLeft="@dimen/padding_standard"
         android:layout_marginRight="@dimen/padding_standard"
         android:layout_marginTop="@dimen/padding_standard_half"/>
@@ -90,11 +90,12 @@
             app:met_textColorHint="@color/common_plus_signin_btn_text_light_disabled"
             app:met_errorColor="@android:color/holo_red_light"
             android:layout_below="@id/divider"
-            android:textSize="12sp"
+            android:textSize="16sp"
             android:layout_marginRight="@dimen/padding_standard_half"
             android:layout_marginTop="@dimen/padding_standard_half"
             android:layout_weight="0.8"
-            android:inputType="number"/>
+            android:inputType="number"
+            android:maxLength="3"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/edt_phone"
@@ -106,7 +107,7 @@
             app:met_textColorHint="@color/common_plus_signin_btn_text_light_disabled"
             app:met_errorColor="@android:color/holo_red_light"
             android:layout_below="@id/divider"
-            android:textSize="12sp"
+            android:textSize="16sp"
             android:layout_marginLeft="@dimen/padding_standard_half"
             android:layout_marginRight="@dimen/padding_standard"
             android:layout_marginTop="@dimen/padding_standard_half"
@@ -135,7 +136,7 @@
         android:layout_marginTop="@dimen/padding_standard"
         android:layout_marginBottom="@dimen/padding_standard"
         android:text="@string/guest_phone_info"
-        android:textSize="@dimen/normal_text_size"
+        android:textSize="14sp"
         android:layout_marginLeft="3dp"/>
 
     <RelativeLayout

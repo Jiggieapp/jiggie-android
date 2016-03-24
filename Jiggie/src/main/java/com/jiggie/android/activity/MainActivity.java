@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     @SuppressWarnings("StatementWithEmptyBody")
     protected void onCreate(Bundle savedInstanceState) {
-        super.setTheme(R.style.AppTheme);
+        super.setTheme(R.style.AppCustomTheme);
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_main);
         this.active = true;

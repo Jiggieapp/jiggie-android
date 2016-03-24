@@ -38,7 +38,7 @@ import butterknife.ButterKnife;
 public class HowToPayActivity extends ToolbarActivity{
 
     RelativeLayout rel_view_orders;
-    TextView txt_t_limit_fill, txt_t_amount_fill, txt_howtopay, txt_close;
+    TextView txt_t_limit_fill, txt_t_amount_fill, txt_howtopay, txt_close, txt_to_fill;
     CountDownTimer countDownTimer;
     LinearLayout lin_con_step;
     long order_id;
@@ -77,6 +77,7 @@ public class HowToPayActivity extends ToolbarActivity{
         txt_t_amount_fill = (TextView) findViewById(R.id.txt_t_amount_fill);
         txt_t_limit_fill = (TextView) findViewById(R.id.txt_t_limit_fill);
         txt_howtopay = (TextView) findViewById(R.id.txt_howtopay);
+        txt_to_fill = (TextView) findViewById(R.id.txt_to_fill);
         rel_view_orders = (RelativeLayout) findViewById(R.id.rel_view_orders);
         lin_con_step = (LinearLayout)findViewById(R.id.lin_con_step);
         txt_close = (TextView)findViewById(R.id.txt_close);
@@ -161,6 +162,7 @@ public class HowToPayActivity extends ToolbarActivity{
                         txt_howtopay.setText(getString(R.string.other_bank));
                     }
 
+                    txt_to_fill.setText(sucScreenVABPModel.getData().getSuccess_screen().getTransfer_to());
                     int sizeStep = stepPayment.size();
                     for(int i=0;i<sizeStep;i++){
                         ContainerStepView containerStepView;

@@ -100,6 +100,7 @@ public class PurchaseHistoryModel {
                 public Guest_detail guest_detail;
                 public ArrayList<Product_list> product_list;
                 public String order_id;
+
                 protected Order(Parcel in) {
                     _id = in.readString();
                     code = in.readString();
@@ -558,7 +559,7 @@ public class PurchaseHistoryModel {
                 public String fullfillment_type;
                 public String fullfillment_value;
                 public long event_time;
-                public ArrayList<Photo> photos;
+                //public ArrayList<Photo> photos;
                 public ArrayList<Invited> invited;
                 public ArrayList<Accepted> accepted;
                 public ArrayList<Confirmed> confirmed;
@@ -577,7 +578,7 @@ public class PurchaseHistoryModel {
                 public String status;
                 public ArrayList<String> tags;
                 public String end_series_datetime;
-                public boolean visible;
+               //public boolean visible;
                 public String created_at;
                 public String updated_at;
                 protected Event(Parcel in) {
@@ -598,12 +599,12 @@ public class PurchaseHistoryModel {
                     fullfillment_type = in.readString();
                     fullfillment_value = in.readString();
                     event_time = in.readLong();
-                    if (in.readByte() == 0x01) {
+                    /*if (in.readByte() == 0x01) {
                         photos = new ArrayList<Photo>();
                         in.readList(photos, Photo.class.getClassLoader());
                     } else {
                         photos = null;
-                    }
+                    }*/
                     if (in.readByte() == 0x01) {
                         invited = new ArrayList<Invited>();
                         in.readList(invited, Invited.class.getClassLoader());
@@ -672,7 +673,7 @@ public class PurchaseHistoryModel {
                         tags = null;
                     }
                     end_series_datetime = in.readString();
-                    visible = in.readByte() != 0x00;
+                    //visible = in.readByte() != 0x00;
                     created_at = in.readString();
                     updated_at = in.readString();
                 }
@@ -701,12 +702,12 @@ public class PurchaseHistoryModel {
                     dest.writeString(fullfillment_type);
                     dest.writeString(fullfillment_value);
                     dest.writeLong(event_time);
-                    if (photos == null) {
+                    /*if (photos == null) {
                         dest.writeByte((byte) (0x00));
                     } else {
                         dest.writeByte((byte) (0x01));
                         dest.writeList(photos);
-                    }
+                    }*/
                     if (invited == null) {
                         dest.writeByte((byte) (0x00));
                     } else {
@@ -775,7 +776,7 @@ public class PurchaseHistoryModel {
                         dest.writeList(tags);
                     }
                     dest.writeString(end_series_datetime);
-                    dest.writeByte((byte) (visible ? 0x01 : 0x00));
+                    //dest.writeByte((byte) (visible ? 0x01 : 0x00));
                     dest.writeString(created_at);
                     dest.writeString(updated_at);
                 }
@@ -793,7 +794,7 @@ public class PurchaseHistoryModel {
                     }
                 };
 
-                public Event(String _id, String event_type, String event_id, String start_date, long start_time, String start_datetime, String end_date, long end_time, String end_datetime, String venue_id, String venue_name, String date_full, String start_datetime_str, String end_datetime_str, String fullfillment_type, String fullfillment_value, long event_time, ArrayList<Photo> photos, ArrayList<Invited> invited, ArrayList<Accepted> accepted, ArrayList<Confirmed> confirmed, ArrayList<Guestconfirmed> guestconfirmed, ArrayList<Hostconfirmed> hostconfirmed, ArrayList<Rejected> rejected, ArrayList<Cancelled> cancelled, ArrayList<Host> hosts, ArrayList<Hoster> hosters, String source, String description, String location, long rank, String title, boolean inherits, String status, ArrayList<String> tags, String end_series_datetime, boolean visible, String created_at, String updated_at) {
+                public Event(String _id, String event_type, String event_id, String start_date, long start_time, String start_datetime, String end_date, long end_time, String end_datetime, String venue_id, String venue_name, String date_full, String start_datetime_str, String end_datetime_str, String fullfillment_type, String fullfillment_value, long event_time, /*ArrayList<Photo> photos,*/ ArrayList<Invited> invited, ArrayList<Accepted> accepted, ArrayList<Confirmed> confirmed, ArrayList<Guestconfirmed> guestconfirmed, ArrayList<Hostconfirmed> hostconfirmed, ArrayList<Rejected> rejected, ArrayList<Cancelled> cancelled, ArrayList<Host> hosts, ArrayList<Hoster> hosters, String source, String description, String location, long rank, String title, boolean inherits, String status, ArrayList<String> tags, String end_series_datetime, /*boolean visible,*/ String created_at, String updated_at) {
                     this._id = _id;
                     this.event_type = event_type;
                     this.event_id = event_id;
@@ -811,7 +812,7 @@ public class PurchaseHistoryModel {
                     this.fullfillment_type = fullfillment_type;
                     this.fullfillment_value = fullfillment_value;
                     this.event_time = event_time;
-                    this.photos = photos;
+                    //this.photos = photos;
                     this.invited = invited;
                     this.accepted = accepted;
                     this.confirmed = confirmed;
@@ -830,7 +831,7 @@ public class PurchaseHistoryModel {
                     this.status = status;
                     this.tags = tags;
                     this.end_series_datetime = end_series_datetime;
-                    this.visible = visible;
+                    //this.visible = visible;
                     this.created_at = created_at;
                     this.updated_at = updated_at;
                 }
@@ -903,9 +904,9 @@ public class PurchaseHistoryModel {
                     return event_time;
                 }
 
-                public ArrayList<Photo> getPhotos() {
+                /*public ArrayList<Photo> getPhotos() {
                     return photos;
-                }
+                }*/
 
                 public ArrayList<Invited> getInvited() {
                     return invited;
@@ -979,9 +980,9 @@ public class PurchaseHistoryModel {
                     return end_series_datetime;
                 }
 
-                public boolean isVisible() {
+                /*public boolean isVisible() {
                     return visible;
-                }
+                }*/
 
                 public String getCreated_at() {
                     return created_at;
