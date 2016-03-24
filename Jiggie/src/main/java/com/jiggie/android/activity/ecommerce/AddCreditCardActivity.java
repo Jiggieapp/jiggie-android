@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.jiggie.android.App;
+import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.R;
@@ -110,6 +111,18 @@ public class AddCreditCardActivity extends ToolbarActivity {
             @Override
             public void afterTextChanged(Editable s) {
 
+                String initial = s.toString();
+                // remove all non-digits characters
+                String processed = initial.replaceAll("\\D", "");
+                // insert a space after all groups of 4 digits that are followed by another digit
+                processed = StringUtility.getCCNumberFormat(processed);
+                // to avoid stackoverflow errors, check that the processed is different from what's already
+                //  there before setting
+                if (!initial.equals(processed)) {
+                    // set the value
+                    s.replace(0, initial.length(), processed);
+                }
+
                 checkEnability();
             }
         });
@@ -172,7 +185,7 @@ public class AddCreditCardActivity extends ToolbarActivity {
         rel_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String cardNumber = edt_cc_number.getText().toString();
+                String cardNumber = edt_cc_number.getText().toString().replaceAll("\\D","");
                 String cvv = edt_cvv.getText().toString();
                 String date = edt_date.getText().toString();
                 if (!isFieldError(cardNumber, cvv, date)) {

@@ -162,7 +162,7 @@ public class HowToPayActivity extends ToolbarActivity{
                         txt_howtopay.setText(getString(R.string.other_bank));
                     }
 
-                    txt_to_fill.setText(sucScreenVABPModel.getData().getSuccess_screen().getTransfer_to());
+                    txt_to_fill.setText(StringUtility.getCCNumberFormat(sucScreenVABPModel.getData().getSuccess_screen().getTransfer_to()));
                     int sizeStep = stepPayment.size();
                     for(int i=0;i<sizeStep;i++){
                         ContainerStepView containerStepView;

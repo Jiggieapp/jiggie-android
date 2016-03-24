@@ -215,4 +215,9 @@ public class StringUtility {
         }
         return displayedString;
     }
+
+    public static String getCCNumberFormat(String input){
+        String output = input.replaceAll("(\\d{4})(?=\\d)", "$1-");
+        return output;
+    }
 }
