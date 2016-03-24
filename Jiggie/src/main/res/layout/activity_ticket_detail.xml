@@ -142,7 +142,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_below="@+id/rel_reg"
-                        android:background="@android:color/darker_gray"/>
+                        android:background="@color/dividercomm"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -171,7 +171,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_above="@+id/rel_guest"
-            android:background="@android:color/darker_gray" />
+            android:background="@color/dividercomm" />
 
         <RelativeLayout
             android:id="@+id/rel_guest"
@@ -225,7 +225,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_above="@+id/purchaseContainer"
-            android:background="@android:color/darker_gray" />
+            android:background="@color/dividercomm" />
 
         <LinearLayout
             android:id="@+id/purchaseContainer"
