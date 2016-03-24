@@ -95,7 +95,7 @@
 
                 <View
                     android:id="@+id/divider1"
-                    android:background="@android:color/darker_gray"
+                    android:background="@color/dividercomm"
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
                     android:layout_below="@id/txt_event_info"/>
@@ -180,7 +180,7 @@
 
         <View
             android:id="@+id/divider2"
-            android:background="@android:color/darker_gray"
+            android:background="@color/dividercomm"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_above="@+id/rel_total"/>
@@ -213,7 +213,7 @@
 
         <View
             android:id="@+id/divider3"
-            android:background="@android:color/darker_gray"
+            android:background="@color/dividercomm"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:layout_above="@+id/rel_payment"/>

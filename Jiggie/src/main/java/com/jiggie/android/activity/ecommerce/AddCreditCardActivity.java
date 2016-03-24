@@ -227,7 +227,6 @@ public class AddCreditCardActivity extends ToolbarActivity {
         setResult(RESULT_OK, new Intent());
         finish();
 
-
     }
 
     private DatePickerDialog createDialogWithoutDateField() {

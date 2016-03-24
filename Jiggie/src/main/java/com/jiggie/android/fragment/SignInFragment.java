@@ -28,6 +28,7 @@ import com.jiggie.android.component.adapter.TutorialFragmentAdapter;
 import com.jiggie.android.component.gcm.GCMRegistration;
 import com.jiggie.android.component.service.FacebookImageSyncService;
 import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.LoginModel;
@@ -287,6 +288,12 @@ public class SignInFragment extends Fragment {
         progressDialog.dismiss();
 
         AccountManager.saveSetting(message);
+
+        //refresh Credit card list----
+        if(CommerceManager.arrCCScreen!=null&&CommerceManager.arrCCScreen.size()>0){
+            CommerceManager.arrCCScreen.clear();
+        }
+        //--------------------
 
         //setupWalkthrough(message.is_new_user(), message.isShow_walkthrough());
 
