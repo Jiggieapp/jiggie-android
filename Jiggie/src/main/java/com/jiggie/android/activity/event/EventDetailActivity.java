@@ -345,9 +345,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 int size = guestArr.size();
 
                 int guestCount = size;
-                final double latt = Double.parseDouble(message.getData().getEvents_detail().getVenue().getLat());
-                final double lon = Double.parseDouble(message.getData().getEvents_detail().getVenue().getLon());
-                final LatLng lat = new LatLng(latt, lon);
 
                 fillPhotos(message.getData().getEvents_detail().getPhotos());
 
@@ -406,9 +403,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 }
                 //btnBook.setVisibility(StringUtility.isEquals(EventManager.FullfillmentTypes.NONE, message.getData().getEvents_detail().getFullfillment_type(), true) ? View.GONE : View.VISIBLE);
 
-                map.addMarker(new MarkerOptions().position(lat).title(message.getData().getEvents_detail().getVenue_name()));
                 layoutGuests.setVisibility(guestCount > 0 ? View.VISIBLE : View.GONE);
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(lat, 15));
                 scrollView.setVisibility(View.VISIBLE);
 
                 final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(message.getData().getEvents_detail().getStart_datetime());
@@ -454,9 +449,26 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                     txtExternalSite.setVisibility(View.VISIBLE);
                     txtBookNow.setText(R.string.book_now);
                 }
+
+                //move it to the most bottom of the code, so the guest interested list will still be shown
+                try
+                {
+                    final double latt = Double.parseDouble(message.getData().getEvents_detail().getVenue().getLat());
+                    final double lon = Double.parseDouble(message.getData().getEvents_detail().getVenue().getLon());
+                    final LatLng lat = new LatLng(latt, lon);
+                    map.addMarker(new MarkerOptions().position(lat).title(message.getData().getEvents_detail().getVenue_name()));
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(lat, 15));
+                }
+                catch (NumberFormatException e)
+                {
+                    swipeRefresh.setRefreshing(false);
+                    throw new RuntimeException(App.getErrorMessage(e), e);
+                }
             } catch (ParseException e) {
+                swipeRefresh.setRefreshing(false);
                 throw new RuntimeException(App.getErrorMessage(e), e);
             }
+
         }
     }
 
