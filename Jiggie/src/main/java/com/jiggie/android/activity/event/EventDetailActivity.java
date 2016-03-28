@@ -448,7 +448,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                     txtBookNow.setText(R.string.book_now);
                 }
 
-
+                //move it to the most bottom of the code, so the guest interested list will still be shown
                 try
                 {
                     final double latt = Double.parseDouble(message.getData().getEvents_detail().getVenue().getLat());
