@@ -212,4 +212,10 @@
     <string name="section_ticket">TICKETS</string>
     <string name="section_table">RESERVE TABLE</string>
     <string name="preferred_experience">Your preferred experiences have been updated</string>
+
+    <string name="msg_carr_1">Discover upcoming food bazaars, music, art \u0026 culture and nightlife events</string>
+    <string name="msg_carr_2">Get detailed information on events and book your tickets</string>
+    <string name="msg_carr_3">Check out other guests who like the same events you do</string>
+    <string name="msg_carr_4">Connect with other fun-loving people and make new friends</string>
+    <string name="msg_carr_5"> Chat with your new friends and make plans to meet up</string>
 </resources>
