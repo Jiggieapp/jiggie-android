@@ -41,7 +41,16 @@ public class EventModel {
             String special_type;
             ArrayList<String> tags;
             String date_day;
+            String description;
             ArrayList<String> photos;
+
+            public String getDescription() {
+                return description;
+            }
+
+            public void setDescription(String description) {
+                this.description = description;
+            }
 
             protected Events(Parcel in) {
                 //super(in);
@@ -55,13 +64,7 @@ public class EventModel {
                 this.tags = in.readArrayList(null);
                 this.date_day = in.readString();
                 this.photos = in.readArrayList(null);
-
-
-            }
-
-            public Events()
-            {
-
+                this.description = in.readString();
             }
 
             @Override
@@ -80,8 +83,7 @@ public class EventModel {
                 dest.writeList(this.tags);
                 dest.writeString(this.date_day);
                 dest.writeList(this.photos);
-
-
+                dest.writeString(this.description);
             }
 
             public static final Creator<Events> CREATOR = new Creator<Events>() {

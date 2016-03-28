@@ -126,6 +126,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     ArrayList<String> event_tags, event_pics;
     String event_day = "";
     String event_end = "";
+    String event_description = "";
 
     ProgressDialog progressDialog;
     public static final String TAG = EventDetailActivity.class.getSimpleName();
@@ -148,6 +149,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         event_day = a.getStringExtra(Common.FIELD_EVENT_DAY);
         event_end = a.getStringExtra(Common.FIELD_EVENT_DAY_END);
         event_pics = a.getStringArrayListExtra(Common.FIELD_EVENT_PICS);
+        event_description = a.getStringExtra(Common.FIELD_EVENT_DESCRIPTION);
 
         this.imagePagerIndicatorAdapter = new ImagePagerIndicatorAdapter(super.getSupportFragmentManager(), this.imageViewPager);
         this.imagePagerIndicator.setAdapter(this.imagePagerIndicatorAdapter.getIndicatorAdapter());
@@ -185,6 +187,9 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
             if(event_pics != null)
                 fillPhotos(event_pics);
+
+            if(event_description != null)
+                txtDescription.setText(event_description);
 
             scrollView.setVisibility(View.VISIBLE);
             elementContainers.setVisibility(View.INVISIBLE);
@@ -338,9 +343,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 int size = guestArr.size();
 
                 int guestCount = size;
-                final double latt = Double.parseDouble(message.getData().getEvents_detail().getVenue().getLat());
-                final double lon = Double.parseDouble(message.getData().getEvents_detail().getVenue().getLon());
-                final LatLng lat = new LatLng(latt, lon);
 
                 fillPhotos(message.getData().getEvents_detail().getPhotos());
 
@@ -399,9 +401,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 }
                 //btnBook.setVisibility(StringUtility.isEquals(EventManager.FullfillmentTypes.NONE, message.getData().getEvents_detail().getFullfillment_type(), true) ? View.GONE : View.VISIBLE);
 
-                map.addMarker(new MarkerOptions().position(lat).title(message.getData().getEvents_detail().getVenue_name()));
                 layoutGuests.setVisibility(guestCount > 0 ? View.VISIBLE : View.GONE);
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(lat, 15));
                 scrollView.setVisibility(View.VISIBLE);
 
                 final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(message.getData().getEvents_detail().getStart_datetime());
@@ -447,9 +447,26 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                     txtExternalSite.setVisibility(View.VISIBLE);
                     txtBookNow.setText(R.string.book_now);
                 }
+
+
+                try
+                {
+                    final double latt = Double.parseDouble(message.getData().getEvents_detail().getVenue().getLat());
+                    final double lon = Double.parseDouble(message.getData().getEvents_detail().getVenue().getLon());
+                    final LatLng lat = new LatLng(latt, lon);
+                    map.addMarker(new MarkerOptions().position(lat).title(message.getData().getEvents_detail().getVenue_name()));
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(lat, 15));
+                }
+                catch (NumberFormatException e)
+                {
+                    swipeRefresh.setRefreshing(false);
+                    throw new RuntimeException(App.getErrorMessage(e), e);
+                }
             } catch (ParseException e) {
+                swipeRefresh.setRefreshing(false);
                 throw new RuntimeException(App.getErrorMessage(e), e);
             }
+
         }
     }
 

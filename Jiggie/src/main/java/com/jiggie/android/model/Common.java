@@ -30,6 +30,7 @@ public class Common {
     public static String FIELD_ABOUT = "about";
     public static String FIELD_EVENT_DAY_END = "date_end";
     public static String FIELD_EVENT_PICS = "event_pics";
+    public static String FIELD_EVENT_DESCRIPTION = "event_description";
 
     public static final String PREF_IMAGES_UPLOADED = "images-uploaded";
     public static final String PREF_FACEBOOK_ID = FIELD_FACEBOOK_ID;
