@@ -30,7 +30,7 @@ public class TutorialFragmentAdapter extends FragmentPagerAdapter {
 
     public TutorialFragmentAdapter(FragmentManager fm, ViewPager viewPager) {
         super(fm);
-        this.fragments = new Fragment[5];
+        this.fragments = new Fragment[6];
         this.indicatorAdapter = new ImagePagerIndicatorAdapter.IndicatorAdapter(this.fragments.length);
 
         viewPager.setAdapter(this);
@@ -59,17 +59,20 @@ public class TutorialFragmentAdapter extends FragmentPagerAdapter {
                 arg.putString(TutorialFragment.ARG_TITLE, app.getString(R.string.app_name));
                 arg.putString(TutorialFragment.ARG_DESC, app.getString(R.string.see_whats_going));
             } else if (position == 1) {
-                arg.putString(TutorialFragment.ARG_DESC, app.getString(R.string.browse_the_latest));
-                arg.putInt(TutorialFragment.ARG_IMAGE, R.mipmap.img_tutorial_event_detail);
+                arg.putString(TutorialFragment.ARG_DESC, app.getString(R.string.msg_carr_1));
+                arg.putInt(TutorialFragment.ARG_IMAGE, R.drawable.ss_car_1);
             } else if (position == 2) {
-                arg.putString(TutorialFragment.ARG_DESC, app.getString(R.string.check_other_guest));
-                arg.putInt(TutorialFragment.ARG_IMAGE, R.mipmap.img_tutorial_guest_list);
+                arg.putString(TutorialFragment.ARG_DESC, app.getString(R.string.msg_carr_2));
+                arg.putInt(TutorialFragment.ARG_IMAGE, R.drawable.ss_car_2);
             } else if (position == 3) {
-                arg.putString(TutorialFragment.ARG_DESC, app.getString(R.string.connect_with_other));
-                arg.putInt(TutorialFragment.ARG_IMAGE, R.mipmap.img_tutorial_social);
+                arg.putString(TutorialFragment.ARG_DESC, app.getString(R.string.msg_carr_3));
+                arg.putInt(TutorialFragment.ARG_IMAGE, R.drawable.ss_car_3);
             } else if (position == 4) {
-                arg.putString(TutorialFragment.ARG_DESC, app.getString(R.string.chat_with_new_friends));
-                arg.putInt(TutorialFragment.ARG_IMAGE, R.mipmap.img_tutorial_chat);
+                arg.putString(TutorialFragment.ARG_DESC, app.getString(R.string.msg_carr_4));
+                arg.putInt(TutorialFragment.ARG_IMAGE, R.drawable.ss_car_4);
+            }else if (position == 5) {
+                arg.putString(TutorialFragment.ARG_DESC, app.getString(R.string.msg_carr_5));
+                arg.putInt(TutorialFragment.ARG_IMAGE, R.drawable.ss_car_5);
             }
 
             fragment.setArguments(arg);
