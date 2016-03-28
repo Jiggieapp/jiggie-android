@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.api.EventInterface;
+import com.jiggie.android.api.OnResponseListener;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.callback.CustomCallback;
 import com.jiggie.android.model.EventDetailModel;
@@ -124,6 +125,43 @@ public class EventManager {
         }catch (IOException e){
             Utils.d("Exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT_DETAIL, Utils.MSG_EXCEPTION + e.toString()));
+        }
+    }
+
+    public static void loaderTagsList(final OnResponseListener onResponseListener)
+    {
+        try {
+            getTagsList(new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                    //String header = String.valueOf(response.code());
+                    /*String responses = new Gson().toJson(response.body());
+                    Utils.d("res", responses);*/
+
+                    if (response.code() == Utils.CODE_SUCCESS) {
+                        TagsListModel dataTemp = (TagsListModel) response.body();
+                        //EventBus.getDefault().post(dataTemp);
+                        onResponseListener.onSuccess(dataTemp);
+                    } else {
+                        //EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SETUP_TAGS, Utils.RESPONSE_FAILED));
+                        onResponseListener.onFailure(new ExceptionModel(
+                                Utils.FROM_SETUP_TAGS, Utils.RESPONSE_FAILED));
+                    }
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    //Utils.d("Failure", t.toString());
+                    //EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SETUP_TAGS, Utils.MSG_EXCEPTION + t.toString()));
+                    onResponseListener.onFailure(new ExceptionModel(
+                            Utils.FROM_SETUP_TAGS, Utils.RESPONSE_FAILED));
+                }
+            });
+        }catch (IOException e){
+            Utils.d("Exception", e.toString());
+            //EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SETUP_TAGS, Utils.MSG_EXCEPTION + e.toString()));
+            onResponseListener.onFailure(new ExceptionModel(
+                    Utils.FROM_SETUP_TAGS, Utils.RESPONSE_FAILED));
         }
     }
 

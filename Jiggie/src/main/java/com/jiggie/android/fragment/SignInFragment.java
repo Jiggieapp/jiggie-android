@@ -1,6 +1,7 @@
 package com.jiggie.android.fragment;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +22,9 @@ import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.MainActivity;
+import com.jiggie.android.activity.setup.SetupNotificationActivity;
 import com.jiggie.android.activity.setup.SetupTagsActivity;
+import com.jiggie.android.api.OnResponseListener;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.ImagePagerIndicatorAdapter;
@@ -29,6 +33,7 @@ import com.jiggie.android.component.gcm.GCMRegistration;
 import com.jiggie.android.component.service.FacebookImageSyncService;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.CommerceManager;
+import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.LoginModel;
@@ -41,19 +46,28 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.SettingModel;
+import com.jiggie.android.model.TagsListModel;
 
 import org.json.JSONObject;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 import it.sephiroth.android.library.widget.HListView;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by rangg on 21/10/2015.
@@ -80,6 +94,7 @@ public class SignInFragment extends Fragment {
     private int previousPage;
     private View rootView;
     private String gcmId;
+    private static final String TAG = SignInFragment.class.getSimpleName();
 
     @Nullable
     @Override
@@ -219,7 +234,6 @@ public class SignInFragment extends Fragment {
     private GraphRequest.GraphJSONObjectCallback profileCallback = new GraphRequest.GraphJSONObjectCallback() {
         @Override
         public void onCompleted(JSONObject object, GraphResponse response) {
-
             String c = object.toString();
             if (getContext() == null) {
                 // fragment already destroyed
@@ -295,20 +309,118 @@ public class SignInFragment extends Fragment {
 
         //setupWalkthrough(message.is_new_user(), message.isShow_walkthrough());
 
-        if (App.getSharedPreferences().getBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, false)&&!message.is_new_user()) {
+        if (App.getSharedPreferences().getBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, false)
+                && !message.is_new_user()) {
             app.trackMixPanelEvent("Log In");
             if (activity != null)
                 activity.navigateToHome();
             else
-                app.startActivity(new Intent (App.getInstance(), MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                app.startActivity(new Intent (App.getInstance(), MainActivity.class)
+                        //.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+                        .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
         } else {
             // Start new activity from app context instead of current activity. This prevent crash when activity has been destroyed.
             app.trackMixPanelEvent("Sign Up");
-            app.startActivity(new Intent(app, SetupTagsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
-            app.startService(new Intent(app, FacebookImageSyncService.class));
+            //wandy 24-03-2016
+            //app.startActivity(new Intent(app, SetupTagsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+            doOperator();
+            //end of wandy 24-03-2016
+
+            app.startService(new Intent
+                    (app, FacebookImageSyncService.class));
             if (activity != null)
                 activity.finish();
         }
+    }
+
+    private void doOperator() {
+        Observable<TagsListModel> observableTagList
+                = Observable.create(new Observable.OnSubscribe<TagsListModel>() {
+            @Override
+            public void call(final Subscriber<? super TagsListModel> subscriber) {
+                EventManager.loaderTagsList(new OnResponseListener() {
+                    @Override
+                    public void onSuccess(Object object) {
+                        subscriber.onNext((TagsListModel) object);
+
+                    }
+
+                    @Override
+                    public void onFailure(ExceptionModel exceptionModel) {
+                        subscriber.onError(new Throwable(exceptionModel.getMessage()));
+                    }
+                });
+            }
+        })
+        .doOnNext(new Action1<TagsListModel>() {
+            @Override
+            public void call(TagsListModel tagsListModel) {
+                //Utils.d(TAG, "doOnNext");
+                //EventManager.saveTagsList(tagsListModel);
+                EventManager.saveTags(tagsListModel.getData().getTagslist());
+            }
+        })
+        .doOnError(new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_LONG).show();
+                btnSignIn.setEnabled(true);
+                progressDialog.dismiss();
+            }
+        });
+
+        observableTagList
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Action1<TagsListModel>() {
+                @Override
+                public void call(TagsListModel tagsListModel) {
+                    actionDone();
+                }
+            });
+    }
+
+    private void actionDone() {
+        final MemberSettingModel memberSettingModel = new MemberSettingModel();
+        final SettingModel currentSettingModel = AccountManager.loadSetting();
+        memberSettingModel.setAccount_type(currentSettingModel.getData().getAccount_type());
+        memberSettingModel.setLocation(1);
+        memberSettingModel.setGender(currentSettingModel.getData().getGender());
+        memberSettingModel.setGender_interest(currentSettingModel.getData().getGender_interest());
+        memberSettingModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
+        memberSettingModel.setChat(1);
+        memberSettingModel.setFeed(1);
+        memberSettingModel.setExperiences(TextUtils.join(",", getTags()));
+
+        AccountManager.loaderMemberSetting(memberSettingModel);
+        currentSettingModel.getData().getNotifications().setLocation(true);
+        currentSettingModel.getData().getNotifications().setChat(true);
+        currentSettingModel.getData().getNotifications().setFeed(true);
+
+        //ArrayList<String> arrExperiences = new ArrayList<String>(Arrays.asList(intent.getStringArrayExtra(SetupTagsActivity.PARAM_EXPERIENCES)));
+        /*final String[] tags = this.getTags().toArray(new String[this.getTags().size()]);
+        ArrayList<String> arrExperiences = new ArrayList<String>();
+        for(String tag : tags)
+        {
+            arrExperiences.add(tag);
+        }*/
+        //App.getInstance().trackMixPanelEvent("Walkthrough Tags");
+        //currentSettingModel.getData().setExperiences(arrExperiences);
+
+        AccountManager.saveSetting(currentSettingModel);
+        App.getSharedPreferences().edit().putBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, true).apply();
+        App.getInstance().startActivity(new Intent(App.getInstance()
+                , MainActivity.class)
+                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        | Intent.FLAG_ACTIVITY_NEW_TASK));
+    }
+
+    private Set<String> getTags() {
+        Set<String> tags = App.getInstance()
+                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                .getStringSet(Utils.TAGS_LIST, null);
+        return tags;
+        //return null;
     }
 
     public void onEvent(ExceptionModel message){

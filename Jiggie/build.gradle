@@ -69,15 +69,20 @@ android {
     dexOptions {
         incremental true
     }
+
+    defaultConfig {
+        multiDexEnabled true
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
 
     lintOptions
-    {
-        abortOnError false
-    }
+            {
+                abortOnError false
+            }
 }
 
 allprojects {
@@ -117,6 +122,6 @@ dependencies {
     //compile 'com.anton46:stepsview:0.0.2'
     compile 'io.reactivex:rxandroid:1.1.0'
     compile 'io.reactivex:rxjava:1.1.0'
-    compile (name : 'VTAndroidAPI', ext: 'aar')
+    compile(name: 'VTAndroidAPI', ext: 'aar')
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
 }
