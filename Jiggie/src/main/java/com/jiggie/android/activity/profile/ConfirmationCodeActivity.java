@@ -128,7 +128,7 @@ public class ConfirmationCodeActivity extends ToolbarActivity {
     private void redirect()
     {
         Intent i = new Intent(this, MainActivity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+        //i.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
     }

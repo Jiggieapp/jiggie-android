@@ -41,8 +41,8 @@ public class EventModel {
             String special_type;
             ArrayList<String> tags;
             String date_day;
-            ArrayList<String> photos;
             String description;
+            ArrayList<String> photos;
 
             public String getDescription() {
                 return description;
@@ -65,11 +65,6 @@ public class EventModel {
                 this.date_day = in.readString();
                 this.photos = in.readArrayList(null);
                 this.description = in.readString();
-            }
-
-            public Events()
-            {
-
             }
 
             @Override
