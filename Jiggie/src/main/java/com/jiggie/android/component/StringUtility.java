@@ -188,31 +188,40 @@ public class StringUtility {
     public static String getRupiahFormat(String number) {
         String displayedString = "";
 
-        if (number.length() == 0) {
+        int numPerThousand = Integer.parseInt(number) / 1000;
+        String strNumPerThousand = String.valueOf(numPerThousand);
+
+
+        if (strNumPerThousand.length() == 0) {
             displayedString = "Rp0";
         } else {
-            if (number.length() > 3) {
-                int length = number.length();
+            if (strNumPerThousand.length() > 3) {
+                int length = strNumPerThousand.length();
 
                 for (int i = length; i > 0; i -= 3) {
                     if (i > 3) {
-                        String myStringPrt1 = number.substring(0, i - 3);
-                        String myStringPrt2 = number.substring(i - 3);
+                        String myStringPrt1 = strNumPerThousand.substring(0, i - 3);
+                        String myStringPrt2 = strNumPerThousand.substring(i - 3);
 
                         String combinedString;
 
                         combinedString = myStringPrt1 + ".";
 
                         combinedString += myStringPrt2;
-                        number = combinedString;
+                        strNumPerThousand = combinedString;
 
                         displayedString = "Rp" + combinedString;
                     }
                 }
             } else {
-                displayedString = "Rp" + number;
+                displayedString = "Rp" + numPerThousand;
             }
         }
+
+        if(numPerThousand>=1){
+            displayedString = displayedString + "K";
+        }
+
         return displayedString;
     }
 

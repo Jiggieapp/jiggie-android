@@ -9,6 +9,7 @@ import android.view.ViewTreeObserver;
 
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.ecommerce.ticket.ReservationActivity;
 import com.jiggie.android.activity.ecommerce.ticket.TicketDetailActivity;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarWithDotActivity;
@@ -78,29 +79,32 @@ public class ProductListActivity extends ToolbarWithDotActivity
 
     @Override
     public void onViewSelected(int position, Object object) {
-        Intent i = new Intent(ProductListActivity.this, TicketDetailActivity.class);
-        i.putExtra(Common.FIELD_EVENT_ID, eventId);
-        i.putExtra(Common.FIELD_EVENT_NAME, eventName);
-        i.putExtra(Common.FIELD_VENUE_NAME, venueName);
-        i.putExtra(Common.FIELD_STARTTIME, startTime);
-        i.putExtra(eventDetail.getClass().getName(), eventDetail);
-
+        Intent i = null;
 
         if(isTwoType){
             if(position<section2Start){
+                i = new Intent(ProductListActivity.this, TicketDetailActivity.class);
                 ProductListModel.Data.ProductList.Purchase itemData = (ProductListModel.Data.ProductList.Purchase)object;
                 i.putExtra(Common.FIELD_TRANS_TYPE, itemData.getTicket_type());
                 i.putExtra(itemData.getClass().getName(), itemData);
             }else{
+                i = new Intent(ProductListActivity.this, ReservationActivity.class);
                 ProductListModel.Data.ProductList.Reservation itemData = (ProductListModel.Data.ProductList.Reservation)object;
                 i.putExtra(Common.FIELD_TRANS_TYPE, itemData.getTicket_type());
                 i.putExtra(itemData.getClass().getName(), itemData);
             }
         }else{
+            i = new Intent(ProductListActivity.this, TicketDetailActivity.class);
             ProductListModel.Data.ProductList.Purchase itemData = (ProductListModel.Data.ProductList.Purchase)object;
             i.putExtra(Common.FIELD_TRANS_TYPE, itemData.getTicket_type());
             i.putExtra(itemData.getClass().getName(), itemData);
         }
+
+        i.putExtra(Common.FIELD_EVENT_ID, eventId);
+        i.putExtra(Common.FIELD_EVENT_NAME, eventName);
+        i.putExtra(Common.FIELD_VENUE_NAME, venueName);
+        i.putExtra(Common.FIELD_STARTTIME, startTime);
+        i.putExtra(eventDetail.getClass().getName(), eventDetail);
 
         startActivity(i);
     }

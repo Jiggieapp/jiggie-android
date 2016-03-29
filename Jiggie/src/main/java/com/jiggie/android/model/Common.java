@@ -35,7 +35,7 @@ public class Common {
 
     public static String FIELD_TRANS_TYPE = "type";
     public static String TYPE_PURCHASE = "purchase";
-    public static String TYPE_RESERVATION = "reservation";
+    public static String TYPE_RESERVATION = "booking";
     public static String FIELD_GUEST_NAME = "guest_name";
     public static String FIELD_GUEST_EMAIL = "guest_email";
     public static String FIELD_GUEST_PHONE = "about";
