@@ -85,6 +85,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/guest_62"
+            android:text="+62"
             app:met_baseColor="@color/textDarkGray"
             app:met_primaryColor="@color/skyBlue"
             app:met_textColorHint="@color/common_plus_signin_btn_text_light_disabled"

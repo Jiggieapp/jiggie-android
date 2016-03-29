@@ -68,12 +68,12 @@
 
             </intent-filter>
         </activity>-->
-        <activity
+        <!--<activity
             android:name=".activity.ecommerce.ticket.TicketDetailActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme" />
-        <activity
+            android:theme="@style/SplashTheme" />-->
+        <!--<activity
             android:name=".activity.ecommerce.PurchaseInfoActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -82,9 +82,9 @@
             android:name=".activity.ecommerce.PurchaseHistoryActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme" />
+            android:theme="@style/SplashTheme" />-->
 
-        <activity
+        <!--<activity
             android:name=".activity.ecommerce.PaymentMethodActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -93,8 +93,8 @@
             android:name=".activity.ecommerce.HowToPayActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme" />
-        <activity
+            android:theme="@style/SplashTheme" />-->
+        <!--<activity
             android:name=".activity.ecommerce.ProductListActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -108,17 +108,13 @@
             android:name=".activity.ecommerce.AddCreditCardActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme" />
-        <activity
+            android:theme="@style/SplashTheme" />-->
+        <!--<activity
             android:name=".activity.ecommerce.CongratsActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
-            <!--<intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
-        </activity>
+        </activity>-->
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -198,6 +194,60 @@
 
             </intent-filter>
         </activity>
+
+        <!--Commerce Activity collection-->
+        <activity
+            android:name=".activity.ecommerce.ticket.TicketDetailActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme" />
+        <activity
+            android:name=".activity.ecommerce.ticket.ReservationActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme" />
+        <activity
+            android:name=".activity.ecommerce.PurchaseInfoActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme"/>
+        <activity
+            android:name=".activity.ecommerce.summary.ReservationInfoActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme"/>
+        <activity
+            android:name=".activity.ecommerce.PurchaseHistoryActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme" />
+
+        <activity
+            android:name=".activity.ecommerce.PaymentMethodActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme" />
+        <activity
+            android:name=".activity.ecommerce.HowToPayActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme" />
+        <activity
+            android:name=".activity.ecommerce.AddGuestActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme" />
+        <activity
+            android:name=".activity.ecommerce.AddCreditCardActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme" />
+        <activity
+            android:name=".activity.ecommerce.CongratsActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme" />
+        <!--End of Commerce Activity collection-->
 
         <activity
             android:name=".activity.event.EventDetailActivity"

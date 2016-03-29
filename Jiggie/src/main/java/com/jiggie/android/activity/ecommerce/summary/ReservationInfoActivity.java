@@ -1,4 +1,4 @@
-package com.jiggie.android.activity.ecommerce;
+package com.jiggie.android.activity.ecommerce.summary;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -27,10 +27,11 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
-import com.jiggie.android.activity.ecommerce.summary.AbstractPurchaseSumaryActivity;
+import com.jiggie.android.activity.ecommerce.CongratsActivity;
+import com.jiggie.android.activity.ecommerce.HowToPayActivity;
+import com.jiggie.android.activity.ecommerce.PaymentMethodActivity;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
-import com.jiggie.android.component.activity.ToolbarWithDotActivity;
 import com.jiggie.android.fragment.SlideFragment;
 import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.model.CCScreenModel;
@@ -54,39 +55,58 @@ import id.co.veritrans.android.api.VTModel.VTToken;
 import id.co.veritrans.android.api.VTUtil.VTConfig;
 
 /**
- * Created by LTE on 3/9/2016.
+ * Created by LTE on 3/28/2016.
  */
-public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
+public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
 
-    @Bind(R.id.pager_slide)
-    ViewPager pagerSlide;
-    @Bind(R.id.rel_payment)
-    RelativeLayout relPayment;
-
-    SummaryModel.Data.Product_summary productSummary;
-    EventDetailModel.Data.EventDetail eventDetail;
     @Bind(R.id.txt_event_name)
     TextView txtEventName;
     @Bind(R.id.txt_event_info)
     TextView txtEventInfo;
-    @Bind(R.id.txt_tik_title)
-    TextView txtTikTitle;
-    @Bind(R.id.txt_tik_fill)
-    TextView txtTikFill;
-    @Bind(R.id.txt_fee_fill)
-    TextView txtFeeFill;
-    @Bind(R.id.txt_tax_fill)
-    TextView txtTaxFill;
+    @Bind(R.id.txt_dft_title)
+    TextView txtDftTitle;
+    @Bind(R.id.txt_dft_fill)
+    TextView txtDftFill;
+    @Bind(R.id.txt_taxx_title)
+    TextView txtTaxxTitle;
+    @Bind(R.id.txt_taxx_fill)
+    TextView txtTaxxFill;
+    @Bind(R.id.txt_ser_title)
+    TextView txtSerTitle;
+    @Bind(R.id.txt_ser_fill)
+    TextView txtSerFill;
+    @Bind(R.id.txt_est_tot_title)
+    TextView txtEstTotTitle;
+    @Bind(R.id.txt_est_tot_fill)
+    TextView txtEstTotFill;
+    @Bind(R.id.txt_require_title)
+    TextView txtRequireTitle;
+    @Bind(R.id.txt_require_fill)
+    TextView txtRequireFill;
+    @Bind(R.id.txt_est_bal_title)
+    TextView txtEstBalTitle;
+    @Bind(R.id.txt_est_bal_fill)
+    TextView txtEstBalFill;
+
     @Bind(R.id.txt_total_fill)
     TextView txtTotalFill;
     @Bind(R.id.img_payment)
     ImageView imgPayment;
     @Bind(R.id.txt_payment)
     TextView txtPayment;
+    @Bind(R.id.rel_payment)
+    RelativeLayout relPayment;
+    @Bind(R.id.pager_slide)
+    ViewPager pagerSlide;
+    @Bind(R.id.rel_disable)
+    RelativeLayout relDisable;
 
-    String eventId, eventName, venueName, startTime, totalPrice;
+    SummaryModel.Data.Product_summary productSummary;
+    EventDetailModel.Data.EventDetail eventDetail;
     @Bind(R.id.lin_terms)
     LinearLayout linTerms;
+
+    String eventId, eventName, venueName, startTime, totalPrice;
     ArrayList<TermsItemView> arrTermItemView = new ArrayList<>();
     String is_new_card, cc_token_id = Utils.BLANK, cc_card_id, paymentType = Utils.BLANK, name_cc = Utils.BLANK;
     boolean is_verified;
@@ -97,9 +117,10 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     public final static String PAYMENT_API = "https://api.veritrans.co.id/v2/token";
     public final static String PAYMENT_API_SANDBOX = "https://api.sandbox.veritrans.co.id/v2/token";
     CCScreenModel.CardDetails cardDetails;
-    @Bind(R.id.rel_disable)
-    RelativeLayout relDisable;
-
+    @Bind(R.id.minus_button)
+    View minusButton;
+    @Bind(R.id.plus_button)
+    View plusButton;
     private SlideAdapter slideAdapter;
 
     public static String getPaymentApiUrl() {
@@ -119,7 +140,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
         relPayment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(PurchaseInfoActivity.this, PaymentMethodActivity.class);
+                Intent i = new Intent(ReservationInfoActivity.this, PaymentMethodActivity.class);
                 i.putExtra(Common.FIELD_ORDER_ID, order_id);
                 i.putExtra(Common.FIELD_PAYMENT_TYPE, paymentType);
                 i.putExtra(Common.FIELD_PRICE, totalPrice);
@@ -148,6 +169,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
 
         sendMixpanel(productSummary, eventDetail);
 
+        relTableDet.setVisibility(View.VISIBLE);
         SummaryModel.Data.Product_summary.LastPayment lastPayment = productSummary.getLast_payment();
         if (!lastPayment.isEmpty()) {
             paymentType = productSummary.getLast_payment().getPayment_type();
@@ -189,11 +211,14 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
         } catch (ParseException e) {
             throw new RuntimeException(App.getErrorMessage(e), e);
         }
-        txtTikTitle.setText(dataProduct.getName() + " Ticket (" + dataProduct.getNum_buy() + "x)");
-        txtTikFill.setText(StringUtility.getRupiahFormat(dataProduct.getTotal_price()));
-        txtFeeFill.setText(StringUtility.getRupiahFormat(dataProduct.getAdmin_fee()));
-        txtTaxFill.setText(StringUtility.getRupiahFormat(dataProduct.getTax_amount()));
-        txtTotalFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_price()));
+        txtDftTitle.setText(dataProduct.getName());
+        txtDftFill.setText(StringUtility.getRupiahFormat(dataProduct.getTotal_price()));
+        txtTaxxFill.setText(StringUtility.getRupiahFormat(dataProduct.getTax_amount()));
+        txtSerFill.setText(StringUtility.getRupiahFormat(dataProduct.getAdmin_fee()));
+        txtEstTotFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_price()));
+        //txtRequireFill.setText();
+        //txtEstBalFill.setText();
+        //txtTotalFill.setText(StringUtility.getRupiahFormat(dataProduct.get));
 
         initTermView(dataProduct);
     }
@@ -208,7 +233,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     private void initTermView(SummaryModel.Data.Product_summary.Product_list dataProduct) {
         int size = dataProduct.getTerms().size();
         for (int i = 0; i < size; i++) {
-            TermsItemView termsItemView = new TermsItemView(PurchaseInfoActivity.this, dataProduct.getTerms().get(i).getBody(), new TermsItemView.OnCheckTermsListener() {
+            TermsItemView termsItemView = new TermsItemView(ReservationInfoActivity.this, dataProduct.getTerms().get(i).getBody(), new TermsItemView.OnCheckTermsListener() {
                 @Override
                 public void onCheckTerms() {
                     checkEnability(arrTermItemView, txtPayment.getText().toString());
@@ -351,7 +376,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                     //using 3d secure
                     /*WebView webView = new
                             WebView(PurchaseInfoActivity.this);*/
-                    MyWebView webView = new MyWebView(PurchaseInfoActivity.this);
+                    MyWebView webView = new MyWebView(ReservationInfoActivity.this);
 
                     webView.getSettings().setJavaScriptEnabled(true);
                     webView.setOnTouchListener(new View.OnTouchListener() {
@@ -373,7 +398,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                     webView.setWebViewClient(new VtWebViewClient(token.getToken_id(), totalPrice));
                     webView.loadUrl(token.getRedirect_url());
 
-                    AlertDialog.Builder alertBuilder = new AlertDialog.Builder(PurchaseInfoActivity.this);
+                    AlertDialog.Builder alertBuilder = new AlertDialog.Builder(ReservationInfoActivity.this);
                     dialog3ds = alertBuilder.create();
 
 
@@ -401,16 +426,6 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                 //Something is wrong, get details message by print e.getMessage()
             }
         });
-    }
-
-    @Override
-    protected int getCurrentStep() {
-        return 2;
-    }
-
-    @Override
-    protected String getToolbarTitle() {
-        return "PURCHASE INFO";
     }
 
     @Override
@@ -468,6 +483,16 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
         }
     }
 
+    @Override
+    protected int getCurrentStep() {
+        return 2;
+    }
+
+    @Override
+    protected String getToolbarTitle() {
+        return "PURCHASE INFO";
+    }
+
     private class VtWebViewClient extends WebViewClient {
 
         String token;
@@ -515,9 +540,9 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                 dismissLoadingDialog();
                 Intent i;
                 if (paymentType.equals(Utils.TYPE_CC)) {
-                    i = new Intent(PurchaseInfoActivity.this, CongratsActivity.class);
+                    i = new Intent(ReservationInfoActivity.this, CongratsActivity.class);
                 } else {
-                    i = new Intent(PurchaseInfoActivity.this, HowToPayActivity.class);
+                    i = new Intent(ReservationInfoActivity.this, HowToPayActivity.class);
                     i.putExtra(Common.FIELD_WALKTHROUGH_PAYMENT, false);
                     i.putExtra(productSummary.getClass().getName(), productSummary);
                     i.putExtra(eventDetail.getClass().getName(), eventDetail);
@@ -531,7 +556,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
             @Override
             public void onFailure(int responseCode, String message) {
                 dismissLoadingDialog();
-                Toast.makeText(PurchaseInfoActivity.this, message, Toast.LENGTH_LONG).show();
+                Toast.makeText(ReservationInfoActivity.this, message, Toast.LENGTH_LONG).show();
             }
         });
 
@@ -540,7 +565,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
 
     private void initLoadingDialog() {
         if (progressDialog == null) {
-            progressDialog = new ProgressDialog(PurchaseInfoActivity.this);
+            progressDialog = new ProgressDialog(ReservationInfoActivity.this);
             progressDialog.setMessage(getString(R.string.loading));
         }
 
@@ -598,11 +623,11 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
 
     @Override
     public String getTotalCaption() {
-        return getString(R.string.pci_total);
+        return getString(R.string.pci_f7b);
     }
 
     @Override
     public String getTransactionType() {
-        return Common.TYPE_PURCHASE;
+        return Common.TYPE_RESERVATION;
     }
 }

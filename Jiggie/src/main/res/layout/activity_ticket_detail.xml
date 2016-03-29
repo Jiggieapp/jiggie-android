@@ -118,7 +118,6 @@
                             android:layout_marginBottom="@dimen/padding_standard_half"
                             android:layout_alignParentTop="true"
                             android:text="IDR 2.000K"
-                            android:textAllCaps="true"
                             android:textColor="@color/textDarkGray"
                             android:textSize="@dimen/font_body_size"
                             android:textStyle="bold" />

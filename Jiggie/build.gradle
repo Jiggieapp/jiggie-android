@@ -26,6 +26,7 @@ android {
         renderscriptTargetApi 18
         renderscriptSupportModeEnabled true
         buildConfigField("String", "BASE_URL", "\"https://api.jiggieapp.com/\"")
+        multiDexEnabled true
     }
     signingConfigs {
         configDebug {

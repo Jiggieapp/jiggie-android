@@ -343,6 +343,13 @@
     <string name="paid">Paid</string>
     <string name="is_void">Void</string>
     <string name="refund">Refund</string>
+
+    <string name="pci_f1b">Dance Floor Table (Estimate)</string>
+    <string name="pci_f3b">Service Charge</string>
+    <string name="pci_f4b">Estimated Total</string>
+    <string name="pci_f5b">Required Deposit</string>
+    <string name="pci_f6b">Estimated balance (pay at venue)</string>
+    <string name="pci_f7b">PAY DEPOSIT</string>
     <!--END HERE-->
 
     <string name="msg_carr_1">Discover upcoming food bazaars, music, art \u0026 culture and nightlife events</string>

@@ -100,79 +100,263 @@
                     android:layout_height="0.5dp"
                     android:layout_below="@id/txt_event_info"/>
 
-                <TextView
-                    android:id="@+id/txt_tik_title"
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:id="@+id/rel_detail"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/padding_standard"
-                    android:text="@string/pci_f1"
-                    android:textColor="@color/textDarkGray"
-                    android:textSize="@dimen/normal_text_size"
-                    android:layout_alignParentLeft="true"
-                    android:layout_below="@id/divider1"
-                    android:layout_marginTop="@dimen/padding_far"/>
+                    android:layout_below="@id/divider1">
+                    <RelativeLayout
+                        android:id="@+id/rel_ticket_det"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone">
+                        <TextView
+                            android:id="@+id/txt_tik_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/padding_standard"
+                            android:text="@string/pci_f1"
+                            android:textColor="@color/textDarkGray"
+                            android:textSize="@dimen/normal_text_size"
+                            android:layout_alignParentLeft="true"
+                            android:layout_marginTop="@dimen/padding_far"
+                            android:layout_alignParentTop="true"/>
 
-                <TextView
-                    android:id="@+id/txt_tik_fill"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/padding_standard"
-                    android:layout_marginTop="@dimen/padding_far"
-                    android:text="@string/pci_f1_fill"
-                    android:textColor="@color/textDarkGray"
-                    android:textSize="@dimen/normal_text_size"
-                    android:layout_alignParentRight="true"
-                    android:layout_below="@id/divider1"/>
+                        <TextView
+                            android:id="@+id/txt_tik_fill"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="@dimen/padding_standard"
+                            android:layout_marginTop="@dimen/padding_far"
+                            android:text="@string/pci_f1_fill"
+                            android:textColor="@color/textDarkGray"
+                            android:textSize="@dimen/normal_text_size"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentTop="true"/>
 
-                <TextView
-                    android:id="@+id/txt_fee_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/padding_standard"
-                    android:text="@string/pci_f2"
-                    android:textColor="@color/textDarkGray"
-                    android:textSize="@dimen/normal_text_size"
-                    android:layout_alignParentLeft="true"
-                    android:layout_below="@id/txt_tik_title"
-                    android:layout_marginTop="@dimen/padding_standard"/>
+                        <TextView
+                            android:id="@+id/txt_fee_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/padding_standard"
+                            android:text="@string/pci_f2"
+                            android:textColor="@color/textDarkGray"
+                            android:textSize="@dimen/normal_text_size"
+                            android:layout_alignParentLeft="true"
+                            android:layout_below="@id/txt_tik_title"
+                            android:layout_marginTop="@dimen/padding_standard"/>
 
-                <TextView
-                    android:id="@+id/txt_fee_fill"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/padding_standard"
-                    android:layout_marginTop="@dimen/padding_standard"
-                    android:text="@string/pci_f2_fill"
-                    android:textColor="@color/textDarkGray"
-                    android:textSize="@dimen/normal_text_size"
-                    android:layout_alignParentRight="true"
-                    android:layout_below="@id/txt_tik_fill"/>
+                        <TextView
+                            android:id="@+id/txt_fee_fill"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="@dimen/padding_standard"
+                            android:layout_marginTop="@dimen/padding_standard"
+                            android:text="@string/pci_f2_fill"
+                            android:textColor="@color/textDarkGray"
+                            android:textSize="@dimen/normal_text_size"
+                            android:layout_alignParentRight="true"
+                            android:layout_below="@id/txt_tik_fill"/>
 
-                <TextView
-                    android:id="@+id/txt_tax_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/padding_standard"
-                    android:text="@string/pci_f3"
-                    android:textColor="@color/textDarkGray"
-                    android:textSize="@dimen/normal_text_size"
-                    android:layout_alignParentLeft="true"
-                    android:layout_below="@id/txt_fee_title"
-                    android:layout_marginTop="@dimen/padding_standard"
-                    android:paddingBottom="@dimen/padding_far"/>
+                        <TextView
+                            android:id="@+id/txt_tax_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/padding_standard"
+                            android:text="@string/pci_f3"
+                            android:textColor="@color/textDarkGray"
+                            android:textSize="@dimen/normal_text_size"
+                            android:layout_alignParentLeft="true"
+                            android:layout_below="@id/txt_fee_title"
+                            android:layout_marginTop="@dimen/padding_standard"
+                            android:paddingBottom="@dimen/padding_far"/>
 
-                <TextView
-                    android:id="@+id/txt_tax_fill"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/padding_standard"
-                    android:layout_marginTop="@dimen/padding_standard"
-                    android:paddingBottom="@dimen/padding_far"
-                    android:text="@string/pci_f3_fill"
-                    android:textColor="@color/textDarkGray"
-                    android:textSize="@dimen/normal_text_size"
-                    android:layout_alignParentRight="true"
-                    android:layout_below="@id/txt_fee_fill"/>
+                        <TextView
+                            android:id="@+id/txt_tax_fill"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="@dimen/padding_standard"
+                            android:layout_marginTop="@dimen/padding_standard"
+                            android:paddingBottom="@dimen/padding_far"
+                            android:text="@string/pci_f3_fill"
+                            android:textColor="@color/textDarkGray"
+                            android:textSize="@dimen/normal_text_size"
+                            android:layout_alignParentRight="true"
+                            android:layout_below="@id/txt_fee_fill"/>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/rel_table_det"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/txt_dft_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/padding_standard"
+                            android:text="@string/pci_f1b"
+                            android:textColor="@color/textDarkGray"
+                            android:textSize="@dimen/normal_text_size"
+                            android:layout_alignParentLeft="true"
+                            android:layout_marginTop="@dimen/padding_far"
+                            android:layout_alignParentTop="true"/>
+
+                        <TextView
+                            android:id="@+id/txt_dft_fill"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="@dimen/padding_standard"
+                            android:layout_marginTop="@dimen/padding_far"
+                            android:text="@string/pci_f1_fill"
+                            android:textColor="@color/textDarkGray"
+                            android:textSize="@dimen/normal_text_size"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentTop="true"/>
+
+                        <TextView
+                            android:id="@+id/txt_taxx_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/padding_standard"
+                            android:text="@string/pci_f3"
+                            android:textColor="@color/textDarkGray"
+                            android:textSize="@dimen/normal_text_size"
+                            android:layout_alignParentLeft="true"
+                            android:layout_below="@id/txt_dft_title"
+                            android:layout_marginTop="@dimen/padding_standard"/>
+
+                        <TextView
+                            android:id="@+id/txt_taxx_fill"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="@dimen/padding_standard"
+                            android:layout_marginTop="@dimen/padding_standard"
+                            android:text="@string/pci_f2_fill"
+                            android:textColor="@color/textDarkGray"
+                            android:textSize="@dimen/normal_text_size"
+                            android:layout_alignParentRight="true"
+                            android:layout_below="@id/txt_dft_fill"/>
+
+                        <TextView
+                            android:id="@+id/txt_ser_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/padding_standard"
+                            android:text="@string/pci_f3b"
+                            android:textColor="@color/textDarkGray"
+                            android:textSize="@dimen/normal_text_size"
+                            android:layout_alignParentLeft="true"
+                            android:layout_below="@id/txt_taxx_title"
+                            android:layout_marginTop="@dimen/padding_standard"/>
+
+                        <TextView
+                            android:id="@+id/txt_ser_fill"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="@dimen/padding_standard"
+                            android:layout_marginTop="@dimen/padding_standard"
+                            android:text="@string/pci_f2_fill"
+                            android:textColor="@color/textDarkGray"
+                            android:textSize="@dimen/normal_text_size"
+                            android:layout_alignParentRight="true"
+                            android:layout_below="@id/txt_taxx_fill"/>
+
+                        <View
+                            android:id="@+id/divider4"
+                            android:background="@drawable/line_dash2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/txt_ser_fill"
+                            android:layout_marginTop="@dimen/padding_standard"
+                            android:layout_alignParentRight="true"/>
+
+                        <TextView
+                            android:id="@+id/txt_est_tot_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/padding_standard"
+                            android:text="@string/pci_f4b"
+                            android:textColor="@color/textDarkGray"
+                            android:textSize="@dimen/normal_text_size"
+                            android:layout_alignParentLeft="true"
+                            android:layout_below="@id/divider4"
+                            android:layout_marginTop="@dimen/padding_standard"/>
+
+                        <TextView
+                            android:id="@+id/txt_est_tot_fill"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="@dimen/padding_standard"
+                            android:layout_marginTop="@dimen/padding_standard"
+                            android:text="@string/pci_f2_fill"
+                            android:textColor="@color/textDarkGray"
+                            android:textSize="@dimen/normal_text_size"
+                            android:layout_alignParentRight="true"
+                            android:layout_below="@id/divider4"/>
+
+                        <TextView
+                            android:id="@+id/txt_require_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/padding_standard"
+                            android:text="@string/pci_f5b"
+                            android:textColor="@color/purple"
+                            android:textSize="@dimen/normal_text_size"
+                            android:layout_alignParentLeft="true"
+                            android:layout_below="@id/txt_est_tot_title"
+                            android:layout_marginTop="@dimen/padding_standard"/>
+
+                        <TextView
+                            android:id="@+id/txt_require_fill"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="@dimen/padding_standard"
+                            android:layout_marginTop="@dimen/padding_standard"
+                            android:text="@string/pci_f2_fill"
+                            android:textColor="@color/purple"
+                            android:textSize="@dimen/normal_text_size"
+                            android:layout_alignParentRight="true"
+                            android:layout_below="@id/txt_est_tot_fill"/>
+
+                        <View
+                            android:id="@+id/divider5"
+                            android:background="@drawable/line_dash2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/txt_require_fill"
+                            android:layout_marginTop="@dimen/padding_standard"
+                            android:layout_alignParentRight="true"/>
+
+                        <TextView
+                            android:id="@+id/txt_est_bal_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/padding_standard"
+                            android:text="@string/pci_f6b"
+                            android:textColor="@color/textDarkGray"
+                            android:textSize="@dimen/normal_text_size"
+                            android:layout_alignParentLeft="true"
+                            android:layout_below="@id/divider5"
+                            android:layout_marginTop="@dimen/padding_standard"
+                            android:paddingBottom="@dimen/padding_standard"/>
+
+                        <TextView
+                            android:id="@+id/txt_est_bal_fill"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="@dimen/padding_standard"
+                            android:layout_marginTop="@dimen/padding_standard"
+                            android:text="@string/pci_f2_fill"
+                            android:textColor="@color/textDarkGray"
+                            android:textSize="@dimen/normal_text_size"
+                            android:layout_alignParentRight="true"
+                            android:layout_below="@id/divider5"
+                            android:paddingBottom="@dimen/padding_standard"/>
+
+                    </RelativeLayout>
+                </RelativeLayout>
 
             </RelativeLayout>
 
@@ -200,15 +384,38 @@
                 android:layout_alignParentLeft="true"
                 />
 
-            <TextView
-                android:id="@+id/txt_total_fill"
+            <LinearLayout
+                android:id="@+id/lin_total_inc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/pci_total_fill"
-                android:textColor="@color/textDarkGray"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_alignParentRight="true"/>
+                android:orientation="horizontal"
+                android:layout_alignParentRight="true">
+                <View
+                    android:id="@+id/minus_button"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/ic_minus_gr"
+                    android:layout_marginRight="@dimen/padding_standard"
+                    android:visibility="gone"/>
+                <TextView
+                    android:id="@+id/txt_total_fill"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pci_total_fill"
+                    android:textColor="@color/textDarkGray"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    />
+                <View
+                    android:id="@+id/plus_button"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/ic_plus_gr"
+                    android:layout_marginLeft="@dimen/padding_standard"
+                    android:visibility="gone"/>
+            </LinearLayout>
+
+
         </RelativeLayout>
 
         <View

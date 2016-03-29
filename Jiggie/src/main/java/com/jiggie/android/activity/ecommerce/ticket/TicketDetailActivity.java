@@ -46,8 +46,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
     TextView lblQuantity;
 
     ProductListModel.Data.ProductList.Purchase detailPurchase = null;
-    ProductListModel.Data.ProductList.Reservation detailReservation = null;
-    boolean isTicketTransaction;
+
     @Bind(R.id.lblEventName)
     TextView lblEventName;
     @Bind(R.id.lblEventLocation)
@@ -72,7 +71,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
     TextView lblTicketCaption;
 
 
-    String eventId, eventName, venueName, startTime, guestName, guestEmail, guestPhone, ticketId, type_transaction;
+    String eventId, eventName, venueName, startTime, guestName, guestEmail, guestPhone, ticketId;
     int max = 0, price;
     EventDetailModel.Data.EventDetail eventDetail;
     SummaryModel.Data.Product_summary productSummary;
@@ -143,12 +142,8 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                     i.putExtra(Common.FIELD_GUEST_PHONE, guestPhone);
                 }
 
-                i.putExtra(Common.FIELD_TRANS_TYPE, type_transaction);
-                if (type_transaction.equals(Common.TYPE_PURCHASE)) {
-                    i.putExtra(detailPurchase.getClass().getName(), detailPurchase);
-                } else if (type_transaction.equals(Common.TYPE_RESERVATION)) {
-                    i.putExtra(detailReservation.getClass().getName(), detailReservation);
-                }
+                i.putExtra(Common.FIELD_TRANS_TYPE, Common.TYPE_PURCHASE);
+                i.putExtra(detailPurchase.getClass().getName(), detailPurchase);
                 i.putExtra(eventDetail.getClass().getName(), eventDetail);
                 startActivityForResult(i, 0);
             }
@@ -185,16 +180,9 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
         venueName = a.getStringExtra(Common.FIELD_VENUE_NAME);
         startTime = a.getStringExtra(Common.FIELD_STARTTIME);
         eventDetail = a.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
-        type_transaction = a.getStringExtra(Common.FIELD_TRANS_TYPE);
-        if (type_transaction.equals(Common.TYPE_PURCHASE)) {
-            isTicketTransaction = true;
-            detailPurchase = a.getParcelableExtra(ProductListModel.Data.ProductList.Purchase.class.getName());
-        } else if (type_transaction.equals(Common.TYPE_RESERVATION)) {
-            isTicketTransaction = false;
-            detailReservation = a.getParcelableExtra(ProductListModel.Data.ProductList.Reservation.class.getName());
-        }
+        detailPurchase = a.getParcelableExtra(ProductListModel.Data.ProductList.Purchase.class.getName());
 
-        sendMixpanel(type_transaction, eventDetail);
+        sendMixpanel(eventDetail);
 
         lblEventName.setText(eventName);
         try {
@@ -205,29 +193,16 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
         }
         lblQuantity.setText(String.valueOf(quantity));
 
-        if (isTicketTransaction) {
-            max = Integer.parseInt(detailPurchase.getMax_purchase());
-            price = Integer.parseInt(detailPurchase.getPrice());
-            ticketId = detailPurchase.getTicket_id();
+        max = Integer.parseInt(detailPurchase.getMax_purchase());
+        price = Integer.parseInt(detailPurchase.getPrice());
+        ticketId = detailPurchase.getTicket_id();
 
-            lblType.setText(detailPurchase.getName());
-            lblTypeCaption.setText(detailPurchase.getSummary());
-            lblTypePrice.setText(StringUtility.getRupiahFormat(detailPurchase.getPrice()));
-            lblTypePriceCaption.setText(getString(R.string.pr_max_purchase) + " " + max);
-            lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(price)));
-            txtTicketDesc.setText(detailPurchase.getDescription());
-        } else {
-            max = Integer.parseInt(detailReservation.getMax_guests());
-            price = Integer.parseInt(detailReservation.getPrice());
-            ticketId = detailReservation.getTicket_id();
-
-            lblType.setText(detailReservation.getName());
-            lblTypeCaption.setText(detailReservation.getSummary());
-            lblTypePrice.setText(StringUtility.getRupiahFormat(detailReservation.getPrice()));
-            lblTypePriceCaption.setText(getString(R.string.pr_max_guest) + " " + max);
-            lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(price)));
-            txtTicketDesc.setText(detailReservation.getDescription());
-        }
+        lblType.setText(detailPurchase.getName());
+        lblTypeCaption.setText(detailPurchase.getSummary());
+        lblTypePrice.setText(StringUtility.getRupiahFormat(detailPurchase.getPrice()));
+        lblTypePriceCaption.setText(getString(R.string.pr_max_purchase) + " " + max);
+        lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(price)));
+        txtTicketDesc.setText(detailPurchase.getDescription());
 
         LoginModel loginModel = AccountManager.loadLogin();
 
@@ -257,15 +232,9 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
         checkEnability(guestName, guestEmail, guestPhone);
     }
 
-    private void sendMixpanel(String type_transaction, EventDetailModel.Data.EventDetail eventDetail) {
-        CommEventMixpanelModel commEventMixpanelModel = null;
-        if (type_transaction.equals(Common.TYPE_PURCHASE)) {
-            commEventMixpanelModel = new CommEventMixpanelModel(eventDetail.getTitle(), eventDetail.getVenue_name(), eventDetail.getVenue().getCity(), eventDetail.getStart_datetime_str(),
-                    eventDetail.getEnd_datetime_str(), eventDetail.getTags(), eventDetail.getDescription(), detailPurchase.getName(), detailPurchase.getTicket_type(), detailPurchase.getTotal_price(), detailPurchase.getMax_purchase());
-        } else if (type_transaction.equals(Common.TYPE_RESERVATION)) {
-            commEventMixpanelModel = new CommEventMixpanelModel(eventDetail.getTitle(), eventDetail.getVenue_name(), eventDetail.getVenue().getCity(), eventDetail.getStart_datetime_str(),
-                    eventDetail.getEnd_datetime_str(), eventDetail.getTags(), eventDetail.getDescription(), detailReservation.getName(), detailReservation.getTicket_type(), detailReservation.getTotal_price(), detailReservation.getMax_guests());
-        }
+    private void sendMixpanel(EventDetailModel.Data.EventDetail eventDetail) {
+        CommEventMixpanelModel commEventMixpanelModel = new CommEventMixpanelModel(eventDetail.getTitle(), eventDetail.getVenue_name(), eventDetail.getVenue().getCity(), eventDetail.getStart_datetime_str(),
+                eventDetail.getEnd_datetime_str(), eventDetail.getTags(), eventDetail.getDescription(), detailPurchase.getName(), detailPurchase.getTicket_type(), detailPurchase.getTotal_price(), detailPurchase.getMax_purchase());
 
         App.getInstance().trackMixPanelCommerce(Utils.COMM_PRODUCT_DETAIL, commEventMixpanelModel);
     }
