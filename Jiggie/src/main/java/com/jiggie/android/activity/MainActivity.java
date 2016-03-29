@@ -186,8 +186,10 @@ public class MainActivity extends AppCompatActivity {
                     super.startService(new Intent(this, GCMRegistrationService.class));
 
                 if (!App.getSharedPreferences().getBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, false)) {
-                    super.startActivity(new Intent(this, SetupTagsActivity.class));
-                    super.finish();
+                    //super.startActivity(new Intent(this, SetupTagsActivity.class));
+                    final SignInFragment fragment = new SignInFragment();
+                    super.getSupportFragmentManager().beginTransaction().add(R.id.container, fragment).commit();
+                    //super.finish();
                 } else {
                     this.navigateToHome();
                     showRateDialog();
@@ -343,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
                                 //i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 //i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(i);
-                                finish();
+                                //finish();
                                 //----------------------
 
                             }

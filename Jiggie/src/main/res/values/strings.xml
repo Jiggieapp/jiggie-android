@@ -249,8 +249,10 @@
     <string name="vor_event_title">AFRO JACK LIFE IN JAKARTA 2016</string>
     <string name="vor_event_date">Sun, 29 Feb 2016</string>
     <string name="vor_order_number">ORDER NUMBER</string>
+    <string name="vor_reservation_number">RESERVATION NUMBER</string>
     <string name="vor_order_number_fill">6GBF991</string>
     <string name="vor_guest_name">GUEST NAME</string>
+    <string name="vor_total_guest">TOTAL GUEST</string>
     <string name="vor_guest_name_fill">BUSY PUTRI</string>
     <string name="vor_status">STATUS</string>
     <string name="vor_status_paid">PAID</string>
@@ -258,6 +260,7 @@
     <string name="vor_payment_method">PAYMENT METHOD</string>
     <string name="vor_payment_method_fill">MANDIRI VIRTUAL ACCOUNT</string>
     <string name="vor_order_summary">ORDER SUMMARY</string>
+    <string name="vor_reservation_summary">RESERVATION SUMMARY</string>
     <string name="vor_order_summary_date">15 January 2016 - 16:12:49</string>
     <string name="vor_reg_ticket">REGULAR TICKET (x3)</string>
     <string name="vor_reg_ticket_fill">Rp3.000.000</string>
@@ -341,4 +344,15 @@
     <string name="is_void">Void</string>
     <string name="refund">Refund</string>
     <!--END HERE-->
+
+    <string name="msg_carr_1">Discover upcoming food bazaars, music, art \u0026 culture and nightlife events</string>
+    <string name="msg_carr_2">Get detailed information on events and book your tickets</string>
+    <string name="msg_carr_3">Check out other guests who like the same events you do</string>
+    <string name="msg_carr_4">Connect with other fun-loving people and make new friends</string>
+    <string name="msg_carr_5"> Chat with your new friends and make plans to meet up</string>
+
+    <string name="estimate">(ESTIMATE)</string>
+    <string name="estimated_total">ESTIMATED TOTAL</string>
+    <string name="paid_deposit">PAID DEPOSIT</string>
+    <string name="estimated_balance">ESTIMATED BALANCE (PAY AT VENUE)</string>
 </resources>

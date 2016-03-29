@@ -402,8 +402,9 @@ public final class SucScreenCCModel {
                 public final ArrayList<Product_list> product_list;
                 public final String order_id;
                 public final Vt_response vt_response;
+                public final String pay_deposit;
 
-                public Summary(String _id, String code, String order_status, String payment_status, String fb_id, String event_id, String total_tax_amount, String total_tip_amount, String total_adminfee, String total_price, String created_at, Guest_detail guest_detail, ArrayList<Product_list> product_list, String order_id, Vt_response vt_response){
+                public Summary(String _id, String code, String order_status, String payment_status, String fb_id, String event_id, String total_tax_amount, String total_tip_amount, String total_adminfee, String total_price, String created_at, Guest_detail guest_detail, ArrayList<Product_list> product_list, String order_id, Vt_response vt_response, String pay_deposit){
                     this._id = _id;
                     this.code = code;
                     this.order_status = order_status;
@@ -419,6 +420,7 @@ public final class SucScreenCCModel {
                     this.product_list = product_list;
                     this.order_id = order_id;
                     this.vt_response = vt_response;
+                    this.pay_deposit = pay_deposit;
                 }
 
                 public String get_id() {
@@ -479,6 +481,10 @@ public final class SucScreenCCModel {
 
                 public Vt_response getVt_response() {
                     return vt_response;
+                }
+
+                public String getPay_deposit() {
+                    return pay_deposit;
                 }
 
                 public static final class Guest_detail {

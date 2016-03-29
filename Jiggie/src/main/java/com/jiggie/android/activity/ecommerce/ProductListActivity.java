@@ -85,7 +85,6 @@ public class ProductListActivity extends ToolbarWithDotActivity
         i.putExtra(Common.FIELD_STARTTIME, startTime);
         i.putExtra(eventDetail.getClass().getName(), eventDetail);
 
-
         if(isTwoType){
             if(position<section2Start){
                 ProductListModel.Data.ProductList.Purchase itemData = (ProductListModel.Data.ProductList.Purchase)object;
@@ -101,7 +100,6 @@ public class ProductListActivity extends ToolbarWithDotActivity
             i.putExtra(Common.FIELD_TRANS_TYPE, itemData.getTicket_type());
             i.putExtra(itemData.getClass().getName(), itemData);
         }
-
         startActivity(i);
     }
 

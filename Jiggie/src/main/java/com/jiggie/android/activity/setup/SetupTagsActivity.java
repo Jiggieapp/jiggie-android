@@ -151,9 +151,6 @@ public class SetupTagsActivity extends BaseActivity implements ViewTreeObserver.
         if(!doNothing){
             holder.checkView.setVisibility(selected ? View.VISIBLE : View.GONE);
         }
-
-        Log.d("tags", this.selectedItems.toString());
-
     }
 
     @Override

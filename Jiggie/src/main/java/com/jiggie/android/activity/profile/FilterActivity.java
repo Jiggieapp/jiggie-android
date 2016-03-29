@@ -84,7 +84,6 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
 
         if(getTags() == null)
         {
-            Utils.d(TAG, "getTags null");
             //showProgressDialog();
             this.progressBar.setVisibility(View.VISIBLE);
             this.btnApply.setVisibility(View.GONE);

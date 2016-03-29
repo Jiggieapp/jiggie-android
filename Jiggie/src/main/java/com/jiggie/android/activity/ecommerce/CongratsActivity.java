@@ -5,8 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jiggie.android.App;
 import com.jiggie.android.R;
@@ -23,6 +26,8 @@ import com.jiggie.android.model.SucScreenCCModel;
 import com.jiggie.android.model.SummaryModel;
 import com.jiggie.android.view.InstructionItemView;
 
+import org.w3c.dom.Text;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,9 +41,13 @@ import butterknife.ButterKnife;
 public class CongratsActivity extends ToolbarActivity {
     TextView txtCongrats, txtEventTitle, txtEventDate, txtTypeNumberFill, txtGuestNameFill, txtStatusFill, txtPaymentFill, txtSummaryDate, txtRegTicketTitle,
             txtRegTicketFill, txtAdFeeFill, txtTaxFill, txtTotalFill, txtInstrucFill, txtInclude, txtFineprint, txtEventTitle2,
-            txtEventDate2, txtVenueTitle, txtVenueDate;
+            txtEventDate2, txtVenueTitle, txtVenueDate, lblGuestCount, lblSummaryTitle
+            , lblEstimatedBalance, lblPaidDeposit, lblEstimatedTotal, lblTotalTitle;
     LinearLayout linInclude, lineFineprint;
-    RelativeLayout relViewTicket;
+    RelativeLayout relViewTicket, containerTableGuest;
+    RelativeLayout scrollView;
+    ProgressBar progressBar;
+    View divider;
 
     long orderId;
     boolean fromOrderList;
@@ -50,11 +59,12 @@ public class CongratsActivity extends ToolbarActivity {
         setContentView(R.layout.activity_view_ticketreserve);
 
         Intent a = getIntent();
-        orderId = a.getLongExtra(Common.FIELD_ORDER_ID, 0);
-        fromOrderList = a.getBooleanExtra(Common.FIELD_FROM_ORDER_LIST, false);
+        //orderId = a.getLongExtra(Common.FIELD_ORDER_ID, 0);
+        //fromOrderList = a.getBooleanExtra(Common.FIELD_FROM_ORDER_LIST, false);
+        orderId = 1459229470982L;
+        fromOrderList = true;
         initView();
         preDefined(String.valueOf(orderId));
-
     }
 
     private void initView(){
@@ -81,6 +91,19 @@ public class CongratsActivity extends ToolbarActivity {
         relViewTicket = (RelativeLayout)findViewById(R.id.rel_view_ticket);
         linInclude = (LinearLayout)findViewById(R.id.lin_include);
         lineFineprint = (LinearLayout)findViewById(R.id.lin_fineprint);
+        containerTableGuest = (RelativeLayout) findViewById(R.id.container_table_guest);
+        lblGuestCount = (TextView) findViewById(R.id.txt_guest_count_fill);
+        lblSummaryTitle = (TextView) findViewById(R.id.txt_summary_title);
+        scrollView = (RelativeLayout) this.findViewById(R.id.container);
+        progressBar = (ProgressBar) this.findViewById(R.id.progressBar);
+        lblEstimatedBalance = (TextView) this.findViewById(R.id.lbl_estimated_balance_fill);
+        lblPaidDeposit = (TextView) this.findViewById(R.id.lbl_required_deposit_fill);
+        lblEstimatedTotal = (TextView) this.findViewById(R.id.lbl_estimate_ttal_fill);
+        lblTotalTitle = (TextView) this.findViewById(R.id.txt_total);
+        divider = (View) this.findViewById(R.id.divider3);
+
+        scrollView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
 
         relViewTicket.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,7 +115,6 @@ public class CongratsActivity extends ToolbarActivity {
                 }else{
                     finish();
                 }
-
             }
         });
     }
@@ -101,6 +123,8 @@ public class CongratsActivity extends ToolbarActivity {
         CommerceManager.loaderSucScreenCC(orderId, new CommerceManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
+                scrollView.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
                 SucScreenCCModel sucScreenCCModel = (SucScreenCCModel)object;
                 sendMixpanel(sucScreenCCModel);
                 SucScreenCCModel.Data.Success_screen.Event event = sucScreenCCModel.getData().getSuccess_screen().getEvent();
@@ -134,12 +158,39 @@ public class CongratsActivity extends ToolbarActivity {
                     throw new RuntimeException(App.getErrorMessage(e), e);
                 }
                 SucScreenCCModel.Data.Success_screen.Summary.Product_list product_list = summary.getProduct_list().get(0);
-                txtRegTicketTitle.setText(product_list.getName() + " Ticket (" + product_list.getNum_buy() + "x)");
                 txtRegTicketFill.setText(StringUtility.getRupiahFormat(product_list.getTotal_price()));
                 txtAdFeeFill.setText(StringUtility.getRupiahFormat(product_list.getAdmin_fee()));
                 txtTaxFill.setText(StringUtility.getRupiahFormat(product_list.getTax_amount()));
                 txtTotalFill.setText(StringUtility.getRupiahFormat(summary.getTotal_price()));
+
                 txtEventTitle2.setText(event.getTitle());
+
+                if (product_list.getTicket_type().equalsIgnoreCase("booking"))
+                {
+                    containerTableGuest.setVisibility(View.VISIBLE);
+                    lblSummaryTitle.setText(
+                            getResources().getString(R.string.vor_reservation_summary));
+                    lblGuestCount.setText(product_list.getNum_buy());
+                    txtRegTicketTitle.setText(product_list.getName().toUpperCase() + " "
+                            + getResources().getString(R.string.estimate));
+
+                    lblEstimatedTotal.setText(StringUtility.getRupiahFormat(summary.getTotal_price()));
+                    lblPaidDeposit.setText(StringUtility.getRupiahFormat(summary.getPay_deposit()));
+                    long estimatedBalance = Long.parseLong(summary.getTotal_price())
+                            - Long.parseLong(summary.getPay_deposit());
+                    lblEstimatedBalance.setText(StringUtility.getRupiahFormat(estimatedBalance + ""));
+
+                    txtTotalFill.setVisibility(View.GONE);
+                    lblTotalTitle.setVisibility(View.GONE);
+                    divider.setVisibility(View.GONE);
+                }
+                else
+                {
+                    lblSummaryTitle.setText(
+                            getResources().getString(R.string.vor_order_summary));
+                    txtRegTicketTitle.setText(product_list.getName() + " Ticket (" + product_list.getNum_buy() + "x)");
+                }
+
                 try {
                     final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(event.getStart_datetime());
                     final Date endDate = Common.ISO8601_DATE_FORMAT_UTC.parse(event.getEnd_datetime());
@@ -170,7 +221,10 @@ public class CongratsActivity extends ToolbarActivity {
 
             @Override
             public void onFailure(int responseCode, String message) {
-
+                Toast.makeText(CongratsActivity.this, message, Toast.LENGTH_LONG);
+                scrollView.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+                finish();
             }
         });
     }

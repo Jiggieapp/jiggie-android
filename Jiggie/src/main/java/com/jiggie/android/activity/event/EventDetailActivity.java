@@ -244,20 +244,11 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         final FragmentManager fragmentManager = super.getSupportFragmentManager();
         ((SupportMapFragment)fragmentManager.findFragmentById(R.id.map)).getMapAsync(this);
 
-
         super.registerReceiver(this.guestInvitedReceiver, new IntentFilter(super.getString(R.string.broadcastGuestInvited)));
 
         if(file!= null && file.exists())
             file.delete();
     }
-
-    /*<LinearLayout
-    android:id="@+id/element_containers"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-
-    </LinearLayout>*/
 
     private static boolean isJiggieUrl(String dataString) {
 
@@ -737,14 +728,10 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                                 progressDialog.dismiss();
 
                             EventDetailActivity.this.startActivity(Intent.createChooser
-                                    (i, EventDetailActivity.this.getString(R.string.share)
-                                            //,)
-                                    ));
+                                    (i, EventDetailActivity.this.getString(R.string.share)));
                             //file.delete();
                         }
                     });
-
-
 
             /*super.startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, share).
                     putExtra(Intent.EXTRA_STREAM, Uri.parse(eventDetail.getPhotos().get(0))).

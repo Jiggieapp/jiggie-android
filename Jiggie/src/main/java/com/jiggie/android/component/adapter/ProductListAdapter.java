@@ -58,14 +58,12 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
         ProductListModel.Data.ProductList.Purchase itemPurchases = null;
         ProductListModel.Data.ProductList.Reservation itemReservations = null;
 
         holder.position = position;
         holder.isTwoType = isTwoType;
         holder.section2Start = section2Start;
-
 
         if(isTwoType){
             if(position<section2Start){
