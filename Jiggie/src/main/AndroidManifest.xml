@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jiggie.android"
-    android:versionCode="1051"
-    android:versionName="1.0.51">
+    android:versionCode="1104"
+    android:versionName="1.1.04">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -142,28 +142,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme" />
 
-        <!--<activity
-            android:name=".activity.MainActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:launchMode="singleTask">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="jiggie"
-                    android:host="event_list"/>
-                <data android:scheme="jiggie"/>
-
-            </intent-filter>
-        </activity>-->
-
         <activity
             android:name=".activity.SplashActivity"
             android:label="@string/app_name"
@@ -196,6 +174,11 @@
         </activity>
 
         <!--Commerce Activity collection-->
+        <activity
+            android:name=".activity.ecommerce.ProductListActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme" />
         <activity
             android:name=".activity.ecommerce.ticket.TicketDetailActivity"
             android:label="@string/app_name"
@@ -399,7 +382,6 @@
             </intent-filter>
         </service>
 
-        <!--<activity android:name=".activity.ecommerce.ProductListActivity"></activity>-->
         <activity
             android:name=".activity.profile.VerifyPhoneNumberActivity"
             android:label=""></activity>

@@ -178,6 +178,11 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                 imgPayment.setImageResource(R.drawable.logo_mandiri);
                 txtPayment.setText(getString(R.string.va_mandiri));
                 txtPayment.setTypeface(null, Typeface.NORMAL);
+            }else if (paymentType.equals(Utils.TYPE_BCA)) {
+                imgPayment.setVisibility(View.VISIBLE);
+                imgPayment.setImageResource(R.drawable.logo_bca2);
+                txtPayment.setText(getString(R.string.va_bca));
+                txtPayment.setTypeface(null, Typeface.NORMAL);
             }
         }
 
@@ -314,6 +319,10 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
             }
         } else {
             PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, Utils.BLANK, productSummary.getOrder_id(), Utils.BLANK, Utils.BLANK, Utils.BLANK);
+
+            String responses = new Gson().toJson(postPaymentModel);
+            Log.d("res", responses);
+
             doPayment(postPaymentModel);
         }
     }

@@ -217,6 +217,11 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                 imgPayment.setImageResource(R.drawable.logo_mandiri);
                 txtPayment.setText(getString(R.string.va_mandiri));
                 txtPayment.setTypeface(null, Typeface.NORMAL);
+            }else if (paymentType.equals(Utils.TYPE_BCA)) {
+                imgPayment.setVisibility(View.VISIBLE);
+                imgPayment.setImageResource(R.drawable.logo_bca2);
+                txtPayment.setText(getString(R.string.va_bca));
+                txtPayment.setTypeface(null, Typeface.NORMAL);
             }
         }
 
