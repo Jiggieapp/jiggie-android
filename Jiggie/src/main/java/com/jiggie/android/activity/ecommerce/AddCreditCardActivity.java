@@ -1,9 +1,12 @@
 package com.jiggie.android.activity.ecommerce;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
@@ -11,9 +14,11 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -56,9 +61,10 @@ public class AddCreditCardActivity extends ToolbarActivity {
 
     String totalPrice;
     private int month, year;
-    DatePickerDialog datePickerDialog;
+    //DatePickerDialog datePickerDialog;
     EventDetailModel.Data.EventDetail eventDetail;
     SummaryModel.Data.Product_summary productSummary;
+    Dialog datePickerDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +94,8 @@ public class AddCreditCardActivity extends ToolbarActivity {
         txt_cancel = (TextView)findViewById(R.id.txt_cancel);
         rel_save = (RelativeLayout)findViewById(R.id.rel_save);
 
-        datePickerDialog = createDialogWithoutDateField();
+        //datePickerDialog = createDialogWithoutDateField();
+        initDateDialog();
 
         txt_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,18 +207,6 @@ public class AddCreditCardActivity extends ToolbarActivity {
         checkEnability();
     }
 
-    private DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int years, int monthOfYear, int dayOfMonth) {
-            String months = String.format("%02d", monthOfYear+1);
-            month = monthOfYear+1;
-            year = years;
-            edt_date.setText(months+"/"+String.valueOf(year));
-
-            checkEnability();
-        }
-    };
-
     private boolean isFieldError(String cardNumber, String cvv, String date){
         boolean isError = false;
         if(cardNumber.isEmpty()){
@@ -242,43 +237,6 @@ public class AddCreditCardActivity extends ToolbarActivity {
 
     }
 
-    private DatePickerDialog createDialogWithoutDateField() {
-
-        final Calendar c = Calendar.getInstance();
-        final int year = c.get(Calendar.YEAR);
-        final int month = c.get(Calendar.MONTH);
-        final int day = c.get(Calendar.DAY_OF_MONTH);
-
-        DatePickerDialog dpd = new DatePickerDialog(AddCreditCardActivity.this, dateSetListener, year, month, day);
-
-        try {
-            Field[] datePickerDialogFields = dpd.getClass().getDeclaredFields();
-            for (Field datePickerDialogField : datePickerDialogFields) {
-                if (datePickerDialogField.getName().equals("mDatePicker")) {
-
-                    datePickerDialogField.setAccessible(true);
-                    DatePicker datePicker = (DatePicker) datePickerDialogField
-                            .get(dpd);
-                    Field datePickerFields[] = datePickerDialogField.getType()
-                            .getDeclaredFields();
-                    for (Field datePickerField : datePickerFields) {
-                        if ("mDayPicker".equals(datePickerField.getName())
-                                || "mDaySpinner".equals(datePickerField
-                                .getName())) {
-                            datePickerField.setAccessible(true);
-                            Object dayPicker = new Object();
-                            dayPicker = datePickerField.get(datePicker);
-                            ((View) dayPicker).setVisibility(View.GONE);
-                        }
-                    }
-                }
-            }
-        } catch (Exception ex) {
-        }
-        return dpd;
-
-    }
-
     private void checkEnability(){
         String cardNumber = edt_cc_number.getText().toString();
         String cvv = edt_cvv.getText().toString();
@@ -300,6 +258,109 @@ public class AddCreditCardActivity extends ToolbarActivity {
         }else{
             rel_save.setEnabled(false);
         }
+    }
+
+    private void initDateDialog() {
+        datePickerDialog = new Dialog(AddCreditCardActivity.this);
+        datePickerDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        datePickerDialog.setContentView(R.layout.dialog_datepicker);
+
+        final DatePicker datePicker = (DatePicker)datePickerDialog.findViewById(R.id.datepicker);
+        Button btn_ok = (Button)datePickerDialog.findViewById(R.id.btn_ok);
+        Button btn_cancel = (Button)datePickerDialog.findViewById(R.id.btn_cancel);
+
+        btn_ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                datePickerDialog.dismiss();
+                String months = String.format("%02d", datePicker.getMonth()+1);
+                month = datePicker.getMonth()+1;
+                year = datePicker.getYear();
+                edt_date.setText(months + "/" + String.valueOf(year));
+
+                checkEnability();
+            }
+        });
+
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                datePickerDialog.dismiss();
+            }
+        });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            int daySpinnerId = Resources.getSystem().getIdentifier("day", "id", "android");
+            if (daySpinnerId != 0)
+            {
+                View daySpinner = datePicker.findViewById(daySpinnerId);
+                if (daySpinner != null)
+                {
+                    daySpinner.setVisibility(View.GONE);
+                }
+            }
+
+            int monthSpinnerId = Resources.getSystem().getIdentifier("month", "id", "android");
+            if (monthSpinnerId != 0)
+            {
+                View monthSpinner = datePicker.findViewById(monthSpinnerId);
+                if (monthSpinner != null)
+                {
+                    monthSpinner.setVisibility(View.VISIBLE);
+                }
+            }
+
+            int yearSpinnerId = Resources.getSystem().getIdentifier("year", "id", "android");
+            if (yearSpinnerId != 0)
+            {
+                View yearSpinner = datePicker.findViewById(yearSpinnerId);
+                if (yearSpinner != null)
+                {
+                    yearSpinner.setVisibility(View.VISIBLE);
+                }
+            }
+        } else { //Older SDK versions
+            Field f[] = datePicker.getClass().getDeclaredFields();
+            for (Field field : f)
+            {
+                if(field.getName().equals("mDayPicker") || field.getName().equals("mDaySpinner"))
+                {
+                    field.setAccessible(true);
+                    Object dayPicker = null;
+                    try {
+                        dayPicker = field.get(datePicker);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                    ((View) dayPicker).setVisibility(View.GONE);
+                }
+
+                if(field.getName().equals("mMonthPicker") || field.getName().equals("mMonthSpinner"))
+                {
+                    field.setAccessible(true);
+                    Object monthPicker = null;
+                    try {
+                        monthPicker = field.get(datePicker);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                    ((View) monthPicker).setVisibility(View.VISIBLE);
+                }
+
+                if(field.getName().equals("mYearPicker") || field.getName().equals("mYearSpinner"))
+                {
+                    field.setAccessible(true);
+                    Object yearPicker = null;
+                    try {
+                        yearPicker = field.get(datePicker);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                    ((View) yearPicker).setVisibility(View.VISIBLE);
+                }
+            }
+        }
+
     }
 
 

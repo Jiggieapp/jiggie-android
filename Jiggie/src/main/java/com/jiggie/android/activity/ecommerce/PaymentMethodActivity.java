@@ -145,11 +145,15 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
             i.putExtra(productSummary.getClass().getName(), productSummary);
             i.putExtra(eventDetail.getClass().getName(), eventDetail);
             startActivityForResult(i, 0);
-        }else if(position == (section2Start + 1)){
+        }else if(position == (section2Start)){
+            //bca
+            setResult(RESULT_OK, new Intent().putExtra(Common.FIELD_PAYMENT_TYPE, Utils.TYPE_BCA));
+            finish();
+        }else if(position == (section2Start + 2)){
             //other bank
             setResult(RESULT_OK, new Intent().putExtra(Common.FIELD_PAYMENT_TYPE, Utils.TYPE_VA));
             finish();
-        }else if(position == section2Start){
+        }else if(position == section2Start + 1){
             //mandiri
             setResult(RESULT_OK, new Intent().putExtra(Common.FIELD_PAYMENT_TYPE, Utils.TYPE_BP));
             finish();

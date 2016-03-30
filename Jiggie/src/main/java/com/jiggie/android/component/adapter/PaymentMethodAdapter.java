@@ -122,17 +122,16 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
 
             holder.txtHow.setText(builder);
             holder.txtHow.setMovementMethod(LinkMovementMethod.getInstance());
-            holder.img.setImageResource(R.drawable.logo_mandiri);
-            holder.txtPaymentName.setText(context.getString(R.string.va_mandiri));
+            holder.img.setImageResource(R.drawable.logo_bca2);
+            holder.txtPaymentName.setText(context.getString(R.string.va_bca));
 
         } else {
             holder.linSection.setVisibility(View.GONE);
 
-            /*if (position == (section2Start + 1)) {
-                holder.img.setImageResource(R.drawable.logo_bca2);
-                holder.txtPaymentName.setText(context.getString(R.string.va_bca));
-            } */
             if (position == (section2Start + 1)) {
+                holder.img.setImageResource(R.drawable.logo_mandiri);
+                holder.txtPaymentName.setText(context.getString(R.string.va_mandiri));
+            }else if (position == (section2Start + 2)) {
                 holder.img.setVisibility(View.GONE);
                 holder.txtPaymentName.setText(context.getString(R.string.other_bank));
             }
@@ -169,7 +168,7 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
 
     @Override
     public int getItemCount() {
-        return (arrDataCredit.size() + 3);
+        return (arrDataCredit.size() + 4);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {

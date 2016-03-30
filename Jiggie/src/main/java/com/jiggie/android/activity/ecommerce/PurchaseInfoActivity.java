@@ -307,13 +307,13 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     private void slidePay() {
         if (paymentType.equals(Utils.TYPE_CC)) {
             if (is_verified) {
-                PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, "0", productSummary.getOrder_id(), cc_token_id, name_cc);
+                PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, "0", productSummary.getOrder_id(), cc_token_id, name_cc, Utils.BLANK);
                 doPayment(postPaymentModel);
             } else {
                 access3dSecure();
             }
         } else {
-            PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, Utils.BLANK, productSummary.getOrder_id(), Utils.BLANK, Utils.BLANK);
+            PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, Utils.BLANK, productSummary.getOrder_id(), Utils.BLANK, Utils.BLANK, Utils.BLANK);
             doPayment(postPaymentModel);
         }
     }
@@ -453,7 +453,12 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                 } else {
                     imgPayment.setVisibility(View.GONE);
                 }
-            } else if (paymentType.equals(Utils.TYPE_BP)) {
+            } else if (paymentType.equals(Utils.TYPE_BCA)) {
+                txtPayment.setText(getString(R.string.va_bca));
+                imgPayment.setVisibility(View.VISIBLE);
+                imgPayment.setImageResource(R.drawable.logo_bca2);
+                txtPayment.setTypeface(null, Typeface.NORMAL);
+            }else if (paymentType.equals(Utils.TYPE_BP)) {
                 txtPayment.setText(getString(R.string.va_mandiri));
                 imgPayment.setVisibility(View.VISIBLE);
                 imgPayment.setImageResource(R.drawable.logo_mandiri);
@@ -491,7 +496,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
             Log.d("VtLog", url);
 
             if (url.startsWith(getPaymentApiUrl() + "/callback/")) {
-                PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, "1", productSummary.getOrder_id(), token, name_cc);
+                PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, "1", productSummary.getOrder_id(), token, name_cc, Utils.BLANK);
 
                 String sd = String.valueOf(new Gson().toJson(postPaymentModel));
                 dialog3ds.dismiss();
