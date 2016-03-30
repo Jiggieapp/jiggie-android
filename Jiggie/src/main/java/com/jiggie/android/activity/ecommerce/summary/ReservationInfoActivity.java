@@ -106,7 +106,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     @Bind(R.id.lin_terms)
     LinearLayout linTerms;
 
-    String eventId, eventName, venueName, startTime, totalPrice;
+    String eventId, eventName, venueName, startTime, totalPrice, minDeposit;
     ArrayList<TermsItemView> arrTermItemView = new ArrayList<>();
     String is_new_card, cc_token_id = Utils.BLANK, cc_card_id, paymentType = Utils.BLANK, name_cc = Utils.BLANK;
     boolean is_verified;
@@ -122,6 +122,8 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     @Bind(R.id.plus_button)
     View plusButton;
     private SlideAdapter slideAdapter;
+    int payDeposit = 0;
+    private final int INCREMENT_VALUE = 500000;
 
     public static String getPaymentApiUrl() {
         if (VTConfig.VT_IsProduction) {
@@ -143,10 +145,24 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                 Intent i = new Intent(ReservationInfoActivity.this, PaymentMethodActivity.class);
                 i.putExtra(Common.FIELD_ORDER_ID, order_id);
                 i.putExtra(Common.FIELD_PAYMENT_TYPE, paymentType);
-                i.putExtra(Common.FIELD_PRICE, totalPrice);
+                i.putExtra(Common.FIELD_PRICE, String.valueOf(payDeposit));
                 i.putExtra(productSummary.getClass().getName(), productSummary);
                 i.putExtra(eventDetail.getClass().getName(), eventDetail);
                 startActivityForResult(i, 0);
+            }
+        });
+
+        minusButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                arrangeEstimateDeposit(false);
+            }
+        });
+
+        plusButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                arrangeEstimateDeposit(true);
             }
         });
 
@@ -162,6 +178,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         eventName = a.getStringExtra(Common.FIELD_EVENT_NAME);
         venueName = a.getStringExtra(Common.FIELD_VENUE_NAME);
         startTime = a.getStringExtra(Common.FIELD_STARTTIME);
+        minDeposit = a.getStringExtra(Common.FIELD_MIN_DEPOSIT);
         productSummary = a.getParcelableExtra(SummaryModel.Data.Product_summary.class.getName());
         eventDetail = a.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
         order_id = productSummary.getOrder_id();
@@ -216,11 +233,39 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         txtTaxxFill.setText(StringUtility.getRupiahFormat(dataProduct.getTax_amount()));
         txtSerFill.setText(StringUtility.getRupiahFormat(dataProduct.getAdmin_fee()));
         txtEstTotFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_price()));
-        //txtRequireFill.setText();
-        //txtEstBalFill.setText();
-        //txtTotalFill.setText(StringUtility.getRupiahFormat(dataProduct.get));
+        payDeposit = Integer.parseInt(minDeposit);
+        txtRequireFill.setText(StringUtility.getRupiahFormat(minDeposit));
+        String estBalance = String.valueOf(Integer.parseInt(productSummary.getTotal_price()) - Integer.parseInt(minDeposit));
+        txtEstBalFill.setText(StringUtility.getRupiahFormat(estBalance));
+        txtTotalFill.setText(StringUtility.getRupiahFormat(minDeposit));
 
         initTermView(dataProduct);
+    }
+
+    private void arrangeEstimateDeposit(boolean isIncrement){
+        if(isIncrement){
+            payDeposit = payDeposit + INCREMENT_VALUE;
+            if(payDeposit<=Integer.parseInt(productSummary.getTotal_price())){
+                txtRequireFill.setText(StringUtility.getRupiahFormat(String.valueOf(payDeposit)));
+                txtTotalFill.setText(StringUtility.getRupiahFormat(String.valueOf(payDeposit)));
+                String estBalance = String.valueOf(Integer.parseInt(productSummary.getTotal_price()) - payDeposit);
+                txtEstBalFill.setText(StringUtility.getRupiahFormat(estBalance));
+            }else{
+                //rollback value payDeposit if bigger than price total
+                payDeposit = payDeposit - INCREMENT_VALUE;
+            }
+        }else{
+            payDeposit = payDeposit - INCREMENT_VALUE;
+            if(payDeposit>=Integer.valueOf(minDeposit)){
+                txtRequireFill.setText(StringUtility.getRupiahFormat(String.valueOf(payDeposit)));
+                txtTotalFill.setText(StringUtility.getRupiahFormat(String.valueOf(payDeposit)));
+                String estBalance = String.valueOf(Integer.parseInt(productSummary.getTotal_price()) - payDeposit);
+                txtEstBalFill.setText(StringUtility.getRupiahFormat(estBalance));
+            }else{
+                //rollback value payDeposit if lower than minimum deposit
+                payDeposit = payDeposit + INCREMENT_VALUE;
+            }
+        }
     }
 
     private void sendMixpanel(SummaryModel.Data.Product_summary productSummary, EventDetailModel.Data.EventDetail eventDetail) {
@@ -332,13 +377,15 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     private void slidePay() {
         if (paymentType.equals(Utils.TYPE_CC)) {
             if (is_verified) {
-                PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, "0", productSummary.getOrder_id(), cc_token_id, name_cc);
+                PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, "0", productSummary.getOrder_id(), cc_token_id, name_cc, String.valueOf(payDeposit));
+                String sd = String.valueOf(new Gson().toJson(postPaymentModel));
                 doPayment(postPaymentModel);
             } else {
                 access3dSecure();
             }
         } else {
-            PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, Utils.BLANK, productSummary.getOrder_id(), Utils.BLANK, Utils.BLANK);
+            PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, Utils.BLANK, productSummary.getOrder_id(), Utils.BLANK, Utils.BLANK, String.valueOf(payDeposit));
+            String sd = String.valueOf(new Gson().toJson(postPaymentModel));
             doPayment(postPaymentModel);
         }
     }
@@ -468,7 +515,12 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                 } else {
                     imgPayment.setVisibility(View.GONE);
                 }
-            } else if (paymentType.equals(Utils.TYPE_BP)) {
+            } else if (paymentType.equals(Utils.TYPE_BCA)) {
+                txtPayment.setText(getString(R.string.va_bca));
+                imgPayment.setVisibility(View.VISIBLE);
+                imgPayment.setImageResource(R.drawable.logo_bca2);
+                txtPayment.setTypeface(null, Typeface.NORMAL);
+            }else if (paymentType.equals(Utils.TYPE_BP)) {
                 txtPayment.setText(getString(R.string.va_mandiri));
                 imgPayment.setVisibility(View.VISIBLE);
                 imgPayment.setImageResource(R.drawable.logo_mandiri);
@@ -516,7 +568,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
             Log.d("VtLog", url);
 
             if (url.startsWith(getPaymentApiUrl() + "/callback/")) {
-                PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, "1", productSummary.getOrder_id(), token, name_cc);
+                PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, "1", productSummary.getOrder_id(), token, name_cc, String.valueOf(payDeposit));
 
                 String sd = String.valueOf(new Gson().toJson(postPaymentModel));
                 dialog3ds.dismiss();

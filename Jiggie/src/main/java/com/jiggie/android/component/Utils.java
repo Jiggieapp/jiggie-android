@@ -99,6 +99,7 @@ public class Utils {
     public static String TYPE_CC = "cc";
     public static String TYPE_VA = "va";
     public static String TYPE_BP = "bp";
+    public static String TYPE_BCA = "bca";
     //------------------------
 
     public static int myPixel(Activity a, int dip) {

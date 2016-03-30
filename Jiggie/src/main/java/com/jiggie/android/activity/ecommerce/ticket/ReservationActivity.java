@@ -119,6 +119,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
                         i.putExtra(Common.FIELD_STARTTIME, startTime);
                         i.putExtra(productSummary.getClass().getName(), productSummary);
                         i.putExtra(eventDetail.getClass().getName(), eventDetail);
+                        i.putExtra(Common.FIELD_MIN_DEPOSIT, detailReservation.getMin_deposit_amount());
 
                         startActivity(i);
                     }
@@ -157,7 +158,6 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
                 if (num_guest > 1) {
                     num_guest--;
                     lblQuantity.setText(String.valueOf(num_guest));
-                    lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(num_guest * price)));
                 }
 
             }
@@ -169,7 +169,6 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
                 if (num_guest > 0 && num_guest < max) {
                     num_guest++;
                     lblQuantity.setText(String.valueOf(num_guest));
-                    lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(num_guest * price)));
                 }
             }
         });
