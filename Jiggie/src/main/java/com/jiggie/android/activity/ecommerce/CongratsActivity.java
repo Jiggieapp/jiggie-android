@@ -43,11 +43,11 @@ public class CongratsActivity extends ToolbarActivity {
             txtRegTicketFill, txtAdFeeFill, txtTaxFill, txtTotalFill, txtInstrucFill, txtInclude, txtFineprint, txtEventTitle2,
             txtEventDate2, txtVenueTitle, txtVenueDate, lblGuestCount, lblSummaryTitle
             , lblEstimatedBalance, lblPaidDeposit, lblEstimatedTotal, lblTotalTitle;
-    LinearLayout linInclude, lineFineprint;
+    LinearLayout linInclude, lineFineprint, linSummaryFooter;
     RelativeLayout relViewTicket, containerTableGuest;
     RelativeLayout scrollView;
     ProgressBar progressBar;
-    View divider;
+    View divider, divider8;
 
     long orderId;
     boolean fromOrderList;
@@ -101,6 +101,8 @@ public class CongratsActivity extends ToolbarActivity {
         lblEstimatedTotal = (TextView) this.findViewById(R.id.lbl_estimate_ttal_fill);
         lblTotalTitle = (TextView) this.findViewById(R.id.txt_total);
         divider = (View) this.findViewById(R.id.divider3);
+        divider8 = (View) this.findViewById(R.id.divider8);
+        linSummaryFooter = (LinearLayout)findViewById(R.id.lin_summary_footer);
 
         scrollView.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
@@ -190,6 +192,8 @@ public class CongratsActivity extends ToolbarActivity {
                         lblSummaryTitle.setText(
                                 getResources().getString(R.string.vor_order_summary));
                         txtRegTicketTitle.setText(product_list.getName() + " Ticket (" + product_list.getNum_buy() + "x)");
+                        linSummaryFooter.setVisibility(View.GONE);
+                        divider8.setVisibility(View.GONE);
                     }
 
                     try {
