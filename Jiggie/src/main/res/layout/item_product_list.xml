@@ -7,7 +7,7 @@
     <RelativeLayout
         android:id="@+id/header_container"
         android:layout_width="match_parent"
-        android:layout_height="160dp"
+        android:layout_height="145dp"
         android:background="@color/colorPrimary"
         android:padding="@dimen/padding_standard_half"
         android:visibility="gone"
@@ -22,7 +22,8 @@
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:layout_above="@+id/lblEventLocation"
-            android:textAllCaps="true"/>
+            android:textAllCaps="true"
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/lblEventLocation"
@@ -32,7 +33,7 @@
             android:text="@string/msg_dummy_title_info"
             android:textColor="@android:color/white"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="28dp"/>
+            android:layout_marginBottom="@dimen/padding_standard"/>
 
     </RelativeLayout>
 
@@ -95,7 +96,8 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
                     android:singleLine="true"
-                    android:maxWidth="190dp"/>
+                    android:maxWidth="190dp"
+                    android:textAllCaps="true"/>
 
                 <TextView
                     android:layout_marginTop="@dimen/padding_standard_half"
@@ -106,7 +108,8 @@
                     android:layout_alignParentLeft="true"
                     android:layout_below="@id/txt_ticket_name"
                     android:singleLine="true"
-                    android:maxWidth="190dp"/>
+                    android:maxWidth="190dp"
+                    android:textAllCaps="true"/>
             </LinearLayout>
 
             <TextView

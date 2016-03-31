@@ -7,7 +7,10 @@
     android:background="@color/colorPrimary"
     app:layout_scrollFlags="scroll|enterAlways"
     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-    app:titleTextColor="@android:color/white">
+    app:titleTextColor="@android:color/white"
+    app:elevation="0dp"
+    android:elevation="0dp"
+    >
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -23,12 +26,13 @@
                 android:layout_height="wrap_content"
                 android:text="Lorem ipsum"
                 android:textColor="@android:color/white"
-                android:textSize="14sp"/>
+                android:textSize="14sp"
+                android:textStyle="bold"/>
 
             <ImageView
                 android:id="@+id/img_help"
-                android:layout_width="64dp"
-                android:layout_height="wrap_content"
+                android:layout_width="44dp"
+                android:layout_height="32dp"
                 android:src="@drawable/ic_helps"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
@@ -50,7 +54,7 @@
 
                 <View
                     android:id="@+id/first_connector"
-                    android:layout_width="30dp"
+                    android:layout_width="24dp"
                     android:layout_height="1.5dp"
                     android:background="@drawable/gray_connector"
                     android:layout_marginLeft="2dp"
@@ -64,7 +68,7 @@
 
                 <View
                     android:id="@+id/second_connector"
-                    android:layout_width="30dp"
+                    android:layout_width="24dp"
                     android:layout_height="1.5dp"
                     android:background="@drawable/gray_connector"
                     android:layout_marginLeft="2dp"

@@ -223,8 +223,8 @@
     <string name="va_mandiri">Mandiri Virtual Account</string>
     <string name="va_bca">BCA Virtual Account</string>
     <string name="other_bank">Other Banks</string>
-    <string name="pr_max_purchase">Max purchase :</string>
-    <string name="pr_max_guest">Max guest :</string>
+    <string name="pr_max_purchase">Max Purchased</string>
+    <string name="pr_max_guest">Max Guest</string>
     <string name="phone_number">Phone Number</string>
     <string name="continue_str">Continue</string>
 
