@@ -122,7 +122,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     @Bind(R.id.plus_button)
     View plusButton;
     private SlideAdapter slideAdapter;
-    int payDeposit = 0;
+    int payDeposit = 0, maxDeposit = 0, latestDeposit = 0;
     private final int INCREMENT_VALUE = 500000;
 
     public static String getPaymentApiUrl() {
@@ -237,8 +237,10 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         txtDftFill.setText(StringUtility.getRupiahFormat(dataProduct.getTotal_price()));
         txtTaxxFill.setText(StringUtility.getRupiahFormat(dataProduct.getTax_amount()));
         txtSerFill.setText(StringUtility.getRupiahFormat(dataProduct.getAdmin_fee()));
+        maxDeposit = Integer.parseInt(productSummary.getTotal_price());
         txtEstTotFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_price()));
         payDeposit = Integer.parseInt(minDeposit);
+        latestDeposit = Integer.parseInt(minDeposit);
         txtRequireFill.setText(StringUtility.getRupiahFormat(minDeposit));
         String estBalance = String.valueOf(Integer.parseInt(productSummary.getTotal_price()) - Integer.parseInt(minDeposit));
         txtEstBalFill.setText(StringUtility.getRupiahFormat(estBalance));
@@ -249,19 +251,29 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
 
     private void arrangeEstimateDeposit(boolean isIncrement){
         if(isIncrement){
+
             payDeposit = payDeposit + INCREMENT_VALUE;
-            if(payDeposit<=Integer.parseInt(productSummary.getTotal_price())){
-                txtRequireFill.setText(StringUtility.getRupiahFormat(String.valueOf(payDeposit)));
-                txtTotalFill.setText(StringUtility.getRupiahFormat(String.valueOf(payDeposit)));
-                String estBalance = String.valueOf(Integer.parseInt(productSummary.getTotal_price()) - payDeposit);
-                txtEstBalFill.setText(StringUtility.getRupiahFormat(estBalance));
+
+            if(payDeposit>=Integer.parseInt(productSummary.getTotal_price())){
+                payDeposit = Integer.parseInt(productSummary.getTotal_price());
             }else{
-                //rollback value payDeposit if bigger than price total
+                latestDeposit = payDeposit;
+            }
+
+            txtRequireFill.setText(StringUtility.getRupiahFormat(String.valueOf(payDeposit)));
+            txtTotalFill.setText(StringUtility.getRupiahFormat(String.valueOf(payDeposit)));
+            String estBalance = String.valueOf(Integer.parseInt(productSummary.getTotal_price()) - payDeposit);
+            txtEstBalFill.setText(StringUtility.getRupiahFormat(estBalance));
+
+        }else{
+
+            if(payDeposit==Integer.parseInt(productSummary.getTotal_price())){
+                payDeposit = latestDeposit;
+            }else{
                 payDeposit = payDeposit - INCREMENT_VALUE;
             }
-        }else{
-            payDeposit = payDeposit - INCREMENT_VALUE;
-            if(payDeposit>=Integer.valueOf(minDeposit)){
+
+            if(payDeposit >=Integer.valueOf(minDeposit)){
                 txtRequireFill.setText(StringUtility.getRupiahFormat(String.valueOf(payDeposit)));
                 txtTotalFill.setText(StringUtility.getRupiahFormat(String.valueOf(payDeposit)));
                 String estBalance = String.valueOf(Integer.parseInt(productSummary.getTotal_price()) - payDeposit);

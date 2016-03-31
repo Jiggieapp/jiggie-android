@@ -60,10 +60,15 @@ public class CustomToolbar extends Toolbar {
             @Override
             public void onClick(View v) {
                 //go to support email
-                final Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", con.getString(R.string.support_email), null));
+                /*final Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", con.getString(R.string.support_email), null));
                 intent.putExtra(Intent.EXTRA_EMAIL, new String[] {con.getString(R.string.support_email)}); // hack for android 4.3
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Support");
-                con.startActivity(Intent.createChooser(intent, con.getString(R.string.support)));
+                con.startActivity(Intent.createChooser(intent, con.getString(R.string.support)));*/
+
+                Uri uri = Uri.parse("smsto:081218288317");
+                Intent it = new Intent(Intent.ACTION_SENDTO, uri);
+                //it.putExtra("sms_body", "The SMS text");
+                con.startActivity(it);
             }
         });
         //--------
