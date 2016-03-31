@@ -59,10 +59,10 @@ public class CongratsActivity extends ToolbarActivity {
         setContentView(R.layout.activity_view_ticketreserve);
 
         Intent a = getIntent();
-        //orderId = a.getLongExtra(Common.FIELD_ORDER_ID, 0);
-        //fromOrderList = a.getBooleanExtra(Common.FIELD_FROM_ORDER_LIST, false);
-        orderId = 1459229470982L;
-        fromOrderList = true;
+        orderId = a.getLongExtra(Common.FIELD_ORDER_ID, 0);
+        fromOrderList = a.getBooleanExtra(Common.FIELD_FROM_ORDER_LIST, false);
+        /*orderId = 1459229470982L;
+        fromOrderList = true;*/
         initView();
         preDefined(String.valueOf(orderId));
     }
