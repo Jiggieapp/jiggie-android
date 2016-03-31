@@ -78,13 +78,19 @@ public class PurchaseHistoryActivity extends ToolbarActivity
             @Override
             public void onSuccess(Object object) {
                 PurchaseHistoryModel purchaseHistoryModel = (PurchaseHistoryModel) object;
-                adapter.clear();
-                for (PurchaseHistoryModel.Data.Order_list order_list : purchaseHistoryModel.getData().getOrder_lists()) {
-                    adapter.add(order_list);
+                if(purchaseHistoryModel!=null){
+                    adapter.clear();
+                    for (PurchaseHistoryModel.Data.Order_list order_list : purchaseHistoryModel.getData().getOrder_lists()) {
+                        adapter.add(order_list);
+                    }
+                    recyclerView.setAdapter(adapter);
+                }else{
+                    Toast.makeText(PurchaseHistoryActivity.this, getString(R.string.msg_wrong), Toast.LENGTH_LONG).show();
                 }
-                recyclerView.setAdapter(adapter);
+
                 if (swipeRefresh.isRefreshing())
                     swipeRefresh.setRefreshing(false);
+
             }
 
             @Override

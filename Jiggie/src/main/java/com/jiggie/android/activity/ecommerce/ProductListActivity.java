@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.ViewTreeObserver;
+import android.widget.Toast;
 
 import com.jiggie.android.App;
 import com.jiggie.android.R;
@@ -134,21 +135,24 @@ public class ProductListActivity extends ToolbarWithDotActivity
             @Override
             public void onSuccess(Object object) {
                 ProductListModel data = (ProductListModel) object;
-                eventName = data.getData().getProduct_lists().getEvent_name();
-                venueName = data.getData().getProduct_lists().getVenue_name();
-                startTime = data.getData().getProduct_lists().getStart_datetime();
-                ArrayList<ProductListModel.Data.ProductList.Purchase> dataPurchase = data.getData().getProduct_lists().getPurchase();
-                ArrayList<ProductListModel.Data.ProductList.Reservation> dataReservation = data.getData().getProduct_lists().getReservation();
+
+                if(data!=null){
+                    eventName = data.getData().getProduct_lists().getEvent_name();
+                    venueName = data.getData().getProduct_lists().getVenue_name();
+                    startTime = data.getData().getProduct_lists().getStart_datetime();
+                    ArrayList<ProductListModel.Data.ProductList.Purchase> dataPurchase = data.getData().getProduct_lists().getPurchase();
+                    ArrayList<ProductListModel.Data.ProductList.Reservation> dataReservation = data.getData().getProduct_lists().getReservation();
 
 
-                if (dataReservation.size() > 0) {
-                    isTwoType = true;
-                    section2Start = dataPurchase.size();
+                    if (dataReservation.size() > 0) {
+                        isTwoType = true;
+                        section2Start = dataPurchase.size();
+                    }
+
+                    setsAdapter(eventName, venueName, startTime, isTwoType, section2Start, dataPurchase, dataReservation);
+                }else{
+                    Toast.makeText(ProductListActivity.this, getString(R.string.msg_wrong), Toast.LENGTH_LONG).show();
                 }
-
-
-
-                setsAdapter(eventName, venueName, startTime, isTwoType, section2Start, dataPurchase, dataReservation);
 
                 swipeRefresh.setRefreshing(false);
                 isLoading = false;

@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ViewTreeObserver;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.jiggie.android.App;
@@ -109,14 +110,21 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
                 isLoading = false;
                 swipeRefresh.setRefreshing(false);
                 CCModel ccModel = (CCModel) object;
-                ArrayList<CCModel.Data.Creditcard_information> ccInformation = ccModel.getData().getCreditcard_informations();
+                if(ccModel!=null){
+                    ArrayList<CCModel.Data.Creditcard_information> ccInformation = ccModel.getData().getCreditcard_informations();
 
-                for (int i = 0; i < ccInformation.size(); i++) {
-                    CommerceManager.arrCCScreen.add(new CCScreenModel(ccInformation.get(i), null, Utils.BLANK));
+                    for (int i = 0; i < ccInformation.size(); i++) {
+                        CommerceManager.arrCCScreen.add(new CCScreenModel(ccInformation.get(i), null, Utils.BLANK));
+                    }
+
+                    section2Start = CommerceManager.arrCCScreen.size() + 1;
+                    setAdapters(section2Start, CommerceManager.arrCCScreen);
+                }else{
+                    section2Start = 0 + 1;
+                    setAdapters(section2Start, CommerceManager.arrCCScreen);
+                    Toast.makeText(PaymentMethodActivity.this, getString(R.string.msg_wrong), Toast.LENGTH_LONG).show();
                 }
 
-                section2Start = CommerceManager.arrCCScreen.size() + 1;
-                setAdapters(section2Start, CommerceManager.arrCCScreen);
             }
 
             @Override

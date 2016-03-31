@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.jiggie.android.App;
@@ -103,22 +104,25 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                     @Override
                     public void onSuccess(Object object) {
                         SummaryModel dataTemp = (SummaryModel) object;
-                        productSummary = dataTemp.getData().getProduct_summary();
-
-                        String responses = new Gson().toJson(dataTemp);
-                        Utils.d("res", responses);
-
                         dismissLoadingDialog();
+                        if(dataTemp!=null){
+                            productSummary = dataTemp.getData().getProduct_summary();
 
-                        Intent i = new Intent(TicketDetailActivity.this, PurchaseInfoActivity.class);
-                        i.putExtra(Common.FIELD_EVENT_ID, eventId);
-                        i.putExtra(Common.FIELD_EVENT_NAME, eventName);
-                        i.putExtra(Common.FIELD_VENUE_NAME, venueName);
-                        i.putExtra(Common.FIELD_STARTTIME, startTime);
-                        i.putExtra(productSummary.getClass().getName(), productSummary);
-                        i.putExtra(eventDetail.getClass().getName(), eventDetail);
+                            String responses = new Gson().toJson(dataTemp);
+                            Utils.d("res", responses);
 
-                        startActivity(i);
+                            Intent i = new Intent(TicketDetailActivity.this, PurchaseInfoActivity.class);
+                            i.putExtra(Common.FIELD_EVENT_ID, eventId);
+                            i.putExtra(Common.FIELD_EVENT_NAME, eventName);
+                            i.putExtra(Common.FIELD_VENUE_NAME, venueName);
+                            i.putExtra(Common.FIELD_STARTTIME, startTime);
+                            i.putExtra(productSummary.getClass().getName(), productSummary);
+                            i.putExtra(eventDetail.getClass().getName(), eventDetail);
+
+                            startActivity(i);
+                        }else{
+                            Toast.makeText(TicketDetailActivity.this, getString(R.string.msg_wrong), Toast.LENGTH_LONG).show();
+                        }
                     }
 
                     @Override

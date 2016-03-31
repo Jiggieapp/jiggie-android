@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jiggie.android.App;
 import com.jiggie.android.R;
@@ -118,24 +119,29 @@ public class HowToPayActivity extends ToolbarActivity{
                 @Override
                 public void onSuccess(Object object) {
                     SucScreenWalkthroughModel sucScreenVABPModel = (SucScreenWalkthroughModel)object;
-                    ArrayList<SucScreenWalkthroughModel.Data.WalkthroughPayment.BpStep.Step_payment> stepPaymentBP = sucScreenVABPModel.getData().getWalkthrough_payment().getBp_step().getStep_payment();
-                    ArrayList<SucScreenWalkthroughModel.Data.WalkthroughPayment.VaStep.Step_payment> stepPaymentVA = sucScreenVABPModel.getData().getWalkthrough_payment().getVa_step().getStep_payment();
-                    int sizeStepBP = stepPaymentBP.size();
-                    int sizeStepVA = stepPaymentVA.size();
+                    if(sucScreenVABPModel!=null){
+                        ArrayList<SucScreenWalkthroughModel.Data.WalkthroughPayment.BpStep.Step_payment> stepPaymentBP = sucScreenVABPModel.getData().getWalkthrough_payment().getBp_step().getStep_payment();
+                        ArrayList<SucScreenWalkthroughModel.Data.WalkthroughPayment.VaStep.Step_payment> stepPaymentVA = sucScreenVABPModel.getData().getWalkthrough_payment().getVa_step().getStep_payment();
+                        int sizeStepBP = stepPaymentBP.size();
+                        int sizeStepVA = stepPaymentVA.size();
 
-                    for(int i=0;i<sizeStepBP;i++){
-                        ContainerStepView containerStepView;
-                        String header = stepPaymentBP.get(i).getHeader();
-                        containerStepView = new ContainerStepView(HowToPayActivity.this, header, stepPaymentBP.get(i).getStep());
-                        lin_con_step.addView(containerStepView);
+                        for(int i=0;i<sizeStepBP;i++){
+                            ContainerStepView containerStepView;
+                            String header = stepPaymentBP.get(i).getHeader();
+                            containerStepView = new ContainerStepView(HowToPayActivity.this, header, stepPaymentBP.get(i).getStep());
+                            lin_con_step.addView(containerStepView);
+                        }
+
+                        for(int i=0;i<sizeStepVA;i++){
+                            ContainerStepView containerStepView;
+                            String header = stepPaymentVA.get(i).getHeader();
+                            containerStepView = new ContainerStepView(HowToPayActivity.this, header, stepPaymentVA.get(i).getStep());
+                            lin_con_step.addView(containerStepView);
+                        }
+                    }else{
+                        Toast.makeText(HowToPayActivity.this, getString(R.string.msg_wrong), Toast.LENGTH_LONG).show();
                     }
 
-                    for(int i=0;i<sizeStepVA;i++){
-                        ContainerStepView containerStepView;
-                        String header = stepPaymentVA.get(i).getHeader();
-                        containerStepView = new ContainerStepView(HowToPayActivity.this, header, stepPaymentVA.get(i).getStep());
-                        lin_con_step.addView(containerStepView);
-                    }
 
                 }
 
@@ -151,64 +157,69 @@ public class HowToPayActivity extends ToolbarActivity{
             CommerceManager.loaderSucScreenVABP(String.valueOf(order_id), new CommerceManager.OnResponseListener() {
                 @Override
                 public void onSuccess(Object object) {
-                    sucScreenVABPModel = (SucScreenVABPModel)object;
-                    sendMixpanel(sucScreenVABPModel);
-                    ArrayList<SucScreenVABPModel.Data.SuccessScreen.StepPayment> stepPayment = sucScreenVABPModel.getData().getSuccess_screen().getStep_payment();
-                    txt_t_amount_fill.setText(StringUtility.getRupiahFormat(sucScreenVABPModel.getData().getSuccess_screen().getAmount()));
+                    sucScreenVABPModel = (SucScreenVABPModel) object;
+                    if (sucScreenVABPModel != null) {
+                        sendMixpanel(sucScreenVABPModel);
+                        ArrayList<SucScreenVABPModel.Data.SuccessScreen.StepPayment> stepPayment = sucScreenVABPModel.getData().getSuccess_screen().getStep_payment();
+                        txt_t_amount_fill.setText(StringUtility.getRupiahFormat(sucScreenVABPModel.getData().getSuccess_screen().getAmount()));
 
-                    payment_type = sucScreenVABPModel.getData().getSuccess_screen().getPayment_type();
-                    if(payment_type.equals(Utils.TYPE_BP)){
-                        txt_howtopay.setText(getString(R.string.va_mandiri));
-                    }else if(payment_type.equals(Utils.TYPE_VA)){
-                        txt_howtopay.setText(getString(R.string.other_bank));
-                    }
-
-                    txt_to_fill.setText(StringUtility.getCCNumberFormat(sucScreenVABPModel.getData().getSuccess_screen().getTransfer_to()));
-                    int sizeStep = stepPayment.size();
-                    for(int i=0;i<sizeStep;i++){
-                        ContainerStepView containerStepView;
-                        String header = stepPayment.get(i).getHeader();
-                        containerStepView = new ContainerStepView(HowToPayActivity.this, header, stepPayment.get(i).getStep());
-                        lin_con_step.addView(containerStepView);
-                    }
-
-                    countDownTimer = new CountDownTimer(StringUtility.getCountdownTime(sucScreenVABPModel.getData().getSuccess_screen().getTimelimit()), 1000) {
-
-                        long hour, minute;
-                        long second;
-                        boolean isFirstTime = true;
-
-                        @Override
-                        public void onTick(long millisUntilFinished) {
-
-                            if(isFirstTime){
-                                hour = ((millisUntilFinished/1000)/60)/60;
-                                minute = ((millisUntilFinished/1000)/60)/3;
-                                second = TimeUnit.MILLISECONDS.toSeconds(minute);
-                            }
-
-                            if(minute==0){
-                                minute = 59;
-                                hour--;
-                            }
-                            if(second==0){
-                                second = 60;
-                                if(!isFirstTime)
-                                    minute--;
-                            }
-
-                            if(isFirstTime)
-                                isFirstTime = false;
-
-                            second--;
-                            txt_t_limit_fill.setText(StringUtility.getTimeFormat(hour, minute, second));
+                        payment_type = sucScreenVABPModel.getData().getSuccess_screen().getPayment_type();
+                        if (payment_type.equals(Utils.TYPE_BP)) {
+                            txt_howtopay.setText(getString(R.string.va_mandiri));
+                        } else if (payment_type.equals(Utils.TYPE_VA)) {
+                            txt_howtopay.setText(getString(R.string.other_bank));
                         }
 
-                        @Override
-                        public void onFinish() {
-                            txt_t_limit_fill.setText("Expired");
+                        txt_to_fill.setText(StringUtility.getCCNumberFormat(sucScreenVABPModel.getData().getSuccess_screen().getTransfer_to()));
+                        int sizeStep = stepPayment.size();
+                        for (int i = 0; i < sizeStep; i++) {
+                            ContainerStepView containerStepView;
+                            String header = stepPayment.get(i).getHeader();
+                            containerStepView = new ContainerStepView(HowToPayActivity.this, header, stepPayment.get(i).getStep());
+                            lin_con_step.addView(containerStepView);
                         }
-                    }.start();
+
+                        countDownTimer = new CountDownTimer(StringUtility.getCountdownTime(sucScreenVABPModel.getData().getSuccess_screen().getTimelimit()), 1000) {
+
+                            long hour, minute;
+                            long second;
+                            boolean isFirstTime = true;
+
+                            @Override
+                            public void onTick(long millisUntilFinished) {
+
+                                if (isFirstTime) {
+                                    hour = ((millisUntilFinished / 1000) / 60) / 60;
+                                    minute = ((millisUntilFinished / 1000) / 60) / 3;
+                                    second = TimeUnit.MILLISECONDS.toSeconds(minute);
+                                }
+
+                                if (minute == 0) {
+                                    minute = 59;
+                                    hour--;
+                                }
+                                if (second == 0) {
+                                    second = 60;
+                                    if (!isFirstTime)
+                                        minute--;
+                                }
+
+                                if (isFirstTime)
+                                    isFirstTime = false;
+
+                                second--;
+                                txt_t_limit_fill.setText(StringUtility.getTimeFormat(hour, minute, second));
+                            }
+
+                            @Override
+                            public void onFinish() {
+                                txt_t_limit_fill.setText("Expired");
+                            }
+                        }.start();
+                    } else {
+                        Toast.makeText(HowToPayActivity.this, getString(R.string.msg_wrong), Toast.LENGTH_LONG).show();
+                    }
+
                 }
 
                 @Override
@@ -251,7 +262,8 @@ public class HowToPayActivity extends ToolbarActivity{
     protected void onStop() {
         super.onStop();
         if(!isWalkthrough){
-            countDownTimer.cancel();
+            if(countDownTimer!=null)
+                countDownTimer.cancel();
         }
 
     }

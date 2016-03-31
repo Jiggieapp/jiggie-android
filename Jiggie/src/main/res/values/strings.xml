@@ -362,4 +362,6 @@
     <string name="estimated_total">ESTIMATED TOTAL</string>
     <string name="paid_deposit">PAID DEPOSIT</string>
     <string name="estimated_balance">ESTIMATED BALANCE (PAY AT VENUE)</string>
+
+    <string name="msg_wrong">Something wrong</string>
 </resources>
