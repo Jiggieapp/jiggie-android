@@ -188,9 +188,8 @@ public class StringUtility {
     public static String getRupiahFormat(String number) {
         String displayedString = "";
 
-        int numPerThousand = Integer.parseInt(number) / 1000;
+        int numPerThousand = (int)(Double.parseDouble(number) / 1000);
         String strNumPerThousand = String.valueOf(numPerThousand);
-
 
         if (strNumPerThousand.length() == 0) {
             displayedString = "Rp0";

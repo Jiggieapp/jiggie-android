@@ -40,6 +40,7 @@ import com.jiggie.android.fragment.SignInFragment;
 import com.appsflyer.AppsFlyerLib;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.manager.ShareManager;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.ShareLinkModel;
@@ -294,6 +295,16 @@ public class MainActivity extends AppCompatActivity {
         if(App.mixpanelAPI!=null){
             App.mixpanelAPI.flush();
         }
+
+        //refresh Credit card list----
+        if(CommerceManager.arrCCScreen!=null&&CommerceManager.arrCCScreen.size()>0){
+            CommerceManager.arrCCScreen.clear();
+        }
+        if(CommerceManager.arrCCLocal!=null&&CommerceManager.arrCCLocal.size()>0){
+            CommerceManager.arrCCLocal.clear();
+        }
+        //--------------------
+
         super.onDestroy();
     }
 

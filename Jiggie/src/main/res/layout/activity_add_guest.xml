@@ -53,7 +53,8 @@
         android:textSize="16sp"
         android:layout_marginLeft="@dimen/padding_standard"
         android:layout_marginRight="@dimen/padding_standard"
-        android:layout_marginTop="@dimen/padding_standard_half"/>
+        android:layout_marginTop="@dimen/padding_standard_half"
+        android:singleLine="true"/>
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/edt_email"
@@ -69,7 +70,8 @@
         android:textSize="16sp"
         android:layout_marginLeft="@dimen/padding_standard"
         android:layout_marginRight="@dimen/padding_standard"
-        android:layout_marginTop="@dimen/padding_standard_half"/>
+        android:layout_marginTop="@dimen/padding_standard_half"
+        android:singleLine="true"/>
 
     <LinearLayout
         android:id="@+id/lin"
@@ -96,7 +98,8 @@
             android:layout_marginTop="@dimen/padding_standard_half"
             android:layout_weight="0.8"
             android:inputType="number"
-            android:maxLength="3"/>
+            android:maxLength="3"
+            android:singleLine="true"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/edt_phone"
@@ -113,7 +116,8 @@
             android:layout_marginRight="@dimen/padding_standard"
             android:layout_marginTop="@dimen/padding_standard_half"
             android:layout_weight="0.2"
-            android:inputType="number"/>
+            android:inputType="number"
+            android:singleLine="true"/>
     </LinearLayout>
 
     <TextView
@@ -153,7 +157,8 @@
             android:id="@+id/txt_save"
             android:text="@string/guest_save"
             android:layout_centerInParent="true"
-            android:textColor="@color/common_plus_signin_btn_text_dark"/>
+            android:textColor="@color/common_plus_signin_btn_text_dark"
+            android:textSize="16sp"/>
     </RelativeLayout>
 
 </RelativeLayout>

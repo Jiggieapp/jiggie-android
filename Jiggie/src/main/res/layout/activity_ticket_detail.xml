@@ -113,7 +113,8 @@
                             android:textColor="@color/text_grey_caption"
                             android:textSize="@dimen/font_caption_size"
                             android:singleLine="true"
-                            android:maxWidth="190dp"/>
+                            android:maxWidth="190dp"
+                            android:textAllCaps="true"/>
 
                         <TextView
                             android:id="@+id/lblTypePrice"
@@ -338,6 +339,7 @@
             android:background="@drawable/bg_button_ticket_detail"
             android:enabled="true"
             android:text="@string/continue_str"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:textSize="16sp"/>
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

@@ -104,6 +104,7 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
     }
 
     private void loadData(String fb_id){
+        CommerceManager.arrCCScreen.clear();
         CommerceManager.loaderCCList(fb_id, new CommerceManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
@@ -118,12 +119,18 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
                     }
 
                     section2Start = CommerceManager.arrCCScreen.size() + 1;
-                    setAdapters(section2Start, CommerceManager.arrCCScreen);
+
                 }else{
                     section2Start = 0 + 1;
-                    setAdapters(section2Start, CommerceManager.arrCCScreen);
                     Toast.makeText(PaymentMethodActivity.this, getString(R.string.msg_wrong), Toast.LENGTH_LONG).show();
                 }
+
+                for (int i = 0; i < CommerceManager.arrCCLocal.size(); i++) {
+                    CommerceManager.arrCCScreen.add(CommerceManager.arrCCLocal.get(i));
+                }
+
+                section2Start = section2Start + CommerceManager.arrCCLocal.size();
+                setAdapters(section2Start, CommerceManager.arrCCScreen);
 
             }
 
@@ -209,6 +216,7 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
                     });
                 }else{
                     CommerceManager.arrCCScreen.remove(position);
+                    CommerceManager.arrCCLocal.remove(position);
                     section2Start = CommerceManager.arrCCScreen.size() + 1;
                     setAdapters(section2Start, CommerceManager.arrCCScreen);
                 }

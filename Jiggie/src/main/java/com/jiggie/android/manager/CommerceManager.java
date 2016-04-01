@@ -32,6 +32,7 @@ public class CommerceManager {
 
     private static CommerceInterface commerceInterface;
     public static ArrayList<CCScreenModel> arrCCScreen = new ArrayList<>();
+    public static ArrayList<CCScreenModel> arrCCLocal = new ArrayList<>();
 
     public static void initCommerceService(){
         Retrofit retrofit = new Retrofit.Builder()

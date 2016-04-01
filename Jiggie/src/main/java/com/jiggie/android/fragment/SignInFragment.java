@@ -305,6 +305,9 @@ public class SignInFragment extends Fragment {
         if(CommerceManager.arrCCScreen!=null&&CommerceManager.arrCCScreen.size()>0){
             CommerceManager.arrCCScreen.clear();
         }
+        if(CommerceManager.arrCCLocal!=null&&CommerceManager.arrCCLocal.size()>0){
+            CommerceManager.arrCCLocal.clear();
+        }
         //--------------------
 
         //setupWalkthrough(message.is_new_user(), message.isShow_walkthrough());

@@ -153,6 +153,8 @@ public class CongratsActivity extends ToolbarActivity {
                         txtPaymentFill.setText(getString(R.string.va_mandiri));
                     }else if(paymentType.equals(Utils.TYPE_VA)){
                         txtPaymentFill.setText(getString(R.string.other_bank));
+                    }else if(paymentType.equals(Utils.TYPE_BCA)){
+                        txtPaymentFill.setText(getString(R.string.va_bca));
                     }
                     try {
                         final Date orderDate = Common.FORMAT_COMM_TRANSACTION.parse(vt_response.getTransaction_time());

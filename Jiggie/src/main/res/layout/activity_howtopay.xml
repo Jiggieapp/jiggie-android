@@ -216,10 +216,9 @@
                 android:id="@+id/txt_view_orders"
                 android:text="@string/howtp_vo"
                 android:layout_centerInParent="true"
-                android:textColor="@color/common_plus_signin_btn_text_dark"/>
+                android:textColor="@color/common_plus_signin_btn_text_dark"
+                android:textSize="16sp"/>
         </RelativeLayout>
     </LinearLayout>
-
-
 
 </RelativeLayout>
