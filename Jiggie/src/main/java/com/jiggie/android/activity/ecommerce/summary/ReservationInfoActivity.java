@@ -239,10 +239,10 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         txtSerFill.setText(StringUtility.getRupiahFormat(dataProduct.getAdmin_fee()));
         maxDeposit = Integer.parseInt(productSummary.getTotal_price());
         txtEstTotFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_price()));
-        payDeposit = Integer.parseInt(minDeposit);
-        latestDeposit = Integer.parseInt(minDeposit);
+        payDeposit = (int)Double.parseDouble(minDeposit);
+        latestDeposit = (int)Double.parseDouble(minDeposit);
         txtRequireFill.setText(StringUtility.getRupiahFormat(minDeposit));
-        String estBalance = String.valueOf(Integer.parseInt(productSummary.getTotal_price()) - Integer.parseInt(minDeposit));
+        String estBalance = String.valueOf(Integer.parseInt(productSummary.getTotal_price()) - (int)Double.parseDouble(minDeposit));
         txtEstBalFill.setText(StringUtility.getRupiahFormat(estBalance));
         txtTotalFill.setText(StringUtility.getRupiahFormat(minDeposit));
 
@@ -549,6 +549,51 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
             }
 
             checkEnability(arrTermItemView, txtPayment.getText().toString());
+        }else{
+            SummaryModel.Data.Product_summary.LastPayment lastPayment = productSummary.getLast_payment();
+            if(CommerceManager.arrCCScreen.size()==0){
+                if(lastPayment.isEmpty()){
+                    txtPayment.setText(getString(R.string.pci_payment));
+                    txtPayment.setTextColor(getResources().getColor(R.color.purple));
+                    imgPayment.setImageResource(R.drawable.ic_plus);
+                }else{
+                    paymentType = lastPayment.getPayment_type();
+                    if (paymentType.equals(Utils.TYPE_CC)) {
+                        String mask = lastPayment.getMasked_card();
+                        boolean isAlreadyDelete = true;
+                        for(int i=0;i<CommerceManager.arrCCScreen.size();i++){
+                            if(mask.equals(CommerceManager.arrCCScreen.get(i).getCreditcardInformation().getMasked_card())){
+                                isAlreadyDelete = false;
+                                break;
+                            }
+                        }
+
+                        if(isAlreadyDelete){
+                            txtPayment.setText(getString(R.string.pci_payment));
+                            txtPayment.setTextColor(getResources().getColor(R.color.purple));
+                            imgPayment.setImageResource(R.drawable.ic_plus);
+                        }
+                    }
+                }
+            }else{
+                paymentType = lastPayment.getPayment_type();
+                if (paymentType.equals(Utils.TYPE_CC)) {
+                    String mask = lastPayment.getMasked_card();
+                    boolean isAlreadyDelete = true;
+                    for(int i=0;i<CommerceManager.arrCCScreen.size();i++){
+                        if(mask.equals(CommerceManager.arrCCScreen.get(i).getCreditcardInformation().getMasked_card())){
+                            isAlreadyDelete = false;
+                            break;
+                        }
+                    }
+
+                    if(isAlreadyDelete){
+                        txtPayment.setText(getString(R.string.pci_payment));
+                        txtPayment.setTextColor(getResources().getColor(R.color.purple));
+                        imgPayment.setImageResource(R.drawable.ic_plus);
+                    }
+                }
+            }
         }
     }
 
@@ -626,6 +671,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
             public void onFailure(int responseCode, String message) {
                 dismissLoadingDialog();
                 Toast.makeText(ReservationInfoActivity.this, message, Toast.LENGTH_LONG).show();
+                pagerSlide.setCurrentItem(1);
             }
         });
 

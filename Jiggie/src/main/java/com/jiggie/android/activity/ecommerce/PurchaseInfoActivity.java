@@ -479,6 +479,51 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
             }
 
             checkEnability(arrTermItemView, txtPayment.getText().toString());
+        }else{
+            SummaryModel.Data.Product_summary.LastPayment lastPayment = productSummary.getLast_payment();
+            if(CommerceManager.arrCCScreen.size()==0){
+                if(lastPayment.isEmpty()){
+                    txtPayment.setText(getString(R.string.pci_payment));
+                    txtPayment.setTextColor(getResources().getColor(R.color.purple));
+                    imgPayment.setImageResource(R.drawable.ic_plus);
+                }else{
+                    paymentType = lastPayment.getPayment_type();
+                    if (paymentType.equals(Utils.TYPE_CC)) {
+                        String mask = lastPayment.getMasked_card();
+                        boolean isAlreadyDelete = true;
+                        for(int i=0;i<CommerceManager.arrCCScreen.size();i++){
+                            if(mask.equals(CommerceManager.arrCCScreen.get(i).getCreditcardInformation().getMasked_card())){
+                                isAlreadyDelete = false;
+                                break;
+                            }
+                        }
+
+                        if(isAlreadyDelete){
+                            txtPayment.setText(getString(R.string.pci_payment));
+                            txtPayment.setTextColor(getResources().getColor(R.color.purple));
+                            imgPayment.setImageResource(R.drawable.ic_plus);
+                        }
+                    }
+                }
+            }else{
+                paymentType = lastPayment.getPayment_type();
+                if (paymentType.equals(Utils.TYPE_CC)) {
+                    String mask = lastPayment.getMasked_card();
+                    boolean isAlreadyDelete = true;
+                    for(int i=0;i<CommerceManager.arrCCScreen.size();i++){
+                        if(mask.equals(CommerceManager.arrCCScreen.get(i).getCreditcardInformation().getMasked_card())){
+                            isAlreadyDelete = false;
+                            break;
+                        }
+                    }
+
+                    if(isAlreadyDelete){
+                        txtPayment.setText(getString(R.string.pci_payment));
+                        txtPayment.setTextColor(getResources().getColor(R.color.purple));
+                        imgPayment.setImageResource(R.drawable.ic_plus);
+                    }
+                }
+            }
         }
     }
 
@@ -546,6 +591,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
             public void onFailure(int responseCode, String message) {
                 dismissLoadingDialog();
                 Toast.makeText(PurchaseInfoActivity.this, message, Toast.LENGTH_LONG).show();
+                pagerSlide.setCurrentItem(1);
             }
         });
 

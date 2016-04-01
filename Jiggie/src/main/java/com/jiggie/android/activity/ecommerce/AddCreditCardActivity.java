@@ -232,6 +232,10 @@ public class AddCreditCardActivity extends ToolbarActivity {
 
         CommerceManager.arrCCScreen.add(new CCScreenModel(new CCModel.Data.Creditcard_information(maskedCard, Utils.BLANK, Utils.BLANK, Utils.TYPE_CC),
                 cardDetails, edt_cc_name.getText().toString()));
+        //data yg di local
+        CommerceManager.arrCCLocal.add(new CCScreenModel(new CCModel.Data.Creditcard_information(maskedCard, Utils.BLANK, Utils.BLANK, Utils.TYPE_CC),
+                cardDetails, edt_cc_name.getText().toString()));
+        //-------------
         setResult(RESULT_OK, new Intent());
         finish();
 

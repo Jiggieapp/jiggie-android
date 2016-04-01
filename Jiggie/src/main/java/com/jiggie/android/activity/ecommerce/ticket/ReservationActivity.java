@@ -75,7 +75,8 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
     int num_guest = 1;
     ProductListModel.Data.ProductList.Reservation detailReservation = null;
     String eventId, eventName, venueName, startTime, guestName, guestEmail, guestPhone, ticketId;
-    int max = 0, price;
+    int max = 0;
+    int price;
     EventDetailModel.Data.EventDetail eventDetail;
     SummaryModel.Data.Product_summary productSummary;
     ProgressDialog progressDialog;
@@ -107,9 +108,8 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
                     public void onSuccess(Object object) {
                         SummaryModel dataTemp = (SummaryModel) object;
                         dismissLoadingDialog();
-
-                        if(dataTemp!=null){
-                            productSummary = dataTemp.getData().getProduct_summary();
+                        productSummary = dataTemp.getData().getProduct_summary();
+                        if(productSummary!=null){
 
                             String responses = new Gson().toJson(dataTemp);
                             Utils.d("res", responses);
@@ -206,7 +206,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
             max = 0;
         }
 
-        price = Integer.parseInt(detailReservation.getPrice());
+        price = (int)Double.parseDouble(detailReservation.getPrice());
         ticketId = detailReservation.getTicket_id();
 
         lblType.setText(detailReservation.getName());
@@ -218,28 +218,23 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
 
         LoginModel loginModel = AccountManager.loadLogin();
 
-
-        guestName = App.getSharedPreferences().getString(Common.FIELD_GUEST_NAME, Utils.BLANK);
-        if (guestName.equals(Utils.BLANK)) {
-            guestName = loginModel.getUser_first_name() + " " + loginModel.getUser_last_name();
-        }
+        guestName = loginModel.getUser_first_name() + " " + loginModel.getUser_last_name();
         guestEmail = App.getSharedPreferences().getString(Common.FIELD_GUEST_EMAIL, Utils.BLANK);
-        if (guestEmail.equals(Utils.BLANK)) {
-            guestEmail = loginModel.getEmail();
-        }
+        guestEmail = loginModel.getEmail();
         guestPhone = App.getSharedPreferences().getString(Common.FIELD_GUEST_PHONE, Utils.BLANK);
+        guestPhone = AccountManager.loadSetting().getData().getPhone();
         if (guestPhone.equals(Utils.BLANK)) {
-            guestPhone = AccountManager.loadSetting().getData().getPhone();
-            if (guestPhone.equals(Utils.BLANK)) {
-                guestPhone = getString(R.string.phone_number);
-                txtGuestPhone.setTextColor(getResources().getColor(android.R.color.holo_red_light));
-            }
-
+            guestPhone = getString(R.string.phone_number);
+            txtGuestPhone.setTextColor(getResources().getColor(android.R.color.holo_red_light));
         }
 
         txtGuestName.setText(guestName);
         txtGuestEmail.setText(guestEmail + " | ");
-        txtGuestPhone.setText(guestPhone);
+        if(guestPhone.equals(getString(R.string.phone_number))){
+            txtGuestPhone.setText(guestPhone);
+        }else{
+            txtGuestPhone.setText("+"+guestPhone);
+        }
 
         checkEnability(guestName, guestEmail, guestPhone);
     }
@@ -260,7 +255,11 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
             guestPhone = data.getStringExtra(Common.FIELD_GUEST_PHONE);
             txtGuestName.setText(data.getStringExtra(Common.FIELD_GUEST_NAME));
             txtGuestEmail.setText(guestEmail + " | ");
-            txtGuestPhone.setText(guestPhone);
+            if(guestPhone.equals(getString(R.string.phone_number))){
+                txtGuestPhone.setText(guestPhone);
+            }else{
+                txtGuestPhone.setText("+"+guestPhone);
+            }
             txtGuestPhone.setTextColor(getResources().getColor(android.R.color.darker_gray));
 
             checkEnability(guestName, guestEmail, guestPhone);

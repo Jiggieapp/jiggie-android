@@ -3,6 +3,7 @@ package com.jiggie.android.activity.ecommerce;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
@@ -73,7 +74,6 @@ public class AddGuestActivity extends ToolbarActivity {
 
                 if (!isFieldError(guestName, guestEmail, guest62, guestPhoneN)) {
                     if (!guestName.isEmpty() && !guestEmail.isEmpty() && !guest62.isEmpty() && !guestPhoneN.isEmpty()) {
-                        App.getSharedPreferences().edit().putString(Common.FIELD_GUEST_NAME, guestName).putString(Common.FIELD_GUEST_EMAIL, guestEmail).putString(Common.FIELD_GUEST_PHONE, guestPhone).commit();
                         setResult(RESULT_OK, new Intent().putExtra(Common.FIELD_GUEST_NAME, guestName).putExtra(Common.FIELD_GUEST_EMAIL, guestEmail).putExtra(Common.FIELD_GUEST_PHONE, guestPhone));
                         finish();
                     } else {
@@ -144,8 +144,8 @@ public class AddGuestActivity extends ToolbarActivity {
 
                 // do something
                 textWatchEdited = true;
-                if(!str.contains("+")){
-                    str = "+"+str;
+                if (!str.contains("+")) {
+                    str = "+" + str;
                 }
                 edt_62.setText(str);
                 checkEnability();
@@ -224,7 +224,18 @@ public class AddGuestActivity extends ToolbarActivity {
             edt_phone.setTextColor(getResources().getColor(android.R.color.holo_red_light));
             edt_phone.setError(Utils.BLANK);
         }
+        if(!email.isEmpty()){
+            if(!isValidEmail(email)){
+                isError = true;
+                edt_email.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+                edt_email.setError(Utils.BLANK);
+            }
+        }
         return isError;
+    }
+
+    public final static boolean isValidEmail(CharSequence target) {
+        return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 
     private void checkEnability(){

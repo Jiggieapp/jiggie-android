@@ -54,7 +54,8 @@
         android:layout_marginLeft="@dimen/padding_standard"
         android:layout_marginRight="@dimen/padding_standard"
         android:layout_marginTop="@dimen/padding_standard_half"
-        android:inputType="text"/>
+        android:inputType="text"
+        android:singleLine="true"/>
 
     <com.rengwuxian.materialedittext.MaterialEditText
         android:id="@+id/edt_cc_number"
@@ -70,7 +71,9 @@
         android:layout_marginLeft="@dimen/padding_standard"
         android:layout_marginRight="@dimen/padding_standard"
         android:layout_marginTop="@dimen/padding_standard_half"
-        android:inputType="phone"/>
+        android:inputType="phone"
+        android:maxLength="19"
+        android:singleLine="true"/>
 
     <LinearLayout
         android:id="@+id/lin"
@@ -95,7 +98,8 @@
             android:textSize="16sp"
             android:layout_marginRight="@dimen/padding_standard_half"
             android:inputType="date"
-            android:layout_weight="0.5"/>
+            android:layout_weight="0.5"
+            android:singleLine="true"/>
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/edt_cc_cvv"
@@ -110,7 +114,8 @@
             android:textSize="16sp"
             android:layout_marginLeft="@dimen/padding_standard_half"
             android:inputType="numberPassword"
-            android:layout_weight="0.5"/>
+            android:layout_weight="0.5"
+            android:singleLine="true"/>
     </LinearLayout>
 
     <RelativeLayout
@@ -125,7 +130,8 @@
             android:layout_width="wrap_content"
             android:text="@string/cc_save"
             android:layout_centerInParent="true"
-            android:textColor="@color/common_plus_signin_btn_text_dark"/>
+            android:textColor="@color/common_plus_signin_btn_text_dark"
+            android:textSize="16sp"/>
     </RelativeLayout>
 
 
