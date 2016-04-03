@@ -81,6 +81,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
 
     @Override
     protected void onCreate() {
+        super.setTheme(R.style.AppCustomTheme);
         super.setContentView(R.layout.activity_ticket_detail);
         super.bindView();
 

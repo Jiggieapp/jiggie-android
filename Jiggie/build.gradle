@@ -27,6 +27,8 @@ android {
         renderscriptSupportModeEnabled true
         buildConfigField("String", "BASE_URL", "\"https://api.jiggieapp.com/\"")
         multiDexEnabled true
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
         configDebug {
@@ -42,14 +44,16 @@ android {
             storeFile file('../keystore/jiggie-release.jks')
         }
     }
+
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
             versionNameSuffix '-Dev'
             resValue "string", "app_name", "Jiggie Dev"
-            signingConfig signingConfigs.configDebug
             buildConfigField("String", "BASE_URL", "\"https://api-dev.jiggieapp.com/\"")
+            signingConfig signingConfigs.configDebug
         }
+
         release {
             minifyEnabled false
             resValue "string", "app_name", "Jiggie"
@@ -58,14 +62,19 @@ android {
         }
     }
 
-    /*productFlavors
-    {
-        staging {
-            applicationIdSuffix ".staging"
-            buildConfigField("boolean", "SHOW_VARIANT", "true")
-            buildConfigField("String", "ENV", "\"http://staging.api.com\"")
-        }
-    }*/
+    productFlavors
+            {
+                dev {
+                    applicationId "com.jiggie.android.dev"
+                    resValue "string", "app_name", "Jiggie Dev"
+                    buildConfigField("String", "BASE_URL", "\"https://api-dev.jiggieapp.com/\"")
+                    minSdkVersion 18
+                }
+
+                utest {
+                    minSdkVersion 18
+                }
+            }
 
     dexOptions {
         incremental true
@@ -80,10 +89,14 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
 
-    lintOptions
-            {
-                abortOnError false
-            }
+    lintOptions {
+        abortOnError false
+    }
+
+    packagingOptions {
+        pickFirst('META-INF/maven/com.google.guava/guava/pom.xml')
+        pickFirst('META-INF/maven/com.google.guava/guava/pom.properties')
+    }
 }
 
 allprojects {
@@ -125,4 +138,15 @@ dependencies {
     compile 'io.reactivex:rxjava:1.1.0'
     compile(name: 'VTAndroidAPI', ext: 'aar')
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
+
+    // App's dependencies, including test
+    compile 'com.android.support:support-annotations:23.1.1'
+
+    // Testing-only dependencies
+
+    //androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
+    androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.1'
+    androidTestCompile 'com.android.support.test:runner:0.5'
+    androidTestCompile 'com.android.support.test:rules:0.5'
+    androidTestCompile 'com.android.support.test.espresso:espresso-web:2.2.2'
 }

@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.facebook.login.widget.LoginButton;
 import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
@@ -46,6 +47,7 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
+import com.jiggie.android.model.LoginResultModel;
 import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.TagsListModel;
@@ -109,7 +111,8 @@ public class SignInFragment extends Fragment {
 
         EventBus.getDefault().register(this);
 
-        LoginManager.getInstance().registerCallback(this.callbackManager = CallbackManager.Factory.create(), this.facebookCallback);
+        LoginManager.getInstance().registerCallback(this.callbackManager = CallbackManager.Factory.create()
+                , this.facebookCallback);
 
         final ImagePagerIndicatorAdapter imagePagerIndicatorAdapter = new ImagePagerIndicatorAdapter(super.getActivity().getSupportFragmentManager(), this.imageViewPager);
         this.imagepagerIndicator.setAdapter(imagePagerIndicatorAdapter.getIndicatorAdapter());
@@ -161,7 +164,7 @@ public class SignInFragment extends Fragment {
     void btnSignInOnClick() {
         this.btnSignIn.setEnabled(false);
         this.progressDialog = App.showProgressDialog(getContext());
-
+        this.progressDialog.dismiss();
         new GCMRegistration(super.getContext(), new GCMRegistration.Listener() {
             @Override
             public boolean onGCMPreExecute() {
@@ -178,6 +181,7 @@ public class SignInFragment extends Fragment {
             @Override
             public void onGCMCompleted(String regId) {
                 gcmId = regId;
+                progressDialog.dismiss();
                 LoginManager.getInstance().logInWithReadPermissions(SignInFragment.this, Arrays.asList(FACEBOOK_PERMISSIONS));
             }
         }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
