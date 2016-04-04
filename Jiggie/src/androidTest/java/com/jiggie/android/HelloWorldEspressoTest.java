@@ -2,6 +2,8 @@ package com.jiggie.android;
 
 import android.app.Instrumentation;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.Espresso;
+import android.support.test.espresso.IdlingResource;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.UiDevice;
@@ -52,6 +54,12 @@ public class HelloWorldEspressoTest {
     @Test
     public void onSplashCreated() throws UiObjectNotFoundException {
         //onView(withText("Hello world!")).check(matches(isDisplayed()));
+        Log.v("inidihelloworldtest", "oke");
+    }
+
+    @Before
+    public void beforeOnSplashCreated() throws UiObjectNotFoundException
+    {
         onView(withId(R.id.btnSignIn))
                 .perform(click());
 
@@ -68,10 +76,16 @@ public class HelloWorldEspressoTest {
         userName.setText("wanceq_2804@hotmail.com");
         password.setText("untukm43Nfb");
         button.clickAndWaitForNewWindow();
+
+
+        /*// Now we wait
+        IdlingResource idlingResource = new ElapsedTimeIdlingResource(waitingTime);
+        Espresso.registerIdlingResources(idlingResource);*/
+
     }
 
-    private Instrumentation.ActivityResult onActivityResult()
+    /*private Instrumentation.ActivityResult onActivityResult()
     {
 
-    }
+    }*/
 }
