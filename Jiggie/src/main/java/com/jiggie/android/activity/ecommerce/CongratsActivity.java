@@ -3,6 +3,7 @@ package com.jiggie.android.activity.ecommerce;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -146,7 +147,7 @@ public class CongratsActivity extends ToolbarActivity {
                     txtTypeNumberFill.setText(String.valueOf(sucScreenCCModel.getData().getSuccess_screen().getOrder_number()));
                     txtGuestNameFill.setText(summary.getGuest_detail().getName());
                     txtStatusFill.setText(sucScreenCCModel.getData().getSuccess_screen().getPayment_status());
-                    String paymentType = sucScreenCCModel.getData().getSuccess_screen().getType();
+                    String paymentType = sucScreenCCModel.getData().getSuccess_screen().getPayment_type();
                     if(paymentType.equals(Utils.TYPE_CC)){
                         txtPaymentFill.setText(getString(R.string.section_credit_card));
                     }else if(paymentType.equals(Utils.TYPE_BP)){
@@ -213,7 +214,8 @@ public class CongratsActivity extends ToolbarActivity {
                         throw new RuntimeException(App.getErrorMessage(e), e);
                     }
 
-                    txtInstrucFill.setText(sucScreenCCModel.getData().getSuccess_screen().getInstructions());
+                    //txtInstrucFill.setText(sucScreenCCModel.getData().getSuccess_screen().getInstructions());
+                    txtInstrucFill.setText(Html.fromHtml(sucScreenCCModel.getData().getSuccess_screen().getInstructions()));
                     ArrayList<String> arrInclude = sucScreenCCModel.getData().getSuccess_screen().getTicket_include();
                     ArrayList<String> arrFineprint = sucScreenCCModel.getData().getSuccess_screen().getFine_print();
                     for(int i=0;i<arrInclude.size();i++){

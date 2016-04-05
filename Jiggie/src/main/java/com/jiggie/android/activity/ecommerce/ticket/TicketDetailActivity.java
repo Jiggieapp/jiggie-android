@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -80,6 +81,11 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
     ProgressDialog progressDialog;
     @Bind(R.id.txt_ticket_desc)
     TextView txtTicketDesc;
+    boolean isSoldOut = false;
+    @Bind(R.id.purchaseContainer)
+    LinearLayout purchaseContainer;
+    @Bind(R.id.txt_sold_out)
+    TextView txtSoldOut;
 
     @Override
     protected void onCreate() {
@@ -107,7 +113,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                         SummaryModel dataTemp = (SummaryModel) object;
                         dismissLoadingDialog();
                         productSummary = dataTemp.getData().getProduct_summary();
-                        if(productSummary!=null){
+                        if (productSummary != null) {
 
 
                             String responses = new Gson().toJson(dataTemp);
@@ -122,7 +128,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                             i.putExtra(eventDetail.getClass().getName(), eventDetail);
 
                             startActivity(i);
-                        }else{
+                        } else {
                             Toast.makeText(TicketDetailActivity.this, getString(R.string.msg_wrong), Toast.LENGTH_LONG).show();
                         }
                     }
@@ -197,17 +203,26 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
         } catch (ParseException e) {
             throw new RuntimeException(App.getErrorMessage(e), e);
         }
-        lblQuantity.setText(String.valueOf(quantity));
 
         max = Integer.parseInt(detailPurchase.getMax_purchase());
-        price = (int)Double.parseDouble(detailPurchase.getPrice());
+        price = (int) Double.parseDouble(detailPurchase.getPrice());
         ticketId = detailPurchase.getTicket_id();
 
         lblType.setText(detailPurchase.getName());
         lblTypeCaption.setText(detailPurchase.getSummary());
         lblTypePrice.setText(StringUtility.getRupiahFormat(detailPurchase.getPrice()));
         lblTypePriceCaption.setText(getString(R.string.pr_max_purchase) + " " + max);
-        lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(price)));
+
+        if(detailPurchase.getStatus().equals(Common.FIELD_STATUS_SOLD_OUT)||detailPurchase.getQuantity()==0){
+            purchaseContainer.setVisibility(View.GONE);
+            txtSoldOut.setVisibility(View.VISIBLE);
+            isSoldOut = true;
+        }else{
+            lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(price)));
+            lblQuantity.setText(String.valueOf(quantity));
+            isSoldOut = false;
+        }
+
         txtTicketDesc.setText(detailPurchase.getDescription());
 
         LoginModel loginModel = AccountManager.loadLogin();
@@ -223,10 +238,10 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
 
         txtGuestName.setText(guestName);
         txtGuestEmail.setText(guestEmail + " | ");
-        if(guestPhone.equals(getString(R.string.phone_number))){
+        if (guestPhone.equals(getString(R.string.phone_number))) {
             txtGuestPhone.setText(guestPhone);
-        }else{
-            txtGuestPhone.setText("+"+guestPhone);
+        } else {
+            txtGuestPhone.setText("+" + guestPhone);
         }
 
         checkEnability(guestName, guestEmail, guestPhone);
@@ -268,10 +283,10 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
             guestPhone = data.getStringExtra(Common.FIELD_GUEST_PHONE);
             txtGuestName.setText(data.getStringExtra(Common.FIELD_GUEST_NAME));
             txtGuestEmail.setText(guestEmail + " | ");
-            if(guestPhone.equals(getString(R.string.phone_number))){
+            if (guestPhone.equals(getString(R.string.phone_number))) {
                 txtGuestPhone.setText(guestPhone);
-            }else{
-                txtGuestPhone.setText("+"+guestPhone);
+            } else {
+                txtGuestPhone.setText("+" + guestPhone);
             }
             txtGuestPhone.setTextColor(getResources().getColor(android.R.color.darker_gray));
 
@@ -294,21 +309,27 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
     }
 
     private void checkEnability(String name, String email, String phoneNumber) {
-        boolean isItEnable = true;
-        if (name.equals(Utils.BLANK)) {
-            isItEnable = false;
-        }
-        if (email.equals(Utils.BLANK)) {
-            isItEnable = false;
-        }
-        if (phoneNumber.equals(Utils.BLANK) || phoneNumber.equals(getString(R.string.phone_number))) {
-            isItEnable = false;
+
+        if(isSoldOut){
+            btnDone.setEnabled(false);
+        }else{
+            boolean isItEnable = true;
+            if (name.equals(Utils.BLANK)) {
+                isItEnable = false;
+            }
+            if (email.equals(Utils.BLANK)) {
+                isItEnable = false;
+            }
+            if (phoneNumber.equals(Utils.BLANK) || phoneNumber.equals(getString(R.string.phone_number))) {
+                isItEnable = false;
+            }
+
+            if (isItEnable) {
+                btnDone.setEnabled(true);
+            } else {
+                btnDone.setEnabled(false);
+            }
         }
 
-        if (isItEnable) {
-            btnDone.setEnabled(true);
-        } else {
-            btnDone.setEnabled(false);
-        }
     }
 }

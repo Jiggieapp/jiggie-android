@@ -3,10 +3,9 @@ package com.jiggie.android.activity.ecommerce;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.text.TextUtils;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,12 +26,8 @@ import com.jiggie.android.model.SucScreenWalkthroughModel;
 import com.jiggie.android.model.SummaryModel;
 import com.jiggie.android.view.ContainerStepView;
 import com.jiggie.android.view.CountdownTimerView;
-import com.jiggie.android.view.StepView;
 
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
@@ -41,7 +36,7 @@ import butterknife.ButterKnife;
 /**
  * Created by LTE on 3/6/2016.
  */
-public class HowToPayActivity extends ToolbarActivity{
+public class HowToPayActivity extends ToolbarActivity {
 
     RelativeLayout rel_view_orders;
     TextView txt_t_amount_fill, txt_howtopay, txt_close, txt_to_fill;
@@ -57,6 +52,8 @@ public class HowToPayActivity extends ToolbarActivity{
     SucScreenVABPModel sucScreenVABPModel;
     PurchaseHistoryModel.Data.Order_list.Order order;
     private final static String TAG = HowToPayActivity.class.getSimpleName();
+    RelativeLayout relContent;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,10 +65,10 @@ public class HowToPayActivity extends ToolbarActivity{
         fromOrderList = a.getBooleanExtra(Common.FIELD_FROM_ORDER_LIST, false);
         order_id = a.getLongExtra(Common.FIELD_ORDER_ID, 0);
 
-        if(fromOrderList){
+        if (fromOrderList) {
             event = a.getParcelableExtra(PurchaseHistoryModel.Data.Order_list.Event.class.getName());
             order = a.getParcelableExtra(PurchaseHistoryModel.Data.Order_list.Order.class.getName());
-        }else {
+        } else {
             productSummary = a.getParcelableExtra(SummaryModel.Data.Product_summary.class.getName());
             eventDetail = a.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
         }
@@ -80,14 +77,16 @@ public class HowToPayActivity extends ToolbarActivity{
         initView();
     }
 
-    private void initView(){
+    private void initView() {
         txt_t_amount_fill = (TextView) findViewById(R.id.txt_t_amount_fill);
         txt_t_limit_fill = (CountdownTimerView) findViewById(R.id.txt_t_limit_fill);
         txt_howtopay = (TextView) findViewById(R.id.txt_howtopay);
         txt_to_fill = (TextView) findViewById(R.id.txt_to_fill);
         rel_view_orders = (RelativeLayout) findViewById(R.id.rel_view_orders);
-        lin_con_step = (LinearLayout)findViewById(R.id.lin_con_step);
-        txt_close = (TextView)findViewById(R.id.txt_close);
+        lin_con_step = (LinearLayout) findViewById(R.id.lin_con_step);
+        txt_close = (TextView) findViewById(R.id.txt_close);
+        relContent = (RelativeLayout)findViewById(R.id.rel_content);
+        progressBar = (ProgressBar)findViewById(R.id.progressBar);
 
         rel_view_orders.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,63 +100,68 @@ public class HowToPayActivity extends ToolbarActivity{
         txt_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isWalkthrough){
-                    if(!fromOrderList){
+                if (!isWalkthrough) {
+                    if (!fromOrderList) {
                         Intent i = new Intent(HowToPayActivity.this, MainActivity.class);
                         //i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(i);
                         finish();
-                    }else{
+                    } else {
                         finish();
                     }
-                }else{
+                } else {
                     finish();
                 }
 
             }
         });
 
-        if(isWalkthrough){
+        relContent.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+
+        if (isWalkthrough) {
             sendMixpanel(productSummary, eventDetail);
             rel_view_orders.setVisibility(View.GONE);
             CommerceManager.loaderSucScreenWalkthrough(new CommerceManager.OnResponseListener() {
                 @Override
                 public void onSuccess(Object object) {
-                    SucScreenWalkthroughModel sucScreenVABPModel = (SucScreenWalkthroughModel)object;
-                    if(sucScreenVABPModel!=null){
+                    SucScreenWalkthroughModel sucScreenVABPModel = (SucScreenWalkthroughModel) object;
+                    if (sucScreenVABPModel != null) {
                         ArrayList<SucScreenWalkthroughModel.Data.WalkthroughPayment.BpStep.Step_payment> stepPaymentBP = sucScreenVABPModel.getData().getWalkthrough_payment().getBp_step().getStep_payment();
                         ArrayList<SucScreenWalkthroughModel.Data.WalkthroughPayment.VaStep.Step_payment> stepPaymentVA = sucScreenVABPModel.getData().getWalkthrough_payment().getVa_step().getStep_payment();
                         int sizeStepBP = stepPaymentBP.size();
                         int sizeStepVA = stepPaymentVA.size();
 
-                        for(int i=0;i<sizeStepBP;i++){
+                        for (int i = 0; i < sizeStepBP; i++) {
                             ContainerStepView containerStepView;
                             String header = stepPaymentBP.get(i).getHeader();
                             containerStepView = new ContainerStepView(HowToPayActivity.this, header, stepPaymentBP.get(i).getStep());
                             lin_con_step.addView(containerStepView);
                         }
 
-                        for(int i=0;i<sizeStepVA;i++){
+                        for (int i = 0; i < sizeStepVA; i++) {
                             ContainerStepView containerStepView;
                             String header = stepPaymentVA.get(i).getHeader();
                             containerStepView = new ContainerStepView(HowToPayActivity.this, header, stepPaymentVA.get(i).getStep());
                             lin_con_step.addView(containerStepView);
                         }
-                    }else{
+                    } else {
                         Toast.makeText(HowToPayActivity.this, getString(R.string.msg_wrong), Toast.LENGTH_LONG).show();
                     }
 
-
+                    relContent.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
                 }
 
                 @Override
                 public void onFailure(int responseCode, String message) {
-
+                    relContent.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
                 }
             });
-        }else{
-            if(fromOrderList){
+        } else {
+            if (fromOrderList) {
                 rel_view_orders.setVisibility(View.GONE);
             }
             CommerceManager.loaderSucScreenVABP(String.valueOf(order_id), new CommerceManager.OnResponseListener() {
@@ -252,11 +256,14 @@ public class HowToPayActivity extends ToolbarActivity{
                         Toast.makeText(HowToPayActivity.this, getString(R.string.msg_wrong), Toast.LENGTH_LONG).show();
                     }
 
+                    relContent.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
                 }
 
                 @Override
                 public void onFailure(int responseCode, String message) {
-
+                    relContent.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
                 }
             });
         }
@@ -264,23 +271,23 @@ public class HowToPayActivity extends ToolbarActivity{
 
     }
 
-    private void sendMixpanel(SummaryModel.Data.Product_summary productSummary, EventDetailModel.Data.EventDetail eventDetail){
+    private void sendMixpanel(SummaryModel.Data.Product_summary productSummary, EventDetailModel.Data.EventDetail eventDetail) {
         CommEventMixpanelModel commEventMixpanelModel = new CommEventMixpanelModel(eventDetail.getTitle(), eventDetail.getVenue_name(), eventDetail.getVenue().getCity(), eventDetail.getStart_datetime_str(),
                 eventDetail.getEnd_datetime_str(), eventDetail.getTags(), eventDetail.getDescription(), productSummary.getProduct_list().get(0).getName(), productSummary.getProduct_list().get(0).getTicket_type(),
                 productSummary.getTotal_price(), productSummary.getProduct_list().get(0).getMax_buy());
         App.getInstance().trackMixPanelCommerce(Utils.COMM_VA_INSTRUCTION, commEventMixpanelModel);
     }
 
-    private void sendMixpanel(SucScreenVABPModel sucScreenVABPModel){
+    private void sendMixpanel(SucScreenVABPModel sucScreenVABPModel) {
         SucScreenVABPModel.Data.SuccessScreen successScreen = sucScreenVABPModel.getData().getSuccess_screen();
         //reservation type not handle yet
         CommEventMixpanelModel commEventMixpanelModel = null;
-        if(fromOrderList){
+        if (fromOrderList) {
             commEventMixpanelModel = new CommEventMixpanelModel(event.getTitle(), event.getVenue_name(), event.getLocation(), event.getStart_datetime_str(),
                     event.getEnd_datetime_str(), event.getTags(), event.getDescription(), order.getProduct_list().get(0).getName(), order.getProduct_list().get(0).getTicket_type(),
                     order.getTotal_price(), order.getProduct_list().get(0).getMax_buy(), successScreen.getCreated_at(), order.getProduct_list().get(0).getNum_buy(),
                     successScreen.getAmount(), "0", successScreen.getType(), Utils.BLANK, false);
-        }else{
+        } else {
             commEventMixpanelModel = new CommEventMixpanelModel(eventDetail.getTitle(), eventDetail.getVenue_name(), eventDetail.getVenue().getCity(), eventDetail.getStart_datetime_str(),
                     eventDetail.getEnd_datetime_str(), eventDetail.getTags(), eventDetail.getDescription(), productSummary.getProduct_list().get(0).getName(), productSummary.getProduct_list().get(0).getTicket_type(),
                     productSummary.getTotal_price(), productSummary.getProduct_list().get(0).getMax_buy(), successScreen.getCreated_at(), productSummary.getProduct_list().get(0).getNum_buy(),
@@ -293,8 +300,8 @@ public class HowToPayActivity extends ToolbarActivity{
     @Override
     protected void onStop() {
         super.onStop();
-        if(!isWalkthrough){
-            if(countDownTimer!=null)
+        if (!isWalkthrough) {
+            if (countDownTimer != null)
                 countDownTimer.cancel();
         }
 
@@ -303,17 +310,17 @@ public class HowToPayActivity extends ToolbarActivity{
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if(!isWalkthrough){
-            if(!fromOrderList){
+        if (!isWalkthrough) {
+            if (!fromOrderList) {
                 Intent i = new Intent(HowToPayActivity.this, MainActivity.class);
                 //i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(i);
                 finish();
-            }else {
+            } else {
                 finish();
             }
-        }else {
+        } else {
             finish();
         }
 

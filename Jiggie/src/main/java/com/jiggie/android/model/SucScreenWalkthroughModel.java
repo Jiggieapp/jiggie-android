@@ -75,11 +75,11 @@ public final class SucScreenWalkthroughModel {
 
                 public static final class Step_payment {
                     public final String header;
-                    public final ArrayList<String> step;
+                    public final ArrayList<String> steps;
 
-                    public Step_payment(String header, ArrayList<String> step){
+                    public Step_payment(String header, ArrayList<String> steps){
                         this.header = header;
-                        this.step = step;
+                        this.steps = steps;
                     }
 
                     public String getHeader() {
@@ -87,7 +87,7 @@ public final class SucScreenWalkthroughModel {
                     }
 
                     public ArrayList<String> getStep() {
-                        return step;
+                        return steps;
                     }
                 }
             }
@@ -111,11 +111,11 @@ public final class SucScreenWalkthroughModel {
 
                 public static final class Step_payment {
                     public final String header;
-                    public final ArrayList<String> step;
+                    public final ArrayList<String> steps;
 
-                    public Step_payment(String header, ArrayList<String> step){
+                    public Step_payment(String header, ArrayList<String> steps){
                         this.header = header;
-                        this.step = step;
+                        this.steps = steps;
                     }
 
                     public String getHeader() {
@@ -123,7 +123,7 @@ public final class SucScreenWalkthroughModel {
                     }
 
                     public ArrayList<String> getStep() {
-                        return step;
+                        return steps;
                     }
                 }
             }
