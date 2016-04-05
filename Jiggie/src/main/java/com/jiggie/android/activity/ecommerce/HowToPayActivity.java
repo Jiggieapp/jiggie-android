@@ -40,7 +40,7 @@ public class HowToPayActivity extends ToolbarActivity {
 
     RelativeLayout rel_view_orders;
     TextView txt_t_amount_fill, txt_howtopay, txt_close, txt_to_fill;
-    CountdownTimerView txt_t_limit_fill;
+    TextView txt_t_limit_fill;
     CountDownTimer countDownTimer;
     LinearLayout lin_con_step;
     long order_id;
@@ -79,7 +79,7 @@ public class HowToPayActivity extends ToolbarActivity {
 
     private void initView() {
         txt_t_amount_fill = (TextView) findViewById(R.id.txt_t_amount_fill);
-        txt_t_limit_fill = (CountdownTimerView) findViewById(R.id.txt_t_limit_fill);
+        txt_t_limit_fill = (TextView) findViewById(R.id.txt_t_limit_fill);
         txt_howtopay = (TextView) findViewById(R.id.txt_howtopay);
         txt_to_fill = (TextView) findViewById(R.id.txt_to_fill);
         rel_view_orders = (RelativeLayout) findViewById(R.id.rel_view_orders);
@@ -191,56 +191,6 @@ public class HowToPayActivity extends ToolbarActivity {
 
                         countDownTimer = new CountDownTimer(StringUtility.getCountdownTime(sucScreenVABPModel.getData().getSuccess_screen().getTimelimit()), 1000) {
 
-                            long hour, minute;
-                            long second;
-                            boolean isFirstTime = true;
-
-                            @Override
-                            public void onTick(long millisUntilFinished) {
-
-                                if (isFirstTime) {
-                                    hour = ((millisUntilFinished / 1000) / 60) / 60;
-                                    minute = ((millisUntilFinished / 1000) / 60) / 3;
-                                    second = TimeUnit.MILLISECONDS.toSeconds(minute);
-                                }
-
-                                if (minute == 0) {
-                                    minute = 59;
-                                    hour--;
-                                }
-                                if (second == 0) {
-                                    second = 60;
-                                    if (!isFirstTime)
-                                        minute--;
-                                }
-
-                                if (isFirstTime)
-                                    isFirstTime = false;
-
-                                second--;
-                                txt_t_limit_fill.setText(StringUtility.getTimeFormat(hour, minute, second));
-                            }
-
-                            @Override
-                            public void onFinish() {
-                                txt_t_limit_fill.setText("Expired");
-                            }
-                        }.start();
-
-                        /*long countdown = 0;
-                        String timelimit = sucScreenVABPModel.getData().getSuccess_screen().getTimelimit();
-                        try {
-                            if (!TextUtils.isEmpty(timelimit)){
-                                final Date date = Common.ISO8601_DATE_FORMAT.parse(timelimit);
-                                final Calendar cal = Calendar.getInstance();
-                                countdown = cal.getTimeInMillis();
-                            }
-                        } catch (ParseException e) {
-                            throw new RuntimeException(e.getMessage(), e);
-                        }
-
-                        txt_t_limit_fill.setTime(countdown);
-                        txt_t_limit_fill.setOnTimerListener(new CountdownTimerView.TimerListener() {
                             @Override
                             public void onTick(long millisUntilFinished) {
                                 txt_t_limit_fill.setText(StringUtility.getTimeFormat(millisUntilFinished));
@@ -250,7 +200,7 @@ public class HowToPayActivity extends ToolbarActivity {
                             public void onFinish() {
                                 txt_t_limit_fill.setText("Expired");
                             }
-                        });*/
+                        }.start();
 
                     } else {
                         Toast.makeText(HowToPayActivity.this, getString(R.string.msg_wrong), Toast.LENGTH_LONG).show();
