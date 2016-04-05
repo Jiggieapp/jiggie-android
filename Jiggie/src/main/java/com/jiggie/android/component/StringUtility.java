@@ -135,17 +135,13 @@ public class StringUtility {
         }
     }
 
-    public static String getTimeFormat(long hour, long minute, long second){
+    public static String getTimeFormat(long milliseconds){
 
-        /*long hour = TimeUnit.MILLISECONDS.toHours(milisecond);
-        long minute = (TimeUnit.MILLISECONDS.toMinutes(milisecond)/hour);
-        long second = (TimeUnit.MILLISECONDS.toSeconds(milisecond)/minute);*/
+        int seconds = (int) (milliseconds / 1000) % 60 ;
+        int minutes = (int) ((milliseconds / (1000*60)) % 60);
+        int hours   = (int) ((milliseconds / (1000*60*60)) % 24);
 
-        /*long hour = ((milisecond/1000)/60)/60;
-        long minute = ((milisecond/1000)/60)/3;
-        long second = TimeUnit.MILLISECONDS.toSeconds(minute);*/
-
-        String time = String.format("%02d:%02d:%02d",hour,minute,second);
+        String time = String.format("%02d:%02d:%02d",hours,minutes,seconds);
         return time;
     }
 
