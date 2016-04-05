@@ -18,7 +18,7 @@
 
     <item
         android:id="@+id/action_orderlist"
-        android:title="@string/order_list"
+        android:title="@string/purchase_history"
         app:showAsAction="never"
         android:orderInCategory="3"/>
 

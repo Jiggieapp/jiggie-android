@@ -217,10 +217,24 @@ public class AddCreditCardActivity extends ToolbarActivity {
             isError = true;
             edt_cvv.setTextColor(getResources().getColor(android.R.color.holo_red_light));
             edt_cvv.setError(Utils.BLANK);
-        }if(date.isEmpty()){
+        }
+
+        if(date.isEmpty()){
             isError = true;
             edt_date.setTextColor(getResources().getColor(android.R.color.holo_red_light));
             edt_date.setError(Utils.BLANK);
+        }else{
+            Calendar c1 = Calendar.getInstance();
+            c1.set(year, month - 1, 1);
+
+            Calendar c2 = Calendar.getInstance();
+            c2.set(c2.get(Calendar.YEAR), c2.get(Calendar.MONTH), 1);
+
+            if(c1.before(c2)){
+                isError = true;
+                edt_date.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+                edt_date.setError(Utils.BLANK);
+            }
         }
         return isError;
     }
