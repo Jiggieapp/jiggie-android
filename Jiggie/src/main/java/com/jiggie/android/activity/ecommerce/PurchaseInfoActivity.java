@@ -486,13 +486,20 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                     txtPayment.setText(getString(R.string.pci_payment));
                     txtPayment.setTextColor(getResources().getColor(R.color.purple));
                     imgPayment.setImageResource(R.drawable.ic_plus);
+                }
+            }else{
+                if(lastPayment.isEmpty()){
+                    txtPayment.setText(getString(R.string.pci_payment));
+                    txtPayment.setTextColor(getResources().getColor(R.color.purple));
+                    imgPayment.setImageResource(R.drawable.ic_plus);
                 }else{
                     paymentType = lastPayment.getPayment_type();
                     if (paymentType.equals(Utils.TYPE_CC)) {
                         String mask = lastPayment.getMasked_card();
                         boolean isAlreadyDelete = true;
                         for(int i=0;i<CommerceManager.arrCCScreen.size();i++){
-                            if(mask.equals(CommerceManager.arrCCScreen.get(i).getCreditcardInformation().getMasked_card())){
+                            String maskB = CommerceManager.arrCCScreen.get(i).getCreditcardInformation().getMasked_card();
+                            if(mask.equals(maskB)){
                                 isAlreadyDelete = false;
                                 break;
                             }
@@ -503,24 +510,6 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                             txtPayment.setTextColor(getResources().getColor(R.color.purple));
                             imgPayment.setImageResource(R.drawable.ic_plus);
                         }
-                    }
-                }
-            }else{
-                paymentType = lastPayment.getPayment_type();
-                if (paymentType.equals(Utils.TYPE_CC)) {
-                    String mask = lastPayment.getMasked_card();
-                    boolean isAlreadyDelete = true;
-                    for(int i=0;i<CommerceManager.arrCCScreen.size();i++){
-                        if(mask.equals(CommerceManager.arrCCScreen.get(i).getCreditcardInformation().getMasked_card())){
-                            isAlreadyDelete = false;
-                            break;
-                        }
-                    }
-
-                    if(isAlreadyDelete){
-                        txtPayment.setText(getString(R.string.pci_payment));
-                        txtPayment.setTextColor(getResources().getColor(R.color.purple));
-                        imgPayment.setImageResource(R.drawable.ic_plus);
                     }
                 }
             }

@@ -3,6 +3,7 @@ package com.jiggie.android.activity.ecommerce;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -25,9 +26,13 @@ import com.jiggie.android.model.SucScreenVABPModel;
 import com.jiggie.android.model.SucScreenWalkthroughModel;
 import com.jiggie.android.model.SummaryModel;
 import com.jiggie.android.view.ContainerStepView;
+import com.jiggie.android.view.CountdownTimerView;
 import com.jiggie.android.view.StepView;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
@@ -39,7 +44,8 @@ import butterknife.ButterKnife;
 public class HowToPayActivity extends ToolbarActivity{
 
     RelativeLayout rel_view_orders;
-    TextView txt_t_limit_fill, txt_t_amount_fill, txt_howtopay, txt_close, txt_to_fill;
+    TextView txt_t_amount_fill, txt_howtopay, txt_close, txt_to_fill;
+    CountdownTimerView txt_t_limit_fill;
     CountDownTimer countDownTimer;
     LinearLayout lin_con_step;
     long order_id;
@@ -76,7 +82,7 @@ public class HowToPayActivity extends ToolbarActivity{
 
     private void initView(){
         txt_t_amount_fill = (TextView) findViewById(R.id.txt_t_amount_fill);
-        txt_t_limit_fill = (TextView) findViewById(R.id.txt_t_limit_fill);
+        txt_t_limit_fill = (CountdownTimerView) findViewById(R.id.txt_t_limit_fill);
         txt_howtopay = (TextView) findViewById(R.id.txt_howtopay);
         txt_to_fill = (TextView) findViewById(R.id.txt_to_fill);
         rel_view_orders = (RelativeLayout) findViewById(R.id.rel_view_orders);
@@ -216,6 +222,32 @@ public class HowToPayActivity extends ToolbarActivity{
                                 txt_t_limit_fill.setText("Expired");
                             }
                         }.start();
+
+                        /*long countdown = 0;
+                        String timelimit = sucScreenVABPModel.getData().getSuccess_screen().getTimelimit();
+                        try {
+                            if (!TextUtils.isEmpty(timelimit)){
+                                final Date date = Common.ISO8601_DATE_FORMAT.parse(timelimit);
+                                final Calendar cal = Calendar.getInstance();
+                                countdown = cal.getTimeInMillis();
+                            }
+                        } catch (ParseException e) {
+                            throw new RuntimeException(e.getMessage(), e);
+                        }
+
+                        txt_t_limit_fill.setTime(countdown);
+                        txt_t_limit_fill.setOnTimerListener(new CountdownTimerView.TimerListener() {
+                            @Override
+                            public void onTick(long millisUntilFinished) {
+                                txt_t_limit_fill.setText(StringUtility.getTimeFormat(millisUntilFinished));
+                            }
+
+                            @Override
+                            public void onFinish() {
+                                txt_t_limit_fill.setText("Expired");
+                            }
+                        });*/
+
                     } else {
                         Toast.makeText(HowToPayActivity.this, getString(R.string.msg_wrong), Toast.LENGTH_LONG).show();
                     }

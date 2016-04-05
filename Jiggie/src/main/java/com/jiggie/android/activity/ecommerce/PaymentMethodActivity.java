@@ -111,7 +111,7 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
                 isLoading = false;
                 swipeRefresh.setRefreshing(false);
                 CCModel ccModel = (CCModel) object;
-                if(ccModel!=null){
+                if (ccModel != null) {
                     ArrayList<CCModel.Data.Creditcard_information> ccInformation = ccModel.getData().getCreditcard_informations();
 
                     for (int i = 0; i < ccInformation.size(); i++) {
@@ -120,7 +120,7 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
 
                     section2Start = CommerceManager.arrCCScreen.size() + 1;
 
-                }else{
+                } else {
                     section2Start = 0 + 1;
                     Toast.makeText(PaymentMethodActivity.this, getString(R.string.msg_wrong), Toast.LENGTH_LONG).show();
                 }
@@ -138,7 +138,7 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
             public void onFailure(int responseCode, String message) {
                 isLoading = false;
                 swipeRefresh.setRefreshing(false);
-                if(responseCode==Utils.CODE_EMPTY_DATA){
+                if (responseCode == Utils.CODE_EMPTY_DATA) {
                     section2Start = 0 + 1;
                     setAdapters(section2Start, CommerceManager.arrCCScreen);
                 }
@@ -215,8 +215,16 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
                         }
                     });
                 }else{
+
+                    String m1 = CommerceManager.arrCCScreen.get(position).getCreditcardInformation().getMasked_card();
+
                     CommerceManager.arrCCScreen.remove(position);
-                    CommerceManager.arrCCLocal.remove(position);
+
+                    for(int i=0;i<CommerceManager.arrCCLocal.size();i++){
+                        if(m1.equals(CommerceManager.arrCCLocal.get(i).getCreditcardInformation().getMasked_card()))
+                            CommerceManager.arrCCLocal.remove(i);
+                    }
+
                     section2Start = CommerceManager.arrCCScreen.size() + 1;
                     setAdapters(section2Start, CommerceManager.arrCCScreen);
                 }

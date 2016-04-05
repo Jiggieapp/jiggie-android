@@ -118,11 +118,11 @@ public final class SucScreenVABPModel
             public static class StepPayment{
 
                 public String header;
-                public ArrayList<String> step = new ArrayList<String>();
+                public ArrayList<String> steps = new ArrayList<String>();
 
-                public StepPayment(String header, ArrayList<String> step) {
+                public StepPayment(String header, ArrayList<String> steps) {
                     this.header = header;
-                    this.step = step;
+                    this.steps = steps;
                 }
 
                 public String getHeader() {
@@ -130,7 +130,7 @@ public final class SucScreenVABPModel
                 }
 
                 public ArrayList<String> getStep() {
-                    return step;
+                    return steps;
                 }
             }
         }
