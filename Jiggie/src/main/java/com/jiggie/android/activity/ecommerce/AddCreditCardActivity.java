@@ -270,6 +270,7 @@ public class AddCreditCardActivity extends ToolbarActivity {
         datePickerDialog.setContentView(R.layout.dialog_datepicker);
 
         final DatePicker datePicker = (DatePicker)datePickerDialog.findViewById(R.id.datepicker);
+
         Button btn_ok = (Button)datePickerDialog.findViewById(R.id.btn_ok);
         Button btn_cancel = (Button)datePickerDialog.findViewById(R.id.btn_cancel);
 
@@ -364,6 +365,8 @@ public class AddCreditCardActivity extends ToolbarActivity {
                 }
             }
         }
+
+        //datePicker.setMinDate(System.currentTimeMillis() - 1000);
 
     }
 
