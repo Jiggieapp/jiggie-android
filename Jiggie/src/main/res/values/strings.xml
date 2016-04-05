@@ -364,4 +364,5 @@
     <string name="estimated_balance">ESTIMATED BALANCE (PAY AT VENUE)</string>
 
     <string name="msg_wrong">Something wrong</string>
+    <string name="sold_out">SOLD OUT</string>
 </resources>

@@ -45,18 +45,20 @@ public final class SucScreenCCModel {
             public final String order_status;
             public final String payment_status;
             public final String type;
+            public final String payment_type;
             public final Event event;
             public final Summary summary;
             public final String instructions;
             public final ArrayList<String> ticket_include;
             public final ArrayList<String> fine_print;
 
-            public Success_screen(String order_id, String order_number, String order_status, String payment_status, String type, Event event, Summary summary, String instructions, ArrayList<String> ticket_include, ArrayList<String> fine_print){
+            public Success_screen(String order_id, String order_number, String order_status, String payment_status, String type, String payment_type, Event event, Summary summary, String instructions, ArrayList<String> ticket_include, ArrayList<String> fine_print){
                 this.order_id = order_id;
                 this.order_number = order_number;
                 this.order_status = order_status;
                 this.payment_status = payment_status;
                 this.type = type;
+                this.payment_type = payment_type;
                 this.event = event;
                 this.summary = summary;
                 this.instructions = instructions;
@@ -82,6 +84,10 @@ public final class SucScreenCCModel {
 
             public String getType() {
                 return type;
+            }
+
+            public String getPayment_type() {
+                return payment_type;
             }
 
             public Event getEvent() {

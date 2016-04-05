@@ -101,8 +101,9 @@ public class ProductListModel {
                 String max_purchase;
                 int payment_timelimit;
                 String summary;
+                String status;
 
-                public Purchase(String ticket_id, String name, String ticket_type, int quantity, String admin_fee, String tax_percent, String tax_amount, String tip_percent, String tip_amount, String price, String total_price, String description, String max_purchase, int payment_timelimit, String summary){
+                public Purchase(String ticket_id, String name, String ticket_type, int quantity, String admin_fee, String tax_percent, String tax_amount, String tip_percent, String tip_amount, String price, String total_price, String description, String max_purchase, int payment_timelimit, String summary, String status){
                     this.ticket_id = ticket_id;
                     this.name = name;
                     this.ticket_type = ticket_type;
@@ -118,6 +119,7 @@ public class ProductListModel {
                     this.max_purchase = max_purchase;
                     this.payment_timelimit = payment_timelimit;
                     this.summary = summary;
+                    this.status = status;
                 }
 
                 protected Purchase(Parcel in) {
@@ -136,6 +138,7 @@ public class ProductListModel {
                     this.max_purchase = in.readString();
                     this.payment_timelimit = in.readInt();
                     this.summary = in.readString();
+                    this.status = in.readString();
                 }
 
                 @Override
@@ -160,6 +163,7 @@ public class ProductListModel {
                     dest.writeString(this.max_purchase);
                     dest.writeInt(this.payment_timelimit);
                     dest.writeString(this.summary);
+                    dest.writeString(this.status);
                 }
 
                 public static final Creator<Purchase> CREATOR = new Creator<Purchase>() {
@@ -228,6 +232,10 @@ public class ProductListModel {
                 public String getSummary() {
                     return summary;
                 }
+
+                public String getStatus() {
+                    return status;
+                }
             }
 
             public static class Reservation implements Parcelable{
@@ -248,8 +256,9 @@ public class ProductListModel {
                 String summary;
                 String min_deposit_percent;
                 String min_deposit_amount;
+                String status;
 
-                public Reservation(String ticket_id, String name, String ticket_type, int quantity, String admin_fee, String tax_percent, String tax_amount, String tip_percent, String tip_amount, String price, String total_price, String description, String max_guests, int payment_timelimit, String summary, String min_deposit_percent, String min_deposit_amount){
+                public Reservation(String ticket_id, String name, String ticket_type, int quantity, String admin_fee, String tax_percent, String tax_amount, String tip_percent, String tip_amount, String price, String total_price, String description, String max_guests, int payment_timelimit, String summary, String min_deposit_percent, String min_deposit_amount, String status){
                     this.ticket_id = ticket_id;
                     this.name = name;
                     this.ticket_type = ticket_type;
@@ -267,6 +276,7 @@ public class ProductListModel {
                     this.summary = summary;
                     this.min_deposit_percent = min_deposit_percent;
                     this.min_deposit_amount = min_deposit_amount;
+                    this.status = status;
                 }
 
                 protected Reservation(Parcel in) {
@@ -287,6 +297,7 @@ public class ProductListModel {
                     this.summary = in.readString();
                     this.min_deposit_percent = in.readString();
                     this.min_deposit_amount = in.readString();
+                    this.status = in.readString();
                 }
 
                 @Override
@@ -313,6 +324,7 @@ public class ProductListModel {
                     dest.writeString(this.summary);
                     dest.writeString(this.min_deposit_percent);
                     dest.writeString(this.min_deposit_amount);
+                    dest.writeString(this.status);
                 }
 
                 public static final Creator<Reservation> CREATOR = new Creator<Reservation>() {
@@ -388,6 +400,10 @@ public class ProductListModel {
 
                 public String getMin_deposit_amount() {
                     return min_deposit_amount;
+                }
+
+                public String getStatus() {
+                    return status;
                 }
             }
 

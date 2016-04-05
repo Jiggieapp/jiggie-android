@@ -91,7 +91,14 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 
         if(isTwoType){
             if(position<section2Start){
-                holder.txtTicketName.setText(itemPurchases.getName());
+                if(itemPurchases.getStatus().equals(Common.FIELD_STATUS_SOLD_OUT)||itemPurchases.getQuantity()==0){
+                    holder.txtTicketName.setTextColor(context.getResources().getColor(android.R.color.holo_red_light));
+                    holder.txtTicketName.setText(itemPurchases.getName()+" "+"(SOLD OUT)");
+                }else{
+                    holder.txtTicketName.setTextColor(context.getResources().getColor(android.R.color.black));
+                    holder.txtTicketName.setText(itemPurchases.getName());
+                }
+
                 holder.txtTicketInfo.setText(itemPurchases.getSummary());
                 holder.txtPrice.setText(StringUtility.getRupiahFormat(itemPurchases.getPrice()));
                 holder.txtPriceInfo.setText(context.getString(R.string.pr_max_purchase)+" "+itemPurchases.getMax_purchase());
@@ -103,7 +110,13 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
                     holder.linSection.setVisibility(View.GONE);
                 }
             }else{
-                holder.txtTicketName.setText(itemReservations.getName());
+                if(itemReservations.getStatus().equals(Common.FIELD_STATUS_SOLD_OUT)||itemReservations.getQuantity()==0){
+                    holder.txtTicketName.setTextColor(context.getResources().getColor(android.R.color.holo_red_light));
+                    holder.txtTicketName.setText(itemReservations.getName()+" "+"(SOLD OUT)");
+                }else{
+                    holder.txtTicketName.setTextColor(context.getResources().getColor(android.R.color.black));
+                    holder.txtTicketName.setText(itemReservations.getName());
+                }
                 holder.txtTicketInfo.setText(itemReservations.getSummary());
                 holder.txtPrice.setText(StringUtility.getRupiahFormat(itemReservations.getPrice()));
                 holder.txtPriceInfo.setText(context.getString(R.string.pr_max_guest)+" "+itemReservations.getMax_guests());
@@ -115,7 +128,13 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
                 }
             }
         }else{
-            holder.txtTicketName.setText(itemPurchases.getName());
+            if(itemPurchases.getStatus().equals(Common.FIELD_STATUS_SOLD_OUT)||itemPurchases.getQuantity()==0){
+                holder.txtTicketName.setTextColor(context.getResources().getColor(android.R.color.holo_red_light));
+                holder.txtTicketName.setText(itemPurchases.getName()+" "+"(SOLD OUT)");
+            }else{
+                holder.txtTicketName.setTextColor(context.getResources().getColor(android.R.color.black));
+                holder.txtTicketName.setText(itemPurchases.getName());
+            }
             holder.txtTicketInfo.setText(itemPurchases.getSummary());
             holder.txtPrice.setText(StringUtility.getRupiahFormat(itemPurchases.getPrice()));
             holder.txtPriceInfo.setText(context.getString(R.string.pr_max_purchase)+" "+itemPurchases.getMax_purchase());

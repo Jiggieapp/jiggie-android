@@ -366,7 +366,13 @@ public class AddCreditCardActivity extends ToolbarActivity {
             }
         }
 
-        //datePicker.setMinDate(System.currentTimeMillis() - 1000);
+        Calendar minCalendar = Calendar.getInstance();
+        minCalendar.set(2016, 1, 0);
+        datePicker.setMinDate(minCalendar.getTimeInMillis());
+
+        Calendar maxCalendar = Calendar.getInstance();
+        maxCalendar.set(2020, 12, 0);
+        datePicker.setMaxDate(maxCalendar.getTimeInMillis());
 
     }
 
