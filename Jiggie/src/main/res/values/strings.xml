@@ -62,6 +62,7 @@
     <string name="profile">Profile</string>
     <string name="invite">Invite friends</string>
     <string name="order_list">Order list</string>
+    <string name="purchase_history">Purchase history</string>
     <string name="settings">Settings</string>
     <string name="support">Support</string>
     <string name="logout">Logout</string>
@@ -223,6 +224,7 @@
     <string name="va_mandiri">Mandiri Virtual Account</string>
     <string name="va_bca">BCA Virtual Account</string>
     <string name="other_bank">Other Banks</string>
+    <string name="bank_transfer">BANK TRANSFER</string>
     <string name="pr_max_purchase">Max Purchased</string>
     <string name="pr_max_guest">Max Guest</string>
     <string name="phone_number">Phone Number</string>
@@ -245,7 +247,7 @@
     <string name="cancel_caps">CANCEL</string>
 
     <string name="vor_congrats">Congratulations Disky!</string>
-    <string name="vor_congrats_info">You have successfully placed an order for</string>
+    <string name="vor_congrats_info">You have successfully booked a ticket for</string>
     <string name="vor_event_title">AFRO JACK LIFE IN JAKARTA 2016</string>
     <string name="vor_event_date">Sun, 29 Feb 2016</string>
     <string name="vor_order_number">ORDER NUMBER</string>
@@ -279,7 +281,7 @@
     <string name="vor_ticket_inc_fill">1. Lorem ipsum dolor sit amet copy in various charsets and languages for layouts.\n2. Lorem ipsum dolor sit amet copy in various charsets and languages for layouts.\n3. Lorem ipsum dolor sit amet copy in various charsets and languages for layouts.</string>
     <string name="vor_event_hour">19:00 - 23:00</string>
     <string name="vor_event_place">GELORA BUNG KARNO</string>
-    <string name="vor_tap_info">*Tap "Orders" from the "More" tab to return to this screen</string>
+    <string name="vor_tap_info">Tap \"Purchase History\" from the \"More\" tab to return to this screen</string>
     <string name="vor_view_ticket">VIEW TICKET</string>
     <string name="vor_fine_print">Fine Print :</string>
 
@@ -301,7 +303,7 @@
     <string name="howtp_s6">Your order status will show "Paid"</string>
     <string name="howtp_star">*</string>
     <string name="howtp_info"> we have also emailed you with these steps along with our Virtual Account number</string>
-    <string name="howtp_vo">VIEW ORDERS</string>
+    <string name="howtp_vo">VIEW BOOKINGS</string>
 
     <string name="his_title">Purchase History</string>
     <string name="his_ev1">AFROJACK LIVE IN JAKARTA 2016</string>

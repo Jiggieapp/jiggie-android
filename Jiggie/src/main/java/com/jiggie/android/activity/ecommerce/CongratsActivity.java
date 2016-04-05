@@ -41,10 +41,10 @@ import butterknife.ButterKnife;
  */
 public class CongratsActivity extends ToolbarActivity {
     TextView txtCongrats, txtEventTitle, txtEventDate, txtTypeNumberFill, txtGuestNameFill, txtStatusFill, txtPaymentFill, txtSummaryDate, txtRegTicketTitle,
-            txtRegTicketFill, txtAdFeeFill, txtTaxFill, txtTotalFill, txtInstrucFill, txtInclude, txtFineprint, txtEventTitle2,
+            txtRegTicketFill, txtAdFeeFill, txtTaxFill, txtTotalFill, txtInstrucFill, txtEventTitle2,
             txtEventDate2, txtVenueTitle, txtVenueDate, lblGuestCount, lblSummaryTitle
-            , lblEstimatedBalance, lblPaidDeposit, lblEstimatedTotal, lblTotalTitle;
-    LinearLayout linInclude, lineFineprint, linSummaryFooter;
+            , lblEstimatedBalance, lblPaidDeposit, lblEstimatedTotal, lblTotalTitle, txt_type_number_title, txtInstruc;
+    LinearLayout linSummaryFooter;
     RelativeLayout relViewTicket, containerTableGuest;
     RelativeLayout scrollView;
     ProgressBar progressBar;
@@ -83,15 +83,11 @@ public class CongratsActivity extends ToolbarActivity {
         txtTaxFill = (TextView)findViewById(R.id.txt_tax_fill);
         txtTotalFill = (TextView)findViewById(R.id.txt_total_fill);
         txtInstrucFill = (TextView)findViewById(R.id.txt_instruc_fill);
-        txtInclude = (TextView)findViewById(R.id.txt_include);
-        txtFineprint = (TextView)findViewById(R.id.txt_fineprint);
         txtEventTitle2 = (TextView)findViewById(R.id.txt_event_title2);
         txtEventDate2 = (TextView)findViewById(R.id.txt_event_date2);
         txtVenueTitle = (TextView)findViewById(R.id.txt_venue_title);
         txtVenueDate = (TextView)findViewById(R.id.txt_venue_date);
         relViewTicket = (RelativeLayout)findViewById(R.id.rel_view_ticket);
-        linInclude = (LinearLayout)findViewById(R.id.lin_include);
-        lineFineprint = (LinearLayout)findViewById(R.id.lin_fineprint);
         containerTableGuest = (RelativeLayout) findViewById(R.id.container_table_guest);
         lblGuestCount = (TextView) findViewById(R.id.txt_guest_count_fill);
         lblSummaryTitle = (TextView) findViewById(R.id.txt_summary_title);
@@ -104,6 +100,8 @@ public class CongratsActivity extends ToolbarActivity {
         divider = (View) this.findViewById(R.id.divider3);
         divider8 = (View) this.findViewById(R.id.divider8);
         linSummaryFooter = (LinearLayout)findViewById(R.id.lin_summary_footer);
+        txt_type_number_title = (TextView)findViewById(R.id.txt_type_number_title);
+        txtInstruc = (TextView)findViewById(R.id.txt_instruc);
 
         scrollView.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
@@ -140,10 +138,11 @@ public class CongratsActivity extends ToolbarActivity {
                     txtEventTitle.setText(event.getTitle());
                     try {
                         final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(event.getStart_datetime());
-                        txtEventDate.setText(Common.SERVER_DATE_FORMAT_COMM.format(startDate)+" - "+event.getVenue_name());
+                        txtEventDate.setText(Common.SERVER_DATE_FORMAT_COMM.format(startDate));
                     }catch (ParseException e){
                         throw new RuntimeException(App.getErrorMessage(e), e);
                     }
+
                     txtTypeNumberFill.setText(String.valueOf(sucScreenCCModel.getData().getSuccess_screen().getOrder_number()));
                     txtGuestNameFill.setText(summary.getGuest_detail().getName());
                     txtStatusFill.setText(sucScreenCCModel.getData().getSuccess_screen().getPayment_status());
@@ -164,6 +163,7 @@ public class CongratsActivity extends ToolbarActivity {
                         throw new RuntimeException(App.getErrorMessage(e), e);
                     }
                     SucScreenCCModel.Data.Success_screen.Summary.Product_list product_list = summary.getProduct_list().get(0);
+
                     txtRegTicketFill.setText(StringUtility.getRupiahFormat(product_list.getTotal_price()));
                     txtAdFeeFill.setText(StringUtility.getRupiahFormat(product_list.getAdmin_fee()));
                     txtTaxFill.setText(StringUtility.getRupiahFormat(product_list.getTax_amount()));
@@ -171,9 +171,10 @@ public class CongratsActivity extends ToolbarActivity {
 
                     txtEventTitle2.setText(event.getTitle());
 
-                    if (product_list.getTicket_type().equalsIgnoreCase("booking"))
+                    if (product_list.getTicket_type().equalsIgnoreCase(Common.TYPE_RESERVATION))
                     {
                         containerTableGuest.setVisibility(View.VISIBLE);
+                        txt_type_number_title.setText(getString(R.string.vor_reservation_number));
                         lblSummaryTitle.setText(
                                 getResources().getString(R.string.vor_reservation_summary));
                         lblGuestCount.setText(product_list.getNum_buy());
@@ -189,9 +190,8 @@ public class CongratsActivity extends ToolbarActivity {
                         txtTotalFill.setVisibility(View.GONE);
                         lblTotalTitle.setVisibility(View.GONE);
                         divider.setVisibility(View.GONE);
-                    }
-                    else
-                    {
+                    }else{
+                        txt_type_number_title.setText(getString(R.string.vor_order_number));
                         lblSummaryTitle.setText(
                                 getResources().getString(R.string.vor_order_summary));
                         txtRegTicketTitle.setText(product_list.getName() + " Ticket (" + product_list.getNum_buy() + "x)");
@@ -215,17 +215,13 @@ public class CongratsActivity extends ToolbarActivity {
                     }
 
                     //txtInstrucFill.setText(sucScreenCCModel.getData().getSuccess_screen().getInstructions());
-                    txtInstrucFill.setText(Html.fromHtml(sucScreenCCModel.getData().getSuccess_screen().getInstructions()));
-                    ArrayList<String> arrInclude = sucScreenCCModel.getData().getSuccess_screen().getTicket_include();
-                    ArrayList<String> arrFineprint = sucScreenCCModel.getData().getSuccess_screen().getFine_print();
-                    for(int i=0;i<arrInclude.size();i++){
-                        InstructionItemView instructionItemView = new InstructionItemView(CongratsActivity.this, String.valueOf(i+1)+".", arrInclude.get(i));
-                        linInclude.addView(instructionItemView);
+                    if(!sucScreenCCModel.getData().getSuccess_screen().getInstructions().equals(Utils.BLANK)){
+                        txtInstrucFill.setText(Html.fromHtml(sucScreenCCModel.getData().getSuccess_screen().getInstructions()));
+                    }else{
+                        txtInstruc.setVisibility(View.GONE);
+                        txtInstrucFill.setVisibility(View.GONE);
                     }
-                    for(int i=0;i<arrFineprint.size();i++){
-                        InstructionItemView instructionItemView = new InstructionItemView(CongratsActivity.this, String.valueOf(i+1)+".", arrFineprint.get(i));
-                        lineFineprint.addView(instructionItemView);
-                    }
+
                 }else{
                     Toast.makeText(CongratsActivity.this, getString(R.string.msg_wrong), Toast.LENGTH_LONG).show();
                 }
@@ -246,10 +242,21 @@ public class CongratsActivity extends ToolbarActivity {
         SucScreenCCModel.Data.Success_screen successScreen = sucScreenCCModel.getData().getSuccess_screen();
         SucScreenCCModel.Data.Success_screen.Event event = sucScreenCCModel.getData().getSuccess_screen().getEvent();
         SucScreenCCModel.Data.Success_screen.Summary.Product_list productList = successScreen.getSummary().getProduct_list().get(0);
-        commEventMixpanelModel = new CommEventMixpanelModel(event.getTitle(), event.getVenue_name(), event.getLocation(), event.getStart_datetime_str(),
-                event.getEnd_datetime_str(), event.getTags(), event.getDescription(), productList.getName(), productList.getTicket_type(),
-                successScreen.getSummary().getTotal_price(), productList.getMax_buy(), successScreen.getSummary().getCreated_at(), productList.getNum_buy(),
-                successScreen.getSummary().getTotal_price(), "0", successScreen.getType(), Utils.BLANK, false);
+
+        if (productList.getTicket_type().equalsIgnoreCase(Common.TYPE_RESERVATION))
+        {
+            commEventMixpanelModel = new CommEventMixpanelModel(event.getTitle(), event.getVenue_name(), event.getLocation(), event.getStart_datetime_str(),
+                    event.getEnd_datetime_str(), event.getTags(), event.getDescription(), productList.getName(), productList.getTicket_type(),
+                    successScreen.getSummary().getTotal_price(), productList.getMax_buy(), successScreen.getSummary().getCreated_at(), productList.getNum_buy(),
+                    successScreen.getSummary().getTotal_price(), "0", successScreen.getPayment_type(), Utils.BLANK, false);
+        }else{
+            commEventMixpanelModel = new CommEventMixpanelModel(event.getTitle(), event.getVenue_name(), event.getLocation(), event.getStart_datetime_str(),
+                    event.getEnd_datetime_str(), event.getTags(), event.getDescription(), productList.getName(), productList.getTicket_type(),
+                    successScreen.getSummary().getTotal_price(), productList.getMax_buy(), successScreen.getSummary().getCreated_at(), Utils.BLANK,
+                    successScreen.getSummary().getTotal_price(), "0", successScreen.getPayment_type(), productList.getNum_buy(), true);
+        }
+
+
         App.getInstance().trackMixPanelCommerce(Utils.COMM_FINISH, commEventMixpanelModel);
     }
 
