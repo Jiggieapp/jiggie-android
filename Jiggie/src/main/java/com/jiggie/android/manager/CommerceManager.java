@@ -16,6 +16,8 @@ import com.jiggie.android.model.ProductListModel;
 import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SummaryModel;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -127,7 +129,20 @@ public class CommerceManager {
 
                     int responseCode = response.code();
                     if (responseCode == Utils.CODE_SUCCESS) {
-                        onResponseListener.onSuccess(response.body());
+
+                        try {
+                            JSONObject jObj = new JSONObject(responses);
+                            int resp = jObj.getInt("response");
+                            if(resp!=Utils.CODE_FAILED){
+                                onResponseListener.onSuccess(response.body());
+                            }else{
+                                String msg = jObj.getString("msg");
+                                onResponseListener.onFailure(responseCode, msg);
+                            }
+                        }catch (Exception e){
+                            onResponseListener.onFailure(responseCode, Utils.RESPONSE_FAILED);
+                        }
+
                     } else {
                         onResponseListener.onFailure(responseCode, Utils.RESPONSE_FAILED);
                     }

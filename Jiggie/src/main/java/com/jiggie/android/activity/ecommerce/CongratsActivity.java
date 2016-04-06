@@ -48,7 +48,7 @@ public class CongratsActivity extends ToolbarActivity {
     RelativeLayout relViewTicket, containerTableGuest;
     RelativeLayout scrollView;
     ProgressBar progressBar;
-    View divider, divider8;
+    View divider, divider8, divider4;
 
     long orderId;
     boolean fromOrderList;
@@ -99,6 +99,7 @@ public class CongratsActivity extends ToolbarActivity {
         lblTotalTitle = (TextView) this.findViewById(R.id.txt_total);
         divider = (View) this.findViewById(R.id.divider3);
         divider8 = (View) this.findViewById(R.id.divider8);
+        divider4 = (View) this.findViewById(R.id.divider4);
         linSummaryFooter = (LinearLayout)findViewById(R.id.lin_summary_footer);
         txt_type_number_title = (TextView)findViewById(R.id.txt_type_number_title);
         txtInstruc = (TextView)findViewById(R.id.txt_instruc);
@@ -152,7 +153,7 @@ public class CongratsActivity extends ToolbarActivity {
                     }else if(paymentType.equals(Utils.TYPE_BP)){
                         txtPaymentFill.setText(getString(R.string.va_mandiri));
                     }else if(paymentType.equals(Utils.TYPE_VA)){
-                        txtPaymentFill.setText(getString(R.string.other_bank));
+                        txtPaymentFill.setText(getString(R.string.bank_transfer));
                     }else if(paymentType.equals(Utils.TYPE_BCA)){
                         txtPaymentFill.setText(getString(R.string.va_bca));
                     }
@@ -220,6 +221,7 @@ public class CongratsActivity extends ToolbarActivity {
                     }else{
                         txtInstruc.setVisibility(View.GONE);
                         txtInstrucFill.setVisibility(View.GONE);
+                        divider4.setVisibility(View.GONE);
                     }
 
                 }else{

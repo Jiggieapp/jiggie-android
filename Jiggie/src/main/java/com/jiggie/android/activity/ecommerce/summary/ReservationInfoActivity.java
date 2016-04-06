@@ -30,6 +30,7 @@ import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.CongratsActivity;
 import com.jiggie.android.activity.ecommerce.HowToPayActivity;
 import com.jiggie.android.activity.ecommerce.PaymentMethodActivity;
+import com.jiggie.android.activity.ecommerce.ProductListActivity;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.fragment.SlideFragment;
@@ -685,8 +686,35 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
             @Override
             public void onFailure(int responseCode, String message) {
                 dismissLoadingDialog();
-                Toast.makeText(ReservationInfoActivity.this, message, Toast.LENGTH_LONG).show();
+
                 pagerSlide.setCurrentItem(1);
+
+                Utils.d(String.valueOf(responseCode), message);
+                if(message.contains("left")||message.contains("unavailable")){
+                    final AlertDialog dialog = new AlertDialog.Builder(ReservationInfoActivity.this)
+                            .setMessage(message)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    Intent i = new Intent(ReservationInfoActivity.this, ProductListActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    i.putExtra(Common.FIELD_EVENT_ID, eventDetail.get_id());
+                                    i.putExtra(EventDetailModel.Data.EventDetail.class.getName(), eventDetail);
+                                    startActivity(i);
+                                    finish();
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }).create();
+                    dialog.show();
+                }else{
+                    Toast.makeText(ReservationInfoActivity.this, message, Toast.LENGTH_LONG).show();
+                }
             }
         });
 
