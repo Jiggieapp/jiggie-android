@@ -10,8 +10,10 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.test.espresso.IdlingResource;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -46,6 +48,7 @@ import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.ImagePagerIndicatorAdapter;
+import com.jiggie.android.component.testing.EspressoIdlingResource;
 import com.jiggie.android.component.volley.SimpleVolleyRequestListener;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.fragment.SocialTabFragment;
@@ -762,7 +765,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             //wandy 15-02-2016
             shareLinkModel = message;
             this.shareEvent();
-
         }
     }
 
@@ -792,5 +794,10 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     public void onBackPressed() {
         super.onBackPressed();
         redirectToHome();
+    }
+
+    @VisibleForTesting
+    public IdlingResource getCountingIdlingResource() {
+        return EspressoIdlingResource.getIdlingResource();
     }
 }

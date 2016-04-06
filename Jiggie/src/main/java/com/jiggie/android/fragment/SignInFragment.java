@@ -174,7 +174,7 @@ public class SignInFragment extends Fragment {
 
             @Override
             public void onGCMError(Exception e) {
-                Utils.d(TAG, "onGcmError");
+                //Utils.d(TAG, "onGcmError");
                 Toast.makeText(getContext(), App.getErrorMessage(e), Toast.LENGTH_LONG).show();
                 btnSignIn.setEnabled(true);
                 progressDialog.dismiss();
@@ -184,7 +184,7 @@ public class SignInFragment extends Fragment {
             public void onGCMCompleted(String regId) {
                 gcmId = regId;
                 progressDialog.dismiss();
-                Utils.d(TAG, "onGcmCompleted");
+                //Utils.d(TAG, "onGcmCompleted");
                 LoginManager.getInstance()
                         .logInWithReadPermissions(SignInFragment.this, Arrays.asList(FACEBOOK_PERMISSIONS));
             }
@@ -194,9 +194,6 @@ public class SignInFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Utils.d(TAG, "requestCode/resultCode " + requestCode + "/" + resultCode);
-        if(callbackManager == null)
-            this.callbackManager = CallbackManager.Factory.create();
         super.onActivityResult(requestCode, resultCode, data);
         this.callbackManager.onActivityResult(
                 requestCode,
@@ -208,7 +205,7 @@ public class SignInFragment extends Fragment {
     private FacebookCallback<LoginResult> facebookCallback = new FacebookCallback<LoginResult>() {
         @Override
         public void onCancel() {
-            Utils.d(TAG, "oncancel");
+            //Utils.d(TAG, "oncancel");
             if (getContext() != null) {
                 btnSignIn.setEnabled(true);
                 progressDialog.dismiss();
@@ -217,7 +214,7 @@ public class SignInFragment extends Fragment {
 
         @Override
         public void onError(final FacebookException error) {
-            Utils.d(TAG, "facebookerror " + error);
+            //Utils.d(TAG, "facebookerror " + error);
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -232,7 +229,7 @@ public class SignInFragment extends Fragment {
 
         @Override
         public void onSuccess(LoginResult loginResult) {
-            Utils.d(TAG, "onsuccess");
+            //Utils.d(TAG, "onsuccess");
             if (getContext() != null) {
                 // Validate permissions
                 for (String perm : loginResult.getRecentlyDeniedPermissions()) {
@@ -245,7 +242,7 @@ public class SignInFragment extends Fragment {
                 }
 
                 final AccessToken token = AccessToken.getCurrentAccessToken();
-                Utils.d(TAG, "accessToken " + AccessToken.getCurrentAccessToken().getToken());
+                //Utils.d(TAG, "accessToken " + AccessToken.getCurrentAccessToken().getToken());
                 final Bundle parameters = new Bundle();
 
                 final GraphRequest request = GraphRequest.newMeRequest(token, profileCallback);
@@ -262,16 +259,14 @@ public class SignInFragment extends Fragment {
             String c = object.toString();
             if (getContext() == null) {
                 // fragment already destroyed
-                Utils.d(TAG, "frament alread destroyed");
                 return;
             } else if (response.getError() != null) {
-                Utils.d(TAG, "response null");
+                //Utils.d(TAG, "response null");
                 Toast.makeText(getContext(), response.getError().getErrorMessage(), Toast.LENGTH_SHORT).show();
                 btnSignIn.setEnabled(true);
                 progressDialog.dismiss();
                 return;
             }
-            Utils.d(TAG, "onprofilecallback");
 
             try {
                 final Date birthDay = Common.FACEBOOK_DATE_FORMAT.parse(object.optString("birthday"));
@@ -321,7 +316,7 @@ public class SignInFragment extends Fragment {
 
     public void onEvent(SettingModel message){
         String responses = new Gson().toJson(message);
-        Utils.d(TAG, responses);
+        //Utils.d(TAG, responses);
 
         final MainActivity activity = (MainActivity) getActivity();
         final App app = App.getInstance();
@@ -383,7 +378,7 @@ public class SignInFragment extends Fragment {
         .doOnNext(new Action1<TagsListModel>() {
             @Override
             public void call(TagsListModel tagsListModel) {
-                //Utils.d(TAG, "doOnNext");
+                ////Utils.d(TAG, "doOnNext");
                 //EventManager.saveTagsList(tagsListModel);
                 EventManager.saveTags(tagsListModel.getData().getTagslist());
             }
@@ -409,7 +404,7 @@ public class SignInFragment extends Fragment {
     }
 
     private void actionDone() {
-        Utils.d(TAG, "actionDone");
+        //Utils.d(TAG, "actionDone");
         final MemberSettingModel memberSettingModel = new MemberSettingModel();
         final SettingModel currentSettingModel = AccountManager.loadSetting();
         memberSettingModel.setAccount_type(currentSettingModel.getData().getAccount_type());
@@ -445,7 +440,7 @@ public class SignInFragment extends Fragment {
     }
 
     private Set<String> getTags() {
-        Utils.d(TAG, "getTags");
+        //Utils.d(TAG, "getTags");
         Set<String> tags = App.getInstance()
                 .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
                 .getStringSet(Utils.TAGS_LIST, null);
@@ -454,7 +449,7 @@ public class SignInFragment extends Fragment {
     }
 
     public void onEvent(ExceptionModel message){
-        Utils.d(TAG, "onevent exception");
+        //Utils.d(TAG, "onevent exception");
         Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_LONG).show();
         btnSignIn.setEnabled(true);
         progressDialog.dismiss();

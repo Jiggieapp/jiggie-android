@@ -361,6 +361,15 @@ public class EventTabFragment extends Fragment
     @Override
     public void onViewSelected(EventModel.Data.Events event) {
         Intent i = new Intent(super.getActivity(), EventDetailActivity.class);
+        Utils.d(TAG, "event_id " + event.get_id());
+        Utils.d(TAG, "event_title " + event.getTitle());
+        Utils.d(TAG, "event_venue_name " + event.getVenue_name());
+        Utils.d(TAG, "event gettags " + event.getTags());
+        Utils.d(TAG, "event start date time" + event.getStart_datetime());
+        Utils.d(TAG, "event getend date time" + event.getEnd_datetime());
+        Utils.d(TAG, "event getphotos " + event.getPhotos());
+        Utils.d(TAG, "event getdescription " + event.getDescription());
+
         i.putExtra(Common.FIELD_EVENT_ID, event.get_id());
         i.putExtra(Common.FIELD_EVENT_NAME, event.getTitle());
         i.putExtra(Common.FIELD_EVENT_VENUE_NAME, event.getVenue_name());
