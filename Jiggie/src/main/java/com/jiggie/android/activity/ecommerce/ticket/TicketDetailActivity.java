@@ -1,7 +1,9 @@
 package com.jiggie.android.activity.ecommerce.ticket;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -134,9 +136,29 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                     }
 
                     @Override
-                    public void onFailure(int responseCode, String message) {
+                    public void onFailure(int responseCode, final String message) {
                         dismissLoadingDialog();
                         Utils.d(String.valueOf(responseCode), message);
+                        if(message.contains("left")||message.contains("unavailable")){
+                            final AlertDialog dialog = new AlertDialog.Builder(TicketDetailActivity.this)
+                                    .setMessage(message)
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                            if(message.contains("unavailable")){
+                                                finish();
+                                            }
+                                        }
+                                    })
+                                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    }).create();
+                            dialog.show();
+                        }
                     }
                 });
             }

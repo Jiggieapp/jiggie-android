@@ -577,10 +577,38 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
             }
 
             @Override
-            public void onFailure(int responseCode, String message) {
+            public void onFailure(int responseCode, final String message) {
                 dismissLoadingDialog();
-                Toast.makeText(PurchaseInfoActivity.this, message, Toast.LENGTH_LONG).show();
+
                 pagerSlide.setCurrentItem(1);
+
+                Utils.d(String.valueOf(responseCode), message);
+                if(message.contains("left")||message.contains("unavailable")){
+                    final AlertDialog dialog = new AlertDialog.Builder(PurchaseInfoActivity.this)
+                            .setMessage(message)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    Intent i = new Intent(PurchaseInfoActivity.this, ProductListActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    i.putExtra(Common.FIELD_EVENT_ID, eventDetail.get_id());
+                                    i.putExtra(EventDetailModel.Data.EventDetail.class.getName(), eventDetail);
+                                    startActivity(i);
+                                    finish();
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }).create();
+                    dialog.show();
+                }else{
+                    Toast.makeText(PurchaseInfoActivity.this, message, Toast.LENGTH_LONG).show();
+                }
+
             }
         });
 
