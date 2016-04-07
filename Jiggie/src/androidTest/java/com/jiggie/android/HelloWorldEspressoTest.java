@@ -107,7 +107,7 @@ public class HelloWorldEspressoTest
                 .instance(0)
                 .className(LinearLayout.class));
             event.click();
-            intended(toPackage("com.jiggie.android.dev"));
+            intended(toPackage("com.jiggie.android.debug"));
         }
     }
 
