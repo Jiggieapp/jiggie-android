@@ -20,7 +20,7 @@ android {
     buildToolsVersion "23.0.2"
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 18
         targetSdkVersion 23
         applicationId "com.jiggie.android"
         renderscriptTargetApi 18
@@ -47,11 +47,12 @@ android {
 
     buildTypes {
         debug {
-            //applicationIdSuffix ".debug"
+            applicationIdSuffix ".debug"
             versionNameSuffix '-Dev'
-            //resValue "string", "app_name", "Jiggie Dev"
-            //buildConfigField("String", "BASE_URL", "\"https://api-dev.jiggieapp.com/\"")
+            resValue "string", "app_name", "Jiggie Dev"
+            buildConfigField("String", "BASE_URL", "\"https://api-dev.jiggieapp.com/\"")
             signingConfig signingConfigs.configDebug
+            //minSdkVersion 18
         }
 
         release {
@@ -64,16 +65,16 @@ android {
 
     productFlavors
     {
-        dev {
-            applicationId "com.jiggie.android.dev"
-            resValue "string", "app_name", "Jiggie Dev"
-            buildConfigField("String", "BASE_URL", "\"https://api-dev.jiggieapp.com/\"")
-            minSdkVersion 18
-        }
+        //dev {
+            //resValue "string", "app_name", "Jiggie Dev"
+            //buildConfigField("String", "BASE_URL", "\"https://api-dev.jiggieapp.com/\"")
+            //minSdkVersion 18
+        //}
 
-        utest {
-            minSdkVersion 18
-        }
+        //utest {
+        //minSdkVersion 16
+        //}
+
     }
 
     dexOptions {
