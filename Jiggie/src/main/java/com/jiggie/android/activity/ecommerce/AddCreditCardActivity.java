@@ -213,7 +213,23 @@ public class AddCreditCardActivity extends ToolbarActivity {
             isError = true;
             edt_cc_number.setTextColor(getResources().getColor(android.R.color.holo_red_light));
             edt_cc_number.setError(Utils.BLANK);
-        }if(cvv.isEmpty()){
+        }else{
+            if(cardNumber.length()<16){
+                isError = true;
+                edt_cc_number.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+                edt_cc_number.setError(Utils.BLANK);
+            }else{
+                if(cardNumber.startsWith("4")||cardNumber.startsWith("5")){
+                    //do nothing
+                }else{
+                    isError = true;
+                    edt_cc_number.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+                    edt_cc_number.setError(Utils.BLANK);
+                }
+            }
+        }
+
+        if(cvv.isEmpty()){
             isError = true;
             edt_cvv.setTextColor(getResources().getColor(android.R.color.holo_red_light));
             edt_cvv.setError(Utils.BLANK);

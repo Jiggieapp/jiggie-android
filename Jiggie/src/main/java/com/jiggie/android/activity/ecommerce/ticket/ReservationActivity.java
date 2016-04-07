@@ -191,7 +191,6 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
                     num_guest--;
                     lblQuantity.setText(String.valueOf(num_guest));
                 }
-
             }
         });
 
