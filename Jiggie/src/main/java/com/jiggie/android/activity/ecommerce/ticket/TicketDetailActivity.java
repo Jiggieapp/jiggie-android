@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.AddGuestActivity;
+import com.jiggie.android.activity.ecommerce.ProductListActivity;
 import com.jiggie.android.activity.ecommerce.PurchaseInfoActivity;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
@@ -147,6 +148,11 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                                         public void onClick(DialogInterface dialog, int which) {
                                             dialog.dismiss();
                                             if(message.contains("unavailable")){
+                                                Intent i = new Intent(TicketDetailActivity.this, ProductListActivity.class);
+                                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                i.putExtra(Common.FIELD_EVENT_ID, eventDetail.get_id());
+                                                i.putExtra(EventDetailModel.Data.EventDetail.class.getName(), eventDetail);
+                                                startActivity(i);
                                                 finish();
                                             }
                                         }

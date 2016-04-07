@@ -161,6 +161,9 @@ public class ProductListActivity extends ToolbarWithDotActivity
             @Override
             public void onFailure(int responseCode, String message) {
                 Log.d(String.valueOf(responseCode), message);
+                Toast.makeText(ProductListActivity.this, message, Toast.LENGTH_LONG);
+                swipeRefresh.setRefreshing(false);
+                isLoading = false;
             }
         });
     }
