@@ -251,7 +251,8 @@ public class AccountManager extends BaseManager{
 
     public static LoginModel loadLogin(){
 
-        LoginModel loginModel = new Gson().fromJson(App.getInstance().getSharedPreferences(Utils.PREFERENCE_LOGIN,
+        LoginModel loginModel = new Gson().fromJson
+                (App.getInstance().getSharedPreferences(Utils.PREFERENCE_LOGIN,
                 Context.MODE_PRIVATE).getString(Utils.LOGIN_MODEL, ""), LoginModel.class);
         return loginModel;
     }

@@ -1,13 +1,11 @@
 package com.jiggie.android.activity;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,16 +15,17 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.appsflyer.AppsFlyerConversionListener;
+import com.appsflyer.AppsFlyerLib;
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
-import com.jiggie.android.activity.ecommerce.ProductListActivity;
 import com.jiggie.android.activity.ecommerce.PurchaseHistoryActivity;
 import com.jiggie.android.activity.profile.FilterActivity;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
@@ -37,9 +36,6 @@ import com.jiggie.android.component.gcm.GCMRegistrationService;
 import com.jiggie.android.component.service.FacebookImageSyncService;
 import com.jiggie.android.fragment.HomeFragment;
 import com.jiggie.android.fragment.SignInFragment;
-import com.appsflyer.AppsFlyerLib;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.jiggie.android.manager.ShareManager;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.ShareLinkModel;
@@ -55,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_GOOGLE_PLAY_SERVICES = 1972;
     private boolean active;
     public static final String TAG = MainActivity.class.getSimpleName();
+    public SignInFragment fragment;
 
     String appsfl = "";
 
@@ -168,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if ((requestCode == REQUEST_GOOGLE_PLAY_SERVICES) && (resultCode == Activity.RESULT_OK)) {
             // Track AppsFlyer Install
@@ -178,9 +175,13 @@ public class MainActivity extends AppCompatActivity {
             //Toast.makeText(MainActivity.this, appsfl, Toast.LENGTH_LONG).show();
 
             if (!App.getInstance().isUserLoggedIn()) {
-                final SignInFragment fragment = new SignInFragment();
-                super.getSupportFragmentManager().beginTransaction().add(R.id.container, fragment).commit();
+                Utils.d(TAG, "onactivityresult cuy 1");
+                fragment = new SignInFragment();
+                /*super.getSupportFragmentManager().beginTransaction()
+                        .add(R.id.container, fragment).commit();*/
+                addFragment(fragment, SignInFragment.class.getSimpleName());
             } else {
+                Utils.d(TAG, "onactivityresult cuy 2");
                 super.startService(new Intent(this, FacebookImageSyncService.class));
                 if (!App.getSharedPreferences().getBoolean(GCMRegistrationService.TAG_UPDATED, false))
                     super.startService(new Intent(this, GCMRegistrationService.class));
@@ -197,6 +198,15 @@ public class MainActivity extends AppCompatActivity {
             }
         } else if (requestCode == REQUEST_GOOGLE_PLAY_SERVICES)
             super.onBackPressed();
+    }
+
+    public void addFragment(Fragment fragment, String tag)
+    {
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.container, fragment, tag).commit();
+        /*getSupportFragmentManager().beginTransaction()
+                .add(CONTAINER_ID, fragment, tag)
+                .commit();*/
     }
 
     private void registerAppsFlyerConversion(){

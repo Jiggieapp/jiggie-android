@@ -830,7 +830,11 @@ public class App extends Application {
         return facebookValid && getSharedPreferences().getBoolean("loggedIn", false);
     }
 
-    public void setUserLoggedIn() { getSharedPreferences().edit().putBoolean("loggedIn", true).apply(); }
+    public void setUserLoggedIn()
+    {
+        Utils.d("helloworld", "setUserLoggedIN");
+        getSharedPreferences().edit().putBoolean("loggedIn", true).apply();
+    }
 
     public static void savePreference(final String key, final Object object)
     {
