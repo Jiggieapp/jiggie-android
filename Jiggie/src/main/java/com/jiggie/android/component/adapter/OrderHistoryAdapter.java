@@ -68,7 +68,7 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
             /*holder.container.setBackground(
                     App.getInstance().getResources().getDrawable(R.drawable.btn_tag_blue));*/
             holder.lblStatus.setText(
-                    App.getInstance().getResources().getString(R.string.awaiting_payment)
+                    App.getInstance().getResources().getString(R.string.unpaid)
             );
         }
         else if(item.getOrder().getPayment_status()

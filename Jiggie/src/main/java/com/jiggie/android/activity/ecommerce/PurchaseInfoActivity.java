@@ -606,6 +606,11 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                             }).create();
                     dialog.show();
                 }else{
+                    /*if(responseCode==Utils.CODE_FAILED){
+
+                    }else{
+
+                    }*/
                     Toast.makeText(PurchaseInfoActivity.this, message, Toast.LENGTH_LONG).show();
                 }
 
