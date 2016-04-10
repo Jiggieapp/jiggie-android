@@ -102,7 +102,9 @@ public class EventsFragment extends Fragment
         }
 
         if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_EVENT, false)) {
-            showWalkthroughDialog();
+            //wandy 07-04-2016
+            //showWalkthroughDialog();
+            //end of wandy 07-04-2016
         }
     }
 
