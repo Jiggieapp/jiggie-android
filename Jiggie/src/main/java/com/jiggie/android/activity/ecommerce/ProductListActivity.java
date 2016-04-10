@@ -191,7 +191,14 @@ public class ProductListActivity extends ToolbarActivity
 
             @Override
             public void onFailure(int responseCode, String message) {
+<<<<<<< HEAD
                 Utils.d(String.valueOf(responseCode), message);
+=======
+                Log.d(String.valueOf(responseCode), message);
+                Toast.makeText(ProductListActivity.this, message, Toast.LENGTH_LONG);
+                swipeRefresh.setRefreshing(false);
+                isLoading = false;
+>>>>>>> e9c7f7df5bb15c47c3729c07de04a4eed9703cfe
             }
         });
     }
