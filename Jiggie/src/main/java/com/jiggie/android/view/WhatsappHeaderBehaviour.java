@@ -10,6 +10,7 @@ import android.util.TypedValue;
 import android.view.View;
 
 import com.jiggie.android.R;
+import com.jiggie.android.component.Utils;
 
 /**
  * Created by anton on 11/12/15.
@@ -54,9 +55,9 @@ public class WhatsappHeaderBehaviour extends CoordinatorLayout.Behavior<HeaderVi
     @Override
     public boolean onDependentViewChanged(CoordinatorLayout parent, HeaderView child, View dependency) {
         shouldInitProperties();
-
         int maxScroll = ((AppBarLayout) dependency).getTotalScrollRange();
-        float percentage = Math.abs(dependency.getY()) / (float) maxScroll;
+        float percentage = (Math.abs(dependency.getY()) - child.lblEventLocation.getHeight())
+                / (float) maxScroll;
         float childPosition = dependency.getHeight()
                 + dependency.getY()
                 - child.getHeight()
@@ -69,12 +70,31 @@ public class WhatsappHeaderBehaviour extends CoordinatorLayout.Behavior<HeaderVi
             float layoutPercentage = (Math.abs(dependency.getY()) - (maxScroll / 2)) / Math.abs(maxScroll / 2);
             lp.leftMargin = (int) (layoutPercentage * mEndMarginLeft) + mStartMarginLeft;
             //child.setTextSize(getTranslationOffset(mTitleStartSize, mTitleEndSize, layoutPercentage));
+            float textSize = getTranslationOffset(mTitleStartSize, 0, layoutPercentage);
+            //child.lblEventLocation.setTextSize(textSize);
+            /*if(textSize > 5)
+            {
+                if(child.lblEventLocation.getVisibility() == View.GONE)
+                    child.lblEventLocation.setVisibility(View.VISIBLE);
+                child.lblEventLocation.setTextSize(textSize);
+                //child.name.setHeight(android.support.design.R.id.wrap_content);
+            }
+            else
+            {
+                child.lblEventLocation.setVisibility(View.GONE);
+            }*/
         } else {
             lp.leftMargin = mStartMarginLeft;
         }
         lp.rightMargin = mMarginRight;
         child.setLayoutParams(lp);
         child.setY(childPosition);
+
+        /*if(child.getHeight() == getToolbarHeight(mContext))
+        {
+            child.setVisibility(View.GONE);
+        }
+        else child.setVisibility(View.VISIBLE);*/
 
         if (isHide && percentage < 1) {
             child.setVisibility(View.VISIBLE);

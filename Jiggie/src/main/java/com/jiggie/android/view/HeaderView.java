@@ -25,8 +25,10 @@ public class HeaderView extends LinearLayout {
     @Bind(R.id.event_name)
     TextView name;
 
-    /*@Bind(R.id.last_seen)
-    TextView lastSeen;*/
+    @Bind(R.id.lblEventLocation)
+    TextView lblEventLocation;
+
+
 
     public HeaderView(Context context) {
         super(context);
@@ -53,6 +55,11 @@ public class HeaderView extends LinearLayout {
 
     public void bindTo(String eventName) {
         this.name.setText(eventName);
+    }
+
+    public void bindTo(String eventName, String location) {
+        this.name.setText(eventName);
+        this.lblEventLocation.setText(location);
     }
 
     public void setTextSize(float size) {

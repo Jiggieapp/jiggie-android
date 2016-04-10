@@ -31,16 +31,16 @@
         <item name="colorPrimaryDark">@color/setup_blue</item>
     </style>
 
-    <style name="AppTheme.StatusBarTransparent" parent="AppCustomTheme2" />
+    <!--<style name="AppTheme.StatusBarTransparent" parent="AppCustomTheme2" />-->
     <!-- Base application theme. -->
-    <style name="AppCustomTheme2" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
+    <!--<style name="AppCustomTheme2" parent="Theme.AppCompat.Light.NoActionBar">
+        &lt;!&ndash; Customize your theme here. &ndash;&gt;
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorControlActivated">@color/colorAccent</item>
         <item name="android:actionMenuTextColor">@color/colorAccent</item>
-    </style>
+    </style>-->
 
     <!--<style name="PopupMenu" parent="@android:style/Widget.PopupMenu">
         <item name="android:popupBackground">@android:color/white</item>

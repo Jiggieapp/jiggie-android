@@ -7,7 +7,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
@@ -20,7 +19,6 @@ import com.jiggie.android.activity.ecommerce.ticket.ReservationActivity;
 import com.jiggie.android.activity.ecommerce.ticket.TicketDetailActivity;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
-import com.jiggie.android.component.activity.ToolbarWithDotActivity;
 import com.jiggie.android.component.adapter.ProductListAdapter;
 import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.model.CommEventMixpanelModel;
@@ -61,6 +59,9 @@ public class ProductListActivity extends ToolbarActivity
     @Bind(R.id.float_header_view)
     protected HeaderView floatHeaderView;
 
+    /*@Bind(R.id.lblEventLocation)
+    protected TextView lblEventLocation;*/
+
     @Bind(R.id.appBar)
     protected AppBarLayout appBarLayout;
 
@@ -72,10 +73,10 @@ public class ProductListActivity extends ToolbarActivity
 
     private boolean isHideToolbarView = false;
 
-    @Override
+    /*@Override
     protected int getThemeResource() {
         return R.style.AppTheme_StatusBarTransparent;
-    }
+    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +102,8 @@ public class ProductListActivity extends ToolbarActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
         toolbarHeaderView.bindTo(eventDetail.getTitle());
-        floatHeaderView.bindTo(eventDetail.getTitle());
+        floatHeaderView.bindTo(eventDetail.getTitle()
+                , eventDetail.getVenue().getAddress());
     }
 
     private void sendMixpanel(EventDetailModel.Data.EventDetail eventDetail){
@@ -191,14 +193,10 @@ public class ProductListActivity extends ToolbarActivity
 
             @Override
             public void onFailure(int responseCode, String message) {
-<<<<<<< HEAD
                 Utils.d(String.valueOf(responseCode), message);
-=======
-                Log.d(String.valueOf(responseCode), message);
                 Toast.makeText(ProductListActivity.this, message, Toast.LENGTH_LONG);
                 swipeRefresh.setRefreshing(false);
                 isLoading = false;
->>>>>>> e9c7f7df5bb15c47c3729c07de04a4eed9703cfe
             }
         });
     }

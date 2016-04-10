@@ -9,31 +9,31 @@
         android:layout_width="match_parent"
         android:layout_height="145dp"
         android:background="@color/colorPrimary"
+        android:clickable="false"
         android:padding="@dimen/padding_standard_half"
-        android:visibility="gone"
-        android:clickable="false">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/lblEventName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/huge_padding"
+            android:layout_above="@+id/lblEventLocation"
+            android:paddingLeft="@dimen/padding_standard_half"
             android:text="@string/msg_dummy_title"
+            android:textAllCaps="true"
             android:textColor="@android:color/white"
             android:textSize="16sp"
-            android:layout_above="@+id/lblEventLocation"
-            android:textAllCaps="true"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/lblEventLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/huge_padding"
-            android:text="@string/msg_dummy_title_info"
-            android:textColor="@android:color/white"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/padding_standard"/>
+            android:layout_marginBottom="@dimen/padding_standard"
+            android:paddingLeft="@dimen/padding_standard_half"
+            android:text="@string/msg_dummy_title_info"
+            android:textColor="@android:color/white" />
 
     </RelativeLayout>
 
@@ -41,106 +41,123 @@
         android:id="@+id/lin_section"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone"
+        android:background="@color/colorLight"
         android:clickable="false"
-        android:background="@color/grayLight">
+        android:orientation="vertical"
+        android:paddingRight="@dimen/padding_standard_half"
+        android:visibility="gone">
+
         <TextView
-            android:layout_margin="@dimen/padding_standard_half"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
             android:id="@+id/txt_section_ticket"
-            android:text="@string/msg_dummy"/>
-        <View
-            android:background="@color/dividercomm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/padding_standard_half"
+            android:text="@string/msg_dummy" />
+
+        <!--<View
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"/>
+            android:layout_height="0.5dp"
+            android:background="@color/dividercomm" />-->
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/lin_item"
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/card_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@drawable/item_click"
-        android:clickable="true">
-        <RelativeLayout
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/padding_standard_half"
+        android:layout_marginLeft="@dimen/padding_standard_half"
+        android:layout_marginRight="@dimen/padding_standard_half"
+        android:layout_marginTop="@dimen/padding_standard_half"
+        android:clickable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        card_view:cardCornerRadius="4dp">
+
+        <LinearLayout
+            android:id="@+id/lin_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/padding_standard">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@null"
-                android:scaleType="centerCrop"
-                android:id="@+id/img_right"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:src="@drawable/purple_arrow2x"
-                />
 
-            <LinearLayout
+            android:orientation="vertical">
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginRight="@dimen/padding_standard"
-                android:layout_centerVertical="true">
-                <TextView
-                    android:layout_height="wrap_content"
+                android:layout_margin="@dimen/padding_standard">
+
+                <!--<ImageView
+                    android:id="@+id/img_right"
                     android:layout_width="wrap_content"
-                    android:id="@+id/txt_ticket_name"
-                    android:text="@string/msg_dummy"
-                    android:textSize="20sp"
-                    android:textColor="@android:color/black"
-                    android:layout_alignParentLeft="true"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:contentDescription="@null"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/purple_arrow2x" />-->
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/padding_standard"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txt_ticket_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:maxWidth="190dp"
+                        android:singleLine="true"
+                        android:text="@string/msg_dummy"
+                        android:textAllCaps="true"
+                        android:textColor="@android:color/black"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/txt_ticket_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_below="@id/txt_ticket_name"
+                        android:layout_marginTop="@dimen/padding_standard_half"
+                        android:maxWidth="190dp"
+                        android:singleLine="true"
+                        android:text="@string/msg_dummy"
+                        android:textAllCaps="true" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/txt_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
                     android:layout_alignParentTop="true"
-                    android:singleLine="true"
-                    android:maxWidth="190dp"
-                    android:textAllCaps="true"/>
+                    android:layout_marginBottom="@dimen/padding_standard_half"
+                    android:layout_marginRight="@dimen/padding_standard"
+                    android:text="@string/msg_dummy_price"
+                    android:textColor="@color/purple"
+                    android:textSize="20sp" />
 
                 <TextView
-                    android:layout_marginTop="@dimen/padding_standard_half"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/txt_price_info"
                     android:layout_width="wrap_content"
-                    android:id="@+id/txt_ticket_info"
-                    android:text="@string/msg_dummy"
-                    android:layout_alignParentLeft="true"
-                    android:layout_below="@id/txt_ticket_name"
-                    android:singleLine="true"
-                    android:maxWidth="190dp"
-                    android:textAllCaps="true"/>
-            </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@id/txt_price"
+                    android:layout_marginRight="@dimen/padding_standard"
+                    android:text="@string/msg_dummy" />
 
-            <TextView
-                android:layout_marginRight="@dimen/padding_standard"
-                android:layout_marginBottom="@dimen/padding_standard_half"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:id="@+id/txt_price"
-                android:text="@string/msg_dummy_price"
-                android:textSize="20sp"
-                android:textColor="@android:color/black"
-                android:layout_toLeftOf="@id/img_right"
-                android:layout_alignParentTop="true"/>
+            </RelativeLayout>
 
-            <TextView
-                android:layout_marginRight="@dimen/padding_standard"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:id="@+id/txt_price_info"
-                android:text="@string/msg_dummy"
-                android:layout_toLeftOf="@id/img_right"
-                android:layout_below="@id/txt_price"/>
-
-        </RelativeLayout>
-
-        <View
-            android:background="@color/dividercomm"
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"/>
-    </LinearLayout>
-
-
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/colorLight" />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 
 </LinearLayout>

@@ -1,6 +1,7 @@
 package com.jiggie.android.component.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -102,14 +103,15 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
                 holder.txtTicketInfo.setText(itemPurchases.getSummary());
                 holder.txtPrice.setText(StringUtility.getRupiahFormat(itemPurchases.getPrice()));
                 holder.txtPriceInfo.setText(context.getString(R.string.pr_max_purchase)+" "+itemPurchases.getMax_purchase());
-                /*if (position == 0) {
+                if (position == 0) {
                     holder.txtSectionTicket.setText(context.getString(R.string.section_ticket));
                     holder.linSection.setVisibility(View.VISIBLE);
-                    holder.headerContainer.setVisibility(View.VISIBLE);
+                    //holder.headerContainer.setVisibility(View.VISIBLE);
+                    holder.headerContainer.setVisibility(View.GONE);
                 }else {
                     holder.linSection.setVisibility(View.GONE);
-                }*/
-                holder.headerContainer.setVisibility(View.GONE);
+                }
+                //holder.headerContainer.setVisibility(View.GONE);
             }else{
                 if(itemReservations.getStatus().equals(Common.FIELD_STATUS_SOLD_OUT)||itemReservations.getQuantity()==0){
                     holder.txtTicketName.setTextColor(context.getResources().getColor(android.R.color.holo_red_light));
@@ -139,28 +141,30 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
             holder.txtTicketInfo.setText(itemPurchases.getSummary());
             holder.txtPrice.setText(StringUtility.getRupiahFormat(itemPurchases.getPrice()));
             holder.txtPriceInfo.setText(context.getString(R.string.pr_max_purchase)+" "+itemPurchases.getMax_purchase());
-            /*if (position == 0) {
+            if (position == 0) {
                 holder.txtSectionTicket.setText(context.getString(R.string.section_ticket));
                 holder.linSection.setVisibility(View.VISIBLE);
-                holder.headerContainer.setVisibility(View.VISIBLE);
+                //holder.headerContainer.setVisibility(View.VISIBLE);
+                holder.headerContainer.setVisibility(View.GONE);
             }else {
                 holder.linSection.setVisibility(View.GONE);
-            }*/
-            holder.headerContainer.setVisibility(View.GONE);
+            }
+            //holder.headerContainer.setVisibility(View.GONE);
         }
 
 
-        /*holder.txtTicketName.setText(context.getString(R.string.msg_dummy));
+        holder.txtTicketName.setText(context.getString(R.string.msg_dummy));
         if (position == 0) {
             holder.txtSectionTicket.setText(context.getString(R.string.section_ticket));
             holder.linSection.setVisibility(View.VISIBLE);
-            holder.headerContainer.setVisibility(View.VISIBLE);
+            //holder.headerContainer.setVisibility(View.VISIBLE);
+            holder.headerContainer.setVisibility(View.GONE);
         } else if (position == 3) {
             holder.txtSectionTicket.setText(context.getString(R.string.section_table));
             holder.linSection.setVisibility(View.VISIBLE);
         } else {
             holder.linSection.setVisibility(View.GONE);
-        }*/
+        }
         //holder.txtTicketInfo.setVisibility(View.GONE);
     }
 
@@ -196,6 +200,8 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         TextView txtPriceInfo;
         @Bind(R.id.lin_item)
         LinearLayout linItem;
+        @Bind(R.id.card_view)
+        CardView cardView;
 
         private ViewSelectedListener listener;
         private int position;
@@ -217,8 +223,8 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
             this.itemReservation = itemReservation;*/
 
 
-            linItem.setOnClickListener(this);
-
+            //linItem.setOnClickListener(this);
+            cardView.setOnClickListener(this);
         }
 
         @Override
