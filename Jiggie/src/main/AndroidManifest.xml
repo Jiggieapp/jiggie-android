@@ -174,11 +174,18 @@
         </activity>
 
         <!--Commerce Activity collection-->
+        <!--<activity
+            android:name=".activity.ecommerce.ProductListActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme" />-->
+
         <activity
             android:name=".activity.ecommerce.ProductListActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme" />
+            android:theme="@style/AppTheme.StatusBarTransparent" />
+
         <activity
             android:name=".activity.ecommerce.ticket.TicketDetailActivity"
             android:label="@string/app_name"

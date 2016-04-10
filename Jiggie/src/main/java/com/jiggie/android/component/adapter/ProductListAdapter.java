@@ -102,13 +102,14 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
                 holder.txtTicketInfo.setText(itemPurchases.getSummary());
                 holder.txtPrice.setText(StringUtility.getRupiahFormat(itemPurchases.getPrice()));
                 holder.txtPriceInfo.setText(context.getString(R.string.pr_max_purchase)+" "+itemPurchases.getMax_purchase());
-                if (position == 0) {
+                /*if (position == 0) {
                     holder.txtSectionTicket.setText(context.getString(R.string.section_ticket));
                     holder.linSection.setVisibility(View.VISIBLE);
                     holder.headerContainer.setVisibility(View.VISIBLE);
                 }else {
                     holder.linSection.setVisibility(View.GONE);
-                }
+                }*/
+                holder.headerContainer.setVisibility(View.GONE);
             }else{
                 if(itemReservations.getStatus().equals(Common.FIELD_STATUS_SOLD_OUT)||itemReservations.getQuantity()==0){
                     holder.txtTicketName.setTextColor(context.getResources().getColor(android.R.color.holo_red_light));
@@ -138,13 +139,14 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
             holder.txtTicketInfo.setText(itemPurchases.getSummary());
             holder.txtPrice.setText(StringUtility.getRupiahFormat(itemPurchases.getPrice()));
             holder.txtPriceInfo.setText(context.getString(R.string.pr_max_purchase)+" "+itemPurchases.getMax_purchase());
-            if (position == 0) {
+            /*if (position == 0) {
                 holder.txtSectionTicket.setText(context.getString(R.string.section_ticket));
                 holder.linSection.setVisibility(View.VISIBLE);
                 holder.headerContainer.setVisibility(View.VISIBLE);
             }else {
                 holder.linSection.setVisibility(View.GONE);
-            }
+            }*/
+            holder.headerContainer.setVisibility(View.GONE);
         }
 
 
