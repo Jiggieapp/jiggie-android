@@ -118,7 +118,6 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                         productSummary = dataTemp.getData().getProduct_summary();
                         if (productSummary != null) {
 
-
                             String responses = new Gson().toJson(dataTemp);
                             Utils.d("res", responses);
 

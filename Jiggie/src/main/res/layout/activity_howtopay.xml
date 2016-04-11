@@ -25,15 +25,15 @@
                 android:textStyle="bold"
                 android:textAllCaps="true"/>
 
-            <TextView
-                android:layout_height="wrap_content"
+            <ImageView
+                android:id="@+id/img_close"
                 android:layout_width="wrap_content"
-                android:id="@+id/txt_close"
-                android:text="@string/howtp_close"
+                android:layout_height="wrap_content"
+                android:src="@drawable/x1"
                 android:layout_alignParentRight="true"
-                android:textColor="@color/common_plus_signin_btn_text_dark_disabled"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/padding_standard"/>
+
         </RelativeLayout>
 
         <View

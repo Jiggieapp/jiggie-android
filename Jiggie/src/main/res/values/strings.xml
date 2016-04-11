@@ -236,12 +236,12 @@
     <string name="cc_save">SAVE CARD</string>
     <string name="title_cc">ADD CREDIT CARD</string>
 
-    <string name="title_guest">GUEST DETAIL</string>
+    <string name="title_guest">CONTACT DETAIL</string>
     <string name="guest_name">Guest name</string>
     <string name="guest_email">Email</string>
     <string name="guest_62">+62</string>
     <string name="guest_phone">Phone number</string>
-    <string name="guest_phone_info">Please verify your information is correct so we can keep you updated on your order</string>
+    <string name="guest_phone_info">* Please verify your information is correct so we can keep you updated on your order</string>
     <string name="guest_save">SAVE</string>
     <string name="cancel_caps">CANCEL</string>
 

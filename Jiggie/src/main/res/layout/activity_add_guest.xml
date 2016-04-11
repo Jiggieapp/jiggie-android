@@ -17,20 +17,20 @@
             android:id="@+id/txt_title"
             android:text="@string/title_guest"
             android:layout_alignParentLeft="true"
-            android:textColor="@color/purple"
+            android:textColor="@color/textDarkGray"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/padding_standard"
             android:textStyle="bold"/>
 
-        <TextView
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/img_close"
             android:layout_width="wrap_content"
-            android:id="@+id/txt_cancel"
-            android:text="@string/cancel"
+            android:layout_height="wrap_content"
+            android:src="@drawable/x1"
             android:layout_alignParentRight="true"
-            android:textColor="@color/common_plus_signin_btn_text_dark_disabled"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/padding_standard"/>
+
     </RelativeLayout>
 
     <View
@@ -53,7 +53,7 @@
         android:textSize="16sp"
         android:layout_marginLeft="@dimen/padding_standard"
         android:layout_marginRight="@dimen/padding_standard"
-        android:layout_marginTop="@dimen/padding_standard_half"
+        android:layout_marginTop="@dimen/padding_fars"
         android:singleLine="true"/>
 
     <com.rengwuxian.materialedittext.MaterialEditText
@@ -113,7 +113,6 @@
             android:layout_below="@id/divider"
             android:textSize="16sp"
             android:layout_marginLeft="@dimen/padding_standard_half"
-            android:layout_marginRight="@dimen/padding_standard"
             android:layout_marginTop="@dimen/padding_standard_half"
             android:layout_weight="0.2"
             android:inputType="number"
@@ -121,28 +120,17 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/txt_star"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/lin"
-        android:layout_marginTop="@dimen/padding_standard"
-        android:layout_marginLeft="@dimen/padding_standard"
-        android:layout_marginBottom="@dimen/padding_standard"
-        android:text="@string/howtp_star"
-        android:layout_alignParentLeft="true"
-        android:textColor="@color/purple"/>
-
-    <TextView
         android:id="@+id/txt_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/lin"
-        android:layout_toRightOf="@id/txt_star"
-        android:layout_marginTop="@dimen/padding_standard"
-        android:layout_marginBottom="@dimen/padding_standard"
+        android:layout_marginLeft="@dimen/padding_standard"
+        android:layout_marginRight="@dimen/padding_standard"
+        android:layout_marginTop="@dimen/padding_fars"
         android:text="@string/guest_phone_info"
         android:textSize="14sp"
-        android:layout_marginLeft="3dp"/>
+        android:layout_alignParentLeft="true"
+        android:textColor="@color/purple"/>
 
     <RelativeLayout
         android:id="@+id/rel_save"
