@@ -21,6 +21,7 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -56,7 +57,7 @@ import id.co.veritrans.android.api.VTUtil.VTConfig;
 public class AddCreditCardActivity extends ToolbarActivity {
 
     EditText edt_cvv, edt_date, edt_cc_number, edt_cc_name;
-    TextView txt_cancel;
+    ImageView img_close;
     RelativeLayout rel_save;
 
     String totalPrice;
@@ -91,13 +92,13 @@ public class AddCreditCardActivity extends ToolbarActivity {
         edt_cc_number = (EditText)findViewById(R.id.edt_cc_number);
         edt_cvv = (EditText)findViewById(R.id.edt_cc_cvv);
         edt_date = (EditText)findViewById(R.id.edt_cc_date);
-        txt_cancel = (TextView)findViewById(R.id.txt_cancel);
+        img_close = (ImageView)findViewById(R.id.img_close);
         rel_save = (RelativeLayout)findViewById(R.id.rel_save);
 
         //datePickerDialog = createDialogWithoutDateField();
         initDateDialog();
 
-        txt_cancel.setOnClickListener(new View.OnClickListener() {
+        img_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();

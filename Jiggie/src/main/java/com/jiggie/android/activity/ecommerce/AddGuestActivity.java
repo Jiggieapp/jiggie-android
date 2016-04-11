@@ -8,6 +8,7 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -27,7 +28,7 @@ import com.jiggie.android.model.SummaryModel;
  */
 public class AddGuestActivity extends ToolbarActivity {
 
-    TextView txt_cancel;
+    ImageView img_close;
     EditText edt_name, edt_email, edt_62, edt_phone;
     RelativeLayout rel_save;
     ProductListModel.Data.ProductList.Purchase detailPurchase = null;
@@ -46,14 +47,14 @@ public class AddGuestActivity extends ToolbarActivity {
     }
 
     private void initView(){
-        txt_cancel = (TextView)findViewById(R.id.txt_cancel);
+        img_close = (ImageView)findViewById(R.id.img_close);
         edt_name = (EditText)findViewById(R.id.edt_name);
         edt_email = (EditText)findViewById(R.id.edt_email);
         edt_62 = (EditText)findViewById(R.id.edt_62);
         edt_phone = (EditText)findViewById(R.id.edt_phone);
         rel_save = (RelativeLayout)findViewById(R.id.rel_save);
 
-        txt_cancel.setOnClickListener(new View.OnClickListener() {
+        img_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -39,8 +40,9 @@ import butterknife.ButterKnife;
 public class HowToPayActivity extends ToolbarActivity {
 
     RelativeLayout rel_view_orders;
-    TextView txt_t_amount_fill, txt_howtopay, txt_close, txt_to_fill;
+    TextView txt_t_amount_fill, txt_howtopay, txt_to_fill;
     TextView txt_t_limit_fill;
+    ImageView img_close;
     CountDownTimer countDownTimer;
     LinearLayout lin_con_step;
     long order_id;
@@ -84,7 +86,7 @@ public class HowToPayActivity extends ToolbarActivity {
         txt_to_fill = (TextView) findViewById(R.id.txt_to_fill);
         rel_view_orders = (RelativeLayout) findViewById(R.id.rel_view_orders);
         lin_con_step = (LinearLayout) findViewById(R.id.lin_con_step);
-        txt_close = (TextView) findViewById(R.id.txt_close);
+        img_close = (ImageView) findViewById(R.id.img_close);
         relContent = (RelativeLayout)findViewById(R.id.rel_content);
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
 
@@ -97,7 +99,7 @@ public class HowToPayActivity extends ToolbarActivity {
             }
         });
 
-        txt_close.setOnClickListener(new View.OnClickListener() {
+        img_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!isWalkthrough) {
