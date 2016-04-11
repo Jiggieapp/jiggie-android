@@ -9,14 +9,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:layout_gravity="top"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:ellipsize="end"
         android:maxLines="3"
         android:textColor="@android:color/white"
         android:textSize="@dimen/header_view_start_text_size"
-        android:textStyle="bold"
-        android:layout_gravity="top"/>
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/lblEventLocation"
@@ -25,9 +25,10 @@
         android:layout_alignParentBottom="true"
         android:layout_below="@id/event_name"
         android:layout_marginBottom="@dimen/padding_standard"
-        android:paddingLeft="@dimen/huge_padding"
         android:text="@string/msg_dummy_title_info"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:textSize="@dimen/header_view_start_text_size"/>
 
     <!--<TextView
         android:id="@+id/last_seen"
