@@ -17,20 +17,20 @@
             android:id="@+id/txt_title_cc"
             android:text="@string/title_cc"
             android:layout_alignParentLeft="true"
-            android:textColor="@color/purple"
+            android:textColor="@color/textDarkGray"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/padding_standard"
             android:textStyle="bold"/>
 
-        <TextView
-            android:layout_height="wrap_content"
+        <ImageView
+            android:id="@+id/img_close"
             android:layout_width="wrap_content"
-            android:id="@+id/txt_cancel"
-            android:text="@string/cancel"
+            android:layout_height="wrap_content"
+            android:src="@drawable/x1"
             android:layout_alignParentRight="true"
-            android:textColor="@color/common_plus_signin_btn_text_dark_disabled"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/padding_standard"/>
+
     </RelativeLayout>
 
     <View
@@ -53,7 +53,7 @@
         android:textSize="16sp"
         android:layout_marginLeft="@dimen/padding_standard"
         android:layout_marginRight="@dimen/padding_standard"
-        android:layout_marginTop="@dimen/padding_standard_half"
+        android:layout_marginTop="@dimen/padding_fars"
         android:inputType="text"
         android:singleLine="true"/>
 
