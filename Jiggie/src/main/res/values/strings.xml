@@ -366,4 +366,6 @@
 
     <string name="msg_wrong">Something wrong</string>
     <string name="sold_out">SOLD OUT</string>
+
+    <string name="ticket_info">Ticket Info</string>
 </resources>

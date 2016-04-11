@@ -15,9 +15,9 @@
             android:id="@+id/appBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            android:elevation="0dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:elevation="0dp"
-            android:elevation="0dp">
+            app:elevation="0dp">
 
             <!--<include layout="@layout/toolbar_with_dots"/>-->
 
@@ -25,10 +25,10 @@
                 android:id="@+id/customToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_scrollFlags="scroll|enterAlways"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                android:elevation="0dp"
                 app:elevation="0dp"
-                android:elevation="0dp"/>
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
         </android.support.design.widget.AppBarLayout>
 
         <ScrollView
@@ -43,7 +43,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <RelativeLayout
+                <!--<RelativeLayout
                     android:id="@+id/header_container"
                     android:layout_width="match_parent"
                     android:layout_height="145dp"
@@ -72,7 +72,7 @@
                         android:layout_alignParentBottom="true"
                         android:layout_marginBottom="@dimen/padding_standard"/>
 
-                </RelativeLayout>
+                </RelativeLayout>-->
 
                 <RelativeLayout
                     android:id="@+id/container_body"
@@ -81,7 +81,7 @@
                     android:layout_below="@+id/header_container"
                     android:background="@color/light_grey">
 
-                    <RelativeLayout
+                    <!--<RelativeLayout
                         android:id="@+id/rel_reg"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -140,30 +140,42 @@
                             android:textAllCaps="true"
                             android:textColor="@color/text_grey_caption"
                             android:textSize="@dimen/font_caption_size" />
-                    </RelativeLayout>
+                    </RelativeLayout>-->
 
-                    <View
+                    <!--<View
                         android:id="@+id/divider"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_below="@+id/rel_reg"
-                        android:background="@color/dividercomm"/>
+                        android:background="@color/dividercomm"/>-->
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/divider"
+                        android:background="@color/grayLight"
                         android:orientation="vertical"
-                        android:padding="@dimen/padding_standard"
-                        android:background="@color/grayLight">
+                        android:padding="@dimen/padding_standard">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginBottom="@dimen/padding_standard_half"
+                            android:maxWidth="190dp"
+                            android:singleLine="true"
+                            android:text="@string/ticket_info"
+                            android:textAllCaps="true"
+                            android:textColor="?android:attr/textColorPrimary"
+                            android:textSize="@dimen/font_body_size"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/txt_ticket_desc"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/tikdet_cl_info"
-                            android:textColor="@color/textDarkGray"
-                            />
+                            android:textColor="@color/textDarkGray" />
 
 
                     </LinearLayout>
@@ -190,39 +202,39 @@
                 android:id="@+id/txt_guest_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginBottom="@dimen/padding_standard_half"
                 android:text="Han Kao"
                 android:textColor="@color/textDarkGray"
                 android:textSize="@dimen/font_body_size"
-                android:textStyle="bold"
-                android:layout_alignParentTop="true"
-                android:layout_marginBottom="@dimen/padding_standard_half"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/txt_guest_email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@id/txt_guest_name"
                 android:text="Han-kao@gmail.com  |  "
                 android:textColor="@android:color/darker_gray"
-                android:textSize="@dimen/font_caption_size"
-                android:layout_below="@id/txt_guest_name"
-                android:layout_alignParentLeft="true"/>
+                android:textSize="@dimen/font_caption_size" />
 
             <TextView
                 android:id="@+id/txt_guest_phone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Phone Number"
-                android:textSize="@dimen/font_caption_size"
                 android:layout_below="@id/txt_guest_name"
+                android:layout_toRightOf="@id/txt_guest_email"
+                android:text="Phone Number"
                 android:textColor="@android:color/darker_gray"
-                android:layout_toRightOf="@id/txt_guest_email"/>
+                android:textSize="@dimen/font_caption_size" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/purple_arrow2x"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"/>
+                android:layout_centerVertical="true"
+                android:src="@drawable/purple_arrow2x" />
         </RelativeLayout>
 
         <View
@@ -238,16 +250,69 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/btnDone"
             android:layout_margin="@dimen/padding_standard"
-            >
+            android:background="@android:color/white">
+
             <LinearLayout
                 android:id="@+id/purchaseContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
+                android:orientation="vertical">
 
                 <RelativeLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/lblTicketCaption"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginTop="14dp"
+                        android:text="lalaaaadafdaf"
+                        android:textAllCaps="true"
+                        android:textColor="?android:attr/textColorPrimary"
+                        android:textSize="@dimen/normal_text_size"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:id="@+id/minus_button"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/padding_standard"
+                        android:layout_toLeftOf="@+id/lblQuantity"
+                        android:background="@drawable/ic_minus_gr" />
+
+                    <TextView
+                        android:id="@+id/lblQuantity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/plus_button"
+                        android:gravity="center_vertical|center_horizontal"
+                        android:paddingLeft="@dimen/padding_standard_half"
+                        android:paddingRight="@dimen/padding_standard_half"
+                        android:text="0"
+                        android:textAllCaps="true"
+                        android:textColor="?android:attr/textColorPrimary"
+                        android:textSize="@dimen/font_body_size_huge"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:id="@+id/plus_button"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/padding_standard"
+                        android:background="@drawable/ic_plus_gr" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5">
 
@@ -255,83 +320,30 @@
                         android:id="@+id/lblEstimatedCostCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="@dimen/padding_standard"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerInParent="true"
+                        android:layout_centerVertical="true"
                         android:text="Lorem"
                         android:textAllCaps="true"
                         android:textColor="?android:attr/textColorPrimary"
                         android:textSize="@dimen/normal_text_size"
-                        android:textStyle="bold"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentLeft="true"/>
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/lblEstimatedCost"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/lblEstimatedCostCaption"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginTop="@dimen/padding_standard_half"
+                        android:layout_toRightOf="@+id/lblEstimatedCostCaption"
+                        android:gravity="right"
                         android:paddingLeft="@dimen/padding_standard"
-                        android:layout_marginTop="@dimen/padding_standard_half"
                         android:text="Rp 3000K"
-                        android:textColor="?android:attr/textColorPrimary"
+                        android:textColor="@color/purple"
                         android:textSize="@dimen/font_body_size_huge"
-                        android:textStyle="bold"
-                        android:layout_alignParentLeft="true"
-                        />
+                        android:textStyle="bold" />
 
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.5"
-                    >
-
-                    <TextView
-                        android:id="@+id/lblTicketCaption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:text=""
-                        android:textAllCaps="true"
-                        android:textColor="?android:attr/textColorPrimary"
-                        android:textSize="@dimen/normal_text_size"
-                        android:textStyle="bold"
-                        android:layout_alignParentTop="true"/>
-
-                    <View
-                        android:id="@+id/minus_button"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_below="@+id/lblTicketCaption"
-                        android:layout_toLeftOf="@+id/lblQuantity"
-                        android:background="@drawable/ic_minus_gr"
-                        android:layout_marginRight="@dimen/padding_standard"
-                        android:layout_marginTop="14dp"/>
-
-                    <TextView
-                        android:id="@+id/lblQuantity"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/lblTicketCaption"
-                        android:paddingLeft="@dimen/padding_standard_half"
-                        android:paddingRight="@dimen/padding_standard_half"
-                        android:layout_marginTop="@dimen/padding_standard_half"
-                        android:text="0"
-                        android:textAllCaps="true"
-                        android:textColor="?android:attr/textColorPrimary"
-                        android:textSize="@dimen/font_body_size_huge"
-                        android:textStyle="bold"
-                        android:layout_centerHorizontal="true"/>
-
-                    <View
-                        android:id="@+id/plus_button"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:background="@drawable/ic_plus_gr"
-                        android:layout_below="@+id/lblTicketCaption"
-                        android:layout_toRightOf="@id/lblQuantity"
-                        android:layout_marginLeft="@dimen/padding_standard"
-                        android:layout_marginTop="14dp"/>
                 </RelativeLayout>
             </LinearLayout>
 
@@ -339,12 +351,12 @@
                 android:id="@+id/txt_sold_out"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 android:text="@string/sold_out"
                 android:textColor="@android:color/holo_red_light"
                 android:textSize="22sp"
-                android:layout_centerInParent="true"
-                android:visibility="gone"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:visibility="gone" />
         </RelativeLayout>
 
         <Button
@@ -356,6 +368,6 @@
             android:enabled="true"
             android:text="@string/continue_str"
             android:textColor="@android:color/white"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

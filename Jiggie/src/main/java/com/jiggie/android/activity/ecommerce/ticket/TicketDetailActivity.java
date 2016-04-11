@@ -52,18 +52,18 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
 
     ProductListModel.Data.ProductList.Purchase detailPurchase = null;
 
-    @Bind(R.id.lblEventName)
+    /*@Bind(R.id.lblEventName)
     TextView lblEventName;
     @Bind(R.id.lblEventLocation)
-    TextView lblEventLocation;
-    @Bind(R.id.lblType)
+    TextView lblEventLocation;*/
+    /*@Bind(R.id.lblType)
     TextView lblType;
     @Bind(R.id.lblTypeCaption)
-    TextView lblTypeCaption;
-    @Bind(R.id.lblTypePrice)
+    TextView lblTypeCaption;*/
+    /*@Bind(R.id.lblTypePrice)
     TextView lblTypePrice;
     @Bind(R.id.lblTypePriceCaption)
-    TextView lblTypePriceCaption;
+    TextView lblTypePriceCaption;*/
     @Bind(R.id.txt_guest_name)
     TextView txtGuestName;
     @Bind(R.id.txt_guest_email)
@@ -223,22 +223,22 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
 
         sendMixpanel(eventDetail);
 
-        lblEventName.setText(eventName);
+        /*lblEventName.setText(eventName);
         try {
             final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(startTime);
             lblEventLocation.setText(Common.SERVER_DATE_FORMAT_COMM.format(startDate) + " - " + venueName);
         } catch (ParseException e) {
             throw new RuntimeException(App.getErrorMessage(e), e);
-        }
+        }*/
 
         max = Integer.parseInt(detailPurchase.getMax_purchase());
         price = (int) Double.parseDouble(detailPurchase.getPrice());
         ticketId = detailPurchase.getTicket_id();
 
-        lblType.setText(detailPurchase.getName());
+        /*lblType.setText(detailPurchase.getName());
         lblTypeCaption.setText(detailPurchase.getSummary());
         lblTypePrice.setText(StringUtility.getRupiahFormat(detailPurchase.getPrice()));
-        lblTypePriceCaption.setText(getString(R.string.pr_max_purchase) + " " + max);
+        lblTypePriceCaption.setText(getString(R.string.pr_max_purchase) + " " + max);*/
 
         if(detailPurchase.getStatus().equals(Common.FIELD_STATUS_SOLD_OUT)||detailPurchase.getQuantity()==0){
             purchaseContainer.setVisibility(View.GONE);
