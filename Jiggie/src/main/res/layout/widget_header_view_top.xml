@@ -20,12 +20,10 @@
         android:id="@+id/lblEventLocation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/padding_standard"
-        android:paddingLeft="@dimen/huge_padding"
         android:text="@string/msg_dummy_title_info"
         android:textColor="@android:color/white"
-        android:visibility="gone"/>
+        android:textStyle="bold"
+        android:textSize="@dimen/header_view_end_text_size_smaller"/>
 
     <!--<TextView
         android:id="@+id/last_seen"

@@ -101,9 +101,10 @@ public class ProductListActivity extends ToolbarActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
-        toolbarHeaderView.bindTo(eventDetail.getTitle());
+        toolbarHeaderView.bindTo(eventDetail.getTitle()
+                , eventDetail.getVenue().getAddress() + " " + eventDetail.getStart_datetime_str());
         floatHeaderView.bindTo(eventDetail.getTitle()
-                , eventDetail.getVenue().getAddress());
+                , eventDetail.getVenue().getAddress() + "\n" + eventDetail.getStart_datetime_str());
     }
 
     private void sendMixpanel(EventDetailModel.Data.EventDetail eventDetail){

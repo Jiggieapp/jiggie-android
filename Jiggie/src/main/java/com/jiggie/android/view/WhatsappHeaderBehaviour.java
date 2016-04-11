@@ -55,9 +55,9 @@ public class WhatsappHeaderBehaviour extends CoordinatorLayout.Behavior<HeaderVi
     @Override
     public boolean onDependentViewChanged(CoordinatorLayout parent, HeaderView child, View dependency) {
         shouldInitProperties();
+
         int maxScroll = ((AppBarLayout) dependency).getTotalScrollRange();
-        float percentage = (Math.abs(dependency.getY()) - child.lblEventLocation.getHeight())
-                / (float) maxScroll;
+        float percentage = Math.abs(dependency.getY()) / (float) maxScroll;
         float childPosition = dependency.getHeight()
                 + dependency.getY()
                 - child.getHeight()
@@ -69,32 +69,16 @@ public class WhatsappHeaderBehaviour extends CoordinatorLayout.Behavior<HeaderVi
         if (Math.abs(dependency.getY()) >= maxScroll / 2) {
             float layoutPercentage = (Math.abs(dependency.getY()) - (maxScroll / 2)) / Math.abs(maxScroll / 2);
             lp.leftMargin = (int) (layoutPercentage * mEndMarginLeft) + mStartMarginLeft;
-            //child.setTextSize(getTranslationOffset(mTitleStartSize, mTitleEndSize, layoutPercentage));
-            float textSize = getTranslationOffset(mTitleStartSize, 0, layoutPercentage);
-            //child.lblEventLocation.setTextSize(textSize);
-            /*if(textSize > 5)
-            {
-                if(child.lblEventLocation.getVisibility() == View.GONE)
-                    child.lblEventLocation.setVisibility(View.VISIBLE);
-                child.lblEventLocation.setTextSize(textSize);
-                //child.name.setHeight(android.support.design.R.id.wrap_content);
-            }
-            else
-            {
-                child.lblEventLocation.setVisibility(View.GONE);
-            }*/
+            child.setTextSize(getTranslationOffset(mTitleStartSize, mTitleStartSize, layoutPercentage));
+            //child.name.setTextSize(getTranslationOffset(mTitleStartSize, mTitleStartSize, layoutPercentage));
+            float textSize = getTranslationOffset(mTitleStartSize, mTitleEndSize, layoutPercentage);
+            child.lblEventLocation.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         } else {
             lp.leftMargin = mStartMarginLeft;
         }
         lp.rightMargin = mMarginRight;
         child.setLayoutParams(lp);
         child.setY(childPosition);
-
-        /*if(child.getHeight() == getToolbarHeight(mContext))
-        {
-            child.setVisibility(View.GONE);
-        }
-        else child.setVisibility(View.VISIBLE);*/
 
         if (isHide && percentage < 1) {
             child.setVisibility(View.VISIBLE);
@@ -128,7 +112,7 @@ public class WhatsappHeaderBehaviour extends CoordinatorLayout.Behavior<HeaderVi
         }
 
         if (mTitleStartSize == 0) {
-            mTitleEndSize = mContext.getResources().getDimensionPixelSize(R.dimen.header_view_end_text_size);
+            mTitleEndSize = mContext.getResources().getDimensionPixelSize(R.dimen.header_view_end_text_size_smaller);
         }
 
         if (mTitleStartSize == 0) {
