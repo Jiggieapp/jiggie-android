@@ -178,8 +178,6 @@ public class AccountManager extends BaseManager{
             getSetting(fb_id, new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
-                    Utils.d(TAG, "responseresponse " + Utils.print(response));
-
                     if (response.code() == Utils.CODE_SUCCESS) {
                         MemberSettingResultModel data = (MemberSettingResultModel) response.body();
                         MemberSettingModel temp = new MemberSettingModel(data);
@@ -250,7 +248,6 @@ public class AccountManager extends BaseManager{
     }
 
     public static LoginModel loadLogin(){
-
         LoginModel loginModel = new Gson().fromJson(App.getInstance().getSharedPreferences(Utils.PREFERENCE_LOGIN,
                 Context.MODE_PRIVATE).getString(Utils.LOGIN_MODEL, ""), LoginModel.class);
         return loginModel;

@@ -149,6 +149,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         event_day = a.getStringExtra(Common.FIELD_EVENT_DAY);
         event_end = a.getStringExtra(Common.FIELD_EVENT_DAY_END);
         event_pics = a.getStringArrayListExtra(Common.FIELD_EVENT_PICS);
+        Utils.d(TAG, "event_pics "  + event_pics + "");
         event_description = a.getStringExtra(Common.FIELD_EVENT_DESCRIPTION);
 
         this.imagePagerIndicatorAdapter = new ImagePagerIndicatorAdapter(super.getSupportFragmentManager(), this.imageViewPager);
