@@ -463,6 +463,21 @@ public class App extends Application {
         final LoginModel login = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin();
         final SettingModel settingModel = AccountManager.loadSetting() == null ? null : AccountManager.loadSetting();
 
+        if(eventName.equals("Install")){
+            if(!Utils.AFmedia_source.equals(""))
+                json.putString("AFmedia_source", Utils.AFmedia_source);
+            else
+                json.putString("AFmedia_source", Utils.AF_ORGANIC);
+            if(!Utils.AFcampaign.equals(""))
+                json.putString("AFcampaign", Utils.AFcampaign);
+            else
+                json.putString("AFcampaign", Utils.AF_ORGANIC);
+            if(!Utils.AFinstall_type.equals(""))
+                json.putString("AFinstall_type", Utils.AFinstall_type);
+            else
+                json.putString("AFinstall_type", Utils.AF_ORGANIC);
+        }
+
         //Added by Aga
         json.putString("App Release", getVersionName(this));
         json.putString("App Version", getVersionCode(this));
