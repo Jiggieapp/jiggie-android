@@ -47,8 +47,8 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
     /*@Bind(R.id.lblType)
     TextView lblType;
     @Bind(R.id.lblTypeCaption)
-    TextView lblTypeCaption;
-    @Bind(R.id.lblTypePrice)*/
+    TextView lblTypeCaption;*/
+    @Bind(R.id.lblTypePrice)
     TextView lblTypePrice;
     @Bind(R.id.txt_ticket_desc)
     TextView txtTicketDesc;
@@ -95,7 +95,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
     protected void onCreate() {
         super.setContentView(R.layout.activity_ticket_detail);
         super.bindView();
-
+        super.setToolbarTitle("Loremmm", true);
         preDefined();
 
         btnDone.setOnClickListener(new View.OnClickListener() {
@@ -130,7 +130,6 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
                             i.putExtra(productSummary.getClass().getName(), productSummary);
                             i.putExtra(eventDetail.getClass().getName(), eventDetail);
                             i.putExtra(Common.FIELD_MIN_DEPOSIT, detailReservation.getMin_deposit_amount());
-
                             startActivity(i);
                         } else {
                             Toast.makeText(ReservationActivity.this, getString(R.string.msg_wrong), Toast.LENGTH_LONG).show();
@@ -355,7 +354,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
         return "Number of guests";
     }
 
-    @Override
+    /*@Override
     protected String getToolbarTitle() {
         return getResources().getString(R.string.ticket_detail);
     }
@@ -363,5 +362,5 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
     @Override
     protected int getCurrentStep() {
         return 1;
-    }
+    }*/
 }

@@ -30,7 +30,6 @@ import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.summary.AbstractPurchaseSumaryActivity;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
-import com.jiggie.android.component.activity.ToolbarWithDotActivity;
 import com.jiggie.android.fragment.SlideFragment;
 import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.model.CCScreenModel;
@@ -83,10 +82,12 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     ImageView imgPayment;
     @Bind(R.id.txt_payment)
     TextView txtPayment;
+    @Bind(R.id.txt_event_info_date)
+    TextView txtEventInfoDate;
 
     String eventId, eventName, venueName, startTime, totalPrice;
-    @Bind(R.id.lin_terms)
-    LinearLayout linTerms;
+    /*@Bind(R.id.lin_terms)
+    LinearLayout linTerms;*/
     ArrayList<TermsItemView> arrTermItemView = new ArrayList<>();
     String is_new_card, cc_token_id = Utils.BLANK, cc_card_id, paymentType = Utils.BLANK, name_cc = Utils.BLANK;
     boolean is_verified;
@@ -129,6 +130,11 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
             }
         });
 
+    }
+
+    @Override
+    protected String getToolbarTitle() {
+        return getResources().getString(R.string.purchase_info);
     }
 
     private void preDefined() {
@@ -190,7 +196,9 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
         txtEventName.setText(eventName);
         try {
             final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(startTime);
-            txtEventInfo.setText(Common.SERVER_DATE_FORMAT_COMM.format(startDate) + " - " + venueName);
+            txtEventInfo.setText(venueName);
+            txtEventInfoDate.setText(Common.SERVER_DATE_FORMAT_COMM.format(startDate)
+            );
         } catch (ParseException e) {
             throw new RuntimeException(App.getErrorMessage(e), e);
         }
@@ -200,7 +208,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
         txtTaxFill.setText(StringUtility.getRupiahFormat(dataProduct.getTax_amount()));
         txtTotalFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_price()));
 
-        initTermView(dataProduct);
+        //initTermView(dataProduct);
     }
 
     private void sendMixpanel(SummaryModel.Data.Product_summary productSummary, EventDetailModel.Data.EventDetail eventDetail) {
@@ -210,7 +218,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
         App.getInstance().trackMixPanelCommerce(Utils.COMM_PURCHASE_CONFIRMATION, commEventMixpanelModel);
     }
 
-    private void initTermView(SummaryModel.Data.Product_summary.Product_list dataProduct) {
+    /*private void initTermView(SummaryModel.Data.Product_summary.Product_list dataProduct) {
         int size = dataProduct.getTerms().size();
         for (int i = 0; i < size; i++) {
             TermsItemView termsItemView = new TermsItemView(PurchaseInfoActivity.this, dataProduct.getTerms().get(i).getBody(), new TermsItemView.OnCheckTermsListener() {
@@ -224,7 +232,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
         }
 
         checkEnability(arrTermItemView, txtPayment.getText().toString());
-    }
+    }*/
 
     @Override
     protected void onStop() {
@@ -410,16 +418,6 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                 //Something is wrong, get details message by print e.getMessage()
             }
         });
-    }
-
-    @Override
-    protected int getCurrentStep() {
-        return 2;
-    }
-
-    @Override
-    protected String getToolbarTitle() {
-        return "PURCHASE INFO";
     }
 
     @Override

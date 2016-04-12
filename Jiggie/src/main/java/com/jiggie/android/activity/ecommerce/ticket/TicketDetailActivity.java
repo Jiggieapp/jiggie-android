@@ -29,9 +29,7 @@ import com.jiggie.android.model.PostSummaryModel;
 import com.jiggie.android.model.ProductListModel;
 import com.jiggie.android.model.SummaryModel;
 
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 
 import butterknife.Bind;
 
@@ -94,7 +92,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
     protected void onCreate() {
         super.setContentView(R.layout.activity_ticket_detail);
         super.bindView();
-
+        super.setToolbarTitle(getResources().getString(R.string.ticket_detail), true);
         preDefined();
 
         btnDone.setOnClickListener(new View.OnClickListener() {
@@ -281,7 +279,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
         App.getInstance().trackMixPanelCommerce(Utils.COMM_PRODUCT_DETAIL, commEventMixpanelModel);
     }
 
-    @Override
+   /* @Override
     protected String getToolbarTitle() {
         return getResources().getString(R.string.ticket_detail);
     }
@@ -289,7 +287,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
     @Override
     protected int getCurrentStep() {
         return 1;
-    }
+    }*/
 
     @Override
     public String getEstimatedCostCaption() {

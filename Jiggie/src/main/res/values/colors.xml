@@ -22,6 +22,7 @@
     <color name="divider">#b3b3b3</color>
     <color name="grey_dot">#CA3FE6</color>
     <color name="dividercomm">#E8EBEB</color>
+    <color name="dividercomm2">#F3F3F3</color>
 
     <!--font-->
     <color name="text_grey_caption">#9E9E9E</color>

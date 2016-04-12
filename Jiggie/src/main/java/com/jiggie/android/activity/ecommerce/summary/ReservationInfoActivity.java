@@ -104,8 +104,8 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
 
     SummaryModel.Data.Product_summary productSummary;
     EventDetailModel.Data.EventDetail eventDetail;
-    @Bind(R.id.lin_terms)
-    LinearLayout linTerms;
+    /*@Bind(R.id.lin_terms)
+    LinearLayout linTerms;*/
 
     String eventId, eventName, venueName, startTime, totalPrice, minDeposit;
     ArrayList<TermsItemView> arrTermItemView = new ArrayList<>();
@@ -159,14 +159,17 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                 arrangeEstimateDeposit(false);
             }
         });
-
         plusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 arrangeEstimateDeposit(true);
             }
         });
+    }
 
+    @Override
+    protected String getToolbarTitle() {
+        return getResources().getString(R.string.reservation_info);
     }
 
     private void preDefined() {
@@ -247,7 +250,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         txtEstBalFill.setText(StringUtility.getRupiahFormat(estBalance));
         txtTotalFill.setText(StringUtility.getRupiahFormat(minDeposit));
 
-        initTermView(dataProduct);
+        //initTermView(dataProduct);
     }
 
     private void arrangeEstimateDeposit(boolean isIncrement){
@@ -267,7 +270,6 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
             txtEstBalFill.setText(StringUtility.getRupiahFormat(estBalance));
 
         }else{
-
             if(payDeposit==Integer.parseInt(productSummary.getTotal_price())){
                 payDeposit = latestDeposit;
             }else{
@@ -293,7 +295,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         App.getInstance().trackMixPanelCommerce(Utils.COMM_PURCHASE_CONFIRMATION, commEventMixpanelModel);
     }
 
-    private void initTermView(SummaryModel.Data.Product_summary.Product_list dataProduct) {
+    /*private void initTermView(SummaryModel.Data.Product_summary.Product_list dataProduct) {
         int size = dataProduct.getTerms().size();
         for (int i = 0; i < size; i++) {
             TermsItemView termsItemView = new TermsItemView(ReservationInfoActivity.this, dataProduct.getTerms().get(i).getBody(), new TermsItemView.OnCheckTermsListener() {
@@ -307,7 +309,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         }
 
         checkEnability(arrTermItemView, txtPayment.getText().toString());
-    }
+    }*/
 
     @Override
     protected void onStop() {
@@ -611,16 +613,6 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                 }
             }
         }
-    }
-
-    @Override
-    protected int getCurrentStep() {
-        return 2;
-    }
-
-    @Override
-    protected String getToolbarTitle() {
-        return "PURCHASE INFO";
     }
 
     private class VtWebViewClient extends WebViewClient {

@@ -4,11 +4,11 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.jiggie.android.R;
-import com.jiggie.android.component.activity.ToolbarWithDotActivity;
+import com.jiggie.android.component.activity.ToolbarActivity;
 
 import butterknife.Bind;
 
-public abstract class AbstractTicketDetailActivity extends ToolbarWithDotActivity {
+public abstract class AbstractTicketDetailActivity extends /*ToolbarWithDotActivity*/ ToolbarActivity {
 
     /*@Bind(R.id.lblTypeCaption)
     TextView lblEventCaption;
@@ -21,6 +21,7 @@ public abstract class AbstractTicketDetailActivity extends ToolbarWithDotActivit
         super.onCreate(savedInstanceState);
         //ButterKnife.bind(this);
         //tb.setTitle(getResources().getString(R.string.ticket_detail));
+        onCreate();
         super.bindView();
 
         //lblEventCaption.setText(getEventCaption());
@@ -33,4 +34,5 @@ public abstract class AbstractTicketDetailActivity extends ToolbarWithDotActivit
     public abstract String getTypePriceCaption();*/
     public abstract String getEstimatedCostCaption();
     public abstract String getTicketCaption();
+    protected abstract void onCreate();
 }
