@@ -319,4 +319,5 @@ public class Utils {
     public static final String[] JIGGIE_URLS =
             { SCHEME + SCHEME_HOST_EVENT_LIST
             , SCHEME + SCHEME_HOST_EVENT_DETAIL };
+
 }

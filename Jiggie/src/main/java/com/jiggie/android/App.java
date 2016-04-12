@@ -202,12 +202,29 @@ public class App extends Application {
         final LoginModel login = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin();
         final SettingModel settingModel = AccountManager.loadSetting() == null ? null : AccountManager.loadSetting();
 
-        if(!Utils.AFmedia_source.equals(""))
-            json.putString("AFmedia_source", Utils.AFmedia_source);
-        if(!Utils.AFcampaign.equals(""))
-            json.putString("AFcampaign", Utils.AFcampaign);
-        if(!Utils.AFinstall_type.equals(""))
-            json.putString("AFinstall_type", Utils.AFinstall_type);
+
+        if(eventName.equals("Install")){
+            if(!Utils.AFmedia_source.equals(""))
+                json.putString("AFmedia_source", Utils.AFmedia_source);
+            else
+                json.putString("AFmedia_source", Utils.AF_ORGANIC);
+            if(!Utils.AFcampaign.equals(""))
+                json.putString("AFcampaign", Utils.AFcampaign);
+            else
+                json.putString("AFcampaign", Utils.AF_ORGANIC);
+            if(!Utils.AFinstall_type.equals(""))
+                json.putString("AFinstall_type", Utils.AFinstall_type);
+            else
+                json.putString("AFinstall_type", Utils.AF_ORGANIC);
+        }else{
+            if(!Utils.AFmedia_source.equals(""))
+                json.putString("AFmedia_source", Utils.AFmedia_source);
+            if(!Utils.AFcampaign.equals(""))
+                json.putString("AFcampaign", Utils.AFcampaign);
+            if(!Utils.AFinstall_type.equals(""))
+                json.putString("AFinstall_type", Utils.AFinstall_type);
+        }
+
 
         //Added by Aga
         json.putString("App Release", getVersionName(this));
@@ -413,7 +430,7 @@ public class App extends Application {
 
         json.putString("os_version", this.getDeviceOSName());
         json.putString("device_type", Build.MODEL);
-        json.putString("app_ersion", getVersionCode(this));
+        json.putString("app_version", getVersionCode(this));
         getInstanceMixpanel().registerSuperProperties(json);
     }
 

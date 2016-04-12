@@ -1,68 +1,62 @@
 package com.jiggie.android.activity.ecommerce;
 
-import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.jiggie.android.App;
+import com.jiggie.android.R;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
-import com.jiggie.android.R;
 import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.model.CCModel;
 import com.jiggie.android.model.CCScreenModel;
 import com.jiggie.android.model.CommEventMixpanelModel;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventDetailModel;
-import com.jiggie.android.model.PostCCModel;
 import com.jiggie.android.model.SummaryModel;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.lang.reflect.Field;
 import java.util.Calendar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import id.co.veritrans.android.api.VTDirect;
-import id.co.veritrans.android.api.VTInterface.ITokenCallback;
-import id.co.veritrans.android.api.VTModel.VTCardDetails;
-import id.co.veritrans.android.api.VTModel.VTToken;
-import id.co.veritrans.android.api.VTUtil.VTConfig;
 
 /**
  * Created by LTE on 2/26/2016.
  */
 public class AddCreditCardActivity extends ToolbarActivity {
+    @Bind(R.id.edt_cc_name)
+    MaterialEditText edtCcName;
+    @Bind(R.id.edt_cc_number)
+    MaterialEditText edtCcNumber;
+    @Bind(R.id.edt_cc_date)
+    MaterialEditText edtCcDate;
+    @Bind(R.id.edt_cc_cvv)
+    MaterialEditText edtCcCvv;
+    @Bind(R.id.rel_save)
+    RelativeLayout relSave;
 
-    EditText edt_cvv, edt_date, edt_cc_number, edt_cc_name;
+    /*EditText edt_cvv, edt_date, edt_cc_number, edt_cc_name;
     ImageView img_close;
-    RelativeLayout rel_save;
+    RelativeLayout rel_save;*/
 
-    String totalPrice;
+
     private int month, year;
     //DatePickerDialog datePickerDialog;
+    String totalPrice;
     EventDetailModel.Data.EventDetail eventDetail;
     SummaryModel.Data.Product_summary productSummary;
     Dialog datePickerDialog;
@@ -71,6 +65,7 @@ public class AddCreditCardActivity extends ToolbarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_cc);
+        super.bindView();
 
         Intent a = getIntent();
         totalPrice = a.getStringExtra(Common.FIELD_PRICE);
@@ -80,32 +75,20 @@ public class AddCreditCardActivity extends ToolbarActivity {
         initView();
     }
 
-    private void sendMixpanel(SummaryModel.Data.Product_summary productSummary, EventDetailModel.Data.EventDetail eventDetail){
+    private void sendMixpanel(SummaryModel.Data.Product_summary productSummary, EventDetailModel.Data.EventDetail eventDetail) {
         CommEventMixpanelModel commEventMixpanelModel = new CommEventMixpanelModel(eventDetail.getTitle(), eventDetail.getVenue_name(), eventDetail.getVenue().getCity(), eventDetail.getStart_datetime_str(),
                 eventDetail.getEnd_datetime_str(), eventDetail.getTags(), eventDetail.getDescription(), productSummary.getProduct_list().get(0).getName(), productSummary.getProduct_list().get(0).getTicket_type(),
                 productSummary.getTotal_price(), productSummary.getProduct_list().get(0).getMax_buy());
         App.getInstance().trackMixPanelCommerce(Utils.COMM_CREDIT_CARD, commEventMixpanelModel);
     }
 
-    private void initView(){
-        edt_cc_name = (EditText)findViewById(R.id.edt_cc_name);
-        edt_cc_number = (EditText)findViewById(R.id.edt_cc_number);
-        edt_cvv = (EditText)findViewById(R.id.edt_cc_cvv);
-        edt_date = (EditText)findViewById(R.id.edt_cc_date);
-        img_close = (ImageView)findViewById(R.id.img_close);
-        rel_save = (RelativeLayout)findViewById(R.id.rel_save);
+    private void initView() {
 
         //datePickerDialog = createDialogWithoutDateField();
+        super.setToolbarTitle(getString(R.string.title_cc), true);
         initDateDialog();
 
-        img_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-
-        edt_cc_number.addTextChangedListener(new TextWatcher() {
+        edtCcNumber.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -113,7 +96,7 @@ public class AddCreditCardActivity extends ToolbarActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                edt_cc_number.setTextColor(getResources().getColor(R.color.textDarkGray));
+                edtCcNumber.setTextColor(getResources().getColor(R.color.textDarkGray));
             }
 
             @Override
@@ -135,7 +118,7 @@ public class AddCreditCardActivity extends ToolbarActivity {
             }
         });
 
-        edt_cvv.addTextChangedListener(new TextWatcher() {
+        edtCcCvv.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -143,7 +126,7 @@ public class AddCreditCardActivity extends ToolbarActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                edt_cvv.setTextColor(getResources().getColor(R.color.textDarkGray));
+                edtCcCvv.setTextColor(getResources().getColor(R.color.textDarkGray));
             }
 
             @Override
@@ -153,7 +136,7 @@ public class AddCreditCardActivity extends ToolbarActivity {
             }
         });
 
-        edt_date.setOnClickListener(new View.OnClickListener() {
+        edtCcDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!datePickerDialog.isShowing()) {
@@ -162,7 +145,7 @@ public class AddCreditCardActivity extends ToolbarActivity {
             }
         });
 
-        edt_date.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+        edtCcDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus && !datePickerDialog.isShowing()) {
@@ -171,7 +154,7 @@ public class AddCreditCardActivity extends ToolbarActivity {
             }
         });
 
-        edt_date.addTextChangedListener(new TextWatcher() {
+        edtCcDate.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -179,7 +162,7 @@ public class AddCreditCardActivity extends ToolbarActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                edt_date.setTextColor(getResources().getColor(R.color.textDarkGray));
+                edtCcDate.setTextColor(getResources().getColor(R.color.textDarkGray));
 
             }
 
@@ -190,12 +173,12 @@ public class AddCreditCardActivity extends ToolbarActivity {
             }
         });
 
-        rel_save.setOnClickListener(new View.OnClickListener() {
+        relSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String cardNumber = edt_cc_number.getText().toString().replaceAll("\\D","");
-                String cvv = edt_cvv.getText().toString();
-                String date = edt_date.getText().toString();
+                String cardNumber = edtCcNumber.getText().toString().replaceAll("\\D", "");
+                String cvv = edtCcCvv.getText().toString();
+                String date = edtCcDate.getText().toString();
                 if (!isFieldError(cardNumber, cvv, date)) {
                     saveCC(cardNumber, cvv, month, year, totalPrice);
                 }
@@ -208,90 +191,90 @@ public class AddCreditCardActivity extends ToolbarActivity {
         checkEnability();
     }
 
-    private boolean isFieldError(String cardNumber, String cvv, String date){
+    private boolean isFieldError(String cardNumber, String cvv, String date) {
         boolean isError = false;
-        if(cardNumber.isEmpty()){
+        if (cardNumber.isEmpty()) {
             isError = true;
-            edt_cc_number.setTextColor(getResources().getColor(android.R.color.holo_red_light));
-            edt_cc_number.setError(Utils.BLANK);
-        }else{
-            if(cardNumber.length()<16){
+            edtCcNumber.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+            edtCcNumber.setError(Utils.BLANK);
+        } else {
+            if (cardNumber.length() < 16) {
                 isError = true;
-                edt_cc_number.setTextColor(getResources().getColor(android.R.color.holo_red_light));
-                edt_cc_number.setError(Utils.BLANK);
-            }else{
-                if(cardNumber.startsWith("4")||cardNumber.startsWith("5")){
+                edtCcNumber.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+                edtCcNumber.setError(Utils.BLANK);
+            } else {
+                if (cardNumber.startsWith("4") || cardNumber.startsWith("5")) {
                     //do nothing
-                }else{
+                } else {
                     isError = true;
-                    edt_cc_number.setTextColor(getResources().getColor(android.R.color.holo_red_light));
-                    edt_cc_number.setError(Utils.BLANK);
+                    edtCcNumber.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+                    edtCcNumber.setError(Utils.BLANK);
                 }
             }
         }
 
-        if(cvv.isEmpty()){
+        if (cvv.isEmpty()) {
             isError = true;
-            edt_cvv.setTextColor(getResources().getColor(android.R.color.holo_red_light));
-            edt_cvv.setError(Utils.BLANK);
+            edtCcCvv.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+            edtCcCvv.setError(Utils.BLANK);
         }
 
-        if(date.isEmpty()){
+        if (date.isEmpty()) {
             isError = true;
-            edt_date.setTextColor(getResources().getColor(android.R.color.holo_red_light));
-            edt_date.setError(Utils.BLANK);
-        }else{
+            edtCcDate.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+            edtCcDate.setError(Utils.BLANK);
+        } else {
             Calendar c1 = Calendar.getInstance();
             c1.set(year, month - 1, 1);
 
             Calendar c2 = Calendar.getInstance();
             c2.set(c2.get(Calendar.YEAR), c2.get(Calendar.MONTH), 1);
 
-            if(c1.before(c2)){
+            if (c1.before(c2)) {
                 isError = true;
-                edt_date.setTextColor(getResources().getColor(android.R.color.holo_red_light));
-                edt_date.setError(Utils.BLANK);
+                edtCcDate.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+                edtCcDate.setError(Utils.BLANK);
             }
         }
         return isError;
     }
 
-    private void saveCC(final String cardNumber, String cvv, int expMonth, int expYear, final String price){
-        String maskedCard = cardNumber.substring(0, cardNumber.length()-4)+"-"+cardNumber.substring(cardNumber.length()-4, cardNumber.length());
+    private void saveCC(final String cardNumber, String cvv, int expMonth, int expYear, final String price) {
+        String maskedCard = cardNumber.substring(0, cardNumber.length() - 4) + "-" + cardNumber.substring(cardNumber.length() - 4, cardNumber.length());
 
         CCScreenModel.CardDetails cardDetails = new CCScreenModel.CardDetails(cardNumber, cvv, expMonth, expYear, price);
 
         CommerceManager.arrCCScreen.add(new CCScreenModel(new CCModel.Data.Creditcard_information(maskedCard, Utils.BLANK, Utils.BLANK, Utils.TYPE_CC),
-                cardDetails, edt_cc_name.getText().toString()));
+                cardDetails, edtCcName.getText().toString()));
         //data yg di local
         CommerceManager.arrCCLocal.add(new CCScreenModel(new CCModel.Data.Creditcard_information(maskedCard, Utils.BLANK, Utils.BLANK, Utils.TYPE_CC),
-                cardDetails, edt_cc_name.getText().toString()));
+                cardDetails, edtCcName.getText().toString()));
         //-------------
         setResult(RESULT_OK, new Intent());
         finish();
 
     }
 
-    private void checkEnability(){
-        String cardNumber = edt_cc_number.getText().toString();
-        String cvv = edt_cvv.getText().toString();
-        String date = edt_date.getText().toString();
+    private void checkEnability() {
+        String cardNumber = edtCcNumber.getText().toString();
+        String cvv = edtCcCvv.getText().toString();
+        String date = edtCcDate.getText().toString();
         boolean isItEnable = true;
 
-        if(cardNumber.equals(Utils.BLANK)){
+        if (cardNumber.equals(Utils.BLANK)) {
             isItEnable = false;
         }
-        if(cvv.equals(Utils.BLANK)){
+        if (cvv.equals(Utils.BLANK)) {
             isItEnable = false;
         }
-        if(date.equals(Utils.BLANK)){
+        if (date.equals(Utils.BLANK)) {
             isItEnable = false;
         }
 
-        if(isItEnable){
-            rel_save.setEnabled(true);
-        }else{
-            rel_save.setEnabled(false);
+        if (isItEnable) {
+            relSave.setEnabled(true);
+        } else {
+            relSave.setEnabled(false);
         }
     }
 
@@ -300,19 +283,19 @@ public class AddCreditCardActivity extends ToolbarActivity {
         datePickerDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         datePickerDialog.setContentView(R.layout.dialog_datepicker);
 
-        final DatePicker datePicker = (DatePicker)datePickerDialog.findViewById(R.id.datepicker);
+        final DatePicker datePicker = (DatePicker) datePickerDialog.findViewById(R.id.datepicker);
 
-        Button btn_ok = (Button)datePickerDialog.findViewById(R.id.btn_ok);
-        Button btn_cancel = (Button)datePickerDialog.findViewById(R.id.btn_cancel);
+        Button btn_ok = (Button) datePickerDialog.findViewById(R.id.btn_ok);
+        Button btn_cancel = (Button) datePickerDialog.findViewById(R.id.btn_cancel);
 
         btn_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 datePickerDialog.dismiss();
-                String months = String.format("%02d", datePicker.getMonth()+1);
-                month = datePicker.getMonth()+1;
+                String months = String.format("%02d", datePicker.getMonth() + 1);
+                month = datePicker.getMonth() + 1;
                 year = datePicker.getYear();
-                edt_date.setText(months + "/" + String.valueOf(year));
+                edtCcDate.setText(months + "/" + String.valueOf(year));
 
                 checkEnability();
             }
@@ -325,42 +308,34 @@ public class AddCreditCardActivity extends ToolbarActivity {
             }
         });
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int daySpinnerId = Resources.getSystem().getIdentifier("day", "id", "android");
-            if (daySpinnerId != 0)
-            {
+            if (daySpinnerId != 0) {
                 View daySpinner = datePicker.findViewById(daySpinnerId);
-                if (daySpinner != null)
-                {
+                if (daySpinner != null) {
                     daySpinner.setVisibility(View.GONE);
                 }
             }
 
             int monthSpinnerId = Resources.getSystem().getIdentifier("month", "id", "android");
-            if (monthSpinnerId != 0)
-            {
+            if (monthSpinnerId != 0) {
                 View monthSpinner = datePicker.findViewById(monthSpinnerId);
-                if (monthSpinner != null)
-                {
+                if (monthSpinner != null) {
                     monthSpinner.setVisibility(View.VISIBLE);
                 }
             }
 
             int yearSpinnerId = Resources.getSystem().getIdentifier("year", "id", "android");
-            if (yearSpinnerId != 0)
-            {
+            if (yearSpinnerId != 0) {
                 View yearSpinner = datePicker.findViewById(yearSpinnerId);
-                if (yearSpinner != null)
-                {
+                if (yearSpinner != null) {
                     yearSpinner.setVisibility(View.VISIBLE);
                 }
             }
         } else { //Older SDK versions
             Field f[] = datePicker.getClass().getDeclaredFields();
-            for (Field field : f)
-            {
-                if(field.getName().equals("mDayPicker") || field.getName().equals("mDaySpinner"))
-                {
+            for (Field field : f) {
+                if (field.getName().equals("mDayPicker") || field.getName().equals("mDaySpinner")) {
                     field.setAccessible(true);
                     Object dayPicker = null;
                     try {
@@ -371,8 +346,7 @@ public class AddCreditCardActivity extends ToolbarActivity {
                     ((View) dayPicker).setVisibility(View.GONE);
                 }
 
-                if(field.getName().equals("mMonthPicker") || field.getName().equals("mMonthSpinner"))
-                {
+                if (field.getName().equals("mMonthPicker") || field.getName().equals("mMonthSpinner")) {
                     field.setAccessible(true);
                     Object monthPicker = null;
                     try {
@@ -383,8 +357,7 @@ public class AddCreditCardActivity extends ToolbarActivity {
                     ((View) monthPicker).setVisibility(View.VISIBLE);
                 }
 
-                if(field.getName().equals("mYearPicker") || field.getName().equals("mYearSpinner"))
-                {
+                if (field.getName().equals("mYearPicker") || field.getName().equals("mYearSpinner")) {
                     field.setAccessible(true);
                     Object yearPicker = null;
                     try {

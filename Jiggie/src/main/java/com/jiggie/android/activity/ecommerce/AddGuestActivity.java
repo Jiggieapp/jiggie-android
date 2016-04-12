@@ -5,72 +5,76 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
+import android.util.Patterns;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.jiggie.android.App;
 import com.jiggie.android.R;
-import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.model.CommEventMixpanelModel;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.ProductListModel;
-import com.jiggie.android.model.SummaryModel;
+import com.rengwuxian.materialedittext.MaterialEditText;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 /**
  * Created by LTE on 2/29/2016.
  */
 public class AddGuestActivity extends ToolbarActivity {
 
-    ImageView img_close;
+    /*ImageView img_close;
     EditText edt_name, edt_email, edt_62, edt_phone;
-    RelativeLayout rel_save;
+    RelativeLayout rel_save;*/
     ProductListModel.Data.ProductList.Purchase detailPurchase = null;
     ProductListModel.Data.ProductList.Reservation detailReservation = null;
 
     boolean textWatchEdited = false;
+    @Bind(R.id.edt_name)
+    MaterialEditText edtName;
+    @Bind(R.id.edt_email)
+    MaterialEditText edtEmail;
+    @Bind(R.id.edt_62)
+    MaterialEditText edt62;
+    @Bind(R.id.edt_phone)
+    MaterialEditText edtPhone;
+    @Bind(R.id.rel_save)
+    RelativeLayout relSave;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_guest);
-
+        ButterKnife.bind(this);
+        super.bindView();
         initView();
         preDefined();
 
     }
 
-    private void initView(){
-        img_close = (ImageView)findViewById(R.id.img_close);
+    private void initView() {
+        /*img_close = (ImageView)findViewById(R.id.img_close);
         edt_name = (EditText)findViewById(R.id.edt_name);
         edt_email = (EditText)findViewById(R.id.edt_email);
         edt_62 = (EditText)findViewById(R.id.edt_62);
         edt_phone = (EditText)findViewById(R.id.edt_phone);
-        rel_save = (RelativeLayout)findViewById(R.id.rel_save);
+        rel_save = (RelativeLayout)findViewById(R.id.rel_save);*/
+        super.setToolbarTitle(getString(R.string.title_guest), true);
 
-        img_close.setOnClickListener(new View.OnClickListener() {
+        relSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
-            }
-        });
-
-        rel_save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String guestName = edt_name.getText().toString();
-                String guestEmail = edt_email.getText().toString();
-                String guest62 = edt_62.getText().toString();
+                String guestName = edtName.getText().toString();
+                String guestEmail = edtEmail.getText().toString();
+                String guest62 = edt62.getText().toString();
                 if (guest62.contains("+")) {
                     guest62 = guest62.substring(1, guest62.length());
                 }
-                String guestPhoneN = edt_phone.getText().toString();
+                String guestPhoneN = edtPhone.getText().toString();
                 String guestPhone = guest62 + guestPhoneN;
 
                 if (!isFieldError(guestName, guestEmail, guest62, guestPhoneN)) {
@@ -84,7 +88,7 @@ public class AddGuestActivity extends ToolbarActivity {
             }
         });
 
-        edt_name.addTextChangedListener(new TextWatcher() {
+        edtName.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -92,7 +96,7 @@ public class AddGuestActivity extends ToolbarActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                edt_name.setTextColor(getResources().getColor(R.color.textDarkGray));
+                edtName.setTextColor(getResources().getColor(R.color.textDarkGray));
             }
 
             @Override
@@ -101,7 +105,7 @@ public class AddGuestActivity extends ToolbarActivity {
             }
         });
 
-        edt_email.addTextChangedListener(new TextWatcher() {
+        edtEmail.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -109,7 +113,7 @@ public class AddGuestActivity extends ToolbarActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                edt_email.setTextColor(getResources().getColor(R.color.textDarkGray));
+                edtEmail.setTextColor(getResources().getColor(R.color.textDarkGray));
             }
 
             @Override
@@ -119,7 +123,7 @@ public class AddGuestActivity extends ToolbarActivity {
         });
 
 
-        edt_62.addTextChangedListener(new TextWatcher() {
+        edt62.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -127,7 +131,7 @@ public class AddGuestActivity extends ToolbarActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                edt_62.setTextColor(getResources().getColor(R.color.textDarkGray));
+                edt62.setTextColor(getResources().getColor(R.color.textDarkGray));
 
             }
 
@@ -139,7 +143,7 @@ public class AddGuestActivity extends ToolbarActivity {
 
                 if (textWatchEdited) {
                     textWatchEdited = false;
-                    edt_62.setSelection(str.length(), str.length());
+                    edt62.setSelection(str.length(), str.length());
                     return;
                 }
 
@@ -148,12 +152,12 @@ public class AddGuestActivity extends ToolbarActivity {
                 if (!str.contains("+")) {
                     str = "+" + str;
                 }
-                edt_62.setText(str);
+                edt62.setText(str);
                 checkEnability();
             }
         });
 
-        edt_phone.addTextChangedListener(new TextWatcher() {
+        edtPhone.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -161,7 +165,7 @@ public class AddGuestActivity extends ToolbarActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                edt_phone.setTextColor(getResources().getColor(R.color.textDarkGray));
+                edtPhone.setTextColor(getResources().getColor(R.color.textDarkGray));
             }
 
             @Override
@@ -171,27 +175,27 @@ public class AddGuestActivity extends ToolbarActivity {
         });
     }
 
-    private void preDefined(){
+    private void preDefined() {
         Intent a = getIntent();
         String type_transaction = a.getStringExtra(Common.FIELD_TRANS_TYPE);
 
         EventDetailModel.Data.EventDetail eventDetail = a.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
-        edt_name.setText(a.getStringExtra(Common.FIELD_GUEST_NAME));
-        edt_email.setText(a.getStringExtra(Common.FIELD_GUEST_EMAIL));
+        edtName.setText(a.getStringExtra(Common.FIELD_GUEST_NAME));
+        edtEmail.setText(a.getStringExtra(Common.FIELD_GUEST_EMAIL));
 
         String phone = a.getStringExtra(Common.FIELD_GUEST_PHONE);
-        if(!phone.equals(Utils.BLANK)){
-           String s62 = phone.substring(0, 2);
-           String phoneN = phone.substring(2, (phone.length()));
-            edt_62.setText("+"+s62);
-            edt_phone.setText(phoneN);
+        if (!phone.equals(Utils.BLANK)) {
+            String s62 = phone.substring(0, 2);
+            String phoneN = phone.substring(2, (phone.length()));
+            edt62.setText("+" + s62);
+            edtPhone.setText(phoneN);
         }
 
         sendMixpanel(a, type_transaction, eventDetail);
         checkEnability();
     }
 
-    private void sendMixpanel(Intent a, String type_transaction, EventDetailModel.Data.EventDetail eventDetail){
+    private void sendMixpanel(Intent a, String type_transaction, EventDetailModel.Data.EventDetail eventDetail) {
         CommEventMixpanelModel commEventMixpanelModel = null;
         if (type_transaction.equals(Common.TYPE_PURCHASE)) {
             detailPurchase = a.getParcelableExtra(ProductListModel.Data.ProductList.Purchase.class.getName());
@@ -206,63 +210,66 @@ public class AddGuestActivity extends ToolbarActivity {
         App.getInstance().trackMixPanelCommerce(Utils.COMM_GUEST_INFO, commEventMixpanelModel);
     }
 
-    private boolean isFieldError(String name, String email, String str62, String phone){
+    private boolean isFieldError(String name, String email, String str62, String phone) {
         boolean isError = false;
-        if(name.isEmpty()){
+        if (name.isEmpty()) {
             isError = true;
-            edt_name.setTextColor(getResources().getColor(android.R.color.holo_red_light));
-            edt_name.setError(Utils.BLANK);
-        }if(email.isEmpty()){
-            isError = true;
-            edt_email.setTextColor(getResources().getColor(android.R.color.holo_red_light));
-            edt_email.setError(Utils.BLANK);
-        }if(str62.isEmpty()){
-            isError = true;
-            edt_62.setTextColor(getResources().getColor(android.R.color.holo_red_light));
-            edt_62.setError(Utils.BLANK);
-        }if(phone.isEmpty()){
-            isError = true;
-            edt_phone.setTextColor(getResources().getColor(android.R.color.holo_red_light));
-            edt_phone.setError(Utils.BLANK);
+            edtName.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+            edtName.setError(Utils.BLANK);
         }
-        if(!email.isEmpty()){
-            if(!isValidEmail(email)){
+        if (email.isEmpty()) {
+            isError = true;
+            edtEmail.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+            edtEmail.setError(Utils.BLANK);
+        }
+        if (str62.isEmpty()) {
+            isError = true;
+            edt62.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+            edt62.setError(Utils.BLANK);
+        }
+        if (phone.isEmpty()) {
+            isError = true;
+            edtPhone.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+            edtPhone.setError(Utils.BLANK);
+        }
+        if (!email.isEmpty()) {
+            if (!isValidEmail(email)) {
                 isError = true;
-                edt_email.setTextColor(getResources().getColor(android.R.color.holo_red_light));
-                edt_email.setError(Utils.BLANK);
+                edtEmail.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+                edtEmail.setError(Utils.BLANK);
             }
         }
         return isError;
     }
 
     public final static boolean isValidEmail(CharSequence target) {
-        return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+        return !TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 
-    private void checkEnability(){
-        String name = edt_name.getText().toString();
-        String email = edt_email.getText().toString();
-        String s_62 = edt_62.getText().toString();
-        String s_phone = edt_phone.getText().toString();
+    private void checkEnability() {
+        String name = edtName.getText().toString();
+        String email = edtEmail.getText().toString();
+        String s_62 = edt62.getText().toString();
+        String s_phone = edtPhone.getText().toString();
         boolean isItEnable = true;
 
-        if(name.equals(Utils.BLANK)){
+        if (name.equals(Utils.BLANK)) {
             isItEnable = false;
         }
-        if(email.equals(Utils.BLANK)){
+        if (email.equals(Utils.BLANK)) {
             isItEnable = false;
         }
-        if(s_62.equals(Utils.BLANK)){
+        if (s_62.equals(Utils.BLANK)) {
             isItEnable = false;
         }
-        if(s_phone.equals(Utils.BLANK)){
+        if (s_phone.equals(Utils.BLANK)) {
             isItEnable = false;
         }
 
-        if(isItEnable){
-            rel_save.setEnabled(true);
-        }else{
-            rel_save.setEnabled(false);
+        if (isItEnable) {
+            relSave.setEnabled(true);
+        } else {
+            relSave.setEnabled(false);
         }
     }
 

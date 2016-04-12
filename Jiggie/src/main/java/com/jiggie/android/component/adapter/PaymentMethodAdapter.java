@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
@@ -17,12 +18,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.HowToPayActivity;
-import com.jiggie.android.activity.ecommerce.ProductListActivity;
-import com.jiggie.android.model.CCModel;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.CCScreenModel;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventDetailModel;
@@ -42,6 +41,7 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
     private final LongClickListener longClickListener;
     int section2Start;
     long order_id;
+
 
     private Activity a;
 
@@ -74,7 +74,7 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.position = position;
         CCScreenModel dataCredit = null;
-        if(position<=(arrDataCredit.size()-1)){
+        if (position <= (arrDataCredit.size() - 1)) {
             dataCredit = arrDataCredit.get(position);
             holder.dataCredit = dataCredit;
         }
@@ -84,28 +84,29 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
             holder.linSection.setVisibility(View.VISIBLE);
             holder.txtHow.setVisibility(View.GONE);
 
-            if((section2Start - 1)!=0){
+            if ((section2Start - 1) != 0) {
                 String maskedCard = dataCredit.getCreditcardInformation().getMasked_card();
-                holder.txtPaymentName.setText("• • • • "+maskedCard.substring(maskedCard.indexOf("-")+1, maskedCard.length()));
+                holder.txtPaymentName.setText("• • • • " + maskedCard.substring(maskedCard.indexOf("-") + 1, maskedCard.length()));
 
                 String headCC = maskedCard.substring(0, 1);
-                if(headCC.equals("4")){
+                if (headCC.equals("4")) {
                     holder.img.setVisibility(View.VISIBLE);
                     holder.img.setImageResource(R.drawable.logo_visa);
-                }else if(headCC.equals("5")){
+                } else if (headCC.equals("5")) {
                     holder.img.setVisibility(View.VISIBLE);
                     holder.img.setImageResource(R.drawable.logo_mastercard);
-                }else{
+                } else {
                     holder.img.setVisibility(View.GONE);
                 }
-            }else{
+            } else {
                 //execute kalau data kosong
-                holder.img.setImageResource(R.drawable.ic_plus);
+                //holder.img.setImageResource(R.drawable.ic_plus);
+                holder.img.setVisibility(View.GONE);
+                holder.imgPlus.setVisibility(View.VISIBLE);
                 holder.txtPaymentName.setText(context.getString(R.string.vor_payment_cc_new));
-                holder.txtPaymentName.setTextColor(context.getResources().getColor(R.color.purple));
+                holder.txtPaymentName.setTextColor(context.getResources().getColor(R.color.blue_selector));
                 holder.txtPaymentName.setTypeface(holder.txtPaymentName.getTypeface(), Typeface.BOLD);
             }
-
 
 
         } else if (position == section2Start) {
@@ -124,6 +125,9 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
             holder.txtHow.setMovementMethod(LinkMovementMethod.getInstance());
             holder.img.setImageResource(R.drawable.logo_bca2);
             holder.txtPaymentName.setText(context.getString(R.string.va_bca));
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            layoutParams.setMargins(0, Utils.myPixel(a, 28), 0, 0);
+            holder.linSection.setLayoutParams(layoutParams);
 
         } else {
             holder.linSection.setVisibility(View.GONE);
@@ -131,30 +135,31 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
             if (position == (section2Start + 1)) {
                 holder.img.setImageResource(R.drawable.logo_mandiri);
                 holder.txtPaymentName.setText(context.getString(R.string.va_mandiri));
-            }else if (position == (section2Start + 2)) {
+            } else if (position == (section2Start + 2)) {
                 holder.img.setVisibility(View.GONE);
                 holder.txtPaymentName.setText(context.getString(R.string.other_bank));
-            }
-            else if (position == (section2Start - 1)) {
-                if((section2Start - 1)!=0){
-                    holder.img.setImageResource(R.drawable.ic_plus);
+            } else if (position == (section2Start - 1)) {
+                if ((section2Start - 1) != 0) {
+                    //holder.img.setImageResource(R.drawable.ic_plus);
+                    holder.img.setVisibility(View.GONE);
+                    holder.imgPlus.setVisibility(View.VISIBLE);
                     holder.txtPaymentName.setText(context.getString(R.string.vor_payment_cc_new));
-                    holder.txtPaymentName.setTextColor(context.getResources().getColor(R.color.purple));
+                    holder.txtPaymentName.setTextColor(context.getResources().getColor(R.color.blue_selector));
                     holder.txtPaymentName.setTypeface(holder.txtPaymentName.getTypeface(), Typeface.BOLD);
                 }
 
-            }else{
+            } else {
                 String maskedCard = dataCredit.getCreditcardInformation().getMasked_card();
-                holder.txtPaymentName.setText("• • • • "+maskedCard.substring(maskedCard.indexOf("-")+1, maskedCard.length()));
+                holder.txtPaymentName.setText("• • • • " + maskedCard.substring(maskedCard.indexOf("-") + 1, maskedCard.length()));
 
                 String headCC = maskedCard.substring(0, 1);
-                if(headCC.equals("4")){
+                if (headCC.equals("4")) {
                     holder.img.setVisibility(View.VISIBLE);
                     holder.img.setImageResource(R.drawable.logo_visa);
-                }else if(headCC.equals("5")){
+                } else if (headCC.equals("5")) {
                     holder.img.setVisibility(View.VISIBLE);
                     holder.img.setImageResource(R.drawable.logo_mastercard);
-                }else{
+                } else {
                     holder.img.setVisibility(View.GONE);
                 }
             }
@@ -183,10 +188,12 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
         @Bind(R.id.txt_payment_name)
         TextView txtPaymentName;
         @Bind(R.id.lin_item)
-        LinearLayout linItem;
+        CardView linItem;
+        @Bind(R.id.img_plus)
+        ImageView imgPlus;
 
         private ViewSelectedListener clickListener;
-        private  LongClickListener longClickListener;
+        private LongClickListener longClickListener;
         private int position;
         private CCScreenModel dataCredit = null;
 
