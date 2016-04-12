@@ -46,8 +46,7 @@
             android:id="@+id/scrollContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/appBar"
-            android:layout_above="@+id/rel_total">
+            android:layout_below="@id/appBar">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -102,12 +101,12 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/txt_event_name"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="@dimen/padding_standard_half"
                     android:layout_marginBottom="@dimen/padding_standard_half"
+                    android:layout_marginTop="@dimen/padding_standard_half"
+                    android:gravity="center_horizontal"
                     android:text="@string/msg_dummy_title_info"
                     android:textColor="@color/textDarkGray"
-                    android:textSize="@dimen/font_body_size"
-                    android:gravity="center_horizontal"/>
+                    android:textSize="@dimen/font_body_size" />
 
                 <TextView
                     android:id="@+id/txt_event_info_date"
@@ -116,10 +115,10 @@
                     android:layout_below="@id/txt_event_info"
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="@dimen/padding_far"
+                    android:gravity="center_horizontal"
                     android:text="@string/msg_dummy_title_info"
                     android:textColor="@color/textDarkGray"
-                    android:textSize="@dimen/font_body_size"
-                    android:gravity="center_horizontal"/>
+                    android:textSize="@dimen/font_body_size" />
 
                 <View
                     android:id="@+id/divider1"
@@ -244,7 +243,7 @@
                             android:layout_marginRight="@dimen/padding_standard"
                             android:layout_marginTop="@dimen/padding_far"
                             android:text="@string/pci_f1_fill"
-                            android:textColor="@color/textDarkGray"
+                            android:textColor="@color/purple"
                             android:textSize="@dimen/font_body_size" />
 
                         <TextView
@@ -292,7 +291,7 @@
                             android:layout_marginRight="@dimen/padding_standard"
                             android:layout_marginTop="@dimen/padding_standard"
                             android:text="@string/pci_f2_fill"
-                            android:textColor="@color/textDarkGray"
+                            android:textColor="@color/purple"
                             android:textSize="@dimen/font_body_size" />
 
                         <View
@@ -326,7 +325,7 @@
                             android:layout_marginRight="@dimen/padding_standard"
                             android:layout_marginTop="@dimen/padding_standard"
                             android:text="@string/pci_f2_fill"
-                            android:textColor="@color/textDarkGray"
+                            android:textColor="@color/purple"
                             android:textSize="@dimen/font_body_size" />
 
                         <TextView
@@ -386,7 +385,7 @@
                             android:layout_marginTop="@dimen/padding_standard"
                             android:paddingBottom="@dimen/padding_standard"
                             android:text="@string/pci_f2_fill"
-                            android:textColor="@color/textDarkGray"
+                            android:textColor="@color/purple"
                             android:textSize="@dimen/font_body_size" />
 
                     </RelativeLayout>
@@ -398,7 +397,7 @@
             android:id="@+id/divider2"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:layout_above="@+id/rel_total"
+            android:layout_below="@+id/scrollContainer"
             android:layout_marginLeft="@dimen/padding_standard"
             android:layout_marginRight="@dimen/padding_standard"
             android:background="@color/dividercomm2" />
@@ -407,6 +406,7 @@
             android:id="@+id/rel_total"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/divider2"
             android:layout_above="@+id/lblSelectPayment"
             android:padding="@dimen/padding_standard">
 
@@ -415,49 +415,59 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
+                android:paddingBottom="@dimen/padding_standard_half"
                 android:text="@string/pci_total"
-                android:textColor="@color/textDarkGray"
-                android:paddingBottom="@dimen/padding_standard_half"/>
+                android:textColor="@color/textDarkGray" />
+
+            <TextView
+                android:id="@+id/txt_total_ticket_fill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@+id/txt_total"
+                android:paddingBottom="@dimen/padding_standard_half"
+                android:text="@string/pci_total"
+                android:textColor="@color/purple"
+                android:gravity="right"/>
 
             <LinearLayout
                 android:id="@+id/lin_total_inc"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_below="@+id/txt_total">
+                android:layout_below="@+id/txt_total"
+                android:orientation="horizontal">
 
                 <View
                     android:id="@+id/minus_button"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:layout_marginRight="@dimen/padding_standard"
-                    android:background="@drawable/ic_minus_gr"
-                    android:visibility="gone"
                     android:layout_gravity="left|center_vertical"
-                    android:layout_weight="0"/>
+                    android:layout_marginRight="@dimen/padding_standard"
+                    android:layout_weight="0"
+                    android:background="@drawable/ic_minus_gr"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/txt_total_fill"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_gravity="center_horizontal|center"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
                     android:text="@string/pci_total_fill"
                     android:textColor="@color/purple"
                     android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:layout_gravity="center_horizontal|center"
-                    android:gravity="center_horizontal"
-                    android:layout_weight="1"/>
+                    android:textStyle="bold" />
 
                 <View
                     android:id="@+id/plus_button"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:layout_marginLeft="@dimen/padding_standard"
-                    android:background="@drawable/ic_plus_gr"
-                    android:visibility="gone"
                     android:layout_gravity="right|center_vertical"
+                    android:layout_marginLeft="@dimen/padding_standard"
                     android:layout_weight="0"
-                    />
+                    android:background="@drawable/ic_plus_gr"
+                    android:visibility="gone" />
             </LinearLayout>
         </RelativeLayout>
 

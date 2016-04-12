@@ -78,6 +78,8 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     TextView txtTaxFill;
     @Bind(R.id.txt_total_fill)
     TextView txtTotalFill;
+    @Bind(R.id.txt_total_ticket_fill)
+    TextView txtTotalTicketFill;
     @Bind(R.id.img_payment)
     ImageView imgPayment;
     @Bind(R.id.txt_payment)
@@ -206,8 +208,9 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
         txtTikFill.setText(StringUtility.getRupiahFormat(dataProduct.getTotal_price()));
         txtFeeFill.setText(StringUtility.getRupiahFormat(dataProduct.getAdmin_fee()));
         txtTaxFill.setText(StringUtility.getRupiahFormat(dataProduct.getTax_amount()));
-        txtTotalFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_price()));
-
+        //txtTotalFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_price()));
+        txtTotalTicketFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_price()));
+        txtTotalFill.setVisibility(View.GONE);
         //initTermView(dataProduct);
     }
 

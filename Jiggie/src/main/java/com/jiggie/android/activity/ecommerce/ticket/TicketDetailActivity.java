@@ -126,7 +126,6 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                             i.putExtra(Common.FIELD_STARTTIME, startTime);
                             i.putExtra(productSummary.getClass().getName(), productSummary);
                             i.putExtra(eventDetail.getClass().getName(), eventDetail);
-
                             startActivity(i);
                         } else {
                             Toast.makeText(TicketDetailActivity.this, getString(R.string.msg_wrong), Toast.LENGTH_LONG).show();

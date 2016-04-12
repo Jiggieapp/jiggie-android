@@ -101,6 +101,8 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     ViewPager pagerSlide;
     @Bind(R.id.rel_disable)
     RelativeLayout relDisable;
+    @Bind(R.id.txt_total_ticket_fill)
+    TextView txtTotalTicketFill;
 
     SummaryModel.Data.Product_summary productSummary;
     EventDetailModel.Data.EventDetail eventDetail;
@@ -221,7 +223,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                 imgPayment.setImageResource(R.drawable.logo_mandiri);
                 txtPayment.setText(getString(R.string.va_mandiri));
                 txtPayment.setTypeface(null, Typeface.NORMAL);
-            }else if (paymentType.equals(Utils.TYPE_BCA)) {
+            } else if (paymentType.equals(Utils.TYPE_BCA)) {
                 imgPayment.setVisibility(View.VISIBLE);
                 imgPayment.setImageResource(R.drawable.logo_bca2);
                 txtPayment.setText(getString(R.string.va_bca));
@@ -243,24 +245,25 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         txtSerFill.setText(StringUtility.getRupiahFormat(dataProduct.getAdmin_fee()));
         maxDeposit = Integer.parseInt(productSummary.getTotal_price());
         txtEstTotFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_price()));
-        payDeposit = (int)Double.parseDouble(minDeposit);
-        latestDeposit = (int)Double.parseDouble(minDeposit);
+        payDeposit = (int) Double.parseDouble(minDeposit);
+        latestDeposit = (int) Double.parseDouble(minDeposit);
         txtRequireFill.setText(StringUtility.getRupiahFormat(minDeposit));
-        String estBalance = String.valueOf(Integer.parseInt(productSummary.getTotal_price()) - (int)Double.parseDouble(minDeposit));
+        String estBalance = String.valueOf(Integer.parseInt(productSummary.getTotal_price()) - (int) Double.parseDouble(minDeposit));
         txtEstBalFill.setText(StringUtility.getRupiahFormat(estBalance));
-        txtTotalFill.setText(StringUtility.getRupiahFormat(minDeposit));
+        txtTotalFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_price()));
+        txtTotalTicketFill.setVisibility(View.GONE);
 
         //initTermView(dataProduct);
     }
 
-    private void arrangeEstimateDeposit(boolean isIncrement){
-        if(isIncrement){
+    private void arrangeEstimateDeposit(boolean isIncrement) {
+        if (isIncrement) {
 
             payDeposit = payDeposit + INCREMENT_VALUE;
 
-            if(payDeposit>=Integer.parseInt(productSummary.getTotal_price())){
+            if (payDeposit >= Integer.parseInt(productSummary.getTotal_price())) {
                 payDeposit = Integer.parseInt(productSummary.getTotal_price());
-            }else{
+            } else {
                 latestDeposit = payDeposit;
             }
 
@@ -269,19 +272,19 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
             String estBalance = String.valueOf(Integer.parseInt(productSummary.getTotal_price()) - payDeposit);
             txtEstBalFill.setText(StringUtility.getRupiahFormat(estBalance));
 
-        }else{
-            if(payDeposit==Integer.parseInt(productSummary.getTotal_price())){
+        } else {
+            if (payDeposit == Integer.parseInt(productSummary.getTotal_price())) {
                 payDeposit = latestDeposit;
-            }else{
+            } else {
                 payDeposit = payDeposit - INCREMENT_VALUE;
             }
 
-            if(payDeposit >=Integer.valueOf(minDeposit)){
+            if (payDeposit >= Integer.valueOf(minDeposit)) {
                 txtRequireFill.setText(StringUtility.getRupiahFormat(String.valueOf(payDeposit)));
                 txtTotalFill.setText(StringUtility.getRupiahFormat(String.valueOf(payDeposit)));
                 String estBalance = String.valueOf(Integer.parseInt(productSummary.getTotal_price()) - payDeposit);
                 txtEstBalFill.setText(StringUtility.getRupiahFormat(estBalance));
-            }else{
+            } else {
                 //rollback value payDeposit if lower than minimum deposit
                 payDeposit = payDeposit + INCREMENT_VALUE;
             }
@@ -540,7 +543,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                 imgPayment.setVisibility(View.VISIBLE);
                 imgPayment.setImageResource(R.drawable.logo_bca2);
                 txtPayment.setTypeface(null, Typeface.NORMAL);
-            }else if (paymentType.equals(Utils.TYPE_BP)) {
+            } else if (paymentType.equals(Utils.TYPE_BP)) {
                 txtPayment.setText(getString(R.string.va_mandiri));
                 imgPayment.setVisibility(View.VISIBLE);
                 imgPayment.setImageResource(R.drawable.logo_mandiri);
@@ -552,58 +555,58 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
             }
 
             checkEnability(arrTermItemView, txtPayment.getText().toString());
-        }else{
+        } else {
             SummaryModel.Data.Product_summary.LastPayment lastPayment = productSummary.getLast_payment();
-            if(CommerceManager.arrCCScreen.size()==0){
-                if(lastPayment.isEmpty()){
+            if (CommerceManager.arrCCScreen.size() == 0) {
+                if (lastPayment.isEmpty()) {
                     txtPayment.setText(getString(R.string.pci_payment));
                     txtPayment.setTextColor(getResources().getColor(R.color.purple));
                     imgPayment.setImageResource(R.drawable.ic_plus);
-                }else{
+                } else {
                     paymentType = lastPayment.getPayment_type();
                     if (paymentType.equals(Utils.TYPE_CC)) {
                         String mask = lastPayment.getMasked_card();
                         boolean isAlreadyDelete = true;
-                        for(int i=0;i<CommerceManager.arrCCScreen.size();i++){
-                            if(mask.equals(CommerceManager.arrCCScreen.get(i).getCreditcardInformation().getMasked_card())){
+                        for (int i = 0; i < CommerceManager.arrCCScreen.size(); i++) {
+                            if (mask.equals(CommerceManager.arrCCScreen.get(i).getCreditcardInformation().getMasked_card())) {
                                 isAlreadyDelete = false;
                                 break;
                             }
                         }
 
-                        if(isAlreadyDelete){
+                        if (isAlreadyDelete) {
                             txtPayment.setText(getString(R.string.pci_payment));
                             txtPayment.setTextColor(getResources().getColor(R.color.purple));
                             imgPayment.setImageResource(R.drawable.ic_plus);
                         }
                     }
                 }
-            }else{
-                if(CommerceManager.arrCCScreen.size()==0){
-                    if(lastPayment.isEmpty()){
+            } else {
+                if (CommerceManager.arrCCScreen.size() == 0) {
+                    if (lastPayment.isEmpty()) {
                         txtPayment.setText(getString(R.string.pci_payment));
                         txtPayment.setTextColor(getResources().getColor(R.color.purple));
                         imgPayment.setImageResource(R.drawable.ic_plus);
                     }
-                }else{
-                    if(lastPayment.isEmpty()){
+                } else {
+                    if (lastPayment.isEmpty()) {
                         txtPayment.setText(getString(R.string.pci_payment));
                         txtPayment.setTextColor(getResources().getColor(R.color.purple));
                         imgPayment.setImageResource(R.drawable.ic_plus);
-                    }else{
+                    } else {
                         paymentType = lastPayment.getPayment_type();
                         if (paymentType.equals(Utils.TYPE_CC)) {
                             String mask = lastPayment.getMasked_card();
                             boolean isAlreadyDelete = true;
-                            for(int i=0;i<CommerceManager.arrCCScreen.size();i++){
+                            for (int i = 0; i < CommerceManager.arrCCScreen.size(); i++) {
                                 String maskB = CommerceManager.arrCCScreen.get(i).getCreditcardInformation().getMasked_card();
-                                if(mask.equals(maskB)){
+                                if (mask.equals(maskB)) {
                                     isAlreadyDelete = false;
                                     break;
                                 }
                             }
 
-                            if(isAlreadyDelete){
+                            if (isAlreadyDelete) {
                                 txtPayment.setText(getString(R.string.pci_payment));
                                 txtPayment.setTextColor(getResources().getColor(R.color.purple));
                                 imgPayment.setImageResource(R.drawable.ic_plus);
@@ -682,7 +685,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                 pagerSlide.setCurrentItem(1);
 
                 Utils.d(String.valueOf(responseCode), message);
-                if(message.contains("left")||message.contains("unavailable")){
+                if (message.contains("left") || message.contains("unavailable")) {
                     final AlertDialog dialog = new AlertDialog.Builder(ReservationInfoActivity.this)
                             .setMessage(message)
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -704,7 +707,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                                 }
                             }).create();
                     dialog.show();
-                }else{
+                } else {
                     Toast.makeText(ReservationInfoActivity.this, message, Toast.LENGTH_LONG).show();
                 }
             }
