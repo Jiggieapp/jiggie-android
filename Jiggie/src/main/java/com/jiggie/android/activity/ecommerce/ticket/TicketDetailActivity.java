@@ -116,8 +116,8 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                         productSummary = dataTemp.getData().getProduct_summary();
                         if (productSummary != null) {
 
-                            String responses = new Gson().toJson(dataTemp);
-                            Utils.d("res", responses);
+                            //String responses = new Gson().toJson(dataTemp);
+                            //Utils.d("res", responses);
 
                             Intent i = new Intent(TicketDetailActivity.this, PurchaseInfoActivity.class);
                             i.putExtra(Common.FIELD_EVENT_ID, eventId);
@@ -209,6 +209,11 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
         });
     }
 
+    @Override
+    protected String getToolbarTitle() {
+        return detailPurchase.getName().toUpperCase();
+    }
+
     private void preDefined() {
         Intent a = getIntent();
         eventId = a.getStringExtra(Common.FIELD_EVENT_ID);
@@ -217,7 +222,6 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
         startTime = a.getStringExtra(Common.FIELD_STARTTIME);
         eventDetail = a.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
         detailPurchase = a.getParcelableExtra(ProductListModel.Data.ProductList.Purchase.class.getName());
-
         sendMixpanel(eventDetail);
 
         /*lblEventName.setText(eventName);
@@ -250,7 +254,6 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
         txtTicketDesc.setText(detailPurchase.getDescription());
 
         LoginModel loginModel = AccountManager.loadLogin();
-
 
         guestName = loginModel.getUser_first_name() + " " + loginModel.getUser_last_name();
         guestEmail = loginModel.getEmail();

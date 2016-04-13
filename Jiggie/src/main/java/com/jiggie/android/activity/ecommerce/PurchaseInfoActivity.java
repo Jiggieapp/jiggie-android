@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -86,6 +87,10 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     TextView txtPayment;
     @Bind(R.id.txt_event_info_date)
     TextView txtEventInfoDate;
+    @Bind(R.id.card_booking)
+    CardView card_booking;
+    @Bind(R.id.lblPayDeposit)
+    TextView lblPayDeposit;
 
     String eventId, eventName, venueName, startTime, totalPrice;
     /*@Bind(R.id.lin_terms)
@@ -140,6 +145,8 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     }
 
     private void preDefined() {
+        card_booking.setVisibility(View.GONE);
+        lblPayDeposit.setVisibility(View.GONE);
         slideAdapter = new SlideAdapter(getSupportFragmentManager(), pagerSlide);
         pagerSlide.setAdapter(slideAdapter);
         pagerSlide.setCurrentItem(1);

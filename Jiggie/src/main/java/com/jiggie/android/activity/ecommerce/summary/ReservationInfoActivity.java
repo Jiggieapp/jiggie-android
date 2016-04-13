@@ -171,7 +171,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
 
     @Override
     protected String getToolbarTitle() {
-        return getResources().getString(R.string.reservation_info);
+        return getResources().getString(R.string.reservation_info).toUpperCase();
     }
 
     private void preDefined() {
@@ -248,9 +248,11 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         payDeposit = (int) Double.parseDouble(minDeposit);
         latestDeposit = (int) Double.parseDouble(minDeposit);
         txtRequireFill.setText(StringUtility.getRupiahFormat(minDeposit));
+
         String estBalance = String.valueOf(Integer.parseInt(productSummary.getTotal_price()) - (int) Double.parseDouble(minDeposit));
         txtEstBalFill.setText(StringUtility.getRupiahFormat(estBalance));
-        txtTotalFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_price()));
+        //txtTotalFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_price()));
+        txtTotalFill.setText(StringUtility.getRupiahFormat(minDeposit));
         txtTotalTicketFill.setVisibility(View.GONE);
 
         //initTermView(dataProduct);

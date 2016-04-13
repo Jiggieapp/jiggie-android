@@ -211,6 +211,11 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
 
     }
 
+    @Override
+    protected String getToolbarTitle() {
+        return detailReservation.getName().toUpperCase();
+    }
+
     private void preDefined() {
         Intent a = getIntent();
         eventId = a.getStringExtra(Common.FIELD_EVENT_ID);
