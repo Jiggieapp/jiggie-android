@@ -44,6 +44,7 @@ import com.facebook.FacebookSdk;
 import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.PostAppsFlyerModel;
+import com.jiggie.android.model.PostMixpanelModel;
 import com.jiggie.android.model.SettingModel;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
@@ -286,11 +287,13 @@ public class App extends Application {
             getInstanceMixpanel().alias(login.getFb_id(), null);
             setPeopleMixpanel(login, settingModel);
             setSuperPropertiesMixpanel(login, settingModel);
+            setSyncMixpanel(login, settingModel);
             setAppsFlyer(login);
         }else if(eventName.equals("Log In")){
             getInstanceMixpanel().identify(mixpanelAPI.getDistinctId());
             setPeopleMixpanel(login, settingModel);
             setSuperPropertiesMixpanel(login, settingModel);
+            setSyncMixpanel(login, settingModel);
             setAppsFlyer(login);
         }
         getInstanceMixpanel().track(eventName, json);
@@ -910,6 +913,38 @@ public class App extends Application {
     public static String getIdChatActive()
     {
         return idChatActive;
+    }
+
+    public void setSyncMixpanel(LoginModel login, SettingModel settingModel){
+        //sync mixpanel API
+        PostMixpanelModel postMixpanelModel = new PostMixpanelModel();
+        postMixpanelModel.setDevice_type(Build.MODEL);
+        postMixpanelModel.setOs_version(this.getDeviceOSName());
+        postMixpanelModel.setApp_version(getVersionCode(this));
+        if(login!=null){
+            postMixpanelModel.setFb_id(login.getFb_id());
+            postMixpanelModel.setLocation(login.getLocation());
+            postMixpanelModel.setName_and_fb_id(login.getUser_first_name() + "_" + login.getUser_last_name() + "_" + login.getFb_id());
+            postMixpanelModel.setEmail(login.getEmail());
+            postMixpanelModel.setLast_name(login.getUser_last_name());
+            postMixpanelModel.setBirthday(login.getBirthday());
+            postMixpanelModel.setFirst_name(login.getUser_first_name());
+            try {
+                postMixpanelModel.setAge(StringUtility.getAge2(login.getBirthday()));
+            }catch (Exception e) {
+
+            }
+        }
+
+        if(settingModel != null) {
+            postMixpanelModel.setGender(settingModel.getData().getGender());
+            postMixpanelModel.setGender_interest(settingModel.getData().getGender_interest());
+        }
+
+        if(login!=null){
+            TrackManager.loaderMixpanel(login.getFb_id(), postMixpanelModel);
+        }
+        //-----------------
     }
 
     public void setAppsFlyer(LoginModel login){
