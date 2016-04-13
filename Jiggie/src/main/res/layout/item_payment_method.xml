@@ -23,8 +23,7 @@
             android:id="@+id/txt_section"
             android:text="@string/msg_dummy"
             android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:textColor="@android:color/black"/>
+            android:layout_centerVertical="true"/>
 
         <TextView
             android:layout_width="wrap_content"

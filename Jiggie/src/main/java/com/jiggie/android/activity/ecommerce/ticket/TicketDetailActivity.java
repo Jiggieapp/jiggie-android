@@ -129,14 +129,14 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                             String responses = new Gson().toJson(dataTemp);
                             //Utils.d("res", responses);
 
-                            Intent i = new Intent(TicketDetailActivity.this, PurchaseInfoActivity.class);
+                            /*Intent i = new Intent(TicketDetailActivity.this, PurchaseInfoActivity.class);
                             i.putExtra(Common.FIELD_EVENT_ID, eventId);
                             i.putExtra(Common.FIELD_EVENT_NAME, eventName);
                             i.putExtra(Common.FIELD_VENUE_NAME, venueName);
                             i.putExtra(Common.FIELD_STARTTIME, startTime);
                             i.putExtra(productSummary.getClass().getName(), productSummary);
                             i.putExtra(eventDetail.getClass().getName(), eventDetail);
-                            startActivity(i);
+                            startActivity(i);*/
                         } else {
                             Toast.makeText(TicketDetailActivity.this, getString(R.string.msg_wrong), Toast.LENGTH_LONG).show();
                         }
@@ -415,7 +415,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
             @Override
             public void onClick(View v) {
                 if(rel_continue.isEnabled()){
-
+                    dialogTerms.dismiss();
 
                     Intent i = new Intent(TicketDetailActivity.this, PurchaseInfoActivity.class);
                     i.putExtra(Common.FIELD_EVENT_ID, eventId);
