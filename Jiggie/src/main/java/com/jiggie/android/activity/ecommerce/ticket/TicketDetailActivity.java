@@ -126,7 +126,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
 
                             showTermsDialog(productSummary.getProduct_list().get(0));
 
-                            String responses = new Gson().toJson(dataTemp);
+                            //String responses = new Gson().toJson(dataTemp);
                             //Utils.d("res", responses);
 
                             Intent i = new Intent(TicketDetailActivity.this, PurchaseInfoActivity.class);
