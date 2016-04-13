@@ -323,7 +323,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
             } else {
                 txtGuestPhone.setText("+" + guestPhone);
             }
-            txtGuestPhone.setTextColor(getResources().getColor(android.R.color.darker_gray));
+            txtGuestPhone.setTextColor(getResources().getColor(R.color.textDarkGray));
 
             checkEnability(guestName, guestEmail, guestPhone);
         }
