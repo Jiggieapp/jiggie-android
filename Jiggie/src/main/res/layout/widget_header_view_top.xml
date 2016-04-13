@@ -2,30 +2,43 @@
 <com.jiggie.android.view.HeaderView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/event_name"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/header_view_end_text_size"
-        android:textStyle="bold" />
+        android:orientation="vertical"
+        android:layout_weight="1">
 
-    <TextView
-        android:id="@+id/lblEventLocation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/msg_dummy_title_info"
-        android:textColor="@android:color/white"
-        android:textStyle="bold"
-        android:textSize="@dimen/header_view_end_text_size_smaller"
-        android:maxLines="1"
-        android:singleLine="true"/>
+        <TextView
+            android:id="@+id/event_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/header_view_end_text_size"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/lblEventLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:marqueeRepeatLimit="1"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:text="@string/msg_dummy_title_info"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/header_view_end_text_size_smaller"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 
     <!--<TextView
         android:id="@+id/last_seen"
@@ -33,4 +46,13 @@
         android:layout_height="wrap_content"
         android:singleLine="true"
         android:textColor="@android:color/white" />-->
+
+    <ImageView
+        android:id="@+id/img_help"
+        android:layout_width="44dp"
+        android:layout_height="32dp"
+        android:layout_gravity="right|center_vertical"
+        android:layout_marginRight="@dimen/padding_standard"
+        android:src="@drawable/ic_helps"
+        android:layout_weight="0"/>
 </com.jiggie.android.view.HeaderView>

@@ -66,16 +66,16 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         holder.isTwoType = isTwoType;
         holder.section2Start = section2Start;
 
-        if(isTwoType){
-            if(position<section2Start){
+        if (isTwoType) {
+            if (position < section2Start) {
                 itemPurchases = dataPurchase.get(position);
                 holder.itemPurchase = itemPurchases;
-            }else{
-                int index = position-section2Start;
+            } else {
+                int index = position - section2Start;
                 itemReservations = dataReservation.get(index);
                 holder.itemReservation = itemReservations;
             }
-        }else{
+        } else {
             itemPurchases = dataPurchase.get(position);
             holder.itemPurchase = itemPurchases;
         }
@@ -84,96 +84,83 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
 
         try {
             final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(startTime);
-            holder.lblEventLocation.setText(Common.SERVER_DATE_FORMAT_COMM.format(startDate)+" - "+venueName);
-        }catch (ParseException e){
+            holder.lblEventLocation.setText(Common.SERVER_DATE_FORMAT_COMM.format(startDate) + " - " + venueName);
+        } catch (ParseException e) {
             throw new RuntimeException(App.getErrorMessage(e), e);
         }
 
 
-        if(isTwoType){
-            if(position<section2Start){
-                if(itemPurchases.getStatus().equals(Common.FIELD_STATUS_SOLD_OUT)||itemPurchases.getQuantity()==0){
+        if (isTwoType) {
+            if (position < section2Start) {
+                if (itemPurchases.getStatus().equals(Common.FIELD_STATUS_SOLD_OUT) || itemPurchases.getQuantity() == 0) {
                     holder.txtTicketName.setTextColor(context.getResources().getColor(android.R.color.holo_red_light));
-                    holder.txtTicketName.setText(itemPurchases.getName()+" "+"(SOLD OUT)");
-                }else{
+                    holder.txtTicketName.setText(itemPurchases.getName() + " " + "(SOLD OUT)");
+                } else {
                     holder.txtTicketName.setTextColor(context.getResources().getColor(android.R.color.black));
                     holder.txtTicketName.setText(itemPurchases.getName());
                 }
 
                 holder.txtTicketInfo.setText(itemPurchases.getSummary());
                 holder.txtPrice.setText(StringUtility.getRupiahFormat(itemPurchases.getPrice()));
-                holder.txtPriceInfo.setText(context.getString(R.string.pr_max_purchase)+" "+itemPurchases.getMax_purchase());
+                holder.txtPriceInfo.setText(context.getString(R.string.pr_max_purchase) + " " + itemPurchases.getMax_purchase());
                 if (position == 0) {
                     holder.txtSectionTicket.setText(context.getString(R.string.section_ticket));
                     holder.linSection.setVisibility(View.VISIBLE);
                     //holder.headerContainer.setVisibility(View.VISIBLE);
                     holder.headerContainer.setVisibility(View.GONE);
-                }else {
+                } else {
                     holder.linSection.setVisibility(View.GONE);
                 }
                 //holder.headerContainer.setVisibility(View.GONE);
-            }else{
-                if(itemReservations.getStatus().equals(Common.FIELD_STATUS_SOLD_OUT)||itemReservations.getQuantity()==0){
+            } else {
+                if (itemReservations.getStatus().equals(Common.FIELD_STATUS_SOLD_OUT) || itemReservations.getQuantity() == 0) {
                     holder.txtTicketName.setTextColor(context.getResources().getColor(android.R.color.holo_red_light));
-                    holder.txtTicketName.setText(itemReservations.getName()+" "+"(SOLD OUT)");
-                }else{
+                    holder.txtTicketName.setText(itemReservations.getName() + " " + "(SOLD OUT)");
+                } else {
                     holder.txtTicketName.setTextColor(context.getResources().getColor(android.R.color.black));
                     holder.txtTicketName.setText(itemReservations.getName());
                 }
                 holder.txtTicketInfo.setText(itemReservations.getSummary());
                 holder.txtPrice.setText(StringUtility.getRupiahFormat(itemReservations.getPrice()));
-                holder.txtPriceInfo.setText(context.getString(R.string.pr_max_guest)+" "+itemReservations.getMax_guests());
-                if ((position-section2Start) == 0) {
+                holder.txtPriceInfo.setText(context.getString(R.string.pr_max_guest) + " " + itemReservations.getMax_guests());
+                if ((position - section2Start) == 0) {
                     holder.txtSectionTicket.setText(context.getString(R.string.section_table));
                     holder.linSection.setVisibility(View.VISIBLE);
-                }else {
+                } else {
                     holder.linSection.setVisibility(View.GONE);
                 }
             }
-        }else{
-            if(itemPurchases.getStatus().equals(Common.FIELD_STATUS_SOLD_OUT)||itemPurchases.getQuantity()==0){
+        } else {
+            if (itemPurchases.getStatus().equals(Common.FIELD_STATUS_SOLD_OUT) || itemPurchases.getQuantity() == 0) {
                 holder.txtTicketName.setTextColor(context.getResources().getColor(android.R.color.holo_red_light));
-                holder.txtTicketName.setText(itemPurchases.getName()+" "+"(SOLD OUT)");
-            }else{
+                holder.txtTicketName.setText(itemPurchases.getName() + " " + "(SOLD OUT)");
+            } else {
                 holder.txtTicketName.setTextColor(context.getResources().getColor(android.R.color.black));
                 holder.txtTicketName.setText(itemPurchases.getName());
             }
             holder.txtTicketInfo.setText(itemPurchases.getSummary());
             holder.txtPrice.setText(StringUtility.getRupiahFormat(itemPurchases.getPrice()));
-            holder.txtPriceInfo.setText(context.getString(R.string.pr_max_purchase)+" "+itemPurchases.getMax_purchase());
+            holder.txtPriceInfo.setText(context.getString(R.string.pr_max_purchase) + " " + itemPurchases.getMax_purchase());
             if (position == 0) {
                 holder.txtSectionTicket.setText(context.getString(R.string.section_ticket));
                 holder.linSection.setVisibility(View.VISIBLE);
                 //holder.headerContainer.setVisibility(View.VISIBLE);
                 holder.headerContainer.setVisibility(View.GONE);
-            }else {
+            } else {
                 holder.linSection.setVisibility(View.GONE);
             }
             //holder.headerContainer.setVisibility(View.GONE);
         }
 
-
-        holder.txtTicketName.setText(context.getString(R.string.msg_dummy));
-        if (position == 0) {
-            holder.txtSectionTicket.setText(context.getString(R.string.section_ticket));
-            holder.linSection.setVisibility(View.VISIBLE);
-            //holder.headerContainer.setVisibility(View.VISIBLE);
-            holder.headerContainer.setVisibility(View.GONE);
-        } else if (position == 3) {
-            holder.txtSectionTicket.setText(context.getString(R.string.section_table));
-            holder.linSection.setVisibility(View.VISIBLE);
-        } else {
-            holder.linSection.setVisibility(View.GONE);
-        }
         //holder.txtTicketInfo.setVisibility(View.GONE);
     }
 
     @Override
     public int getItemCount() {
         int size = 0;
-        if(isTwoType){
-            size = dataPurchase.size()+dataReservation.size();
-        }else{
+        if (isTwoType) {
+            size = dataPurchase.size() + dataReservation.size();
+        } else {
             size = dataPurchase.size();
         }
         return size;
@@ -231,13 +218,13 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         public void onClick(View v) {
             if (listener != null) {
                 //should pass data
-                if(isTwoType){
-                    if(position<section2Start){
+                if (isTwoType) {
+                    if (position < section2Start) {
                         listener.onViewSelected(this.position, this.itemPurchase);
-                    }else{
+                    } else {
                         listener.onViewSelected(this.position, this.itemReservation);
                     }
-                }else{
+                } else {
                     listener.onViewSelected(this.position, this.itemPurchase);
                 }
             }

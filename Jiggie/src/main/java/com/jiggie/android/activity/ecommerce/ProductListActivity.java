@@ -17,6 +17,7 @@ import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.ticket.ReservationActivity;
 import com.jiggie.android.activity.ecommerce.ticket.TicketDetailActivity;
+import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.ProductListAdapter;
@@ -27,7 +28,9 @@ import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.ProductListModel;
 import com.jiggie.android.view.HeaderView;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -101,10 +104,20 @@ public class ProductListActivity extends ToolbarActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
-        toolbarHeaderView.bindTo(eventDetail.getTitle()
-                , eventDetail.getVenue().getAddress() + " " + eventDetail.getStart_datetime_str());
-        floatHeaderView.bindTo(eventDetail.getTitle()
-                , eventDetail.getVenue().getAddress() + "\n" + eventDetail.getStart_datetime_str());
+
+        try {
+            final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(eventDetail.getStart_datetime());
+            final String startTime = Common.SERVER_DATE_FORMAT_COMM.format(startDate);
+            Utils.d(TAG, "startDate " + startDate);
+            toolbarHeaderView.bindTo(eventDetail.getTitle()
+                    , eventDetail.getVenue_name() + ", " + startTime);
+            floatHeaderView.bindTo(eventDetail.getTitle()
+                    , eventDetail.getVenue_name() + "\n"
+                            + startTime);
+        } catch (ParseException e) {
+            throw new RuntimeException(App.getErrorMessage(e), e);
+        }
+
     }
 
     private void sendMixpanel(EventDetailModel.Data.EventDetail eventDetail){
@@ -121,6 +134,7 @@ public class ProductListActivity extends ToolbarActivity
                 i = new Intent(ProductListActivity.this, TicketDetailActivity.class);
                 ProductListModel.Data.ProductList.Purchase itemData = (ProductListModel.Data.ProductList.Purchase)object;
                 i.putExtra(Common.FIELD_TRANS_TYPE, itemData.getTicket_type());
+                //Utils.d(TAG, "detailPurchase  brother " + itemData.getSummary());
                 i.putExtra(itemData.getClass().getName(), itemData);
             }else{
                 i = new Intent(ProductListActivity.this, ReservationActivity.class);
