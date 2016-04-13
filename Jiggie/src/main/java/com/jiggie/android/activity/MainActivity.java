@@ -354,9 +354,9 @@ public class MainActivity extends AppCompatActivity {
                                 //added by Aga 22-1-2016
                                 Intent i = new Intent(MainActivity.this, MainActivity.class);
                                 //i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                //i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(i);
-                                //finish();
+                                finish();
                                 //----------------------
 
                             }
