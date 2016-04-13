@@ -254,7 +254,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/purple_arrow2x" />
+                    android:src="@drawable/blue_arrow_r" />
             </RelativeLayout>
         </android.support.v7.widget.CardView>
 
@@ -305,7 +305,7 @@
                         android:layout_centerVertical="true"
                         android:layout_marginRight="@dimen/padding_standard"
                         android:layout_toLeftOf="@+id/lblQuantity"
-                        android:background="@drawable/ic_minus_gr" />
+                        android:background="@drawable/ic_minus_bl" />
 
                     <TextView
                         android:id="@+id/lblQuantity"
@@ -329,7 +329,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/padding_standard"
-                        android:background="@drawable/ic_plus_gr" />
+                        android:background="@drawable/ic_plus_bl" />
                 </RelativeLayout>
 
                 <View
