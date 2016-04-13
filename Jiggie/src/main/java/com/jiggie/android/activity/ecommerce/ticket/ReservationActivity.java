@@ -1,11 +1,16 @@
 package com.jiggie.android.activity.ecommerce.ticket;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -16,6 +21,7 @@ import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.AddGuestActivity;
 import com.jiggie.android.activity.ecommerce.ProductListActivity;
+import com.jiggie.android.activity.ecommerce.PurchaseInfoActivity;
 import com.jiggie.android.activity.ecommerce.summary.ReservationInfoActivity;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
@@ -28,6 +34,7 @@ import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.PostSummaryModel;
 import com.jiggie.android.model.ProductListModel;
 import com.jiggie.android.model.SummaryModel;
+import com.jiggie.android.view.InstructionItemView;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -91,6 +98,8 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
     @Bind(R.id.txt_sold_out)
     TextView txtSoldOut;
 
+    private Dialog dialogTerms;
+
     @Override
     protected void onCreate() {
         super.setContentView(R.layout.activity_ticket_detail);
@@ -118,11 +127,12 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
                         dismissLoadingDialog();
                         productSummary = dataTemp.getData().getProduct_summary();
                         if (productSummary != null) {
+                            showTermsDialog(productSummary.getProduct_list().get(0));
 
                             String responses = new Gson().toJson(dataTemp);
                             Utils.d("res", responses);
 
-                            Intent i = new Intent(ReservationActivity.this, ReservationInfoActivity.class);
+                            /*Intent i = new Intent(ReservationActivity.this, ReservationInfoActivity.class);
                             i.putExtra(Common.FIELD_EVENT_ID, eventId);
                             i.putExtra(Common.FIELD_EVENT_NAME, eventName);
                             i.putExtra(Common.FIELD_VENUE_NAME, venueName);
@@ -130,7 +140,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
                             i.putExtra(productSummary.getClass().getName(), productSummary);
                             i.putExtra(eventDetail.getClass().getName(), eventDetail);
                             i.putExtra(Common.FIELD_MIN_DEPOSIT, detailReservation.getMin_deposit_amount());
-                            startActivity(i);
+                            startActivity(i);*/
                         } else {
                             Toast.makeText(ReservationActivity.this, getString(R.string.msg_wrong), Toast.LENGTH_LONG).show();
                         }
@@ -363,4 +373,72 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
     protected int getCurrentStep() {
         return 1;
     }*/
+
+    private void showTermsDialog(SummaryModel.Data.Product_summary.Product_list dataProduct){
+        dialogTerms = new Dialog(ReservationActivity.this);
+        dialogTerms.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialogTerms.setContentView(R.layout.activity_terms);
+        dialogTerms.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialogTerms.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
+        ImageView img_close = (ImageView)dialogTerms.findViewById(R.id.img_close);
+        final ImageView img_check = (ImageView)dialogTerms.findViewById(R.id.img_check);
+        final RelativeLayout rel_continue = (RelativeLayout)dialogTerms.findViewById(R.id.rel_continue);
+        LinearLayout lin_term = (LinearLayout)dialogTerms.findViewById(R.id.lin_term);
+
+        int size = dataProduct.getTerms().size();
+        for (int i = 0; i < size; i++) {
+
+            String number = String.valueOf((i + 1) + ".");
+            String text = dataProduct.getTerms().get(i).getBody();
+            InstructionItemView textView = new InstructionItemView(ReservationActivity.this, number, text);
+            textView.setTextSizes(14);
+
+            lin_term.addView(textView);
+        }
+
+        rel_continue.setEnabled(false);
+        img_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogTerms.dismiss();
+            }
+        });
+
+        img_check.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(img_check.isSelected()){
+                    img_check.setSelected(false);
+                    rel_continue.setEnabled(false);
+                }else{
+                    img_check.setSelected(true);
+                    rel_continue.setEnabled(true);
+                }
+            }
+        });
+
+        rel_continue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(rel_continue.isEnabled()){
+                    dialogTerms.dismiss();
+
+                    Intent i = new Intent(ReservationActivity.this, ReservationInfoActivity.class);
+                    i.putExtra(Common.FIELD_EVENT_ID, eventId);
+                    i.putExtra(Common.FIELD_EVENT_NAME, eventName);
+                    i.putExtra(Common.FIELD_VENUE_NAME, venueName);
+                    i.putExtra(Common.FIELD_STARTTIME, startTime);
+                    i.putExtra(productSummary.getClass().getName(), productSummary);
+                    i.putExtra(eventDetail.getClass().getName(), eventDetail);
+                    i.putExtra(Common.FIELD_MIN_DEPOSIT, detailReservation.getMin_deposit_amount());
+                    startActivity(i);
+                }
+            }
+        });
+
+        dialogTerms.setCanceledOnTouchOutside(true);
+        dialogTerms.setCancelable(true);
+        dialogTerms.show();
+    }
 }
