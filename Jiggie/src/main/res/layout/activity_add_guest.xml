@@ -2,151 +2,135 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/rel_title"
+    <android.support.design.widget.AppBarLayout
+        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_alignParentTop="true"
-        >
-        <TextView
+        android:id="@+id/appBar"
+        android:layout_alignParentTop="true">
+
+        <android.support.v7.widget.Toolbar
+            android:theme="@style/ThemeOverlay.AppCompat.Dark"
+            android:background="@color/colorPrimary"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:id="@+id/txt_title"
-            android:text="@string/title_guest"
-            android:layout_alignParentLeft="true"
-            android:textColor="@color/textDarkGray"
-            android:layout_centerVertical="true"
+            android:layout_width="match_parent"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:titleTextColor="@android:color/white"
+            android:id="@+id/toolbar"
+            android:elevation="4dp"/>
+    </android.support.design.widget.AppBarLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/appBar">
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/edt_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/guest_name"
+            app:met_baseColor="@color/textDarkGray"
+            app:met_primaryColor="@color/skyBlue"
+            app:met_textColorHint="@color/common_plus_signin_btn_text_light_disabled"
+            app:met_errorColor="@android:color/holo_red_light"
+            android:layout_alignParentTop="true"
+            android:textSize="16sp"
             android:layout_marginLeft="@dimen/padding_standard"
-            android:textStyle="bold"/>
+            android:layout_marginRight="@dimen/padding_standard"
+            android:layout_marginTop="@dimen/padding_fars"
+            android:singleLine="true"/>
 
-        <ImageView
-            android:id="@+id/img_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/x1"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/padding_standard"/>
-
-    </RelativeLayout>
-
-    <View
-        android:id="@+id/divider"
-        android:background="@android:color/darker_gray"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_below="@id/rel_title"/>
-
-    <com.rengwuxian.materialedittext.MaterialEditText
-        android:id="@+id/edt_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/guest_name"
-        app:met_baseColor="@color/textDarkGray"
-        app:met_primaryColor="@color/skyBlue"
-        app:met_textColorHint="@color/common_plus_signin_btn_text_light_disabled"
-        app:met_errorColor="@android:color/holo_red_light"
-        android:layout_below="@id/divider"
-        android:textSize="16sp"
-        android:layout_marginLeft="@dimen/padding_standard"
-        android:layout_marginRight="@dimen/padding_standard"
-        android:layout_marginTop="@dimen/padding_fars"
-        android:singleLine="true"/>
-
-    <com.rengwuxian.materialedittext.MaterialEditText
-        android:id="@+id/edt_email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/guest_email"
-        android:inputType="textEmailAddress"
-        app:met_baseColor="@color/textDarkGray"
-        app:met_primaryColor="@color/skyBlue"
-        app:met_textColorHint="@color/common_plus_signin_btn_text_light_disabled"
-        app:met_errorColor="@android:color/holo_red_light"
-        android:layout_below="@id/edt_name"
-        android:textSize="16sp"
-        android:layout_marginLeft="@dimen/padding_standard"
-        android:layout_marginRight="@dimen/padding_standard"
-        android:layout_marginTop="@dimen/padding_standard_half"
-        android:singleLine="true"/>
-
-    <LinearLayout
-        android:id="@+id/lin"
-        android:layout_below="@id/edt_email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginLeft="@dimen/padding_standard"
-        android:layout_marginRight="@dimen/padding_standard"
-        android:layout_marginTop="@dimen/padding_standard_half">
         <com.rengwuxian.materialedittext.MaterialEditText
-            android:id="@+id/edt_62"
+            android:id="@+id/edt_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/guest_62"
-            android:text="+62"
+            android:hint="@string/guest_email"
+            android:inputType="textEmailAddress"
             app:met_baseColor="@color/textDarkGray"
             app:met_primaryColor="@color/skyBlue"
             app:met_textColorHint="@color/common_plus_signin_btn_text_light_disabled"
             app:met_errorColor="@android:color/holo_red_light"
-            android:layout_below="@id/divider"
+            android:layout_below="@id/edt_name"
             android:textSize="16sp"
-            android:layout_marginRight="@dimen/padding_standard_half"
+            android:layout_marginLeft="@dimen/padding_standard"
+            android:layout_marginRight="@dimen/padding_standard"
             android:layout_marginTop="@dimen/padding_standard_half"
-            android:layout_weight="0.8"
-            android:inputType="number"
-            android:maxLength="3"
             android:singleLine="true"/>
 
-        <com.rengwuxian.materialedittext.MaterialEditText
-            android:id="@+id/edt_phone"
+        <LinearLayout
+            android:id="@+id/lin"
+            android:layout_below="@id/edt_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/guest_phone"
-            app:met_baseColor="@color/textDarkGray"
-            app:met_primaryColor="@color/skyBlue"
-            app:met_textColorHint="@color/common_plus_signin_btn_text_light_disabled"
-            app:met_errorColor="@android:color/holo_red_light"
-            android:layout_below="@id/divider"
-            android:textSize="16sp"
-            android:layout_marginLeft="@dimen/padding_standard_half"
-            android:layout_marginTop="@dimen/padding_standard_half"
-            android:layout_weight="0.2"
-            android:inputType="number"
-            android:singleLine="true"/>
-    </LinearLayout>
+            android:orientation="horizontal"
+            android:layout_marginLeft="@dimen/padding_standard"
+            android:layout_marginRight="@dimen/padding_standard"
+            android:layout_marginTop="@dimen/padding_standard_half">
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/edt_62"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/guest_62"
+                android:text="+62"
+                app:met_baseColor="@color/textDarkGray"
+                app:met_primaryColor="@color/skyBlue"
+                app:met_textColorHint="@color/common_plus_signin_btn_text_light_disabled"
+                app:met_errorColor="@android:color/holo_red_light"
+                android:textSize="16sp"
+                android:layout_marginRight="@dimen/padding_standard_half"
+                android:layout_marginTop="@dimen/padding_standard_half"
+                android:layout_weight="0.8"
+                android:inputType="number"
+                android:maxLength="3"
+                android:singleLine="true"/>
 
-    <TextView
-        android:id="@+id/txt_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/lin"
-        android:layout_marginLeft="@dimen/padding_standard"
-        android:layout_marginRight="@dimen/padding_standard"
-        android:layout_marginTop="@dimen/padding_fars"
-        android:text="@string/guest_phone_info"
-        android:textSize="14sp"
-        android:layout_alignParentLeft="true"
-        android:textColor="@color/purple"/>
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/edt_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/guest_phone"
+                app:met_baseColor="@color/textDarkGray"
+                app:met_primaryColor="@color/skyBlue"
+                app:met_textColorHint="@color/common_plus_signin_btn_text_light_disabled"
+                app:met_errorColor="@android:color/holo_red_light"
+                android:textSize="16sp"
+                android:layout_marginLeft="@dimen/padding_standard_half"
+                android:layout_marginTop="@dimen/padding_standard_half"
+                android:layout_weight="0.2"
+                android:inputType="number"
+                android:singleLine="true"/>
+        </LinearLayout>
 
-    <RelativeLayout
-        android:id="@+id/rel_save"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_gravity="bottom"
-        android:background="@drawable/bg_button_ticket_detail"
-        android:layout_alignParentBottom="true">
         <TextView
-            android:layout_height="wrap_content"
+            android:id="@+id/txt_info"
             android:layout_width="wrap_content"
-            android:id="@+id/txt_save"
-            android:text="@string/guest_save"
-            android:layout_centerInParent="true"
-            android:textColor="@color/common_plus_signin_btn_text_dark"
-            android:textSize="16sp"/>
+            android:layout_height="wrap_content"
+            android:layout_below="@id/lin"
+            android:layout_marginLeft="@dimen/padding_standard"
+            android:layout_marginRight="@dimen/padding_standard"
+            android:layout_marginTop="@dimen/padding_fars"
+            android:text="@string/guest_phone_info"
+            android:textSize="14sp"
+            android:layout_alignParentLeft="true"
+            android:textColor="@color/purple"/>
+
+        <RelativeLayout
+            android:id="@+id/rel_save"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@drawable/bg_button_ticket_detail"
+            android:layout_alignParentBottom="true">
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/txt_save"
+                android:text="@string/guest_save"
+                android:layout_centerInParent="true"
+                android:textColor="@color/common_plus_signin_btn_text_dark"
+                android:textSize="16sp"/>
+        </RelativeLayout>
     </RelativeLayout>
 
 </RelativeLayout>

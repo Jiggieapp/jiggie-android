@@ -27,12 +27,14 @@ import android.view.WindowManager;
 
 import com.appsflyer.AppsFlyerProperties;
 import com.crashlytics.android.Crashlytics;
+import com.google.gson.Gson;
 import com.jiggie.android.component.SimpleJSONObject;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.database.DatabaseConnection;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.manager.TrackManager;
 import com.jiggie.android.model.CommEventMixpanelModel;
 import com.jiggie.android.model.Common;
 import com.android.volley.VolleyError;
@@ -41,6 +43,7 @@ import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
 import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.LoginModel;
+import com.jiggie.android.model.PostAppsFlyerModel;
 import com.jiggie.android.model.SettingModel;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
@@ -202,12 +205,29 @@ public class App extends Application {
         final LoginModel login = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin();
         final SettingModel settingModel = AccountManager.loadSetting() == null ? null : AccountManager.loadSetting();
 
-        if(!Utils.AFmedia_source.equals(""))
-            json.putString("AFmedia_source", Utils.AFmedia_source);
-        if(!Utils.AFcampaign.equals(""))
-            json.putString("AFcampaign", Utils.AFcampaign);
-        if(!Utils.AFinstall_type.equals(""))
-            json.putString("AFinstall_type", Utils.AFinstall_type);
+
+        if(eventName.equals("Install")){
+            if(!Utils.AFmedia_source.equals(""))
+                json.putString("AFmedia_source", Utils.AFmedia_source);
+            else
+                json.putString("AFmedia_source", Utils.AF_ORGANIC);
+            if(!Utils.AFcampaign.equals(""))
+                json.putString("AFcampaign", Utils.AFcampaign);
+            else
+                json.putString("AFcampaign", Utils.AF_ORGANIC);
+            if(!Utils.AFinstall_type.equals(""))
+                json.putString("AFinstall_type", Utils.AFinstall_type);
+            else
+                json.putString("AFinstall_type", Utils.AF_ORGANIC);
+        }else{
+            if(!Utils.AFmedia_source.equals(""))
+                json.putString("AFmedia_source", Utils.AFmedia_source);
+            if(!Utils.AFcampaign.equals(""))
+                json.putString("AFcampaign", Utils.AFcampaign);
+            if(!Utils.AFinstall_type.equals(""))
+                json.putString("AFinstall_type", Utils.AFinstall_type);
+        }
+
 
         //Added by Aga
         json.putString("App Release", getVersionName(this));
@@ -266,10 +286,12 @@ public class App extends Application {
             getInstanceMixpanel().alias(login.getFb_id(), null);
             setPeopleMixpanel(login, settingModel);
             setSuperPropertiesMixpanel(login, settingModel);
+            setAppsFlyer(login);
         }else if(eventName.equals("Log In")){
             getInstanceMixpanel().identify(mixpanelAPI.getDistinctId());
             setPeopleMixpanel(login, settingModel);
             setSuperPropertiesMixpanel(login, settingModel);
+            setAppsFlyer(login);
         }
         getInstanceMixpanel().track(eventName, json);
     }
@@ -413,7 +435,7 @@ public class App extends Application {
 
         json.putString("os_version", this.getDeviceOSName());
         json.putString("device_type", Build.MODEL);
-        json.putString("app_ersion", getVersionCode(this));
+        json.putString("app_version", getVersionCode(this));
         getInstanceMixpanel().registerSuperProperties(json);
     }
 
@@ -888,5 +910,41 @@ public class App extends Application {
     public static String getIdChatActive()
     {
         return idChatActive;
+    }
+
+    public void setAppsFlyer(LoginModel login){
+        if(login!=null){
+            PostAppsFlyerModel postAppsFlyerModel = new PostAppsFlyerModel();
+            postAppsFlyerModel.setFb_id(login.getFb_id());
+            //String appsflyer = "{\n  \\\"af_status\\\" : \\\""+Utils.AFinstall_type+"\\\",\\n  \\\"media_source\\\" : \\\""+Utils.AFmedia_source+"\\\",\\n  \\\"campaign\\\" : \\\""+Utils.AFcampaign+"\\\"\\n}";
+
+            String media_source = Utils.AFmedia_source;
+            String campaign = Utils.AFcampaign;
+            String install_type = Utils.AFinstall_type;
+
+            String click_time = Utils.AFclick_time;
+            String install_time = Utils.AFinstall_time;
+            String af_sub1 = Utils.AFsub1;
+
+            if(media_source.equals(Utils.BLANK)){
+                media_source = Utils.AF_ORGANIC;
+            }
+            if(campaign.equals(Utils.BLANK)){
+                campaign = Utils.AF_ORGANIC;
+            }
+            if(install_type.equals(Utils.BLANK)){
+                install_type = Utils.AF_ORGANIC;
+            }
+
+            //String appsflyer = "{  \"af_status\" : \""+install_type+"\",  \"media_source\" : \""+media_source+"\",  \"campaign\" : \""+campaign+"\"}";
+            String appsflyer = "{  \"af_status\" : \""+install_type+"\",  \"media_source\" : \""+media_source+"\",  \"campaign\" : \""+campaign+"\", \"click_time\" : \""+click_time+"\", \"install_time\" : \""+install_time+"\", \"af_sub1\" : \""+af_sub1+"\"}";
+
+
+            postAppsFlyerModel.setAppsflyer(appsflyer);
+
+            String sd = String.valueOf(new Gson().toJson(postAppsFlyerModel));
+
+            TrackManager.loaderAppsFlyer(postAppsFlyerModel);
+        }
     }
 }
