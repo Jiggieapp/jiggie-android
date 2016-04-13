@@ -223,6 +223,8 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
         txtTotalTicketFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_price()));
         txtTotalFill.setVisibility(View.GONE);
         //initTermView(dataProduct);
+
+        checkEnability(txtPayment.getText().toString());
     }
 
     private void sendMixpanel(SummaryModel.Data.Product_summary productSummary, EventDetailModel.Data.EventDetail eventDetail) {
@@ -490,7 +492,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                 txtPayment.setTypeface(null, Typeface.NORMAL);
             }
 
-            checkEnability(arrTermItemView, txtPayment.getText().toString());
+            checkEnability(txtPayment.getText().toString());
         }else{
             SummaryModel.Data.Product_summary.LastPayment lastPayment = productSummary.getLast_payment();
             if(CommerceManager.arrCCScreen.size()==0){
@@ -646,14 +648,8 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
             progressDialog.dismiss();
     }
 
-    private void checkEnability(ArrayList<TermsItemView> arrTermItemView, String namePayment) {
+    private void checkEnability(String namePayment) {
         boolean isItEnable = true;
-        for (int i = 0; i < arrTermItemView.size(); i++) {
-            if (!arrTermItemView.get(i).getImgCheck().isSelected()) {
-                isItEnable = false;
-                break;
-            }
-        }
         if (namePayment.equals(Utils.BLANK) || namePayment.equals(getString(R.string.pci_payment))) {
             isItEnable = false;
         }
