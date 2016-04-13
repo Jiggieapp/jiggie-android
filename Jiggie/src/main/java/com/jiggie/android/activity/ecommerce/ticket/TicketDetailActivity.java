@@ -35,9 +35,7 @@ import com.jiggie.android.model.ProductListModel;
 import com.jiggie.android.model.SummaryModel;
 import com.jiggie.android.view.InstructionItemView;
 
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 
 import butterknife.Bind;
 
@@ -58,18 +56,18 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
 
     ProductListModel.Data.ProductList.Purchase detailPurchase = null;
 
-    @Bind(R.id.lblEventName)
+    /*@Bind(R.id.lblEventName)
     TextView lblEventName;
     @Bind(R.id.lblEventLocation)
-    TextView lblEventLocation;
-    @Bind(R.id.lblType)
+    TextView lblEventLocation;*/
+    /*@Bind(R.id.lblType)
     TextView lblType;
     @Bind(R.id.lblTypeCaption)
-    TextView lblTypeCaption;
-    @Bind(R.id.lblTypePrice)
+    TextView lblTypeCaption;*/
+    /*@Bind(R.id.lblTypePrice)
     TextView lblTypePrice;
     @Bind(R.id.lblTypePriceCaption)
-    TextView lblTypePriceCaption;
+    TextView lblTypePriceCaption;*/
     @Bind(R.id.txt_guest_name)
     TextView txtGuestName;
     @Bind(R.id.txt_guest_email)
@@ -102,7 +100,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
     protected void onCreate() {
         super.setContentView(R.layout.activity_ticket_detail);
         super.bindView();
-
+        super.setToolbarTitle(getResources().getString(R.string.ticket_detail), true);
         preDefined();
 
         btnDone.setOnClickListener(new View.OnClickListener() {
@@ -129,10 +127,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                             showTermsDialog(productSummary.getProduct_list().get(0));
 
                             String responses = new Gson().toJson(dataTemp);
-                            Utils.d("res", responses);
-
-                            /*String responses = new Gson().toJson(dataTemp);
-                            Utils.d("res", responses);
+                            //Utils.d("res", responses);
 
                             Intent i = new Intent(TicketDetailActivity.this, PurchaseInfoActivity.class);
                             i.putExtra(Common.FIELD_EVENT_ID, eventId);
@@ -141,8 +136,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                             i.putExtra(Common.FIELD_STARTTIME, startTime);
                             i.putExtra(productSummary.getClass().getName(), productSummary);
                             i.putExtra(eventDetail.getClass().getName(), eventDetail);
-
-                            startActivity(i);*/
+                            startActivity(i);
                         } else {
                             Toast.makeText(TicketDetailActivity.this, getString(R.string.msg_wrong), Toast.LENGTH_LONG).show();
                         }
@@ -236,22 +230,22 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
 
         sendMixpanel(eventDetail);
 
-        lblEventName.setText(eventName);
+        /*lblEventName.setText(eventName);
         try {
             final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(startTime);
             lblEventLocation.setText(Common.SERVER_DATE_FORMAT_COMM.format(startDate) + " - " + venueName);
         } catch (ParseException e) {
             throw new RuntimeException(App.getErrorMessage(e), e);
-        }
+        }*/
 
         max = Integer.parseInt(detailPurchase.getMax_purchase());
         price = (int) Double.parseDouble(detailPurchase.getPrice());
         ticketId = detailPurchase.getTicket_id();
 
-        lblType.setText(detailPurchase.getName());
+        /*lblType.setText(detailPurchase.getName());
         lblTypeCaption.setText(detailPurchase.getSummary());
         lblTypePrice.setText(StringUtility.getRupiahFormat(detailPurchase.getPrice()));
-        lblTypePriceCaption.setText(getString(R.string.pr_max_purchase) + " " + max);
+        lblTypePriceCaption.setText(getString(R.string.pr_max_purchase) + " " + max);*/
 
         if(detailPurchase.getStatus().equals(Common.FIELD_STATUS_SOLD_OUT)||detailPurchase.getQuantity()==0){
             purchaseContainer.setVisibility(View.GONE);
@@ -294,7 +288,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
         App.getInstance().trackMixPanelCommerce(Utils.COMM_PRODUCT_DETAIL, commEventMixpanelModel);
     }
 
-    @Override
+   /* @Override
     protected String getToolbarTitle() {
         return getResources().getString(R.string.ticket_detail);
     }
@@ -302,7 +296,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
     @Override
     protected int getCurrentStep() {
         return 1;
-    }
+    }*/
 
     @Override
     public String getEstimatedCostCaption() {

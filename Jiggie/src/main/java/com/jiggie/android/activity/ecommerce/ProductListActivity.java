@@ -83,7 +83,7 @@ public class ProductListActivity extends ToolbarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_list);
         ButterKnife.bind(this);
-        super.bindView();
+        //super.bindView();
         final Intent intent = getIntent();
         eventId = intent.getStringExtra(Common.FIELD_EVENT_ID);
         eventDetail = intent.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
@@ -195,7 +195,7 @@ public class ProductListActivity extends ToolbarActivity
             @Override
             public void onFailure(int responseCode, String message) {
                 Utils.d(String.valueOf(responseCode), message);
-                Toast.makeText(ProductListActivity.this, message, Toast.LENGTH_LONG);
+                //Toast.makeText(ProductListActivity.this, message, Toast.LENGTH_LONG);
                 swipeRefresh.setRefreshing(false);
                 isLoading = false;
             }

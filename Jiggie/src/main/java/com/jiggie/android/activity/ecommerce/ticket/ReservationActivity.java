@@ -40,14 +40,14 @@ import butterknife.Bind;
  */
 public class ReservationActivity extends AbstractTicketDetailActivity {
 
-    @Bind(R.id.lblEventName)
+    /*@Bind(R.id.lblEventName)
     TextView lblEventName;
     @Bind(R.id.lblEventLocation)
-    TextView lblEventLocation;
-    @Bind(R.id.lblType)
+    TextView lblEventLocation;*/
+    /*@Bind(R.id.lblType)
     TextView lblType;
     @Bind(R.id.lblTypeCaption)
-    TextView lblTypeCaption;
+    TextView lblTypeCaption;*/
     @Bind(R.id.lblTypePrice)
     TextView lblTypePrice;
     @Bind(R.id.txt_ticket_desc)
@@ -72,8 +72,8 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
     View plusButton;
     @Bind(R.id.btnDone)
     Button btnDone;
-    @Bind(R.id.lblTypePriceCaption)
-    TextView lblTypePriceCaption;
+    /*@Bind(R.id.lblTypePriceCaption)
+    TextView lblTypePriceCaption;*/
 
     int num_guest = 1;
     ProductListModel.Data.ProductList.Reservation detailReservation = null;
@@ -95,7 +95,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
     protected void onCreate() {
         super.setContentView(R.layout.activity_ticket_detail);
         super.bindView();
-
+        super.setToolbarTitle("Loremmm", true);
         preDefined();
 
         btnDone.setOnClickListener(new View.OnClickListener() {
@@ -130,7 +130,6 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
                             i.putExtra(productSummary.getClass().getName(), productSummary);
                             i.putExtra(eventDetail.getClass().getName(), eventDetail);
                             i.putExtra(Common.FIELD_MIN_DEPOSIT, detailReservation.getMin_deposit_amount());
-
                             startActivity(i);
                         } else {
                             Toast.makeText(ReservationActivity.this, getString(R.string.msg_wrong), Toast.LENGTH_LONG).show();
@@ -223,10 +222,10 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
 
         sendMixpanel(eventDetail);
 
-        lblEventName.setText(eventName);
+        //lblEventName.setText(eventName);
         try {
             final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(startTime);
-            lblEventLocation.setText(Common.SERVER_DATE_FORMAT_COMM.format(startDate) + " - " + venueName);
+            //lblEventLocation.setText(Common.SERVER_DATE_FORMAT_COMM.format(startDate) + " - " + venueName);
         } catch (ParseException e) {
             throw new RuntimeException(App.getErrorMessage(e), e);
         }
@@ -240,10 +239,10 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
         price = (int) Double.parseDouble(detailReservation.getPrice());
         ticketId = detailReservation.getTicket_id();
 
-        lblType.setText(detailReservation.getName());
-        lblTypeCaption.setText(detailReservation.getSummary());
+        /*lblType.setText(detailReservation.getName());
+        lblTypeCaption.setText(detailReservation.getSummary());*/
         lblTypePrice.setText(StringUtility.getRupiahFormat(detailReservation.getPrice()));
-        lblTypePriceCaption.setText(getString(R.string.pr_max_guest) + " " + max);
+        //lblTypePriceCaption.setText(getString(R.string.pr_max_guest) + " " + max);
 
         if (detailReservation.getStatus().equals(Common.FIELD_STATUS_SOLD_OUT) || detailReservation.getQuantity() == 0) {
             purchaseContainer.setVisibility(View.GONE);
@@ -355,7 +354,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
         return "Number of guests";
     }
 
-    @Override
+    /*@Override
     protected String getToolbarTitle() {
         return getResources().getString(R.string.ticket_detail);
     }
@@ -363,5 +362,5 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
     @Override
     protected int getCurrentStep() {
         return 1;
-    }
+    }*/
 }

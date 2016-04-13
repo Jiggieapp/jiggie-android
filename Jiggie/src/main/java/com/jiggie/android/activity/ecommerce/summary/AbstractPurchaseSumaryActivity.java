@@ -6,7 +6,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jiggie.android.R;
-import com.jiggie.android.component.activity.ToolbarWithDotActivity;
+import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.model.Common;
 
 import butterknife.Bind;
@@ -14,7 +14,7 @@ import butterknife.Bind;
 /**
  * Created by LTE on 3/28/2016.
  */
-public abstract class AbstractPurchaseSumaryActivity extends ToolbarWithDotActivity {
+public abstract class AbstractPurchaseSumaryActivity extends /*ToolbarWithDotActivity*/ ToolbarActivity{
 
     @Bind(R.id.rel_table_det)
     RelativeLayout relTableDet;
@@ -30,7 +30,11 @@ public abstract class AbstractPurchaseSumaryActivity extends ToolbarWithDotActiv
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        onCreate();
         super.bindView();
+        //super.setToolbarTitle(getToolbarTitle(), true);
+        getSupportActionBar().setTitle(getToolbarTitle());
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if(getTransactionType().equals(Common.TYPE_PURCHASE)){
             relTicketDet.setVisibility(View.VISIBLE);
@@ -45,4 +49,6 @@ public abstract class AbstractPurchaseSumaryActivity extends ToolbarWithDotActiv
 
     public abstract String getTotalCaption();
     public abstract String getTransactionType();
+    protected abstract void onCreate();
+    protected abstract String getToolbarTitle();
 }
