@@ -121,9 +121,9 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     public final static String PAYMENT_API_SANDBOX = "https://api.sandbox.veritrans.co.id/v2/token";
     CCScreenModel.CardDetails cardDetails;
     @Bind(R.id.minus_button)
-    View minusButton;
+    RelativeLayout minusButton;
     @Bind(R.id.plus_button)
-    View plusButton;
+    RelativeLayout plusButton;
     private SlideAdapter slideAdapter;
     int payDeposit = 0, maxDeposit = 0, latestDeposit = 0;
     private final int INCREMENT_VALUE = 500000;

@@ -25,18 +25,6 @@
             android:fitsSystemWindows="true"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-            <!--<include layout="@layout/toolbar_with_dots"/>-->
-
-            <!--old nd dipake-->
-            <!--<com.jiggie.android.view.CustomToolbar
-                android:id="@+id/customToolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_scrollFlags="scroll|enterAlways"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:elevation="0dp"
-                android:elevation="0dp"/>-->
-
             <android.support.design.widget.CollapsingToolbarLayout
                 android:id="@+id/collapsing_toolbar"
                 android:layout_width="match_parent"
