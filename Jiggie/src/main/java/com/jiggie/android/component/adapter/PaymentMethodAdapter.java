@@ -91,10 +91,10 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
                 String headCC = maskedCard.substring(0, 1);
                 if (headCC.equals("4")) {
                     holder.img.setVisibility(View.VISIBLE);
-                    holder.img.setImageResource(R.drawable.logo_visa);
+                    holder.img.setImageResource(R.drawable.logo_visa2);
                 } else if (headCC.equals("5")) {
                     holder.img.setVisibility(View.VISIBLE);
-                    holder.img.setImageResource(R.drawable.logo_mastercard);
+                    holder.img.setImageResource(R.drawable.logo_mastercard2);
                 } else {
                     holder.img.setVisibility(View.GONE);
                 }
@@ -155,10 +155,10 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
                 String headCC = maskedCard.substring(0, 1);
                 if (headCC.equals("4")) {
                     holder.img.setVisibility(View.VISIBLE);
-                    holder.img.setImageResource(R.drawable.logo_visa);
+                    holder.img.setImageResource(R.drawable.logo_visa2);
                 } else if (headCC.equals("5")) {
                     holder.img.setVisibility(View.VISIBLE);
-                    holder.img.setImageResource(R.drawable.logo_mastercard);
+                    holder.img.setImageResource(R.drawable.logo_mastercard2);
                 } else {
                     holder.img.setVisibility(View.GONE);
                 }

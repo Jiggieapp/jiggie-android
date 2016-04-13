@@ -207,10 +207,10 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                 String headCC = cc_card_id.substring(0, 1);
                 if (headCC.equals("4")) {
                     imgPayment.setVisibility(View.VISIBLE);
-                    imgPayment.setImageResource(R.drawable.logo_visa);
+                    imgPayment.setImageResource(R.drawable.logo_visa2);
                 } else if (headCC.equals("5")) {
                     imgPayment.setVisibility(View.VISIBLE);
-                    imgPayment.setImageResource(R.drawable.logo_mastercard);
+                    imgPayment.setImageResource(R.drawable.logo_mastercard2);
                 } else {
                     imgPayment.setVisibility(View.GONE);
                 }
@@ -531,10 +531,10 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                 String headCC = cc_card_id.substring(0, 1);
                 if (headCC.equals("4")) {
                     imgPayment.setVisibility(View.VISIBLE);
-                    imgPayment.setImageResource(R.drawable.logo_visa);
+                    imgPayment.setImageResource(R.drawable.logo_visa2);
                 } else if (headCC.equals("5")) {
                     imgPayment.setVisibility(View.VISIBLE);
-                    imgPayment.setImageResource(R.drawable.logo_mastercard);
+                    imgPayment.setImageResource(R.drawable.logo_mastercard2);
                 } else {
                     imgPayment.setVisibility(View.GONE);
                 }
