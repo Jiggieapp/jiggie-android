@@ -49,4 +49,9 @@ public class InstructionItemView extends RelativeLayout {
         txtMsg.setText(text);
     }
 
+    public void setTextSizes(int size){
+        txtNumber.setTextSize(size);
+        txtMsg.setTextSize(size);
+    }
+
 }
