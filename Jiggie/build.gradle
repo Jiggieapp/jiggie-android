@@ -50,11 +50,9 @@ android {
             applicationIdSuffix ".debug"
             versionNameSuffix '-Dev'
             resValue "string", "app_name", "Jiggie Dev"
-            buildConfigField("String", "BASE_URL", "\"https://api-dev.jiggieapp.com/\"")
             signingConfig signingConfigs.configDebug
-            //minSdkVersion 18
+            buildConfigField("String", "BASE_URL", "\"https://api-dev.jiggieapp.com/\"")
         }
-
         release {
             minifyEnabled false
             resValue "string", "app_name", "Jiggie"
@@ -63,20 +61,14 @@ android {
         }
     }
 
-    productFlavors
+    /*productFlavors
     {
-        //dev {
-            //resValue "string", "app_name", "Jiggie Dev"
-            //buildConfigField("String", "BASE_URL", "\"https://api-dev.jiggieapp.com/\"")
-            //minSdkVersion 18
-        //}
-
-        //utest {
-        //minSdkVersion 16
-        //}
-
-    }
-
+        staging {
+            applicationIdSuffix ".staging"
+            buildConfigField("boolean", "SHOW_VARIANT", "true")
+            buildConfigField("String", "ENV", "\"http://staging.api.com\"")
+        }
+    }*/
     dexOptions {
         incremental true
     }

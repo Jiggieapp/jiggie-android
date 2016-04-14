@@ -66,7 +66,6 @@ public class HelloWorldEspressoTest
 
     @Test
     public void onSplashCreated() throws UiObjectNotFoundException {
-        Utils.d("helloworld", "onsplashcreated");
         //onView(withText("Hello world!")).check(matches(isDisplayed()));
         if (!App.getInstance().isUserLoggedIn()) {
             onView(withId(R.id.btnSignIn))
