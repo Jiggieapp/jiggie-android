@@ -432,6 +432,9 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
             public void onError(Exception e) {
 
                 //Something is wrong, get details message by print e.getMessage()
+
+                pagerSlide.setCurrentItem(1);
+                Toast.makeText(PurchaseInfoActivity.this, getString(R.string.error_3dsecure), Toast.LENGTH_LONG).show();
             }
         });
     }

@@ -495,7 +495,8 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
 
             @Override
             public void onError(Exception e) {
-
+                pagerSlide.setCurrentItem(1);
+                Toast.makeText(ReservationInfoActivity.this, getString(R.string.error_3dsecure), Toast.LENGTH_LONG).show();
                 //Something is wrong, get details message by print e.getMessage()
             }
         });
