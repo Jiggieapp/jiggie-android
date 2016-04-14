@@ -4,8 +4,10 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -21,7 +23,6 @@ import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.AddGuestActivity;
 import com.jiggie.android.activity.ecommerce.ProductListActivity;
-import com.jiggie.android.activity.ecommerce.PurchaseInfoActivity;
 import com.jiggie.android.activity.ecommerce.summary.ReservationInfoActivity;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
@@ -97,6 +98,10 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
     LinearLayout purchaseContainer;
     @Bind(R.id.txt_sold_out)
     TextView txtSoldOut;
+    @Bind(R.id.rel_con_guest)
+    RelativeLayout relConGuest;
+    @Bind(R.id.card_view_guest)
+    CardView cardViewGuest;
 
     private Dialog dialogTerms;
 
@@ -150,14 +155,14 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
                     public void onFailure(int responseCode, final String message) {
                         dismissLoadingDialog();
                         Utils.d(String.valueOf(responseCode), message);
-                        if(message.contains("left")||message.contains("unavailable")){
+                        if (message.contains("left") || message.contains("unavailable")) {
                             final AlertDialog dialog = new AlertDialog.Builder(ReservationActivity.this)
                                     .setMessage(message)
                                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             dialog.dismiss();
-                                            if(message.contains("unavailable")){
+                                            if (message.contains("unavailable")) {
                                                 Intent i = new Intent(ReservationActivity.this, ProductListActivity.class);
                                                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                                 i.putExtra(Common.FIELD_EVENT_ID, eventDetail.get_id());
@@ -180,7 +185,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
             }
         });
 
-        relGuest.setOnClickListener(new View.OnClickListener() {
+        cardViewGuest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(ReservationActivity.this, AddGuestActivity.class);
@@ -281,6 +286,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
         if (guestPhone.equals(Utils.BLANK)) {
             guestPhone = getString(R.string.phone_number);
             txtGuestPhone.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+            relConGuest.setSelected(true);
         }
 
         txtGuestName.setText(guestName);
@@ -316,6 +322,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
                 txtGuestPhone.setText("+" + guestPhone);
             }
             txtGuestPhone.setTextColor(getResources().getColor(R.color.textDarkGray));
+            relConGuest.setSelected(false);
 
             checkEnability(guestName, guestEmail, guestPhone);
         }
@@ -379,17 +386,17 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
         return 1;
     }*/
 
-    private void showTermsDialog(SummaryModel.Data.Product_summary.Product_list dataProduct){
+    private void showTermsDialog(SummaryModel.Data.Product_summary.Product_list dataProduct) {
         dialogTerms = new Dialog(ReservationActivity.this);
         dialogTerms.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogTerms.setContentView(R.layout.activity_terms);
-        dialogTerms.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialogTerms.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialogTerms.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 
-        ImageView img_close = (ImageView)dialogTerms.findViewById(R.id.img_close);
-        final ImageView img_check = (ImageView)dialogTerms.findViewById(R.id.img_check);
-        final RelativeLayout rel_continue = (RelativeLayout)dialogTerms.findViewById(R.id.rel_continue);
-        LinearLayout lin_term = (LinearLayout)dialogTerms.findViewById(R.id.lin_term);
+        ImageView img_close = (ImageView) dialogTerms.findViewById(R.id.img_close);
+        final ImageView img_check = (ImageView) dialogTerms.findViewById(R.id.img_check);
+        final RelativeLayout rel_continue = (RelativeLayout) dialogTerms.findViewById(R.id.rel_continue);
+        LinearLayout lin_term = (LinearLayout) dialogTerms.findViewById(R.id.lin_term);
 
         int size = dataProduct.getTerms().size();
         for (int i = 0; i < size; i++) {
@@ -413,10 +420,10 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
         img_check.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(img_check.isSelected()){
+                if (img_check.isSelected()) {
                     img_check.setSelected(false);
                     rel_continue.setEnabled(false);
-                }else{
+                } else {
                     img_check.setSelected(true);
                     rel_continue.setEnabled(true);
                 }
@@ -426,7 +433,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
         rel_continue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(rel_continue.isEnabled()){
+                if (rel_continue.isEnabled()) {
                     dialogTerms.dismiss();
 
                     Intent i = new Intent(ReservationActivity.this, ReservationInfoActivity.class);

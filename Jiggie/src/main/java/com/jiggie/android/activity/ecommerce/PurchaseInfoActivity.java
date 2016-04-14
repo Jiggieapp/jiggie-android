@@ -1,12 +1,10 @@
 package com.jiggie.android.activity.ecommerce;
 
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -18,13 +16,10 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -111,6 +106,10 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     CCScreenModel.CardDetails cardDetails;
     @Bind(R.id.rel_disable)
     RelativeLayout relDisable;
+    @Bind(R.id.card_view)
+    CardView cardView;
+    @Bind(R.id.rel_con_payment)
+    RelativeLayout relConPayment;
 
 
     private SlideAdapter slideAdapter;
@@ -130,7 +129,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
 
         preDefined();
 
-        relPayment.setOnClickListener(new View.OnClickListener() {
+        cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(PurchaseInfoActivity.this, PaymentMethodActivity.class);
@@ -199,12 +198,14 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                 imgPayment.setImageResource(R.drawable.logo_mandiri);
                 txtPayment.setText(getString(R.string.va_mandiri));
                 txtPayment.setTypeface(null, Typeface.NORMAL);
-            }else if (paymentType.equals(Utils.TYPE_BCA)) {
+            } else if (paymentType.equals(Utils.TYPE_BCA)) {
                 imgPayment.setVisibility(View.VISIBLE);
                 imgPayment.setImageResource(R.drawable.logo_bca2);
                 txtPayment.setText(getString(R.string.va_bca));
                 txtPayment.setTypeface(null, Typeface.NORMAL);
             }
+        }else{
+            relConPayment.setSelected(true);
         }
 
         totalPrice = productSummary.getTotal_price();
@@ -343,7 +344,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
             } else {
                 try {
                     access3dSecure();
-                }catch (Exception e){
+                } catch (Exception e) {
                     pagerSlide.setCurrentItem(1);
                     Toast.makeText(PurchaseInfoActivity.this, getString(R.string.error_3dsecure), Toast.LENGTH_LONG).show();
                 }
@@ -497,7 +498,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                 imgPayment.setVisibility(View.VISIBLE);
                 imgPayment.setImageResource(R.drawable.logo_bca2);
                 txtPayment.setTypeface(null, Typeface.NORMAL);
-            }else if (paymentType.equals(Utils.TYPE_BP)) {
+            } else if (paymentType.equals(Utils.TYPE_BP)) {
                 txtPayment.setText(getString(R.string.va_mandiri));
                 imgPayment.setVisibility(View.VISIBLE);
                 imgPayment.setImageResource(R.drawable.logo_mandiri);
@@ -507,39 +508,47 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                 imgPayment.setVisibility(View.GONE);
                 txtPayment.setTypeface(null, Typeface.NORMAL);
             }
-            //.getLast_payment().setPayment_type(paymentType);
+            relConPayment.setSelected(false);
             checkEnability(txtPayment.getText().toString());
         }
         else if(resultCode != 284){ //klo 284 do nothing
             SummaryModel.Data.Product_summary.LastPayment lastPayment = productSummary.getLast_payment();
-            if(CommerceManager.arrCCScreen.size()==0){
-                if(lastPayment.isEmpty()){
+            if (CommerceManager.arrCCScreen.size() == 0) {
+                if (lastPayment.isEmpty()) {
                     txtPayment.setText(getString(R.string.pci_payment));
                     txtPayment.setTextColor(getResources().getColor(R.color.purple));
                     imgPayment.setImageResource(R.drawable.ic_plus);
+
+                    relConPayment.setSelected(true);
                 }
-            }else{
-                if(lastPayment.isEmpty()){
+            } else {
+                if (lastPayment.isEmpty()) {
                     txtPayment.setText(getString(R.string.pci_payment));
                     txtPayment.setTextColor(getResources().getColor(R.color.purple));
                     imgPayment.setImageResource(R.drawable.ic_plus);
-                }else{
+
+                    relConPayment.setSelected(true);
+                } else {
                     paymentType = lastPayment.getPayment_type();
                     if (paymentType.equals(Utils.TYPE_CC)) {
                         String mask = lastPayment.getMasked_card();
                         boolean isAlreadyDelete = true;
-                        for(int i=0;i<CommerceManager.arrCCScreen.size();i++){
+                        for (int i = 0; i < CommerceManager.arrCCScreen.size(); i++) {
                             String maskB = CommerceManager.arrCCScreen.get(i).getCreditcardInformation().getMasked_card();
-                            if(mask.equals(maskB)){
+                            if (mask.equals(maskB)) {
                                 isAlreadyDelete = false;
                                 break;
                             }
                         }
 
-                        if(isAlreadyDelete){
+                        if (isAlreadyDelete) {
                             txtPayment.setText(getString(R.string.pci_payment));
                             txtPayment.setTextColor(getResources().getColor(R.color.purple));
                             imgPayment.setImageResource(R.drawable.ic_plus);
+
+                            relConPayment.setSelected(true);
+                        }else{
+                            relConPayment.setSelected(false);
                         }
                     }
                 }
@@ -636,7 +645,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                                 }
                             }).create();
                     dialog.show();
-                }else{
+                } else {
                     /*if(responseCode==Utils.CODE_FAILED){
 
                     }else{

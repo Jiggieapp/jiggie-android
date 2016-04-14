@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -19,7 +20,6 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -124,6 +124,10 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     RelativeLayout minusButton;
     @Bind(R.id.plus_button)
     RelativeLayout plusButton;
+    @Bind(R.id.card_view)
+    CardView cardView;
+    @Bind(R.id.rel_con_payment)
+    RelativeLayout relConPayment;
     private SlideAdapter slideAdapter;
     int payDeposit = 0, maxDeposit = 0, latestDeposit = 0;
     private final int INCREMENT_VALUE = 500000;
@@ -142,7 +146,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
 
         preDefined();
 
-        relPayment.setOnClickListener(new View.OnClickListener() {
+        cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(ReservationInfoActivity.this, PaymentMethodActivity.class);
@@ -229,6 +233,8 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                 txtPayment.setText(getString(R.string.va_bca));
                 txtPayment.setTypeface(null, Typeface.NORMAL);
             }
+        }else{
+            relConPayment.setSelected(true);
         }
 
         totalPrice = productSummary.getTotal_price();
@@ -557,7 +563,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                 imgPayment.setVisibility(View.GONE);
                 txtPayment.setTypeface(null, Typeface.NORMAL);
             }
-
+            relConPayment.setSelected(false);
             checkEnability(txtPayment.getText().toString());
         } else {
             SummaryModel.Data.Product_summary.LastPayment lastPayment = productSummary.getLast_payment();
@@ -566,6 +572,8 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                     txtPayment.setText(getString(R.string.pci_payment));
                     txtPayment.setTextColor(getResources().getColor(R.color.purple));
                     imgPayment.setImageResource(R.drawable.ic_plus);
+
+                    relConPayment.setSelected(true);
                 } else {
                     paymentType = lastPayment.getPayment_type();
                     if (paymentType.equals(Utils.TYPE_CC)) {
@@ -582,6 +590,10 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                             txtPayment.setText(getString(R.string.pci_payment));
                             txtPayment.setTextColor(getResources().getColor(R.color.purple));
                             imgPayment.setImageResource(R.drawable.ic_plus);
+
+                            relConPayment.setSelected(true);
+                        }else{
+                            relConPayment.setSelected(false);
                         }
                     }
                 }
@@ -591,12 +603,16 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                         txtPayment.setText(getString(R.string.pci_payment));
                         txtPayment.setTextColor(getResources().getColor(R.color.purple));
                         imgPayment.setImageResource(R.drawable.ic_plus);
+
+                        relConPayment.setSelected(true);
                     }
                 } else {
                     if (lastPayment.isEmpty()) {
                         txtPayment.setText(getString(R.string.pci_payment));
                         txtPayment.setTextColor(getResources().getColor(R.color.purple));
                         imgPayment.setImageResource(R.drawable.ic_plus);
+
+                        relConPayment.setSelected(true);
                     } else {
                         paymentType = lastPayment.getPayment_type();
                         if (paymentType.equals(Utils.TYPE_CC)) {
@@ -614,6 +630,10 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                                 txtPayment.setText(getString(R.string.pci_payment));
                                 txtPayment.setTextColor(getResources().getColor(R.color.purple));
                                 imgPayment.setImageResource(R.drawable.ic_plus);
+
+                                relConPayment.setSelected(true);
+                            }else{
+                                relConPayment.setSelected(false);
                             }
                         }
                     }

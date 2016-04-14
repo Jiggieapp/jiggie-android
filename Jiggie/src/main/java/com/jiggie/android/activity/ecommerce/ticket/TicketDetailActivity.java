@@ -4,8 +4,10 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -93,6 +95,10 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
     LinearLayout purchaseContainer;
     @Bind(R.id.txt_sold_out)
     TextView txtSoldOut;
+    @Bind(R.id.rel_con_guest)
+    RelativeLayout relConGuest;
+    @Bind(R.id.card_view_guest)
+    CardView cardViewGuest;
 
     private Dialog dialogTerms;
 
@@ -144,14 +150,14 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                     public void onFailure(int responseCode, final String message) {
                         dismissLoadingDialog();
                         Utils.d(String.valueOf(responseCode), message);
-                        if(message.contains("left")||message.contains("unavailable")){
+                        if (message.contains("left") || message.contains("unavailable")) {
                             final AlertDialog dialog = new AlertDialog.Builder(TicketDetailActivity.this)
                                     .setMessage(message)
                                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             dialog.dismiss();
-                                            if(message.contains("unavailable")){
+                                            if (message.contains("unavailable")) {
                                                 Intent i = new Intent(TicketDetailActivity.this, ProductListActivity.class);
                                                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                                 i.putExtra(Common.FIELD_EVENT_ID, eventDetail.get_id());
@@ -174,7 +180,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
             }
         });
 
-        relGuest.setOnClickListener(new View.OnClickListener() {
+        cardViewGuest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(TicketDetailActivity.this, AddGuestActivity.class);
@@ -249,11 +255,11 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
         lblTypePrice.setText(StringUtility.getRupiahFormat(detailPurchase.getPrice()));
         lblTypePriceCaption.setText(getString(R.string.pr_max_purchase) + " " + max);*/
 
-        if(detailPurchase.getStatus().equals(Common.FIELD_STATUS_SOLD_OUT)||detailPurchase.getQuantity()==0){
+        if (detailPurchase.getStatus().equals(Common.FIELD_STATUS_SOLD_OUT) || detailPurchase.getQuantity() == 0) {
             purchaseContainer.setVisibility(View.GONE);
             txtSoldOut.setVisibility(View.VISIBLE);
             isSoldOut = true;
-        }else{
+        } else {
             lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(price)));
             lblQuantity.setText(String.valueOf(quantity));
             isSoldOut = false;
@@ -269,6 +275,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
         if (guestPhone.equals(Utils.BLANK)) {
             guestPhone = getString(R.string.phone_number);
             txtGuestPhone.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+            relConGuest.setSelected(true);
         }
 
         txtGuestName.setText(guestName);
@@ -324,6 +331,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                 txtGuestPhone.setText("+" + guestPhone);
             }
             txtGuestPhone.setTextColor(getResources().getColor(R.color.textDarkGray));
+            relConGuest.setSelected(false);
 
             checkEnability(guestName, guestEmail, guestPhone);
         }
@@ -345,9 +353,9 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
 
     private void checkEnability(String name, String email, String phoneNumber) {
 
-        if(isSoldOut){
+        if (isSoldOut) {
             btnDone.setEnabled(false);
-        }else{
+        } else {
             boolean isItEnable = true;
             if (name.equals(Utils.BLANK)) {
                 isItEnable = false;
@@ -368,17 +376,17 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
 
     }
 
-    private void showTermsDialog(SummaryModel.Data.Product_summary.Product_list dataProduct){
+    private void showTermsDialog(SummaryModel.Data.Product_summary.Product_list dataProduct) {
         dialogTerms = new Dialog(TicketDetailActivity.this);
         dialogTerms.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogTerms.setContentView(R.layout.activity_terms);
-        dialogTerms.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialogTerms.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialogTerms.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 
-        ImageView img_close = (ImageView)dialogTerms.findViewById(R.id.img_close);
-        final ImageView img_check = (ImageView)dialogTerms.findViewById(R.id.img_check);
-        final RelativeLayout rel_continue = (RelativeLayout)dialogTerms.findViewById(R.id.rel_continue);
-        LinearLayout lin_term = (LinearLayout)dialogTerms.findViewById(R.id.lin_term);
+        ImageView img_close = (ImageView) dialogTerms.findViewById(R.id.img_close);
+        final ImageView img_check = (ImageView) dialogTerms.findViewById(R.id.img_check);
+        final RelativeLayout rel_continue = (RelativeLayout) dialogTerms.findViewById(R.id.rel_continue);
+        LinearLayout lin_term = (LinearLayout) dialogTerms.findViewById(R.id.lin_term);
 
         int size = dataProduct.getTerms().size();
         for (int i = 0; i < size; i++) {
@@ -402,10 +410,10 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
         img_check.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(img_check.isSelected()){
+                if (img_check.isSelected()) {
                     img_check.setSelected(false);
                     rel_continue.setEnabled(false);
-                }else{
+                } else {
                     img_check.setSelected(true);
                     rel_continue.setEnabled(true);
                 }
@@ -415,7 +423,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
         rel_continue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(rel_continue.isEnabled()){
+                if (rel_continue.isEnabled()) {
                     dialogTerms.dismiss();
 
                     Intent i = new Intent(TicketDetailActivity.this, PurchaseInfoActivity.class);
