@@ -695,6 +695,4 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     public String getTransactionType() {
         return Common.TYPE_PURCHASE;
     }
-
-
 }

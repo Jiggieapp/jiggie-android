@@ -80,10 +80,9 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
 
-    lintOptions
-            {
+    lintOptions {
                 abortOnError false
-            }
+    }
 }
 
 allprojects {
@@ -110,7 +109,8 @@ dependencies {
     compile 'com.android.support:design:23.1.1'
     compile 'it.sephiroth.android.library.horizontallistview:hlistview:1.2.2'
     compile 'com.facebook.android:facebook-android-sdk:4.7.0'
-    compile 'com.github.bumptech.glide:glide:3.6.1'
+    //compile 'com.github.bumptech.glide:glide:3.6.1'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.loopj.android:android-async-http:1.4.9'

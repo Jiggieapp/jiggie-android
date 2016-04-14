@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.ticket.ReservationActivity;
@@ -98,8 +99,15 @@ public class ProductListActivity extends ToolbarActivity
         this.isLoading = false;
 
         appBarLayout.addOnOffsetChangedListener(this);
-        Glide.with(this).load("https://s3-us-west-2.amazonaws.com/cdnpartyhost/1449118778651.png")
-                .into(eventImage);
+        final String eventPics = getIntent().getStringExtra("images");
+        Utils.d(TAG,"event pics " + eventPics);
+        if(eventPics != null)
+        {
+            Glide.with(this)
+                    .load(eventPics)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(eventImage);
+        }
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -108,7 +116,6 @@ public class ProductListActivity extends ToolbarActivity
         try {
             final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(eventDetail.getStart_datetime());
             final String startTime = Common.SERVER_DATE_FORMAT_COMM.format(startDate);
-            Utils.d(TAG, "startDate " + startDate);
             toolbarHeaderView.bindTo(eventDetail.getTitle()
                     , eventDetail.getVenue_name() + ", " + startTime);
             floatHeaderView.bindTo(eventDetail.getTitle()

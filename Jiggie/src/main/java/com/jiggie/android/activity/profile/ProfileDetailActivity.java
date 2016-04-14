@@ -90,6 +90,7 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
         this.refreshLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
         fb_id = super.getIntent().getStringExtra(Common.FIELD_FACEBOOK_ID);
+        //fb_id = "10204456507851351";
         if (fb_id == null) {
             fb_id = AccessToken.getCurrentAccessToken().getUserId();
             isMe = true;

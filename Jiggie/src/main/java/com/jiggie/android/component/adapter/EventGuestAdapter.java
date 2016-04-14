@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.bumptech.glide.Glide;
@@ -52,7 +53,12 @@ public class EventGuestAdapter extends RecyclerView.Adapter<EventGuestAdapter.Vi
 
         holder.guest = item;
         holder.text.setText(String.format("%s %s", item.getFirst_name(), ""));
-        Glide.with(this.activity).load(url).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.image) {
+        Glide.with(this.activity)
+                .load(url)
+                .asBitmap()
+                .centerCrop()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(new BitmapImageViewTarget(holder.image) {
             @Override
             protected void setResource(Bitmap resource) {
                 final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(activity.getResources(), resource);

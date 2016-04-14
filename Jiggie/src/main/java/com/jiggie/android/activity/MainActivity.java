@@ -352,11 +352,20 @@ public class MainActivity extends AppCompatActivity {
                                 //getActivity().finish();
 
                                 //added by Aga 22-1-2016
-                                Intent i = new Intent(MainActivity.this, MainActivity.class);
+                                Intent i = new Intent(MainActivity.this, SplashActivity.class);
                                 //i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                //i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                 startActivity(i);
                                 finish();
+
+                                /*Intent intent = getBaseContext().getPackageManager()
+                                        .getLaunchIntentForPackage(getBaseContext().getPackageName());
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);*/
+                                //finish();
+
                                 //----------------------
 
                             }

@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.facebook.AccessToken;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -149,8 +150,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         event_day = a.getStringExtra(Common.FIELD_EVENT_DAY);
         event_end = a.getStringExtra(Common.FIELD_EVENT_DAY_END);
         event_pics = a.getStringArrayListExtra(Common.FIELD_EVENT_PICS);
-        Utils.d(TAG, "event_pics "  + event_pics + "");
         event_description = a.getStringExtra(Common.FIELD_EVENT_DESCRIPTION);
+
 
         this.imagePagerIndicatorAdapter = new ImagePagerIndicatorAdapter(super.getSupportFragmentManager(), this.imageViewPager);
         this.imagePagerIndicator.setAdapter(this.imagePagerIndicatorAdapter.getIndicatorAdapter());
@@ -355,7 +356,12 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
                     for (int i = 0; i < guestCount; i++) {
                         final String url = App.getFacebookImage(guestArr.get(i).getFb_id(), width);
-                        Glide.with(EventDetailActivity.this).load(url).asBitmap().centerCrop().into(new BitmapImageViewTarget(imageGuests[i]) {
+                        Glide.with(EventDetailActivity.this)
+                                .load(url)
+                                .asBitmap()
+                                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                                .centerCrop()
+                                .into(new BitmapImageViewTarget(imageGuests[i]) {
                             @Override
                             protected void setResource(Bitmap resource) {
                                 final Resources resources = getResources();
@@ -574,6 +580,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 Intent i = new Intent(this, ProductListActivity.class);
                 i.putExtra(Common.FIELD_EVENT_ID, this.eventDetail.get_id());
                 i.putExtra(eventDetail.getClass().getName(), eventDetail);
+                if(event_pics.size() > 0)
+                    i.putExtra("images", event_pics.get(0));
                 startActivity(i);
             }
             else
