@@ -60,6 +60,7 @@ public class HeaderView extends LinearLayout {
     public void bindTo(String eventName, String location) {
         this.name.setText(eventName);
         this.lblEventLocation.setText(location);
+        this.lblEventLocation.setSelected(true);
     }
 
     public void setTextSize(float size) {

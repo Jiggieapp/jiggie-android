@@ -23,7 +23,8 @@ public abstract class AbstractTicketDetailActivity extends /*ToolbarWithDotActiv
         //tb.setTitle(getResources().getString(R.string.ticket_detail));
         onCreate();
         super.bindView();
-
+        //super.setToolbarTitle(getToolbarTitle(), true);
+        getSupportActionBar().setTitle(getToolbarTitle());
         //lblEventCaption.setText(getEventCaption());
         //lblTypePriceCaption.setText(getTypePriceCaption());
         lblEstimatedCostCaption.setText(getEstimatedCostCaption());
@@ -35,4 +36,5 @@ public abstract class AbstractTicketDetailActivity extends /*ToolbarWithDotActiv
     public abstract String getEstimatedCostCaption();
     public abstract String getTicketCaption();
     protected abstract void onCreate();
+    protected abstract String getToolbarTitle();
 }

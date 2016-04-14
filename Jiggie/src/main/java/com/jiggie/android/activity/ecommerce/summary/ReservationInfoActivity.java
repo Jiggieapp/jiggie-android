@@ -121,9 +121,9 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     public final static String PAYMENT_API_SANDBOX = "https://api.sandbox.veritrans.co.id/v2/token";
     CCScreenModel.CardDetails cardDetails;
     @Bind(R.id.minus_button)
-    View minusButton;
+    RelativeLayout minusButton;
     @Bind(R.id.plus_button)
-    View plusButton;
+    RelativeLayout plusButton;
     private SlideAdapter slideAdapter;
     int payDeposit = 0, maxDeposit = 0, latestDeposit = 0;
     private final int INCREMENT_VALUE = 500000;
@@ -171,7 +171,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
 
     @Override
     protected String getToolbarTitle() {
-        return getResources().getString(R.string.reservation_info);
+        return getResources().getString(R.string.reservation_info).toUpperCase();
     }
 
     private void preDefined() {
@@ -248,9 +248,11 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         payDeposit = (int) Double.parseDouble(minDeposit);
         latestDeposit = (int) Double.parseDouble(minDeposit);
         txtRequireFill.setText(StringUtility.getRupiahFormat(minDeposit));
+
         String estBalance = String.valueOf(Integer.parseInt(productSummary.getTotal_price()) - (int) Double.parseDouble(minDeposit));
         txtEstBalFill.setText(StringUtility.getRupiahFormat(estBalance));
-        txtTotalFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_price()));
+        //txtTotalFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_price()));
+        txtTotalFill.setText(StringUtility.getRupiahFormat(minDeposit));
         txtTotalTicketFill.setVisibility(View.GONE);
 
         //initTermView(dataProduct);

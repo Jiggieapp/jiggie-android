@@ -17,17 +17,6 @@
             android:layout_height="wrap_content"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-            <!--<include layout="@layout/toolbar_with_dots"/>-->
-
-            <!--<com.jiggie.android.view.CustomToolbar
-                android:id="@+id/customToolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:elevation="0dp"
-                app:elevation="0dp"
-                app:layout_scrollFlags="scroll|enterAlways"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />-->
-
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
@@ -35,7 +24,17 @@
                 android:background="@color/colorPrimary"
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:titleTextColor="@android:color/white" />
+                app:titleTextColor="@android:color/white">
+
+                <ImageView
+                    android:id="@+id/img_help"
+                    android:layout_width="44dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="right|center_vertical"
+                    android:layout_marginRight="@dimen/padding_standard"
+                    android:layout_weight="0"
+                    android:src="@drawable/ic_helps" />
+            </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
 
         <ScrollView
@@ -44,6 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/card_view"
             android:layout_below="@+id/appBar"
+            android:background="@color/grayLight"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <RelativeLayout
@@ -85,16 +85,15 @@
                     android:id="@+id/container_body"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/header_container"
-                    android:background="@color/light_grey">
+                    android:layout_below="@+id/header_container">
 
                     <RelativeLayout
                         android:id="@+id/rel_reg"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/padding_standard"
                         android:layout_alignParentTop="true"
-                        android:background="@color/background">
+                        android:padding="@dimen/padding_standard">
+
                         <TextView
                             android:id="@+id/lblType"
                             android:layout_width="wrap_content"
@@ -102,13 +101,13 @@
                             android:layout_alignParentLeft="true"
                             android:layout_alignParentTop="true"
                             android:layout_marginBottom="@dimen/padding_standard_half"
+                            android:maxWidth="190dp"
+                            android:singleLine="true"
                             android:text="Regular Class"
                             android:textAllCaps="true"
                             android:textColor="?android:attr/textColorPrimary"
                             android:textSize="@dimen/font_body_size"
-                            android:textStyle="bold"
-                            android:singleLine="true"
-                            android:maxWidth="190dp"/>
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/lblTypeCaption"
@@ -116,20 +115,20 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentLeft="true"
                             android:layout_below="@+id/lblType"
-                            android:text="Lorem ipsum"
-                            android:textColor="@color/text_grey_caption"
-                            android:textSize="@dimen/font_caption_size"
-                            android:singleLine="true"
                             android:maxWidth="190dp"
-                            android:textAllCaps="true"/>
+                            android:singleLine="true"
+                            android:text="Lorem ipsum"
+                            android:textAllCaps="true"
+                            android:textColor="@color/purple"
+                            android:textSize="@dimen/font_caption_size" />
 
                         <TextView
                             android:id="@+id/lblTypePrice"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
-                            android:layout_marginBottom="@dimen/padding_standard_half"
                             android:layout_alignParentTop="true"
+                            android:layout_marginBottom="@dimen/padding_standard_half"
                             android:text="IDR 2.000K"
                             android:textColor="@color/textDarkGray"
                             android:textSize="@dimen/font_body_size"
@@ -200,6 +199,7 @@
             android:id="@+id/card_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/rel_purchase"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/padding_standard_half"
             android:layout_marginLeft="@dimen/padding_standard_half"
@@ -207,8 +207,7 @@
             android:layout_marginTop="@dimen/padding_standard_half"
             android:clickable="true"
             android:foreground="?android:attr/selectableItemBackground"
-            card_view:cardCornerRadius="4dp"
-            android:layout_above="@+id/rel_purchase">
+            card_view:cardCornerRadius="4dp">
 
             <RelativeLayout
                 android:id="@+id/rel_guest"
@@ -236,7 +235,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_below="@id/txt_guest_name"
                     android:text="Han-kao@gmail.com  |  "
-                    android:textColor="@android:color/darker_gray"
+                    android:textColor="@color/textDarkGray"
                     android:textSize="@dimen/font_caption_size" />
 
                 <TextView
@@ -246,7 +245,7 @@
                     android:layout_below="@id/txt_guest_name"
                     android:layout_toRightOf="@id/txt_guest_email"
                     android:text="Phone Number"
-                    android:textColor="@android:color/darker_gray"
+                    android:textColor="@color/textDarkGray"
                     android:textSize="@dimen/font_caption_size" />
 
                 <ImageView
@@ -269,15 +268,14 @@
             android:id="@+id/rel_purchase"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/btnDone"
-            >
+            android:layout_above="@+id/btnDone">
 
             <LinearLayout
                 android:id="@+id/purchaseContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@android:color/white">
+                android:background="@android:color/white"
+                android:orientation="vertical">
 
                 <RelativeLayout
                     android:layout_width="match_parent"

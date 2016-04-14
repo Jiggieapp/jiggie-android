@@ -221,6 +221,11 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
 
     }
 
+    @Override
+    protected String getToolbarTitle() {
+        return detailReservation.getName().toUpperCase();
+    }
+
     private void preDefined() {
         Intent a = getIntent();
         eventId = a.getStringExtra(Common.FIELD_EVENT_ID);
@@ -310,7 +315,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
             } else {
                 txtGuestPhone.setText("+" + guestPhone);
             }
-            txtGuestPhone.setTextColor(getResources().getColor(android.R.color.darker_gray));
+            txtGuestPhone.setTextColor(getResources().getColor(R.color.textDarkGray));
 
             checkEnability(guestName, guestEmail, guestPhone);
         }
