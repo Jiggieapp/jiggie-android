@@ -339,7 +339,13 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                 PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, "0", productSummary.getOrder_id(), cc_token_id, name_cc, Utils.BLANK);
                 doPayment(postPaymentModel);
             } else {
-                access3dSecure();
+                try {
+                    access3dSecure();
+                }catch (Exception e){
+                    pagerSlide.setCurrentItem(1);
+                    Toast.makeText(PurchaseInfoActivity.this, getString(R.string.error_3dsecure), Toast.LENGTH_LONG).show();
+                }
+
             }
         } else {
             PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, Utils.BLANK, productSummary.getOrder_id(), Utils.BLANK, Utils.BLANK, Utils.BLANK);
