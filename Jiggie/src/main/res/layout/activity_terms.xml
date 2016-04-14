@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E6000000">
+    android:background="#CC000000">
 
     <RelativeLayout
         android:id="@+id/rel_title"
@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:id="@+id/txt_title_cc"
             android:text="TERMS AND CONDITIONS"
-            android:layout_alignParentLeft="true"
+            android:layout_toRightOf="@+id/img_close"
             android:textColor="@color/background"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/padding_standard"
@@ -27,10 +27,10 @@
             android:id="@+id/img_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/x1"
-            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_back_bl"
+            android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/padding_standard"/>
+            android:layout_marginLeft="@dimen/padding_standard"/>
 
     </RelativeLayout>
 

@@ -31,6 +31,7 @@
     <string name="error_connection_failed">Connection failed</string>
     <string name="error_no_connection">No connection</string>
     <string name="error_unknown">Unknown error</string>
+    <string name="error_3dsecure">3D secure authentication failed, make sure your credit card is valid</string>
 
     <string name="facebook_permission_required">To get the full benefits of Jiggie\n please accept the following Facebook permission(s): Birthday, Email, Photos, Location, About_me</string>
     <string name="welcome_description">Welcome to Jiggie, Jiggie shows you great\nevents near you - let\'s get going.</string>
