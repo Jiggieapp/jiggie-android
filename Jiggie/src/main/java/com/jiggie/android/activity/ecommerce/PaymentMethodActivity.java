@@ -152,6 +152,18 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
     }
 
     @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        setResult(284); //do nothing
+        finish();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        return super.onSupportNavigateUp();
+    }
+
+    @Override
     public void onViewSelected(int position, CCScreenModel dataCredit) {
         if(position==(section2Start-1)){
             //add new CC

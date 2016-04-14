@@ -112,7 +112,9 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     @Bind(R.id.rel_disable)
     RelativeLayout relDisable;
 
+
     private SlideAdapter slideAdapter;
+    public final static String TAG = PurchaseInfoActivity.class.getSimpleName();
 
     public static String getPaymentApiUrl() {
         if (VTConfig.VT_IsProduction) {
@@ -145,7 +147,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
 
     @Override
     protected String getToolbarTitle() {
-        return getResources().getString(R.string.purchase_info);
+        return getResources().getString(R.string.purchase_info).toUpperCase();
     }
 
     private void preDefined() {
@@ -350,8 +352,8 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
         } else {
             PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, Utils.BLANK, productSummary.getOrder_id(), Utils.BLANK, Utils.BLANK, Utils.BLANK);
 
-            String responses = new Gson().toJson(postPaymentModel);
-            Log.d("res", responses);
+            //String responses = new Gson().toJson(postPaymentModel);
+            //Utils.d("res", responses);
 
             doPayment(postPaymentModel);
         }
@@ -425,13 +427,17 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                             dialog.dismiss();
                         }
                     });
+                    dialog3ds.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            pagerSlide.setCurrentItem(1);
+                        }
+                    });
 
                     dialog3ds.show();
                 }
                 //print or send token
-                Log.d("token", token.getToken_id());
-
-
+                //Utils.d("token", token.getToken_id());
             }
 
             @Override
@@ -448,6 +454,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (resultCode == RESULT_OK) {
             paymentType = data.getStringExtra(Common.FIELD_PAYMENT_TYPE);
             txtPayment.setTextColor(getResources().getColor(R.color.textDarkGray));
@@ -500,9 +507,10 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                 imgPayment.setVisibility(View.GONE);
                 txtPayment.setTypeface(null, Typeface.NORMAL);
             }
-
+            //.getLast_payment().setPayment_type(paymentType);
             checkEnability(txtPayment.getText().toString());
-        }else{
+        }
+        else if(resultCode != 284){ //klo 284 do nothing
             SummaryModel.Data.Product_summary.LastPayment lastPayment = productSummary.getLast_payment();
             if(CommerceManager.arrCCScreen.size()==0){
                 if(lastPayment.isEmpty()){
@@ -537,6 +545,10 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                 }
             }
         }
+        else if(resultCode == 284)
+        {
+            Utils.d(TAG, "what the fuck?");
+        }
     }
 
     private class VtWebViewClient extends WebViewClient {
@@ -558,8 +570,6 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-
-            Log.d("VtLog", url);
 
             if (url.startsWith(getPaymentApiUrl() + "/callback/")) {
                 PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, "1", productSummary.getOrder_id(), token, name_cc, Utils.BLANK);
@@ -604,9 +614,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                 dismissLoadingDialog();
 
                 pagerSlide.setCurrentItem(1);
-
-                Utils.d(String.valueOf(responseCode), message);
-                if(message.contains("left")||message.contains("unavailable")){
+                if(message != null && (message.contains("left")|| message.contains("unavailable"))){
                     final AlertDialog dialog = new AlertDialog.Builder(PurchaseInfoActivity.this)
                             .setMessage(message)
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -634,7 +642,10 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                     }else{
 
                     }*/
-                    Toast.makeText(PurchaseInfoActivity.this, message, Toast.LENGTH_LONG).show();
+                    if(message != null)
+                    {
+                        Toast.makeText(PurchaseInfoActivity.this, message, Toast.LENGTH_LONG).show();
+                    }
                 }
 
             }

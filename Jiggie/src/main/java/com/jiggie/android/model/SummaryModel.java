@@ -461,6 +461,11 @@ public final class SummaryModel{
                     return saved_token_id;
                 }
 
+                public void setPayment_type(String payment_type)
+                {
+                    this.payment_type = payment_type;
+                }
+
                 public String getPayment_type() {
                     return payment_type;
                 }

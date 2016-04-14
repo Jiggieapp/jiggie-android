@@ -357,8 +357,8 @@ public class CommerceManager {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
-                    String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
+                    //String responses = new Gson().toJson(response.body());
+                    //Log.d("res", responses);
 
                     int responseCode = response.code();
                     if (responseCode == Utils.CODE_SUCCESS) {
@@ -371,7 +371,7 @@ public class CommerceManager {
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Utils.d("Failure", t.toString());
+                    //Utils.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
                 }
             });

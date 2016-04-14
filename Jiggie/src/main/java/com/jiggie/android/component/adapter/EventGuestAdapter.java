@@ -52,7 +52,7 @@ public class EventGuestAdapter extends RecyclerView.Adapter<EventGuestAdapter.Vi
         final String url = App.getFacebookImage(item.getFb_id(), holder.image.getWidth() * 2);
 
         holder.guest = item;
-        holder.text.setText(String.format("%s %s", item.getFirst_name(), ""));
+        holder.text.setText(String.format("%s %s", item.getFirst_name().toUpperCase(), ""));
         Glide.with(this.activity)
                 .load(url)
                 .asBitmap()
