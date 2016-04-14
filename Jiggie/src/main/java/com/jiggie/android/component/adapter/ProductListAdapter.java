@@ -100,9 +100,9 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
                     holder.txtTicketName.setText(itemPurchases.getName());
                 }
 
-                holder.txtTicketInfo.setText(itemPurchases.getSummary());
+                //holder.txtTicketInfo.setText(itemPurchases.getSummary());
                 holder.txtPrice.setText(StringUtility.getRupiahFormat(itemPurchases.getPrice()));
-                holder.txtPriceInfo.setText(context.getString(R.string.pr_max_purchase) + " " + itemPurchases.getMax_purchase());
+                //holder.txtPriceInfo.setText(context.getString(R.string.pr_max_purchase) + " " + itemPurchases.getMax_purchase());
                 if (position == 0) {
                     holder.txtSectionTicket.setText(context.getString(R.string.section_ticket));
                     holder.linSection.setVisibility(View.VISIBLE);
@@ -120,9 +120,9 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
                     holder.txtTicketName.setTextColor(context.getResources().getColor(android.R.color.black));
                     holder.txtTicketName.setText(itemReservations.getName());
                 }
-                holder.txtTicketInfo.setText(itemReservations.getSummary());
+                //holder.txtTicketInfo.setText(itemReservations.getSummary());
                 holder.txtPrice.setText(StringUtility.getRupiahFormat(itemReservations.getPrice()));
-                holder.txtPriceInfo.setText(context.getString(R.string.pr_max_guest) + " " + itemReservations.getMax_guests());
+                //holder.txtPriceInfo.setText(context.getString(R.string.pr_max_guest) + " " + itemReservations.getMax_guests());
                 if ((position - section2Start) == 0) {
                     holder.txtSectionTicket.setText(context.getString(R.string.section_table));
                     holder.linSection.setVisibility(View.VISIBLE);
@@ -138,9 +138,9 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
                 holder.txtTicketName.setTextColor(context.getResources().getColor(android.R.color.black));
                 holder.txtTicketName.setText(itemPurchases.getName());
             }
-            holder.txtTicketInfo.setText(itemPurchases.getSummary());
+            //holder.txtTicketInfo.setText(itemPurchases.getSummary());
             holder.txtPrice.setText(StringUtility.getRupiahFormat(itemPurchases.getPrice()));
-            holder.txtPriceInfo.setText(context.getString(R.string.pr_max_purchase) + " " + itemPurchases.getMax_purchase());
+            //holder.txtPriceInfo.setText(context.getString(R.string.pr_max_purchase) + " " + itemPurchases.getMax_purchase());
             if (position == 0) {
                 holder.txtSectionTicket.setText(context.getString(R.string.section_ticket));
                 holder.linSection.setVisibility(View.VISIBLE);
@@ -179,12 +179,12 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         LinearLayout linSection;
         @Bind(R.id.txt_ticket_name)
         TextView txtTicketName;
-        @Bind(R.id.txt_ticket_info)
-        TextView txtTicketInfo;
+        /*@Bind(R.id.txt_ticket_info)
+        TextView txtTicketInfo;*/
         @Bind(R.id.txt_price)
         TextView txtPrice;
-        @Bind(R.id.txt_price_info)
-        TextView txtPriceInfo;
+        /*@Bind(R.id.txt_price_info)
+        TextView txtPriceInfo;*/
         @Bind(R.id.lin_item)
         LinearLayout linItem;
         @Bind(R.id.card_view)

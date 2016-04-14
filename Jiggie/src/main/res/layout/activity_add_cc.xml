@@ -101,7 +101,8 @@
                 android:layout_marginLeft="@dimen/padding_standard_half"
                 android:inputType="numberPassword"
                 android:layout_weight="0.5"
-                android:singleLine="true"/>
+                android:singleLine="true"
+                android:maxLength="3"/>
         </LinearLayout>
 
         <RelativeLayout
