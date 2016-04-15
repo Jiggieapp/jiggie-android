@@ -67,6 +67,11 @@ public class CommerceManager {
         getInstance().getCC(fb_id).enqueue(callback);
     }
 
+    private static void getPaymentMethod(Callback callback)
+    {
+        getInstance().getPaymentMethod().enqueue(callback);
+    }
+
     private static void postCC(PostCCModel postCCModel, Callback callback) throws IOException {
         getInstance().postCC(Utils.URL_POST_CC, postCCModel).enqueue(callback);
     }
@@ -187,7 +192,7 @@ public class CommerceManager {
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Log.d("Failure", t.toString());
+                    Utils.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
                 }
             });
@@ -195,6 +200,26 @@ public class CommerceManager {
             Log.d("Exception", e.toString());
             onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
         }
+    }
+
+    public static void loaderPaymentMethod(final OnResponseListener onResponseListener)
+    {
+        getPaymentMethod(new CustomCallback() {
+            @Override
+            public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                int responseCode = response.code();
+                if (responseCode == Utils.CODE_SUCCESS) {
+                    onResponseListener.onSuccess(response.body());
+                } else {
+                    onResponseListener.onFailure(responseCode, Utils.RESPONSE_FAILED);
+                }
+            }
+
+            @Override
+            public void onCustomCallbackFailure(String t) {
+                onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+            }
+        });
     }
 
     public static void loaderCCList(String fb_id, final OnResponseListener onResponseListener){
@@ -214,12 +239,10 @@ public class CommerceManager {
                     } else {
                         onResponseListener.onFailure(responseCode, Utils.RESPONSE_FAILED);
                     }
-
                 }
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Log.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
                 }
             });

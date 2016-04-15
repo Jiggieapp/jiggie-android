@@ -1,6 +1,5 @@
 package com.jiggie.android.activity.ecommerce;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,7 +13,6 @@ import android.util.Log;
 import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
@@ -27,18 +25,20 @@ import com.jiggie.android.model.CCScreenModel;
 import com.jiggie.android.model.CommEventMixpanelModel;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventDetailModel;
+import com.jiggie.android.model.PaymentMethod;
 import com.jiggie.android.model.PostDeleteCCModel;
 import com.jiggie.android.model.SummaryModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 
 /**
  * Created by LTE on 2/25/2016.
  */
-public class PaymentMethodActivity extends ToolbarActivity implements PaymentMethodAdapter.ViewSelectedListener, ViewTreeObserver.OnGlobalLayoutListener, SwipeRefreshLayout.OnRefreshListener, PaymentMethodAdapter.LongClickListener{
+public class PaymentMethodActivity extends ToolbarActivity implements PaymentMethodAdapter.ViewSelectedListener, ViewTreeObserver.OnGlobalLayoutListener, SwipeRefreshLayout.OnRefreshListener, PaymentMethodAdapter.LongClickListener {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -51,6 +51,7 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
     private boolean isLoading;
     private String totalPrice;
     private Dialog dialogLongClick;
+    private final static String TAG = PaymentMethodActivity.class.getSimpleName();
 
     String payment_type;
     long order_id;
@@ -77,9 +78,11 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
         recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(this);
         swipeRefresh.setOnRefreshListener(this);
         this.isLoading = false;
+
+        paymentMethodGlobal = new HashMap<>();
     }
 
-    private void sendMixpanel(SummaryModel.Data.Product_summary productSummary, EventDetailModel.Data.EventDetail eventDetail){
+    private void sendMixpanel(SummaryModel.Data.Product_summary productSummary, EventDetailModel.Data.EventDetail eventDetail) {
         CommEventMixpanelModel commEventMixpanelModel = new CommEventMixpanelModel(eventDetail.getTitle(), eventDetail.getVenue_name(), eventDetail.getVenue().getCity(), eventDetail.getStart_datetime_str(),
                 eventDetail.getEnd_datetime_str(), eventDetail.getTags(), eventDetail.getDescription(), productSummary.getProduct_list().get(0).getName(), productSummary.getProduct_list().get(0).getTicket_type(),
                 productSummary.getTotal_price(), productSummary.getProduct_list().get(0).getMax_buy());
@@ -102,7 +105,42 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
         loadData(AccountManager.loadLogin().getFb_id());
     }
 
-    private void loadData(String fb_id){
+    private void loadPaymentMethod() {
+        CommerceManager.loaderPaymentMethod(new CommerceManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object) {
+                PaymentMethod paymentMethod = (PaymentMethod) object;
+                if(swipeRefresh.isRefreshing())
+                    swipeRefresh.setRefreshing(false);
+                isLoading = false;
+                /*ArrayList<HashMap<String, PaymentMethod.Data.Paymentmethod>> data
+                        = new ArrayList<HashMap<String, PaymentMethod.Data.Paymentmethod>>();
+                Map<String, HashMap<String, PaymentMethod.Data.Paymentmethod>> tampung
+                        = new HashMap<String, HashMap<String, PaymentMethod.Data.Paymentmethod>>();*/
+                for(PaymentMethod.Data.Paymentmethod paymentMethoddd : paymentMethod.data.paymentmethod)
+                {
+                    //Utils.d(TAG, "success " + paymentMethoddd.type);
+                    /*HashMap<String, PaymentMethod.Data.Paymentmethod> temp = new HashMap<String, PaymentMethod.Data.Paymentmethod>();
+                    temp.put(paymentMethoddd.type, paymentMethoddd);
+                    data.add(temp);*/
+                    paymentMethodGlobal.put(paymentMethoddd.type, paymentMethoddd);
+                }
+
+                setAdapters(section2Start, CommerceManager.arrCCScreen, paymentMethodGlobal);
+            }
+
+            @Override
+            public void onFailure(int responseCode, String message) {
+                if(swipeRefresh.isRefreshing())
+                    swipeRefresh.setRefreshing(false);
+                isLoading = false;
+            }
+        });
+    }
+
+    HashMap<String, PaymentMethod.Data.Paymentmethod> paymentMethodGlobal;
+
+    private void loadData(String fb_id) {
         CommerceManager.arrCCScreen.clear();
         CommerceManager.loaderCCList(fb_id, new CommerceManager.OnResponseListener() {
             @Override
@@ -116,7 +154,6 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
                     for (int i = 0; i < ccInformation.size(); i++) {
                         CommerceManager.arrCCScreen.add(new CCScreenModel(ccInformation.get(i), null, Utils.BLANK));
                     }
-
                     section2Start = CommerceManager.arrCCScreen.size() + 1;
 
                 } else {
@@ -129,7 +166,8 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
                 }
 
                 section2Start = section2Start + CommerceManager.arrCCLocal.size();
-                setAdapters(section2Start, CommerceManager.arrCCScreen);
+                // setAdapters(section2Start, CommerceManager.arrCCScreen);
+                loadPaymentMethod();
             }
 
             @Override
@@ -144,10 +182,20 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
         });
     }
 
-    private void setAdapters(int section2Start, ArrayList<CCScreenModel> dataCredit){
-        adapter = new PaymentMethodAdapter(PaymentMethodActivity.this, this, this, section2Start, dataCredit, order_id, payment_type, productSummary, eventDetail);
+    private void setAdapters(int section2Start, ArrayList<CCScreenModel> dataCredit) {
+        /*adapter = new PaymentMethodAdapter(PaymentMethodActivity.this, this, this, section2Start, dataCredit, order_id, payment_type, productSummary, eventDetail);
+        recyclerView.setAdapter(adapter);*/
+
+        setAdapters(section2Start, dataCredit, paymentMethodGlobal);
+    }
+
+    //wandy 15-04-2016
+    private void setAdapters(int section2Start, ArrayList<CCScreenModel> dataCredit
+            , HashMap<String, PaymentMethod.Data.Paymentmethod> paymentMethod) {
+        adapter = new PaymentMethodAdapter(PaymentMethodActivity.this, this, this, section2Start, dataCredit, order_id, payment_type, productSummary, eventDetail, paymentMethod);
         recyclerView.setAdapter(adapter);
     }
+    //end of wandy 15-04-2016
 
     @Override
     public void onBackPressed() {
@@ -163,26 +211,26 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
 
     @Override
     public void onViewSelected(int position, CCScreenModel dataCredit) {
-        if(position==(section2Start-1)){
+        if (position == (section2Start - 1)) {
             //add new CC
             Intent i = new Intent(PaymentMethodActivity.this, AddCreditCardActivity.class);
             i.putExtra(Common.FIELD_PRICE, totalPrice);
             i.putExtra(productSummary.getClass().getName(), productSummary);
             i.putExtra(eventDetail.getClass().getName(), eventDetail);
             startActivityForResult(i, 0);
-        }else if(position == (section2Start)){
+        } else if (position == (section2Start)) {
             //bca
             setResult(RESULT_OK, new Intent().putExtra(Common.FIELD_PAYMENT_TYPE, Utils.TYPE_BCA));
             finish();
-        }else if(position == (section2Start + 2)){
+        } else if (position == (section2Start + 2)) {
             //other bank
             setResult(RESULT_OK, new Intent().putExtra(Common.FIELD_PAYMENT_TYPE, Utils.TYPE_VA));
             finish();
-        }else if(position == section2Start + 1){
+        } else if (position == section2Start + 1) {
             //mandiri
             setResult(RESULT_OK, new Intent().putExtra(Common.FIELD_PAYMENT_TYPE, Utils.TYPE_BP));
             finish();
-        }else{
+        } else {
             //exist CC
             setResult(RESULT_OK, new Intent().putExtra(Common.FIELD_PAYMENT_TYPE, Utils.TYPE_CC).putExtra(dataCredit.getClass().getName(), dataCredit));
             finish();
@@ -191,15 +239,15 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
 
     @Override
     public void onLongClick(int position, CCScreenModel dataCredit) {
-        if(position==(section2Start-1)||position == (section2Start + 1)||position == section2Start){
+        if (position == (section2Start - 1) || position == (section2Start + 1) || position == section2Start) {
             //do nothing
-        }else{
+        } else {
             //exist CC
             showLongClickDialog(position, dataCredit.getCreditcardInformation());
         }
     }
 
-    private void showLongClickDialog(final int position, final CCModel.Data.Creditcard_information dataCredit){
+    private void showLongClickDialog(final int position, final CCModel.Data.Creditcard_information dataCredit) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Delete Credit Card").setMessage("Are you sure to delete this Credit card?").setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
@@ -209,7 +257,7 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
         }).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if(!dataCredit.getSaved_token_id().equals(Utils.BLANK)){
+                if (!dataCredit.getSaved_token_id().equals(Utils.BLANK)) {
                     PostDeleteCCModel postDeleteCCModel = new PostDeleteCCModel(AccountManager.loadLogin().getFb_id(), dataCredit.getMasked_card());
                     CommerceManager.loaderDeleteCC(postDeleteCCModel, new CommerceManager.OnResponseListener() {
                         @Override
@@ -221,15 +269,15 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
 
                         @Override
                         public void onFailure(int responseCode, String message) {
-                            Log.d("delete","failed");
+                            Log.d("delete", "failed");
                         }
                     });
-                }else{
+                } else {
                     String m1 = CommerceManager.arrCCScreen.get(position).getCreditcardInformation().getMasked_card();
                     CommerceManager.arrCCScreen.remove(position);
 
-                    for(int i=0;i<CommerceManager.arrCCLocal.size();i++){
-                        if(m1.equals(CommerceManager.arrCCLocal.get(i).getCreditcardInformation().getMasked_card()))
+                    for (int i = 0; i < CommerceManager.arrCCLocal.size(); i++) {
+                        if (m1.equals(CommerceManager.arrCCLocal.get(i).getCreditcardInformation().getMasked_card()))
                             CommerceManager.arrCCLocal.remove(i);
                     }
 
@@ -245,21 +293,28 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK){
+        if (resultCode == RESULT_OK) {
             //refreshData();
             section2Start = CommerceManager.arrCCScreen.size() + 1;
-            setAdapters(section2Start, CommerceManager.arrCCScreen);
+            setAdapters(section2Start, CommerceManager.arrCCScreen, paymentMethodGlobal);
         }
     }
 
-    private void refreshData(){
+    private void refreshData() {
         if(CommerceManager.arrCCScreen.size()==0){
             isLoading = false;
             swipeRefresh.setRefreshing(true);
             this.onRefresh();
         }else{
             section2Start = CommerceManager.arrCCScreen.size() + 1;
-            setAdapters(section2Start, CommerceManager.arrCCScreen);
+            //setAdapters(section2Start, CommerceManager.arrCCScreen);
+            isLoading = true;
+            swipeRefresh.setRefreshing(true);
+            loadPaymentMethod();
         }
+
+        //this.onRefresh();
+
+        //loadPaymentMethod();
     }
 }

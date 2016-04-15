@@ -25,9 +25,11 @@ import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.CCScreenModel;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventDetailModel;
+import com.jiggie.android.model.PaymentMethod;
 import com.jiggie.android.model.SummaryModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -50,6 +52,7 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
     private String paymentType;
     EventDetailModel.Data.EventDetail eventDetail;
     SummaryModel.Data.Product_summary productSummary;
+    HashMap<String, PaymentMethod.Data.Paymentmethod> paymentMethod;
 
     public PaymentMethodAdapter(Activity a, ViewSelectedListener clickListener, LongClickListener longClickListener, int section2Start, ArrayList<CCScreenModel> arrDataCredit,
                                 long order_id, String paymentType, SummaryModel.Data.Product_summary productSummary, EventDetailModel.Data.EventDetail eventDetail) {
@@ -62,6 +65,20 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
         this.paymentType = paymentType;
         this.productSummary = productSummary;
         this.eventDetail = eventDetail;
+    }
+
+    public PaymentMethodAdapter(Activity a, ViewSelectedListener clickListener, LongClickListener longClickListener, int section2Start, ArrayList<CCScreenModel> arrDataCredit,
+                                long order_id, String paymentType, SummaryModel.Data.Product_summary productSummary, EventDetailModel.Data.EventDetail eventDetail, HashMap<String, PaymentMethod.Data.Paymentmethod> paymentMethod) {
+        this.a = a;
+        this.clickListener = clickListener;
+        this.longClickListener = longClickListener;
+        this.section2Start = section2Start;
+        this.arrDataCredit = arrDataCredit;
+        this.order_id = order_id;
+        this.paymentType = paymentType;
+        this.productSummary = productSummary;
+        this.eventDetail = eventDetail;
+        this.paymentMethod = paymentMethod;
     }
 
     @Override
@@ -80,33 +97,41 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
         }
 
         if (position == 0) {
-            holder.txtSection.setText(context.getString(R.string.section_credit_card));
-            holder.linSection.setVisibility(View.VISIBLE);
-            holder.txtHow.setVisibility(View.GONE);
+            if(paymentMethod.get("cc").status == true)
+            {
+                holder.txtSection.setText(context.getString(R.string.section_credit_card));
+                holder.linSection.setVisibility(View.VISIBLE);
+                holder.txtHow.setVisibility(View.GONE);
 
-            if ((section2Start - 1) != 0) {
-                String maskedCard = dataCredit.getCreditcardInformation().getMasked_card();
-                holder.txtPaymentName.setText("• • • • " + maskedCard.substring(maskedCard.indexOf("-") + 1, maskedCard.length()));
+                if ((section2Start - 1) != 0) {
+                    String maskedCard = dataCredit.getCreditcardInformation().getMasked_card();
+                    holder.txtPaymentName.setText("• • • • " + maskedCard.substring(maskedCard.indexOf("-") + 1, maskedCard.length()));
 
-                String headCC = maskedCard.substring(0, 1);
-                if (headCC.equals("4")) {
-                    holder.img.setVisibility(View.VISIBLE);
-                    holder.img.setImageResource(R.drawable.logo_visa2);
-                } else if (headCC.equals("5")) {
-                    holder.img.setVisibility(View.VISIBLE);
-                    holder.img.setImageResource(R.drawable.logo_mastercard2);
+                    String headCC = maskedCard.substring(0, 1);
+                    if (headCC.equals("4")) {
+                        holder.img.setVisibility(View.VISIBLE);
+                        holder.img.setImageResource(R.drawable.logo_visa2);
+                    } else if (headCC.equals("5")) {
+                        holder.img.setVisibility(View.VISIBLE);
+                        holder.img.setImageResource(R.drawable.logo_mastercard2);
+                    } else {
+                        holder.img.setVisibility(View.GONE);
+                    }
                 } else {
+                    //execute kalau data kosong
+                    //holder.img.setImageResource(R.drawable.ic_plus);
                     holder.img.setVisibility(View.GONE);
+                    holder.imgPlus.setVisibility(View.VISIBLE);
+                    holder.txtPaymentName.setText(context.getString(R.string.vor_payment_cc_new));
+                    holder.txtPaymentName.setTextColor(context.getResources().getColor(R.color.blue_selector));
+                    holder.txtPaymentName.setTypeface(holder.txtPaymentName.getTypeface(), Typeface.BOLD);
                 }
-            } else {
-                //execute kalau data kosong
-                //holder.img.setImageResource(R.drawable.ic_plus);
-                holder.img.setVisibility(View.GONE);
-                holder.imgPlus.setVisibility(View.VISIBLE);
-                holder.txtPaymentName.setText(context.getString(R.string.vor_payment_cc_new));
-                holder.txtPaymentName.setTextColor(context.getResources().getColor(R.color.blue_selector));
-                holder.txtPaymentName.setTypeface(holder.txtPaymentName.getTypeface(), Typeface.BOLD);
             }
+            else
+            {
+
+            }
+
 
 
         } else if (position == section2Start) {
@@ -123,21 +148,43 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
 
             holder.txtHow.setText(builder);
             holder.txtHow.setMovementMethod(LinkMovementMethod.getInstance());
-            holder.img.setImageResource(R.drawable.logo_bca2);
-            holder.txtPaymentName.setText(context.getString(R.string.va_bca));
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(0, Utils.myPixel(a, 28), 0, 0);
-            holder.linSection.setLayoutParams(layoutParams);
-
+            if( paymentMethod.get("bca").status == true)
+            {
+                holder.img.setImageResource(R.drawable.logo_bca2);
+                holder.txtPaymentName.setText(context.getString(R.string.va_bca));
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                layoutParams.setMargins(0, Utils.myPixel(a, 28), 0, 0);
+                holder.linSection.setLayoutParams(layoutParams);
+            }
+            else
+            {
+                holder.linItem.setVisibility(View.GONE);
+            }
         } else {
             holder.linSection.setVisibility(View.GONE);
 
             if (position == (section2Start + 1)) {
-                holder.img.setImageResource(R.drawable.logo_mandiri);
-                holder.txtPaymentName.setText(context.getString(R.string.va_mandiri));
+                if(paymentMethod.get("bp").status == true)
+                {
+                    holder.img.setImageResource(R.drawable.logo_mandiri);
+                    holder.txtPaymentName.setText(context.getString(R.string.va_mandiri));
+                }
+                else
+                {
+                    //holder.txtPaymentName.setText("geje skl");
+                    holder.linItem.setVisibility(View.GONE);
+                }
             } else if (position == (section2Start + 2)) {
-                holder.img.setVisibility(View.GONE);
-                holder.txtPaymentName.setText(context.getString(R.string.other_bank));
+                if(paymentMethod.get("va").status == true)
+                {
+                    holder.img.setVisibility(View.GONE);
+                    holder.txtPaymentName.setText(context.getString(R.string.other_bank));
+                }
+                else
+                {
+                    holder.linItem.setVisibility(View.GONE);
+                }
+
             } else if (position == (section2Start - 1)) {
                 if ((section2Start - 1) != 0) {
                     //holder.img.setImageResource(R.drawable.ic_plus);
@@ -148,7 +195,7 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
                     holder.txtPaymentName.setTypeface(holder.txtPaymentName.getTypeface(), Typeface.BOLD);
                 }
 
-            } else {
+            } else if(paymentMethod.get("cc").status == true){
                 String maskedCard = dataCredit.getCreditcardInformation().getMasked_card();
                 holder.txtPaymentName.setText("• • • • " + maskedCard.substring(maskedCard.indexOf("-") + 1, maskedCard.length()));
 
@@ -174,6 +221,16 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
     @Override
     public int getItemCount() {
         return (arrDataCredit.size() + 4);
+        /*int count = 0;
+        if(paymentMethod.get("cc").status == true)
+            count+=1;
+        if(paymentMethod.get("bca").status == true)
+            count+=1;
+        if(paymentMethod.get("bp").status == true)
+            count+=1;
+        if(paymentMethod.get("va").status == true)
+            count+=1;
+        return (arrDataCredit.size() + count);*/
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
