@@ -98,8 +98,6 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
     LinearLayout purchaseContainer;
     @Bind(R.id.txt_sold_out)
     TextView txtSoldOut;
-    @Bind(R.id.rel_con_guest)
-    RelativeLayout relConGuest;
     @Bind(R.id.card_view_guest)
     CardView cardViewGuest;
 
@@ -286,7 +284,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
         if (guestPhone.equals(Utils.BLANK)) {
             guestPhone = getString(R.string.phone_number);
             txtGuestPhone.setTextColor(getResources().getColor(android.R.color.holo_red_light));
-            cardViewGuest.setSelected(true);
+            relGuest.setSelected(true);
         }
 
         txtGuestName.setText(guestName);
@@ -322,7 +320,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
                 txtGuestPhone.setText("+" + guestPhone);
             }
             txtGuestPhone.setTextColor(getResources().getColor(R.color.textDarkGray));
-            cardViewGuest.setSelected(false);
+            relGuest.setSelected(false);
 
             checkEnability(guestName, guestEmail, guestPhone);
         }

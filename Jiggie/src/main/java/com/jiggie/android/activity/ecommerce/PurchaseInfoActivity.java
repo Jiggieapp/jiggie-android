@@ -108,8 +108,6 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     RelativeLayout relDisable;
     @Bind(R.id.card_view)
     CardView cardView;
-    @Bind(R.id.rel_con_payment)
-    RelativeLayout relConPayment;
 
 
     private SlideAdapter slideAdapter;
@@ -205,7 +203,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                 txtPayment.setTypeface(null, Typeface.NORMAL);
             }
         }else{
-            cardView.setSelected(true);
+            relPayment.setSelected(true);
         }
 
         totalPrice = productSummary.getTotal_price();
@@ -508,7 +506,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                 imgPayment.setVisibility(View.GONE);
                 txtPayment.setTypeface(null, Typeface.NORMAL);
             }
-            cardView.setSelected(false);
+            relPayment.setSelected(false);
             checkEnability(txtPayment.getText().toString());
         }
         else if(resultCode != 284){ //klo 284 do nothing
@@ -519,7 +517,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                     txtPayment.setTextColor(getResources().getColor(R.color.purple));
                     imgPayment.setImageResource(R.drawable.ic_plus);
 
-                    cardView.setSelected(true);
+                    relPayment.setSelected(true);
                 }
             } else {
                 if (lastPayment.isEmpty()) {
@@ -527,7 +525,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                     txtPayment.setTextColor(getResources().getColor(R.color.purple));
                     imgPayment.setImageResource(R.drawable.ic_plus);
 
-                    cardView.setSelected(true);
+                    relPayment.setSelected(true);
                 } else {
                     paymentType = lastPayment.getPayment_type();
                     if (paymentType.equals(Utils.TYPE_CC)) {
@@ -546,9 +544,9 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                             txtPayment.setTextColor(getResources().getColor(R.color.purple));
                             imgPayment.setImageResource(R.drawable.ic_plus);
 
-                            cardView.setSelected(true);
+                            relPayment.setSelected(true);
                         }else{
-                            cardView.setSelected(false);
+                            relPayment.setSelected(false);
                         }
                     }
                 }

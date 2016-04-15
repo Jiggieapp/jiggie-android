@@ -126,8 +126,6 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     RelativeLayout plusButton;
     @Bind(R.id.card_view)
     CardView cardView;
-    @Bind(R.id.rel_con_payment)
-    RelativeLayout relConPayment;
     private SlideAdapter slideAdapter;
     int payDeposit = 0, maxDeposit = 0, latestDeposit = 0;
     private final int INCREMENT_VALUE = 500000;
@@ -234,7 +232,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                 txtPayment.setTypeface(null, Typeface.NORMAL);
             }
         }else{
-            cardView.setSelected(true);
+            relPayment.setSelected(true);
         }
 
         totalPrice = productSummary.getTotal_price();
@@ -563,7 +561,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                 imgPayment.setVisibility(View.GONE);
                 txtPayment.setTypeface(null, Typeface.NORMAL);
             }
-            cardView.setSelected(false);
+            relPayment.setSelected(false);
             checkEnability(txtPayment.getText().toString());
         } else {
             SummaryModel.Data.Product_summary.LastPayment lastPayment = productSummary.getLast_payment();
@@ -573,7 +571,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                     txtPayment.setTextColor(getResources().getColor(R.color.purple));
                     imgPayment.setImageResource(R.drawable.ic_plus);
 
-                    cardView.setSelected(true);
+                    relPayment.setSelected(true);
                 } else {
                     paymentType = lastPayment.getPayment_type();
                     if (paymentType.equals(Utils.TYPE_CC)) {
@@ -591,9 +589,9 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                             txtPayment.setTextColor(getResources().getColor(R.color.purple));
                             imgPayment.setImageResource(R.drawable.ic_plus);
 
-                            cardView.setSelected(true);
+                            relPayment.setSelected(true);
                         }else{
-                            cardView.setSelected(false);
+                            relPayment.setSelected(false);
                         }
                     }
                 }
@@ -604,7 +602,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                         txtPayment.setTextColor(getResources().getColor(R.color.purple));
                         imgPayment.setImageResource(R.drawable.ic_plus);
 
-                        cardView.setSelected(true);
+                        relPayment.setSelected(true);
                     }
                 } else {
                     if (lastPayment.isEmpty()) {
@@ -612,7 +610,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                         txtPayment.setTextColor(getResources().getColor(R.color.purple));
                         imgPayment.setImageResource(R.drawable.ic_plus);
 
-                        cardView.setSelected(true);
+                        relPayment.setSelected(true);
                     } else {
                         paymentType = lastPayment.getPayment_type();
                         if (paymentType.equals(Utils.TYPE_CC)) {
@@ -631,9 +629,9 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                                 txtPayment.setTextColor(getResources().getColor(R.color.purple));
                                 imgPayment.setImageResource(R.drawable.ic_plus);
 
-                                cardView.setSelected(true);
+                                relPayment.setSelected(true);
                             }else{
-                                cardView.setSelected(false);
+                                relPayment.setSelected(false);
                             }
                         }
                     }
