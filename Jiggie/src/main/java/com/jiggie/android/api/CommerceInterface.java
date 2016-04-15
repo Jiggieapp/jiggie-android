@@ -12,6 +12,7 @@ import com.jiggie.android.model.SucScreenVABPModel;
 import com.jiggie.android.model.SucScreenWalkthroughModel;
 import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SummaryModel;
+import com.jiggie.android.model.SupportModel;
 
 import retrofit.Call;
 import retrofit.http.Body;
@@ -51,5 +52,8 @@ public interface CommerceInterface {
 
     @GET(Utils.URL_SUCCESS_SCREEN_WALKTHROUGH)
     Call<SucScreenWalkthroughModel> getSucScreenWalkthrough();
+
+    @GET(Utils.URL_SUPPORT)
+    Call<SupportModel> getSupport();
 
 }

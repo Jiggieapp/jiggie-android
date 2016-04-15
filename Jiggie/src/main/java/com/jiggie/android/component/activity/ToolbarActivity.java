@@ -1,5 +1,6 @@
 package com.jiggie.android.component.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.Nullable;
@@ -8,9 +9,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.jiggie.android.R;
 import com.jiggie.android.activity.MainActivity;
+import com.jiggie.android.manager.CommerceManager;
+import com.jiggie.android.model.SupportModel;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -25,6 +29,8 @@ public abstract class ToolbarActivity extends BaseActivity {
     @Nullable
     @Bind(R.id.img_help)
     ImageView imgHelp;
+
+    ProgressDialog progressDialog;
 
     @Override
     protected void bindView() {
@@ -75,7 +81,35 @@ public abstract class ToolbarActivity extends BaseActivity {
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Support");
                 con.startActivity(Intent.createChooser(intent, con.getString(R.string.support)));*/
 
-        Uri uri = Uri.parse("smsto:081218288317");
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading");
+        progressDialog.show();
+
+        if(CommerceManager.supportData==null){
+            CommerceManager.loaderSupport(new CommerceManager.OnResponseListener() {
+                @Override
+                public void onSuccess(Object object) {
+                    progressDialog.dismiss();
+                    SupportModel supportModel = (SupportModel)object;
+                    CommerceManager.supportData = supportModel.getData().getSupport();
+                    openSMS(CommerceManager.supportData.getTelp());
+                }
+
+                @Override
+                public void onFailure(int responseCode, String message) {
+                    progressDialog.dismiss();
+                    Toast.makeText(ToolbarActivity.this, message, Toast.LENGTH_LONG).show();
+                }
+            });
+        }else{
+            progressDialog.dismiss();
+            openSMS(CommerceManager.supportData.getTelp());
+        }
+
+    }
+
+    private void openSMS(String telp){
+        Uri uri = Uri.parse("smsto:"+telp);
         Intent it = new Intent(Intent.ACTION_SENDTO, uri);
         //it.putExtra("sms_body", "The SMS text");
         startActivity(it);
