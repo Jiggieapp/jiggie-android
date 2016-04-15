@@ -238,7 +238,7 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
         @Override
         public void onClick(View widget) {
 
-            Log.d("How it works", "click");
+            //Utils.d("How it works", "click");
             Intent i = new Intent(a, HowToPayActivity.class);
             i.putExtra(Common.FIELD_WALKTHROUGH_PAYMENT, true);
             i.putExtra(Common.FIELD_ORDER_ID, order_id);
@@ -255,7 +255,5 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
             super.updateDrawState(ds);
             ds.setUnderlineText(true);
         }
-
     }
-
 }

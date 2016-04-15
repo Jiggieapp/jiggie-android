@@ -77,7 +77,6 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
         recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(this);
         swipeRefresh.setOnRefreshListener(this);
         this.isLoading = false;
-
     }
 
     private void sendMixpanel(SummaryModel.Data.Product_summary productSummary, EventDetailModel.Data.EventDetail eventDetail){
@@ -131,7 +130,6 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
 
                 section2Start = section2Start + CommerceManager.arrCCLocal.size();
                 setAdapters(section2Start, CommerceManager.arrCCScreen);
-
             }
 
             @Override
@@ -227,9 +225,7 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
                         }
                     });
                 }else{
-
                     String m1 = CommerceManager.arrCCScreen.get(position).getCreditcardInformation().getMasked_card();
-
                     CommerceManager.arrCCScreen.remove(position);
 
                     for(int i=0;i<CommerceManager.arrCCLocal.size();i++){
