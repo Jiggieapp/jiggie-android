@@ -569,21 +569,22 @@
             android:layout_marginLeft="@dimen/padding_standard_half"
             android:layout_marginRight="@dimen/padding_standard_half"
             android:layout_marginTop="@dimen/padding_standard_half"
-            android:layout_above="@+id/rel_bottom"
-            android:background="@drawable/bg_card_red">
+            android:layout_above="@+id/rel_bottom">
             <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/card_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                card_view:cardCornerRadius="4dp">
+                android:foreground="@drawable/bg_card_red"
+                card_view:cardCornerRadius="4dp"
+                card_view:cardElevation="@dimen/padding_standard_half">
 
                 <RelativeLayout
                     android:id="@+id/rel_payment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
                     android:paddingBottom="@dimen/padding_standard"
                     android:paddingRight="@dimen/padding_standard"
                     android:paddingTop="@dimen/padding_standard">

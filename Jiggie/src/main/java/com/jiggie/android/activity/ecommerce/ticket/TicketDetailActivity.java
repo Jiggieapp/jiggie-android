@@ -180,7 +180,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
             }
         });
 
-        cardViewGuest.setOnClickListener(new View.OnClickListener() {
+        relGuest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(TicketDetailActivity.this, AddGuestActivity.class);
@@ -275,7 +275,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
         if (guestPhone.equals(Utils.BLANK)) {
             guestPhone = getString(R.string.phone_number);
             txtGuestPhone.setTextColor(getResources().getColor(android.R.color.holo_red_light));
-            relConGuest.setSelected(true);
+            cardViewGuest.setSelected(true);
         }
 
         txtGuestName.setText(guestName);
@@ -331,7 +331,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                 txtGuestPhone.setText("+" + guestPhone);
             }
             txtGuestPhone.setTextColor(getResources().getColor(R.color.textDarkGray));
-            relConGuest.setSelected(false);
+            cardViewGuest.setSelected(false);
 
             checkEnability(guestName, guestEmail, guestPhone);
         }
