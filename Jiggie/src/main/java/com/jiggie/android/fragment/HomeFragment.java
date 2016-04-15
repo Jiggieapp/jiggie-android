@@ -42,7 +42,7 @@ import butterknife.ButterKnife;
 public class HomeFragment extends Fragment implements ViewPager.OnPageChangeListener, ViewTreeObserver.OnGlobalLayoutListener, HomeMain {
     @Bind(R.id.appBar)
     AppBarLayout appBarLayout;
-    @Bind(R.id.viewpager)
+    @Bind(R.id.viewpagerw)
     ViewPager viewPager;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
