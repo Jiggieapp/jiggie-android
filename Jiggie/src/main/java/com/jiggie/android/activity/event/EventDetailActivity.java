@@ -434,13 +434,13 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                     txtBookNow.setText(R.string.call);
                 } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.RESERVATION, fullfillmentType, true)) {
                     txtExternalSite.setVisibility(View.GONE);
-                    txtBookNow.setText(R.string.reserve);
+                    txtBookNow.setText(R.string.book_now);
                 } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.PURCHASE, fullfillmentType, true)) {
                     txtExternalSite.setVisibility(View.GONE);
-                    txtBookNow.setText(R.string.purchase);
+                    txtBookNow.setText(R.string.book_now);
                 } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.TICKET, fullfillmentType, true)) {
                     txtExternalSite.setVisibility(View.GONE);
-                    txtBookNow.setText(getResources().getString(R.string.purchase_ticket));
+                    txtBookNow.setText(getResources().getString(R.string.book_now));
                 }
                 //Changed by Aga 16-2-2016
                 else if (StringUtility.isEquals(EventManager.FullfillmentTypes.LINK, message.getData().getEvents_detail().getFullfillment_type(), true)) {

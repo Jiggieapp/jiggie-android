@@ -153,6 +153,7 @@ public class Utils {
     public final static String URL_SUCCESS_SCREEN_VABP = BASE_URL + "app/v3/product/success_screen/{order_id}";
     public final static String URL_SUCCESS_SCREEN_WALKTHROUGH = BASE_URL + "app/v3/product/walkthrough_payment";
     public final static String URL_PAYMENT_METHOD = BASE_URL + "app/v3/product/payment_method";
+    public final static String URL_SUPPORT = BASE_URL + "app/v3/product/support";
 
     public static void d(final String tag, final String value) {
         Log.d(tag, value);

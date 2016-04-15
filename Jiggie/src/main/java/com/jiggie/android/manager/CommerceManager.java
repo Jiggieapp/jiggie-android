@@ -15,6 +15,7 @@ import com.jiggie.android.model.PostSummaryModel;
 import com.jiggie.android.model.ProductListModel;
 import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SummaryModel;
+import com.jiggie.android.model.SupportModel;
 
 import org.json.JSONObject;
 
@@ -35,6 +36,7 @@ public class CommerceManager {
     private static CommerceInterface commerceInterface;
     public static ArrayList<CCScreenModel> arrCCScreen = new ArrayList<>();
     public static ArrayList<CCScreenModel> arrCCLocal = new ArrayList<>();
+    public static SupportModel.Data.Support supportData = null;
 
     public static void initCommerceService(){
         Retrofit retrofit = new Retrofit.Builder()
@@ -92,6 +94,10 @@ public class CommerceManager {
         getInstance().getSucScreenWalkthrough().enqueue(callback);
     }
 
+    private static void getSupport(Callback callback) throws IOException {
+        getInstance().getSupport().enqueue(callback);
+    }
+
     public static void loaderProductList(String event_id, final OnResponseListener onResponseListener){
         try {
             getProductList(event_id, new CustomCallback() {
@@ -138,13 +144,13 @@ public class CommerceManager {
                         try {
                             JSONObject jObj = new JSONObject(responses);
                             int resp = jObj.getInt("response");
-                            if(resp!=Utils.CODE_FAILED){
+                            if (resp != Utils.CODE_FAILED) {
                                 onResponseListener.onSuccess(response.body());
-                            }else{
+                            } else {
                                 String msg = jObj.getString("msg");
                                 onResponseListener.onFailure(responseCode, msg);
                             }
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             onResponseListener.onFailure(responseCode, Utils.RESPONSE_FAILED);
                         }
 
@@ -178,9 +184,9 @@ public class CommerceManager {
                     int responseCode = response.code();
                     if (responseCode == Utils.CODE_SUCCESS) {
                         Success2Model dataTemp = (Success2Model) response.body();
-                        if(dataTemp.getResponse()==1){
+                        if (dataTemp.getResponse() == 1) {
                             onResponseListener.onSuccess(dataTemp);
-                        }else{
+                        } else {
                             onResponseListener.onFailure(dataTemp.getResponse(), dataTemp.getMsg());
                         }
 
@@ -400,6 +406,36 @@ public class CommerceManager {
             });
         }catch (IOException e){
             Utils.d("Exception", e.toString());
+            onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
+        }
+    }
+
+    public static void loaderSupport(final OnResponseListener onResponseListener){
+        try {
+            getSupport(new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+
+                    String responses = new Gson().toJson(response.body());
+                    Log.d("res", responses);
+
+                    int responseCode = response.code();
+                    if (responseCode == Utils.CODE_SUCCESS) {
+                        onResponseListener.onSuccess(response.body());
+                    } else {
+                        onResponseListener.onFailure(responseCode, Utils.RESPONSE_FAILED);
+                    }
+
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    Log.d("Failure", t.toString());
+                    onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+                }
+            });
+        }catch (IOException e){
+            Log.d("Exception", e.toString());
             onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
         }
     }

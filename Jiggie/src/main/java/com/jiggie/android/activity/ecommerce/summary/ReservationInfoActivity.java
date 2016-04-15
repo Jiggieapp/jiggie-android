@@ -103,6 +103,8 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     RelativeLayout relDisable;
     @Bind(R.id.txt_total_ticket_fill)
     TextView txtTotalTicketFill;
+    @Bind(R.id.txt_event_info_date)
+    TextView txtEventInfoDate;
 
     SummaryModel.Data.Product_summary productSummary;
     EventDetailModel.Data.EventDetail eventDetail;
@@ -173,7 +175,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
 
     @Override
     protected String getToolbarTitle() {
-        return getResources().getString(R.string.reservation_info).toUpperCase();
+        return getResources().getString(R.string.purchase_info).toUpperCase();
     }
 
     private void preDefined() {
@@ -239,10 +241,13 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         txtEventName.setText(eventName);
         try {
             final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(startTime);
-            txtEventInfo.setText(Common.SERVER_DATE_FORMAT_COMM.format(startDate) + " - " + venueName);
+            txtEventInfo.setText(venueName);
+            txtEventInfoDate.setText(Common.SERVER_DATE_FORMAT_COMM.format(startDate)
+            );
         } catch (ParseException e) {
             throw new RuntimeException(App.getErrorMessage(e), e);
         }
+
         txtDftTitle.setText(dataProduct.getName());
         txtDftFill.setText(StringUtility.getRupiahFormat(dataProduct.getTotal_price()));
         txtTaxxFill.setText(StringUtility.getRupiahFormat(dataProduct.getTax_amount()));
