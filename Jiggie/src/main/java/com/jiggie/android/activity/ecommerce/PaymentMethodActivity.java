@@ -119,10 +119,6 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
                         = new HashMap<String, HashMap<String, PaymentMethod.Data.Paymentmethod>>();*/
                 for(PaymentMethod.Data.Paymentmethod paymentMethoddd : paymentMethod.data.paymentmethod)
                 {
-                    //Utils.d(TAG, "success " + paymentMethoddd.type);
-                    /*HashMap<String, PaymentMethod.Data.Paymentmethod> temp = new HashMap<String, PaymentMethod.Data.Paymentmethod>();
-                    temp.put(paymentMethoddd.type, paymentMethoddd);
-                    data.add(temp);*/
                     paymentMethodGlobal.put(paymentMethoddd.type, paymentMethoddd);
                 }
 

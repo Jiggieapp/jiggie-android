@@ -44,7 +44,6 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
     int section2Start;
     long order_id;
 
-
     private Activity a;
 
     private Context context;
@@ -53,6 +52,7 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
     EventDetailModel.Data.EventDetail eventDetail;
     SummaryModel.Data.Product_summary productSummary;
     HashMap<String, PaymentMethod.Data.Paymentmethod> paymentMethod;
+    public final static String TAG = PaymentMethodAdapter.class.getSimpleName();
 
     public PaymentMethodAdapter(Activity a, ViewSelectedListener clickListener, LongClickListener longClickListener, int section2Start, ArrayList<CCScreenModel> arrDataCredit,
                                 long order_id, String paymentType, SummaryModel.Data.Product_summary productSummary, EventDetailModel.Data.EventDetail eventDetail) {
@@ -97,7 +97,8 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
         }
 
         if (position == 0) {
-            if(paymentMethod.get("cc").status == true)
+            if(paymentMethod.get("cc") != null &&
+                    paymentMethod.get("cc").status == true)
             {
                 holder.txtSection.setText(context.getString(R.string.section_credit_card));
                 holder.linSection.setVisibility(View.VISIBLE);
@@ -127,13 +128,6 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
                     holder.txtPaymentName.setTypeface(holder.txtPaymentName.getTypeface(), Typeface.BOLD);
                 }
             }
-            else
-            {
-
-            }
-
-
-
         } else if (position == section2Start) {
             String sectionClick = "HOW IT WORKS?";
             holder.txtSection.setText(context.getString(R.string.section_va));
@@ -148,7 +142,8 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
 
             holder.txtHow.setText(builder);
             holder.txtHow.setMovementMethod(LinkMovementMethod.getInstance());
-            if( paymentMethod.get("bca").status == true)
+            if(paymentMethod.get("bca") != null
+                    && paymentMethod.get("bca").status == true)
             {
                 holder.img.setImageResource(R.drawable.logo_bca2);
                 holder.txtPaymentName.setText(context.getString(R.string.va_bca));
@@ -162,9 +157,9 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
             }
         } else {
             holder.linSection.setVisibility(View.GONE);
-
             if (position == (section2Start + 1)) {
-                if(paymentMethod.get("bp").status == true)
+                if(paymentMethod .get("bp") != null &&
+                        paymentMethod.get("bp").status == true)
                 {
                     holder.img.setImageResource(R.drawable.logo_mandiri);
                     holder.txtPaymentName.setText(context.getString(R.string.va_mandiri));
@@ -175,7 +170,8 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
                     holder.linItem.setVisibility(View.GONE);
                 }
             } else if (position == (section2Start + 2)) {
-                if(paymentMethod.get("va").status == true)
+                if(paymentMethod.get("va") != null &&
+                        paymentMethod.get("va").status == true)
                 {
                     holder.img.setVisibility(View.GONE);
                     holder.txtPaymentName.setText(context.getString(R.string.other_bank));
@@ -194,8 +190,8 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
                     holder.txtPaymentName.setTextColor(context.getResources().getColor(R.color.blue_selector));
                     holder.txtPaymentName.setTypeface(holder.txtPaymentName.getTypeface(), Typeface.BOLD);
                 }
-
-            } else if(paymentMethod.get("cc").status == true){
+            } else if(paymentMethod.get("cc") != null &&
+                    paymentMethod.get("cc").status == true){
                 String maskedCard = dataCredit.getCreditcardInformation().getMasked_card();
                 holder.txtPaymentName.setText("• • • • " + maskedCard.substring(maskedCard.indexOf("-") + 1, maskedCard.length()));
 
@@ -220,7 +216,10 @@ public class PaymentMethodAdapter extends RecyclerView.Adapter<PaymentMethodAdap
 
     @Override
     public int getItemCount() {
-        return (arrDataCredit.size() + 4);
+        if(paymentMethod.size() == 0)
+            return 0;
+        else
+            return (arrDataCredit.size() + 4);
         /*int count = 0;
         if(paymentMethod.get("cc").status == true)
             count+=1;

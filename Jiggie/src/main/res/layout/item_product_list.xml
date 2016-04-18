@@ -45,13 +45,16 @@
         android:clickable="false"
         android:orientation="vertical"
         android:paddingRight="@dimen/padding_standard_half"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <TextView
             android:id="@+id/txt_section_ticket"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/padding_standard_half"
+            android:layout_marginLeft="@dimen/padding_standard"
+            android:layout_marginRight="@dimen/padding_standard"
+            android:layout_marginTop="@dimen/padding_standard_half"
+            android:layout_marginBottom="@dimen/padding_standard_half"
             android:text="@string/msg_dummy" />
 
         <!--<View
@@ -67,9 +70,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="@dimen/padding_standard_half"
-        android:layout_marginLeft="@dimen/padding_standard_half"
-        android:layout_marginRight="@dimen/padding_standard_half"
-        android:layout_marginTop="@dimen/padding_standard_half"
+        android:layout_marginLeft="@dimen/padding_standard"
+        android:layout_marginRight="@dimen/padding_standard"
         android:clickable="true"
         android:foreground="?android:attr/selectableItemBackground"
         card_view:cardCornerRadius="4dp">
@@ -78,8 +80,6 @@
             android:id="@+id/lin_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
-
             android:orientation="vertical">
 
             <RelativeLayout
@@ -104,7 +104,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="@dimen/padding_standard"
+                    android:layout_marginRight="@dimen/padding_standard_half"
                     android:orientation="vertical"
                     android:layout_alignParentLeft="true">
 
@@ -117,7 +117,8 @@
                         android:text="@string/msg_dummy"
                         android:textAllCaps="true"
                         android:textColor="@android:color/black"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        android:textStyle="bold"/>
 
                     <!--<TextView
                         android:id="@+id/txt_ticket_info"
@@ -138,7 +139,6 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="@dimen/padding_standard"
                     android:text="@string/msg_dummy_price"
                     android:textColor="@color/purple"
                     android:textSize="20sp" />
