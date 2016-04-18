@@ -322,7 +322,7 @@
     <string name="tikdet_how">Book your ticket through the app.\nShow up to venue and show the your ticket - found under booking list of the app or via link your confirmation email, bring your e-ticket or print your booking receipt for entry to the venue.</string>
     <string name="tikdet_terms">This event is 21+\nThis ticket is subject to processing fee\nNo alcohol permitted on permises other than that\nserved by licensed vendors of this event.\nCredit does not apply to tickets.</string>
 
-    <string name="pci_agree">By continue this order, I AGREE That :</string>
+    <string name="pci_agree">By continuing with this order, I AGREE That :</string>
     <string name="pci_c1">All booking are final</string>
     <string name="pci_c2">I will be charged the full amount</string>
     <string name="pci_c3">I will show up at the event</string>
