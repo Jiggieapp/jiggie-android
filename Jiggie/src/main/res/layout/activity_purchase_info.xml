@@ -135,7 +135,7 @@
                     android:layout_below="@id/txt_event_info_date"
                     android:layout_marginLeft="@dimen/padding_standard"
                     android:layout_marginRight="@dimen/padding_standard"
-                    android:background="@color/dividercomm2" />
+                    android:background="@color/divider_pantone" />
 
                 <RelativeLayout
                     android:id="@+id/rel_detail"
@@ -310,7 +310,7 @@
                             android:layout_below="@id/txt_ser_fill"
                             android:layout_marginLeft="@dimen/padding_standard"
                             android:layout_marginRight="@dimen/padding_standard"
-                            android:background="@color/dividercomm2" />
+                            android:background="@color/divider_pantone" />
 
                         <TextView
                             android:id="@+id/txt_est_tot_title"
@@ -380,7 +380,7 @@
                             android:layout_marginLeft="@dimen/padding_standard"
                             android:layout_marginRight="@dimen/padding_standard"
                             android:layout_marginTop="@dimen/padding_standard"
-                            android:background="@color/dividercomm2"
+                            android:background="@color/divider_pantone"
                             android:paddingBottom="@dimen/padding_standard_half" />
 
                         <TextView
@@ -421,7 +421,7 @@
             android:layout_above="@+id/rel_total"
             android:layout_marginLeft="@dimen/padding_standard"
             android:layout_marginRight="@dimen/padding_standard"
-            android:background="@color/dividercomm2" />
+            android:background="@color/divider_pantone" />
 
         <RelativeLayout
             android:id="@+id/rel_total"
@@ -639,13 +639,34 @@
                 android:clickable="false"
                 android:visibility="gone">
 
-                <TextView
+                <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text="@string/pci_slide"
-                    android:textColor="@color/common_plus_signin_btn_text_dark"
-                    android:textSize="16sp" />
+                    android:layout_centerInParent="true">
+                    <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:id="@+id/txt_pay"
+                        android:text="@string/pci_slide"
+                        android:textColor="@color/common_plus_signin_btn_text_dark"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"/>
+                    <ImageView
+                        android:id="@+id/r1"
+                        android:layout_width="10dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/r_arrows"
+                        android:layout_marginLeft="@dimen/padding_standard_half"
+                        android:layout_toRightOf="@id/txt_pay"
+                        android:layout_centerVertical="true"/>
+                    <ImageView
+                        android:id="@+id/r2"
+                        android:layout_width="10dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/r_arrows"
+                        android:layout_toRightOf="@id/r1"
+                        android:layout_centerVertical="true"/>
+                </RelativeLayout>
             </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>

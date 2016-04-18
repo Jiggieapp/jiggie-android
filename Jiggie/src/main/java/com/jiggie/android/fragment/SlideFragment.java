@@ -1,16 +1,17 @@
 package com.jiggie.android.fragment;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.jiggie.android.R;
+import com.jiggie.android.component.Utils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -24,6 +25,10 @@ public class SlideFragment extends Fragment {
     TextView txtPay;
     @Bind(R.id.rel_slide_pay)
     RelativeLayout relSlidePay;
+    @Bind(R.id.r1)
+    ImageView r1;
+    @Bind(R.id.r2)
+    ImageView r2;
 
     public static Fragment newInstance() {
         SlideFragment en = new SlideFragment();
@@ -44,6 +49,13 @@ public class SlideFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         final Bundle arg = super.getArguments();
         this.txtPay.setText(arg.getString(ARG_TITLE));
+        if(arg.getString(ARG_TITLE).equals(Utils.BLANK)){
+            this.r1.setVisibility(View.GONE);
+            this.r2.setVisibility(View.GONE);
+        }else{
+            this.r1.setVisibility(View.VISIBLE);
+            this.r2.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
