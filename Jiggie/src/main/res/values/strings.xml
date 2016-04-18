@@ -281,7 +281,7 @@
     <string name="vor_ticket_inc_fill">1. Lorem ipsum dolor sit amet copy in various charsets and languages for layouts.\n2. Lorem ipsum dolor sit amet copy in various charsets and languages for layouts.\n3. Lorem ipsum dolor sit amet copy in various charsets and languages for layouts.</string>
     <string name="vor_event_hour">19:00 - 23:00</string>
     <string name="vor_event_place">GELORA BUNG KARNO</string>
-    <string name="vor_tap_info">Tap \"Purchase History\" from the \"More\" tab to return to this screen</string>
+    <string name="vor_tap_info">Tap \"Bookings\" from the \"More\" tab to return to this screen</string>
     <string name="vor_view_ticket">VIEW TICKET</string>
     <string name="vor_fine_print">Fine Print :</string>
 
@@ -305,7 +305,7 @@
     <string name="howtp_info"> we have also emailed you with these steps along with our Virtual Account number</string>
     <string name="howtp_vo">VIEW BOOKINGS</string>
 
-    <string name="his_title">Purchase History</string>
+    <string name="his_title">Bookings</string>
     <string name="his_ev1">AFROJACK LIVE IN JAKARTA 2016</string>
     <string name="his_ven1">Gelora Bung Karno, Jakarta, Indonesia</string>
     <string name="his_dt1">Sunday, 29 February 2016</string>
