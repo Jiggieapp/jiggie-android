@@ -139,7 +139,6 @@ public class ImagePagerIndicatorAdapter extends FragmentPagerAdapter {
         public void onActivityCreated(@Nullable Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
             String url = super.getArguments().getString(Common.BUNDLE_IMAGE);
-            Utils.d(TAG, "url pics " + url);
             //url = "https://img.jiggieapp.com/image/10204456507851351/0?imgid=https://scontent.xx.fbcdn.net/hphotos-xal1/t31.0-8/12370850_10203839778713508_3736034773002736547_o.jpg";
             Glide.with(this)
                     .load(url)

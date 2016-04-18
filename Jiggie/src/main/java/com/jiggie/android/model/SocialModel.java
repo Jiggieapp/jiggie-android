@@ -56,6 +56,15 @@ public class SocialModel {
             String type;
             int type_rank;
             String last_updated;
+            String image;
+
+            public String getImage() {
+                return image;
+            }
+
+            public void setImage(String image) {
+                this.image = image;
+            }
 
             public String getFb_id() {
                 return fb_id;

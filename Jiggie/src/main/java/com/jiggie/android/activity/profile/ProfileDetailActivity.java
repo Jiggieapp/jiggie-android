@@ -146,8 +146,6 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
 
             final LoginModel loginModel = AccountManager.loadLogin();
 
-
-
             if (TextUtils.isEmpty(loginModel.getLocation()))
             {
                 txtLocation.setVisibility(View.GONE);
@@ -183,6 +181,10 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
         }
         //-----------------------
 
+        for(String photo : photos)
+        {
+            Utils.d(TAG, "photos " + photo);
+        }
         this.pagerIndicatorAdapter.setImages(photos);
 
 
