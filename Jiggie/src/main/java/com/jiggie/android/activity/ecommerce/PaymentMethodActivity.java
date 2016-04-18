@@ -146,7 +146,6 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
                 CCModel ccModel = (CCModel) object;
                 if (ccModel != null) {
                     ArrayList<CCModel.Data.Creditcard_information> ccInformation = ccModel.getData().getCreditcard_informations();
-
                     for (int i = 0; i < ccInformation.size(); i++) {
                         CommerceManager.arrCCScreen.add(new CCScreenModel(ccInformation.get(i), null, Utils.BLANK));
                     }
@@ -172,7 +171,7 @@ public class PaymentMethodActivity extends ToolbarActivity implements PaymentMet
                 swipeRefresh.setRefreshing(false);
                 if (responseCode == Utils.CODE_EMPTY_DATA) {
                     section2Start = 0 + 1;
-                    setAdapters(section2Start, CommerceManager.arrCCScreen);
+                    loadPaymentMethod();
                 }
             }
         });

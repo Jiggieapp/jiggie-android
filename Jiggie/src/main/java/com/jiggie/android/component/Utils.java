@@ -156,7 +156,10 @@ public class Utils {
     public final static String URL_SUPPORT = BASE_URL + "app/v3/product/support";
 
     public static void d(final String tag, final String value) {
-        Log.d(tag, value);
+        if(BuildConfig.DEBUG)
+        {
+            Log.d(tag, value);
+        }
     }
 
     public static final String DATE_TODAY = "today";

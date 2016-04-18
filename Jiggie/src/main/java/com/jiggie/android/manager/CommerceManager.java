@@ -237,7 +237,7 @@ public class CommerceManager {
 
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
+                    Utils.d("restoran", responses);
 
                     int responseCode = response.code();
                     if (responseCode == Utils.CODE_SUCCESS) {
