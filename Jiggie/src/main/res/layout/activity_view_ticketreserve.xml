@@ -125,7 +125,7 @@
                     android:layout_below="@id/txt_type_number_fill"
                     android:layout_marginLeft="@dimen/padding_standard"
                     android:layout_marginRight="@dimen/padding_standard"
-                    android:background="@android:color/darker_gray" />
+                    android:background="@color/divider_pantone" />
 
                 <LinearLayout
                     android:id="@+id/lin_order_number"
@@ -262,7 +262,7 @@
                     android:layout_below="@id/lin_order_number"
                     android:layout_margin="@dimen/padding_far"
                     android:layout_toRightOf="@id/txt_summary_title"
-                    android:background="@android:color/darker_gray" />
+                    android:background="@color/divider_pantone" />
 
                 <TextView
                     android:id="@+id/txt_summary_date"
@@ -368,7 +368,7 @@
                     android:layout_marginLeft="@dimen/padding_standard"
                     android:layout_marginRight="@dimen/padding_standard"
                     android:layout_toRightOf="@+id/txt_summary_title"
-                    android:background="@android:color/darker_gray" />
+                    android:background="@color/divider_pantone" />
 
                 <LinearLayout
                     android:id="@+id/lin_summary_footer"
@@ -464,7 +464,7 @@
                     android:layout_marginLeft="@dimen/padding_standard"
                     android:layout_marginRight="@dimen/padding_standard"
                     android:layout_toRightOf="@id/txt_summary_title"
-                    android:background="@android:color/darker_gray" />
+                    android:background="@color/divider_pantone" />
 
                 <TextView
                     android:id="@+id/txt_total"
@@ -515,7 +515,7 @@
                     android:layout_marginRight="@dimen/padding_standard"
                     android:layout_marginTop="@dimen/padding_far"
                     android:layout_toRightOf="@id/txt_instruc"
-                    android:background="@android:color/darker_gray" />
+                    android:background="@color/divider_pantone" />
 
                 <TextView
                     android:id="@+id/txt_instruc_fill"
@@ -533,7 +533,7 @@
                     android:layout_height="0.5dp"
                     android:layout_below="@id/txt_instruc_fill"
                     android:layout_marginTop="@dimen/padding_standard"
-                    android:background="@android:color/darker_gray" />
+                    android:background="@color/divider_pantone" />
 
                 <RelativeLayout
                     android:id="@+id/rel_event"
@@ -628,7 +628,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="0.5dp"
                     android:layout_below="@id/rel_venue"
-                    android:background="@android:color/darker_gray" />
+                    android:background="@color/divider_pantone" />
 
             </RelativeLayout>
         </ScrollView>

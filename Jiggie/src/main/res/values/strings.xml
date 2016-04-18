@@ -338,7 +338,7 @@
     <string name="pci_total">Total Price</string>
     <string name="pci_total_fill">Rp3.650K</string>
     <string name="pci_payment">CHOOSE PAYMENT METHOD</string>
-    <string name="pci_slide">SWIPE TO PAY >></string>
+    <string name="pci_slide">SWIPE TO PAY</string>
 
     <string name="unpaid">Unpaid</string>
     <string name="expired">Expired</string>
