@@ -9,7 +9,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -35,6 +37,7 @@ import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class ProductListActivity extends ToolbarActivity
         implements ViewTreeObserver.OnGlobalLayoutListener, SwipeRefreshLayout.OnRefreshListener, ProductListAdapter.ViewSelectedListener,
@@ -75,6 +78,9 @@ public class ProductListActivity extends ToolbarActivity
     @Bind(R.id.event_image)
     ImageView eventImage;
 
+    @Bind(R.id.back_button)
+    ImageButton backButton;
+
     private boolean isHideToolbarView = false;
 
     /*@Override
@@ -110,7 +116,7 @@ public class ProductListActivity extends ToolbarActivity
         }
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
 
         try {
@@ -241,5 +247,11 @@ public class ProductListActivity extends ToolbarActivity
             toolbarHeaderView.setVisibility(View.GONE);
             isHideToolbarView = !isHideToolbarView;
         }
+    }
+
+    @OnClick(R.id.back_button)
+    public void onBackButtonClick()
+    {
+        super.onBackPressed();
     }
 }

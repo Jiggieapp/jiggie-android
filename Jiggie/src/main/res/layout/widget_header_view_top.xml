@@ -47,12 +47,12 @@
         android:singleLine="true"
         android:textColor="@android:color/white" />-->
 
-    <ImageView
+    <!--<ImageView
         android:id="@+id/img_help"
         android:layout_width="44dp"
         android:layout_height="32dp"
         android:layout_gravity="right|center_vertical"
         android:layout_marginRight="@dimen/padding_standard"
         android:src="@drawable/ic_helps"
-        android:layout_weight="0"/>
+        android:layout_weight="0"/>-->
 </com.jiggie.android.view.HeaderView>

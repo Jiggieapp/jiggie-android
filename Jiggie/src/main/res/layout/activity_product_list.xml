@@ -31,7 +31,8 @@
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
                 app:contentScrim="?attr/colorPrimary"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed">
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                >
 
                 <ImageView
                     android:id="@+id/event_image"
@@ -47,7 +48,19 @@
                     android:layout_height="?attr/actionBarSize"
                     android:background="@android:color/transparent"
                     app:layout_collapseMode="pin"
-                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                    app:contentInsetLeft="0dp"
+                    app:contentInsetStart="0dp">
+
+                    <ImageButton
+                        android:id="@+id/back_button"
+                        android:layout_width="?attr/actionBarSize"
+                        android:layout_height="?attr/actionBarSize"
+                        android:src="@drawable/ic_back_button_shadow"
+                        android:layout_gravity="left|center_vertical"
+                        android:background="@android:color/transparent"
+                        android:scaleType="centerInside"
+                        />
 
                     <include
                         android:id="@+id/toolbar_header_view"
@@ -55,6 +68,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:visibility="gone" />
+
+                    <ImageView
+                        android:id="@+id/img_help"
+                        android:layout_width="44dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="right|center_vertical"
+                        android:layout_marginRight="@dimen/padding_standard"
+                        android:layout_weight="0"
+                        android:src="@drawable/ic_helps" />
                 </android.support.v7.widget.Toolbar>
 
             </android.support.design.widget.CollapsingToolbarLayout>
