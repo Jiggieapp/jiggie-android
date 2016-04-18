@@ -108,6 +108,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     RelativeLayout relDisable;
     @Bind(R.id.card_view)
     CardView cardView;
+    boolean isPaying = false;
 
 
     private SlideAdapter slideAdapter;
@@ -598,9 +599,11 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     }
 
     private void doPayment(PostPaymentModel postPaymentModel) {
+        isPaying = true;
         CommerceManager.loaderPayment(postPaymentModel, new CommerceManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
+                isPaying = false;
                 dismissLoadingDialog();
                 Intent i;
                 if (paymentType.equals(Utils.TYPE_CC)) {
@@ -619,6 +622,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
 
             @Override
             public void onFailure(int responseCode, final String message) {
+                isPaying = false;
                 dismissLoadingDialog();
 
                 pagerSlide.setCurrentItem(1);
@@ -666,6 +670,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(PurchaseInfoActivity.this);
             progressDialog.setMessage(getString(R.string.loading));
+            progressDialog.setCancelable(false);
         }
 
         progressDialog.show();
@@ -722,5 +727,13 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     @Override
     public String getTransactionType() {
         return Common.TYPE_PURCHASE;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (isPaying) {
+            //do nothing
+        }
     }
 }

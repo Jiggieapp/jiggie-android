@@ -131,6 +131,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     private SlideAdapter slideAdapter;
     int payDeposit = 0, maxDeposit = 0, latestDeposit = 0;
     private final int INCREMENT_VALUE = 500000;
+    boolean isPaying = false;
 
     public static String getPaymentApiUrl() {
         if (VTConfig.VT_IsProduction) {
@@ -686,9 +687,11 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     }
 
     private void doPayment(PostPaymentModel postPaymentModel) {
+        isPaying = true;
         CommerceManager.loaderPayment(postPaymentModel, new CommerceManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
+                isPaying = false;
                 dismissLoadingDialog();
                 Intent i;
                 if (paymentType.equals(Utils.TYPE_CC)) {
@@ -707,6 +710,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
 
             @Override
             public void onFailure(int responseCode, String message) {
+                isPaying = false;
                 dismissLoadingDialog();
 
                 pagerSlide.setCurrentItem(1);
@@ -747,6 +751,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(ReservationInfoActivity.this);
             progressDialog.setMessage(getString(R.string.loading));
+            progressDialog.setCancelable(false);
         }
 
         progressDialog.show();
@@ -803,5 +808,13 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     @Override
     public String getTransactionType() {
         return Common.TYPE_RESERVATION;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (isPaying) {
+            //do nothing
+        }
     }
 }
