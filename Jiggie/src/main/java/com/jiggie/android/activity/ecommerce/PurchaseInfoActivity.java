@@ -648,7 +648,32 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                                 }
                             }).create();
                     dialog.show();
-                } else {
+                } else if(message != null && (message.contains("Paid"))){
+                    final AlertDialog dialog = new AlertDialog.Builder(PurchaseInfoActivity.this)
+                            .setMessage(message)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+
+                                    Intent i;
+                                    if (CommerceManager.lastPaymentType.equals(Utils.TYPE_CC)) {
+                                        i = new Intent(PurchaseInfoActivity.this, CongratsActivity.class);
+                                    } else {
+                                        i = new Intent(PurchaseInfoActivity.this, HowToPayActivity.class);
+                                        i.putExtra(Common.FIELD_WALKTHROUGH_PAYMENT, false);
+                                        i.putExtra(productSummary.getClass().getName(), productSummary);
+                                        i.putExtra(eventDetail.getClass().getName(), eventDetail);
+                                    }
+                                    i.putExtra(Common.FIELD_ORDER_ID, order_id);
+                                    i.putExtra(Common.FIELD_PAYMENT_TYPE, paymentType);
+                                    i.putExtra(Common.FIELD_FROM_ORDER_LIST, false);
+                                    startActivity(i);
+
+                                }
+                            }).create();
+                    dialog.show();
+                }else {
                     /*if(responseCode==Utils.CODE_FAILED){
 
                     }else{

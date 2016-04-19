@@ -5,7 +5,7 @@ package com.jiggie.android.model;
  */
 public class PostPaymentModel {
 
-    String type;
+    String type = null;
     String is_new_card;
     long order_id;
     String token_id;
@@ -21,4 +21,7 @@ public class PostPaymentModel {
         this.pay_deposit = pay_deposit;
     }
 
+    public String getType() {
+        return type;
+    }
 }
