@@ -76,7 +76,7 @@
                         android:layout_gravity="right|center_vertical"
                         android:layout_marginRight="@dimen/padding_standard"
                         android:layout_weight="0"
-                        android:src="@drawable/ic_helps" />
+                        android:src="@drawable/ic_help_sh" />
                 </android.support.v7.widget.Toolbar>
 
             </android.support.design.widget.CollapsingToolbarLayout>
