@@ -34,5 +34,9 @@ public class Success2Model {
         this.msg = msg;
     }
 
+    String type = null;
 
+    public String getType() {
+        return type;
+    }
 }

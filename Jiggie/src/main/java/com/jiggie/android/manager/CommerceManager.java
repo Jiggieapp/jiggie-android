@@ -37,6 +37,7 @@ public class CommerceManager {
     public static ArrayList<CCScreenModel> arrCCScreen = new ArrayList<>();
     public static ArrayList<CCScreenModel> arrCCLocal = new ArrayList<>();
     public static SupportModel.Data.Support supportData = null;
+    public static String lastPaymentType = Utils.BLANK;
 
     public static void initCommerceService(){
         Retrofit retrofit = new Retrofit.Builder()
@@ -171,7 +172,7 @@ public class CommerceManager {
         }
     }
 
-    public static void loaderPayment(PostPaymentModel postPaymentModel, final OnResponseListener onResponseListener){
+    public static void loaderPayment(final PostPaymentModel postPaymentModel, final OnResponseListener onResponseListener){
         try {
             postPayment(postPaymentModel, new CustomCallback() {
                 @Override
@@ -185,8 +186,13 @@ public class CommerceManager {
                     if (responseCode == Utils.CODE_SUCCESS) {
                         Success2Model dataTemp = (Success2Model) response.body();
                         if (dataTemp.getResponse() == 1) {
+                            lastPaymentType = postPaymentModel.getType();
                             onResponseListener.onSuccess(dataTemp);
+
                         } else {
+                            /*if(dataTemp.getType() != null && dataTemp.getType().equals("paid")){
+                                onResponseListener.onFailure(dataTemp.getResponse(), dataTemp.getMsg());
+                            }*/
                             onResponseListener.onFailure(dataTemp.getResponse(), dataTemp.getMsg());
                         }
 
