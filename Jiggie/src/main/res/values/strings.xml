@@ -372,4 +372,5 @@
     <string name="purchase_info">Booking Info</string>
     <string name="reservation_info">Reservation Info</string>
     <string name="select_payment_short">Select Payment</string>
+    <string name="title_activity_country">Country Activity</string>
 </resources>

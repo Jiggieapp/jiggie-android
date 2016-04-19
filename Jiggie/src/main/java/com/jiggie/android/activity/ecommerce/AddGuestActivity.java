@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.setup.country.CountryActivity;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.model.CommEventMixpanelModel;
@@ -21,6 +22,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by LTE on 2/29/2016.
@@ -191,6 +193,9 @@ public class AddGuestActivity extends ToolbarActivity {
             edtPhone.setText(phoneN);
         }
 
+        edt62.setFocusable(false);
+        //edt62.setClickable(true);
+
         sendMixpanel(a, type_transaction, eventDetail);
         checkEnability();
     }
@@ -273,4 +278,23 @@ public class AddGuestActivity extends ToolbarActivity {
         }
     }
 
+    @OnClick(R.id.edt_62)
+    public void onEdt62Click()
+    {
+        Intent i = new Intent(this, CountryActivity.class);
+        startActivityForResult(i ,Utils.REQUEST_CODE_CHOOSE_COUNTRY);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == Utils.REQUEST_CODE_CHOOSE_COUNTRY)
+        {
+            if(resultCode == RESULT_OK)
+            {
+                edt62.setText(
+                        data.getStringExtra("dial_code").replace(" ", ""));
+
+            }
+        }
+    }
 }

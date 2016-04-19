@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="62dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@android:color/white"
@@ -34,9 +34,11 @@
             android:scrollHorizontally="true"
             android:singleLine="true"
             android:text="@string/msg_dummy_title_info"
+            android:layout_marginRight="64dp"
             android:textColor="@android:color/white"
             android:textSize="@dimen/header_view_end_text_size_smaller"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            />
 
     </LinearLayout>
 

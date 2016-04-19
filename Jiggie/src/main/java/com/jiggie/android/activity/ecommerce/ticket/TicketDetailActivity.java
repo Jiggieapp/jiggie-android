@@ -24,6 +24,7 @@ import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.AddGuestActivity;
 import com.jiggie.android.activity.ecommerce.ProductListActivity;
 import com.jiggie.android.activity.ecommerce.PurchaseInfoActivity;
+import com.jiggie.android.activity.setup.country.CountryActivity;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.manager.AccountManager;
@@ -40,6 +41,7 @@ import com.jiggie.android.view.InstructionItemView;
 import java.util.ArrayList;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 
 public class TicketDetailActivity extends AbstractTicketDetailActivity {
 

@@ -83,7 +83,6 @@
                 android:layout_marginTop="@dimen/padding_standard_half"
                 android:layout_weight="0.8"
                 android:inputType="number"
-                android:maxLength="3"
                 android:singleLine="true"/>
 
             <com.rengwuxian.materialedittext.MaterialEditText

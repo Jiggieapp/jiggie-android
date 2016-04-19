@@ -67,7 +67,8 @@
                         layout="@layout/widget_header_view_top"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:visibility="gone" />
+                        android:visibility="gone"
+                        android:layout_toLeftOf="@+id/img_help"/>
 
                     <ImageView
                         android:id="@+id/img_help"

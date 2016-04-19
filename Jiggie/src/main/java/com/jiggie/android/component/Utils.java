@@ -329,6 +329,7 @@ public class Utils {
             , SCHEME + SCHEME_HOST_EVENT_DETAIL };
 
     private static int screenWidth = 0;
+    public static final int REQUEST_CODE_CHOOSE_COUNTRY = 28;
 
 
     public static int getScreenWidth(Context c) {
