@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.AccessToken;
+import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.event.EventDetailActivity;
@@ -31,7 +34,9 @@ import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.model.Common;
+import com.jiggie.android.model.PostLocationModel;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -168,6 +173,25 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         {
 
         }
+
+        //PART of postLocation
+        PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), SocialManager.lat, SocialManager.lng);
+        //PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), "-6.2216706", "106.8401574");
+        String responses = new Gson().toJson(postLocationModel);
+        Utils.d("res", responses);
+
+        SocialManager.loaderLocation(postLocationModel, new SocialManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object) {
+                Log.d(getString(R.string.tag_location), "post success");
+            }
+
+            @Override
+            public void onFailure(int responseCode, String message) {
+
+            }
+        });
+        //end here
     }
 
     @Override

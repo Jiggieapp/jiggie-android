@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.StringUtility;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ProductListModel;
 
@@ -101,7 +102,12 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
                 }
 
                 //holder.txtTicketInfo.setText(itemPurchases.getSummary());
-                holder.txtPrice.setText(StringUtility.getRupiahFormat(itemPurchases.getPrice()));
+                if(itemPurchases.getPrice().equals(Utils.NOL_RUPIAH)){
+                    holder.txtPrice.setText(context.getString(R.string.free));
+                }else{
+                    holder.txtPrice.setText(StringUtility.getRupiahFormat(itemPurchases.getPrice()));
+                }
+
                 //holder.txtPriceInfo.setText(context.getString(R.string.pr_max_purchase) + " " + itemPurchases.getMax_purchase());
                 if (position == 0) {
                     holder.txtSectionTicket.setText(context.getString(R.string.section_ticket));
@@ -121,7 +127,12 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
                     holder.txtTicketName.setText(itemReservations.getName());
                 }
                 //holder.txtTicketInfo.setText(itemReservations.getSummary());
-                holder.txtPrice.setText(StringUtility.getRupiahFormat(itemReservations.getPrice()));
+                if(itemReservations.getPrice().equals(Utils.NOL_RUPIAH)){
+                    holder.txtPrice.setText(context.getString(R.string.free));
+                }else{
+                    holder.txtPrice.setText(StringUtility.getRupiahFormat(itemReservations.getPrice()));
+                }
+
                 //holder.txtPriceInfo.setText(context.getString(R.string.pr_max_guest) + " " + itemReservations.getMax_guests());
                 if ((position - section2Start) == 0) {
                     holder.txtSectionTicket.setText(context.getString(R.string.section_table));
@@ -139,7 +150,12 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
                 holder.txtTicketName.setText(itemPurchases.getName());
             }
             //holder.txtTicketInfo.setText(itemPurchases.getSummary());
-            holder.txtPrice.setText(StringUtility.getRupiahFormat(itemPurchases.getPrice()));
+            if(itemPurchases.getPrice().equals(Utils.NOL_RUPIAH)){
+                holder.txtPrice.setText(context.getString(R.string.free));
+            }else{
+                holder.txtPrice.setText(StringUtility.getRupiahFormat(itemPurchases.getPrice()));
+            }
+
             //holder.txtPriceInfo.setText(context.getString(R.string.pr_max_purchase) + " " + itemPurchases.getMax_purchase());
             if (position == 0) {
                 holder.txtSectionTicket.setText(context.getString(R.string.section_ticket));
