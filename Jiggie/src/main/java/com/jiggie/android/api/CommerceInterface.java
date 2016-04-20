@@ -6,6 +6,7 @@ import com.jiggie.android.model.GuestInfo;
 import com.jiggie.android.model.PaymentMethod;
 import com.jiggie.android.model.PostCCModel;
 import com.jiggie.android.model.PostDeleteCCModel;
+import com.jiggie.android.model.PostFreePaymentModel;
 import com.jiggie.android.model.PostPaymentModel;
 import com.jiggie.android.model.PostSummaryModel;
 import com.jiggie.android.model.ProductListModel;
@@ -63,5 +64,8 @@ public interface CommerceInterface {
 
     @GET(Utils.URL_SUPPORT)
     Call<SupportModel> getSupport();
+
+    @POST
+    Call<Success2Model> postFreePayment(@Url String url, @Body PostFreePaymentModel postFreePaymentModel);
 
 }

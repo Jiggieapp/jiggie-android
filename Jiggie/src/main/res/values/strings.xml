@@ -32,6 +32,9 @@
     <string name="error_no_connection">No connection</string>
     <string name="error_unknown">Unknown error</string>
     <string name="error_3dsecure">3D secure authentication failed, make sure your credit card is valid</string>
+    <string name="tag_location">TAG LOCATION</string>
+    <string name="error_loc_failed">Failed get location</string>
+    <string name="error_loc_suspended">Suspended get location</string>
 
     <string name="facebook_permission_required">To get the full benefits of Jiggie\n please accept the following Facebook permission(s): Birthday, Email, Photos, Location, About_me</string>
     <string name="welcome_description">Welcome to Jiggie, Jiggie shows you great\nevents near you - let\'s get going.</string>
@@ -164,6 +167,8 @@
 
     <string name="title_dialog_location">Allow share location?</string>
     <string name="msg_dialog_location">System will allow this app to get information about your phone location.</string>
+
+    <string name="msg_dialog_sett_location">Open Setting to activate GPS</string>
 
     <plurals name="guest_count">
         <item quantity="one">%1$d Guest</item>
@@ -352,6 +357,8 @@
     <string name="pci_f5b">Required Deposit</string>
     <string name="pci_f6b">Estimated balance (pay at venue)</string>
     <string name="pci_f7b">Pay Deposit</string>
+
+    <string name="free">FREE</string>
     <!--END HERE-->
 
     <string name="msg_carr_1">Discover upcoming food bazaars, music, art \u0026 culture and nightlife events</string>

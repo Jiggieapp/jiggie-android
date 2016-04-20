@@ -10,6 +10,7 @@ import com.jiggie.android.model.CCScreenModel;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.PostCCModel;
 import com.jiggie.android.model.PostDeleteCCModel;
+import com.jiggie.android.model.PostFreePaymentModel;
 import com.jiggie.android.model.PostPaymentModel;
 import com.jiggie.android.model.PostSummaryModel;
 import com.jiggie.android.model.ProductListModel;
@@ -102,6 +103,10 @@ public class CommerceManager {
 
     private static void getSupport(Callback callback) throws IOException {
         getInstance().getSupport().enqueue(callback);
+    }
+
+    private static void postFreePayment(PostFreePaymentModel postFreePaymentModel, Callback callback) throws IOException {
+        getInstance().postFreePayment(Utils.URL_FREE_PAYMENT, postFreePaymentModel).enqueue(callback);
     }
 
     public static void loaderProductList(String event_id, final OnResponseListener onResponseListener){
@@ -461,6 +466,47 @@ public class CommerceManager {
             });
         }catch (IOException e){
             //Log.d("Exception", e.toString());
+            onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
+        }
+    }
+
+    public static void loaderFreePayment(final PostFreePaymentModel postFreePaymentModel, final OnResponseListener onResponseListener){
+        try {
+            postFreePayment(postFreePaymentModel, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+
+                    //String header = String.valueOf(response.code());
+                    String responses = new Gson().toJson(response.body());
+                    Log.d("res", response.toString());
+
+                    int responseCode = response.code();
+                    if (responseCode == Utils.CODE_SUCCESS) {
+                        Success2Model dataTemp = (Success2Model) response.body();
+                        if (dataTemp.getResponse() == 1) {
+                            onResponseListener.onSuccess(dataTemp);
+
+                        } else {
+                            /*if(dataTemp.getType() != null && dataTemp.getType().equals("paid")){
+                                onResponseListener.onFailure(dataTemp.getResponse(), dataTemp.getMsg());
+                            }*/
+                            onResponseListener.onFailure(dataTemp.getResponse(), dataTemp.getMsg());
+                        }
+
+                    } else {
+                        onResponseListener.onFailure(responseCode, Utils.RESPONSE_FAILED);
+                    }
+
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    Utils.d("Failure", t.toString());
+                    onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+                }
+            });
+        }catch (IOException e){
+            Log.d("Exception", e.toString());
             onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
         }
     }

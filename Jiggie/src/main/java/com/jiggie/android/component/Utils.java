@@ -1,10 +1,16 @@
 package com.jiggie.android.component;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.graphics.Point;
+import android.location.LocationManager;
+import android.os.Build;
+import android.provider.Settings;
+import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
@@ -158,6 +164,8 @@ public class Utils {
     public static final String URL_PAYMENT_METHOD = BASE_URL + "app/v3/product/payment_method";
     public static final String URL_SUPPORT = BASE_URL + "app/v3/product/support";
     public static final String URL_GUEST_INFO = BASE_URL + "app/v3/product/guest_info/{fb_id}";
+    public final static String URL_POST_LOCATION = BASE_URL + "app/v3/save_longlat";
+    public final static String URL_FREE_PAYMENT = BASE_URL + "app/v3/product/free_payment";
 
     public static void d(final String tag, final String value) {
         if(BuildConfig.DEBUG)
@@ -195,7 +203,9 @@ public class Utils {
     public static final String AF_ORGANIC = "Organic";
     //------------------------
 
-    public static final String calculateTime(String date) {
+    public final static String NOL_RUPIAH = "0";
+
+    public static String calculateTime(String date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         format.setTimeZone(TimeZone.getTimeZone("UTC"));
         //SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
@@ -346,5 +356,37 @@ public class Utils {
         }
 
         return screenWidth;
+    }
+
+    public static boolean isLocationServicesAvailable(Context context) {
+        int locationMode = 0;
+        String locationProviders;
+        boolean isAvailable = false;
+
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            try {
+                locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+            } catch (Settings.SettingNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            isAvailable = (locationMode != Settings.Secure.LOCATION_MODE_OFF);
+        } else {
+            locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+            isAvailable = !TextUtils.isEmpty(locationProviders);
+        }*/
+
+        final LocationManager manager = (LocationManager) context.getSystemService( Context.LOCATION_SERVICE );
+
+        if ( manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+            isAvailable = true;
+        }else{
+            isAvailable = false;
+        }
+
+        boolean coarsePermissionCheck = (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED);
+        boolean finePermissionCheck = (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED);
+
+        return isAvailable && (coarsePermissionCheck || finePermissionCheck);
     }
 }

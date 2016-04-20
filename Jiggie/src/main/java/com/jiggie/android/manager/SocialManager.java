@@ -7,6 +7,7 @@ import com.jiggie.android.api.SocialInterface;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.callback.CustomCallback;
 import com.jiggie.android.model.ExceptionModel;
+import com.jiggie.android.model.PostLocationModel;
 import com.jiggie.android.model.SocialModel;
 import com.jiggie.android.model.Success2Model;
 
@@ -25,6 +26,8 @@ public class SocialManager {
 
     private static SocialInterface socialInterface;
     public static final String TAG = SocialManager.class.getSimpleName() ;
+    public static String lat = Utils.BLANK;
+    public static  String lng = Utils.BLANK;
 
     public static void iniSocialService(){
         Retrofit retrofit = new Retrofit.Builder()
@@ -48,6 +51,10 @@ public class SocialManager {
 
     private static void getSocialMatch(String fb_id, String from_id, String type, Callback callback) throws IOException {
         getInstance().getSocialMatch(fb_id, from_id, type).enqueue(callback);
+    }
+
+    private static void postLocation(PostLocationModel postLocationModel, Callback callback) throws IOException {
+        getInstance().postLocation(Utils.URL_POST_LOCATION, postLocationModel).enqueue(callback);
     }
 
     public static void loaderSocialFeed(String fb_id, String gender_interest){
@@ -115,11 +122,11 @@ public class SocialManager {
                     String responses = new Gson().toJson(response.body());
                     Log.d("res", responses);
 
-                    if(response.code()==Utils.CODE_SUCCESS){
+                    if (response.code() == Utils.CODE_SUCCESS) {
                         Success2Model dataTemp = (Success2Model) response.body();
                         dataTemp.setFrom(TAG);
                         EventBus.getDefault().post(dataTemp);
-                    }else{
+                    } else {
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_MATCH, Utils.RESPONSE_FAILED));
                     }
 
@@ -137,6 +144,44 @@ public class SocialManager {
         }
     }
 
+    public static void loaderLocation(final PostLocationModel postLocationModel, final OnResponseListener onResponseListener){
+        try {
+            postLocation(postLocationModel, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+
+                    //String header = String.valueOf(response.code());
+                    String responses = new Gson().toJson(response.body());
+                    Log.d("res", response.toString());
+
+                    int responseCode = response.code();
+                    if (responseCode == Utils.CODE_SUCCESS) {
+                        Success2Model dataTemp = (Success2Model) response.body();
+                        if (dataTemp.getResponse() == 1) {
+                            onResponseListener.onSuccess(dataTemp);
+
+                        } else {
+                            onResponseListener.onFailure(dataTemp.getResponse(), dataTemp.getMsg());
+                        }
+
+                    } else {
+                        onResponseListener.onFailure(responseCode, Utils.RESPONSE_FAILED);
+                    }
+
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    Utils.d("Failure", t.toString());
+                    onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+                }
+            });
+        }catch (IOException e){
+            Log.d("Exception", e.toString());
+            onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
+        }
+    }
+
     public static class Type {
         public static final String APPROVED = "approved";
         public static final String VIEWED = "viewed";
@@ -148,6 +193,11 @@ public class SocialManager {
                 return APPROVED.equalsIgnoreCase(value.getType());
             else return false;
         }
+    }
+
+    public interface OnResponseListener {
+        public void onSuccess(Object object);
+        public void onFailure(int responseCode, String message);
     }
 
 }

@@ -3,14 +3,19 @@ package com.jiggie.android.activity;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.LayerDrawable;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -24,6 +29,8 @@ import android.widget.Toast;
 import com.appsflyer.AppsFlyerConversionListener;
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.jiggie.android.App;
 import com.jiggie.android.BuildConfig;
 import com.jiggie.android.R;
@@ -43,6 +50,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.manager.ShareManager;
+import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.GuestInfo;
 import com.jiggie.android.model.ShareLinkModel;
@@ -55,12 +63,13 @@ import de.greenrobot.event.EventBus;
 /**
  * Created by rangg on 21/10/2015.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
     public static final int REQUEST_GOOGLE_PLAY_SERVICES = 1972;
     private boolean active;
     public static final String TAG = MainActivity.class.getSimpleName();
 
     String appsfl = "";
+    GoogleApiClient mGoogleApiClient = null;
 
     private boolean isFirstRun()
     {
@@ -122,6 +131,63 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        if(mGoogleApiClient!=null)
+            mGoogleApiClient.connect();
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        if(mGoogleApiClient!=null)
+            mGoogleApiClient.disconnect();
+        super.onStop();
+    }
+
+    private void checkLocation(){
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Location mLastLocation = null;
+        try {
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                    mGoogleApiClient);
+        }catch (SecurityException e){
+            Log.d(getString(R.string.tag_location),e.toString());
+        }
+
+        if (mLastLocation != null) {
+            SocialManager.lat = String.valueOf(mLastLocation.getLatitude());
+            SocialManager.lng = String.valueOf(mLastLocation.getLongitude());
+            Log.d(getString(R.string.tag_location),"lat: "+String.valueOf(mLastLocation.getLatitude())+" lon: "+String.valueOf(mLastLocation.getLongitude()));
+        }else{
+            Log.d(getString(R.string.tag_location),getString(R.string.error_loc_failed));
+        }
+
+        actionResults();
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Log.d(getString(R.string.tag_location),getString(R.string.error_loc_failed));
+        actionResults();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Log.d(getString(R.string.tag_location), getString(R.string.error_loc_suspended));
+        actionResults();
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case Utils.PERMISSION_REQUEST:
@@ -172,6 +238,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        if(Utils.isLocationServicesAvailable(this)){
+            checkLocation();
+        }else{
+            final AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                    .setMessage(getString(R.string.msg_dialog_sett_location))
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            final Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                            startActivity(intent);
+                        }
+                    })
+                    /*.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })*/.create();
+            dialog.setCancelable(false);
+            dialog.show();
+
+        }
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if ((requestCode == REQUEST_GOOGLE_PLAY_SERVICES) && (resultCode == Activity.RESULT_OK)) {
@@ -181,7 +275,36 @@ public class MainActivity extends AppCompatActivity {
             registerAppsFlyerConversion();
             //Toast.makeText(MainActivity.this, appsfl, Toast.LENGTH_LONG).show();
 
-            if (!App.getInstance().isUserLoggedIn()) {
+            //checkLocation and post it
+            //checkLocation();
+
+            //Check availability GPS Location
+            if(Utils.isLocationServicesAvailable(this)){
+                checkLocation();
+            }else{
+                final AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                        .setMessage(getString(R.string.msg_dialog_sett_location))
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                final Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivity(intent);
+                            }
+                        })
+                        /*.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })*/.create();
+                dialog.setCancelable(false);
+                dialog.show();
+
+            }
+            //End here
+
+            /*if (!App.getInstance().isUserLoggedIn()) {
                 final SignInFragment fragment = new SignInFragment();
                 super.getSupportFragmentManager().beginTransaction().add(R.id.container, fragment).commit();
             } else {
@@ -223,9 +346,30 @@ public class MainActivity extends AppCompatActivity {
                         showRateDialog();
                     }
                 }
-            }
+            }*/
         } else if (requestCode == REQUEST_GOOGLE_PLAY_SERVICES)
             super.onBackPressed();
+    }
+
+    private void actionResults(){
+        if (!App.getInstance().isUserLoggedIn()) {
+            final SignInFragment fragment = new SignInFragment();
+            super.getSupportFragmentManager().beginTransaction().add(R.id.container, fragment).commit();
+        } else {
+            super.startService(new Intent(this, FacebookImageSyncService.class));
+            if (!App.getSharedPreferences().getBoolean(GCMRegistrationService.TAG_UPDATED, false))
+                super.startService(new Intent(this, GCMRegistrationService.class));
+
+            if (!App.getSharedPreferences().getBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, false)) {
+                //super.startActivity(new Intent(this, SetupTagsActivity.class));
+                final SignInFragment fragment = new SignInFragment();
+                super.getSupportFragmentManager().beginTransaction().add(R.id.container, fragment).commit();
+                //super.finish();
+            } else {
+                this.navigateToHome();
+                showRateDialog();
+            }
+        }
     }
 
     private void registerAppsFlyerConversion(){
