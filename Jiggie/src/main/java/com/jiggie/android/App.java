@@ -138,7 +138,9 @@ public class App extends Application {
         return dialog;
     }
 
-    public static SharedPreferences getSharedPreferences() { return PreferenceManager.getDefaultSharedPreferences(instance); }
+    public static SharedPreferences getSharedPreferences() {
+        return PreferenceManager.getDefaultSharedPreferences(instance);
+    }
 
     public static void safeClose(Closeable closeable) {
         try {
@@ -747,7 +749,6 @@ public class App extends Application {
         } catch (Exception e) {
             // e.printStackTrace();
         }
-
         return pi.versionName;
     }
 
@@ -871,6 +872,7 @@ public class App extends Application {
     }
 
     public void setUserLoggedIn() { getSharedPreferences().edit().putBoolean("loggedIn", true).apply(); }
+
 
     public static void savePreference(final String key, final Object object)
     {

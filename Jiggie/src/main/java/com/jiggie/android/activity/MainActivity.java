@@ -25,6 +25,7 @@ import com.appsflyer.AppsFlyerConversionListener;
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
 import com.jiggie.android.App;
+import com.jiggie.android.BuildConfig;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.ProductListActivity;
 import com.jiggie.android.activity.ecommerce.PurchaseHistoryActivity;
@@ -43,7 +44,9 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.manager.ShareManager;
 import com.jiggie.android.model.ExceptionModel;
+import com.jiggie.android.model.GuestInfo;
 import com.jiggie.android.model.ShareLinkModel;
+import com.jiggie.android.presenter.GuestPresenter;
 
 import java.util.Map;
 
@@ -192,8 +195,33 @@ public class MainActivity extends AppCompatActivity {
                     super.getSupportFragmentManager().beginTransaction().add(R.id.container, fragment).commit();
                     //super.finish();
                 } else {
-                    this.navigateToHome();
-                    showRateDialog();
+                    //wandy 20-04-2016
+                    //sblm navigate to home, pastikan sudah ambil guest info sekali aja
+                    final int versionCode = BuildConfig.VERSION_CODE;
+                    if(!App.getInstance().getSharedPreferences().getBoolean(Utils.HAS_LOAD_GROUP_INFO, false))
+                    {
+                        App.getSharedPreferences().edit().putBoolean
+                                (Utils.HAS_LOAD_GROUP_INFO, true).apply();
+                        final GuestPresenter guestPresenter = new GuestPresenter();
+                        guestPresenter.loadGuestInfo(new GuestPresenter.OnFinishGetGuestInfo() {
+                            @Override
+                            public void onFinish(GuestInfo guestInfo) {
+                                Utils.d(TAG, "on finish " + guestInfo.data.guest_detail.name);
+                                guestPresenter.saveGuest(guestInfo);
+                                navigateToHome();
+                            }
+
+                            @Override
+                            public void onFailed() {
+                                navigateToHome();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        this.navigateToHome();
+                        showRateDialog();
+                    }
                 }
             }
         } else if (requestCode == REQUEST_GOOGLE_PLAY_SERVICES)
@@ -348,7 +376,9 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 App.getSharedPreferences().edit().clear().putBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, true).apply();
+                                App.getSharedPreferences().edit().clear().apply();
                                 LoginManager.getInstance().logOut();
+
                                 //getActivity().finish();
 
                                 //added by Aga 22-1-2016

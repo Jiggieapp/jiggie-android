@@ -75,6 +75,11 @@ public class CommerceManager {
         getInstance().getPaymentMethod().enqueue(callback);
     }
 
+    private static void getGuest(Callback callback)
+    {
+        getInstance().getGuest(AccountManager.loadLogin().getFb_id()).enqueue(callback);
+    }
+
     private static void postCC(PostCCModel postCCModel, Callback callback) throws IOException {
         getInstance().postCC(Utils.URL_POST_CC, postCCModel).enqueue(callback);
     }
@@ -230,6 +235,21 @@ public class CommerceManager {
             @Override
             public void onCustomCallbackFailure(String t) {
                 onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+            }
+        });
+    }
+
+    public static void loaderGuest(final OnResponseListener onResponseListener)
+    {
+        getGuest(new CustomCallback() {
+            @Override
+            public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                onResponseListener.onSuccess(response.body());
+            }
+
+            @Override
+            public void onCustomCallbackFailure(String t) {
+                onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION);
             }
         });
     }

@@ -2,6 +2,7 @@ package com.jiggie.android.api;
 
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.CCModel;
+import com.jiggie.android.model.GuestInfo;
 import com.jiggie.android.model.PaymentMethod;
 import com.jiggie.android.model.PostCCModel;
 import com.jiggie.android.model.PostDeleteCCModel;
@@ -41,6 +42,9 @@ public interface CommerceInterface {
 
     @GET(Utils.URL_PAYMENT_METHOD)
     Call<PaymentMethod> getPaymentMethod();
+
+    @GET(Utils.URL_GUEST_INFO)
+    Call<GuestInfo> getGuest(@Path("fb_id") String fb_id);
 
     @POST
     Call<Success2Model> postCC(@Url String url, @Body PostCCModel postPaymentModel);

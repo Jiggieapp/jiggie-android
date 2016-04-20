@@ -36,6 +36,7 @@ import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.PostSummaryModel;
 import com.jiggie.android.model.ProductListModel;
 import com.jiggie.android.model.SummaryModel;
+import com.jiggie.android.presenter.GuestPresenter;
 import com.jiggie.android.view.InstructionItemView;
 
 import java.util.ArrayList;
@@ -83,8 +84,13 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
     @Bind(R.id.lblTicketCaption)
     TextView lblTicketCaption;
 
+    @Bind(R.id.lblFillYourContactInfo)
+    TextView lblFillYourContactInfo;
+    @Bind(R.id.rel_guest_detail)
+    RelativeLayout relGuestDetail;
 
-    String eventId, eventName, venueName, startTime, guestName, guestEmail, guestPhone, ticketId;
+
+    String eventId, eventName, venueName, startTime, guestName, guestEmail, dialCode, guestPhone, ticketId;
     int max = 0;
     int price;
     EventDetailModel.Data.EventDetail eventDetail;
@@ -101,12 +107,15 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
     CardView cardViewGuest;
 
     private Dialog dialogTerms;
+    GuestPresenter guestPresenter;
 
     @Override
     protected void onCreate() {
         super.setContentView(R.layout.activity_ticket_detail);
         super.bindView();
         super.setToolbarTitle(getResources().getString(R.string.ticket_detail), true);
+
+        guestPresenter = new GuestPresenter();
         preDefined();
 
         btnDone.setOnClickListener(new View.OnClickListener() {
@@ -117,7 +126,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                 PostSummaryModel.Product_list product_list = new PostSummaryModel.Product_list(ticketId, quantity);
                 ArrayList<PostSummaryModel.Product_list> arrProductList = new ArrayList<PostSummaryModel.Product_list>();
                 arrProductList.add(product_list);
-                PostSummaryModel.Guest_detail guest_detail = new PostSummaryModel.Guest_detail(guestName, guestEmail, guestPhone);
+                PostSummaryModel.Guest_detail guest_detail = new PostSummaryModel.Guest_detail(guestName, guestEmail, guestPhone, dialCode);
                 PostSummaryModel postSummaryModel = new PostSummaryModel(AccountManager.loadLogin().getFb_id(), eventId, arrProductList, guest_detail);
 
                 String sd = String.valueOf(new Gson().toJson(postSummaryModel));
@@ -191,7 +200,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                 } else {
                     i.putExtra(Common.FIELD_GUEST_PHONE, guestPhone);
                 }
-
+                i.putExtra("dial_code", dialCode);
                 i.putExtra(Common.FIELD_TRANS_TYPE, Common.TYPE_PURCHASE);
                 i.putExtra(detailPurchase.getClass().getName(), detailPurchase);
                 i.putExtra(eventDetail.getClass().getName(), eventDetail);
@@ -267,11 +276,29 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
 
         txtTicketDesc.setText(detailPurchase.getDescription());
 
+        //wandy 20-04-2016
+        /*
         LoginModel loginModel = AccountManager.loadLogin();
-
         guestName = loginModel.getUser_first_name() + " " + loginModel.getUser_last_name();
         guestEmail = loginModel.getEmail();
-        guestPhone = AccountManager.loadSetting().getData().getPhone();
+        guestPhone = AccountManager.loadSetting().getData().getPhone();*/
+        PostSummaryModel.Guest_detail guestDetail = guestPresenter.loadGuest();
+        if (guestDetail != null) {
+            lblFillYourContactInfo.setVisibility(View.GONE);
+            relGuestDetail.setVisibility(View.VISIBLE);
+            guestName = guestDetail.name;
+            guestEmail = guestDetail.email;
+            guestPhone = guestDetail.phone;
+            dialCode = guestDetail.dial_code;
+        } else {
+            lblFillYourContactInfo.setVisibility(View.VISIBLE);
+            relGuestDetail.setVisibility(View.GONE);
+            guestName = "";
+            guestEmail = "";
+            guestPhone = Utils.BLANK;
+            dialCode = "";
+        }
+
         if (guestPhone.equals(Utils.BLANK)) {
             guestPhone = getString(R.string.phone_number);
             txtGuestPhone.setTextColor(getResources().getColor(android.R.color.holo_red_light));
@@ -283,8 +310,12 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
         if (guestPhone.equals(getString(R.string.phone_number))) {
             txtGuestPhone.setText(guestPhone);
         } else {
-            txtGuestPhone.setText("+" + guestPhone);
+            txtGuestPhone.setText("+" + dialCode + guestPhone);
         }
+
+
+        //end of wandy 20-04-2016
+
 
         checkEnability(guestName, guestEmail, guestPhone);
     }
@@ -323,16 +354,19 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
             guestName = data.getStringExtra(Common.FIELD_GUEST_NAME);
             guestEmail = data.getStringExtra(Common.FIELD_GUEST_EMAIL);
             guestPhone = data.getStringExtra(Common.FIELD_GUEST_PHONE);
+            dialCode = data.getStringExtra("dial_code");
             txtGuestName.setText(data.getStringExtra(Common.FIELD_GUEST_NAME));
             txtGuestEmail.setText(guestEmail + " | ");
             if (guestPhone.equals(getString(R.string.phone_number))) {
                 txtGuestPhone.setText(guestPhone);
             } else {
-                txtGuestPhone.setText("+" + guestPhone);
+                txtGuestPhone.setText("+" + dialCode + guestPhone);
             }
             txtGuestPhone.setTextColor(getResources().getColor(R.color.textDarkGray));
             relGuest.setSelected(false);
 
+            relGuestDetail.setVisibility(View.VISIBLE);
+            lblFillYourContactInfo.setVisibility(View.GONE);
             checkEnability(guestName, guestEmail, guestPhone);
         }
     }

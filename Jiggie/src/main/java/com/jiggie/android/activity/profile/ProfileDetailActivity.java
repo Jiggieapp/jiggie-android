@@ -88,11 +88,12 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
     @Override
     public void onGlobalLayout() {
         this.refreshLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-
         fb_id = super.getIntent().getStringExtra(Common.FIELD_FACEBOOK_ID);
-        //fb_id = "10204456507851351";
+
         if (fb_id == null) {
             fb_id = AccessToken.getCurrentAccessToken().getUserId();
+            //fb_id = "10204456507851351"; //richard
+            //fb_id = "10153418311072858"; //wandy
             isMe = true;
         }
 

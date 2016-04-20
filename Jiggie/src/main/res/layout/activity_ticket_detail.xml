@@ -44,8 +44,8 @@
             android:layout_above="@+id/card_view_guest"
             android:layout_below="@+id/appBar"
             android:background="@color/grayLight"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:paddingBottom="@dimen/padding_standard_half">
+            android:paddingBottom="@dimen/padding_standard_half"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -200,15 +200,16 @@
             android:id="@+id/card_view_guest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/rel_purchase"
             android:layout_gravity="center"
-            android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
-            card_view:cardCornerRadius="4dp"
             android:layout_marginBottom="@dimen/padding_standard_half"
             android:layout_marginLeft="@dimen/padding_standard_half"
             android:layout_marginRight="@dimen/padding_standard_half"
             android:layout_marginTop="@dimen/padding_standard_half"
-            android:layout_above="@+id/rel_purchase">
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            card_view:cardCornerRadius="4dp">
+
 
             <RelativeLayout
                 android:id="@+id/rel_guest"
@@ -219,35 +220,49 @@
                 android:padding="@dimen/padding_standard">
 
                 <TextView
-                    android:id="@+id/txt_guest_name"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/lblFillYourContactInfo"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginBottom="@dimen/padding_standard_half"
-                    android:text="Han Kao"
-                    android:textColor="@color/textDarkGray"
-                    android:textSize="@dimen/font_body_size"
-                    android:textStyle="bold" />
+                    android:layout_centerInParent="true"
+                    android:text="LOREM IPSUM" />
 
-                <TextView
-                    android:id="@+id/txt_guest_email"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_below="@id/txt_guest_name"
-                    android:text="Han-kao@gmail.com  |  "
-                    android:textColor="@color/textDarkGray"
-                    android:textSize="@dimen/font_caption_size" />
+                <RelativeLayout
+                    android:id="@+id/rel_guest_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/txt_guest_phone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/txt_guest_name"
-                    android:layout_toRightOf="@id/txt_guest_email"
-                    android:text="Phone Number"
-                    android:textColor="@color/textDarkGray"
-                    android:textSize="@dimen/font_caption_size" />
+                    <TextView
+                        android:id="@+id/txt_guest_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginBottom="@dimen/padding_standard_half"
+                        android:text="Han Kao"
+                        android:textColor="@color/textDarkGray"
+                        android:textSize="@dimen/font_body_size"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txt_guest_email"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_below="@id/txt_guest_name"
+                        android:text="Han-kao@gmail.com  |  "
+                        android:textColor="@color/textDarkGray"
+                        android:textSize="@dimen/font_caption_size" />
+
+                    <TextView
+                        android:id="@+id/txt_guest_phone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/txt_guest_name"
+                        android:layout_toRightOf="@id/txt_guest_email"
+                        android:text="Phone Number"
+                        android:textColor="@color/textDarkGray"
+                        android:textSize="@dimen/font_caption_size" />
+
+                </RelativeLayout>
 
                 <ImageView
                     android:layout_width="wrap_content"

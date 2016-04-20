@@ -118,7 +118,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
                 PostSummaryModel.Product_list product_list = new PostSummaryModel.Product_list(ticketId, num_guest);
                 ArrayList<PostSummaryModel.Product_list> arrProductList = new ArrayList<PostSummaryModel.Product_list>();
                 arrProductList.add(product_list);
-                PostSummaryModel.Guest_detail guest_detail = new PostSummaryModel.Guest_detail(guestName, guestEmail, guestPhone);
+                PostSummaryModel.Guest_detail guest_detail = new PostSummaryModel.Guest_detail(guestName, guestEmail, guestPhone, "");
                 PostSummaryModel postSummaryModel = new PostSummaryModel(AccountManager.loadLogin().getFb_id(), eventId, arrProductList, guest_detail);
 
                 String sd = String.valueOf(new Gson().toJson(postSummaryModel));

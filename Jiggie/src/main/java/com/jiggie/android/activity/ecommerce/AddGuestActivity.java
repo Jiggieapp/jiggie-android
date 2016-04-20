@@ -17,7 +17,9 @@ import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.model.CommEventMixpanelModel;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventDetailModel;
+import com.jiggie.android.model.PostSummaryModel;
 import com.jiggie.android.model.ProductListModel;
+import com.jiggie.android.presenter.GuestPresenter;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import butterknife.Bind;
@@ -47,15 +49,18 @@ public class AddGuestActivity extends ToolbarActivity {
     @Bind(R.id.rel_save)
     RelativeLayout relSave;
 
+    GuestPresenter guestPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_guest);
         ButterKnife.bind(this);
         super.bindView();
+
         initView();
         preDefined();
-
+        guestPresenter = new GuestPresenter();
     }
 
     private void initView() {
@@ -77,11 +82,19 @@ public class AddGuestActivity extends ToolbarActivity {
                     guest62 = guest62.substring(1, guest62.length());
                 }
                 String guestPhoneN = edtPhone.getText().toString();
-                String guestPhone = guest62 + guestPhoneN;
+                String guestPhone = /*guest62 +*/ guestPhoneN;
 
                 if (!isFieldError(guestName, guestEmail, guest62, guestPhoneN)) {
                     if (!guestName.isEmpty() && !guestEmail.isEmpty() && !guest62.isEmpty() && !guestPhoneN.isEmpty()) {
-                        setResult(RESULT_OK, new Intent().putExtra(Common.FIELD_GUEST_NAME, guestName).putExtra(Common.FIELD_GUEST_EMAIL, guestEmail).putExtra(Common.FIELD_GUEST_PHONE, guestPhone));
+                        Intent result = new Intent();
+                        result.putExtra(Common.FIELD_GUEST_NAME, guestName);
+                        result.putExtra(Common.FIELD_GUEST_EMAIL, guestEmail);
+                        result.putExtra(Common.FIELD_GUEST_PHONE, guestPhone);
+                        result.putExtra("dial_code", guest62);
+                        PostSummaryModel.Guest_detail gDetail = new PostSummaryModel.Guest_detail
+                                (guestName, guestEmail, guestPhone, guest62);
+                        guestPresenter.saveGuest(gDetail);
+                        setResult(RESULT_OK, result);
                         finish();
                     } else {
                         //error handling
@@ -184,13 +197,13 @@ public class AddGuestActivity extends ToolbarActivity {
         EventDetailModel.Data.EventDetail eventDetail = a.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
         edtName.setText(a.getStringExtra(Common.FIELD_GUEST_NAME));
         edtEmail.setText(a.getStringExtra(Common.FIELD_GUEST_EMAIL));
-
         String phone = a.getStringExtra(Common.FIELD_GUEST_PHONE);
         if (!phone.equals(Utils.BLANK)) {
-            String s62 = phone.substring(0, 2);
-            String phoneN = phone.substring(2, (phone.length()));
+            //String s62 = phone.substring(0, 2);
+            //String phoneN = phone.substring(2, (phone.length()));
+            String s62 = a.getStringExtra("dial_code");
             edt62.setText("+" + s62);
-            edtPhone.setText(phoneN);
+            edtPhone.setText(phone);
         }
 
         edt62.setFocusable(false);
@@ -293,7 +306,6 @@ public class AddGuestActivity extends ToolbarActivity {
             {
                 edt62.setText(
                         data.getStringExtra("dial_code").replace(" ", ""));
-
             }
         }
     }
