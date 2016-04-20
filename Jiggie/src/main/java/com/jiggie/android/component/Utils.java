@@ -161,6 +161,7 @@ public class Utils {
     public final static String URL_PAYMENT_METHOD = BASE_URL + "app/v3/product/payment_method";
     public final static String URL_SUPPORT = BASE_URL + "app/v3/product/support";
     public final static String URL_POST_LOCATION = BASE_URL + "app/v3/save_longlat";
+    public final static String URL_FREE_PAYMENT = BASE_URL + "app/v3/product/free_payment";
 
     public static void d(final String tag, final String value) {
         if(BuildConfig.DEBUG)
