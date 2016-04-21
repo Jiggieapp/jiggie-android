@@ -18,6 +18,7 @@ public class Conversation {
     public static final String FIELD_LAST_UPDATED = "last_updated";
     public static final String FIELD_UNREAD = "unread";
     public static final String FIELD_REPLIED = "hasreplied";
+    public static final String FIELD_EVENT_NAME = "field_event_name";
     public static final String FIELD_FACEBOOK_ID = Common.FIELD_FACEBOOK_ID;
 
     private String fromId;

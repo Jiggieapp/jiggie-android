@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                     mGoogleApiClient);
         }catch (SecurityException e){
-            Log.d(getString(R.string.tag_location),e.toString());
+            Utils.d(getString(R.string.tag_location),e.toString());
         }
 
         if (mLastLocation != null) {
@@ -169,22 +169,22 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             SocialManager.lng = String.valueOf(mLastLocation.getLongitude());
             Log.d(getString(R.string.tag_location),"lat: "+String.valueOf(mLastLocation.getLatitude())+" lon: "+String.valueOf(mLastLocation.getLongitude()));
         }else{
-            Log.d(getString(R.string.tag_location),getString(R.string.error_loc_failed));
+            Utils.d(getString(R.string.tag_location),getString(R.string.error_loc_failed));
         }
 
-        actionResults();
+        //actionResults();
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.d(getString(R.string.tag_location),getString(R.string.error_loc_failed));
-        actionResults();
+        Utils.d(getString(R.string.tag_location),getString(R.string.error_loc_failed));
+        //actionResults();
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-        Log.d(getString(R.string.tag_location), getString(R.string.error_loc_suspended));
-        actionResults();
+        Utils.d(getString(R.string.tag_location), getString(R.string.error_loc_suspended));
+        //actionResults();
     }
 
     @Override
@@ -261,7 +261,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     })*/.create();
             dialog.setCancelable(false);
             dialog.show();
-
         }
     }
 
@@ -279,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             //checkLocation();
 
             //Check availability GPS Location
-            if(Utils.isLocationServicesAvailable(this)){
+            /*if(Utils.isLocationServicesAvailable(this)){
                 checkLocation();
             }else{
                 final AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
@@ -292,19 +291,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                                 startActivity(intent);
                             }
                         })
-                        /*.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        *//*.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
                             }
-                        })*/.create();
+                        })*//*.create();
                 dialog.setCancelable(false);
                 dialog.show();
 
-            }
+            }*/
             //End here
 
-            /*if (!App.getInstance().isUserLoggedIn()) {
+            if (!App.getInstance().isUserLoggedIn()) {
                 final SignInFragment fragment = new SignInFragment();
                 super.getSupportFragmentManager().beginTransaction().add(R.id.container, fragment).commit();
             } else {
@@ -346,7 +345,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         showRateDialog();
                     }
                 }
-            }*/
+            }
         } else if (requestCode == REQUEST_GOOGLE_PLAY_SERVICES)
             super.onBackPressed();
     }
