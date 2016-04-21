@@ -214,7 +214,12 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                 if (quantity > 1) {
                     quantity--;
                     lblQuantity.setText(String.valueOf(quantity));
-                    lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(quantity * price)));
+                    if(String.valueOf(price).equals(Utils.NOL_RUPIAH)){
+                        lblEstimatedCost.setText(getString(R.string.free));
+                    }else{
+                        lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(quantity * price)));
+                    }
+
                 }
 
             }
@@ -226,7 +231,12 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                 if (quantity > 0 && quantity < max) {
                     quantity++;
                     lblQuantity.setText(String.valueOf(quantity));
-                    lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(quantity * price)));
+                    if(String.valueOf(price).equals(Utils.NOL_RUPIAH)){
+                        lblEstimatedCost.setText(getString(R.string.free));
+                    }else{
+                        lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(quantity * price)));
+                    }
+
                 }
             }
         });
@@ -269,7 +279,12 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
             txtSoldOut.setVisibility(View.VISIBLE);
             isSoldOut = true;
         } else {
-            lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(price)));
+            if(String.valueOf(price).equals(Utils.NOL_RUPIAH)){
+                lblEstimatedCost.setText(getString(R.string.free));
+            }else{
+                lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(price)));
+            }
+
             lblQuantity.setText(String.valueOf(quantity));
             isSoldOut = false;
         }

@@ -259,7 +259,12 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
 
         /*lblType.setText(detailReservation.getName());
         lblTypeCaption.setText(detailReservation.getSummary());*/
-        lblTypePrice.setText(StringUtility.getRupiahFormat(detailReservation.getPrice()));
+        if(detailReservation.getPrice().equals(Utils.NOL_RUPIAH)){
+            lblTypePrice.setText(getString(R.string.free));
+        }else{
+            lblTypePrice.setText(StringUtility.getRupiahFormat(detailReservation.getPrice()));
+        }
+
         //lblTypePriceCaption.setText(getString(R.string.pr_max_guest) + " " + max);
 
         if (detailReservation.getStatus().equals(Common.FIELD_STATUS_SOLD_OUT) || detailReservation.getQuantity() == 0) {
@@ -267,7 +272,12 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
             txtSoldOut.setVisibility(View.VISIBLE);
             isSoldOut = true;
         } else {
-            lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(price)));
+            if(String.valueOf(price).equals(Utils.NOL_RUPIAH)){
+                lblEstimatedCost.setText(getString(R.string.free));
+            }else{
+                lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(price)));
+            }
+
             lblQuantity.setText(String.valueOf(num_guest));
             isSoldOut = false;
         }
