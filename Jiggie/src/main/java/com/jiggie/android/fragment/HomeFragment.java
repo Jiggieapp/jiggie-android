@@ -103,6 +103,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         activity.setSupportActionBar(toolbar);
 
         this.adapter = new PageAdapter(this, activity.getSupportFragmentManager());
+        Utils.d(TAG, "onActivityCreated "  + adapter.getCount());
         this.viewPager.setOffscreenPageLimit(this.adapter.getCount());
         this.viewPager.setAdapter(this.adapter);
 
@@ -183,7 +184,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         SocialManager.loaderLocation(postLocationModel, new SocialManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
-                Log.d(getString(R.string.tag_location), "post success");
+                Utils.d(TAG, "post location success");
             }
 
             @Override
