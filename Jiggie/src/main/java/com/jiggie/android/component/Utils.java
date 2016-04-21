@@ -209,7 +209,8 @@ public class Utils {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         format.setTimeZone(TimeZone.getTimeZone("UTC"));
         //SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
-        //format.setTimeZone(TimeZone.getTimeZone("UTC"));
+        //format.setTimeZone(Ty/c  xv
+        //  meZone.getTimeZone("UTC"));
         try {
             Date d1 = format.parse(date);
             Calendar c = Calendar.getInstance();

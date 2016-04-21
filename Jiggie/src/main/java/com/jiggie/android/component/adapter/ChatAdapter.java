@@ -31,7 +31,7 @@ import butterknife.ButterKnife;
 /**
  * Created by rangg on 21/12/2015.
  */
-public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
+public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Activity activity;
     private List<Chat> items;
     private String profileImage;

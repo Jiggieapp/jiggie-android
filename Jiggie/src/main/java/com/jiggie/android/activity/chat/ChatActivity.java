@@ -345,7 +345,6 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
         }
     };
 
-
     private BroadcastReceiver checkNewMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
