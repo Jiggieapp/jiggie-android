@@ -103,6 +103,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         activity.setSupportActionBar(toolbar);
 
         this.adapter = new PageAdapter(this, activity.getSupportFragmentManager());
+        Utils.d(TAG, "onActivityCreated "  + adapter.getCount());
         this.viewPager.setOffscreenPageLimit(this.adapter.getCount());
         this.viewPager.setAdapter(this.adapter);
 
@@ -123,11 +124,11 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         this.viewPager.getViewTreeObserver().addOnGlobalLayoutListener(this);
 
         //Load animation
-        makeOutAnimation = AnimationUtils.loadAnimation(this.getActivity(),
+        /*makeOutAnimation = AnimationUtils.loadAnimation(this.getActivity(),
                 R.anim.slide_down);
 
         makeInAnimation = AnimationUtils.loadAnimation(this.getActivity(),
-                R.anim.slide_up);
+                R.anim.slide_up);*/
 
 
         /*makeInAnimation = AnimationUtils.makeInAnimation(this.getActivity(), false);
@@ -177,13 +178,13 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         //PART of postLocation
         PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), SocialManager.lat, SocialManager.lng);
         //PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), "-6.2216706", "106.8401574");
-        String responses = new Gson().toJson(postLocationModel);
-        Utils.d("res", responses);
+        /*String responses = new Gson().toJson(postLocationModel);
+        Utils.d("res", responses);*/
 
         SocialManager.loaderLocation(postLocationModel, new SocialManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
-                Log.d(getString(R.string.tag_location), "post success");
+                Utils.d(TAG, "post location success");
             }
 
             @Override

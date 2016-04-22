@@ -36,6 +36,7 @@ import com.jiggie.android.model.CCScreenModel;
 import com.jiggie.android.model.CommEventMixpanelModel;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventDetailModel;
+import com.jiggie.android.model.PostFreePaymentModel;
 import com.jiggie.android.model.PostPaymentModel;
 import com.jiggie.android.model.SummaryModel;
 import com.jiggie.android.view.TermsItemView;
@@ -219,11 +220,25 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
         }
 
         txtTikTitle.setText(dataProduct.getName() + " Ticket (" + dataProduct.getNum_buy() + "x)");
-        txtTikFill.setText(StringUtility.getRupiahFormat(dataProduct.getTotal_price()));
+
+        if(dataProduct.getTotal_price().equals(Utils.NOL_RUPIAH)){
+            txtTikFill.setText(getString(R.string.free));
+        }else{
+            txtTikFill.setText(StringUtility.getRupiahFormat(dataProduct.getTotal_price()));
+        }
+
+
         txtFeeFill.setText(StringUtility.getRupiahFormat(dataProduct.getAdmin_fee()));
         txtTaxFill.setText(StringUtility.getRupiahFormat(dataProduct.getTax_amount()));
         //txtTotalFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_price()));
-        txtTotalTicketFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_price()));
+
+        if(totalPrice.equals(Utils.NOL_RUPIAH)){
+            txtTotalTicketFill.setText(getString(R.string.free));
+        }else{
+            txtTotalTicketFill.setText(StringUtility.getRupiahFormat(totalPrice));
+        }
+
+
         txtTotalFill.setVisibility(View.GONE);
         //initTermView(dataProduct);
 
@@ -337,27 +352,34 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     }
 
     private void slidePay() {
-        if (paymentType.equals(Utils.TYPE_CC)) {
-            if (is_verified) {
-                PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, "0", productSummary.getOrder_id(), cc_token_id, name_cc, Utils.BLANK);
-                doPayment(postPaymentModel);
-            } else {
-                try {
-                    access3dSecure();
-                } catch (Exception e) {
-                    pagerSlide.setCurrentItem(1);
-                    Toast.makeText(PurchaseInfoActivity.this, getString(R.string.error_3dsecure), Toast.LENGTH_LONG).show();
+        if(Integer.parseInt(totalPrice)>0){
+            if (paymentType.equals(Utils.TYPE_CC)) {
+                if (is_verified) {
+                    PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, "0", productSummary.getOrder_id(), cc_token_id, name_cc, Utils.BLANK);
+                    doPayment(postPaymentModel);
+                } else {
+                    try {
+                        access3dSecure();
+                    } catch (Exception e) {
+                        pagerSlide.setCurrentItem(1);
+                        Toast.makeText(PurchaseInfoActivity.this, getString(R.string.error_3dsecure), Toast.LENGTH_LONG).show();
+                    }
+
                 }
+            } else {
+                PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, Utils.BLANK, productSummary.getOrder_id(), Utils.BLANK, Utils.BLANK, Utils.BLANK);
 
+                //String responses = new Gson().toJson(postPaymentModel);
+                //Utils.d("res", responses);
+
+                doPayment(postPaymentModel);
             }
-        } else {
-            PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, Utils.BLANK, productSummary.getOrder_id(), Utils.BLANK, Utils.BLANK, Utils.BLANK);
-
-            //String responses = new Gson().toJson(postPaymentModel);
-            //Utils.d("res", responses);
-
-            doPayment(postPaymentModel);
+        }else{
+            //free payment
+            PostFreePaymentModel postFreePaymentModel = new PostFreePaymentModel(String.valueOf(order_id), Utils.BLANK);
+            doFreePayment(postFreePaymentModel);
         }
+
     }
 
     private void access3dSecure() {
@@ -688,6 +710,83 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
             }
         });
 
+        initLoadingDialog();
+    }
+
+    private void doFreePayment(PostFreePaymentModel postFreePaymentModel) {
+        isPaying = true;
+        CommerceManager.loaderFreePayment(postFreePaymentModel, new CommerceManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object) {
+                isPaying = false;
+                dismissLoadingDialog();
+                Intent i = new Intent(PurchaseInfoActivity.this, CongratsActivity.class);
+
+                i.putExtra(Common.FIELD_ORDER_ID, order_id);
+                i.putExtra(Common.FIELD_PAYMENT_TYPE, paymentType);
+                i.putExtra(Common.FIELD_FROM_ORDER_LIST, false);
+                startActivity(i);
+            }
+
+            @Override
+            public void onFailure(int responseCode, String message) {
+                isPaying = false;
+                dismissLoadingDialog();
+
+                pagerSlide.setCurrentItem(1);
+                if(message != null && (message.contains("left")|| message.contains("unavailable"))){
+                    final AlertDialog dialog = new AlertDialog.Builder(PurchaseInfoActivity.this)
+                            .setMessage(message)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    Intent i = new Intent(PurchaseInfoActivity.this, ProductListActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    i.putExtra(Common.FIELD_EVENT_ID, eventDetail.get_id());
+                                    i.putExtra(EventDetailModel.Data.EventDetail.class.getName(), eventDetail);
+                                    startActivity(i);
+                                    finish();
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }).create();
+                    dialog.show();
+                } else if(message != null && (message.contains("Paid"))){
+                    final AlertDialog dialog = new AlertDialog.Builder(PurchaseInfoActivity.this)
+                            .setMessage(message)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+
+                                    Intent i = new Intent(PurchaseInfoActivity.this, CongratsActivity.class);
+
+                                    i.putExtra(Common.FIELD_ORDER_ID, order_id);
+                                    i.putExtra(Common.FIELD_PAYMENT_TYPE, paymentType);
+                                    i.putExtra(Common.FIELD_FROM_ORDER_LIST, false);
+                                    startActivity(i);
+
+                                }
+                            }).create();
+                    dialog.show();
+                }else {
+                    /*if(responseCode==Utils.CODE_FAILED){
+
+                    }else{
+
+                    }*/
+                    if(message != null)
+                    {
+                        Toast.makeText(PurchaseInfoActivity.this, message, Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
         initLoadingDialog();
     }
 

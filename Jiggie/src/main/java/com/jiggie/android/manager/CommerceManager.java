@@ -116,7 +116,7 @@ public class CommerceManager {
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
                     String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
+                    Utils.d("res", responses);
 
                     int responseCode = response.code();
                     if (responseCode == Utils.CODE_SUCCESS) {
@@ -129,12 +129,12 @@ public class CommerceManager {
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Log.d("Failure", t.toString());
+                    Utils.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
                 }
             });
         }catch (IOException e){
-            Log.d("Exception", e.toString());
+            Utils.d("Exception", e.toString());
             onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
         }
     }
@@ -147,7 +147,7 @@ public class CommerceManager {
 
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
+                    Utils.d("res", responses);
 
                     int responseCode = response.code();
                     if (responseCode == Utils.CODE_SUCCESS) {
@@ -172,12 +172,12 @@ public class CommerceManager {
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Log.d("Failure", t.toString());
+                    Utils.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
                 }
             });
         }catch (IOException e){
-            Log.d("Exception", e.toString());
+            Utils.d("Exception", e.toString());
             onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
         }
     }
@@ -190,7 +190,7 @@ public class CommerceManager {
 
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());
-                    Log.d("res", response.toString());
+                    Utils.d("res", response.toString());
 
                     int responseCode = response.code();
                     if (responseCode == Utils.CODE_SUCCESS) {
@@ -219,7 +219,7 @@ public class CommerceManager {
                 }
             });
         }catch (IOException e){
-            Log.d("Exception", e.toString());
+            Utils.d("Exception", e.toString());
             onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
         }
     }
@@ -284,7 +284,7 @@ public class CommerceManager {
                 }
             });
         }catch (IOException e){
-            Log.d("Exception", e.toString());
+            Utils.d("Exception", e.toString());
             onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
         }
     }
@@ -298,7 +298,7 @@ public class CommerceManager {
 
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
+                    Utils.d("res", responses);
 
                     int responseCode = response.code();
                     if (responseCode == Utils.CODE_SUCCESS) {
@@ -311,12 +311,12 @@ public class CommerceManager {
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Log.d("Failure", t.toString());
+                    Utils.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
                 }
             });
         }catch (IOException e){
-            Log.d("Exception", e.toString());
+            Utils.d("Exception", e.toString());
             onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
         }
     }
@@ -328,7 +328,7 @@ public class CommerceManager {
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
                     String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
+                    Utils.d("res", responses);
 
                     int responseCode = response.code();
                     if (responseCode == Utils.CODE_SUCCESS) {
@@ -341,12 +341,12 @@ public class CommerceManager {
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Log.d("Failure", t.toString());
+                    Utils.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
                 }
             });
         }catch (IOException e){
-            Log.d("Exception", e.toString());
+            Utils.d("Exception", e.toString());
             onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
         }
     }
@@ -358,7 +358,7 @@ public class CommerceManager {
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
                     String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
+                    Utils.d("res", responses);
 
                     int responseCode = response.code();
                     if (responseCode == Utils.CODE_SUCCESS) {
@@ -371,12 +371,12 @@ public class CommerceManager {
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Log.d("Failure", t.toString());
+                    Utils.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
                 }
             });
         }catch (IOException e){
-            Log.d("Exception", e.toString());
+            Utils.d("Exception", e.toString());
             onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
         }
     }
@@ -388,7 +388,7 @@ public class CommerceManager {
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
                     String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
+                    //Utils.d("res", responses);
 
                     int responseCode = response.code();
                     if (responseCode == Utils.CODE_SUCCESS) {
@@ -401,12 +401,12 @@ public class CommerceManager {
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Log.d("Failure", t.toString());
+                    Utils.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
                 }
             });
         }catch (IOException e){
-            Log.d("Exception", e.toString());
+            Utils.d("Exception", e.toString());
             onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
         }
     }
@@ -418,7 +418,7 @@ public class CommerceManager {
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
                     //String responses = new Gson().toJson(response.body());
-                    //Log.d("res", responses);
+                    //Utils.d("res", responses);
 
                     int responseCode = response.code();
                     if (responseCode == Utils.CODE_SUCCESS) {
@@ -448,7 +448,7 @@ public class CommerceManager {
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
                     String responses = new Gson().toJson(response.body());
-                    //Log.d("res", responses);
+                    //Utils.d("res", responses);
 
                     int responseCode = response.code();
                     if (responseCode == Utils.CODE_SUCCESS) {
@@ -460,12 +460,12 @@ public class CommerceManager {
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    //Log.d("Failure", t.toString());
+                    //Utils.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
                 }
             });
         }catch (IOException e){
-            //Log.d("Exception", e.toString());
+            //Utils.d("Exception", e.toString());
             onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
         }
     }
@@ -478,7 +478,7 @@ public class CommerceManager {
 
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());
-                    Log.d("res", response.toString());
+                    //Utils.d("res", response.toString());
 
                     int responseCode = response.code();
                     if (responseCode == Utils.CODE_SUCCESS) {
@@ -506,7 +506,7 @@ public class CommerceManager {
                 }
             });
         }catch (IOException e){
-            Log.d("Exception", e.toString());
+            Utils.d("Exception", e.toString());
             onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
         }
     }

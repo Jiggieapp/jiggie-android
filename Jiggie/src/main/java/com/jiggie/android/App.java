@@ -78,6 +78,7 @@ public class App extends Application {
     static String mPackageName;
 
     public static MixpanelAPI mixpanelAPI;
+    private Thread.UncaughtExceptionHandler androidDefaultUEH;
 
     @Override
     public void onCreate() {
@@ -89,12 +90,24 @@ public class App extends Application {
 
         FacebookSdk.sdkInitialize(this);
         AppsFlyerLib.setAppsFlyerKey(super.getString(R.string.appsflyer_devkey));
-        //Fabric.with(this, new Crashlytics());
-
+        Fabric.with(this, new Crashlytics());
         //endregion
-
         this.database = new DatabaseConnection(this);
+
+        // Setup handler for uncaught exceptions.
+        androidDefaultUEH = Thread.getDefaultUncaughtExceptionHandler();
+        Thread.setDefaultUncaughtExceptionHandler(handler);
     }
+
+    private Thread.UncaughtExceptionHandler handler = new Thread.UncaughtExceptionHandler() {
+        public void uncaughtException(Thread thread, Throwable ex) {
+            // log it & phone home.
+            //Utils.d("error", "masuk sini");
+            androidDefaultUEH.uncaughtException(thread, ex);
+
+        }
+    };
+
 
     @SuppressWarnings("unused")
     @SuppressLint("PackageManagerGetSignatures")
@@ -113,13 +126,15 @@ public class App extends Application {
                 }
 
                 preferences.edit().putStringSet("signatures", signatures).apply();
-            } catch (PackageManager.NameNotFoundException | NoSuchAlgorithmException  e) {
+            } catch (PackageManager.NameNotFoundException | NoSuchAlgorithmException e) {
                 // ignore
             }
         }
     }
 
-    public static App getInstance() { return instance; }
+    public static App getInstance() {
+        return instance;
+    }
 
     public static String getErrorMessage(Throwable throwable) {
         if (throwable instanceof VolleyError)
@@ -175,7 +190,9 @@ public class App extends Application {
         return String.format("https://graph.facebook.com/%s/picture?width=%d&height=%d", facebookId, width, width);
     }
 
-    public DatabaseConnection getDatabase() { return this.database; }
+    public DatabaseConnection getDatabase() {
+        return this.database;
+    }
 
     @Override
     public void onTerminate() {
@@ -192,14 +209,17 @@ public class App extends Application {
         }
     }
 
-    public void trackMixPanelEvent(String eventName) { this.trackMixPanelEvent(eventName, new SimpleJSONObject()); }
+    public void trackMixPanelEvent(String eventName) {
+        this.trackMixPanelEvent(eventName, new SimpleJSONObject());
+    }
+
     public void trackMixPanelEvent(String eventName, SimpleJSONObject json) {
         final String location = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin().getLocation();
 
         String[] locations = null;
         try {
-            locations = TextUtils.isEmpty(location) ? new String[] { "", "" } : location.split(",");
-        }catch (Exception e){
+            locations = TextUtils.isEmpty(location) ? new String[]{"", ""} : location.split(",");
+        } catch (Exception e) {
 
         }
         final ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -209,25 +229,25 @@ public class App extends Application {
         final SettingModel settingModel = AccountManager.loadSetting() == null ? null : AccountManager.loadSetting();
 
 
-        if(eventName.equals("Install")){
-            if(!Utils.AFmedia_source.equals(""))
+        if (eventName.equals("Install")) {
+            if (!Utils.AFmedia_source.equals(""))
                 json.putString("AFmedia_source", Utils.AFmedia_source);
             else
                 json.putString("AFmedia_source", Utils.AF_ORGANIC);
-            if(!Utils.AFcampaign.equals(""))
+            if (!Utils.AFcampaign.equals(""))
                 json.putString("AFcampaign", Utils.AFcampaign);
             else
                 json.putString("AFcampaign", Utils.AF_ORGANIC);
-            if(!Utils.AFinstall_type.equals(""))
+            if (!Utils.AFinstall_type.equals(""))
                 json.putString("AFinstall_type", Utils.AFinstall_type);
             else
                 json.putString("AFinstall_type", Utils.AF_ORGANIC);
-        }else{
-            if(!Utils.AFmedia_source.equals(""))
+        } else {
+            if (!Utils.AFmedia_source.equals(""))
                 json.putString("AFmedia_source", Utils.AFmedia_source);
-            if(!Utils.AFcampaign.equals(""))
+            if (!Utils.AFcampaign.equals(""))
                 json.putString("AFcampaign", Utils.AFcampaign);
-            if(!Utils.AFinstall_type.equals(""))
+            if (!Utils.AFinstall_type.equals(""))
                 json.putString("AFinstall_type", Utils.AFinstall_type);
         }
 
@@ -240,13 +260,13 @@ public class App extends Application {
         json.putString("Carrier", this.getSimOperatorName());
         try {
             json.putString("City", locations[0].trim());
-        }catch (Exception e){
+        } catch (Exception e) {
             json.putString("City", Utils.BLANK);
         }
 
         try {
             json.putString("Country", locations[1].trim());
-        }catch (Exception e){
+        } catch (Exception e) {
             json.putString("Country", Utils.BLANK);
         }
         json.putString("Device Model", Build.MODEL);
@@ -266,32 +286,32 @@ public class App extends Application {
         json.putString("Region", locations[0]);
 
 
-        if(login!=null){
+        if (login != null) {
             json.putString("Distinct Id", login.getFb_id());
             try {
                 json.putString("age", StringUtility.getAge2(login.getBirthday()));
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
             json.putString("birthday", login.getBirthday());
             json.putString("email", login.getEmail());
             json.putString("first_name", login.getUser_first_name());
             json.putString("last_name", login.getUser_last_name());
-            json.putString("name_and_fb_id", login.getUser_first_name()+"_"+login.getUser_last_name()+"_"+login.getFb_id());
+            json.putString("name_and_fb_id", login.getUser_first_name() + "_" + login.getUser_last_name() + "_" + login.getFb_id());
 
-            if(settingModel!=null){
+            if (settingModel != null) {
                 json.putString("gender", settingModel.getData().getGender());
                 json.putString("gender_interest", settingModel.getData().getGender_interest());
             }
         }
 
-        if(eventName.equals("Sign Up")){
+        if (eventName.equals("Sign Up")) {
             getInstanceMixpanel().alias(login.getFb_id(), null);
             setPeopleMixpanel(login, settingModel);
             setSuperPropertiesMixpanel(login, settingModel);
             setSyncMixpanel(login, settingModel);
             setAppsFlyer(login);
-        }else if(eventName.equals("Log In")){
+        } else if (eventName.equals("Log In")) {
             getInstanceMixpanel().identify(mixpanelAPI.getDistinctId());
             setPeopleMixpanel(login, settingModel);
             setSuperPropertiesMixpanel(login, settingModel);
@@ -315,35 +335,35 @@ public class App extends Application {
 
     }
 
-    private void setEventMixpanelComm(String eventName, LoginModel login, CommEventMixpanelModel commEventMixpanelModel){
+    private void setEventMixpanelComm(String eventName, LoginModel login, CommEventMixpanelModel commEventMixpanelModel) {
         SimpleJSONObject json = new SimpleJSONObject();
-        if(login!=null){
+        if (login != null) {
             json.putString("First Name", login.getUser_first_name());
             json.putString("Last Name", login.getUser_last_name());
             final String location = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin().getLocation();
 
             String[] locations = null;
             try {
-                locations = TextUtils.isEmpty(location) ? new String[] { "", "" } : location.split(",");
-            }catch (Exception e){
+                locations = TextUtils.isEmpty(location) ? new String[]{"", ""} : location.split(",");
+            } catch (Exception e) {
 
             }
             String city, country;
             try {
                 city = locations[0].trim();
-            }catch (Exception e){
+            } catch (Exception e) {
                 city = Utils.BLANK;
             }
             try {
                 country = locations[1].trim();
-            }catch (Exception e){
+            } catch (Exception e) {
                 country = Utils.BLANK;
             }
-            json.putString("Location", city+" "+country);
+            json.putString("Location", city + " " + country);
 
         }
 
-        if(!eventName.equals(Utils.COMM_ORDER_LIST)){
+        if (!eventName.equals(Utils.COMM_ORDER_LIST)) {
             json.putString("Event Name", commEventMixpanelModel.getEventName());
             json.putString("Event Venue Name", commEventMixpanelModel.getEventVenueName());
             json.putString("Event Venue City", commEventMixpanelModel.getEventVenueCity());
@@ -353,31 +373,31 @@ public class App extends Application {
             json.putString("Event Description", commEventMixpanelModel.getEventDescription());
         }
 
-        if(!eventName.equals(Utils.COMM_PRODUCT_LIST)&&!eventName.equals(Utils.COMM_ORDER_LIST)){
+        if (!eventName.equals(Utils.COMM_PRODUCT_LIST) && !eventName.equals(Utils.COMM_ORDER_LIST)) {
             json.putString("Ticket Name", commEventMixpanelModel.getTicketName());
             json.putString("Ticket Type", commEventMixpanelModel.getTicketType());
             json.putString("Ticket Price", commEventMixpanelModel.getTicketPrice());
             json.putString("Ticket Max Per Guest", commEventMixpanelModel.getTicketMaxPerGuest());
         }
 
-        if(eventName.equals(Utils.COMM_FINISH_VA)||eventName.equals(Utils.COMM_FINISH)){
+        if (eventName.equals(Utils.COMM_FINISH_VA) || eventName.equals(Utils.COMM_FINISH)) {
             json.putString("Purchase Quantity", commEventMixpanelModel.getPurchaseQuantity());
             json.putString("Purchase Amount", commEventMixpanelModel.getPurchaseAmount());
             json.putString("Purchase Discount", commEventMixpanelModel.getPurchaseDiscount());
             json.putString("Purchase Payment", commEventMixpanelModel.getPurchasePayment());
             json.putString("Purchase Quantity", commEventMixpanelModel.getPurchaseQuantity());
-            if(commEventMixpanelModel.isReservation()){
+            if (commEventMixpanelModel.isReservation()) {
                 json.putString("Total Guest", commEventMixpanelModel.getTotalGuest());
             }
         }
         getInstanceMixpanel().track(eventName, json);
     }
 
-    public void setPeopleMixpanelComm(LoginModel login, SettingModel settingModel){
+    public void setPeopleMixpanelComm(LoginModel login, SettingModel settingModel) {
         getInstanceMixpanel().getPeople().identify(mixpanelAPI.getDistinctId());
 
         SimpleJSONObject json = new SimpleJSONObject();
-        if(login!=null){
+        if (login != null) {
             json.putString("FB ID", login.getFb_id());
             json.putString("First Name", login.getUser_first_name());
             json.putString("Last Name", login.getUser_last_name());
@@ -388,23 +408,23 @@ public class App extends Application {
             final String location = login == null ? null : login.getLocation();
             String[] locations = null;
             try {
-                locations = TextUtils.isEmpty(location) ? new String[] { "", "" } : location.split(",");
-            }catch (Exception e){
+                locations = TextUtils.isEmpty(location) ? new String[]{"", ""} : location.split(",");
+            } catch (Exception e) {
 
             }
             try {
-                json.putString("City Country", locations[0].trim()+" "+locations[1].trim());
-            }catch (Exception e){
+                json.putString("City Country", locations[0].trim() + " " + locations[1].trim());
+            } catch (Exception e) {
                 json.putString("City Country", locations[0].trim());
             }
             json.putString("Email", login.getEmail());
 
-            if(settingModel!=null){
+            if (settingModel != null) {
                 json.putString("Gender", settingModel.getData().getGender());
                 json.putString("Gender Interest", settingModel.getData().getGender_interest());
             }
 
-            json.putString("Name and FB ID", login.getUser_first_name()+"_"+login.getUser_last_name()+"_"+login.getFb_id());
+            json.putString("Name and FB ID", login.getUser_first_name() + "_" + login.getUser_last_name() + "_" + login.getFb_id());
         }
         json.putString("App Version", getVersionCode(this));
         json.putString("OS", "Android");
@@ -412,15 +432,15 @@ public class App extends Application {
         getInstanceMixpanel().getPeople().set(json);
     }
 
-    public MixpanelAPI getInstanceMixpanel(){
-        if(mixpanelAPI == null)
+    public MixpanelAPI getInstanceMixpanel() {
+        if (mixpanelAPI == null)
             mixpanelAPI = MixpanelAPI.getInstance(this, super.getString(R.string.mixpanel_token));
         return mixpanelAPI;
     }
 
-    public void setSuperPropertiesMixpanel(LoginModel login, SettingModel settingModel){
+    public void setSuperPropertiesMixpanel(LoginModel login, SettingModel settingModel) {
         SimpleJSONObject json = new SimpleJSONObject();
-        if(login!=null){
+        if (login != null) {
             json.putString("first_name", login.getUser_first_name());
             json.putString("last_name", login.getUser_last_name());
             json.putString("birthday", login.getBirthday());
@@ -428,12 +448,12 @@ public class App extends Application {
             json.putString("location", login.getLocation());
             try {
                 json.putString("age", StringUtility.getAge2(login.getBirthday()));
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
         }
 
-        if(settingModel!=null){
+        if (settingModel != null) {
             json.putString("gender", settingModel.getData().getGender());
             json.putString("gender_interest", settingModel.getData().getGender_interest());
         }
@@ -444,26 +464,26 @@ public class App extends Application {
         getInstanceMixpanel().registerSuperProperties(json);
     }
 
-    public void setPeopleMixpanel(LoginModel login, SettingModel settingModel){
+    public void setPeopleMixpanel(LoginModel login, SettingModel settingModel) {
         //getInstanceMixpanel().identify(mixpanelAPI.getDistinctId());
         getInstanceMixpanel().getPeople().identify(mixpanelAPI.getDistinctId());
 
         SimpleJSONObject json = new SimpleJSONObject();
-        if(login!=null){
+        if (login != null) {
             json.putString("first_name", login.getUser_first_name());
             json.putString("last_name", login.getUser_last_name());
             json.putString("birthday", login.getBirthday());
             json.putString("email", login.getEmail());
             json.putString("fb_id", login.getFb_id());
-            json.putString("name_and_fb_id", login.getUser_first_name()+"_"+login.getUser_last_name()+"_"+login.getFb_id());
+            json.putString("name_and_fb_id", login.getUser_first_name() + "_" + login.getUser_last_name() + "_" + login.getFb_id());
             try {
                 json.putString("age", StringUtility.getAge2(login.getBirthday()));
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
         }
 
-        if(settingModel!=null){
+        if (settingModel != null) {
             json.putString("gender", settingModel.getData().getGender());
             json.putString("gender_interest", settingModel.getData().getGender_interest());
         }
@@ -479,8 +499,8 @@ public class App extends Application {
 
         String[] locations = null;
         try {
-            locations = TextUtils.isEmpty(location) ? new String[] { "", "" } : location.split(",");
-        }catch (Exception e){
+            locations = TextUtils.isEmpty(location) ? new String[]{"", ""} : location.split(",");
+        } catch (Exception e) {
 
         }
 
@@ -490,16 +510,16 @@ public class App extends Application {
         final LoginModel login = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin();
         final SettingModel settingModel = AccountManager.loadSetting() == null ? null : AccountManager.loadSetting();
 
-        if(eventName.equals("Install")){
-            if(!Utils.AFmedia_source.equals(""))
+        if (eventName.equals("Install")) {
+            if (!Utils.AFmedia_source.equals(""))
                 json.putString("AFmedia_source", Utils.AFmedia_source);
             else
                 json.putString("AFmedia_source", Utils.AF_ORGANIC);
-            if(!Utils.AFcampaign.equals(""))
+            if (!Utils.AFcampaign.equals(""))
                 json.putString("AFcampaign", Utils.AFcampaign);
             else
                 json.putString("AFcampaign", Utils.AF_ORGANIC);
-            if(!Utils.AFinstall_type.equals(""))
+            if (!Utils.AFinstall_type.equals(""))
                 json.putString("AFinstall_type", Utils.AFinstall_type);
             else
                 json.putString("AFinstall_type", Utils.AF_ORGANIC);
@@ -514,13 +534,13 @@ public class App extends Application {
 
         try {
             json.putString("City", locations[0].trim());
-        }catch (Exception e){
+        } catch (Exception e) {
             json.putString("City", Utils.BLANK);
         }
 
         try {
             json.putString("Country", locations[1].trim());
-        }catch (Exception e){
+        } catch (Exception e) {
             json.putString("Country", Utils.BLANK);
         }
 
@@ -542,195 +562,195 @@ public class App extends Application {
 
         try {
             json.putString("Region", locations[0]);
-        }catch (Exception e){
+        } catch (Exception e) {
             json.putString("Region", Utils.BLANK);
         }
 
 
-        if(login!=null){
+        if (login != null) {
             json.putString("Distinct Id", login.getFb_id());
             try {
                 json.putString("age", StringUtility.getAge2(login.getBirthday()));
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
             json.putString("birthday", login.getBirthday());
             json.putString("email", login.getEmail());
             json.putString("first_name", login.getUser_first_name());
             json.putString("last_name", login.getUser_last_name());
-            json.putString("name_and_fb_id", login.getUser_first_name()+"_"+login.getUser_last_name()+"_"+login.getFb_id());
+            json.putString("name_and_fb_id", login.getUser_first_name() + "_" + login.getUser_last_name() + "_" + login.getFb_id());
 
-            if(settingModel!=null){
+            if (settingModel != null) {
                 json.putString("gender", settingModel.getData().getGender());
                 json.putString("gender_interest", settingModel.getData().getGender_interest());
             }
         }
 
-        if(eventName.equals("View Event Details")){
-            if(eventDetail!=null){
-                try{
+        if (eventName.equals("View Event Details")) {
+            if (eventDetail != null) {
+                try {
                     json.putString("Event Description", eventDetail.getDescription());
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Event Description", Utils.BLANK);
                 }
-                try{
+                try {
                     json.putString("Event Name", eventDetail.getTitle());
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Event Name", Utils.BLANK);
                 }
-                try{
+                try {
                     json.putString("Event Tags", eventDetail.getTags().toString());
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Event Tags", Utils.BLANK);
                 }
-                try{
+                try {
                     json.putString("Event Venue Description", eventDetail.getVenue().getDescription());
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Event Venue Description", Utils.BLANK);
                 }
-                try{
+                try {
                     json.putString("Event Venue Neighborhood", eventDetail.getVenue().getNeighborhood());
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Event Venue Neighborhood", Utils.BLANK);
                 }
-                try{
+                try {
                     json.putString("Event End Time", eventDetail.getEnd_datetime());
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Event End Time", Utils.BLANK);
                 }
-                try{
+                try {
                     json.putString("Event Start Time", eventDetail.getStart_datetime());
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Event Start Time", Utils.BLANK);
                 }
-                try{
+                try {
                     json.putString("Event Venue City", eventDetail.getVenue().getCity());
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Event Venue City", Utils.BLANK);
                 }
-                try{
+                try {
                     json.putString("Event Venue Name", eventDetail.getVenue_name());
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Event Venue Name", Utils.BLANK);
                 }
-                try{
+                try {
                     json.putString("Event Venue Zip", eventDetail.getVenue().getZip());
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Event Venue Zip", Utils.BLANK);
                 }
 
             }
-        }else if(eventName.equals("Share Event")){
-            if(eventDetail!=null){
-                try{
+        } else if (eventName.equals("Share Event")) {
+            if (eventDetail != null) {
+                try {
                     json.putString("Event Description", eventDetail.getDescription());
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Event Description", Utils.BLANK);
                 }
-                try{
+                try {
                     json.putString("Event Id", eventDetail.get_id());
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Event Id", Utils.BLANK);
                 }
-                try{
+                try {
                     json.putString("Event Name", eventDetail.getTitle());
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Event Name", Utils.BLANK);
                 }
-                try{
+                try {
                     json.putString("Event Tags", eventDetail.getTags().toString());
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Event Tags", Utils.BLANK);
                 }
-                try{
+                try {
                     json.putString("Event Venue Description", eventDetail.getVenue().getDescription());
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Event Venue Description", Utils.BLANK);
                 }
-                try{
+                try {
                     json.putString("Event Venue Neighborhood", eventDetail.getVenue().getNeighborhood());
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Event Venue Neighborhood", Utils.BLANK);
                 }
-                try{
+                try {
                     json.putString("Event End Time", eventDetail.getEnd_datetime());
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Event End Time", Utils.BLANK);
                 }
-                try{
+                try {
                     json.putString("Event Start Time", eventDetail.getStart_datetime());
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Event Start Time", Utils.BLANK);
                 }
-                try{
+                try {
                     json.putString("Event Venue City", eventDetail.getVenue().getCity());
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Event Venue City", Utils.BLANK);
                 }
-                try{
+                try {
                     json.putString("Event Venue Name", eventDetail.getVenue_name());
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Event Venue Name", Utils.BLANK);
                 }
-                try{
+                try {
                     json.putString("Event Venue Zip", eventDetail.getVenue().getZip());
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Event Venue Zip", Utils.BLANK);
                 }
-                try{
-                    if(login!=null){
+                try {
+                    if (login != null) {
                         json.putString("Inviter Email", login.getEmail());
                     }
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Inviter Email", Utils.BLANK);
                 }
-                try{
-                    if(login!=null){
+                try {
+                    if (login != null) {
                         json.putString("Inviter First Name", login.getUser_first_name());
                     }
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Inviter First Name", Utils.BLANK);
                 }
-                try{
-                    if(login!=null){
+                try {
+                    if (login != null) {
                         json.putString("Inviter Last Name", login.getUser_last_name());
                     }
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Inviter Last Name", Utils.BLANK);
                 }
-                try{
-                    if(login!=null){
+                try {
+                    if (login != null) {
                         json.putString("Inviter Birthday", login.getBirthday());
                     }
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Inviter Birthday", Utils.BLANK);
                 }
-                try{
-                    if(login!=null){
+                try {
+                    if (login != null) {
                         json.putString("Inviter FB ID", login.getFb_id());
                     }
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Inviter FB ID", Utils.BLANK);
                 }
-                try{
-                    if(settingModel!=null){
+                try {
+                    if (settingModel != null) {
                         json.putString("Inviter Gender", settingModel.getData().getGender());
                     }
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Inviter Gender", Utils.BLANK);
                 }
-                try{
-                    if(login!=null){
-                        json.putString("Inviter Whole Name", login.getUser_first_name()+" "+login.getUser_last_name());
+                try {
+                    if (login != null) {
+                        json.putString("Inviter Whole Name", login.getUser_first_name() + " " + login.getUser_last_name());
                     }
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     json.putString("Inviter Whole Name", Utils.BLANK);
                 }
             }
@@ -740,7 +760,7 @@ public class App extends Application {
     }
 
     //Added by Aga
-    public static String getVersionName(Context c){
+    public static String getVersionName(Context c) {
         PackageInfo pi = null;
         try {
             pi = c.getPackageManager()
@@ -752,7 +772,7 @@ public class App extends Application {
         return pi.versionName;
     }
 
-    private static String getVersionCode(Context c){
+    private static String getVersionCode(Context c) {
         PackageInfo pi = null;
         try {
             pi = c.getPackageManager()
@@ -822,8 +842,7 @@ public class App extends Application {
         }
         return this.deviceId;*/
 
-        if(this.deviceId == null)
-        {
+        if (this.deviceId == null) {
             this.deviceId = Settings.Secure.getString(getApplicationContext().getContentResolver(),
                     Settings.Secure.ANDROID_ID);
         }
@@ -833,15 +852,13 @@ public class App extends Application {
 
     @TargetApi(Build.VERSION_CODES.M)
     private void checkPermission(final String permission
-            , final Activity activity)
-    {
-            int hasWriteContactsPermission = checkSelfPermission(permission);
-            if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(activity, new String[]{permission},
-                        Utils.PERMISSION_REQUEST);
-                return;
-            }
-        else return;
+            , final Activity activity) {
+        int hasWriteContactsPermission = checkSelfPermission(permission);
+        if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(activity, new String[]{permission},
+                    Utils.PERMISSION_REQUEST);
+            return;
+        } else return;
     }
 
     private String getSimOperatorName() {
@@ -856,7 +873,7 @@ public class App extends Application {
         if (this.phoneType == null) {
             final TelephonyManager telephonyManager = (TelephonyManager) super.getSystemService(Context.TELEPHONY_SERVICE);
             if (telephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_GSM)
-                this.phoneType  = "GSM";
+                this.phoneType = "GSM";
             else if (telephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_CDMA)
                 this.phoneType = "CDMA";
             else
@@ -871,59 +888,48 @@ public class App extends Application {
         return facebookValid && getSharedPreferences().getBoolean("loggedIn", false);
     }
 
-    public void setUserLoggedIn() { getSharedPreferences().edit().putBoolean("loggedIn", true).apply(); }
+    public void setUserLoggedIn() {
+        getSharedPreferences().edit().putBoolean("loggedIn", true).apply();
+    }
 
 
-    public static void savePreference(final String key, final Object object)
-    {
+    public static void savePreference(final String key, final Object object) {
         SharedPreferences.Editor sharedPreferencesEditor = App.getInstance()
                 .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
                 .edit();
-        if(object instanceof Integer)
-        {
+        if (object instanceof Integer) {
             sharedPreferencesEditor.putInt(key, (Integer) object);
-        }
-        else if(object instanceof String)
-        {
+        } else if (object instanceof String) {
             sharedPreferencesEditor.putString(key, (String) object);
-        }
-        else if(object instanceof Boolean)
-        {
+        } else if (object instanceof Boolean) {
             sharedPreferencesEditor.putBoolean(key, (Boolean) object);
-        }
-        else if(object instanceof Long )
-        {
+        } else if (object instanceof Long) {
             sharedPreferencesEditor.putLong(key, (Long) object);
-        }
-        else if(object instanceof Float)
-        {
+        } else if (object instanceof Float) {
             sharedPreferencesEditor.putFloat(key, (Float) object);
-        }
-        else if(object instanceof Set<?>)
-        {
+        } else if (object instanceof Set<?>) {
             sharedPreferencesEditor.putStringSet(key, (Set<String>) object);
         }
         sharedPreferencesEditor.apply();
     }
 
     private static String idChatActive = "";
-    public static void setIdChatActive(String id)
-    {
+
+    public static void setIdChatActive(String id) {
         idChatActive = id;
     }
 
-    public static String getIdChatActive()
-    {
+    public static String getIdChatActive() {
         return idChatActive;
     }
 
-    public void setSyncMixpanel(LoginModel login, SettingModel settingModel){
+    public void setSyncMixpanel(LoginModel login, SettingModel settingModel) {
         //sync mixpanel API
         PostMixpanelModel postMixpanelModel = new PostMixpanelModel();
         postMixpanelModel.setDevice_type(Build.MODEL);
         postMixpanelModel.setOs_version(this.getDeviceOSName());
         postMixpanelModel.setApp_version(getVersionCode(this));
-        if(login!=null){
+        if (login != null) {
             postMixpanelModel.setFb_id(login.getFb_id());
             postMixpanelModel.setLocation(login.getLocation());
             postMixpanelModel.setName_and_fb_id(login.getUser_first_name() + "_" + login.getUser_last_name() + "_" + login.getFb_id());
@@ -933,24 +939,24 @@ public class App extends Application {
             postMixpanelModel.setFirst_name(login.getUser_first_name());
             try {
                 postMixpanelModel.setAge(StringUtility.getAge2(login.getBirthday()));
-            }catch (Exception e) {
+            } catch (Exception e) {
 
             }
         }
 
-        if(settingModel != null) {
+        if (settingModel != null) {
             postMixpanelModel.setGender(settingModel.getData().getGender());
             postMixpanelModel.setGender_interest(settingModel.getData().getGender_interest());
         }
 
-        if(login!=null){
+        if (login != null) {
             TrackManager.loaderMixpanel(login.getFb_id(), postMixpanelModel);
         }
         //-----------------
     }
 
-    public void setAppsFlyer(LoginModel login){
-        if(login!=null){
+    public void setAppsFlyer(LoginModel login) {
+        if (login != null) {
             PostAppsFlyerModel postAppsFlyerModel = new PostAppsFlyerModel();
             postAppsFlyerModel.setFb_id(login.getFb_id());
             //String appsflyer = "{\n  \\\"af_status\\\" : \\\""+Utils.AFinstall_type+"\\\",\\n  \\\"media_source\\\" : \\\""+Utils.AFmedia_source+"\\\",\\n  \\\"campaign\\\" : \\\""+Utils.AFcampaign+"\\\"\\n}";
@@ -963,18 +969,18 @@ public class App extends Application {
             String install_time = Utils.AFinstall_time;
             String af_sub1 = Utils.AFsub1;
 
-            if(media_source.equals(Utils.BLANK)){
+            if (media_source.equals(Utils.BLANK)) {
                 media_source = Utils.AF_ORGANIC;
             }
-            if(campaign.equals(Utils.BLANK)){
+            if (campaign.equals(Utils.BLANK)) {
                 campaign = Utils.AF_ORGANIC;
             }
-            if(install_type.equals(Utils.BLANK)){
+            if (install_type.equals(Utils.BLANK)) {
                 install_type = Utils.AF_ORGANIC;
             }
 
             //String appsflyer = "{  \"af_status\" : \""+install_type+"\",  \"media_source\" : \""+media_source+"\",  \"campaign\" : \""+campaign+"\"}";
-            String appsflyer = "{  \"af_status\" : \""+install_type+"\",  \"media_source\" : \""+media_source+"\",  \"campaign\" : \""+campaign+"\", \"click_time\" : \""+click_time+"\", \"install_time\" : \""+install_time+"\", \"af_sub1\" : \""+af_sub1+"\"}";
+            String appsflyer = "{  \"af_status\" : \"" + install_type + "\",  \"media_source\" : \"" + media_source + "\",  \"campaign\" : \"" + campaign + "\", \"click_time\" : \"" + click_time + "\", \"install_time\" : \"" + install_time + "\", \"af_sub1\" : \"" + af_sub1 + "\"}";
 
 
             postAppsFlyerModel.setAppsflyer(appsflyer);
@@ -983,5 +989,13 @@ public class App extends Application {
 
             TrackManager.loaderAppsFlyer(postAppsFlyerModel);
         }
+    }
+
+    public void handleUncaughtException(Thread thread, Throwable e) {
+        e.printStackTrace(); // not all Android versions will print the stack trace automatically
+        // System.exit(1); // kill off the crashed app
+
+        //App.getInstance().
+        android.os.Process.killProcess(android.os.Process.myPid());
     }
 }

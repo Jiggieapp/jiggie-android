@@ -10,7 +10,8 @@ import com.jiggie.android.activity.ecommerce.TermsConditionActivity;
 /**
  * Created by Wandy on 3/23/2016.
  */
-public class SplashActivity extends Activity{
+public class SplashActivity extends Activity
+{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,4 +22,6 @@ public class SplashActivity extends Activity{
         startActivity(i);
         finish();
     }
+
+
 }

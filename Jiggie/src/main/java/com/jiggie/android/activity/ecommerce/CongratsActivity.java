@@ -157,11 +157,18 @@ public class CongratsActivity extends ToolbarActivity {
                     }else if(paymentType.equals(Utils.TYPE_BCA)){
                         txtPaymentFill.setText(getString(R.string.va_bca));
                     }
-                    try {
-                        final Date orderDate = Common.FORMAT_COMM_TRANSACTION.parse(vt_response.getTransaction_time());
-                        txtSummaryDate.setText(Common.FORMAT_COMM_TICKET.format(orderDate));
-                    }catch (ParseException e){
-                        throw new RuntimeException(App.getErrorMessage(e), e);
+                    if(vt_response != null)
+                    {
+                        try {
+                            final Date orderDate = Common.FORMAT_COMM_TRANSACTION.parse(vt_response.getTransaction_time());
+                            txtSummaryDate.setText(Common.FORMAT_COMM_TICKET.format(orderDate));
+                        }catch (ParseException e){
+                            throw new RuntimeException(App.getErrorMessage(e), e);
+                        }
+                    }
+                    else //free payment
+                    {
+                        txtSummaryDate.setVisibility(View.GONE);
                     }
                     SucScreenCCModel.Data.Success_screen.Summary.Product_list product_list = summary.getProduct_list().get(0);
 

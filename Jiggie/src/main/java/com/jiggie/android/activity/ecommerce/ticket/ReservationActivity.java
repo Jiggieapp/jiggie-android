@@ -60,12 +60,12 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
     TextView lblTypePrice;
     @Bind(R.id.txt_ticket_desc)
     TextView txtTicketDesc;
-    @Bind(R.id.txt_guest_name)
+    /*@Bind(R.id.txt_guest_name)
     TextView txtGuestName;
     @Bind(R.id.txt_guest_email)
     TextView txtGuestEmail;
     @Bind(R.id.txt_guest_phone)
-    TextView txtGuestPhone;
+    TextView txtGuestPhone;*/
     @Bind(R.id.lblEstimatedCostCaption)
     TextView lblEstimatedCostCaption;
     @Bind(R.id.lblEstimatedCost)
@@ -85,21 +85,21 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
 
     int num_guest = 1;
     ProductListModel.Data.ProductList.Reservation detailReservation = null;
-    String eventId, eventName, venueName, startTime, guestName, guestEmail, guestPhone, ticketId;
+    String eventId, eventName, venueName, startTime, ticketId;
     int max = 0;
     int price;
     EventDetailModel.Data.EventDetail eventDetail;
     SummaryModel.Data.Product_summary productSummary;
     ProgressDialog progressDialog;
-    @Bind(R.id.rel_guest)
-    RelativeLayout relGuest;
+    /*@Bind(R.id.rel_guest)
+    RelativeLayout relGuest;*/
     boolean isSoldOut = false;
     @Bind(R.id.purchaseContainer)
     LinearLayout purchaseContainer;
     @Bind(R.id.txt_sold_out)
     TextView txtSoldOut;
-    @Bind(R.id.card_view_guest)
-    CardView cardViewGuest;
+    /*@Bind(R.id.card_view_guest)
+    CardView cardViewGuest;*/
 
     private Dialog dialogTerms;
 
@@ -108,6 +108,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
         super.setContentView(R.layout.activity_ticket_detail);
         super.bindView();
         super.setToolbarTitle("Loremmm", true);
+
         preDefined();
 
         btnDone.setOnClickListener(new View.OnClickListener() {
@@ -118,7 +119,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
                 PostSummaryModel.Product_list product_list = new PostSummaryModel.Product_list(ticketId, num_guest);
                 ArrayList<PostSummaryModel.Product_list> arrProductList = new ArrayList<PostSummaryModel.Product_list>();
                 arrProductList.add(product_list);
-                PostSummaryModel.Guest_detail guest_detail = new PostSummaryModel.Guest_detail(guestName, guestEmail, guestPhone, "");
+                PostSummaryModel.Guest_detail guest_detail = new PostSummaryModel.Guest_detail(guestName, guestEmail, guestPhone, dialCode);
                 PostSummaryModel postSummaryModel = new PostSummaryModel(AccountManager.loadLogin().getFb_id(), eventId, arrProductList, guest_detail);
 
                 String sd = String.valueOf(new Gson().toJson(postSummaryModel));
@@ -132,8 +133,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
                         if (productSummary != null) {
                             showTermsDialog(productSummary.getProduct_list().get(0));
 
-                            String responses = new Gson().toJson(dataTemp);
-                            Utils.d("res", responses);
+                            //String responses = new Gson().toJson(dataTemp);
 
                             /*Intent i = new Intent(ReservationActivity.this, ReservationInfoActivity.class);
                             i.putExtra(Common.FIELD_EVENT_ID, eventId);
@@ -194,7 +194,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
                 } else {
                     i.putExtra(Common.FIELD_GUEST_PHONE, guestPhone);
                 }
-
+                i.putExtra("dial_code", dialCode);
                 i.putExtra(Common.FIELD_TRANS_TYPE, Common.TYPE_RESERVATION);
                 i.putExtra(detailReservation.getClass().getName(), detailReservation);
                 i.putExtra(eventDetail.getClass().getName(), eventDetail);
@@ -259,7 +259,12 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
 
         /*lblType.setText(detailReservation.getName());
         lblTypeCaption.setText(detailReservation.getSummary());*/
-        lblTypePrice.setText(StringUtility.getRupiahFormat(detailReservation.getPrice()));
+        if(detailReservation.getPrice().equals(Utils.NOL_RUPIAH)){
+            lblTypePrice.setText(getString(R.string.free));
+        }else{
+            lblTypePrice.setText(StringUtility.getRupiahFormat(detailReservation.getPrice()));
+        }
+
         //lblTypePriceCaption.setText(getString(R.string.pr_max_guest) + " " + max);
 
         if (detailReservation.getStatus().equals(Common.FIELD_STATUS_SOLD_OUT) || detailReservation.getQuantity() == 0) {
@@ -267,14 +272,19 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
             txtSoldOut.setVisibility(View.VISIBLE);
             isSoldOut = true;
         } else {
-            lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(price)));
+            if(String.valueOf(price).equals(Utils.NOL_RUPIAH)){
+                lblEstimatedCost.setText(getString(R.string.free));
+            }else{
+                lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(price)));
+            }
+
             lblQuantity.setText(String.valueOf(num_guest));
             isSoldOut = false;
         }
 
         txtTicketDesc.setText(detailReservation.getDescription());
 
-        LoginModel loginModel = AccountManager.loadLogin();
+        /*LoginModel loginModel = AccountManager.loadLogin();
 
         guestName = loginModel.getUser_first_name() + " " + loginModel.getUser_last_name();
         guestEmail = App.getSharedPreferences().getString(Common.FIELD_GUEST_EMAIL, Utils.BLANK);
@@ -293,8 +303,9 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
             txtGuestPhone.setText(guestPhone);
         } else {
             txtGuestPhone.setText("+" + guestPhone);
-        }
+        }*/
 
+        initGuest();
         checkEnability(guestName, guestEmail, guestPhone);
     }
 
@@ -312,6 +323,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
             guestName = data.getStringExtra(Common.FIELD_GUEST_NAME);
             guestEmail = data.getStringExtra(Common.FIELD_GUEST_EMAIL);
             guestPhone = data.getStringExtra(Common.FIELD_GUEST_PHONE);
+            dialCode = data.getStringExtra("dial_code");
             txtGuestName.setText(data.getStringExtra(Common.FIELD_GUEST_NAME));
             txtGuestEmail.setText(guestEmail + " | ");
             if (guestPhone.equals(getString(R.string.phone_number))) {
