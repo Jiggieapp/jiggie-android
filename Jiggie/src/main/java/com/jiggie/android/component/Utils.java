@@ -106,6 +106,7 @@ public class Utils {
     public static String DEVICE_ID = "";
     public static final String GUEST_DETAilS = "guest_details";
     public static final String VERSION_CODE = "version_code";
+    public static final String PREFERENCE_GPS = "gps";
 
     //Ecommerce var-----------
     public static final String TYPE_CC = "cc";
