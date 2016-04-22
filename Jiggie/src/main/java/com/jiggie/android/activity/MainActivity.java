@@ -160,22 +160,40 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onConnected(Bundle bundle) {
         Location mLastLocation = null;
-        try {
+        /*try {
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                     mGoogleApiClient);
         }catch (SecurityException e){
             Utils.d(getString(R.string.tag_location),e.toString());
+        }*/
+
+        LocationManager locationManager = (LocationManager) this
+                .getSystemService(LOCATION_SERVICE);
+        if (locationManager != null) {
+            try {
+                mLastLocation = locationManager
+                        .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            }catch (SecurityException e){
+                Utils.d(getString(R.string.tag_location),e.toString());
+            }
+
+            if (mLastLocation != null) {
+                SocialManager.lat = String.valueOf(mLastLocation.getLatitude());
+                SocialManager.lng = String.valueOf(mLastLocation.getLongitude());
+            }
         }
 
         if (mLastLocation != null) {
             SocialManager.lat = String.valueOf(mLastLocation.getLatitude());
             SocialManager.lng = String.valueOf(mLastLocation.getLongitude());
             Log.d(getString(R.string.tag_location),"lat: "+String.valueOf(mLastLocation.getLatitude())+" lon: "+String.valueOf(mLastLocation.getLongitude()));
+
+            HomeFragment.sendLocationInfo();
         }else{
             Utils.d(getString(R.string.tag_location),getString(R.string.error_loc_failed));
         }
 
-        HomeFragment.sendLocationInfo();
+
         //actionResults();
     }
 

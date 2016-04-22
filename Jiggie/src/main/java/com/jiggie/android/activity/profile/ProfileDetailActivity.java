@@ -160,12 +160,18 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
                 txtLocation.setText(loginModel.getLocation());
             }
 
-            if (TextUtils.isEmpty(loginModel.getAbout()))
-                txtDescription.setVisibility(View.GONE);
-            else
-            {
-                txtDescription.setText(loginModel.getAbout());
+            if(TextUtils.isEmpty(message.getData().getMemberinfo().getAbout())){
+                if (TextUtils.isEmpty(loginModel.getAbout()))
+                    txtDescription.setVisibility(View.GONE);
+                else
+                {
+                    txtDescription.setText(loginModel.getAbout());
+                }
+            }else{
+                txtDescription.setText(message.getData().getMemberinfo().getAbout());
             }
+
+
         }
         else{
             photos = message.getData().getMemberinfo().getPhotos().toArray(new String[message.getData().getMemberinfo().getPhotos().size()]);
