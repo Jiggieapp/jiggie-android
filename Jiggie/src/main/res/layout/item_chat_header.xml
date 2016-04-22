@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/lbl_chat_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/padding_standard_half"
+        android:background="@drawable/chat_header_rounded_corner"
+        android:gravity="center_horizontal"
+        android:paddingBottom="@dimen/padding_standard_half"
+        android:paddingLeft="@dimen/padding_standard"
+        android:paddingRight="@dimen/padding_standard"
+        android:paddingTop="@dimen/padding_standard_half"
+        android:singleLine="true"
+        android:text="lorem ipsum"
+        android:textColor="@android:color/white" />
+
+</LinearLayout>

@@ -39,11 +39,7 @@ public class AccountManager extends BaseManager{
     public static boolean isInSettingPage = false;
 
     public static void initAccountService(){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Utils.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        accountInterface = retrofit.create(AccountInterface.class);
+        accountInterface = getRetrofit().create(AccountInterface.class);
     }
 
     private static AccountInterface getInstance(){
@@ -400,7 +396,9 @@ public class AccountManager extends BaseManager{
     }
 
 
-    public static void getAccessToken()
+    public static void getAccessToken
+            //(final OnFinishGetAccessToken onFinishGetAccessToken)
+            (final CommerceManager.OnResponseListener onResponseListener)
     {
         getAccessToken(new CustomCallback() {
             @Override
@@ -414,17 +412,24 @@ public class AccountManager extends BaseManager{
                         .edit()
                         .putString(Utils.ACCESS_TOKEN, successModel.getToken())
                         .apply();
-
-                //AccessTokenModel accessTokenModel = (AccessTokenModel) response.body();
-                //Utils.d(TAG, accessTokenModel.getToken());
+                //onResponseListener.onSuccess(successModel.getToken());
+                //onFinishGetAccessToken.onFinishGetAccessToken(successModel.getToken());
             }
 
             @Override
             public void onCustomCallbackFailure(String t) {
-                Utils.d(TAG, "failure " + t.toString());
+                //onResponseListener.onFailure(Utils.CODE_FAILED, t);
             }
         });
     }
+
+    public OnFinishGetAccessToken onFinishGetAccessToken;
+    public interface OnFinishGetAccessToken
+    {
+        public Retrofit onFinishGetAccessToken(String accessToken);
+    }
+
+
 
     private static void getAccessToken(Callback callback)
     {

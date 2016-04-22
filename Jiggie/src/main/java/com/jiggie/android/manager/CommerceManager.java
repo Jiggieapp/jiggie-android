@@ -32,7 +32,7 @@ import retrofit.Retrofit;
 /**
  * Created by LTE on 2/22/2016.
  */
-public class CommerceManager {
+public class CommerceManager extends BaseManager{
 
     private static CommerceInterface commerceInterface;
     public static ArrayList<CCScreenModel> arrCCScreen = new ArrayList<>();
@@ -41,11 +41,7 @@ public class CommerceManager {
     public static String lastPaymentType = Utils.BLANK;
 
     public static void initCommerceService(){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Utils.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        commerceInterface = retrofit.create(CommerceInterface.class);
+        commerceInterface = getRetrofit().create(CommerceInterface.class);
     }
 
     private static CommerceInterface getInstance(){
@@ -139,7 +135,7 @@ public class CommerceManager {
         }
     }
 
-    public static void loaderSummary(PostSummaryModel postSummaryModel, final OnResponseListener onResponseListener){
+    public static void loaderSummary(final PostSummaryModel postSummaryModel, final OnResponseListener onResponseListener){
         try {
             postSummary(postSummaryModel, new CustomCallback() {
                 @Override
@@ -175,6 +171,7 @@ public class CommerceManager {
                     Utils.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
                 }
+
             });
         }catch (IOException e){
             Utils.d("Exception", e.toString());
@@ -477,7 +474,7 @@ public class CommerceManager {
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
                     //String header = String.valueOf(response.code());
-                    String responses = new Gson().toJson(response.body());
+                    //String responses = new Gson().toJson(response.body());
                     //Utils.d("res", response.toString());
 
                     int responseCode = response.code();

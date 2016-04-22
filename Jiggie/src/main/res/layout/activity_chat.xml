@@ -19,21 +19,7 @@
         android:layout_weight="1"
         android:background="@color/grayLight">
 
-        <TextView
-            android:id="@+id/lbl_chat_header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="lorem ipsum"
-            android:gravity="center_horizontal"
-            android:layout_marginTop="@dimen/padding_standard_half"
-            android:paddingTop="@dimen/padding_standard_half"
-            android:paddingBottom="@dimen/padding_standard_half"
-            android:paddingLeft="@dimen/padding_standard"
-            android:paddingRight="@dimen/padding_standard"
-            android:singleLine="true"
-            android:textColor="@android:color/white"
-            android:background="@drawable/chat_header_rounded_corner"
-            android:layout_centerHorizontal="true"/>
+
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler"

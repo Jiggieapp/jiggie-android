@@ -3,7 +3,9 @@ package com.jiggie.android.component.callback;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
+import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.ChatManager;
+import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.model.ExceptionModel;
 
 import java.net.SocketTimeoutException;
@@ -21,7 +23,8 @@ public abstract class CustomCallback implements Callback{
 
     @Override
     public void onResponse(Response response, Retrofit retrofit) {
-        onCustomCallbackResponse(response, retrofit);
+            onCustomCallbackResponse(response, retrofit);
+
         //this.response = response;
     }
 

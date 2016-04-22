@@ -21,17 +21,13 @@ import retrofit.Retrofit;
 /**
  * Created by LTE on 2/4/2016.
  */
-public class GuestManager {
+public class GuestManager extends BaseManager{
 
     private static GuestInterface eventInterface;
     public static ArrayList<GuestModel.Data.GuestInterests> dataGuestInterest = new ArrayList<>();
 
     public static void initGuestService(){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Utils.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        eventInterface = retrofit.create(GuestInterface.class);
+        eventInterface = getRetrofit().create(GuestInterface.class);
     }
 
     private static GuestInterface getInstance(){

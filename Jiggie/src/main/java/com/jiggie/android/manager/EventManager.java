@@ -27,7 +27,7 @@ import retrofit.Retrofit;
 /**
  * Created by LTE on 2/1/2016.
  */
-public class EventManager {
+public class EventManager extends BaseManager{
 
     private static EventInterface eventInterface;
     public static final String TAG = EventManager.class.getSimpleName();
@@ -42,11 +42,7 @@ public class EventManager {
     }
 
     public static void initEventService(){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Utils.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        eventInterface = retrofit.create(EventInterface.class);
+        eventInterface = getRetrofit().create(EventInterface.class);
     }
 
     private static EventInterface getInstance(){

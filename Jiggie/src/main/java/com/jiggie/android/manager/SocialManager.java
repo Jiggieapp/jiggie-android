@@ -22,7 +22,7 @@ import retrofit.Retrofit;
 /**
  * Created by LTE on 2/5/2016.
  */
-public class SocialManager {
+public class SocialManager extends BaseManager{
 
     private static SocialInterface socialInterface;
     public static final String TAG = SocialManager.class.getSimpleName() ;
@@ -30,12 +30,7 @@ public class SocialManager {
     public static  String lng = Utils.BLANK;
 
     public static void iniSocialService(){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Utils.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        socialInterface = retrofit.create(SocialInterface.class);
-
+        socialInterface = getRetrofit().create(SocialInterface.class);
     }
 
     private static SocialInterface getInstance(){

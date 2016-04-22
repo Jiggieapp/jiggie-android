@@ -20,16 +20,12 @@ import retrofit.Retrofit;
 /**
  * Created by LTE on 2/5/2016.
  */
-public class ShareManager {
+public class ShareManager extends BaseManager{
 
     private static ShareInterface shareInterface;
 
     public static void initShareService(){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Utils.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        shareInterface = retrofit.create(ShareInterface.class);
+        shareInterface = getRetrofit().create(ShareInterface.class);
     }
 
     private static ShareInterface getInstance(){

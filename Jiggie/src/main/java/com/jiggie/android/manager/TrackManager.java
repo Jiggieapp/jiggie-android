@@ -22,16 +22,12 @@ import retrofit.Retrofit;
 /**
  * Created by LTE on 2/25/2016.
  */
-public class TrackManager {
+public class TrackManager extends BaseManager{
 
     static TrackInterface trackInterface;
 
     public static void initTrackService(){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Utils.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        trackInterface = retrofit.create(TrackInterface.class);
+        trackInterface = getRetrofit().create(TrackInterface.class);
     }
 
     private static TrackInterface getInstance(){

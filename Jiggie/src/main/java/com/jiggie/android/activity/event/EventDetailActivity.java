@@ -725,11 +725,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                                     .putExtra(Intent.EXTRA_SUBJECT, "Lets Go Out With Jiggie");
 
                             if (file != null && file.exists()) {
-                                //Utils.d(TAG, "file getabsolutepath " + file.getAbsolutePath());
                                 i.putExtra(android.content.Intent.EXTRA_STREAM,
                                         Uri.parse("file:" + file.getAbsolutePath()));
-                            } else {
-                                //Utils.d(TAG, "file not existss");
                             }
 
                             i.setType("text/plain");
@@ -738,7 +735,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
                             EventDetailActivity.this.startActivity(Intent.createChooser
                                     (i, EventDetailActivity.this.getString(R.string.share)));
-                            //file.delete();
                         }
                     });
 

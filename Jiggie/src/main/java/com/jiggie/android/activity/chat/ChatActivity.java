@@ -75,8 +75,6 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
     @Bind(R.id.viewFailed) View failedView;
     @Bind(R.id.btnSend) Button btnSend;
     @Bind(R.id.viewChat) View viewChat;
-    @Bind(R.id.lbl_chat_header)
-    TextView lblChatHeader;
 
     private String lastMessageDate = "";
     private ChatAdapter adapter;
@@ -137,13 +135,10 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
         this.recyclerView.setAdapter(this.adapter = new ChatAdapter(this, profileImage, toId));
         this.recyclerView.setScrollContainer(false);
         this.recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(this);
-        lblChatHeader.setVisibility(View.GONE);
-        makeOutAnimation = AnimationUtils.loadAnimation(this,
+        /*makeOutAnimation = AnimationUtils.loadAnimation(this,
                 R.anim.com_mixpanel_android_fade_in);
         makeInAnimation = AnimationUtils.loadAnimation(this,
                 R.anim.com_mixpanel_android_fade_out);
-        /*makeInAnimation = AnimationUtils.makeInAnimation(this, false);
-        makeOutAnimation = AnimationUtils.makeOutAnimation(this, true);*/
 
         makeInAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -196,7 +191,7 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
                 }
             }
 
-        });
+        });*/
 
         this.txtMessage.addTextChangedListener(new SimpleTextWatcher() {
             @Override
@@ -454,15 +449,18 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
 
     public void onEvent(ChatResponseModel message){
         if(message.getFromFunction().equals(ChatManager.FROM_LOAD)){
-            lblChatHeader.bringToFront();
+            /*lblChatHeader.bringToFront();
             lblChatHeader.setText(message.getData().getEvent_name());
-            lblChatHeader.setVisibility(View.VISIBLE);
+            lblChatHeader.setVisibility(View.VISIBLE);*/
 
             final List<Chat> failedItems = ChatTable.getUnProcessedItems(App.getInstance().getDatabase(), toId);
             final int length = message.getData().getMessages() == null ? 0 : message.getData().getMessages().size();
             final int failedLength = failedItems.size();
 
             adapter.clear();
+            final Chat chatHeader = new Chat(message.getData().getMessages().get(0)
+                    , message.getData().getFromId(), message.getData().getEvent_name());
+            adapter.add(chatHeader);
             for (int i = 0; i < length; i++) {
                 final Chat chat = new Chat(message.getData().getMessages().get(i), message.getData().getFromId());
                 if ((!chat.isFromYou()) && (lastMessageDate.compareTo(chat.getCreatedAt()) < 0))

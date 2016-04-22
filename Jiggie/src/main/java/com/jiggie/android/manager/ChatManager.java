@@ -43,11 +43,7 @@ public class ChatManager extends BaseManager{
     public static ArrayList<ChatListModel.Data.ChatLists> dataChatList = new ArrayList<ChatListModel.Data.ChatLists>();
 
     public static void initChatService(){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Utils.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        chatInterface = retrofit.create(ChatInterface.class);
+        chatInterface = getRetrofit().create(ChatInterface.class);
     }
 
     private static ChatInterface getInstance(){
