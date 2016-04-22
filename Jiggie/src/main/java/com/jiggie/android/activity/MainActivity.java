@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        Utils.d(getString(R.string.tag_location),getString(R.string.error_loc_failed));
+        Utils.d(getString(R.string.tag_location), getString(R.string.error_loc_failed));
         //actionResults();
     }
 
@@ -244,7 +244,11 @@ public class MainActivity extends AppCompatActivity
         if(Utils.isLocationServicesAvailable(this)){
             checkLocation();
         }else{
-            showDialog();
+            boolean isAlreadyOpen = App.getSharedPreferences().getBoolean(Utils.PREFERENCE_GPS, false);
+            if(!isAlreadyOpen){
+                App.getSharedPreferences().edit().putBoolean(Utils.PREFERENCE_GPS, true).commit();
+                showDialog();
+            }
         }
     }
 
@@ -287,7 +291,12 @@ public class MainActivity extends AppCompatActivity
             if(Utils.isLocationServicesAvailable(this)){
                 checkLocation();
             }else{
-                showDialog();
+                boolean isAlreadyOpen = App.getSharedPreferences().getBoolean(Utils.PREFERENCE_GPS, false);
+                if(!isAlreadyOpen){
+                    App.getSharedPreferences().edit().putBoolean(Utils.PREFERENCE_GPS, true).commit();
+                    showDialog();
+                }
+
             }
             //End here
 
@@ -463,6 +472,8 @@ public class MainActivity extends AppCompatActivity
             CommerceManager.arrCCLocal.clear();
         }
         //--------------------
+
+        App.getSharedPreferences().edit().putBoolean(Utils.PREFERENCE_GPS, false).commit();
 
         super.onDestroy();
     }
