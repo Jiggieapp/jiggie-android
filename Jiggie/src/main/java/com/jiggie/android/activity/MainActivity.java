@@ -63,7 +63,8 @@ import de.greenrobot.event.EventBus;
 /**
  * Created by rangg on 21/10/2015.
  */
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
+public class MainActivity extends AppCompatActivity
+        implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
     public static final int REQUEST_GOOGLE_PLAY_SERVICES = 1972;
     private boolean active;
     public static final String TAG = MainActivity.class.getSimpleName();
@@ -243,25 +244,30 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if(Utils.isLocationServicesAvailable(this)){
             checkLocation();
         }else{
-            final AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
-                    .setMessage(getString(R.string.msg_dialog_sett_location))
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            final Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                            startActivity(intent);
-                        }
-                    })
-                    /*.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })*/.create();
-            dialog.setCancelable(false);
-            dialog.show();
+            showDialog();
         }
+    }
+
+    private void showDialog()
+    {
+        final AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                .setMessage(getString(R.string.msg_dialog_sett_location))
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        final Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create();
+        dialog.setCancelable(false);
+        dialog.show();
     }
 
     @Override
@@ -278,29 +284,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             //checkLocation();
 
             //Check availability GPS Location
-            /*if(Utils.isLocationServicesAvailable(this)){
+            if(Utils.isLocationServicesAvailable(this)){
                 checkLocation();
             }else{
-                final AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
-                        .setMessage(getString(R.string.msg_dialog_sett_location))
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                final Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                                startActivity(intent);
-                            }
-                        })
-                        *//*.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })*//*.create();
-                dialog.setCancelable(false);
-                dialog.show();
-
-            }*/
+                showDialog();
+            }
             //End here
 
             if (!App.getInstance().isUserLoggedIn()) {

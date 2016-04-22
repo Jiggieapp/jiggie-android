@@ -39,6 +39,7 @@ import com.jiggie.android.model.CCScreenModel;
 import com.jiggie.android.model.CommEventMixpanelModel;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventDetailModel;
+import com.jiggie.android.model.PostFreePaymentModel;
 import com.jiggie.android.model.PostPaymentModel;
 import com.jiggie.android.model.SummaryModel;
 import com.jiggie.android.view.TermsItemView;
@@ -132,6 +133,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     int payDeposit = 0, maxDeposit = 0, latestDeposit = 0;
     private final int INCREMENT_VALUE = 500000;
     boolean isPaying = false;
+    private static final String TAG = ReservationInfoActivity.class.getSimpleName();
 
     public static String getPaymentApiUrl() {
         if (VTConfig.VT_IsProduction) {
@@ -406,26 +408,109 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                 can = false;
             }
         }
-
         return can;
     }
 
     private void slidePay() {
-        if (paymentType.equals(Utils.TYPE_CC)) {
-            if (is_verified) {
-                PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, "0", productSummary.getOrder_id(), cc_token_id, name_cc, String.valueOf(payDeposit));
+        if (Integer.parseInt(String.valueOf(payDeposit)) > 0) {
+            if (paymentType.equals(Utils.TYPE_CC)) {
+                if (is_verified) {
+                    PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, "0", productSummary.getOrder_id(), cc_token_id, name_cc, String.valueOf(payDeposit));
+                    String sd = String.valueOf(new Gson().toJson(postPaymentModel));
+                    doPayment(postPaymentModel);
+                } else {
+                    access3dSecure();
+                }
+            } else {
+                PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, Utils.BLANK, productSummary.getOrder_id(), Utils.BLANK, Utils.BLANK, String.valueOf(payDeposit));
                 String sd = String.valueOf(new Gson().toJson(postPaymentModel));
                 doPayment(postPaymentModel);
-            } else {
-                access3dSecure();
             }
-        } else {
-            PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, Utils.BLANK, productSummary.getOrder_id(), Utils.BLANK, Utils.BLANK, String.valueOf(payDeposit));
-            String sd = String.valueOf(new Gson().toJson(postPaymentModel));
-            doPayment(postPaymentModel);
+        } else
+        {
+            //free payment
+            PostFreePaymentModel postFreePaymentModel = new PostFreePaymentModel(String.valueOf(order_id), "0");
+            doFreePayment(postFreePaymentModel);
         }
     }
 
+    private void doFreePayment(PostFreePaymentModel postFreePaymentModel) {
+        isPaying = true;
+        CommerceManager.loaderFreePayment(postFreePaymentModel, new CommerceManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object) {
+                isPaying = false;
+                dismissLoadingDialog();
+                Intent i = new Intent(ReservationInfoActivity.this, CongratsActivity.class);
+
+                i.putExtra(Common.FIELD_ORDER_ID, order_id);
+                i.putExtra(Common.FIELD_PAYMENT_TYPE, paymentType);
+                i.putExtra(Common.FIELD_FROM_ORDER_LIST, false);
+                startActivity(i);
+            }
+
+            @Override
+            public void onFailure(int responseCode, String message) {
+                isPaying = false;
+                dismissLoadingDialog();
+
+                pagerSlide.setCurrentItem(1);
+                if(message != null && (message.contains("left")|| message.contains("unavailable"))){
+                    final AlertDialog dialog = new AlertDialog.Builder(ReservationInfoActivity.this)
+                            .setMessage(message)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    Intent i = new Intent(ReservationInfoActivity.this, ProductListActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    i.putExtra(Common.FIELD_EVENT_ID, eventDetail.get_id());
+                                    i.putExtra(EventDetailModel.Data.EventDetail.class.getName(), eventDetail);
+                                    startActivity(i);
+                                    finish();
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }).create();
+                    dialog.show();
+                } else if(message != null && (message.contains("Paid"))){
+                    final AlertDialog dialog = new AlertDialog.Builder(ReservationInfoActivity.this)
+                            .setMessage(message)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+
+                                    Intent i = new Intent(ReservationInfoActivity.this, CongratsActivity.class);
+
+                                    i.putExtra(Common.FIELD_ORDER_ID, order_id);
+                                    i.putExtra(Common.FIELD_PAYMENT_TYPE, paymentType);
+                                    i.putExtra(Common.FIELD_FROM_ORDER_LIST, false);
+                                    startActivity(i);
+
+                                }
+                            }).create();
+                    dialog.show();
+                }else {
+                    /*if(responseCode==Utils.CODE_FAILED){
+
+                    }else{
+
+                    }*/
+                    if(message != null)
+                    {
+                        Toast.makeText(ReservationInfoActivity.this, message, Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
+        initLoadingDialog();
+    }
+    
     private void access3dSecure() {
         //using 3d secure
         VTConfig.VT_IsProduction = false;
@@ -458,7 +543,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
 
                     //using 3d secure
                     /*WebView webView = new
-                            WebView(PurchaseInfoActivity.this);*/
+                            WebView(ReservationInfoActivity.this);*/
                     MyWebView webView = new MyWebView(ReservationInfoActivity.this);
 
                     webView.getSettings().setJavaScriptEnabled(true);

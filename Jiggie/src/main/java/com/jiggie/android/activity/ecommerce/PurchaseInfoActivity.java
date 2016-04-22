@@ -787,7 +787,6 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                 }
             }
         });
-
         initLoadingDialog();
     }
 

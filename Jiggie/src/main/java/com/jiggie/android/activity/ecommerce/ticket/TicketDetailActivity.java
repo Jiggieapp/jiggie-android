@@ -47,8 +47,7 @@ import butterknife.OnClick;
 public class TicketDetailActivity extends AbstractTicketDetailActivity {
 
     public static final String TAG = TicketDetailActivity.class.getSimpleName();
-    @Bind(R.id.rel_guest)
-    RelativeLayout relGuest;
+
     @Bind(R.id.btnDone)
     Button btnDone;
     @Bind(R.id.minus_button)
@@ -73,24 +72,13 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
     TextView lblTypePrice;
     @Bind(R.id.lblTypePriceCaption)
     TextView lblTypePriceCaption;*/
-    @Bind(R.id.txt_guest_name)
-    TextView txtGuestName;
-    @Bind(R.id.txt_guest_email)
-    TextView txtGuestEmail;
-    @Bind(R.id.txt_guest_phone)
-    TextView txtGuestPhone;
+
     @Bind(R.id.lblEstimatedCost)
     TextView lblEstimatedCost;
     @Bind(R.id.lblTicketCaption)
     TextView lblTicketCaption;
 
-    @Bind(R.id.lblFillYourContactInfo)
-    TextView lblFillYourContactInfo;
-    @Bind(R.id.rel_guest_detail)
-    RelativeLayout relGuestDetail;
-
-
-    String eventId, eventName, venueName, startTime, guestName, guestEmail, dialCode, guestPhone, ticketId;
+    String eventId, eventName, venueName, startTime, ticketId;
     int max = 0;
     int price;
     EventDetailModel.Data.EventDetail eventDetail;
@@ -107,7 +95,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
     CardView cardViewGuest;
 
     private Dialog dialogTerms;
-    GuestPresenter guestPresenter;
+
 
     @Override
     protected void onCreate() {
@@ -115,7 +103,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
         super.bindView();
         super.setToolbarTitle(getResources().getString(R.string.ticket_detail), true);
 
-        guestPresenter = new GuestPresenter();
+
         preDefined();
 
         btnDone.setOnClickListener(new View.OnClickListener() {
@@ -297,7 +285,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
         guestName = loginModel.getUser_first_name() + " " + loginModel.getUser_last_name();
         guestEmail = loginModel.getEmail();
         guestPhone = AccountManager.loadSetting().getData().getPhone();*/
-        PostSummaryModel.Guest_detail guestDetail = guestPresenter.loadGuest();
+        /*PostSummaryModel.Guest_detail guestDetail = guestPresenter.loadGuest();
         if (guestDetail != null) {
             lblFillYourContactInfo.setVisibility(View.GONE);
             relGuestDetail.setVisibility(View.VISIBLE);
@@ -326,9 +314,9 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
             txtGuestPhone.setText(guestPhone);
         } else {
             txtGuestPhone.setText("+" + dialCode + guestPhone);
-        }
+        }*/
 
-
+        initGuest();
         //end of wandy 20-04-2016
 
 
