@@ -131,12 +131,12 @@ public class MainActivity extends AppCompatActivity
         EventBus.getDefault().unregister(this);
     }
 
-    @Override
+    /*@Override
     protected void onStart() {
         if(mGoogleApiClient!=null)
             mGoogleApiClient.connect();
         super.onStart();
-    }
+    }*/
 
     @Override
     protected void onStop() {
@@ -152,6 +152,8 @@ public class MainActivity extends AppCompatActivity
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
                     .build();
+
+            mGoogleApiClient.connect();
         }
     }
 
@@ -173,6 +175,7 @@ public class MainActivity extends AppCompatActivity
             Utils.d(getString(R.string.tag_location),getString(R.string.error_loc_failed));
         }
 
+        HomeFragment.sendLocationInfo();
         //actionResults();
     }
 

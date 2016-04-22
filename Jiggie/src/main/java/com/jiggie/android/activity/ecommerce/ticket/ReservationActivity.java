@@ -272,11 +272,13 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
             txtSoldOut.setVisibility(View.VISIBLE);
             isSoldOut = true;
         } else {
-            if(String.valueOf(price).equals(Utils.NOL_RUPIAH)){
+            /*if(String.valueOf(price).equals(Utils.NOL_RUPIAH)){
                 lblEstimatedCost.setText(getString(R.string.free));
             }else{
                 lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(price)));
-            }
+            }*/
+
+            lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(price)));
 
             lblQuantity.setText(String.valueOf(num_guest));
             isSoldOut = false;

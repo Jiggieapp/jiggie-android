@@ -110,6 +110,8 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     @Bind(R.id.card_view)
     CardView cardView;
     boolean isPaying = false;
+    @Bind(R.id.lblSelectPayment)
+    TextView lblSelectPayment;
 
 
     private SlideAdapter slideAdapter;
@@ -204,7 +206,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                 txtPayment.setText(getString(R.string.va_bca));
                 txtPayment.setTypeface(null, Typeface.NORMAL);
             }
-        }else{
+        } else {
             relPayment.setSelected(true);
         }
 
@@ -221,20 +223,27 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
 
         txtTikTitle.setText(dataProduct.getName() + " Ticket (" + dataProduct.getNum_buy() + "x)");
 
-        if(dataProduct.getTotal_price().equals(Utils.NOL_RUPIAH)){
+        if (dataProduct.getTotal_price().equals(Utils.NOL_RUPIAH)) {
             txtTikFill.setText(getString(R.string.free));
-        }else{
+        } else {
             txtTikFill.setText(StringUtility.getRupiahFormat(dataProduct.getTotal_price()));
         }
 
+        if (dataProduct.getAdmin_fee().equals(Utils.NOL_RUPIAH)) {
+            txtFeeFill.setText(getString(R.string.free));
+        } else {
+            txtFeeFill.setText(StringUtility.getRupiahFormat(dataProduct.getAdmin_fee()));
+        }
 
-        txtFeeFill.setText(StringUtility.getRupiahFormat(dataProduct.getAdmin_fee()));
-        txtTaxFill.setText(StringUtility.getRupiahFormat(dataProduct.getTax_amount()));
-        //txtTotalFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_price()));
+        if (dataProduct.getTax_amount().equals(Utils.NOL_RUPIAH)) {
+            txtTaxFill.setText(getString(R.string.free));
+        } else {
+            txtTaxFill.setText(StringUtility.getRupiahFormat(dataProduct.getAdmin_fee()));
+        }
 
-        if(totalPrice.equals(Utils.NOL_RUPIAH)){
+        if (totalPrice.equals(Utils.NOL_RUPIAH)) {
             txtTotalTicketFill.setText(getString(R.string.free));
-        }else{
+        } else {
             txtTotalTicketFill.setText(StringUtility.getRupiahFormat(totalPrice));
         }
 
@@ -316,7 +325,12 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                 if (position == 0) {
                     arg.putString(SlideFragment.ARG_TITLE, "");
                 } else if (position == 1) {
-                    arg.putString(SlideFragment.ARG_TITLE, app.getString(R.string.pci_slide));
+                    if (totalPrice.equals(Utils.NOL_RUPIAH)) {
+                        arg.putString(SlideFragment.ARG_TITLE, app.getString(R.string.pci_slide_continue));
+                    } else {
+                        arg.putString(SlideFragment.ARG_TITLE, app.getString(R.string.pci_slide));
+                    }
+
                 }
 
                 fragment.setArguments(arg);
@@ -330,21 +344,23 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     private boolean canPay() {
         boolean can = true;
 
-        for (int i = 0; i < arrTermItemView.size(); i++) {
-            ImageView img = arrTermItemView.get(i).getImgCheck();
-            if (!img.isSelected()) {
-                can = false;
-                break;
+        if (!totalPrice.equals(Utils.NOL_RUPIAH)) {
+            for (int i = 0; i < arrTermItemView.size(); i++) {
+                ImageView img = arrTermItemView.get(i).getImgCheck();
+                if (!img.isSelected()) {
+                    can = false;
+                    break;
+                }
             }
-        }
 
-        if (can) {
-            if (paymentType.equals(Utils.TYPE_CC)) {
-                if (cc_card_id.isEmpty()) {
+            if (can) {
+                if (paymentType.equals(Utils.TYPE_CC)) {
+                    if (cc_card_id.isEmpty()) {
+                        can = false;
+                    }
+                } else if (paymentType.equals(Utils.BLANK)) {
                     can = false;
                 }
-            } else if (paymentType.equals(Utils.BLANK)) {
-                can = false;
             }
         }
 
@@ -352,7 +368,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     }
 
     private void slidePay() {
-        if(Integer.parseInt(totalPrice)>0){
+        if (Integer.parseInt(totalPrice) > 0) {
             if (paymentType.equals(Utils.TYPE_CC)) {
                 if (is_verified) {
                     PostPaymentModel postPaymentModel = new PostPaymentModel(paymentType, "0", productSummary.getOrder_id(), cc_token_id, name_cc, Utils.BLANK);
@@ -374,7 +390,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
 
                 doPayment(postPaymentModel);
             }
-        }else{
+        } else {
             //free payment
             PostFreePaymentModel postFreePaymentModel = new PostFreePaymentModel(String.valueOf(order_id), Utils.BLANK);
             doFreePayment(postFreePaymentModel);
@@ -532,8 +548,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
             }
             relPayment.setSelected(false);
             checkEnability(txtPayment.getText().toString());
-        }
-        else if(resultCode != 284){ //klo 284 do nothing
+        } else if (resultCode != 284) { //klo 284 do nothing
             SummaryModel.Data.Product_summary.LastPayment lastPayment = productSummary.getLast_payment();
             if (CommerceManager.arrCCScreen.size() == 0) {
                 if (lastPayment.isEmpty()) {
@@ -569,15 +584,13 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                             imgPayment.setImageResource(R.drawable.ic_plus);
 
                             relPayment.setSelected(true);
-                        }else{
+                        } else {
                             relPayment.setSelected(false);
                         }
                     }
                 }
             }
-        }
-        else if(resultCode == 284)
-        {
+        } else if (resultCode == 284) {
             Utils.d(TAG, "what the fuck?");
         }
     }
@@ -648,7 +661,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                 dismissLoadingDialog();
 
                 pagerSlide.setCurrentItem(1);
-                if(message != null && (message.contains("left")|| message.contains("unavailable"))){
+                if (message != null && (message.contains("left") || message.contains("unavailable"))) {
                     final AlertDialog dialog = new AlertDialog.Builder(PurchaseInfoActivity.this)
                             .setMessage(message)
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -670,7 +683,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                                 }
                             }).create();
                     dialog.show();
-                } else if(message != null && (message.contains("Paid"))){
+                } else if (message != null && (message.contains("Paid"))) {
                     final AlertDialog dialog = new AlertDialog.Builder(PurchaseInfoActivity.this)
                             .setMessage(message)
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -695,14 +708,13 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                                 }
                             }).create();
                     dialog.show();
-                }else {
+                } else {
                     /*if(responseCode==Utils.CODE_FAILED){
 
                     }else{
 
                     }*/
-                    if(message != null)
-                    {
+                    if (message != null) {
                         Toast.makeText(PurchaseInfoActivity.this, message, Toast.LENGTH_LONG).show();
                     }
                 }
@@ -734,7 +746,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                 dismissLoadingDialog();
 
                 pagerSlide.setCurrentItem(1);
-                if(message != null && (message.contains("left")|| message.contains("unavailable"))){
+                if (message != null && (message.contains("left") || message.contains("unavailable"))) {
                     final AlertDialog dialog = new AlertDialog.Builder(PurchaseInfoActivity.this)
                             .setMessage(message)
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -756,7 +768,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                                 }
                             }).create();
                     dialog.show();
-                } else if(message != null && (message.contains("Paid"))){
+                } else if (message != null && (message.contains("Paid"))) {
                     final AlertDialog dialog = new AlertDialog.Builder(PurchaseInfoActivity.this)
                             .setMessage(message)
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -774,14 +786,13 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                                 }
                             }).create();
                     dialog.show();
-                }else {
+                } else {
                     /*if(responseCode==Utils.CODE_FAILED){
 
                     }else{
 
                     }*/
-                    if(message != null)
-                    {
+                    if (message != null) {
                         Toast.makeText(PurchaseInfoActivity.this, message, Toast.LENGTH_LONG).show();
                     }
                 }
@@ -806,18 +817,29 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     }
 
     private void checkEnability(String namePayment) {
-        boolean isItEnable = true;
-        if (namePayment.equals(Utils.BLANK) || namePayment.equals(getString(R.string.pci_payment))) {
-            isItEnable = false;
-        }
 
-        if (isItEnable) {
+        if (totalPrice.equals(Utils.NOL_RUPIAH)) {
             pagerSlide.setVisibility(View.VISIBLE);
             relDisable.setVisibility(View.GONE);
+
+            lblSelectPayment.setVisibility(View.GONE);
+            cardView.setVisibility(View.GONE);
         } else {
-            pagerSlide.setVisibility(View.GONE);
-            relDisable.setVisibility(View.VISIBLE);
+            boolean isItEnable = true;
+            if (namePayment.equals(Utils.BLANK) || namePayment.equals(getString(R.string.pci_payment))) {
+                isItEnable = false;
+            }
+
+            if (isItEnable) {
+                pagerSlide.setVisibility(View.VISIBLE);
+                relDisable.setVisibility(View.GONE);
+            } else {
+                pagerSlide.setVisibility(View.GONE);
+                relDisable.setVisibility(View.VISIBLE);
+            }
         }
+
+
     }
 
     class MyWebView extends WebView {
