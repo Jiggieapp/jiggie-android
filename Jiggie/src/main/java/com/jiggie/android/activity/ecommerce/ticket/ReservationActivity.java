@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.CardView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -31,7 +30,6 @@ import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.model.CommEventMixpanelModel;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventDetailModel;
-import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.PostSummaryModel;
 import com.jiggie.android.model.ProductListModel;
 import com.jiggie.android.model.SummaryModel;
@@ -72,12 +70,8 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
     TextView lblEstimatedCost;
     @Bind(R.id.lblTicketCaption)
     TextView lblTicketCaption;
-    @Bind(R.id.minus_button)
-    View minusButton;
     @Bind(R.id.lblQuantity)
     TextView lblQuantity;
-    @Bind(R.id.plus_button)
-    View plusButton;
     @Bind(R.id.btnDone)
     Button btnDone;
     /*@Bind(R.id.lblTypePriceCaption)
@@ -98,6 +92,10 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
     LinearLayout purchaseContainer;
     @Bind(R.id.txt_sold_out)
     TextView txtSoldOut;
+    @Bind(R.id.rel_minus)
+    RelativeLayout relMinus;
+    @Bind(R.id.rel_plus)
+    RelativeLayout relPlus;
     /*@Bind(R.id.card_view_guest)
     CardView cardViewGuest;*/
 
@@ -202,7 +200,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
             }
         });
 
-        minusButton.setOnClickListener(new View.OnClickListener() {
+        relMinus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (num_guest > 1) {
@@ -212,7 +210,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
             }
         });
 
-        plusButton.setOnClickListener(new View.OnClickListener() {
+        relPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (num_guest > 0 && num_guest < max) {
@@ -259,9 +257,9 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
 
         /*lblType.setText(detailReservation.getName());
         lblTypeCaption.setText(detailReservation.getSummary());*/
-        if(detailReservation.getPrice().equals(Utils.NOL_RUPIAH)){
+        if (detailReservation.getPrice().equals(Utils.NOL_RUPIAH)) {
             lblTypePrice.setText(getString(R.string.free));
-        }else{
+        } else {
             lblTypePrice.setText(StringUtility.getRupiahFormat(detailReservation.getPrice()));
         }
 

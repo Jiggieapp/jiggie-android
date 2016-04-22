@@ -97,6 +97,8 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_chat);
 
+        App.runningActivity = this;
+
         final Intent intent = super.getIntent();
         init(intent);
 

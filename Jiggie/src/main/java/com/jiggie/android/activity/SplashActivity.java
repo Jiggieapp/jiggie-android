@@ -20,6 +20,7 @@ public class SplashActivity extends Activity
         super.onCreate(savedInstanceState);
 
         //App.getSharedPreferences().edit().putBoolean(Utils.PREFERENCE_GPS, false).commit();
+        App.runningActivity = this;
 
         Intent i = new Intent(this, MainActivity.class);
         //Intent i = new Intent(this, TermsConditionActivity.class);

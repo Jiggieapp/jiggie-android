@@ -18,6 +18,7 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -191,7 +192,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 fillPhotos(event_pics);
 
             if(event_description != null)
-                txtDescription.setText(event_description);
+                txtDescription.setText(Html.fromHtml(event_description));
 
             scrollView.setVisibility(View.VISIBLE);
             elementContainers.setVisibility(View.INVISIBLE);

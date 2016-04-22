@@ -290,23 +290,24 @@ public class MainActivity extends AppCompatActivity
             //checkLocation and post it
             //checkLocation();
 
-            //Check availability GPS Location
-            if(Utils.isLocationServicesAvailable(this)){
-                checkLocation();
-            }else{
-                boolean isAlreadyOpen = App.getSharedPreferences().getBoolean(Utils.PREFERENCE_GPS, false);
-                if(!isAlreadyOpen){
-                    App.getSharedPreferences().edit().putBoolean(Utils.PREFERENCE_GPS, true).commit();
-                    showDialog();
-                }
-
-            }
-            //End here
-
             if (!App.getInstance().isUserLoggedIn()) {
                 final SignInFragment fragment = new SignInFragment();
                 super.getSupportFragmentManager().beginTransaction().add(R.id.container, fragment).commit();
             } else {
+
+                //Check availability GPS Location
+                if(Utils.isLocationServicesAvailable(this)){
+                    checkLocation();
+                }else{
+                    boolean isAlreadyOpen = App.getSharedPreferences().getBoolean(Utils.PREFERENCE_GPS, false);
+                    if(!isAlreadyOpen){
+                        App.getSharedPreferences().edit().putBoolean(Utils.PREFERENCE_GPS, true).commit();
+                        showDialog();
+                    }
+
+                }
+                //End here
+
                 super.startService(new Intent(this, FacebookImageSyncService.class));
                 if (!App.getSharedPreferences().getBoolean(GCMRegistrationService.TAG_UPDATED, false))
                     super.startService(new Intent(this, GCMRegistrationService.class));

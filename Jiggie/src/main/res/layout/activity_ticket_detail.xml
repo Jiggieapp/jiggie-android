@@ -312,21 +312,29 @@
                         android:textSize="@dimen/font_body_size"
                         android:textStyle="bold" />
 
-                    <View
-                        android:id="@+id/minus_button"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                    <RelativeLayout
+                        android:id="@+id/rel_minus"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:layout_centerVertical="true"
-                        android:layout_marginRight="@dimen/padding_standard"
                         android:layout_toLeftOf="@+id/lblQuantity"
-                        android:background="@drawable/ic_minus_bl" />
+                        android:layout_marginRight="@dimen/padding_standard"
+                        >
+                        <View
+                            android:id="@+id/minus_button"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/ic_minus_bl"
+                            android:layout_centerInParent="true"
+                            />
+                    </RelativeLayout>
 
                     <TextView
                         android:id="@+id/lblQuantity"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_toLeftOf="@+id/plus_button"
+                        android:layout_toLeftOf="@+id/rel_plus"
                         android:gravity="center_vertical|center_horizontal"
                         android:paddingLeft="@dimen/padding_standard_half"
                         android:paddingRight="@dimen/padding_standard_half"
@@ -336,14 +344,23 @@
                         android:textSize="@dimen/font_body_size_huge"
                         android:textStyle="bold" />
 
-                    <View
-                        android:id="@+id/plus_button"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                    <RelativeLayout
+                        android:id="@+id/rel_plus"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/padding_standard"
-                        android:background="@drawable/ic_plus_bl" />
+                        android:layout_marginLeft="@dimen/padding_standard">
+                        <View
+                            android:id="@+id/plus_button"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="@drawable/ic_plus_bl"
+                            android:layout_centerInParent="true"
+                            />
+                    </RelativeLayout>
+
+
                 </RelativeLayout>
 
                 <View

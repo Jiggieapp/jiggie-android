@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.manager.CommerceManager;
@@ -36,6 +37,8 @@ public abstract class ToolbarActivity extends BaseActivity {
     protected void bindView() {
         super.bindView();
         super.setSupportActionBar(this.toolbar);
+
+        App.runningActivity = this;
     }
 
     protected void setToolbarTitle(String title, boolean backEnabled) {

@@ -61,6 +61,7 @@ import java.util.UUID;
 
 import io.fabric.sdk.android.Fabric;
 
+import static android.support.v4.app.ActivityCompat.finishAffinity;
 import static android.support.v4.app.ActivityCompat.requestPermissions;
 
 /**
@@ -79,6 +80,8 @@ public class App extends Application {
 
     public static MixpanelAPI mixpanelAPI;
     private Thread.UncaughtExceptionHandler androidDefaultUEH;
+
+    public static Activity runningActivity = null;
 
     @Override
     public void onCreate() {
@@ -102,9 +105,11 @@ public class App extends Application {
     private Thread.UncaughtExceptionHandler handler = new Thread.UncaughtExceptionHandler() {
         public void uncaughtException(Thread thread, Throwable ex) {
             // log it & phone home.
-            //Utils.d("error", "masuk sini");
+            Utils.d("error", "masuk sini");
+            if(runningActivity!=null){
+                finishAffinity(runningActivity);
+            }
             androidDefaultUEH.uncaughtException(thread, ex);
-
         }
     };
 
