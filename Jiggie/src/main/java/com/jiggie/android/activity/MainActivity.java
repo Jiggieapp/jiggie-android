@@ -131,12 +131,12 @@ public class MainActivity extends AppCompatActivity
         EventBus.getDefault().unregister(this);
     }
 
-    @Override
+    /*@Override
     protected void onStart() {
         if(mGoogleApiClient!=null)
             mGoogleApiClient.connect();
         super.onStart();
-    }
+    }*/
 
     @Override
     protected void onStop() {
@@ -152,33 +152,54 @@ public class MainActivity extends AppCompatActivity
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
                     .build();
+
+            mGoogleApiClient.connect();
         }
     }
 
     @Override
     public void onConnected(Bundle bundle) {
         Location mLastLocation = null;
-        try {
+        /*try {
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                     mGoogleApiClient);
         }catch (SecurityException e){
             Utils.d(getString(R.string.tag_location),e.toString());
+        }*/
+
+        LocationManager locationManager = (LocationManager) this
+                .getSystemService(LOCATION_SERVICE);
+        if (locationManager != null) {
+            try {
+                mLastLocation = locationManager
+                        .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            }catch (SecurityException e){
+                Utils.d(getString(R.string.tag_location),e.toString());
+            }
+
+            if (mLastLocation != null) {
+                SocialManager.lat = String.valueOf(mLastLocation.getLatitude());
+                SocialManager.lng = String.valueOf(mLastLocation.getLongitude());
+            }
         }
 
         if (mLastLocation != null) {
             SocialManager.lat = String.valueOf(mLastLocation.getLatitude());
             SocialManager.lng = String.valueOf(mLastLocation.getLongitude());
             Log.d(getString(R.string.tag_location),"lat: "+String.valueOf(mLastLocation.getLatitude())+" lon: "+String.valueOf(mLastLocation.getLongitude()));
+
+            HomeFragment.sendLocationInfo();
         }else{
             Utils.d(getString(R.string.tag_location),getString(R.string.error_loc_failed));
         }
+
 
         //actionResults();
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        Utils.d(getString(R.string.tag_location),getString(R.string.error_loc_failed));
+        Utils.d(getString(R.string.tag_location), getString(R.string.error_loc_failed));
         //actionResults();
     }
 
@@ -244,7 +265,11 @@ public class MainActivity extends AppCompatActivity
         if(Utils.isLocationServicesAvailable(this)){
             checkLocation();
         }else{
-            showDialog();
+            boolean isAlreadyOpen = App.getSharedPreferences().getBoolean(Utils.PREFERENCE_GPS, false);
+            if(!isAlreadyOpen){
+                App.getSharedPreferences().edit().putBoolean(Utils.PREFERENCE_GPS, true).commit();
+                showDialog();
+            }
         }
     }
 
@@ -283,18 +308,24 @@ public class MainActivity extends AppCompatActivity
             //checkLocation and post it
             //checkLocation();
 
-            //Check availability GPS Location
-            if(Utils.isLocationServicesAvailable(this)){
-                checkLocation();
-            }else{
-                showDialog();
-            }
-            //End here
-
             if (!App.getInstance().isUserLoggedIn()) {
                 final SignInFragment fragment = new SignInFragment();
                 super.getSupportFragmentManager().beginTransaction().add(R.id.container, fragment).commit();
             } else {
+
+                //Check availability GPS Location
+                if(Utils.isLocationServicesAvailable(this)){
+                    checkLocation();
+                }else{
+                    boolean isAlreadyOpen = App.getSharedPreferences().getBoolean(Utils.PREFERENCE_GPS, false);
+                    if(!isAlreadyOpen){
+                        App.getSharedPreferences().edit().putBoolean(Utils.PREFERENCE_GPS, true).commit();
+                        showDialog();
+                    }
+
+                }
+                //End here
+
                 super.startService(new Intent(this, FacebookImageSyncService.class));
                 if (!App.getSharedPreferences().getBoolean(GCMRegistrationService.TAG_UPDATED, false))
                     super.startService(new Intent(this, GCMRegistrationService.class));
@@ -463,6 +494,8 @@ public class MainActivity extends AppCompatActivity
             CommerceManager.arrCCLocal.clear();
         }
         //--------------------
+
+        App.getSharedPreferences().edit().putBoolean(Utils.PREFERENCE_GPS, false).commit();
 
         super.onDestroy();
     }

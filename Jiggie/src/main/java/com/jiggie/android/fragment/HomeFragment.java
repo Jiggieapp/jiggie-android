@@ -175,16 +175,20 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
 
         }
 
+
+    }
+
+    public static void sendLocationInfo(){
         //PART of postLocation
         PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), SocialManager.lat, SocialManager.lng);
         //PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), "-6.2216706", "106.8401574");
-        /*String responses = new Gson().toJson(postLocationModel);
-        Utils.d("res", responses);*/
+        String responses = new Gson().toJson(postLocationModel);
+        Utils.d("res", responses);
 
         SocialManager.loaderLocation(postLocationModel, new SocialManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
-                Utils.d(TAG, "post location success");
+                Utils.d("location", "post location success");
             }
 
             @Override

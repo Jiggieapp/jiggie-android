@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
@@ -129,6 +130,8 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     RelativeLayout plusButton;
     @Bind(R.id.card_view)
     CardView cardView;
+    @Bind(R.id.lblSelectPayment)
+    TextView lblSelectPayment;
     private SlideAdapter slideAdapter;
     int payDeposit = 0, maxDeposit = 0, latestDeposit = 0;
     private final int INCREMENT_VALUE = 500000;
@@ -236,7 +239,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                 txtPayment.setText(getString(R.string.va_bca));
                 txtPayment.setTypeface(null, Typeface.NORMAL);
             }
-        }else{
+        } else {
             relPayment.setSelected(true);
         }
 
@@ -304,6 +307,25 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                 payDeposit = payDeposit + INCREMENT_VALUE;
             }
         }
+
+        if(payDeposit==0){
+            lblSelectPayment.setVisibility(View.INVISIBLE);
+            cardView.setVisibility(View.INVISIBLE);
+        }else{
+            lblSelectPayment.setVisibility(View.VISIBLE);
+            cardView.setVisibility(View.VISIBLE);
+        }
+
+        checkEnability(txtPayment.getText().toString());
+
+        /*slideAdapter = null;
+        pagerSlide.setAdapter(slideAdapter);*/
+
+        int pos = pagerSlide.getCurrentItem();
+        slideAdapter = new SlideAdapter(getSupportFragmentManager(), pagerSlide);
+        pagerSlide.setAdapter(slideAdapter);
+        pagerSlide.setCurrentItem(pos);
+
     }
 
     private void sendMixpanel(SummaryModel.Data.Product_summary productSummary, EventDetailModel.Data.EventDetail eventDetail) {
@@ -335,7 +357,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         pagerSlide.setCurrentItem(1);
     }
 
-    public class SlideAdapter extends FragmentPagerAdapter {
+    public class SlideAdapter extends FragmentStatePagerAdapter {
         private Fragment[] fragments;
 
         public SlideAdapter(FragmentManager fm, ViewPager viewPager) {
@@ -377,7 +399,12 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                 if (position == 0) {
                     arg.putString(SlideFragment.ARG_TITLE, "");
                 } else if (position == 1) {
-                    arg.putString(SlideFragment.ARG_TITLE, app.getString(R.string.pci_slide));
+                    if(payDeposit==0){
+                        arg.putString(SlideFragment.ARG_TITLE, app.getString(R.string.pci_slide_continue));
+                    }else{
+                        arg.putString(SlideFragment.ARG_TITLE, app.getString(R.string.pci_slide));
+                    }
+
                 }
 
                 fragment.setArguments(arg);
@@ -391,23 +418,26 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     private boolean canPay() {
         boolean can = true;
 
-        for (int i = 0; i < arrTermItemView.size(); i++) {
-            ImageView img = arrTermItemView.get(i).getImgCheck();
-            if (!img.isSelected()) {
-                can = false;
-                break;
+        if(payDeposit!=0){
+            for (int i = 0; i < arrTermItemView.size(); i++) {
+                ImageView img = arrTermItemView.get(i).getImgCheck();
+                if (!img.isSelected()) {
+                    can = false;
+                    break;
+                }
+            }
+
+            if (can) {
+                if (paymentType.equals(Utils.TYPE_CC)) {
+                    if (cc_card_id.isEmpty()) {
+                        can = false;
+                    }
+                } else if (paymentType.equals(Utils.BLANK)) {
+                    can = false;
+                }
             }
         }
 
-        if (can) {
-            if (paymentType.equals(Utils.TYPE_CC)) {
-                if (cc_card_id.isEmpty()) {
-                    can = false;
-                }
-            } else if (paymentType.equals(Utils.BLANK)) {
-                can = false;
-            }
-        }
         return can;
     }
 
@@ -426,8 +456,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                 String sd = String.valueOf(new Gson().toJson(postPaymentModel));
                 doPayment(postPaymentModel);
             }
-        } else
-        {
+        } else {
             //free payment
             PostFreePaymentModel postFreePaymentModel = new PostFreePaymentModel(String.valueOf(order_id), "0");
             doFreePayment(postFreePaymentModel);
@@ -455,7 +484,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                 dismissLoadingDialog();
 
                 pagerSlide.setCurrentItem(1);
-                if(message != null && (message.contains("left")|| message.contains("unavailable"))){
+                if (message != null && (message.contains("left") || message.contains("unavailable"))) {
                     final AlertDialog dialog = new AlertDialog.Builder(ReservationInfoActivity.this)
                             .setMessage(message)
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -477,7 +506,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                                 }
                             }).create();
                     dialog.show();
-                } else if(message != null && (message.contains("Paid"))){
+                } else if (message != null && (message.contains("Paid"))) {
                     final AlertDialog dialog = new AlertDialog.Builder(ReservationInfoActivity.this)
                             .setMessage(message)
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -495,14 +524,13 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                                 }
                             }).create();
                     dialog.show();
-                }else {
+                } else {
                     /*if(responseCode==Utils.CODE_FAILED){
 
                     }else{
 
                     }*/
-                    if(message != null)
-                    {
+                    if (message != null) {
                         Toast.makeText(ReservationInfoActivity.this, message, Toast.LENGTH_LONG).show();
                     }
                 }
@@ -510,7 +538,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         });
         initLoadingDialog();
     }
-    
+
     private void access3dSecure() {
         //using 3d secure
         VTConfig.VT_IsProduction = false;
@@ -681,7 +709,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                             imgPayment.setImageResource(R.drawable.ic_plus);
 
                             relPayment.setSelected(true);
-                        }else{
+                        } else {
                             relPayment.setSelected(false);
                         }
                     }
@@ -721,7 +749,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                                 imgPayment.setImageResource(R.drawable.ic_plus);
 
                                 relPayment.setSelected(true);
-                            }else{
+                            } else {
                                 relPayment.setSelected(false);
                             }
                         }
@@ -848,18 +876,32 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     }
 
     private void checkEnability(String namePayment) {
-        boolean isItEnable = true;
-        if (namePayment.equals(Utils.BLANK) || namePayment.equals(getString(R.string.pci_payment))) {
-            isItEnable = false;
-        }
 
-        if (isItEnable) {
+        if(payDeposit==0){
             pagerSlide.setVisibility(View.VISIBLE);
             relDisable.setVisibility(View.GONE);
-        } else {
-            pagerSlide.setVisibility(View.GONE);
-            relDisable.setVisibility(View.VISIBLE);
+
+            lblSelectPayment.setVisibility(View.INVISIBLE);
+            cardView.setVisibility(View.INVISIBLE);
+        }else{
+            boolean isItEnable = true;
+            if (namePayment.equals(Utils.BLANK) || namePayment.equals(getString(R.string.pci_payment))) {
+                isItEnable = false;
+            }
+
+            lblSelectPayment.setVisibility(View.VISIBLE);
+            cardView.setVisibility(View.VISIBLE);
+
+            if (isItEnable) {
+                pagerSlide.setVisibility(View.VISIBLE);
+                relDisable.setVisibility(View.GONE);
+            } else {
+                pagerSlide.setVisibility(View.GONE);
+                relDisable.setVisibility(View.VISIBLE);
+            }
         }
+
+
     }
 
     class MyWebView extends WebView {

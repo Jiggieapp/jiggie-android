@@ -24,7 +24,6 @@ import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.AddGuestActivity;
 import com.jiggie.android.activity.ecommerce.ProductListActivity;
 import com.jiggie.android.activity.ecommerce.PurchaseInfoActivity;
-import com.jiggie.android.activity.setup.country.CountryActivity;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.manager.AccountManager;
@@ -32,17 +31,14 @@ import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.model.CommEventMixpanelModel;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventDetailModel;
-import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.PostSummaryModel;
 import com.jiggie.android.model.ProductListModel;
 import com.jiggie.android.model.SummaryModel;
-import com.jiggie.android.presenter.GuestPresenter;
 import com.jiggie.android.view.InstructionItemView;
 
 import java.util.ArrayList;
 
 import butterknife.Bind;
-import butterknife.OnClick;
 
 public class TicketDetailActivity extends AbstractTicketDetailActivity {
 
@@ -50,10 +46,6 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
 
     @Bind(R.id.btnDone)
     Button btnDone;
-    @Bind(R.id.minus_button)
-    View minusButton;
-    @Bind(R.id.plus_button)
-    View plusButton;
     int quantity = 1;
     @Bind(R.id.lblQuantity)
     TextView lblQuantity;
@@ -93,6 +85,10 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
     TextView txtSoldOut;
     @Bind(R.id.card_view_guest)
     CardView cardViewGuest;
+    @Bind(R.id.rel_minus)
+    RelativeLayout relMinus;
+    @Bind(R.id.rel_plus)
+    RelativeLayout relPlus;
 
     private Dialog dialogTerms;
 
@@ -196,15 +192,15 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
             }
         });
 
-        minusButton.setOnClickListener(new View.OnClickListener() {
+        relMinus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (quantity > 1) {
                     quantity--;
                     lblQuantity.setText(String.valueOf(quantity));
-                    if(String.valueOf(price).equals(Utils.NOL_RUPIAH)){
+                    if (String.valueOf(price).equals(Utils.NOL_RUPIAH)) {
                         lblEstimatedCost.setText(getString(R.string.free));
-                    }else{
+                    } else {
                         lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(quantity * price)));
                     }
 
@@ -213,15 +209,15 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
             }
         });
 
-        plusButton.setOnClickListener(new View.OnClickListener() {
+        relPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (quantity > 0 && quantity < max) {
                     quantity++;
                     lblQuantity.setText(String.valueOf(quantity));
-                    if(String.valueOf(price).equals(Utils.NOL_RUPIAH)){
+                    if (String.valueOf(price).equals(Utils.NOL_RUPIAH)) {
                         lblEstimatedCost.setText(getString(R.string.free));
-                    }else{
+                    } else {
                         lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(quantity * price)));
                     }
 
@@ -267,9 +263,9 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
             txtSoldOut.setVisibility(View.VISIBLE);
             isSoldOut = true;
         } else {
-            if(String.valueOf(price).equals(Utils.NOL_RUPIAH)){
+            if (String.valueOf(price).equals(Utils.NOL_RUPIAH)) {
                 lblEstimatedCost.setText(getString(R.string.free));
-            }else{
+            } else {
                 lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(price)));
             }
 
