@@ -50,6 +50,7 @@ public class AddGuestActivity extends ToolbarActivity {
     RelativeLayout relSave;
 
     GuestPresenter guestPresenter;
+    private static final String TAG = AddGuestActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,7 +165,7 @@ public class AddGuestActivity extends ToolbarActivity {
 
                 // do something
                 textWatchEdited = true;
-                if (!str.contains("+")) {
+                if (!str.contains("+") && !str.isEmpty()) {
                     str = "+" + str;
                 }
                 edt62.setText(str);
@@ -202,7 +203,18 @@ public class AddGuestActivity extends ToolbarActivity {
             //String s62 = phone.substring(0, 2);
             //String phoneN = phone.substring(2, (phone.length()));
             String s62 = a.getStringExtra("dial_code");
-            edt62.setText("+" + s62);
+            //s62 = null;
+            if(s62 == null)
+                s62 = "";
+            if(!s62.isEmpty())
+            {
+                edt62.setText("+" + s62);
+            }
+            else
+            {
+                edt62.setText(s62);
+            }
+
             edtPhone.setText(phone);
         }
 
