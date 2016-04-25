@@ -14,6 +14,7 @@ import com.jiggie.android.model.PostFreePaymentModel;
 import com.jiggie.android.model.PostPaymentModel;
 import com.jiggie.android.model.PostSummaryModel;
 import com.jiggie.android.model.ProductListModel;
+import com.jiggie.android.model.PurchaseHistoryModel;
 import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SummaryModel;
 import com.jiggie.android.model.SupportModel;
@@ -562,7 +563,6 @@ public class CommerceManager extends BaseManager{
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Utils.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
                 }
 
@@ -591,5 +591,32 @@ public class CommerceManager extends BaseManager{
         public void onFailure(int responseCode, String message);
         public void onNeedToRestart();
     }*/
+
+    private static void getOrderList(final String fb_id, CustomCallback callback)
+    {
+        getInstance().getOrderList(fb_id).enqueue(callback);
+    }
+
+    public static void getOrderList(final String fb_id, final CommerceManager.OnResponseListener onResponseListener)
+    {
+        getOrderList(fb_id, new CustomCallback() {
+            @Override
+            public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                PurchaseHistoryModel purchaseHistoryModel = (PurchaseHistoryModel) response.body();
+                onResponseListener.onSuccess(purchaseHistoryModel);
+            }
+
+            @Override
+            public void onCustomCallbackFailure(String t) {
+                Utils.d(TAG, "gagal " + t);
+                onResponseListener.onFailure(Utils.CODE_FAILED, t);
+            }
+
+            @Override
+            public void onNeedToRestart() {
+                getOrderList(fb_id, onResponseListener);
+            }
+        });
+    }
 
 }

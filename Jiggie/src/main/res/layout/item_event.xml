@@ -56,7 +56,7 @@
             android:id="@+id/hListView"/>-->
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/hListView"
+            android:id="@+id/hListViewEventList"
             android:layout_height="21dp"
             android:layout_width="match_parent"
             android:scrollbars="horizontal"

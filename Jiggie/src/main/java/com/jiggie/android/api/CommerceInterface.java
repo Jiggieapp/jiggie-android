@@ -10,6 +10,7 @@ import com.jiggie.android.model.PostFreePaymentModel;
 import com.jiggie.android.model.PostPaymentModel;
 import com.jiggie.android.model.PostSummaryModel;
 import com.jiggie.android.model.ProductListModel;
+import com.jiggie.android.model.PurchaseHistoryModel;
 import com.jiggie.android.model.SucScreenCCModel;
 import com.jiggie.android.model.SucScreenVABPModel;
 import com.jiggie.android.model.SucScreenWalkthroughModel;
@@ -67,5 +68,8 @@ public interface CommerceInterface {
 
     @POST
     Call<Success2Model> postFreePayment(@Url String url, @Body PostFreePaymentModel postFreePaymentModel);
+
+    @GET(Utils.URL_GET_ORDER_LIST)
+    Call<PurchaseHistoryModel> getOrderList(@Path("fb_id") String fb_id);
 
 }

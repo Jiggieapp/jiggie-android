@@ -1,5 +1,6 @@
 package com.jiggie.android.activity.ecommerce;
 
+import android.accounts.Account;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -133,7 +134,7 @@ public class ProductListActivity extends ToolbarActivity
             throw new RuntimeException(App.getErrorMessage(e), e);
         }
 
-        checkTokenHeader();
+
     }
 
     public void checkTokenHeader()
@@ -147,10 +148,11 @@ public class ProductListActivity extends ToolbarActivity
                     //do restart here
                     SuccessTokenModel successTokenModel = (SuccessTokenModel) object;
                     final String token = successTokenModel.data.token;
-                    //Utils.d(TAG, "success token model " +  successTokenModel.data.token);
+                    Utils.d(TAG, "success token model " +  successTokenModel.data.token);
                     AccountManager.setAccessTokenToPreferences(token);
                     CommerceManager.initCommerceService();
                     BaseManager.reinstantianteRetrofit();
+                    loadData(eventId);
                     //onNeedToRestart();
                 }
 
@@ -160,7 +162,7 @@ public class ProductListActivity extends ToolbarActivity
                 }
             });
         }
-
+        else loadData(eventId);
     }
 
 
@@ -209,7 +211,7 @@ public class ProductListActivity extends ToolbarActivity
     @Override
     public void onGlobalLayout() {
         this.recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-        this.loadData(eventId);
+        checkTokenHeader();
     }
 
     @Override

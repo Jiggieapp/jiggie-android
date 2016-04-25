@@ -28,8 +28,8 @@ public abstract class CustomCallback implements Callback {
 
     @Override
     public void onResponse(Response response, Retrofit retrofit) {
-        Utils.d(TAG, "responsecode " + response.code());
-        AccountManager.setAccessTokenToPreferences("");
+        //Utils.d(TAG, "responsecode " + response.code());
+        //AccountManager.setAccessTokenToPreferences("");
         //response.code() = 401;
         final int responseCode = response.code();
         if(responseCode == 401) //error
