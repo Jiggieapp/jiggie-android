@@ -29,15 +29,18 @@ public abstract class CustomCallback implements Callback {
     @Override
     public void onResponse(Response response, Retrofit retrofit) {
         Utils.d(TAG, "responsecode " + response.code());
-        if(response.code() == 401) //error
+        AccountManager.setAccessTokenToPreferences("");
+        //response.code() = 401;
+        final int responseCode = response.code();
+        if(responseCode == 401) //error
         {
-            if(AccountManager.getAccessTokenFromPreferences().isEmpty())
+            /*if(AccountManager.getAccessTokenFromPreferences().isEmpty())
             {
                 getToken();
                 //dorestarthere
                 //onNeedToRestart();
             }
-            else onCustomCallbackFailure("");
+            else */onCustomCallbackFailure("");
         }
         else if(response.code() == 410) //expired
         {

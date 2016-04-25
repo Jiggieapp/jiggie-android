@@ -203,9 +203,9 @@ public class AddGuestActivity extends ToolbarActivity {
             //String s62 = phone.substring(0, 2);
             //String phoneN = phone.substring(2, (phone.length()));
             String s62 = a.getStringExtra("dial_code");
-            s62 = null;
+            /*s62 = null;
             if(s62 == null)
-                s62 = "";
+                s62 = "";*/
             if(!s62.isEmpty())
             {
                 edt62.setText("+" + s62);
@@ -214,7 +214,7 @@ public class AddGuestActivity extends ToolbarActivity {
             {
                 edt62.setText(s62);
             }
-
+            Utils.d(TAG, "guest62 " + s62);
             edtPhone.setText(phone);
         }
 

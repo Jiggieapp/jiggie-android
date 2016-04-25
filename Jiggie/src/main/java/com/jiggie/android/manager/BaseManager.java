@@ -41,7 +41,6 @@ public abstract class BaseManager {
 
     public static OkHttpClient getHttpClient() {
         final String accessToken = AccountManager.getAccessTokenFromPreferences();
-        Utils.d(TAG, "accesstoken " + accessToken);
         OkHttpClient httpClient = new OkHttpClient();
         httpClient.networkInterceptors().add(new Interceptor() {
             @Override
