@@ -643,7 +643,8 @@
             <RelativeLayout
                 android:id="@+id/rel_info_tap"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize">
+                android:layout_height="?attr/actionBarSize"
+                >
 
                 <TextView
                     android:id="@+id/txt_star"
@@ -651,17 +652,18 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/padding_standard_half"
                     android:text="@string/howtp_star"
-                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@+id/txt_info"
                     android:textColor="@color/purple"
                     android:layout_centerVertical="true"/>
 
                 <TextView
+                    android:id="@+id/txt_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="@string/vor_tap_info"
                     android:textSize="@dimen/normal_text_size"
-                    android:layout_toRightOf="@id/txt_star"/>
+                    android:layout_centerHorizontal="true"/>
             </RelativeLayout>
 
             <RelativeLayout

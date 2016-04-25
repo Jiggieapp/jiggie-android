@@ -43,7 +43,7 @@ public class CongratsActivity extends ToolbarActivity {
     TextView txtCongrats, txtEventTitle, txtEventDate, txtTypeNumberFill, txtGuestNameFill, txtStatusFill, txtPaymentFill, txtSummaryDate, txtRegTicketTitle,
             txtRegTicketFill, txtAdFeeFill, txtTaxFill, txtTotalFill, txtInstrucFill, txtEventTitle2,
             txtEventDate2, txtVenueTitle, txtVenueDate, lblGuestCount, lblSummaryTitle
-            , lblEstimatedBalance, lblPaidDeposit, lblEstimatedTotal, lblTotalTitle, txt_type_number_title, txtInstruc;
+            , lblEstimatedBalance, lblPaidDeposit, lblEstimatedTotal, lblTotalTitle, txt_type_number_title, txtInstruc, txtPaymentTitle, txtStatusTitle;
     LinearLayout linSummaryFooter;
     RelativeLayout relViewTicket, containerTableGuest;
     RelativeLayout scrollView;
@@ -75,7 +75,9 @@ public class CongratsActivity extends ToolbarActivity {
         txtTypeNumberFill = (TextView)findViewById(R.id.txt_type_number_fill);
         txtGuestNameFill = (TextView)findViewById(R.id.txt_guest_name_fill);
         txtStatusFill = (TextView)findViewById(R.id.txt_status_fill);
+        txtStatusTitle = (TextView)findViewById(R.id.txt_status_title);
         txtPaymentFill = (TextView)findViewById(R.id.txt_payment_fill);
+        txtPaymentTitle = (TextView)findViewById(R.id.txt_payment_title);
         txtSummaryDate = (TextView)findViewById(R.id.txt_summary_date);
         txtRegTicketTitle = (TextView)findViewById(R.id.txt_reg_ticket_title);
         txtRegTicketFill = (TextView)findViewById(R.id.txt_reg_ticket_fill);
@@ -172,10 +174,29 @@ public class CongratsActivity extends ToolbarActivity {
                     }
                     SucScreenCCModel.Data.Success_screen.Summary.Product_list product_list = summary.getProduct_list().get(0);
 
-                    txtRegTicketFill.setText(StringUtility.getRupiahFormat(product_list.getTotal_price()));
-                    txtAdFeeFill.setText(StringUtility.getRupiahFormat(product_list.getAdmin_fee()));
-                    txtTaxFill.setText(StringUtility.getRupiahFormat(product_list.getTax_amount()));
-                    txtTotalFill.setText(StringUtility.getRupiahFormat(summary.getTotal_price()));
+                    if(product_list.getTotal_price().equals(Utils.NOL_RUPIAH)){
+                        txtRegTicketFill.setText(getString(R.string.free));
+                    }else{
+                        txtRegTicketFill.setText(StringUtility.getRupiahFormat(product_list.getTotal_price()));
+                    }
+
+                    if(product_list.getAdmin_fee().equals(Utils.NOL_RUPIAH)){
+                        txtAdFeeFill.setText(getString(R.string.free));
+                    }else{
+                        txtAdFeeFill.setText(StringUtility.getRupiahFormat(product_list.getAdmin_fee()));
+                    }
+
+                    if(product_list.getTax_amount().equals(Utils.NOL_RUPIAH)){
+                        txtTaxFill.setText(getString(R.string.free));
+                    }else{
+                        txtTaxFill.setText(StringUtility.getRupiahFormat(product_list.getTax_amount()));
+                    }
+
+                    if(summary.getTotal_price().equals(Utils.NOL_RUPIAH)){
+                        txtTotalFill.setText(getString(R.string.free));
+                    }else{
+                        txtTotalFill.setText(StringUtility.getRupiahFormat(summary.getTotal_price()));
+                    }
 
                     txtEventTitle2.setText(event.getTitle());
 
@@ -198,6 +219,13 @@ public class CongratsActivity extends ToolbarActivity {
                         txtTotalFill.setVisibility(View.GONE);
                         lblTotalTitle.setVisibility(View.GONE);
                         divider.setVisibility(View.GONE);
+
+                        if(summary.getPay_deposit().equals(Utils.NOL_RUPIAH)){
+                            txtStatusTitle.setVisibility(View.GONE);
+                            txtStatusFill.setVisibility(View.GONE);
+                            txtPaymentTitle.setVisibility(View.GONE);
+                            txtPaymentFill.setVisibility(View.GONE);
+                        }
                     }else{
                         txt_type_number_title.setText(getString(R.string.vor_order_number));
                         lblSummaryTitle.setText(

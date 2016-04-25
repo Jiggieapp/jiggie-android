@@ -210,7 +210,12 @@ public class CommerceManager extends BaseManager{
                             /*if(dataTemp.getType() != null && dataTemp.getType().equals("paid")){
                                 onResponseListener.onFailure(dataTemp.getResponse(), dataTemp.getMsg());
                             }*/
-                            onResponseListener.onFailure(dataTemp.getResponse(), dataTemp.getMsg());
+                            if(dataTemp.getMsg()!=null){
+                                onResponseListener.onFailure(dataTemp.getResponse(), dataTemp.getMsg());
+                            }else{
+                                onResponseListener.onFailure(dataTemp.getResponse(), Utils.RESPONSE_FAILED);
+                            }
+
                         }
 
                     } else {

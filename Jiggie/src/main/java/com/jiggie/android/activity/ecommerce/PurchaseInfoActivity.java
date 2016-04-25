@@ -296,7 +296,9 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                     //action
                     if (position == 0) {
                         if (canPay()) {
-                            slidePay();
+                            if(isPaying==false){
+                                slidePay();
+                            }
                         } else {
                             Log.d("Pay status", "cannot pay");
                         }
@@ -368,6 +370,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     }
 
     private void slidePay() {
+        isPaying = true;
         if (Integer.parseInt(totalPrice) > 0) {
             if (paymentType.equals(Utils.TYPE_CC)) {
                 if (is_verified) {
@@ -464,12 +467,16 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.dismiss();
+                            pagerSlide.setCurrentItem(1);
+                            isPaying = false;
                         }
                     });
                     dialog3ds.setOnCancelListener(new DialogInterface.OnCancelListener() {
                         @Override
                         public void onCancel(DialogInterface dialog) {
+                            dialog.dismiss();
                             pagerSlide.setCurrentItem(1);
+                            isPaying = false;
                         }
                     });
 
@@ -634,7 +641,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     }
 
     private void doPayment(PostPaymentModel postPaymentModel) {
-        isPaying = true;
+
         CommerceManager.loaderPayment(postPaymentModel, new CommerceManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
@@ -657,10 +664,9 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
 
             @Override
             public void onFailure(int responseCode, final String message) {
+                pagerSlide.setCurrentItem(1);
                 isPaying = false;
                 dismissLoadingDialog();
-
-                pagerSlide.setCurrentItem(1);
                 if (message != null && (message.contains("left") || message.contains("unavailable"))) {
                     final AlertDialog dialog = new AlertDialog.Builder(PurchaseInfoActivity.this)
                             .setMessage(message)
@@ -726,7 +732,6 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     }
 
     private void doFreePayment(PostFreePaymentModel postFreePaymentModel) {
-        isPaying = true;
         CommerceManager.loaderFreePayment(postFreePaymentModel, new CommerceManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
@@ -742,10 +747,9 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
 
             @Override
             public void onFailure(int responseCode, String message) {
+                pagerSlide.setCurrentItem(1);
                 isPaying = false;
                 dismissLoadingDialog();
-
-                pagerSlide.setCurrentItem(1);
                 if (message != null && (message.contains("left") || message.contains("unavailable"))) {
                     final AlertDialog dialog = new AlertDialog.Builder(PurchaseInfoActivity.this)
                             .setMessage(message)

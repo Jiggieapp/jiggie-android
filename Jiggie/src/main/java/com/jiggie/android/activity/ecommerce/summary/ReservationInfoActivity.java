@@ -370,7 +370,10 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                     //action
                     if (position == 0) {
                         if (canPay()) {
-                            slidePay();
+                            if(isPaying==false){
+                                slidePay();
+                            }
+
                         } else {
                             Log.d("Pay status", "cannot pay");
                         }
@@ -442,6 +445,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     }
 
     private void slidePay() {
+        isPaying = true;
         if (Integer.parseInt(String.valueOf(payDeposit)) > 0) {
             if (paymentType.equals(Utils.TYPE_CC)) {
                 if (is_verified) {
@@ -464,11 +468,10 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     }
 
     private void doFreePayment(PostFreePaymentModel postFreePaymentModel) {
-        isPaying = true;
         CommerceManager.loaderFreePayment(postFreePaymentModel, new CommerceManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
-                isPaying = false;
+
                 dismissLoadingDialog();
                 Intent i = new Intent(ReservationInfoActivity.this, CongratsActivity.class);
 
@@ -476,14 +479,16 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                 i.putExtra(Common.FIELD_PAYMENT_TYPE, paymentType);
                 i.putExtra(Common.FIELD_FROM_ORDER_LIST, false);
                 startActivity(i);
+
+                isPaying = false;
             }
 
             @Override
             public void onFailure(int responseCode, String message) {
+                pagerSlide.setCurrentItem(1);
                 isPaying = false;
                 dismissLoadingDialog();
 
-                pagerSlide.setCurrentItem(1);
                 if (message != null && (message.contains("left") || message.contains("unavailable"))) {
                     final AlertDialog dialog = new AlertDialog.Builder(ReservationInfoActivity.this)
                             .setMessage(message)
@@ -549,6 +554,9 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         final VTCardDetails vtCardDetails = new VTCardDetails();
         //TODO: Set your card details based on user input.
         //this is a sample
+
+        String as = cardDetails.getGrossAmount();
+
         vtCardDetails.setCard_number(cardDetails.getCardNumber()); // 3DS Dummy CC
         vtCardDetails.setCard_cvv(cardDetails.getCvv());
         vtCardDetails.setCard_exp_month(cardDetails.getExpMonth());
@@ -604,7 +612,19 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                     alertBuilder.setNegativeButton("Close", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int id) {
+
                             dialog.dismiss();
+                            pagerSlide.setCurrentItem(1);
+                            isPaying = false;
+                        }
+                    });
+
+                    dialog3ds.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            dialog.dismiss();
+                            pagerSlide.setCurrentItem(1);
+                            isPaying = false;
                         }
                     });
 
@@ -619,6 +639,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
             @Override
             public void onError(Exception e) {
                 pagerSlide.setCurrentItem(1);
+                isPaying = false;
                 Toast.makeText(ReservationInfoActivity.this, getString(R.string.error_3dsecure), Toast.LENGTH_LONG).show();
                 //Something is wrong, get details message by print e.getMessage()
             }
@@ -800,11 +821,10 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     }
 
     private void doPayment(PostPaymentModel postPaymentModel) {
-        isPaying = true;
         CommerceManager.loaderPayment(postPaymentModel, new CommerceManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
-                isPaying = false;
+
                 dismissLoadingDialog();
                 Intent i;
                 if (paymentType.equals(Utils.TYPE_CC)) {
@@ -819,14 +839,15 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                 i.putExtra(Common.FIELD_PAYMENT_TYPE, paymentType);
                 i.putExtra(Common.FIELD_FROM_ORDER_LIST, false);
                 startActivity(i);
+
+                isPaying = false;
             }
 
             @Override
             public void onFailure(int responseCode, String message) {
+                pagerSlide.setCurrentItem(1);
                 isPaying = false;
                 dismissLoadingDialog();
-
-                pagerSlide.setCurrentItem(1);
 
                 Utils.d(String.valueOf(responseCode), message);
                 if (message.contains("left") || message.contains("unavailable")) {
