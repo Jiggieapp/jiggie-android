@@ -70,6 +70,11 @@ public class GuestManager extends BaseManager{
                     Log.d("Failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT_GUEST, Utils.MSG_EXCEPTION + t.toString()));
                 }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
             });
         }catch (IOException e){
             Log.d("Exception", e.toString());
@@ -100,6 +105,11 @@ public class GuestManager extends BaseManager{
                 public void onCustomCallbackFailure(String t) {
                     Log.d("Failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_GUEST_CONNECT, Utils.MSG_EXCEPTION + t.toString()));
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
                 }
             });
         }catch (IOException e){

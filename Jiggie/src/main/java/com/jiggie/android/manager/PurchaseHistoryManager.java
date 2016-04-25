@@ -42,6 +42,11 @@ public class PurchaseHistoryManager extends BaseManager {
                 Utils.d(TAG, "gagal " + t);
                 onResponseListener.onFailure(new ExceptionModel(t));
             }
+
+            @Override
+            public void onNeedToRestart() {
+
+            }
         });
     }
 }

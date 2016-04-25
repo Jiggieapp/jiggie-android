@@ -65,6 +65,11 @@ public class WalkthroughManager extends BaseManager{
                 public void onCustomCallbackFailure(String t) {
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_WALKTHROUGH, Utils.MSG_EXCEPTION + t.toString()));
                 }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
             });
         }catch (IOException e){
             Log.d("Exception", e.toString());

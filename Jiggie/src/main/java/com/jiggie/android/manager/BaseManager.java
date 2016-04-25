@@ -40,11 +40,9 @@ public abstract class BaseManager {
     private static Retrofit retrofit;
 
     public static OkHttpClient getHttpClient() {
-        final String accessToken = App.getInstance()
-                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
-                .getString(Utils.ACCESS_TOKEN, "");
+        final String accessToken = AccountManager.getAccessTokenFromPreferences();
+        Utils.d(TAG, "accesstoken " + accessToken);
         OkHttpClient httpClient = new OkHttpClient();
-        //OkHttpClient httpClient = getOkHttpClientWithSSL();
         httpClient.networkInterceptors().add(new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
@@ -78,9 +76,16 @@ public abstract class BaseManager {
                     .baseUrl(Utils.BASE_URL)
                     //.addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
-                            //.client(okHttpClient)
+                    .client(okHttpClient)
                     .build();
         }
         return retrofit;
+    }
+
+    public static void reinstantianteRetrofit()
+    {
+        Utils.d(TAG, "reinstantiate");
+        retrofit = null;
+        //getRetrofit();
     }
 }

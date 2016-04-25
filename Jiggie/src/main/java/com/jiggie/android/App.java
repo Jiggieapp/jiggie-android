@@ -93,7 +93,7 @@ public class App extends Application {
 
         FacebookSdk.sdkInitialize(this);
         AppsFlyerLib.setAppsFlyerKey(super.getString(R.string.appsflyer_devkey));
-        Fabric.with(this, new Crashlytics());
+        //Fabric.with(this, new Crashlytics());
         //endregion
         this.database = new DatabaseConnection(this);
 
@@ -105,7 +105,6 @@ public class App extends Application {
     private Thread.UncaughtExceptionHandler handler = new Thread.UncaughtExceptionHandler() {
         public void uncaughtException(Thread thread, Throwable ex) {
             // log it & phone home.
-            Utils.d("error", "masuk sini");
             if(runningActivity!=null){
                 finishAffinity(runningActivity);
             }

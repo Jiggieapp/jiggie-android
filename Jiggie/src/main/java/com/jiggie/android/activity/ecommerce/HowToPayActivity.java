@@ -130,7 +130,10 @@ public class HowToPayActivity extends ToolbarActivity {
             sendMixpanel(productSummary, eventDetail);
 
             relViewOrders.setVisibility(View.GONE);
+
+
             CommerceManager.loaderSucScreenWalkthrough(new CommerceManager.OnResponseListener() {
+
                 @Override
                 public void onSuccess(Object object) {
                     SucScreenWalkthroughModel sucScreenVABPModel = (SucScreenWalkthroughModel) object;
@@ -228,8 +231,6 @@ public class HowToPayActivity extends ToolbarActivity {
                 }
             });
         }
-
-
     }
 
     @Override
@@ -278,7 +279,6 @@ public class HowToPayActivity extends ToolbarActivity {
                     productSummary.getTotal_price(), productSummary.getProduct_list().get(0).getMax_buy(), successScreen.getCreated_at(), productSummary.getProduct_list().get(0).getNum_buy(),
                     successScreen.getAmount(), "0", successScreen.getType(), Utils.BLANK, false);
         }
-
         App.getInstance().trackMixPanelCommerce(Utils.COMM_FINISH_VA, commEventMixpanelModel);
     }
 
@@ -308,6 +308,5 @@ public class HowToPayActivity extends ToolbarActivity {
         } else {
             finish();
         }
-
     }
 }

@@ -101,6 +101,11 @@ public class SocialManager extends BaseManager{
                 public void onCustomCallbackFailure(String t) {
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_FEED, t));
                 }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
             });
         } catch (IOException e) {
             e.printStackTrace();
@@ -131,6 +136,11 @@ public class SocialManager extends BaseManager{
                 public void onCustomCallbackFailure(String t) {
                     Log.d("Failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_MATCH, Utils.MSG_EXCEPTION + t.toString()));
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
                 }
             });
         }catch (IOException e){
@@ -169,6 +179,11 @@ public class SocialManager extends BaseManager{
                 public void onCustomCallbackFailure(String t) {
                     Utils.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
                 }
             });
         }catch (IOException e){
