@@ -148,10 +148,9 @@ public class ProductListActivity extends ToolbarActivity
                     //do restart here
                     SuccessTokenModel successTokenModel = (SuccessTokenModel) object;
                     final String token = successTokenModel.data.token;
-                    Utils.d(TAG, "success token model " +  successTokenModel.data.token);
                     AccountManager.setAccessTokenToPreferences(token);
-                    CommerceManager.initCommerceService();
                     BaseManager.reinstantianteRetrofit();
+                    CommerceManager.initCommerceService();
                     loadData(eventId);
                     //onNeedToRestart();
                 }

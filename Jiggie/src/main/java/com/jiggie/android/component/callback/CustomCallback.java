@@ -64,8 +64,8 @@ public abstract class CustomCallback implements Callback {
                 final String token = successTokenModel.data.token;
                 //Utils.d(TAG, "success token model " +  successTokenModel.data.token);
                 AccountManager.setAccessTokenToPreferences(token);
-                CommerceManager.initCommerceService();
                 BaseManager.reinstantianteRetrofit();
+                CommerceManager.initCommerceService();
                 onNeedToRestart();
             }
 
