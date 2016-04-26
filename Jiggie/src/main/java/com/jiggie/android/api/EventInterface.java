@@ -3,6 +3,7 @@ package com.jiggie.android.api;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.EventModel;
+import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.TagsListModel;
 
 import retrofit.Call;
@@ -22,4 +23,7 @@ public interface EventInterface {
 
     @GET(Utils.URL_TAGSLIST)
     Call<TagsListModel> getTagsList();
+
+    @GET(Utils.URL_LIKE_EVENT)
+    Call<Success2Model> actionLikeEvent(@Path("event_id") String event_id, @Path("fb_id") String fb_id, @Path("action") String action);
 }

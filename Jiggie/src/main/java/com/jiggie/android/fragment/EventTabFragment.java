@@ -4,9 +4,14 @@ import android.animation.Animator;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -72,6 +77,12 @@ public class EventTabFragment extends Fragment
     TextView txtWkDesc;
     @Bind(R.id.layout_walkthrough)
     RelativeLayout layoutWalkthrough;
+    @Bind(R.id.fab)
+    FloatingActionButton fab;
+    @Bind(R.id.bottom_sheet)
+    FrameLayout bottomSheet;
+    @Bind(R.id.contentView)
+    CoordinatorLayout contentView;
     /*@Bind(R.id.tab)
     TableLayout timeTab;*/
     /*@Bind(R.id.txtFilter)
@@ -99,6 +110,7 @@ public class EventTabFragment extends Fragment
     private static final String TAG = EventTabFragment.class.getSimpleName();
     private View failedView;
     private Dialog dialogWalkthrough;
+    boolean isAlreadyExpand = false;
 
     public EventTabFragment() {
 
@@ -133,6 +145,34 @@ public class EventTabFragment extends Fragment
         View view = this.rootView = inflater.inflate(R.layout.fragment_tab_event, container, false);
         ButterKnife.bind(this, view);
         //EventBus.getDefault().register(this);
+
+        final BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
+
+        behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+
+            }
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                // React to dragging events
+
+            }
+        });
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isAlreadyExpand){
+                    behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    isAlreadyExpand = false;
+                }else{
+                    behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    isAlreadyExpand = true;
+                }
+
+            }
+        });
+
         return view;
     }
 
@@ -503,7 +543,7 @@ public class EventTabFragment extends Fragment
         dialogWalkthrough = new Dialog(getActivity());
         dialogWalkthrough.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogWalkthrough.setContentView(R.layout.walkthrough_screen);
-        dialogWalkthrough.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialogWalkthrough.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialogWalkthrough.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 
         RelativeLayout layout = (RelativeLayout) dialogWalkthrough.findViewById(R.id.layout_walkthrough);

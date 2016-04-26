@@ -63,6 +63,10 @@ public class EventManager extends BaseManager{
         getInstance().getTagsList().enqueue(callback);
     }
 
+    private static void actionLikeEvent(String _id, String fb_id, String action, Callback callback) throws IOException {
+        getInstance().actionLikeEvent(_id, fb_id, action).enqueue(callback);
+    }
+
     public static void loaderEvent(String fb_id){
         try {
             getEventList(fb_id, new CustomCallback() {
@@ -190,6 +194,33 @@ public class EventManager extends BaseManager{
         }
     }
 
+    public static void loaderLikeEvent(final String _id, final String fb_id, String action, final OnResponseEventListener onResponseListener){
+        try {
+            actionLikeEvent(_id, fb_id, action, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                    /*String responses = new Gson().toJson(response.body());
+                    Utils.d("res", responses);*/
+                    int responseCode = response.code();
+                    if (responseCode == Utils.CODE_SUCCESS) {
+                        onResponseListener.onSuccess(response.body());
+                    } else {
+                        onResponseListener.onFailure(responseCode, Utils.RESPONSE_FAILED);
+                    }
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    Utils.d("Failure", t.toString());
+                    onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+                }
+            });
+        }catch (IOException e){
+            Utils.d("Exception", e.toString());
+            onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
+        }
+    }
+
     public static void saveTagsList(TagsListModel tagsListModel){
         String model = new Gson().toJson(tagsListModel);
         App.getInstance().getSharedPreferences(Utils.PREFERENCE_TAGLIST, Context.MODE_PRIVATE).edit()
@@ -216,6 +247,11 @@ public class EventManager extends BaseManager{
         }
 
         App.getInstance().savePreference(Utils.TAGS_LIST, setValues);
+    }
+
+    public interface OnResponseEventListener {
+        public void onSuccess(Object object);
+        public void onFailure(int responseCode, String message);
     }
 
 }
