@@ -75,13 +75,15 @@
                     </FrameLayout>
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
+
+            <com.andtinder.view.CardContainer
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/layoutview"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"/>
         </LinearLayout>
 
-        <com.andtinder.view.CardContainer
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/layoutview"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" />
+
 
         <FrameLayout
             android:id="@+id/cardEmpty"

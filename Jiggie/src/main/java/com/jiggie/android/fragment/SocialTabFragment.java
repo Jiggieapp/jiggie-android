@@ -9,12 +9,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -33,8 +36,6 @@ import com.android.volley.VolleyError;
 import com.andtinder.model.CardModel;
 import com.andtinder.model.Orientations;
 import com.andtinder.view.CardContainer;
-import com.andtinder.view.CardStackAdapter;
-import com.andtinder.view.SimpleCardStackAdapter;
 import com.bumptech.glide.DrawableTypeRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
@@ -50,6 +51,7 @@ import com.jiggie.android.component.SimpleJSONObject;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
+import com.jiggie.android.component.adapter.SocialCardAdapter;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.manager.AccountManager;
@@ -66,7 +68,6 @@ import com.jiggie.android.model.Success2Model;
 
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -141,8 +142,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     }
 
     @Override
-    public int getIcon()
-    {
+    public int getIcon() {
         return R.drawable.ic_visibility_white_24dp;
     }
 
@@ -157,13 +157,13 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         //currentSetting = AccountManager.loadSetting();
 
         boolean a = AccountManager.anySettingChange;
-        if (this.current == null){
+        if (this.current == null) {
             if (switchSocialize.isChecked()) {
                 txtSocialize.setText(R.string.socialize_description);
                 this.onRefresh();
-                if(this.cardEmpty.getVisibility() == View.GONE)
+                if (this.cardEmpty.getVisibility() == View.GONE)
                     this.progressBar.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 this.layoutSocialize.setVisibility(View.VISIBLE);
                 txtSocialize.setText(R.string.socialize_description_off);
             }
@@ -173,7 +173,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             }
         }
 
-        if (switchSocialize.isChecked()&&AccountManager.anySettingChange) {
+        if (switchSocialize.isChecked() && AccountManager.anySettingChange) {
             txtSocialize.setText(R.string.socialize_description);
             this.onRefresh();
             AccountManager.anySettingChange = false;
@@ -209,12 +209,9 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         //wandy 22-02-2016
         //currentSetting = null;
 
-        if(currentSetting != null)
-        {
+        if (currentSetting != null) {
             this.switchSocialize.setChecked(currentSetting.isMatchme());
-         }
-        else
-        {
+        } else {
             this.switchSocialize.setChecked(true);
         }
         this.switchSocialize.setOnCheckedChangeListener(this.socializeChanged);
@@ -225,7 +222,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
 
         //wandy 11-03-206
         //generalTxtEvent.setTextColor(getActivity().getResources().getColor(R.color.));
-        cardsContainer.setOrientation(Orientations.Orientation.Ordered);
+        /*cardsContainer.setOrientation(Orientations.Orientation.Ordered);
         CardModel card = new CardModel("Title1", "Description goes here",
                 getActivity().getResources().getDrawable(R.drawable.like));
         CardModel card2 = new CardModel("Title2", "Description goes here 2",
@@ -249,11 +246,11 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         adapter.add(card);
         adapter.add(card2);
         adapter.add(card3);
-        cardsContainer.setAdapter(adapterr);
+        cardsContainer.setAdapter(adapterr);*/
     }
 
     private void onRefresh() {
-        if(!AccountManager.isInSettingPage){
+        if (!AccountManager.isInSettingPage) {
             currentSetting = AccountManager.loadSetting();
             if (super.getContext() == null) {
                 // fragment already destroyed.
@@ -273,8 +270,8 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         }
     }
 
-    public void onEvent(SocialModel message){
-        current = null;
+    public void onEvent(SocialModel message) {
+        /*current = null;
         socialSize = 0;
 
         if(switchSocialize.isChecked())
@@ -306,15 +303,99 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             if(this.progressBar.getVisibility() == View.VISIBLE)
                 this.progressBar.setVisibility(View.GONE);
             dismissProgressDialog();
-        }
+        }*/
 
+        fillSocialCard(message);
     }
 
-    public void onEvent(ExceptionModel message){
+    private SocialCardAdapter cardStackAdapter;
+
+    protected void fillSocialCard(SocialModel message) {
+        /*for (int i = 0; i < message.getData().getSocial_feeds().size(); i++) {
+            final SocialModel.Data.SocialFeeds item = message.getData().getSocial_feeds().get(i);
+        }*/
+
+        this.layoutSocialize.setVisibility(View.VISIBLE);
+        this.cardEmpty.setVisibility(View.GONE);
+        this.progressBar.setVisibility(View.GONE);
+
+        ArrayList<SocialModel.Data.SocialFeeds> temp = new ArrayList<>();
+        ArrayList<CardModel> dummy = new ArrayList<>();
+        for(SocialModel.Data.SocialFeeds item : message.getData().getSocial_feeds())
+        {
+            temp.add(item);
+            CardModel cardModel = new CardModel(item.getFrom_first_name()
+                    , "", (Drawable)((Drawable)null));
+            dummy.add(cardModel);
+
+        }
+        cardStackAdapter = new SocialCardAdapter(temp, dummy, getActivity());
+        cardsContainer.setOrientation(Orientations.Orientation.Ordered);
+        cardsContainer.setAdapter(cardStackAdapter);
+
+        /*
+        cardStackAdapter = new SocialCardAdapter(getActivity());
+        for(SocialModel.Data.SocialFeeds item : message.getData().getSocial_feeds())
+        {
+            cardStackAdapter.add(item);
+        }
+        cardsContainer.setOrientation(Orientations.Orientation.Ordered);
+        cardsContainer.setAdapter(cardStackAdapter);*/
+
+        /*CustomCardStackAdapter adapter = new CustomCardStackAdapter(getActivity(), message.getData().getSocial_feeds()) {
+            @Override
+            protected View getCardView(int position, SocialModel.Data.SocialFeeds model
+                    , View convertView, ViewGroup parent) {
+                ViewHolder holder;
+                if (convertView == null) {
+                    LayoutInflater inflater = LayoutInflater.from(this.getContext());
+                    convertView = inflater.inflate(R.layout.item_social_card_general, parent, false);
+                    holder = new ViewHolder(convertView);
+                    convertView.setTag(holder);
+                    assert convertView != null;
+                } else {
+                    holder = (ViewHolder) convertView.getTag();
+                }
+
+                holder.generalTxtUser.setText(model.getFrom_first_name());
+                return convertView;
+            }
+        };
+        cardsContainer.setOrientation(Orientations.Orientation.Ordered);
+        cardsContainer.setAdapter(adapter);*/
+    }
+
+    static class ViewHolder {
+        @Bind(R.id.card)
+        CardView cardView;
+
+        @Bind(R.id.cardGeneral)
+        FrameLayout cardGeneral;
+
+        @Bind(R.id.txtConnectGeneral)
+        TextView generalTxtConnect;
+        @Bind(R.id.txtEventGeneral)
+        TextView generalTxtEvent;
+        @Bind(R.id.imageUserGeneral)
+        ImageView generalImage;
+        @Bind(R.id.txtUserGeneral)
+        TextView generalTxtUser;
+        @Bind(R.id.btnYesGeneral)
+        Button generalBtnYes;
+        @Bind(R.id.btnNoGeneral)
+        Button generalBtnNo;
+
+        ViewHolder(View view) {
+            ButterKnife.bind(this, view);
+            //generalTxtUser = (TextView) ;
+        }
+    }
+
+    public void onEvent(ExceptionModel message) {
         String ex = message.getMessage();
         //Utils.d(TAG, "exception " + ex);
-        if(message.getFrom().equals(Utils.FROM_SOCIAL_FEED)||message.getFrom().equals(Utils.FROM_SOCIAL_MATCH)||message.getFrom().equals(Utils.FROM_EVENT_DETAIL)){
-            if(ex.equals(Utils.RESPONSE_FAILED+" "+"empty data")){
+        if (message.getFrom().equals(Utils.FROM_SOCIAL_FEED) || message.getFrom().equals(Utils.FROM_SOCIAL_MATCH) || message.getFrom().equals(Utils.FROM_EVENT_DETAIL)) {
+            if (ex.equals(Utils.RESPONSE_FAILED + " " + "empty data")) {
                 this.layoutSocialize.setVisibility(View.GONE);
                 this.cardEmpty.setVisibility(View.VISIBLE);
                 dismissProgressDialog();
@@ -322,12 +403,12 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                 this.cardInbound.setVisibility(View.GONE);
                 this.progressBar.setVisibility(View.GONE);
                 this.card.setVisibility(View.GONE);
-            }else{
+            } else {
                 if (getContext() != null) {
                     dismissProgressDialog();
                     Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
-                    if(message.getFrom().equals(Utils.FROM_SOCIAL_MATCH)||message.getFrom().equals(Utils.FROM_EVENT_DETAIL)){
+                    if (message.getFrom().equals(Utils.FROM_SOCIAL_MATCH) || message.getFrom().equals(Utils.FROM_EVENT_DETAIL)) {
                         enableButton(true);
                     }
                 }
@@ -354,7 +435,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             this.cardEmpty.setVisibility(View.GONE);
             this.card.setVisibility(View.VISIBLE);
 
-           //final String image = App.getFacebookImage(value.getFrom_fb_id(), generalImage.getWidth() * 2);
+            //final String image = App.getFacebookImage(value.getFrom_fb_id(), generalImage.getWidth() * 2);
             final String image = value.getImage();
             Utils.d(TAG, "image " + image);
             final DrawableTypeRequest<String> glideRequest = Glide.with(SocialTabFragment.this).load(image);
@@ -399,7 +480,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
 
         //wandy 03-03-2016
         //this.progressBar.setVisibility(View.VISIBLE);
-        if(this.progressBar.getVisibility() == View.VISIBLE)
+        if (this.progressBar.getVisibility() == View.VISIBLE)
             this.progressBar.setVisibility(View.GONE);
         dismissProgressDialog();
     }
@@ -480,8 +561,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
 
     @OnClick(R.id.cardInbound)
     void cardOnClick() {
-        if(current != null)
-        {
+        if (current != null) {
             Intent i = new Intent(super.getContext(), EventDetailActivity.class);
             i.putExtra(Common.FIELD_EVENT_ID, current.getEvent_id());
             i.putExtra(Common.FIELD_EVENT_NAME, current.getEvent_name());
@@ -494,7 +574,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     @OnClick(R.id.btnYesInbound)
     void btnYesInboundOnClick() {
         this.btnYesOnClick();
-        socialSize-=1;
+        socialSize -= 1;
         setHomeTitle();
     }
 
@@ -508,7 +588,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     @OnClick(R.id.btnNoInbound)
     void btnNoInboundONClick() {
         this.btnNoOnClick();
-        socialSize-=1;
+        socialSize -= 1;
         setHomeTitle();
     }
 
@@ -527,22 +607,19 @@ public class SocialTabFragment extends Fragment implements TabFragment {
 
     private ProgressDialog progressDialog;
 
-    private void showProgressDialog()
-    {
-        if(progressDialog == null)
-        {
+    private void showProgressDialog() {
+        if (progressDialog == null) {
             progressDialog = ProgressDialog.show(getActivity(), "",
                     getResources().getString(R.string.wait));
             progressDialog.setCancelable(false);
         }
 
-        if(!progressDialog.isShowing())
+        if (!progressDialog.isShowing())
             progressDialog.show();
     }
 
-    private void dismissProgressDialog()
-    {
-        if(progressDialog!=null && progressDialog.isShowing())
+    private void dismissProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing())
             progressDialog.dismiss();
     }
 
@@ -554,14 +631,13 @@ public class SocialTabFragment extends Fragment implements TabFragment {
 
         confirm = confirms;
         showProgressDialog();
-        if(current!=null)
+        if (current != null)
             SocialManager.loaderSocialMatch(AccessToken.getCurrentAccessToken().getUserId(), this.current.getFrom_fb_id(), confirm ? "approved" : "denied");
     }
 
     public void onEvent(Success2Model message) {
-        if(message.getFrom().equalsIgnoreCase(SocialManager.TAG)
-                /*|| message.getFrom().equalsIgnoreCase(Utils.FROM_PROFILE_SETTING)*/)
-        {
+        if (message.getFrom().equalsIgnoreCase(SocialManager.TAG)
+                /*|| message.getFrom().equalsIgnoreCase(Utils.FROM_PROFILE_SETTING)*/) {
             final App app = App.getInstance();
             final Context context = getContext();
             final SocialModel.Data.SocialFeeds socialMatch = current;
@@ -601,9 +677,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                 }
 
                 //dismissProgressDialog();
-            }
-            else
-            {
+            } else {
                 app.trackMixPanelEvent("Passed Feed Item");
             }
         }
@@ -646,7 +720,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                     card.setVisibility(View.GONE);
                     onRefresh();
                     progressBar.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     layoutSocialize.setVisibility(View.VISIBLE);
                     txtSocialize.setText(R.string.socialize_description_off);
                 }
@@ -664,18 +738,15 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     private void setHomeTitle() {
         if (this.homeMain != null) {
             //final int unreadCount = this.adapter.countUnread();
-            if (socialSize > 0)
-            {
-                if(socialSize >= 99)
-                    this.title =  "99";
+            if (socialSize > 0) {
+                if (socialSize >= 99)
+                    this.title = "99";
                 else
                     this.title = socialSize + "";
 
-            }
-            else if(socialSize <= 0)
-            {
+            } else if (socialSize <= 0) {
                 socialSize = 0;
-                this.title="0";
+                this.title = "0";
             }
             this.homeMain.onTabTitleChanged(this);
         }
@@ -688,11 +759,11 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         dialogWalkthrough.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         dialogWalkthrough.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 
-        RelativeLayout layout = (RelativeLayout)dialogWalkthrough.findViewById(R.id.layout_walkthrough);
-        final ImageView imgWk = (ImageView)dialogWalkthrough.findViewById(R.id.img_wk);
-        final TextView txtWkAction = (TextView)dialogWalkthrough.findViewById(R.id.txt_wk_action);
-        final TextView txtWkTitle = (TextView)dialogWalkthrough.findViewById(R.id.txt_wk_title);
-        final TextView txtWkDesc = (TextView)dialogWalkthrough.findViewById(R.id.txt_wk_desc);
+        RelativeLayout layout = (RelativeLayout) dialogWalkthrough.findViewById(R.id.layout_walkthrough);
+        final ImageView imgWk = (ImageView) dialogWalkthrough.findViewById(R.id.img_wk);
+        final TextView txtWkAction = (TextView) dialogWalkthrough.findViewById(R.id.txt_wk_action);
+        final TextView txtWkTitle = (TextView) dialogWalkthrough.findViewById(R.id.txt_wk_title);
+        final TextView txtWkDesc = (TextView) dialogWalkthrough.findViewById(R.id.txt_wk_desc);
         imgWk.setImageResource(R.drawable.wk_img_suggestion);
         txtWkAction.setPadding(0, 0, Utils.myPixel(getActivity(), 27), Utils.myPixel(getActivity(), 22));
         txtWkAction.setText(getString(R.string.wk_match_action));
@@ -749,14 +820,14 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         dialogWalkthrough.show();
     }
 
-    private void showAgainWalkthroughDialog(){
-        if(dialogWalkthrough!=null&&!dialogWalkthrough.isShowing()){
+    private void showAgainWalkthroughDialog() {
+        if (dialogWalkthrough != null && !dialogWalkthrough.isShowing()) {
             dialogWalkthrough.show();
         }
     }
 
-    private void dismissWalkthroughDialog(){
-        if(dialogWalkthrough!=null&&dialogWalkthrough.isShowing()){
+    private void dismissWalkthroughDialog() {
+        if (dialogWalkthrough != null && dialogWalkthrough.isShowing()) {
             dialogWalkthrough.dismiss();
         }
     }
