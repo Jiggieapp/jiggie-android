@@ -30,6 +30,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.andtinder.model.CardModel;
+import com.andtinder.model.Orientations;
+import com.andtinder.view.CardContainer;
+import com.andtinder.view.CardStackAdapter;
+import com.andtinder.view.SimpleCardStackAdapter;
 import com.bumptech.glide.DrawableTypeRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
@@ -60,6 +65,9 @@ import com.jiggie.android.model.SocialModel;
 import com.jiggie.android.model.Success2Model;
 
 import org.json.JSONObject;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -111,6 +119,9 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     Button inboundBtnYes;
     @Bind(R.id.btnNoInbound)
     Button inboundBtnNo;
+
+    @Bind(R.id.layoutview)
+    CardContainer cardsContainer;
 
     //private SocialMatch current;
     private HomeMain homeMain;
@@ -214,7 +225,31 @@ public class SocialTabFragment extends Fragment implements TabFragment {
 
         //wandy 11-03-206
         //generalTxtEvent.setTextColor(getActivity().getResources().getColor(R.color.));
+        cardsContainer.setOrientation(Orientations.Orientation.Ordered);
+        CardModel card = new CardModel("Title1", "Description goes here",
+                getActivity().getResources().getDrawable(R.drawable.like));
+        CardModel card2 = new CardModel("Title2", "Description goes here 2",
+                getActivity().getResources().getDrawable(R.drawable.badge_background));
+        CardModel card3 = new CardModel("Title3", "Description goes here 3",
+                getActivity().getResources().getDrawable(R.drawable.bg_circle_accent));
 
+        ArrayList<CardModel> arrayList = new ArrayList<>();
+        arrayList.add(card);
+        arrayList.add(card2);
+        arrayList.add(card3);
+
+        SimpleCardStackAdapter adapter = new SimpleCardStackAdapter(getActivity());
+        CardStackAdapter adapterr = new CardStackAdapter(getActivity(), arrayList) {
+            @Override
+            protected View getCardView(int i, CardModel cardModel, View view, ViewGroup viewGroup) {
+                return null;
+            }
+        };
+
+        adapter.add(card);
+        adapter.add(card2);
+        adapter.add(card3);
+        cardsContainer.setAdapter(adapterr);
     }
 
     private void onRefresh() {

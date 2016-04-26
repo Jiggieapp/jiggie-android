@@ -83,7 +83,6 @@ public abstract class BaseManager {
 
     public static void reinstantianteRetrofit()
     {
-        Utils.d(TAG, "reinstantiate");
         retrofit = null;
         //getRetrofit();
     }

@@ -44,7 +44,8 @@
                 android:layout_height="0dp"
                 android:layout_marginBottom="?attr/actionBarSize"
                 android:layout_marginTop="@dimen/padding_standard"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:visibility="gone">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -75,6 +76,12 @@
                 </RelativeLayout>
             </android.support.v7.widget.CardView>
         </LinearLayout>
+
+        <com.andtinder.view.CardContainer
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/layoutview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
 
         <FrameLayout
             android:id="@+id/cardEmpty"

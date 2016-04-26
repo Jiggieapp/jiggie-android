@@ -95,6 +95,9 @@ allprojects {
 }
 
 dependencies {
+    //swipeable cards
+    compile 'com.github.kikoso:SwipeableCards:1.1-RELEASE@aar'
+
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }
@@ -127,6 +130,5 @@ dependencies {
     compile(name: 'VTAndroidAPI', ext: 'aar')
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
 
-    //swipeable cards
-    //compile 'com.github.kikoso:SwipeableCards:1.1-RELEASE@aar'
+
 }
