@@ -221,6 +221,35 @@ public class EventManager extends BaseManager{
         }
     }
 
+    public static void loaderTags(final OnResponseEventListener onResponseListener){
+        try {
+            getTagsList(new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                    //String header = String.valueOf(response.code());
+                    /*String responses = new Gson().toJson(response.body());
+                    Utils.d("res", responses);*/
+
+                    int responseCode = response.code();
+                    if (responseCode == Utils.CODE_SUCCESS) {
+                        onResponseListener.onSuccess(response.body());
+                    } else {
+                        onResponseListener.onFailure(responseCode, Utils.RESPONSE_FAILED);
+                    }
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    Utils.d("Failure", t.toString());
+                    onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+                }
+            });
+        }catch (IOException e){
+            Utils.d("Exception", e.toString());
+            onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
+        }
+    }
+
     public static void saveTagsList(TagsListModel tagsListModel){
         String model = new Gson().toJson(tagsListModel);
         App.getInstance().getSharedPreferences(Utils.PREFERENCE_TAGLIST, Context.MODE_PRIVATE).edit()

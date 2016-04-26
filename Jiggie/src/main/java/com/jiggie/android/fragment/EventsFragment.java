@@ -4,11 +4,15 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -28,6 +32,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -64,8 +69,6 @@ public class EventsFragment extends Fragment
     /*ViewPager viewPagerEvents;*/ NonSwipeableViewPager viewPagerEvents;
     @Bind(R.id.swipe_refresh)
     SwipeRefreshLayout refreshLayout;
-    @Bind(R.id.coordinatorLayout)
-    CoordinatorLayout coordinatorLayout;
 
     private PageAdapter pageAdapter;
     private View rootView;
@@ -155,6 +158,12 @@ public class EventsFragment extends Fragment
     }
 
     EventTabFragment todayFragment, tomorrowFragment, upcomingFragment;
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
+    }
 
     private class PageAdapter extends FragmentPagerAdapter {
         private final Fragment[] fragments;
@@ -248,6 +257,8 @@ public class EventsFragment extends Fragment
         this.viewPagerEvents.setPagingEnabled(true);
         this.refreshLayout.setOnRefreshListener(this);
         super.setHasOptionsMenu(true);
+
+
     }
 
     @Override
@@ -379,8 +390,7 @@ public class EventsFragment extends Fragment
                                     filter(searchText, true);
                                 } else {
                                     boolean isExpanded = false;
-                                    if(searchView != null && !searchView.isIconified())
-                                    {
+                                    if (searchView != null && !searchView.isIconified()) {
                                         isExpanded = true;
                                     }
                                     filter("", isExpanded);
@@ -527,7 +537,7 @@ public class EventsFragment extends Fragment
         dialogWalkthrough = new Dialog(getActivity());
         dialogWalkthrough.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogWalkthrough.setContentView(R.layout.walkthrough_screen);
-        dialogWalkthrough.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialogWalkthrough.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialogWalkthrough.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 
         RelativeLayout layout = (RelativeLayout) dialogWalkthrough.findViewById(R.id.layout_walkthrough);

@@ -6,10 +6,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -21,22 +26,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.activity.event.EventDetailActivity;
+import com.jiggie.android.component.FlowLayout;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.model.Common;
+import com.jiggie.android.model.MemberSettingResultModel;
 import com.jiggie.android.model.PostLocationModel;
+import com.jiggie.android.model.TagsListModel;
+
+import java.util.ArrayList;
+import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -53,6 +67,12 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     Toolbar toolbar;
     @Bind(R.id.tab)
     TabLayout tab;
+    /*@Bind(R.id.bottom_sheet)
+    RelativeLayout bottomSheet;*/
+    @Bind(R.id.fab)
+    FloatingActionButton fab;
+    @Bind(R.id.flowLayout)
+    FlowLayout flowLayout;
     //@Bind(R.id.fab) FloatingActionButton fab;
 
     private TabFragment lastSelectedFragment;
@@ -66,11 +86,15 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     final int CHAT_TAB = 2;
 
     private int currentPosition;
+    boolean isAlreadyExpand = false;
+    private ArrayList<String> selectedItems = new ArrayList<>();
+    private boolean hasChanged;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return this.rootView = inflater.inflate(R.layout.fragment_home, container, false);
+        View view = this.rootView = inflater.inflate(R.layout.fragment_home, container, false);
+        return view;
     }
 
     private boolean isNeedToBeRedirected() {
@@ -81,8 +105,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
             String afSub1 = Utils.AFsub2;
             pref.edit().putBoolean(Utils.IS_NEED_TO_BE_REDIRECTED_TO_EVENT_DETAIL, false).commit();
             return (isNeedToBeRedirected && !afSub1.isEmpty() && !afSub1.equalsIgnoreCase("null"));
-        }
-        else return false;
+        } else return false;
     }
 
     @Override
@@ -103,7 +126,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         activity.setSupportActionBar(toolbar);
 
         this.adapter = new PageAdapter(this, activity.getSupportFragmentManager());
-        Utils.d(TAG, "onActivityCreated "  + adapter.getCount());
+        Utils.d(TAG, "onActivityCreated " + adapter.getCount());
         this.viewPager.setOffscreenPageLimit(this.adapter.getCount());
         this.viewPager.setAdapter(this.adapter);
 
@@ -169,16 +192,175 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
                     , Utils.AFsub2 /*"56cbf750acbe12030016860d"*/);
             //i.putExtra(Common.FIELD_EVENT_NAME, event.getTitle());
             super.startActivity(i);
-        }
-        else //app invite
+        } else //app invite
         {
 
         }
 
+        //PART OF BOTTOM SHEET FILTER=================
+        CoordinatorLayout coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.cl_main);
+        final View bottomSheet = coordinatorLayout.findViewById(R.id.bottom_sheet);
+        final BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
 
+        behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if(newState==BottomSheetBehavior.STATE_SETTLING){
+                    boolean isShow = bottomSheet.isShown();
+                    behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
+                Log.d("state",String.valueOf(newState));
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                // React to dragging events
+
+            }
+        });
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /*FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.myPixel(getActivity(), 156), 0);
+                bottomSheet.setLayoutParams(layoutParams);*/
+
+                if (isAlreadyExpand) {
+                    fab.setImageResource(R.drawable.ic_filter_list_white_24dp);
+                    behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                    isAlreadyExpand = false;
+                } else {
+                    fab.setImageResource(R.drawable.ic_action_cancel);
+                    behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    isAlreadyExpand = true;
+                }
+
+
+            }
+        });
+        //behavior.setHideable(true);
+
+        EventManager.loaderTags(new EventManager.OnResponseEventListener() {
+            @Override
+            public void onSuccess(Object object) {
+                TagsListModel dataTemp = (TagsListModel) object;
+
+                setTags(dataTemp);
+            }
+
+            @Override
+            public void onFailure(int responseCode, String message) {
+                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG);
+            }
+        });
+        //END OF PART OF BOTTOM SHEET FILTER=================
     }
 
-    public static void sendLocationInfo(){
+    public Set<String> getTags() {
+        Set<String> tags = App.getInstance()
+                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                .getStringSet(Utils.TAGS_LIST, null);
+        return tags;
+        //return null;
+    }
+
+    private void setTags(TagsListModel tagsListModel){
+        EventManager.saveTags(tagsListModel.getData().getTagslist());
+        AccountManager.getUserTags(new AccountManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object) {
+                MemberSettingResultModel memberSettingResultModel = (MemberSettingResultModel) object;
+                ArrayList<String> result = memberSettingResultModel.getData().getMembersettings().getExperiences();
+
+                for (String res : getTags()) {
+                    final View view = getActivity().getLayoutInflater().inflate(R.layout.item_setup_tag, flowLayout, false);
+                    final ViewHolder holder = new ViewHolder(getActivity(), view, res);
+
+                    holder.textView.setText(holder.text);
+                    //holder.textView.setTextColor(getResources().getColor(android.R.color.white));
+                    //holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_blue));
+                    //selectedItems.add(holder.text);
+                    flowLayout.addView(view);
+                    if (result.contains(res))
+                    {
+                        selectedItems.add(res);
+                        //holder.checkView.setVisibility(View.GONE);
+                        holder.checkView.setVisibility(View.INVISIBLE);
+                    } else {
+                        //setSelected(holder.container, holder.textView, false);
+                        holder.checkView.setVisibility(View.VISIBLE);
+                    }
+                    //onTagClick(holder);
+                    setSelected(holder, holder.checkView.getVisibility() != View.VISIBLE);
+                    hasChanged = false;
+
+                    view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                        @Override
+                        public void onGlobalLayout() {
+                            view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                            holder.container.setMinimumWidth(holder.container.getMeasuredWidth());
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(int responseCode, String message) {
+                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG);
+            }
+        });
+    }
+
+    class ViewHolder {
+        @Bind(R.id.textView)
+        TextView textView;
+        @Bind(R.id.checkView)
+        View checkView;
+        @Bind(R.id.container)
+        View container;
+
+        View parent;
+        String text;
+
+        public ViewHolder(final FragmentActivity activity, View parent, String text) {
+            ButterKnife.bind(this, parent);
+            this.textView.setText(text);
+            this.parent = parent;
+            this.text = text;
+
+            this.container.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (activity != null)
+                        onTagClick(ViewHolder.this);
+                }
+            });
+        }
+    }
+
+    private void onTagClick(ViewHolder holder) {
+        final boolean selected = holder.checkView.getVisibility() != View.VISIBLE;
+        if (selected) {
+            this.selectedItems.add(holder.text);
+
+        } else {
+            this.selectedItems.remove(holder.text);
+        }
+        setSelected(holder, selected);
+    }
+
+    private void setSelected(ViewHolder holder, boolean selected) {
+        if (selected) {
+            holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_blue));
+            holder.textView.setTextColor(getResources().getColor(android.R.color.white));
+        } else {
+            holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_grey));
+            holder.textView.setTextColor(getResources().getColor(R.color.textDarkGray));
+        }
+        holder.checkView.setVisibility(selected ? View.VISIBLE : View.INVISIBLE);
+        hasChanged = true;
+    }
+
+    public static void sendLocationInfo() {
         //PART of postLocation
         PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), SocialManager.lat, SocialManager.lng);
         //PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), "-6.2216706", "106.8401574");
@@ -243,7 +425,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     }
 
     private void startFetchChat() {
-        if(AccountManager.loadMemberSetting().getChat() == 0)
+        if (AccountManager.loadMemberSetting().getChat() == 0)
             ((ChatTabFragment) this.adapter.getItem(CHAT_TAB)).startRepeatingTask();
     }
 
@@ -277,6 +459,12 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
                 }
             }
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 
     private static class PageAdapter extends FragmentPagerAdapter {
