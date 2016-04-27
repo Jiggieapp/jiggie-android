@@ -48,7 +48,7 @@ android {
             versionNameSuffix '-Dev'
             resValue "string", "app_name", "Jiggie Dev"
             signingConfig signingConfigs.configDebug
-            buildConfigField("String", "BASE_URL", "\"https://api-dev.jiggieapp.com/\"")
+            buildConfigField("String", "BASE_URL", "\"https://api.jiggieapp.com/\"")
         }
         release {
             minifyEnabled false
@@ -95,8 +95,6 @@ allprojects {
 }
 
 dependencies {
-    //swipeable cards
-    compile 'com.github.kikoso:SwipeableCards:1.1-RELEASE@aar'
 
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
@@ -129,6 +127,7 @@ dependencies {
     compile 'io.reactivex:rxjava:1.1.0'
     compile(name: 'VTAndroidAPI', ext: 'aar')
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
-
-
+    //nnt hilangkan
+    compile 'com.birbit:android-priority-jobqueue:2.0.0-alpha2'
+    compile 'com.lorentzos.swipecards:library:1.0.9@aar'
 }

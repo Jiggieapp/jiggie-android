@@ -20,7 +20,6 @@ import java.util.Set;
 
 import de.greenrobot.event.EventBus;
 import retrofit.Callback;
-import retrofit.GsonConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
 

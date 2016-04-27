@@ -23,10 +23,18 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.WindowManager;
 
 import com.appsflyer.AppsFlyerProperties;
+import com.birbit.android.jobqueue.JobManager;
+import com.birbit.android.jobqueue.config.Configuration;
+import com.birbit.android.jobqueue.log.CustomLogger;
+import com.birbit.android.jobqueue.scheduling.FrameworkJobSchedulerService;
+import com.birbit.android.jobqueue.scheduling.GcmJobSchedulerService;
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.gson.Gson;
 import com.jiggie.android.component.SimpleJSONObject;
 import com.jiggie.android.component.StringUtility;
@@ -82,6 +90,7 @@ public class App extends Application {
     private Thread.UncaughtExceptionHandler androidDefaultUEH;
 
     public static Activity runningActivity = null;
+    private JobManager jobManager;
 
     @Override
     public void onCreate() {
@@ -100,12 +109,13 @@ public class App extends Application {
         // Setup handler for uncaught exceptions.
         androidDefaultUEH = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(handler);
+
     }
 
     private Thread.UncaughtExceptionHandler handler = new Thread.UncaughtExceptionHandler() {
         public void uncaughtException(Thread thread, Throwable ex) {
             // log it & phone home.
-            if(runningActivity!=null){
+            if (runningActivity != null) {
                 finishAffinity(runningActivity);
             }
             androidDefaultUEH.uncaughtException(thread, ex);
@@ -1002,4 +1012,7 @@ public class App extends Application {
         //App.getInstance().
         android.os.Process.killProcess(android.os.Process.myPid());
     }
+
+
+
 }

@@ -1,12 +1,8 @@
 package com.jiggie.android.manager;
 
-import android.util.Log;
-
-import com.google.gson.Gson;
 import com.jiggie.android.api.ChatInterface;
 import com.jiggie.android.api.OnResponseListener;
 import com.jiggie.android.component.Utils;
-import com.jiggie.android.component.callback.NewCallback;
 import com.jiggie.android.model.ChatActionModel;
 import com.jiggie.android.model.ChatAddModel;
 import com.jiggie.android.component.callback.CustomCallback;
@@ -21,13 +17,8 @@ import java.util.ArrayList;
 
 import de.greenrobot.event.EventBus;
 import retrofit.Callback;
-import retrofit.GsonConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
-import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by LTE on 2/3/2016.
