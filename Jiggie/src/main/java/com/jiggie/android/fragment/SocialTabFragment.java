@@ -381,7 +381,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         flingAdapterView.getTopCardListener().selectLeft();
     }
 
-    static class ViewHolder {
+    /*static class ViewHolder {
         @Bind(R.id.card)
         CardView cardView;
 
@@ -405,7 +405,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             ButterKnife.bind(this, view);
             //generalTxtUser = (TextView) ;
         }
-    }
+    }*/
 
     public void onEvent(ExceptionModel message) {
         String ex = message.getMessage();
@@ -558,7 +558,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         }
     };
 
-    @SuppressWarnings("unused")
+    /*@SuppressWarnings("unused")
     @OnClick(R.id.imageUserGeneral)
     void imageUserGeneralOnClick() {
         this.imageUserOnClick();
@@ -585,9 +585,9 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             super.startActivity(i);
         }
 
-    }
+    }*/
 
-    @SuppressWarnings("unused")
+    /*@SuppressWarnings("unused")
     @OnClick(R.id.btnYesInbound)
     void btnYesInboundOnClick() {
         this.btnYesOnClick();
@@ -613,7 +613,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     @OnClick(R.id.btnNoGeneral)
     void btnNoOnClick() {
         this.match(false);
-    }
+    }*/
 
     private void enableButton(boolean isEnabled) {
         /*this.generalBtnYes.setEnabled(isEnabled);
@@ -652,8 +652,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             SocialManager.loaderSocialMatch(AccessToken.getCurrentAccessToken().getUserId(), this.current.getFrom_fb_id(), confirm ? "approved" : "denied");
     }
 
-    private void matchAsync(final String fromFbId, final boolean confirm)
-    {
+    private void matchAsync(final String fromFbId, final boolean confirm) {
         /*SocialManager.loaderSocialMatchAsync
                 (AccessToken.getCurrentAccessToken().getUserId()
                         , fromFbId, confirm ? "approved" : "denied");*/

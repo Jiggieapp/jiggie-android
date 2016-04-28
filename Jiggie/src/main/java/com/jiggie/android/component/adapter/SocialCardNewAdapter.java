@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.jiggie.android.R;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.SocialModel;
 
 import java.util.ArrayList;
@@ -69,6 +70,7 @@ public class SocialCardNewAdapter extends BaseAdapter {
         /*((ImageView)convertView.findViewById(com.andtinder.R.id.image)).setImageDrawable(model.getCardImageDrawable());
         ((TextView)convertView.findViewById(com.andtinder.R.id.title)).setText(model.getTitle());
         ((TextView)convertView.findViewById(com.andtinder.R.id.description)).setText(model.getDescription());*/
+        Utils.d(TAG, "aneh " + model.getFrom_first_name());
         holder.generalTxtUser.setText(model.getFrom_first_name());
         holder.generalTxtEvent.setText(model.getEvent_name());
         holder.generalTxtUser.setText(context.getString(R.string.user_viewing
@@ -80,8 +82,8 @@ public class SocialCardNewAdapter extends BaseAdapter {
     }
 
     public class ViewHolder {
-        @Bind(R.id.card_general)
-        CardView cardView;
+        //@Bind(R.id.card_general)
+        //CardView cardView;
 
         @Bind(R.id.txtConnectGeneral)
         TextView generalTxtConnect;

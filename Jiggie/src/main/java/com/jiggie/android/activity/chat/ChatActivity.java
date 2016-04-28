@@ -460,6 +460,7 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
             final int failedLength = failedItems.size();
 
             adapter.clear();
+
             final Chat chatHeader = new Chat(message.getData().getMessages().get(0)
                     , message.getData().getFromId(), message.getData().getEvent_name());
             adapter.add(chatHeader);
