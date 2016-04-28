@@ -21,6 +21,24 @@ public class MemberSettingModel {
     String gender_interest;
     String account_type;
     ArrayList<String> photos;
+    String distance;
+    String area_event;
+
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
+    }
+
+    public String getArea_event() {
+        return area_event;
+    }
+
+    public void setArea_event(String area_event) {
+        this.area_event = area_event;
+    }
 
     public String getGender() {
         return gender;

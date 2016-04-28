@@ -169,7 +169,7 @@ public class SocialManager extends BaseManager{
                 @Override
                 public void onCustomCallbackFailure(String t) {
                     //Log.d("Failure", t.toString());
-                    //EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_MATCH, Utils.MSG_EXCEPTION + t.toString()));
+                    EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_MATCH, Utils.MSG_EXCEPTION + t.toString()));
                 }
 
                 @Override

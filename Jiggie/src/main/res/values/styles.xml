@@ -83,6 +83,8 @@
 
     <style name="CustomFlatButtonStyle" parent="@style/Widget.AppCompat.Button.Borderless">
         <item name="android:textColor">@color/blue_selector</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:layout_margin">0dp</item>
     </style>
 
     <style name="fullHeightDialog" parent="android:style/Theme.Material.Light.Dialog.Alert">

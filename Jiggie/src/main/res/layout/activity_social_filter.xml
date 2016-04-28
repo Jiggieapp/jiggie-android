@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.social.SocialFilterActivity">
+
+   <!-- <android.support.design.widget.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">-->
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:elevation="4dp"
+            app:titleTextColor="@android:color/white"
+            android:layout_marginBottom="@dimen/padding_standard"/>
+    <!--</android.support.design.widget.AppBarLayout>-->
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_below="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/layoutSocialize"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/padding_standard"
+                android:paddingRight="@dimen/padding_standard">
+
+                <Switch
+                    android:id="@+id/switchSocialize"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/socialize"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/txtSocialize"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="50dp"
+                    android:layout_marginRight="50dp"
+                    android:text="@string/socialize_description_new" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/divider1"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_below="@+id/layoutSocialize"
+                android:layout_marginBottom="@dimen/padding_standard"
+                android:layout_marginTop="@dimen/padding_standard"
+                android:background="@color/divider_pantone" />
+
+            <TextView
+                android:id="@+id/lbl_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/divider1"
+                android:paddingLeft="@dimen/padding_standard"
+                android:paddingRight="@dimen/padding_standard"
+                android:text="@string/location"
+                android:textStyle="bold" />
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_below="@+id/lbl_location"
+                android:layout_marginBottom="@dimen/padding_standard"
+                android:layout_marginTop="@dimen/padding_standard"
+                android:background="@color/divider_pantone" />
+
+            <LinearLayout
+                android:id="@+id/container_interested"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/divider2"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin">
+
+                <TextView
+                    android:id="@+id/lbl_interested_in"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/interested_in"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/lbl_male"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:paddingRight="@dimen/padding_standard"
+                    android:text="@string/man" />
+
+                <TextView
+                    android:id="@+id/lbl_female"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:text="@string/woman" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/divider3"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_below="@+id/container_interested"
+                android:layout_marginBottom="@dimen/padding_standard"
+                android:layout_marginTop="@dimen/padding_standard"
+                android:background="@color/divider_pantone" />
+
+            <LinearLayout
+                android:id="@+id/container_slider_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/divider3"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin">
+
+                <TextView
+                    android:id="@+id/lbl_location_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:text="@string/maximum_distance"
+                    android:textStyle="bold" />
+
+                <SeekBar
+                    android:id="@+id/slider_distance"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/divider3"
+                    android:paddingBottom="@dimen/padding_standard"
+                    android:paddingTop="@dimen/padding_standard" />
+
+                <TextView
+                    android:id="@+id/lbl_location_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:text="@string/sort_by_distance" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/divider4"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_below="@+id/container_slider_location"
+                android:layout_marginBottom="@dimen/padding_standard"
+                android:layout_marginTop="@dimen/padding_standard"
+                android:background="@color/divider_pantone" />
+
+            <LinearLayout
+                android:id="@+id/container_slider_age"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/divider4"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin">
+
+                <TextView
+                    android:id="@+id/lbl_age_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:text="@string/age"
+                    android:textStyle="bold" />
+
+                <SeekBar
+                    android:id="@+id/slider_age"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/divider3"
+                    android:paddingBottom="@dimen/padding_standard"
+                    android:paddingTop="@dimen/padding_standard" />
+
+                <TextView
+                    android:id="@+id/lbl_age_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:text="@string/sort_by_age" />
+
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+
+    <View
+        android:id="@+id/divider5"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_above="@+id/lbl_reset_filter"
+        android:layout_marginTop="@dimen/padding_standard_half"
+        android:background="@color/divider_pantone" />
+
+    <TextView
+        android:id="@+id/lbl_reset_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:gravity="center_vertical"
+        android:padding="@dimen/padding_standard"
+        android:text="@string/reset_filter"
+        android:textAllCaps="true"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/btnApply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:padding="@dimen/padding_standard"
+        android:text="Apply"
+        android:textAllCaps="true"
+        android:textColor="@color/blue_selector"
+        android:visibility="gone"/>
+
+    <FrameLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:id="@+id/layoutError">
+
+        <include layout="@layout/view_failed"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:id="@+id/progressBar">
+
+        <ProgressBar
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"/>
+    </FrameLayout>
+</RelativeLayout>
+

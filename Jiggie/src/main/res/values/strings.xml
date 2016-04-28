@@ -113,6 +113,8 @@
     <string name="socialize">Socialize</string>
     <string name="socialize_description">Turn off if you do not wish to be seen by others</string>
     <string name="socialize_description_off">Turn on if you wish to be seen by others</string>
+    <string name="socialize_description_new">If you wish not to be seen by others, turn this off</string>
+
     <string name="wants_to_go_with">%1$s wants to go with you to</string>
     <string name="interested_question">Interested?</string>
     <string name="something_went_wrong">Something went wrong</string>
@@ -382,4 +384,10 @@
     <string name="select_payment_short">Select Payment</string>
     <string name="title_activity_country">Country Activity</string>
     <string name="fill_your_contact_info">Fill Your Contact Info</string>
+
+    <string name="maximum_distance">Maximum distance</string>
+    <string name="sort_by_distance">Sort users by distance</string>
+    <string name="sort_by_age">Sort users by age</string>
+    <string name="reset_filter">Reset filters</string>
+
 </resources>

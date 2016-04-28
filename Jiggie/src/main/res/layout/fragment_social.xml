@@ -6,92 +6,19 @@
 
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/grayLight">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="@dimen/padding_standard">
-
-            <!--<LinearLayout
-                android:id="@+id/layoutSocialize"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <Switch
-                    android:id="@+id/switchSocialize"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/socialize"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/txtSocialize"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="50dp"
-                    android:layout_marginRight="50dp"
-                    android:text="@string/socialize_description" />
-            </LinearLayout>-->
-
-            <!--<android.support.v7.widget.CardView
-                android:id="@+id/card"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginBottom="?attr/actionBarSize"
-                android:layout_marginTop="@dimen/padding_standard"
-                android:layout_weight="1"
-                android:visibility="gone">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@android:color/white">
-
-                    <FrameLayout
-                        android:id="@+id/cardGeneral"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="?attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:visibility="gone">
-
-                        <include layout="@layout/card_social_general" />
-                    </FrameLayout>
-
-                    <FrameLayout
-                        android:id="@+id/cardInbound"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="?attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:visibility="gone">
-
-                        <include layout="@layout/card_social_inbound" />
-                    </FrameLayout>
-                </RelativeLayout>
-            </android.support.v7.widget.CardView>-->
-
-
-
-        </LinearLayout>
-
-
-
         <com.lorentzos.flingswipe.SwipeFlingAdapterView
             android:id="@+id/fling_adapter"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:rotation_degrees="16"
             app:max_visible="4"
-            app:min_adapter_stack="6" />
-
-
+            app:min_adapter_stack="6"
+            android:layout_centerInParent="true"/>
 
         <!--<FrameLayout
             android:id="@+id/cardEmpty"
@@ -108,6 +35,8 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:indeterminate="true" />
+
+
 
         <!--<FrameLayout
             android:id="@+id/layout_walkthrough"

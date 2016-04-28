@@ -57,6 +57,7 @@ public class SocialCardNewAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         SocialModel.Data.SocialFeeds model = getItem(position);
+        Utils.d(TAG, "count " + model.getFrom_first_name());
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(context);
             convertView = inflater.inflate(R.layout.item_social_card_general, parent, false);
@@ -70,29 +71,31 @@ public class SocialCardNewAdapter extends BaseAdapter {
         /*((ImageView)convertView.findViewById(com.andtinder.R.id.image)).setImageDrawable(model.getCardImageDrawable());
         ((TextView)convertView.findViewById(com.andtinder.R.id.title)).setText(model.getTitle());
         ((TextView)convertView.findViewById(com.andtinder.R.id.description)).setText(model.getDescription());*/
-        Utils.d(TAG, "aneh " + model.getFrom_first_name());
-        holder.generalTxtUser.setText(model.getFrom_first_name());
-        holder.generalTxtEvent.setText(model.getEvent_name());
+        /*holder.generalTxtUser.setText(model.getFrom_first_name());
+        holder.generalTxtEvent.setText(model.getEvent_name());*/
         holder.generalTxtUser.setText(context.getString(R.string.user_viewing
                 , model.getFrom_first_name()));
         holder.generalTxtConnect.setText(context.getString(R.string.connect_with
                 , model.getFrom_first_name()));
-
         return convertView;
     }
 
-    public class ViewHolder {
+    static class ViewHolder {
         //@Bind(R.id.card_general)
         //CardView cardView;
 
         @Bind(R.id.txtConnectGeneral)
         TextView generalTxtConnect;
-        @Bind(R.id.txtEventGeneral)
+
+        /*@Bind(R.id.txtEventGeneral)
         TextView generalTxtEvent;
+
         @Bind(R.id.imageUserGeneral)
-        ImageView generalImage;
+        ImageView generalImage;*/
+
         @Bind(R.id.txtUserGeneral)
         TextView generalTxtUser;
+
         @Bind(R.id.btnYesGeneral)
         Button generalBtnYes;
         @Bind(R.id.btnNoGeneral)

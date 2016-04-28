@@ -16,7 +16,7 @@
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="-32dp"
+        android:layout_marginTop="32dp"
         android:background="@drawable/bg_circle_accent">
 
         <ImageView
@@ -84,4 +84,10 @@
             android:textColor="@android:color/white"
             android:textStyle="bold" />
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lorem ipsumers"
+        android:layout_centerInParent="true"/>
 </LinearLayout>

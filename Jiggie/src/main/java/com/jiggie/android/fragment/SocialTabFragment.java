@@ -189,7 +189,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //ButterKnife.bind(this, this.rootView);
+        ButterKnife.bind(this, this.rootView);
 
         EventBus.getDefault().register(this);
 
@@ -314,6 +314,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         }*/
         //setHomeTitle();
         //openDetail(current);
+        setHomeTitle();
         fillSocialCard(message);
     }
 
@@ -336,11 +337,11 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         /*cardStackAdapter = new SocialCardAdapter(temp, dummy, getActivity(), this);
         cardsContainer.setOrientation(Orientations.Orientation.Ordered);
         cardsContainer.setAdapter(cardStackAdapter);*/
-        Utils.d(TAG, "temp " + temp.size());
+
         socialCardNewAdapter = new SocialCardNewAdapter(temp
                 , getActivity(), this);
-        //flingAdapterView.init(getActivity(), adapter);
         flingAdapterView.setAdapter(socialCardNewAdapter);
+        Utils.d(TAG, "temp " + socialCardNewAdapter.getCount());
         flingAdapterView.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
             @Override
             public void removeFirstObjectInAdapter() {
@@ -368,7 +369,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
 
             }
         });
-
+        //flingAdapterView.init(getActivity(), socialCardNewAdapter);
     }
 
     @Override
@@ -510,7 +511,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         }
     }*/
 
-    private CompoundButton.OnCheckedChangeListener socializeChanged = new CompoundButton.OnCheckedChangeListener() {
+    /*private CompoundButton.OnCheckedChangeListener socializeChanged = new CompoundButton.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
             final String url = String.format("partyfeed/settings/%s/%s", AccessToken.getCurrentAccessToken().getUserId(), isChecked ? "yes" : "no");
@@ -545,10 +546,10 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                 public void onErrorResponse(VolleyError error) {
                     if (getContext() != null) {
                         Toast.makeText(getContext(), App.getErrorMessage(error), Toast.LENGTH_SHORT).show();
-                        /*switchSocialize.setOnCheckedChangeListener(null);
+                        *//*switchSocialize.setOnCheckedChangeListener(null);
                         switchSocialize.setChecked(!isChecked);
                         switchSocialize.setOnCheckedChangeListener(socializeChanged);
-                        */
+                        *//*
                         //txtSocialize.setText(isChecked ? R.string.socialize_description_off : R.string.socialize_description);
                         //dialog.dismiss();
                         dismissProgressDialog();
@@ -557,7 +558,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             });
         }
     };
-
+*/
     /*@SuppressWarnings("unused")
     @OnClick(R.id.imageUserGeneral)
     void imageUserGeneralOnClick() {

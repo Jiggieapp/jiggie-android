@@ -8,6 +8,7 @@ import com.jiggie.android.App;
 import com.jiggie.android.api.AccountInterface;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.callback.CustomCallback;
+import com.jiggie.android.listener.OnResponseListener;
 import com.jiggie.android.model.AboutModel;
 import com.jiggie.android.model.AccessTokenModel;
 import com.jiggie.android.model.ExceptionModel;
@@ -207,6 +208,45 @@ public class AccountManager extends BaseManager{
                 @Override
                 public void onCustomCallbackFailure(String t) {
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_SETTING, Utils.MSG_EXCEPTION + t.toString()));
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
+            });
+        }catch (IOException e){
+            Utils.d("exception", e.toString());
+            EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_SETTING, Utils.MSG_EXCEPTION + e.toString()));
+        }
+    }
+
+    public static void loaderSettingNew(String fb_id, final OnResponseListener onResponseListener){
+        try {
+            getSetting(fb_id, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                    Utils.d(TAG, Utils.print(response));
+                    if (response.code() == Utils.CODE_SUCCESS) {
+                        MemberSettingResultModel data = (MemberSettingResultModel) response.body();
+                        MemberSettingModel temp = new MemberSettingModel(data);
+                        saveMemberSetting(temp);
+                        /*App.getInstance().savePreference(Utils.MEMBER_SETTING_MODEL
+                                , new Gson().toJson(response.body()));*/
+
+                        SettingModel dataTemp = setSettingModelFromMemberSetting(data);
+                        //EventBus.getDefault().post(dataTemp);
+                        onResponseListener.onSuccess(data);
+                    } else {
+                        //EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_SETTING, Utils.RESPONSE_FAILED));
+                        onResponseListener.onFailure(Utils.CODE_FAILED, response.message());
+                    }
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    //EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_SETTING, Utils.MSG_EXCEPTION + t.toString()));
+                    onResponseListener.onFailure(Utils.CODE_FAILED, t);
                 }
 
                 @Override
