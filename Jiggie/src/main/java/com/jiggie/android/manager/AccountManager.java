@@ -77,6 +77,10 @@ public class AccountManager extends BaseManager{
         getInstance().postEditAbout(Utils.URL_EDIT_ABOUT, aboutModel).enqueue(callback);
     }
 
+    private static void getCityList(Callback callback) throws IOException {
+        getInstance().getCityList().enqueue(callback);
+    }
+
     public static void loaderLogin(LoginModel loginRequestModel){
         try {
             postLogin(loginRequestModel, new CustomCallback() {
@@ -329,6 +333,53 @@ public class AccountManager extends BaseManager{
             onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
         }
 
+    }
+
+    public static void loaderMemberSetting2(final MemberSettingModel memberSettingModel, final OnResponseListener onResponseListener){
+        try {
+            postMemberSetting(memberSettingModel, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                    int responseCode = response.code();
+                    if (responseCode == Utils.CODE_SUCCESS) {
+                        AccountManager.saveMemberSetting(memberSettingModel);
+                        onResponseListener.onSuccess(response.body());
+                    } else {
+                        onResponseListener.onFailure(responseCode, Utils.RESPONSE_FAILED);
+                    }
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+                }
+            });
+        } catch (IOException e){
+            onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
+        }
+    }
+
+    public static void loaderCityList(final OnResponseListener onResponseListener){
+        try {
+            getCityList(new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                    int responseCode = response.code();
+                    if (responseCode == Utils.CODE_SUCCESS) {
+                        onResponseListener.onSuccess(response.body());
+                    } else {
+                        onResponseListener.onFailure(responseCode, Utils.RESPONSE_FAILED);
+                    }
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+                }
+            });
+        } catch (IOException e){
+            onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
+        }
     }
 
     private static SettingModel setSettingModelFromLogin(LoginResultModel data){

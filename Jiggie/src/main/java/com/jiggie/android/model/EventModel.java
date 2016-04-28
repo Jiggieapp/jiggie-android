@@ -40,6 +40,7 @@ public class EventModel {
             String end_datetime;
             String special_type;
             ArrayList<String> tags;
+            int likes;
             String date_day;
             String description;
             ArrayList<String> photos;
@@ -62,6 +63,7 @@ public class EventModel {
                 this.end_datetime = in.readString();
                 this.special_type = in.readString();
                 this.tags = in.readArrayList(null);
+                this.likes = in.readInt();
                 this.date_day = in.readString();
                 this.photos = in.readArrayList(null);
                 this.description = in.readString();
@@ -81,6 +83,7 @@ public class EventModel {
                 dest.writeString(this.end_datetime);
                 dest.writeString(this.special_type);
                 dest.writeList(this.tags);
+                dest.writeInt(this.likes);
                 dest.writeString(this.date_day);
                 dest.writeList(this.photos);
                 dest.writeString(this.description);
@@ -155,6 +158,14 @@ public class EventModel {
 
             public void setTags(ArrayList<String> tags) {
                 this.tags = tags;
+            }
+
+            public int getLikes() {
+                return likes;
+            }
+
+            public void setLikes(int likes) {
+                this.likes = likes;
             }
 
             public String getDate_day() {

@@ -3,6 +3,7 @@ package com.jiggie.android.api;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.AboutModel;
 import com.jiggie.android.model.AccessTokenModel;
+import com.jiggie.android.model.CityModel;
 import com.jiggie.android.model.FilterModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.LoginResultModel;
@@ -51,4 +52,7 @@ public interface AccountInterface{
 
     @GET(Utils.URL_VERIFY_VERIFICATION_CODE)
     Call<Success2Model> verifyVerificationCode(@Path("fb_id") String fb_id, @Path("token") String token);
+
+    @GET(Utils.URL_CITY)
+    Call<CityModel> getCityList();
 }

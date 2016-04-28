@@ -1,7 +1,11 @@
 package com.jiggie.android.fragment;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -20,14 +24,15 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,8 +40,8 @@ import com.facebook.AccessToken;
 import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
-import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.activity.event.EventDetailActivity;
+import com.jiggie.android.activity.setup.CityActivity;
 import com.jiggie.android.component.FlowLayout;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
@@ -45,6 +50,8 @@ import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.model.Common;
+import com.jiggie.android.model.ExceptionModel;
+import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.MemberSettingResultModel;
 import com.jiggie.android.model.PostLocationModel;
 import com.jiggie.android.model.TagsListModel;
@@ -54,6 +61,7 @@ import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by rangg on 21/10/2015.
@@ -73,6 +81,12 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     FloatingActionButton fab;
     @Bind(R.id.flowLayout)
     FlowLayout flowLayout;
+    @Bind(R.id.txt_place)
+    TextView txtPlace;
+    @Bind(R.id.rel_place)
+    RelativeLayout relPlace;
+    @Bind(R.id.view_shadow)
+    View viewShadow;
     //@Bind(R.id.fab) FloatingActionButton fab;
 
     private TabFragment lastSelectedFragment;
@@ -89,6 +103,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     boolean isAlreadyExpand = false;
     private ArrayList<String> selectedItems = new ArrayList<>();
     private boolean hasChanged;
+    ProgressDialog progressDialog;
 
     @Nullable
     @Override
@@ -205,11 +220,11 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if(newState==BottomSheetBehavior.STATE_SETTLING){
+                /*if(newState==BottomSheetBehavior.STATE_SETTLING){
                     boolean isShow = bottomSheet.isShown();
                     behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                }
-                Log.d("state",String.valueOf(newState));
+                }*/
+                Log.d("state", String.valueOf(newState));
             }
 
             @Override
@@ -228,10 +243,13 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
                     fab.setImageResource(R.drawable.ic_filter_list_white_24dp);
                     behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                     isAlreadyExpand = false;
+                    viewShadow.setVisibility(View.GONE);
+                    changeTags();
                 } else {
                     fab.setImageResource(R.drawable.ic_action_cancel);
                     behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                     isAlreadyExpand = true;
+                    viewShadow.setVisibility(View.VISIBLE);
                 }
 
 
@@ -253,6 +271,80 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
             }
         });
         //END OF PART OF BOTTOM SHEET FILTER=================
+
+        EventBus.getDefault().register(this);
+
+        relPlace.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), CityActivity.class);
+                startActivityForResult(i, Utils.REQUEST_CODE_CHOOSE_COUNTRY);
+            }
+        });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    private void changeTags() {
+        if (selectedItems.size() > 0) {
+            MemberSettingModel memberSettingModel = AccountManager.loadMemberSetting();
+            //MemberSettingModel memberSettingModel = new MemberSettingModel();
+            //MemberSettingResultModel memberSettingModel = AccountManager.loadMemberSetting();
+
+            final String experiences = TextUtils.join(",", selectedItems.toArray(new String[this.selectedItems.size()]));
+            memberSettingModel.setExperiences(experiences);
+            //memberSettingModel.getData().getMembersettings().setExperiences(selectedItems);
+            showProgressDialog();
+            AccountManager.loaderMemberSetting2(memberSettingModel, new AccountManager.OnResponseListener() {
+                @Override
+                public void onSuccess(Object object) {
+                    hideProgressDialog();
+                    EventBus.getDefault().post(EventsFragment.TAG);
+                }
+
+                @Override
+                public void onFailure(int responseCode, String message) {
+                    hideProgressDialog();
+                }
+            });
+        } else {
+            showConfirmationDialog();
+        }
+    }
+
+    public void onEvent(ExceptionModel exceptionModel) {
+        //Toast.makeText(this, exceptionModel.getMessage(), Toast.LENGTH_SHORT).show();
+        if (exceptionModel.getMessage()
+                .equalsIgnoreCase(Utils.MSG_EMPTY_DATA)) {
+            showToast(getResources().getString(R.string.preferred_experience));
+        } else {
+            showToast(exceptionModel.getMessage());
+        }
+        //this.progressDialog.setVisibility(View.GONE);
+        //this.failedView.setVisibility(View.VISIBLE);
+
+        hideProgressDialog();
+    }
+
+    private void showToast(final String message) {
+        Toast.makeText(getActivity()
+                , message
+                , Toast.LENGTH_SHORT).show();
+    }
+
+    private void showProgressDialog() {
+        progressDialog = ProgressDialog.show(getActivity(), "", getResources().getString(R.string.please_wait), false);
+        progressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
     }
 
     public Set<String> getTags() {
@@ -263,7 +355,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         //return null;
     }
 
-    private void setTags(TagsListModel tagsListModel){
+    private void setTags(TagsListModel tagsListModel) {
         EventManager.saveTags(tagsListModel.getData().getTagslist());
         AccountManager.getUserTags(new AccountManager.OnResponseListener() {
             @Override
@@ -280,8 +372,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
                     //holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_blue));
                     //selectedItems.add(holder.text);
                     flowLayout.addView(view);
-                    if (result.contains(res))
-                    {
+                    if (result.contains(res)) {
                         selectedItems.add(res);
                         //holder.checkView.setVisibility(View.GONE);
                         holder.checkView.setVisibility(View.INVISIBLE);
@@ -290,7 +381,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
                         holder.checkView.setVisibility(View.VISIBLE);
                     }
                     //onTagClick(holder);
-                    setSelected(holder, holder.checkView.getVisibility() != View.VISIBLE);
+                    setSelected(holder, holder.checkView.getVisibility() != View.VISIBLE, res);
                     hasChanged = false;
 
                     view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -314,7 +405,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         @Bind(R.id.textView)
         TextView textView;
         @Bind(R.id.checkView)
-        View checkView;
+        ImageView checkView;
         @Bind(R.id.container)
         View container;
 
@@ -341,23 +432,75 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         final boolean selected = holder.checkView.getVisibility() != View.VISIBLE;
         if (selected) {
             this.selectedItems.add(holder.text);
-
         } else {
             this.selectedItems.remove(holder.text);
         }
-        setSelected(holder, selected);
+        setSelected(holder, selected, holder.text);
     }
 
-    private void setSelected(ViewHolder holder, boolean selected) {
+    private void setSelected(ViewHolder holder, boolean selected, String text) {
         if (selected) {
-            holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_blue));
-            holder.textView.setTextColor(getResources().getColor(android.R.color.white));
+            if (text.equalsIgnoreCase("Art & Culture")) {
+                holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_red));
+                holder.textView.setTextColor(getResources().getColor(R.color.pink));
+                holder.checkView.setImageResource(R.drawable.ic_tick_pink);
+                //holder.checkView.setImageResource(R.mipmap.ic_check);
+            } else if (text.equalsIgnoreCase("Fashion")) {
+                holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_green));
+                holder.textView.setTextColor(getResources().getColor(R.color.green_tag));
+                holder.checkView.setImageResource(R.drawable.ic_tick_green);
+                //holder.checkView.setImageResource(R.mipmap.ic_check);
+            } else if (text.equalsIgnoreCase("Nightlife")) {
+                holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_greydark));
+                holder.textView.setTextColor(getResources().getColor(R.color.greydark_tag));
+                holder.checkView.setImageResource(R.drawable.ic_tick_greydark);
+                //holder.checkView.setImageResource(R.mipmap.ic_check);
+            } else if (text.equalsIgnoreCase("Music")) {
+                holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_blue));
+                holder.textView.setTextColor(getResources().getColor(R.color.bluedark_tag));
+                holder.checkView.setImageResource(R.drawable.ic_tick_blue);
+                //holder.checkView.setImageResource(R.mipmap.ic_check);
+            } else if (text.equalsIgnoreCase("Food & Drink")) {
+                holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_yellow));
+                holder.textView.setTextColor(getResources().getColor(R.color.yellow_warning));
+                holder.checkView.setImageResource(R.drawable.ic_tick_yellow);
+                //holder.checkView.setImageResource(R.mipmap.ic_check);
+            } else if (text.equalsIgnoreCase("Featured")) {
+                /*holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_blue));
+                holder.textView.setTextColor(getResources().getColor(R.color.bluedark_tag));*/
+            }
+
         } else {
             holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_grey));
-            holder.textView.setTextColor(getResources().getColor(R.color.textDarkGray));
+            holder.textView.setTextColor(getResources().getColor(R.color.grey_tag));
+            //holder.checkView.setImageResource(R.drawable.ic_tick_grey);
+            holder.checkView.setImageResource(R.drawable.ic_tick_yellow);
         }
+
+
         holder.checkView.setVisibility(selected ? View.VISIBLE : View.INVISIBLE);
         hasChanged = true;
+    }
+
+    private void showConfirmationDialog() {
+        final AlertDialog builder = new AlertDialog.Builder(getActivity())
+                //.setTitle(getAct)
+                .setMessage(getResources().getString(R.string.choose_one_experience))
+                .setPositiveButton(getActivity().getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        //listener.onNextAction(ACTION, data);
+                    }
+                })
+                /*.setNegativeButton(get().getResources().getString(R.string.edit), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })*/
+                .create();
+        builder.show();
     }
 
     public static void sendLocationInfo() {
@@ -571,5 +714,14 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         }
     };
 
-
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Utils.REQUEST_CODE_CHOOSE_COUNTRY) {
+            if (resultCode == Activity.RESULT_OK) {
+                txtPlace.setText(data.getStringExtra("cityname"));
+                //EventBus.getDefault().post(EventsFragment.TAG);
+            }
+        }
+    }
 }

@@ -169,6 +169,7 @@ public class Utils {
     public final static String URL_FREE_PAYMENT = BASE_URL + "app/v3/product/free_payment";
 
     public final static String URL_LIKE_EVENT = BASE_URL + "app/v3/event/likes/{event_id}/{fb_id}/{action}";
+    public final static String URL_CITY = BASE_URL + "app/v3/user/citylist";
 
     public static void d(final String tag, final String value) {
         if(BuildConfig.DEBUG)
@@ -348,6 +349,7 @@ public class Utils {
 
     private static int screenWidth = 0;
     public static final int REQUEST_CODE_CHOOSE_COUNTRY = 28;
+    public static final int REQUEST_CODE_CHOOSE_CITY = 29;
 
 
     public static int getScreenWidth(Context c) {

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -42,11 +43,22 @@ public class EventTabListAdapter
         this.fragment = fragment;
     }
 
-    public void clear() { this.items.clear(); }
-    public void addAll(ArrayList<EventModel.Data.Events> items) { this.items.addAll(items); }
-    public void add(EventModel.Data.Events item) { this.items.add(item); }
-    public void setItems(ArrayList<EventModel.Data.Events> items){
-        this.items.addAll(items);}
+    public void clear() {
+        this.items.clear();
+    }
+
+    public void addAll(ArrayList<EventModel.Data.Events> items) {
+        this.items.addAll(items);
+    }
+
+    public void add(EventModel.Data.Events item) {
+        this.items.add(item);
+    }
+
+    public void setItems(ArrayList<EventModel.Data.Events> items) {
+        this.items.addAll(items);
+    }
+
     private Context context;
 
 
@@ -57,6 +69,7 @@ public class EventTabListAdapter
     }
 
     private EventTagAdapter eventTagAdapter;
+
     //Added by Aga
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
@@ -65,9 +78,9 @@ public class EventTabListAdapter
 
             int sizePhoto = item.getPhotos().size();
             String imageUrl = null;
-            if(sizePhoto>0){
+            if (sizePhoto > 0) {
                 imageUrl = item.getPhotos().get(0);
-            }else{
+            } else {
                 if (imageUrl == null) {
                     imageUrl = String.format("%simages/event/%s", VolleyHandler.getInstance().getServerHost(), item.get_id());
                     //item.setImageUrl(imageUrl);
@@ -79,30 +92,40 @@ public class EventTabListAdapter
             holder.event = item;
             holder.txtTitle.setText(item.getTitle());
 
-            String[] tags =  new String[item.getTags().size()];
+            String[] tags = new String[item.getTags().size()];
             item.getTags().toArray(tags);
 
-            this.eventTagAdapter = new EventTagAdapter(R.layout.item_event_tag);
+            this.eventTagAdapter = new EventTagAdapter(this.context, R.layout.item_event_tag);
 
             eventTagAdapter.setTags(tags);
             LinearLayoutManager layoutManager = new LinearLayoutManager(fragment.getContext()
-                    ,LinearLayoutManager.HORIZONTAL, false);
+                    , LinearLayoutManager.HORIZONTAL, false);
             holder.tagListView.setLayoutManager(layoutManager);
             holder.tagListView.setAdapter(eventTagAdapter);
             //holder.eventTagAdapter.notifyDataSetChanged();
             holder.txtVenueName.setText(item.getVenue_name());
             Utils.d(TAG, "imageUrl " + imageUrl);
             Glide
-                .with(this.fragment)
-                .load(imageUrl)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(holder.image);
+                    .with(this.fragment)
+                    .load(imageUrl)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(holder.image);
 
             final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(item.getStart_datetime());
             final Date endDate = Common.ISO8601_DATE_FORMAT_UTC.parse(item.getEnd_datetime());
             String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format, Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));
 
             holder.txtDate.setText(simpleDate);
+
+            if (item.getLikes() > 0) {
+                holder.relLike.setVisibility(View.VISIBLE);
+                holder.txtCountLike.setText(String.valueOf(item.getLikes()));
+            } else {
+                holder.relLike.setVisibility(View.GONE);
+            }
+
+            holder.txtPriceTitle.setShadowLayer(1.6f, 1.5f, 1.3f, context.getResources().getColor(android.R.color.black));
+            holder.txtPriceFill.setShadowLayer(1.6f, 1.5f, 1.3f, context.getResources().getColor(android.R.color.black));
         } catch (ParseException e) {
             throw new RuntimeException(App.getErrorMessage(e), e);
         }
@@ -110,14 +133,32 @@ public class EventTabListAdapter
     //------------------------------
 
     @Override
-    public int getItemCount() { return this.items.size(); }
+    public int getItemCount() {
+        return this.items.size();
+    }
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @Bind(R.id.hListView) RecyclerView tagListView;
-        @Bind(R.id.txtEventName) TextView txtTitle;
-        @Bind(R.id.txtVenue) TextView txtVenueName;
-        @Bind(R.id.txtDate) TextView txtDate;
-        @Bind(R.id.image) ImageView image;
+        @Bind(R.id.hListView)
+        RecyclerView tagListView;
+        @Bind(R.id.txtEventName)
+        TextView txtTitle;
+        @Bind(R.id.txtVenue)
+        TextView txtVenueName;
+        @Bind(R.id.txtDate)
+        TextView txtDate;
+        @Bind(R.id.image)
+        ImageView image;
+
+        @Bind(R.id.txt_count_like)
+        TextView txtCountLike;
+        @Bind(R.id.img_love)
+        ImageView imgLove;
+        @Bind(R.id.rel_like)
+        RelativeLayout relLike;
+        @Bind(R.id.txtPriceTitle)
+        TextView txtPriceTitle;
+        @Bind(R.id.txtPriceFill)
+        TextView txtPriceFill;
 
 
         //private EventTagArrayAdapter eventTagAdapter;
@@ -134,13 +175,13 @@ public class EventTabListAdapter
 
         @Override
         public void onClick(View v) {
-            if (listener != null){
+            if (listener != null) {
                 listener.onViewSelected(this.event);
             }
         }
     }
 
-    public interface ViewSelectedListener{
+    public interface ViewSelectedListener {
         void onViewSelected(EventModel.Data.Events event);
     }
 }
