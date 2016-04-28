@@ -78,6 +78,9 @@ public class Utils {
     public static final String TAB_CHAT = "chat";
     public static final String TAB_SOCIAL = "social";
 
+    public static final String ACTION_LIKE_YES = "yes";
+    public static final String ACTION_LIKE_NO = "no";
+
     //ERROR CODE & MESSAGE
     //public static final String MSG_EXCEPTION = "Failed: ";
     //changed by wandy 12-02-2016
