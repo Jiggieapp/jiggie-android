@@ -118,6 +118,7 @@
     <string name="something_went_wrong">Something went wrong</string>
     <string name="retry">Retry</string>
     <string name="event_date_format">%1$s to %2$s</string>
+    <string name="summary_created">%1$s - %2$s</string>
     <string name="book_now">Book now</string>
     <string name="external_site">(External site)</string>
     <string name="send">Send</string>
@@ -379,6 +380,7 @@
     <string name="ticket_info">Ticket Info</string>
     <string name="purchase_info">Booking Info</string>
     <string name="reservation_info">Reservation Info</string>
+    <string name="table_info">Table Info</string>
     <string name="select_payment_short">Select Payment</string>
     <string name="title_activity_country">Country Activity</string>
     <string name="fill_your_contact_info">Fill Your Contact Info</string>

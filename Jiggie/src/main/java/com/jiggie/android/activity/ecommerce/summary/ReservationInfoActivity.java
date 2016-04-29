@@ -245,13 +245,25 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
 
         totalPrice = productSummary.getTotal_price();
         txtEventName.setText(eventName);
-        try {
+        /*try {
             final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(startTime);
             txtEventInfo.setText(venueName);
             txtEventInfoDate.setText(Common.SERVER_DATE_FORMAT_COMM.format(startDate)
             );
         } catch (ParseException e) {
             throw new RuntimeException(App.getErrorMessage(e), e);
+        }*/
+        try {
+            final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse
+                    (eventDetail.getStart_datetime());
+            final Date endDate = Common.ISO8601_DATE_FORMAT_UTC.parse
+                    (eventDetail.getEnd_datetime());
+            String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format
+                    , Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));
+            txtEventInfo.setText(venueName);
+            txtEventInfoDate.setText(simpleDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
 
         txtDftTitle.setText(dataProduct.getName());

@@ -44,6 +44,7 @@ public abstract class AbstractTicketDetailActivity extends /*ToolbarWithDotActiv
     @Bind(R.id.rel_guest)
     RelativeLayout relGuest;
 
+
     private static final String TAG = AbstractTicketDetailActivity.class.getSimpleName();
 
     @Override
@@ -60,6 +61,7 @@ public abstract class AbstractTicketDetailActivity extends /*ToolbarWithDotActiv
         //lblTypePriceCaption.setText(getTypePriceCaption());
         lblEstimatedCostCaption.setText(getEstimatedCostCaption());
         lblTicketCaption.setText(getTicketCaption());
+        //lblInfo.setText(getPageInfo() + "grrr");
     }
 
     /*public abstract String getEventCaption();
@@ -69,6 +71,7 @@ public abstract class AbstractTicketDetailActivity extends /*ToolbarWithDotActiv
     protected abstract void onCreate();
 
     protected abstract String getToolbarTitle();
+    protected abstract String getPageInfo();
 
     protected void initGuest() {
         //wandy 20-04-2016

@@ -469,8 +469,8 @@ public class CommerceManager extends BaseManager{
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
-                    //String responses = new Gson().toJson(response.body());
-                    //Utils.d("res", responses);
+                    String responses = new Gson().toJson(response.body());
+                    Utils.d("CongratsActivity", "response " + responses);
 
                     int responseCode = response.code();
                     if (responseCode == Utils.CODE_SUCCESS) {

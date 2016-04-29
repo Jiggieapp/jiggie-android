@@ -98,6 +98,8 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
     RelativeLayout relPlus;
     /*@Bind(R.id.card_view_guest)
     CardView cardViewGuest;*/
+    @Bind(R.id.lbl_info_top)
+    TextView lblInfo;
 
     private Dialog dialogTerms;
 
@@ -227,6 +229,11 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
         return detailReservation.getName().toUpperCase();
     }
 
+    @Override
+    protected String getPageInfo() {
+        return getResources().getString(R.string.table_info);
+    }
+
     private void preDefined() {
         Intent a = getIntent();
         eventId = a.getStringExtra(Common.FIELD_EVENT_ID);
@@ -283,6 +290,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
         }
 
         txtTicketDesc.setText(detailReservation.getDescription());
+        lblInfo.setText(getPageInfo());
 
         /*LoginModel loginModel = AccountManager.loadLogin();
 

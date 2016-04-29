@@ -29,9 +29,13 @@ import com.jiggie.android.view.InstructionItemView;
 
 import org.w3c.dom.Text;
 
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -124,6 +128,7 @@ public class CongratsActivity extends ToolbarActivity {
     }
 
     private void preDefined(final String orderId){
+        Utils.d(TAG, "orderId " + orderId);
         CommerceManager.loaderSucScreenCC(orderId, new CommerceManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
@@ -170,7 +175,25 @@ public class CongratsActivity extends ToolbarActivity {
                     }
                     else //free payment
                     {
-                        txtSummaryDate.setVisibility(View.GONE);
+                        //txtSummaryDate.setVisibility(View.GONE);
+                        /*SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                        format.setTimeZone(TimeZone.getTimeZone("UTC"));
+                        format.p
+                        String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format
+                                , Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));
+
+                        */
+                        try {
+                            String start_dt = summary.getCreated_at();
+                            Date date = Common.ISO8601_DATE_FORMAT_UTC.parse(start_dt);
+                            SimpleDateFormat newFormat = new SimpleDateFormat("dd MMMM yyyy - HH:mm:ss", Locale.getDefault());
+                            //newFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+                            String finalString = newFormat.format(date);
+                            txtSummaryDate.setText(finalString);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
                     }
                     SucScreenCCModel.Data.Success_screen.Summary.Product_list product_list = summary.getProduct_list().get(0);
 
