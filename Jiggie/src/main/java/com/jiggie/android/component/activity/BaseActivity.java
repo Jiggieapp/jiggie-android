@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
 
@@ -28,6 +29,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.setTheme(this.getThemeResource());
         super.onCreate(savedInstanceState);
         this.active = true;
+
+        App.runningActivity = this;
     }
 
     protected int getThemeResource() {

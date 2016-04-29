@@ -1,5 +1,8 @@
 package com.jiggie.android.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
 /**
@@ -11,28 +14,22 @@ public class ProductListModel {
     String msg;
     Data data;
 
-    public int getResponse() {
-        return response;
+    public ProductListModel(int response, String msg, Data data){
+        this.response = response;
+        this.msg = msg;
+        this.data = data;
     }
 
-    public void setResponse(int response) {
-        this.response = response;
+    public int getResponse() {
+        return response;
     }
 
     public String getMsg() {
         return msg;
     }
 
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
     public Data getData() {
         return data;
-    }
-
-    public void setData(Data data) {
-        this.data = data;
     }
 
     public static class Data{
@@ -50,46 +47,49 @@ public class ProductListModel {
 
             String event_id;
             String event_name;
+            String venue_name;
+            String start_datetime;
             ArrayList<Purchase> purchase;
             ArrayList<Reservation> reservation;
 
-            public String getEvent_id() {
-                return event_id;
+            public ProductList(String event_id, String event_name, String venue_name, String start_datetime, ArrayList<Purchase> purchase, ArrayList<Reservation> reservation){
+                this.event_id = event_id;
+                this.event_name = event_name;
+                this.venue_name = venue_name;
+                this.start_datetime = start_datetime;
+                this.purchase = purchase;
+                this.reservation = reservation;
             }
 
-            public void setEvent_id(String event_id) {
-                this.event_id = event_id;
+            public String getVenue_name() {
+                return venue_name;
+            }
+
+            public String getStart_datetime() {
+                return start_datetime;
+            }
+
+            public String getEvent_id() {
+                return event_id;
             }
 
             public String getEvent_name() {
                 return event_name;
             }
 
-            public void setEvent_name(String event_name) {
-                this.event_name = event_name;
-            }
-
             public ArrayList<Purchase> getPurchase() {
                 return purchase;
-            }
-
-            public void setPurchase(ArrayList<Purchase> purchase) {
-                this.purchase = purchase;
             }
 
             public ArrayList<Reservation> getReservation() {
                 return reservation;
             }
 
-            public void setReservation(ArrayList<Reservation> reservation) {
-                this.reservation = reservation;
-            }
-
-            public static class Purchase{
+            public static class Purchase implements Parcelable{
                 String ticket_id;
                 String name;
                 String ticket_type;
-                String quantity;
+                int quantity;
                 String admin_fee;
                 String tax_percent;
                 String tax_amount;
@@ -97,101 +97,152 @@ public class ProductListModel {
                 String tip_amount;
                 String price;
                 String total_price;
+                String description;
+                String max_purchase;
+                int payment_timelimit;
+                String summary;
+                String status;
+
+                public Purchase(String ticket_id, String name, String ticket_type, int quantity, String admin_fee, String tax_percent, String tax_amount, String tip_percent, String tip_amount, String price, String total_price, String description, String max_purchase, int payment_timelimit, String summary, String status){
+                    this.ticket_id = ticket_id;
+                    this.name = name;
+                    this.ticket_type = ticket_type;
+                    this.quantity = quantity;
+                    this.admin_fee = admin_fee;
+                    this.tax_percent = tax_percent;
+                    this.tax_amount = tax_amount;
+                    this.tip_percent = tip_percent;
+                    this.tip_amount = tip_amount;
+                    this.price = price;
+                    this.total_price = total_price;
+                    this.description = description;
+                    this.max_purchase = max_purchase;
+                    this.payment_timelimit = payment_timelimit;
+                    this.summary = summary;
+                    this.status = status;
+                }
+
+                protected Purchase(Parcel in) {
+                    this.ticket_id = in.readString();
+                    this.name = in.readString();
+                    this.ticket_type = in.readString();
+                    this.quantity = in.readInt();
+                    this.admin_fee = in.readString();
+                    this.tax_percent = in.readString();
+                    this.tax_amount = in.readString();
+                    this.tip_percent = in.readString();
+                    this.tip_amount = in.readString();
+                    this.price = in.readString();
+                    this.total_price = in.readString();
+                    this.description = in.readString();
+                    this.max_purchase = in.readString();
+                    this.payment_timelimit = in.readInt();
+                    this.summary = in.readString();
+                    this.status = in.readString();
+                }
+
+                @Override
+                public int describeContents() {
+                    return 0;
+                }
+
+                @Override
+                public void writeToParcel(Parcel dest, int flags) {
+                    dest.writeString(this.ticket_id);
+                    dest.writeString(this.name);
+                    dest.writeString(this.ticket_type);
+                    dest.writeInt(this.quantity);
+                    dest.writeString(this.admin_fee);
+                    dest.writeString(this.tax_percent);
+                    dest.writeString(this.tax_amount);
+                    dest.writeString(this.tip_percent);
+                    dest.writeString(this.tip_amount);
+                    dest.writeString(this.price);
+                    dest.writeString(this.total_price);
+                    dest.writeString(this.description);
+                    dest.writeString(this.max_purchase);
+                    dest.writeInt(this.payment_timelimit);
+                    dest.writeString(this.summary);
+                    dest.writeString(this.status);
+                }
+
+                public static final Creator<Purchase> CREATOR = new Creator<Purchase>() {
+                    @Override
+                    public Purchase createFromParcel(Parcel in) { return new Purchase(in); }
+                    @Override
+                    public Purchase[] newArray(int size) { return new Purchase[size]; }
+                };
 
                 public String getTicket_id() {
                     return ticket_id;
-                }
-
-                public void setTicket_id(String ticket_id) {
-                    this.ticket_id = ticket_id;
                 }
 
                 public String getName() {
                     return name;
                 }
 
-                public void setName(String name) {
-                    this.name = name;
-                }
-
                 public String getTicket_type() {
                     return ticket_type;
                 }
 
-                public void setTicket_type(String ticket_type) {
-                    this.ticket_type = ticket_type;
-                }
-
-                public String getQuantity() {
+                public int getQuantity() {
                     return quantity;
-                }
-
-                public void setQuantity(String quantity) {
-                    this.quantity = quantity;
                 }
 
                 public String getAdmin_fee() {
                     return admin_fee;
                 }
 
-                public void setAdmin_fee(String admin_fee) {
-                    this.admin_fee = admin_fee;
-                }
-
                 public String getTax_percent() {
                     return tax_percent;
-                }
-
-                public void setTax_percent(String tax_percent) {
-                    this.tax_percent = tax_percent;
                 }
 
                 public String getTax_amount() {
                     return tax_amount;
                 }
 
-                public void setTax_amount(String tax_amount) {
-                    this.tax_amount = tax_amount;
-                }
-
                 public String getTip_percent() {
                     return tip_percent;
-                }
-
-                public void setTip_percent(String tip_percent) {
-                    this.tip_percent = tip_percent;
                 }
 
                 public String getTip_amount() {
                     return tip_amount;
                 }
 
-                public void setTip_amount(String tip_amount) {
-                    this.tip_amount = tip_amount;
-                }
-
                 public String getPrice() {
                     return price;
-                }
-
-                public void setPrice(String price) {
-                    this.price = price;
                 }
 
                 public String getTotal_price() {
                     return total_price;
                 }
 
-                public void setTotal_price(String total_price) {
-                    this.total_price = total_price;
+                public String getDescription() {
+                    return description;
+                }
+
+                public String getMax_purchase() {
+                    return max_purchase;
+                }
+
+                public int getPayment_timelimit() {
+                    return payment_timelimit;
+                }
+
+                public String getSummary() {
+                    return summary;
+                }
+
+                public String getStatus() {
+                    return status;
                 }
             }
 
-            public static class Reservation{
+            public static class Reservation implements Parcelable{
                 String ticket_id;
                 String name;
                 String ticket_type;
-                String quantity;
+                int quantity;
                 String admin_fee;
                 String tax_percent;
                 String tax_amount;
@@ -199,93 +250,160 @@ public class ProductListModel {
                 String tip_amount;
                 String price;
                 String total_price;
+                String description;
+                String max_guests;
+                int payment_timelimit;
+                String summary;
+                String min_deposit_percent;
+                String min_deposit_amount;
+                String status;
+
+                public Reservation(String ticket_id, String name, String ticket_type, int quantity, String admin_fee, String tax_percent, String tax_amount, String tip_percent, String tip_amount, String price, String total_price, String description, String max_guests, int payment_timelimit, String summary, String min_deposit_percent, String min_deposit_amount, String status){
+                    this.ticket_id = ticket_id;
+                    this.name = name;
+                    this.ticket_type = ticket_type;
+                    this.quantity = quantity;
+                    this.admin_fee = admin_fee;
+                    this.tax_percent = tax_percent;
+                    this.tax_amount = tax_amount;
+                    this.tip_percent = tip_percent;
+                    this.tip_amount = tip_amount;
+                    this.price = price;
+                    this.total_price = total_price;
+                    this.description = description;
+                    this.max_guests = max_guests;
+                    this.payment_timelimit = payment_timelimit;
+                    this.summary = summary;
+                    this.min_deposit_percent = min_deposit_percent;
+                    this.min_deposit_amount = min_deposit_amount;
+                    this.status = status;
+                }
+
+                protected Reservation(Parcel in) {
+                    this.ticket_id = in.readString();
+                    this.name = in.readString();
+                    this.ticket_type = in.readString();
+                    this.quantity = in.readInt();
+                    this.admin_fee = in.readString();
+                    this.tax_percent = in.readString();
+                    this.tax_amount = in.readString();
+                    this.tip_percent = in.readString();
+                    this.tip_amount = in.readString();
+                    this.price = in.readString();
+                    this.total_price = in.readString();
+                    this.description = in.readString();
+                    this.max_guests = in.readString();
+                    this.payment_timelimit = in.readInt();
+                    this.summary = in.readString();
+                    this.min_deposit_percent = in.readString();
+                    this.min_deposit_amount = in.readString();
+                    this.status = in.readString();
+                }
+
+                @Override
+                public int describeContents() {
+                    return 0;
+                }
+
+                @Override
+                public void writeToParcel(Parcel dest, int flags) {
+                    dest.writeString(this.ticket_id);
+                    dest.writeString(this.name);
+                    dest.writeString(this.ticket_type);
+                    dest.writeInt(this.quantity);
+                    dest.writeString(this.admin_fee);
+                    dest.writeString(this.tax_percent);
+                    dest.writeString(this.tax_amount);
+                    dest.writeString(this.tip_percent);
+                    dest.writeString(this.tip_amount);
+                    dest.writeString(this.price);
+                    dest.writeString(this.total_price);
+                    dest.writeString(this.description);
+                    dest.writeString(this.max_guests);
+                    dest.writeInt(this.payment_timelimit);
+                    dest.writeString(this.summary);
+                    dest.writeString(this.min_deposit_percent);
+                    dest.writeString(this.min_deposit_amount);
+                    dest.writeString(this.status);
+                }
+
+                public static final Creator<Reservation> CREATOR = new Creator<Reservation>() {
+                    @Override
+                    public Reservation createFromParcel(Parcel in) { return new Reservation(in); }
+                    @Override
+                    public Reservation[] newArray(int size) { return new Reservation[size]; }
+                };
 
                 public String getTicket_id() {
                     return ticket_id;
-                }
-
-                public void setTicket_id(String ticket_id) {
-                    this.ticket_id = ticket_id;
                 }
 
                 public String getName() {
                     return name;
                 }
 
-                public void setName(String name) {
-                    this.name = name;
-                }
-
                 public String getTicket_type() {
                     return ticket_type;
                 }
 
-                public void setTicket_type(String ticket_type) {
-                    this.ticket_type = ticket_type;
-                }
-
-                public String getQuantity() {
+                public int getQuantity() {
                     return quantity;
-                }
-
-                public void setQuantity(String quantity) {
-                    this.quantity = quantity;
                 }
 
                 public String getAdmin_fee() {
                     return admin_fee;
                 }
 
-                public void setAdmin_fee(String admin_fee) {
-                    this.admin_fee = admin_fee;
-                }
-
                 public String getTax_percent() {
                     return tax_percent;
-                }
-
-                public void setTax_percent(String tax_percent) {
-                    this.tax_percent = tax_percent;
                 }
 
                 public String getTax_amount() {
                     return tax_amount;
                 }
 
-                public void setTax_amount(String tax_amount) {
-                    this.tax_amount = tax_amount;
-                }
-
                 public String getTip_percent() {
                     return tip_percent;
-                }
-
-                public void setTip_percent(String tip_percent) {
-                    this.tip_percent = tip_percent;
                 }
 
                 public String getTip_amount() {
                     return tip_amount;
                 }
 
-                public void setTip_amount(String tip_amount) {
-                    this.tip_amount = tip_amount;
-                }
-
                 public String getPrice() {
                     return price;
-                }
-
-                public void setPrice(String price) {
-                    this.price = price;
                 }
 
                 public String getTotal_price() {
                     return total_price;
                 }
 
-                public void setTotal_price(String total_price) {
-                    this.total_price = total_price;
+                public String getDescription() {
+                    return description;
+                }
+
+                public String getMax_guests() {
+                    return max_guests;
+                }
+
+                public int getPayment_timelimit() {
+                    return payment_timelimit;
+                }
+
+                public String getSummary() {
+                    return summary;
+                }
+
+                public String getMin_deposit_percent() {
+                    return min_deposit_percent;
+                }
+
+                public String getMin_deposit_amount() {
+                    return min_deposit_amount;
+                }
+
+                public String getStatus() {
+                    return status;
                 }
             }
 

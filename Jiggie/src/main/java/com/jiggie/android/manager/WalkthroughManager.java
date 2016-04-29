@@ -21,17 +21,13 @@ import retrofit.Retrofit;
 /**
  * Created by LTE on 2/29/2016.
  */
-public class WalkthroughManager {
+public class WalkthroughManager extends BaseManager{
 
     private static WalkthroughInterface walkthroughInterface;
     static final String TAG = WalkthroughManager.class.getSimpleName();
 
     public static void initWalkthroughService(){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Utils.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        walkthroughInterface = retrofit.create(WalkthroughInterface.class);
+        walkthroughInterface = getRetrofit().create(WalkthroughInterface.class);
     }
 
     private static WalkthroughInterface getInstance(){
@@ -68,6 +64,11 @@ public class WalkthroughManager {
                 @Override
                 public void onCustomCallbackFailure(String t) {
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_WALKTHROUGH, Utils.MSG_EXCEPTION + t.toString()));
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
                 }
             });
         }catch (IOException e){

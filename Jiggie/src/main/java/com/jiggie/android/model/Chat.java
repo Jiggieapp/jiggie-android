@@ -32,6 +32,16 @@ public class Chat implements Model, Parcelable, BaseColumns {
     private String toId;
     private String simpleDate;
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    private String title;
+
     public Chat() { }
     public Chat(JSONObject json) {
         this.header = json.optString(FIELD_HEADER);
@@ -42,11 +52,35 @@ public class Chat implements Model, Parcelable, BaseColumns {
     }
 
     public Chat(ChatConversationModel.Data.ChatConversations.Messages data, String fromId) {
+        /*this.header = data.getHeader();
+        this.fromId = fromId;
+        this.message = data.getMessage();
+        this.fromYou = data.isFromYou();
+        this.createdAt = data.getCreated_at();*/
+
+        setData(data, fromId, "");
+    }
+
+    public Chat(ChatConversationModel.Data.ChatConversations.Messages data
+            , String fromId, String title) {
+        /*this.header = data.getHeader();
+        this.fromId = fromId;
+        this.message = data.getMessage();
+        this.fromYou = data.isFromYou();
+        this.createdAt = data.getCreated_at();
+        this.title = title;*/
+        setData(data, fromId, title);
+    }
+
+    private void setData(ChatConversationModel.Data.ChatConversations.Messages data
+            , String fromId, String title)
+    {
         this.header = data.getHeader();
         this.fromId = fromId;
         this.message = data.getMessage();
         this.fromYou = data.isFromYou();
         this.createdAt = data.getCreated_at();
+        this.title = title;
     }
 
     protected Chat(Parcel in) {

@@ -18,6 +18,7 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -30,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.facebook.AccessToken;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -40,7 +42,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
-import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.activity.ecommerce.ProductListActivity;
 import com.jiggie.android.component.FlowLayout;
 import com.jiggie.android.component.StringUtility;
@@ -109,6 +110,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     @Bind(R.id.btnBook) View btnBook;
     @Bind(R.id.element_containers)
     LinearLayout elementContainers;
+    @Bind(R.id.element_containers2)
+    LinearLayout elementContainers2;
 
     @Bind(R.id.imageGuest1) ImageView imageGuest1;
     @Bind(R.id.imageGuest2) ImageView imageGuest2;
@@ -132,7 +135,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     public static final String TAG = EventDetailActivity.class.getSimpleName();
     private File file;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -150,6 +152,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         event_end = a.getStringExtra(Common.FIELD_EVENT_DAY_END);
         event_pics = a.getStringArrayListExtra(Common.FIELD_EVENT_PICS);
         event_description = a.getStringExtra(Common.FIELD_EVENT_DESCRIPTION);
+
 
         this.imagePagerIndicatorAdapter = new ImagePagerIndicatorAdapter(super.getSupportFragmentManager(), this.imageViewPager);
         this.imagePagerIndicator.setAdapter(this.imagePagerIndicatorAdapter.getIndicatorAdapter());
@@ -189,10 +192,11 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 fillPhotos(event_pics);
 
             if(event_description != null)
-                txtDescription.setText(event_description);
+                txtDescription.setText(Html.fromHtml(event_description));
 
             scrollView.setVisibility(View.VISIBLE);
             elementContainers.setVisibility(View.INVISIBLE);
+            elementContainers2.setVisibility(View.INVISIBLE);
 
             if(event_id == null || event_id.equalsIgnoreCase("null")){
                 //wandy 17-03-2016
@@ -243,20 +247,11 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         final FragmentManager fragmentManager = super.getSupportFragmentManager();
         ((SupportMapFragment)fragmentManager.findFragmentById(R.id.map)).getMapAsync(this);
 
-
         super.registerReceiver(this.guestInvitedReceiver, new IntentFilter(super.getString(R.string.broadcastGuestInvited)));
 
         if(file!= null && file.exists())
             file.delete();
     }
-
-    /*<LinearLayout
-    android:id="@+id/element_containers"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-
-    </LinearLayout>*/
 
     private static boolean isJiggieUrl(String dataString) {
 
@@ -328,6 +323,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 eventDetail = message.getData().getEvents_detail();
                 App.getInstance().trackMixPanelViewEventDetail("View Event Details", eventDetail);
                 elementContainers.setVisibility(View.VISIBLE);
+                elementContainers2.setVisibility(View.VISIBLE);
 
                 if (event_name == null) {
                     super.setToolbarTitle(eventDetail.getTitle().toUpperCase(), true);
@@ -361,7 +357,12 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
                     for (int i = 0; i < guestCount; i++) {
                         final String url = App.getFacebookImage(guestArr.get(i).getFb_id(), width);
-                        Glide.with(EventDetailActivity.this).load(url).asBitmap().centerCrop().into(new BitmapImageViewTarget(imageGuests[i]) {
+                        Glide.with(EventDetailActivity.this)
+                                .load(url)
+                                .asBitmap()
+                                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                                .centerCrop()
+                                .into(new BitmapImageViewTarget(imageGuests[i]) {
                             @Override
                             protected void setResource(Bitmap resource) {
                                 final Resources resources = getResources();
@@ -434,13 +435,13 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                     txtBookNow.setText(R.string.call);
                 } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.RESERVATION, fullfillmentType, true)) {
                     txtExternalSite.setVisibility(View.GONE);
-                    txtBookNow.setText(R.string.reserve);
+                    txtBookNow.setText(R.string.book_now);
                 } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.PURCHASE, fullfillmentType, true)) {
                     txtExternalSite.setVisibility(View.GONE);
-                    txtBookNow.setText(R.string.purchase);
+                    txtBookNow.setText(R.string.book_now);
                 } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.TICKET, fullfillmentType, true)) {
                     txtExternalSite.setVisibility(View.GONE);
-                    txtBookNow.setText(getResources().getString(R.string.purchase_ticket));
+                    txtBookNow.setText(getResources().getString(R.string.book_now));
                 }
                 //Changed by Aga 16-2-2016
                 else if (StringUtility.isEquals(EventManager.FullfillmentTypes.LINK, message.getData().getEvents_detail().getFullfillment_type(), true)) {
@@ -579,6 +580,9 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             {
                 Intent i = new Intent(this, ProductListActivity.class);
                 i.putExtra(Common.FIELD_EVENT_ID, this.eventDetail.get_id());
+                i.putExtra(eventDetail.getClass().getName(), eventDetail);
+                if(event_pics.size() > 0)
+                    i.putExtra("images", event_pics.get(0));
                 startActivity(i);
             }
             else
@@ -623,6 +627,10 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             } catch (UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
+        }
+        else if(item.getItemId() == R.id.home)
+        {
+            redirectToHome();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -718,11 +726,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                                     .putExtra(Intent.EXTRA_SUBJECT, "Lets Go Out With Jiggie");
 
                             if (file != null && file.exists()) {
-                                //Utils.d(TAG, "file getabsolutepath " + file.getAbsolutePath());
                                 i.putExtra(android.content.Intent.EXTRA_STREAM,
                                         Uri.parse("file:" + file.getAbsolutePath()));
-                            } else {
-                                //Utils.d(TAG, "file not existss");
                             }
 
                             i.setType("text/plain");
@@ -730,14 +735,9 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                                 progressDialog.dismiss();
 
                             EventDetailActivity.this.startActivity(Intent.createChooser
-                                    (i, EventDetailActivity.this.getString(R.string.share)
-                                            //,)
-                                    ));
-                            //file.delete();
+                                    (i, EventDetailActivity.this.getString(R.string.share)));
                         }
                     });
-
-
 
             /*super.startActivity(Intent.createChooser(new Intent(Intent.ACTION_SEND).putExtra(Intent.EXTRA_TEXT, share).
                     putExtra(Intent.EXTRA_STREAM, Uri.parse(eventDetail.getPhotos().get(0))).

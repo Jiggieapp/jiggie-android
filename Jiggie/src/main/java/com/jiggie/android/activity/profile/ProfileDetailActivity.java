@@ -88,10 +88,12 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
     @Override
     public void onGlobalLayout() {
         this.refreshLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-
         fb_id = super.getIntent().getStringExtra(Common.FIELD_FACEBOOK_ID);
+
         if (fb_id == null) {
             fb_id = AccessToken.getCurrentAccessToken().getUserId();
+            //fb_id = "10204456507851351"; //richard
+            //fb_id = "10153418311072858"; //wandy
             isMe = true;
         }
 
@@ -145,8 +147,6 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
 
             final LoginModel loginModel = AccountManager.loadLogin();
 
-
-
             if (TextUtils.isEmpty(loginModel.getLocation()))
             {
                 txtLocation.setVisibility(View.GONE);
@@ -160,12 +160,18 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
                 txtLocation.setText(loginModel.getLocation());
             }
 
-            if (TextUtils.isEmpty(loginModel.getAbout()))
-                txtDescription.setVisibility(View.GONE);
-            else
-            {
-                txtDescription.setText(loginModel.getAbout());
+            if(TextUtils.isEmpty(message.getData().getMemberinfo().getAbout())){
+                if (TextUtils.isEmpty(loginModel.getAbout()))
+                    txtDescription.setVisibility(View.GONE);
+                else
+                {
+                    txtDescription.setText(loginModel.getAbout());
+                }
+            }else{
+                txtDescription.setText(message.getData().getMemberinfo().getAbout());
             }
+
+
         }
         else{
             photos = message.getData().getMemberinfo().getPhotos().toArray(new String[message.getData().getMemberinfo().getPhotos().size()]);
@@ -182,6 +188,10 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
         }
         //-----------------------
 
+        for(String photo : photos)
+        {
+            Utils.d(TAG, "photos " + photo);
+        }
         this.pagerIndicatorAdapter.setImages(photos);
 
 

@@ -1,5 +1,6 @@
 package com.jiggie.android.component.adapter;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,11 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+import com.bumptech.glide.request.target.Target;
 import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.Common;
@@ -65,6 +71,16 @@ public class ImagePagerIndicatorAdapter extends FragmentPagerAdapter {
             fragment = new ImageFragment();
             final Bundle bundle = new Bundle();
             bundle.putString(Common.BUNDLE_IMAGE, image);
+
+            /*if(position % 2 == 0)
+            {
+                bundle.putString(Common.BUNDLE_IMAGE, image);
+            }
+            else
+            {
+                bundle.putString(Common.BUNDLE_IMAGE,"https://scontent.xx.fbcdn.net/hphotos-xal1/t31.0-8/12370850_10203839778713508_3736034773002736547_o.jpg");
+            }*/
+
             fragment.setArguments(bundle);
             this.fragments[position] = fragment;
         }
@@ -122,13 +138,28 @@ public class ImagePagerIndicatorAdapter extends FragmentPagerAdapter {
         @Override
         public void onActivityCreated(@Nullable Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
-            final String url = super.getArguments().getString(Common.BUNDLE_IMAGE);
-            Utils.d(TAG, "imageUrl " + url);
+            String url = super.getArguments().getString(Common.BUNDLE_IMAGE);
+            //url = "https://img.jiggieapp.com/image/10204456507851351/0?imgid=https://scontent.xx.fbcdn.net/hphotos-xal1/t31.0-8/12370850_10203839778713508_3736034773002736547_o.jpg";
             Glide.with(this)
                     .load(url)
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .centerCrop()
                     .into(this.imageView);
+                    /*.into(new GlideDrawableImageViewTarget(this.imageView) {
+                        @Override
+                        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> animation) {
+                            super.onResourceReady(resource, animation);
+                            //never called
+                        }
+
+                        @Override
+                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                            super.onLoadFailed(e, errorDrawable);
+                            Utils.d(TAG, "errorglide ");
+                            //never called
+                            //e.printStackTrace();
+                        }
+                    });*/
         }
     }
 

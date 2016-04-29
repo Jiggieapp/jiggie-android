@@ -24,6 +24,8 @@ public class Common {
 
     public static String FIELD_EVENT_NAME = "event_name";
     public static String FIELD_EVENT_ID = "event_id";
+    public static String FIELD_VENUE_NAME = "venue_name";
+    public static String FIELD_STARTTIME = "starttime";
     public static String FIELD_EVENT_VENUE_NAME = "venue_name";
     public static String FIELD_EVENT_TAGS = "tags";
     public static String FIELD_EVENT_DAY = "date_day";
@@ -31,6 +33,31 @@ public class Common {
     public static String FIELD_EVENT_DAY_END = "date_end";
     public static String FIELD_EVENT_PICS = "event_pics";
     public static String FIELD_EVENT_DESCRIPTION = "event_description";
+
+    public static String FIELD_TRANS_TYPE = "type";
+    public static String TYPE_PURCHASE = "purchase";
+    public static String TYPE_RESERVATION = "booking";
+    public static String FIELD_GUEST_NAME = "guest_name";
+    public static String FIELD_GUEST_EMAIL = "guest_email";
+    public static String FIELD_GUEST_PHONE = "about";
+    public static String FIELD_PRICE = "price";
+    public static String FIELD_PAYMENT_TYPE = "payment_type";
+    public static String FIELD_ORDER_ID = "order_id";
+    public static String FIELD_WALKTHROUGH_PAYMENT = "walkthrough_payment";
+    public static String FIELD_FROM_ORDER_LIST = "order_list";
+    public static String FIELD_FROM_HOWTOPAY = "how_to_pay";
+    public static String FIELD_MIN_DEPOSIT = "min_deposit";
+    public static String FIELD_STATUS_SOLD_OUT = "sold out";
+    /*public static String FIELD_TICKET_ID = "ticket_id";
+    public static String FIELD_TICKET_NAME = "ticket_name";
+    public static String FIELD_TICKET_DESC = "ticket_desc";
+    public static String FIELD_MAX_PURCHASE = "max_purchase";
+    public static String FIELD_PRICE = "price";*/
+
+    /*"is_new_card": "",
+            "type": "bp",
+            "token_id": "",
+            "order_id": 1457668217795*/
 
     public static final String PREF_IMAGES_UPLOADED = "images-uploaded";
     public static final String PREF_FACEBOOK_ID = FIELD_FACEBOOK_ID;
@@ -52,6 +79,10 @@ public class Common {
     public static final SimpleDateFormat SIMPLE_12_HOUR_FORMAT_UTC = new SimpleDateFormat("h:mm a", Locale.getDefault());
     public static final SimpleDateFormat SIMPLE_24_HOUR_FORMAT_UTC = new SimpleDateFormat("HH:mm a", Locale.getDefault());
     public static final SimpleDateFormat SHORT_DATE_FORMAT_UTC = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+    public static final SimpleDateFormat SERVER_DATE_FORMAT_COMM = new SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault());
+    public static final SimpleDateFormat FORMAT_COMM_TRANSACTION = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+    public static final SimpleDateFormat FORMAT_COMM_TICKET = new SimpleDateFormat("dd MMMM yyyy - HH:mm:ss", Locale.getDefault());
 
     static {
         final TimeZone utcTimeZone = TimeZone.getTimeZone("UTC");

@@ -14,9 +14,47 @@
         <!--<item name="android:popupMenuStyle">@style/PopupMenu</item>-->
     </style>
 
+    <style name="AppThemeToolbar" parent="Theme.AppCompat.Light">
+        <item name="windowActionModeOverlay">true</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:windowActionModeOverlay">true</item>
+
+        <!-- To change the background of options menu-->
+        <!--<item name="android:itemBackground">@color/skyBlue</item>-->
+        <!--<item name="android:popupMenuStyle">@style/PopupMenu</item>-->
+    </style>
+
+    <style name="AppCustomTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionModeOverlay">true</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <item name="android:windowActionModeOverlay">true</item>
+
+        <!-- To change the background of options menu-->
+        <!--<item name="android:itemBackground">@color/skyBlue</item>-->
+        <!--<item name="android:popupMenuStyle">@style/PopupMenu</item>-->
+    </style>
+
     <style name="AppTheme.Setup" parent="AppTheme">
         <item name="colorPrimaryDark">@color/setup_blue</item>
     </style>
+
+    <!--<style name="AppTheme.StatusBarTransparent" parent="AppCustomTheme2" />-->
+    <!-- Base application theme. -->
+    <!--<style name="AppCustomTheme2" parent="Theme.AppCompat.Light.NoActionBar">
+        &lt;!&ndash; Customize your theme here. &ndash;&gt;
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+        <item name="android:actionMenuTextColor">@color/colorAccent</item>
+    </style>-->
 
     <!--<style name="PopupMenu" parent="@android:style/Widget.PopupMenu">
         <item name="android:popupBackground">@android:color/white</item>
@@ -49,4 +87,9 @@
     <style name="fullHeightDialog" parent="android:style/Theme.Material.Light.Dialog.Alert">
         <item name="android:windowNoTitle">true</item>
     </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
 </resources>

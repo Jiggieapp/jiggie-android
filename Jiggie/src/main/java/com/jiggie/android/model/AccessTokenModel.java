@@ -4,9 +4,9 @@ package com.jiggie.android.model;
  * Created by wandywijayanto on 2/9/16.
  */
 public class AccessTokenModel {
-    String token;
+    String fb_token;
     public void setToken(String token) {
-        this.token = token;
+        this.fb_token = token;
     }
 
     /*public AccessTokenModel(boolean success, String token){
@@ -15,6 +15,9 @@ public class AccessTokenModel {
     }*/
 
     public String getToken() {
-        return token;
+        return fb_token;
     }
+
+
+
 }

@@ -106,6 +106,7 @@ public class GCMMessageHandler extends GcmListenerService {
             final String eventId = data.getString(Common.KEY_EVENT_ID, "");
             intent = new Intent(App.getInstance(), EventDetailActivity.class);
             intent.putExtra(Common.FIELD_EVENT_ID, eventId);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         } else if (type.equalsIgnoreCase(Common.PUSH_NOTIFICATIONS_TYPE_MATCH)) {
             final String fromm = data.getString(Common.PUSH_NOTIFICATIONS_FROM_NAME);
             too = data.getString(Common.PUSH_NOTIFICATIONS_FROM_ID);
@@ -151,7 +152,6 @@ public class GCMMessageHandler extends GcmListenerService {
                     profil_image = ChatManager.dataChatList.get(i).getProfile_image();
                 }
             }
-
             intent = new Intent(App.getInstance(), ChatActivity.class);
             //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             intent.putExtra(Conversation.FIELD_PROFILE_IMAGE, profil_image);
@@ -166,7 +166,6 @@ public class GCMMessageHandler extends GcmListenerService {
             }catch (Exception e){
                 Utils.d("error String Arr", e.toString());
             }
-
             intent = new Intent(App.getInstance(), ChatActivity.class);
             intent.putExtra(Conversation.FIELD_FROM_NAME, fromName);
             intent.putExtra(Conversation.FIELD_FACEBOOK_ID, fromId);
@@ -178,7 +177,6 @@ public class GCMMessageHandler extends GcmListenerService {
                     (type.equalsIgnoreCase(Common.PUSH_NOTIFICATIONS_TYPE_MESSAGE)
                         && !App.getInstance().getIdChatActive().equalsIgnoreCase(too))) {
                 final PendingIntent pendingIntent = PendingIntent.getActivity(App.getInstance(), Integer.MIN_VALUE, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-
                 final Notification notif = new NotificationCompat.BigTextStyle
                         (new NotificationCompat.Builder(this)
                                 //.setCategory(Notification.CATEGORY_PROMO)
@@ -193,7 +191,6 @@ public class GCMMessageHandler extends GcmListenerService {
                                 .setVibrate(new long[]{0, 0, 0, 0, 0}))
                         .bigText(message)
                         .build();
-
                 notificationManager.notify(0, notif);
             }
             super.sendBroadcast(new Intent(super.getString(R.string.broadcast_notification)));

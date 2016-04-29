@@ -319,7 +319,9 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             this.cardEmpty.setVisibility(View.GONE);
             this.card.setVisibility(View.VISIBLE);
 
-            final String image = App.getFacebookImage(value.getFrom_fb_id(), generalImage.getWidth() * 2);
+           //final String image = App.getFacebookImage(value.getFrom_fb_id(), generalImage.getWidth() * 2);
+            final String image = value.getImage();
+            Utils.d(TAG, "image " + image);
             final DrawableTypeRequest<String> glideRequest = Glide.with(SocialTabFragment.this).load(image);
 
             App.getInstance().trackMixPanelEvent("View Feed Item");

@@ -21,6 +21,7 @@
     <!--<string name="mixpanel_token">0a94cf8d4142e2803752e9ca812a8e53</string>-->
 
     <string name="mixpanel_token">39ae6be779ffea77ea2b2a898305f560</string>
+    <string name="vt_client_key">VT-client-gJRBbRZC0t_-JXUD</string>
 
     <string name="broadcast_notification">jiggie.broadcast.notification</string>
     <string name="broadcast_social">jiggie.broadcast.social</string>
@@ -30,6 +31,10 @@
     <string name="error_connection_failed">Connection failed</string>
     <string name="error_no_connection">No connection</string>
     <string name="error_unknown">Unknown error</string>
+    <string name="error_3dsecure">3D secure authentication failed, make sure your credit card is valid</string>
+    <string name="tag_location">TAG LOCATION</string>
+    <string name="error_loc_failed">Failed get location</string>
+    <string name="error_loc_suspended">Suspended get location</string>
 
     <string name="facebook_permission_required">To get the full benefits of Jiggie\n please accept the following Facebook permission(s): Birthday, Email, Photos, Location, About_me</string>
     <string name="welcome_description">Welcome to Jiggie, Jiggie shows you great\nevents near you - let\'s get going.</string>
@@ -59,7 +64,8 @@
     <string name="age_sort">Sort guests by their age&#8230;</string>
     <string name="verify_your_phone_number">Verify your phone number</string>
     <string name="profile">Profile</string>
-    <string name="invite">Invite friends</string>
+    <string name="invite">Invite Friends</string>
+    <string name="order_list">Order list</string>
     <string name="settings">Settings</string>
     <string name="support">Support</string>
     <string name="logout">Logout</string>
@@ -112,6 +118,7 @@
     <string name="something_went_wrong">Something went wrong</string>
     <string name="retry">Retry</string>
     <string name="event_date_format">%1$s to %2$s</string>
+    <string name="summary_created">%1$s - %2$s</string>
     <string name="book_now">Book now</string>
     <string name="external_site">(External site)</string>
     <string name="send">Send</string>
@@ -162,6 +169,8 @@
     <string name="title_dialog_location">Allow share location?</string>
     <string name="msg_dialog_location">System will allow this app to get information about your phone location.</string>
 
+    <string name="msg_dialog_sett_location">Open Setting to activate GPS</string>
+
     <plurals name="guest_count">
         <item quantity="one">%1$d Guest</item>
         <item quantity="other">%1$d Guests</item>
@@ -190,7 +199,8 @@
     <string name="wait">Please wait</string>
 
     <string name="no_internet_connection">Please check your internet connection</string>
-    <string name="standard_error_message">Sorry we\'re having some server issues, please check back in a few minutes.</string>
+    <string name="standard_error_message">Sorry we\'re having some server issues, please check back in a few minutes</string>
+    <string name="socket_timeout_exception">Sorry, your request has been timed out</string>
 
     <string name="no_one_will_see_your_phone_number">No one will see your phone number on Jiggie.</string>
     <string name="international">International</string>
@@ -203,19 +213,175 @@
     <string name="hint_validation_code">Validation Code</string>
     <string name="description_validation_code">Enter the 6 digit code we just sent to your number</string>
     <string name="verification_success">Your phone number has been successfully verified</string>
-    <string name="verification_failed">Plese check the number and try again</string>
+    <string name="verification_failed">Please check the number and try again</string>
+    <string name="ticket_detail">TICKET DETAILS</string>
+    <string name="preferred_experience">Your preferred experiences have been updated</string>
 
+    <!--COMMERCE STRING VALUE-->
     <string name="msg_dummy">Lorem ipsum</string>
     <string name="msg_dummy_price">Rp 2.000K</string>
     <string name="msg_dummy_title">AFRO JACK LIVE IN JAKARTA</string>
     <string name="msg_dummy_title_info">Sun, 29 Feb 2016 - Gelora Bung Karno</string>
     <string name="section_ticket">TICKETS</string>
-    <string name="section_table">RESERVE TABLE</string>
-    <string name="preferred_experience">Your preferred experiences have been updated</string>
+    <string name="section_table">TABLES</string>
+    <string name="section_credit_card">CREDIT CARD</string>
+    <string name="section_va">VIRTUAL BANK TRANSFER</string>
+    <string name="select_payment">SELECT PAYMENT METHOD</string>
+    <string name="va_mandiri">Mandiri Virtual Account</string>
+    <string name="va_bca">BCA Virtual Account</string>
+    <string name="other_bank">Other Banks</string>
+    <string name="bank_transfer">BANK TRANSFER</string>
+    <string name="pr_max_purchase">Max Purchased</string>
+    <string name="pr_max_guest">Max Guest</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="continue_str">Continue</string>
+
+    <string name="cc_name_hint">Card Holder Name</string>
+    <string name="cc_number_hint">Credit Card Number</string>
+    <string name="cc_date_hint">MM/YYYY</string>
+    <string name="cc_cvv_hint">CVV</string>
+    <string name="cc_save">SAVE CARD</string>
+    <string name="title_cc">ADD CREDIT CARD</string>
+
+    <string name="title_guest">CONTACT DETAIL</string>
+    <string name="guest_name">Guest name</string>
+    <string name="guest_email">Email</string>
+    <string name="guest_62">+62</string>
+    <string name="guest_phone">Phone number</string>
+    <string name="guest_phone_info">* Please verify your information is correct so we can keep you updated on your order</string>
+    <string name="guest_save">SAVE</string>
+    <string name="cancel_caps">CANCEL</string>
+
+    <string name="vor_congrats">Congratulations Disky!</string>
+    <string name="vor_congrats_info">You have successfully booked a ticket for</string>
+    <string name="vor_event_title">AFRO JACK LIFE IN JAKARTA 2016</string>
+    <string name="vor_event_date">Sun, 29 Feb 2016</string>
+    <string name="vor_order_number">BOOKING NUMBER</string>
+    <string name="vor_reservation_number">RESERVATION NUMBER</string>
+    <string name="vor_order_number_fill">6GBF991</string>
+    <string name="vor_guest_name">GUEST NAME</string>
+    <string name="vor_total_guest">TOTAL GUEST</string>
+    <string name="vor_guest_name_fill">BUSY PUTRI</string>
+    <string name="vor_status">STATUS</string>
+    <string name="vor_status_paid">PAID</string>
+    <string name="vor_payment_cc_new">ADD NEW CREDIT CARD</string>
+    <string name="vor_payment_method">PAYMENT METHOD</string>
+    <string name="vor_payment_method_fill">FREE</string>
+    <string name="vor_order_summary">BOOKING SUMMARY</string>
+    <string name="vor_reservation_summary">RESERVATION SUMMARY</string>
+    <string name="vor_order_summary_date">15 January 2016 - 16:12:49</string>
+    <string name="vor_reg_ticket">REGULAR TICKET (x3)</string>
+    <string name="vor_reg_ticket_fill">Rp3.000.000</string>
+    <string name="vor_ad_fee">ADMINISTRATIVE FEE</string>
+    <string name="vor_ad_fee_fill">Rp500.000</string>
+    <string name="vor_tax">TAX</string>
+    <string name="vor_tax_fill">Rp150.000</string>
+    <string name="vor_total">TOTAL</string>
+    <string name="vor_total_fill">Rp3.650.000</string>
+    <string name="vor_instruction">INSTRUCTIONS</string>
+    <string name="vor_instruction_fill">When you get to the venue look for the ticket booth. Lorem ipsum dolor sit amet, lorem ipsum copy in various charsets and languages for layouts.\nIf you have any questions please don\'t hestitate to text or WA us at <b>+62111111111</b></string>
+    <string name="vor_ticket_inc">This Ticket Include:</string>
+    <string name="vor_ticket_inc_fill1">1. Lorem ipsum dolor sit amet copy in various charsets and languages for layouts.</string>
+    <string name="vor_ticket_inc_fill2">2. Lorem ipsum dolor sit amet copy in various charsets and languages for layouts.</string>
+    <string name="vor_ticket_inc_fill3">3. Lorem ipsum dolor sit amet copy in various charsets and languages for layouts.</string>
+    <string name="vor_ticket_inc_fill">1. Lorem ipsum dolor sit amet copy in various charsets and languages for layouts.\n2. Lorem ipsum dolor sit amet copy in various charsets and languages for layouts.\n3. Lorem ipsum dolor sit amet copy in various charsets and languages for layouts.</string>
+    <string name="vor_event_hour">19:00 - 23:00</string>
+    <string name="vor_event_place">GELORA BUNG KARNO</string>
+    <string name="vor_tap_info">Tap \"Bookings\" from the \"More\" tab to return to this screen</string>
+    <string name="vor_view_ticket">VIEW TICKET</string>
+    <string name="vor_fine_print">Fine Print :</string>
+
+    <string name="howtp_title">HOW TO PAY</string>
+    <string name="howtp_close">Close</string>
+    <string name="howtp_trlimit">Transfer time limit</string>
+    <string name="howtp_trlimit_fill">xxxx</string>
+    <string name="howtp_trlamo">Transfer amount</string>
+    <string name="howtp_trlamo_fill">Rpx.xxxK</string>
+    <string name="howtp_trto">Transfer to</string>
+    <string name="howtp_trto_fill">xxxx - xxxx - xxxx - xxxx</string>
+    <string name="howtp_jg">JIGGIE Teknologi Indonesia</string>
+    <string name="howtp_ste">Step for Mandiri virtual account transfer</string>
+    <string name="howtp_s1">Go to ATM</string>
+    <string name="howtp_s2">Choose "Transfer" from the menu</string>
+    <string name="howtp_s3">Input the number provide above</string>
+    <string name="howtp_s4">Choose "Pay"</string>
+    <string name="howtp_s5">Open JIGGIE and go to "more" -> "order"</string>
+    <string name="howtp_s6">Your order status will show "Paid"</string>
+    <string name="howtp_star">*</string>
+    <string name="howtp_info"> we have also emailed you with these steps along with our Virtual Account number</string>
+    <string name="howtp_vo">VIEW BOOKINGS</string>
+
+    <string name="his_title">Bookings</string>
+    <string name="his_ev1">AFROJACK LIVE IN JAKARTA 2016</string>
+    <string name="his_ven1">Gelora Bung Karno, Jakarta, Indonesia</string>
+    <string name="his_dt1">Sunday, 29 February 2016</string>
+    <string name="his_ev2">SUNDAY BRUNCH WITH LION</string>
+    <string name="his_ven2">Cafetaria, Jakarta, Indonesia</string>
+    <string name="his_dt2">Monday, 21 February 2016</string>
+    <string name="his_ev3">BREAKFAST WITH HORSE</string>
+    <string name="his_ven3">Balai Kartini, Jakarta, Indonesia</string>
+    <string name="his_dt3">Wednesday, 5 March 2016</string>
+
+    <string name="tikdet_cl">REGULAR CLASS INFO</string>
+    <string name="tikdet_how_title">HOW DOES IT WORK?</string>
+    <string name="tikdet_cl_info">Book your ticket and enjoy entry to this event.</string>
+    <string name="tikdet_how">Book your ticket through the app.\nShow up to venue and show the your ticket - found under booking list of the app or via link your confirmation email, bring your e-ticket or print your booking receipt for entry to the venue.</string>
+    <string name="tikdet_terms">This event is 21+\nThis ticket is subject to processing fee\nNo alcohol permitted on permises other than that\nserved by licensed vendors of this event.\nCredit does not apply to tickets.</string>
+
+    <string name="pci_agree">By continuing with this order, I AGREE That :</string>
+    <string name="pci_c1">All booking are final</string>
+    <string name="pci_c2">I will be charged the full amount</string>
+    <string name="pci_c3">I will show up at the event</string>
+    <string name="pci_c4">This purchase is not refundable</string>
+    <string name="pci_f1">Regular Ticket (3x)</string>
+    <string name="pci_f2">Administrative Fee</string>
+    <string name="pci_f3">Tax</string>
+
+    <string name="pci_f1_fill">Rp3.000K</string>
+    <string name="pci_f2_fill">Rp500K</string>
+    <string name="pci_f3_fill">Rp150K</string>
+
+    <string name="pci_total">Total Price</string>
+    <string name="pci_total_fill">Rp3.650K</string>
+    <string name="pci_payment">CHOOSE PAYMENT METHOD</string>
+    <string name="pci_slide">SWIPE TO PAY</string>
+    <string name="pci_slide_continue">SWIPE TO BOOK</string>
+
+    <string name="unpaid">Unpaid</string>
+    <string name="expired">Expired</string>
+    <string name="paid">Paid</string>
+    <string name="is_void">Void</string>
+    <string name="refund">Refund</string>
+
+    <string name="pci_f1b">Dance Floor Table (Estimate)</string>
+    <string name="pci_f3b">Service Charge</string>
+    <string name="pci_f4b">Estimated Total</string>
+    <string name="pci_f5b">Required Deposit</string>
+    <string name="pci_f6b">Estimated balance (pay at venue)</string>
+    <string name="pci_f7b">Pay Deposit</string>
+
+    <string name="free">FREE</string>
+    <!--END HERE-->
 
     <string name="msg_carr_1">Discover upcoming food bazaars, music, art \u0026 culture and nightlife events</string>
     <string name="msg_carr_2">Get detailed information on events and book your tickets</string>
     <string name="msg_carr_3">Check out other guests who like the same events you do</string>
     <string name="msg_carr_4">Connect with other fun-loving people and make new friends</string>
     <string name="msg_carr_5"> Chat with your new friends and make plans to meet up</string>
+
+    <string name="estimate">(ESTIMATE)</string>
+    <string name="estimated_total">ESTIMATED TOTAL</string>
+    <string name="paid_deposit">PAID DEPOSIT</string>
+    <string name="estimated_balance">ESTIMATED BALANCE (PAY AT VENUE)</string>
+
+    <string name="msg_wrong">Something wrong</string>
+    <string name="sold_out">SOLD OUT</string>
+
+    <string name="ticket_info">Ticket Info</string>
+    <string name="purchase_info">Booking Info</string>
+    <string name="reservation_info">Reservation Info</string>
+    <string name="table_info">Table Info</string>
+    <string name="select_payment_short">Select Payment</string>
+    <string name="title_activity_country">Country Activity</string>
+    <string name="fill_your_contact_info">Fill Your Contact Info</string>
 </resources>

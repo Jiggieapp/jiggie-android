@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="signin_text_size">18sp</dimen>
+    <dimen name="normal_text_size">12sp</dimen>
+    <dimen name="padding_far">24dp</dimen>
+    <dimen name="padding_fars">36dp</dimen>
     <dimen name="padding_standard">16dp</dimen>
     <dimen name="padding_standard_half">8dp</dimen>
     <dimen name="chat_user_text_size">16sp</dimen>
@@ -8,8 +11,6 @@
 
     <dimen name="margin_text_walkthrough">45dp</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
-    <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="footer_height">48dp</dimen>
     <dimen name="custom_tab_height">60dp</dimen>
@@ -22,4 +23,21 @@
     <dimen name="jiggie_logo_width">63dp</dimen>
     <dimen name="jiggie_logo_height">24dp</dimen>
     <dimen name="badgeSizeHome">20dp</dimen>
+
+    <dimen name="font_subhead_size">16sp</dimen>
+    <dimen name="font_body_size">14sp</dimen>
+    <dimen name="font_body_size_huge">24sp</dimen>
+    <dimen name="font_caption_size">12sp</dimen>
+    <dimen name="huge_padding">56dp</dimen>
+
+    <dimen name="header_view_start_margin_left">16dp</dimen>
+    <dimen name="header_view_end_margin_left">40dp</dimen>
+    <dimen name="header_view_end_margin_right">14dp</dimen>
+    <dimen name="header_view_start_margin_bottom">14dp</dimen>
+    <dimen name="header_view_start_text_size">18sp</dimen>
+    <dimen name="header_view_end_text_size">18sp</dimen>
+    <dimen name="header_view_end_text_size_smaller">12sp</dimen>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="country_row_height">64dp</dimen>
 </resources>

@@ -3,14 +3,19 @@ package com.jiggie.android.activity;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.LayerDrawable;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -24,13 +29,17 @@ import android.widget.Toast;
 import com.appsflyer.AppsFlyerConversionListener;
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.jiggie.android.App;
+import com.jiggie.android.BuildConfig;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.ecommerce.ProductListActivity;
+import com.jiggie.android.activity.ecommerce.PurchaseHistoryActivity;
 import com.jiggie.android.activity.profile.FilterActivity;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
 import com.jiggie.android.activity.profile.ProfileSettingActivity;
 import com.jiggie.android.activity.setup.SetupTagsActivity;
-import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.gcm.GCMRegistrationService;
 import com.jiggie.android.component.service.FacebookImageSyncService;
@@ -39,14 +48,14 @@ import com.jiggie.android.fragment.SignInFragment;
 import com.appsflyer.AppsFlyerLib;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.manager.ShareManager;
-import com.jiggie.android.model.Common;
+import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.model.ExceptionModel;
+import com.jiggie.android.model.GuestInfo;
 import com.jiggie.android.model.ShareLinkModel;
+import com.jiggie.android.presenter.GuestPresenter;
 
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Map;
 
 import de.greenrobot.event.EventBus;
@@ -54,12 +63,14 @@ import de.greenrobot.event.EventBus;
 /**
  * Created by rangg on 21/10/2015.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
     public static final int REQUEST_GOOGLE_PLAY_SERVICES = 1972;
     private boolean active;
     public static final String TAG = MainActivity.class.getSimpleName();
 
     String appsfl = "";
+    GoogleApiClient mGoogleApiClient = null;
 
     private boolean isFirstRun()
     {
@@ -77,26 +88,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     @SuppressWarnings("StatementWithEmptyBody")
     protected void onCreate(Bundle savedInstanceState) {
-        Bundle bundle = getIntent().getExtras();
-        if(bundle != null)
-        {
-            final boolean showBackground = bundle.getBoolean("show_background", false);
-            if(!showBackground)
-            {
-                getWindow().setBackgroundDrawable(null);
-                super.setTheme(R.style.AppTheme);
-            }
-
-        }
-        else
-        {
-            super.setTheme(R.style.AppTheme);
-        }
-
+        super.setTheme(R.style.AppCustomTheme);
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_main);
         this.active = true;
@@ -134,6 +129,84 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         EventBus.getDefault().unregister(this);
+    }
+
+    /*@Override
+    protected void onStart() {
+        if(mGoogleApiClient!=null)
+            mGoogleApiClient.connect();
+        super.onStart();
+    }*/
+
+    @Override
+    protected void onStop() {
+        if(mGoogleApiClient!=null)
+            mGoogleApiClient.disconnect();
+        super.onStop();
+    }
+
+    private void checkLocation(){
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+
+            mGoogleApiClient.connect();
+        }
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Location mLastLocation = null;
+        /*try {
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
+                    mGoogleApiClient);
+        }catch (SecurityException e){
+            Utils.d(getString(R.string.tag_location),e.toString());
+        }*/
+
+        LocationManager locationManager = (LocationManager) this
+                .getSystemService(LOCATION_SERVICE);
+        if (locationManager != null) {
+            try {
+                mLastLocation = locationManager
+                        .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            }catch (SecurityException e){
+                Utils.d(getString(R.string.tag_location),e.toString());
+            }
+
+            if (mLastLocation != null) {
+                SocialManager.lat = String.valueOf(mLastLocation.getLatitude());
+                SocialManager.lng = String.valueOf(mLastLocation.getLongitude());
+            }
+        }
+
+        if (mLastLocation != null) {
+            SocialManager.lat = String.valueOf(mLastLocation.getLatitude());
+            SocialManager.lng = String.valueOf(mLastLocation.getLongitude());
+            Log.d(getString(R.string.tag_location),"lat: "+String.valueOf(mLastLocation.getLatitude())+" lon: "+String.valueOf(mLastLocation.getLongitude()));
+
+            HomeFragment.sendLocationInfo();
+        }else{
+            Utils.d(getString(R.string.tag_location),getString(R.string.error_loc_failed));
+        }
+
+
+        //actionResults();
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Utils.d(getString(R.string.tag_location), getString(R.string.error_loc_failed));
+        //actionResults();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Utils.d(getString(R.string.tag_location), getString(R.string.error_loc_suspended));
+        //actionResults();
     }
 
     @Override
@@ -187,34 +260,134 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        if(Utils.isLocationServicesAvailable(this)){
+            checkLocation();
+        }else{
+            boolean isAlreadyOpen = App.getSharedPreferences().getBoolean(Utils.PREFERENCE_GPS, false);
+            if(!isAlreadyOpen){
+                App.getSharedPreferences().edit().putBoolean(Utils.PREFERENCE_GPS, true).commit();
+                showDialog();
+            }
+        }
+    }
+
+    private void showDialog()
+    {
+        final AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                .setMessage(getString(R.string.msg_dialog_sett_location))
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        final Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create();
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if ((requestCode == REQUEST_GOOGLE_PLAY_SERVICES) && (resultCode == Activity.RESULT_OK)) {
             // Track AppsFlyer Install
             AppsFlyerLib.sendTracking(super.getApplicationContext());
 
-
             registerAppsFlyerConversion();
             //Toast.makeText(MainActivity.this, appsfl, Toast.LENGTH_LONG).show();
+
+            //checkLocation and post it
+            //checkLocation();
 
             if (!App.getInstance().isUserLoggedIn()) {
                 final SignInFragment fragment = new SignInFragment();
                 super.getSupportFragmentManager().beginTransaction().add(R.id.container, fragment).commit();
             } else {
+
+                //Check availability GPS Location
+                if(Utils.isLocationServicesAvailable(this)){
+                    checkLocation();
+                }else{
+                    boolean isAlreadyOpen = App.getSharedPreferences().getBoolean(Utils.PREFERENCE_GPS, false);
+                    if(!isAlreadyOpen){
+                        App.getSharedPreferences().edit().putBoolean(Utils.PREFERENCE_GPS, true).commit();
+                        showDialog();
+                    }
+
+                }
+                //End here
+
                 super.startService(new Intent(this, FacebookImageSyncService.class));
                 if (!App.getSharedPreferences().getBoolean(GCMRegistrationService.TAG_UPDATED, false))
                     super.startService(new Intent(this, GCMRegistrationService.class));
 
                 if (!App.getSharedPreferences().getBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, false)) {
-                    super.startActivity(new Intent(this, SetupTagsActivity.class));
-                    super.finish();
+                    //super.startActivity(new Intent(this, SetupTagsActivity.class));
+                    final SignInFragment fragment = new SignInFragment();
+                    super.getSupportFragmentManager().beginTransaction().add(R.id.container, fragment).commit();
+                    //super.finish();
                 } else {
-                    this.navigateToHome();
-                    showRateDialog();
+                    //wandy 20-04-2016
+                    //sblm navigate to home, pastikan sudah ambil guest info sekali aja
+                    final int versionCode = BuildConfig.VERSION_CODE;
+                    if(!App.getInstance().getSharedPreferences().getBoolean(Utils.HAS_LOAD_GROUP_INFO, false))
+                    {
+                        App.getSharedPreferences().edit().putBoolean
+                                (Utils.HAS_LOAD_GROUP_INFO, true).apply();
+                        final GuestPresenter guestPresenter = new GuestPresenter();
+                        guestPresenter.loadGuestInfo(new GuestPresenter.OnFinishGetGuestInfo() {
+                            @Override
+                            public void onFinish(GuestInfo guestInfo) {
+                                Utils.d(TAG, "on finish " + guestInfo.data.guest_detail.name);
+                                guestPresenter.saveGuest(guestInfo);
+                                navigateToHome();
+                            }
+
+                            @Override
+                            public void onFailed() {
+                                navigateToHome();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        this.navigateToHome();
+                        showRateDialog();
+                    }
                 }
             }
         } else if (requestCode == REQUEST_GOOGLE_PLAY_SERVICES)
             super.onBackPressed();
+    }
+
+    private void actionResults(){
+        if (!App.getInstance().isUserLoggedIn()) {
+            final SignInFragment fragment = new SignInFragment();
+            super.getSupportFragmentManager().beginTransaction().add(R.id.container, fragment).commit();
+        } else {
+            super.startService(new Intent(this, FacebookImageSyncService.class));
+            if (!App.getSharedPreferences().getBoolean(GCMRegistrationService.TAG_UPDATED, false))
+                super.startService(new Intent(this, GCMRegistrationService.class));
+
+            if (!App.getSharedPreferences().getBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, false)) {
+                //super.startActivity(new Intent(this, SetupTagsActivity.class));
+                final SignInFragment fragment = new SignInFragment();
+                super.getSupportFragmentManager().beginTransaction().add(R.id.container, fragment).commit();
+                //super.finish();
+            } else {
+                this.navigateToHome();
+                showRateDialog();
+            }
+        }
     }
 
     private void registerAppsFlyerConversion(){
@@ -303,7 +476,7 @@ public class MainActivity extends AppCompatActivity {
     protected boolean isActive()
     {
         return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) ?
-            !super.isDestroyed() : this.active;
+                !super.isDestroyed() : this.active;
     }
 
     @Override
@@ -312,6 +485,18 @@ public class MainActivity extends AppCompatActivity {
         if(App.mixpanelAPI!=null){
             App.mixpanelAPI.flush();
         }
+
+        //refresh Credit card list----
+        if(CommerceManager.arrCCScreen!=null&&CommerceManager.arrCCScreen.size()>0){
+            CommerceManager.arrCCScreen.clear();
+        }
+        if(CommerceManager.arrCCLocal!=null&&CommerceManager.arrCCLocal.size()>0){
+            CommerceManager.arrCCLocal.clear();
+        }
+        //--------------------
+
+        App.getSharedPreferences().edit().putBoolean(Utils.PREFERENCE_GPS, false).commit();
+
         super.onDestroy();
     }
 
@@ -343,6 +528,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_invite:
                 inviteFriends();
                 break;
+            case R.id.action_orderlist:
+                startActivity(new Intent(this, PurchaseHistoryActivity.class));
+                break;
             case R.id.action_logout:
                 new AlertDialog.Builder(MainActivity.this)
                         .setTitle(R.string.logout)
@@ -352,14 +540,26 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 App.getSharedPreferences().edit().clear().putBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, true).apply();
+                                App.getSharedPreferences().edit().clear().apply();
                                 LoginManager.getInstance().logOut();
+
                                 //getActivity().finish();
 
                                 //added by Aga 22-1-2016
-                                Intent i = new Intent(MainActivity.this, MainActivity.class);
-                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                Intent i = new Intent(MainActivity.this, SplashActivity.class);
+                                //i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                //i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                 startActivity(i);
                                 finish();
+
+                                /*Intent intent = getBaseContext().getPackageManager()
+                                        .getLaunchIntentForPackage(getBaseContext().getPackageName());
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);*/
+                                //finish();
+
                                 //----------------------
 
                             }
@@ -424,5 +624,6 @@ public class MainActivity extends AppCompatActivity {
             hideProgressDialog();
         }
     }
+
 
 }

@@ -21,17 +21,13 @@ import retrofit.Retrofit;
 /**
  * Created by LTE on 2/4/2016.
  */
-public class GuestManager {
+public class GuestManager extends BaseManager{
 
     private static GuestInterface eventInterface;
     public static ArrayList<GuestModel.Data.GuestInterests> dataGuestInterest = new ArrayList<>();
 
     public static void initGuestService(){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Utils.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        eventInterface = retrofit.create(GuestInterface.class);
+        eventInterface = getRetrofit().create(GuestInterface.class);
     }
 
     private static GuestInterface getInstance(){
@@ -74,6 +70,11 @@ public class GuestManager {
                     Log.d("Failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT_GUEST, Utils.MSG_EXCEPTION + t.toString()));
                 }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
             });
         }catch (IOException e){
             Log.d("Exception", e.toString());
@@ -104,6 +105,11 @@ public class GuestManager {
                 public void onCustomCallbackFailure(String t) {
                     Log.d("Failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_GUEST_CONNECT, Utils.MSG_EXCEPTION + t.toString()));
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
                 }
             });
         }catch (IOException e){

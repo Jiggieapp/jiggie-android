@@ -83,6 +83,125 @@ public class EventDetailModel {
             ArrayList<GuestViewed> guests_viewed;
             Venue venue;
 
+            public EventDetail(String _id, String event_id, String start_datetime, String end_datetime, String venue_id, String venue_name, String start_datetime_str, String end_datetime_str,
+                               String fullfillment_type, String fullfillment_value, ArrayList<String> photos, String description, String title, ArrayList<String> tags,
+                               ArrayList<GuestViewed> guests_viewed, Venue venue){
+                this._id = _id;
+                this.event_id = event_id;
+                this.start_datetime = start_datetime;
+                this.end_datetime = end_datetime;
+                this.venue_id = venue_id;
+                this.venue_name = venue_name;
+                this.start_datetime_str = start_datetime_str;
+                this.end_datetime_str = end_datetime_str;
+                this.fullfillment_type = fullfillment_type;
+                this.fullfillment_value = fullfillment_value;
+                this.photos = photos;
+                this.description = description;
+                this.title = title;
+                this.tags = tags;
+                this.guests_viewed = guests_viewed;
+                this.venue = venue;
+            }
+
+            public String get_id() {
+                return _id;
+            }
+
+            public String getEvent_id() {
+                return event_id;
+            }
+
+            public String getStart_datetime() {
+                return start_datetime;
+            }
+
+            public String getEnd_datetime() {
+                return end_datetime;
+            }
+
+            public String getVenue_id() {
+                return venue_id;
+            }
+
+            public String getVenue_name() {
+                return venue_name;
+            }
+
+            public String getStart_datetime_str() {
+                return start_datetime_str;
+            }
+
+            public String getEnd_datetime_str() {
+                return end_datetime_str;
+            }
+
+            public String getFullfillment_type() {
+                return fullfillment_type;
+            }
+
+            public String getFullfillment_value() {
+                return fullfillment_value;
+            }
+
+            public ArrayList<String> getPhotos() {
+                return photos;
+            }
+
+            public String getDescription() {
+                return description;
+            }
+
+            public String getTitle() {
+                return title;
+            }
+
+            public ArrayList<String> getTags() {
+                return tags;
+            }
+
+            public ArrayList<GuestViewed> getGuests_viewed() {
+                return guests_viewed;
+            }
+
+            public Venue getVenue() {
+                return venue;
+            }
+
+            protected EventDetail(Parcel in) {
+                _id = in.readString();
+                event_id = in.readString();
+                start_datetime = in.readString();
+                end_datetime = in.readString();
+                venue_id = in.readString();
+                venue_name = in.readString();
+                start_datetime_str = in.readString();
+                end_datetime_str = in.readString();
+                fullfillment_type = in.readString();
+                fullfillment_value = in.readString();
+                if (in.readByte() == 0x01) {
+                    photos = new ArrayList<String>();
+                    in.readList(photos, String.class.getClassLoader());
+                } else {
+                    photos = null;
+                }
+                description = in.readString();
+                title = in.readString();
+                if (in.readByte() == 0x01) {
+                    tags = new ArrayList<String>();
+                    in.readList(tags, String.class.getClassLoader());
+                } else {
+                    tags = null;
+                }
+                if (in.readByte() == 0x01) {
+                    guests_viewed = new ArrayList<GuestViewed>();
+                    in.readList(guests_viewed, GuestViewed.class.getClassLoader());
+                } else {
+                    guests_viewed = null;
+                }
+                venue = (Venue) in.readValue(Venue.class.getClassLoader());
+            }
+
             @Override
             public int describeContents() {
                 return 0;
@@ -90,212 +209,106 @@ public class EventDetailModel {
 
             @Override
             public void writeToParcel(Parcel dest, int flags) {
-                dest.writeString(this._id);
-                dest.writeString(this.event_id);
-                dest.writeString(this.start_datetime);
-                dest.writeString(this.end_datetime);
-                dest.writeString(this.venue_id);
-                dest.writeString(this.venue_name);
-                dest.writeString(this.start_datetime_str);
-                dest.writeString(this.end_datetime_str);
-                dest.writeString(this.fullfillment_type);
-                dest.writeString(this.fullfillment_value);
-                dest.writeStringList(this.photos);
-                dest.writeString(this.description);
-                dest.writeString(this.title);
-                dest.writeStringList(this.tags);
-                //dest.writeList(this.guests_viewed);
-                dest.writeParcelable(this.venue, 0);
+                dest.writeString(_id);
+                dest.writeString(event_id);
+                dest.writeString(start_datetime);
+                dest.writeString(end_datetime);
+                dest.writeString(venue_id);
+                dest.writeString(venue_name);
+                dest.writeString(start_datetime_str);
+                dest.writeString(end_datetime_str);
+                dest.writeString(fullfillment_type);
+                dest.writeString(fullfillment_value);
+                if (photos == null) {
+                    dest.writeByte((byte) (0x00));
+                } else {
+                    dest.writeByte((byte) (0x01));
+                    dest.writeList(photos);
+                }
+                dest.writeString(description);
+                dest.writeString(title);
+                if (tags == null) {
+                    dest.writeByte((byte) (0x00));
+                } else {
+                    dest.writeByte((byte) (0x01));
+                    dest.writeList(tags);
+                }
+                if (guests_viewed == null) {
+                    dest.writeByte((byte) (0x00));
+                } else {
+                    dest.writeByte((byte) (0x01));
+                    dest.writeList(guests_viewed);
+                }
+                dest.writeValue(venue);
             }
 
-            protected EventDetail(Parcel in) {
-                this._id = in.readString();
-                this.event_id = in.readString();
-                this.start_datetime = in.readString();
-                this.end_datetime = in.readString();
-                this.venue_id = in.readString();
-                this.venue_name = in.readString();
-                this.start_datetime_str = in.readString();
-                this.end_datetime_str = in.readString();
-                this.fullfillment_type = in.readString();
-                this.fullfillment_value = in.readString();
-                this.photos = in.createStringArrayList();
-                this.description = in.readString();
-                this.title = in.readString();
-                this.tags = in.createStringArrayList();
-                /*this.guests_viewed = new ArrayList<GuestViewed>();
-                in.readList(this.guests_viewed, List.class.getClassLoader());*/
-                this.venue = in.readParcelable(Venue.class.getClassLoader());
-            }
-
-            public static final Creator<EventDetail> CREATOR = new Creator<EventDetail>() {
-                public EventDetail createFromParcel(Parcel source) {
-                    return new EventDetail(source);
+            @SuppressWarnings("unused")
+            public static final Parcelable.Creator<EventDetail> CREATOR = new Parcelable.Creator<EventDetail>() {
+                @Override
+                public EventDetail createFromParcel(Parcel in) {
+                    return new EventDetail(in);
                 }
 
+                @Override
                 public EventDetail[] newArray(int size) {
                     return new EventDetail[size];
                 }
             };
 
-            public String get_id() {
-                return _id;
-            }
-
-            public void set_id(String _id) {
-                this._id = _id;
-            }
-
-            public String getEvent_id() {
-                return event_id;
-            }
-
-            public void setEvent_id(String event_id) {
-                this.event_id = event_id;
-            }
-
-            public String getStart_datetime() {
-                return start_datetime;
-            }
-
-            public void setStart_datetime(String start_datetime) {
-                this.start_datetime = start_datetime;
-            }
-
-            public String getEnd_datetime() {
-                return end_datetime;
-            }
-
-            public void setEnd_datetime(String end_datetime) {
-                this.end_datetime = end_datetime;
-            }
-
-            public String getVenue_id() {
-                return venue_id;
-            }
-
-            public void setVenue_id(String venue_id) {
-                this.venue_id = venue_id;
-            }
-
-            public String getVenue_name() {
-                return venue_name;
-            }
-
-            public void setVenue_name(String venue_name) {
-                this.venue_name = venue_name;
-            }
-
-            public String getStart_datetime_str() {
-                return start_datetime_str;
-            }
-
-            public void setStart_datetime_str(String start_datetime_str) {
-                this.start_datetime_str = start_datetime_str;
-            }
-
-            public String getEnd_datetime_str() {
-                return end_datetime_str;
-            }
-
-            public void setEnd_datetime_str(String end_datetime_str) {
-                this.end_datetime_str = end_datetime_str;
-            }
-
-            public String getFullfillment_type() {
-                return fullfillment_type;
-            }
-
-            public void setFullfillment_type(String fullfillment_type) {
-                this.fullfillment_type = fullfillment_type;
-            }
-
-            public String getFullfillment_value() {
-                return fullfillment_value;
-            }
-
-            public void setFullfillment_value(String fullfillment_value) {
-                this.fullfillment_value = fullfillment_value;
-            }
-
-            public ArrayList<String> getPhotos() {
-                return photos;
-            }
-
-            public void setPhotos(ArrayList<String> photos) {
-                this.photos = photos;
-            }
-
-            public String getDescription() {
-                return description;
-            }
-
-            public void setDescription(String description) {
-                this.description = description;
-            }
-
-            public String getTitle() {
-                return title;
-            }
-
-            public void setTitle(String title) {
-                this.title = title;
-            }
-
-            public ArrayList<String> getTags() {
-                return tags;
-            }
-
-            public void setTags(ArrayList<String> tags) {
-                this.tags = tags;
-            }
-
-            public ArrayList<GuestViewed> getGuests_viewed() {
-                return guests_viewed;
-            }
-
-            public void setGuests_viewed(ArrayList<GuestViewed> guests_viewed) {
-                this.guests_viewed = guests_viewed;
-            }
-
-            public Venue getVenue() {
-                return venue;
-            }
-
-            public void setVenue(Venue venue) {
-                this.venue = venue;
-            }
-
-            public static class GuestViewed{
+            public static class GuestViewed implements Parcelable {
 
                 String fb_id;
                 String first_name;
                 String gender;
 
+                public GuestViewed(String fb_id, String first_name, String gender){
+                    this.fb_id = fb_id;
+                    this.first_name = first_name;
+                    this.gender = gender;
+                }
 
                 public String getFb_id() {
                     return fb_id;
-                }
-
-                public void setFb_id(String fb_id) {
-                    this.fb_id = fb_id;
                 }
 
                 public String getFirst_name() {
                     return first_name;
                 }
 
-                public void setFirst_name(String first_name) {
-                    this.first_name = first_name;
-                }
-
                 public String getGender() {
                     return gender;
                 }
 
-                public void setGender(String gender) {
-                    this.gender = gender;
+                protected GuestViewed(Parcel in) {
+                    fb_id = in.readString();
+                    first_name = in.readString();
+                    gender = in.readString();
                 }
+
+                @Override
+                public int describeContents() {
+                    return 0;
+                }
+
+                @Override
+                public void writeToParcel(Parcel dest, int flags) {
+                    dest.writeString(fb_id);
+                    dest.writeString(first_name);
+                    dest.writeString(gender);
+                }
+
+                @SuppressWarnings("unused")
+                public static final Parcelable.Creator<GuestViewed> CREATOR = new Parcelable.Creator<GuestViewed>() {
+                    @Override
+                    public GuestViewed createFromParcel(Parcel in) {
+                        return new GuestViewed(in);
+                    }
+
+                    @Override
+                    public GuestViewed[] newArray(int size) {
+                        return new GuestViewed[size];
+                    }
+                };
             }
 
             public static class Venue implements Parcelable {
@@ -314,84 +327,75 @@ public class EventDetailModel {
                 String name;
                 ArrayList<String> photos;
 
-                public String get_id() {
-                    return _id;
+                public Venue(String _id, String address, String neighborhood, String city, String description, String lon, String lat, String zip, String name, ArrayList<String> photos){
+                    this._id = _id;
+                    this.address = address;
+                    this.neighborhood = neighborhood;
+                    this.city = city;
+                    this.description = description;
+                    this.lon = lon;
+                    this.lat = lat;
+                    this.zip = zip;
+                    this.name = name;
+                    this.photos = photos;
                 }
 
-                public void set_id(String _id) {
-                    this._id = _id;
+                public String get_id() {
+                    return _id;
                 }
 
                 public String getAddress() {
                     return address;
                 }
 
-                public void setAddress(String address) {
-                    this.address = address;
-                }
-
                 public String getNeighborhood() {
                     return neighborhood;
-                }
-
-                public void setNeighborhood(String neighborhood) {
-                    this.neighborhood = neighborhood;
                 }
 
                 public String getCity() {
                     return city;
                 }
 
-                public void setCity(String city) {
-                    this.city = city;
-                }
-
                 public String getDescription() {
                     return description;
-                }
-
-                public void setDescription(String description) {
-                    this.description = description;
                 }
 
                 public String getLon() {
                     return lon;
                 }
 
-                public void setLon(String lon) {
-                    this.lon = lon;
-                }
-
                 public String getLat() {
                     return lat;
-                }
-
-                public void setLat(String lat) {
-                    this.lat = lat;
                 }
 
                 public String getZip() {
                     return zip;
                 }
 
-                public void setZip(String zip) {
-                    this.zip = zip;
-                }
-
                 public String getName() {
                     return name;
-                }
-
-                public void setName(String name) {
-                    this.name = name;
                 }
 
                 public ArrayList<String> getPhotos() {
                     return photos;
                 }
 
-                public void setPhotos(ArrayList<String> photos) {
-                    this.photos = photos;
+                protected Venue(Parcel in) {
+                    _id = in.readString();
+                    address = in.readString();
+                    neighborhood = in.readString();
+                    city = in.readString();
+                    description = in.readString();
+                    lon = in.readString();
+                    lat = in.readString();
+                    zip = in.readString();
+                    name = in.readString();
+                    if (in.readByte() == 0x01) {
+                        photos = new ArrayList<String>();
+                        in.readList(photos, String.class.getClassLoader());
+                    } else {
+                        photos = null;
+                    }
                 }
 
                 @Override
@@ -401,43 +405,36 @@ public class EventDetailModel {
 
                 @Override
                 public void writeToParcel(Parcel dest, int flags) {
-                    dest.writeString(this._id);
-                    dest.writeString(this.address);
-                    dest.writeString(this.neighborhood);
-                    dest.writeString(this.city);
-                    dest.writeString(this.description);
-                    dest.writeString(this.lon);
-                    dest.writeString(this.lat);
-                    dest.writeString(this.zip);
-                    dest.writeString(this.name);
-                    dest.writeStringList(this.photos);
+                    dest.writeString(_id);
+                    dest.writeString(address);
+                    dest.writeString(neighborhood);
+                    dest.writeString(city);
+                    dest.writeString(description);
+                    dest.writeString(lon);
+                    dest.writeString(lat);
+                    dest.writeString(zip);
+                    dest.writeString(name);
+                    if (photos == null) {
+                        dest.writeByte((byte) (0x00));
+                    } else {
+                        dest.writeByte((byte) (0x01));
+                        dest.writeList(photos);
+                    }
                 }
 
-                protected Venue(Parcel in) {
-                    this._id = in.readString();
-                    this.address = in.readString();
-                    this.neighborhood = in.readString();
-                    this.city = in.readString();
-                    this.description = in.readString();
-                    this.lon = in.readString();
-                    this.lat = in.readString();
-                    this.zip = in.readString();
-                    this.name = in.readString();
-                    this.photos = in.createStringArrayList();
-                }
-
-                public static final Creator<Venue> CREATOR = new Creator<Venue>() {
-                    public Venue createFromParcel(Parcel source) {
-                        return new Venue(source);
+                @SuppressWarnings("unused")
+                public static final Parcelable.Creator<Venue> CREATOR = new Parcelable.Creator<Venue>() {
+                    @Override
+                    public Venue createFromParcel(Parcel in) {
+                        return new Venue(in);
                     }
 
+                    @Override
                     public Venue[] newArray(int size) {
                         return new Venue[size];
                     }
                 };
             }
-
-
         }
 
     }

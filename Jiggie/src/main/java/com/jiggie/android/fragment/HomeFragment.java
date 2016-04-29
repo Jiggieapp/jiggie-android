@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.AccessToken;
+import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.event.EventDetailActivity;
@@ -31,7 +34,9 @@ import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.model.Common;
+import com.jiggie.android.model.PostLocationModel;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -42,7 +47,7 @@ import butterknife.ButterKnife;
 public class HomeFragment extends Fragment implements ViewPager.OnPageChangeListener, ViewTreeObserver.OnGlobalLayoutListener, HomeMain {
     @Bind(R.id.appBar)
     AppBarLayout appBarLayout;
-    @Bind(R.id.viewpager)
+    @Bind(R.id.viewpagerw)
     ViewPager viewPager;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -78,7 +83,6 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
             return (isNeedToBeRedirected && !afSub1.isEmpty() && !afSub1.equalsIgnoreCase("null"));
         }
         else return false;
-        //return true;
     }
 
     @Override
@@ -99,6 +103,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         activity.setSupportActionBar(toolbar);
 
         this.adapter = new PageAdapter(this, activity.getSupportFragmentManager());
+        Utils.d(TAG, "onActivityCreated "  + adapter.getCount());
         this.viewPager.setOffscreenPageLimit(this.adapter.getCount());
         this.viewPager.setAdapter(this.adapter);
 
@@ -119,11 +124,11 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         this.viewPager.getViewTreeObserver().addOnGlobalLayoutListener(this);
 
         //Load animation
-        makeOutAnimation = AnimationUtils.loadAnimation(this.getActivity(),
+        /*makeOutAnimation = AnimationUtils.loadAnimation(this.getActivity(),
                 R.anim.slide_down);
 
         makeInAnimation = AnimationUtils.loadAnimation(this.getActivity(),
-                R.anim.slide_up);
+                R.anim.slide_up);*/
 
 
         /*makeInAnimation = AnimationUtils.makeInAnimation(this.getActivity(), false);
@@ -169,6 +174,29 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         {
 
         }
+
+
+    }
+
+    public static void sendLocationInfo(){
+        //PART of postLocation
+        PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), SocialManager.lat, SocialManager.lng);
+        //PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), "-6.2216706", "106.8401574");
+        String responses = new Gson().toJson(postLocationModel);
+        Utils.d("res", responses);
+
+        SocialManager.loaderLocation(postLocationModel, new SocialManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object) {
+                Utils.d("location", "post location success");
+            }
+
+            @Override
+            public void onFailure(int responseCode, String message) {
+
+            }
+        });
+        //end here
     }
 
     @Override

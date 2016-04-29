@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rel_slide_pay"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_button_ticket_detail">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/txt_pay"
+            android:text="@string/pci_slide"
+            android:textColor="@color/common_plus_signin_btn_text_dark"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"/>
+        <ImageView
+            android:id="@+id/r1"
+            android:layout_width="10dp"
+            android:layout_height="18dp"
+            android:src="@drawable/r_arrows"
+            android:layout_marginLeft="@dimen/padding_standard_half"
+            android:layout_toRightOf="@id/txt_pay"
+            android:layout_centerVertical="true"/>
+        <ImageView
+            android:id="@+id/r2"
+            android:layout_width="10dp"
+            android:layout_height="18dp"
+            android:src="@drawable/r_arrows"
+            android:layout_toRightOf="@id/r1"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+
+
+
+</RelativeLayout>

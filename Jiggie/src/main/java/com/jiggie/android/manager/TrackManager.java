@@ -22,16 +22,12 @@ import retrofit.Retrofit;
 /**
  * Created by LTE on 2/25/2016.
  */
-public class TrackManager {
+public class TrackManager extends BaseManager{
 
     static TrackInterface trackInterface;
 
     public static void initTrackService(){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Utils.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        trackInterface = retrofit.create(TrackInterface.class);
+        trackInterface = getRetrofit().create(TrackInterface.class);
     }
 
     private static TrackInterface getInstance(){
@@ -72,6 +68,11 @@ public class TrackManager {
                     Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_APPSFLYER, Utils.MSG_EXCEPTION + t.toString()));
                 }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
             });
         }catch (IOException e){
             Utils.d("exception", e.toString());
@@ -102,6 +103,11 @@ public class TrackManager {
                 public void onCustomCallbackFailure(String t) {
                     Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MIXPANEL, Utils.MSG_EXCEPTION + t.toString()));
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
                 }
             });
         }catch (IOException e){

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/txt_event"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_margin="@dimen/padding_standard"
+        android:text="@string/his_ev1"
+        android:textColor="@color/textDarkGray"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <RelativeLayout
+        android:id="@+id/rel_venue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txt_event"
+        android:layout_marginBottom="@dimen/padding_standard"
+        android:layout_marginLeft="@dimen/padding_standard">
+
+        <ImageView
+            android:id="@+id/img_venue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_map_gr" />
+
+        <TextView
+            android:id="@+id/txt_venue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/padding_standard_half"
+            android:layout_toRightOf="@id/img_venue"
+            android:text="@string/his_ven1"
+            android:textSize="@dimen/normal_text_size" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rel_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rel_venue"
+        android:layout_marginBottom="@dimen/padding_standard"
+        android:layout_marginLeft="@dimen/padding_standard">
+
+        <ImageView
+            android:id="@+id/img_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_clock_gr" />
+
+        <TextView
+            android:id="@+id/txt_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/padding_standard_half"
+            android:layout_toRightOf="@id/img_date"
+            android:text="@string/his_dt1"
+            android:textSize="@dimen/normal_text_size" />
+    </RelativeLayout>
+
+    <!--<ImageView
+        android:id="@+id/img_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rel_date"
+        android:layout_marginBottom="@dimen/padding_standard_half"
+        android:layout_marginLeft="@dimen/padding_standard"
+        android:src="@drawable/bdg_expired" />-->
+
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:layout_marginBottom="@dimen/padding_standard"
+        android:layout_marginLeft="@dimen/padding_standard"
+        android:layout_below="@id/rel_date"
+        >
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:textColor="@android:color/white"
+            android:enabled="false"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_below="@+id/container"
+        android:background="@color/dividercomm" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/padding_standard"
+        android:src="@drawable/purple_arrow2x" />
+
+</RelativeLayout>

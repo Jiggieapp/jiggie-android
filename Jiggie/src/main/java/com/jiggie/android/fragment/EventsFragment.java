@@ -23,7 +23,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -222,8 +221,7 @@ public class EventsFragment extends Fragment
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        this.rootView
-                = inflater.inflate(R.layout.fragment_events, container, false);
+        this.rootView = inflater.inflate(R.layout.fragment_events, container, false);
         return this.rootView;
     }
 
@@ -439,8 +437,6 @@ public class EventsFragment extends Fragment
                         || searchText.equals("")) {
                     if (!isSearch) {
                         showTab();
-                        Utils.d(TAG, "calculatetime " + tempEvent.getTitle()
-                                + " " + tempEvent.getStart_datetime());
                         final String diffDays = Utils.calculateTime(tempEvent.getStart_datetime());
                         if (diffDays.equals(Utils.DATE_TODAY)) {
                             todayEvents.add(tempEvent);

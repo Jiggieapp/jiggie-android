@@ -19,6 +19,8 @@
         android:layout_weight="1"
         android:background="@color/grayLight">
 
+
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler"
             android:layout_width="match_parent"

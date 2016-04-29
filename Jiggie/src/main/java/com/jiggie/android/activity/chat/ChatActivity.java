@@ -17,9 +17,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jiggie.android.App;
@@ -91,6 +95,8 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_chat);
 
+        App.runningActivity = this;
+
         final Intent intent = super.getIntent();
         init(intent);
 
@@ -106,9 +112,13 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
         init(intent);
     }*/
 
+    Animation makeInAnimation, makeOutAnimation;
+
     private void init(Intent intent)
     {
+
         final String profileImage = intent.getStringExtra(Conversation.FIELD_PROFILE_IMAGE);
+        final String eventNae = intent.getStringExtra(Conversation.FIELD_EVENT_NAME);
         this.toName = intent.getStringExtra(Conversation.FIELD_FROM_NAME);
         this.toId = intent.getStringExtra(Conversation.FIELD_FACEBOOK_ID);
 
@@ -127,6 +137,64 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
         this.recyclerView.setAdapter(this.adapter = new ChatAdapter(this, profileImage, toId));
         this.recyclerView.setScrollContainer(false);
         this.recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(this);
+        /*makeOutAnimation = AnimationUtils.loadAnimation(this,
+                R.anim.com_mixpanel_android_fade_in);
+        makeInAnimation = AnimationUtils.loadAnimation(this,
+                R.anim.com_mixpanel_android_fade_out);
+
+        makeInAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+                //fab.setVisibility(View.VISIBLE);
+                lblChatHeader.setVisibility(View.GONE);
+            }
+        });
+        makeOutAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                //fab.setVisibility(View.GONE);
+                lblChatHeader.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+        });
+
+        this.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    // scrolling up
+                    //lblChatHeader.setVisibility(View.GONE);
+                    //makeInAnimation.start();
+                    //lblChatHeader.setAnimation(makeInAnimation);
+                    lblChatHeader.setVisibility(View.GONE);
+                }
+                else if(dy < 0)
+                { // scrolling down }
+                    //lblChatHeader.setVisibility(View.VISIBLE);
+                    //makeOutAnimation.start();
+                    //lblChatHeader.setAnimation(makeOutAnimation);
+                    //lblChatHeader.startAnimation(makeOutAnimation);
+                    lblChatHeader.startAnimation(makeInAnimation);
+                }
+            }
+
+        });*/
+
         this.txtMessage.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -250,6 +318,10 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
                         }
                     }).show();
         }
+        else if(item.getItemId() == R.id.home)
+        {
+            onBackPressed();
+        }
         /*else if (item.getItemId() == R.id.action_clear) {
             new AlertDialog.Builder(this)
                     .setMessage(R.string.confirmation)
@@ -341,7 +413,6 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
         }
     };
 
-
     private BroadcastReceiver checkNewMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -380,11 +451,18 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
 
     public void onEvent(ChatResponseModel message){
         if(message.getFromFunction().equals(ChatManager.FROM_LOAD)){
+            /*lblChatHeader.bringToFront();
+            lblChatHeader.setText(message.getData().getEvent_name());
+            lblChatHeader.setVisibility(View.VISIBLE);*/
+
             final List<Chat> failedItems = ChatTable.getUnProcessedItems(App.getInstance().getDatabase(), toId);
             final int length = message.getData().getMessages() == null ? 0 : message.getData().getMessages().size();
             final int failedLength = failedItems.size();
 
             adapter.clear();
+            final Chat chatHeader = new Chat(message.getData().getMessages().get(0)
+                    , message.getData().getFromId(), message.getData().getEvent_name());
+            adapter.add(chatHeader);
             for (int i = 0; i < length; i++) {
                 final Chat chat = new Chat(message.getData().getMessages().get(i), message.getData().getFromId());
                 if ((!chat.isFromYou()) && (lastMessageDate.compareTo(chat.getCreatedAt()) < 0))
@@ -409,9 +487,7 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
                 setResult(RESULT_OK, new Intent().putExtra(Conversation.FIELD_FACEBOOK_ID, toId));
             }
         }else if(message.getFromFunction().equals(ChatManager.FROM_CHECK_NEW)){
-            Utils.d(TAG, "fetch chat new message suksesbrother");
             final int length = message.getData().getMessages() == null ? 0 : message.getData().getMessages().size();
-
             for (int i = 0; i < length; i++) {
                 final Chat chat = new Chat(message.getData().getMessages().get(i), message.getData().getFromId());
                 if ((!chat.isFromYou()) && (lastMessageDate.compareTo(chat.getCreatedAt()) < 0)) {
@@ -509,9 +585,10 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
     public void onBackPressed() {
         super.onBackPressed();
         Intent i = new Intent(this, MainActivity.class);
-        //i.putExtra("show_background", false);
         i.putExtra(Common.TO_TAB_CHAT, true);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
         finish();
     }
+
 }

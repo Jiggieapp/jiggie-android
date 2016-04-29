@@ -19,9 +19,9 @@ import com.jiggie.android.model.MemberSettingResultModel;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SuccessModel;
+import com.jiggie.android.model.SuccessTokenModel;
 
 import java.io.IOException;
-import java.lang.reflect.Member;
 
 import de.greenrobot.event.EventBus;
 import retrofit.Callback;
@@ -40,11 +40,7 @@ public class AccountManager extends BaseManager{
     public static boolean isInSettingPage = false;
 
     public static void initAccountService(){
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Utils.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        accountInterface = retrofit.create(AccountInterface.class);
+        accountInterface = getRetrofit().create(AccountInterface.class);
     }
 
     private static AccountInterface getInstance(){
@@ -103,7 +99,6 @@ public class AccountManager extends BaseManager{
                         //-------------
 
                         SettingModel dataTemp = setSettingModelFromLogin(dataLogin);
-
                         EventBus.getDefault().post(dataTemp);
                     } else {
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SIGN_IN, Utils.RESPONSE_FAILED));
@@ -113,6 +108,11 @@ public class AccountManager extends BaseManager{
                 @Override
                 public void onCustomCallbackFailure(String t) {
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SIGN_IN, Utils.MSG_EXCEPTION + t.toString()));
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
                 }
             });
         }catch (IOException e){
@@ -142,6 +142,11 @@ public class AccountManager extends BaseManager{
                 public void onCustomCallbackFailure(String t) {
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.MSG_EXCEPTION + t.toString()));
                 }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
             });
         } catch (IOException e){
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.MSG_EXCEPTION + e.toString()));
@@ -168,6 +173,11 @@ public class AccountManager extends BaseManager{
                 public void onCustomCallbackFailure(String t) {
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_DETAIL, Utils.MSG_EXCEPTION + t.toString()));
                 }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
             });
         }catch (IOException e){
             Utils.d("exception", e.toString());
@@ -180,8 +190,6 @@ public class AccountManager extends BaseManager{
             getSetting(fb_id, new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
-                    Utils.d(TAG, "responseresponse " + Utils.print(response));
-
                     if (response.code() == Utils.CODE_SUCCESS) {
                         MemberSettingResultModel data = (MemberSettingResultModel) response.body();
                         MemberSettingModel temp = new MemberSettingModel(data);
@@ -199,6 +207,11 @@ public class AccountManager extends BaseManager{
                 @Override
                 public void onCustomCallbackFailure(String t) {
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_SETTING, Utils.MSG_EXCEPTION + t.toString()));
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
                 }
             });
         }catch (IOException e){
@@ -227,6 +240,11 @@ public class AccountManager extends BaseManager{
                     Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_EDIT, Utils.MSG_EXCEPTION + t.toString()));
                 }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
             });
         }catch (IOException e){
             Utils.d("exception", e.toString());
@@ -252,7 +270,6 @@ public class AccountManager extends BaseManager{
     }
 
     public static LoginModel loadLogin(){
-
         LoginModel loginModel = new Gson().fromJson(App.getInstance().getSharedPreferences(Utils.PREFERENCE_LOGIN,
                 Context.MODE_PRIVATE).getString(Utils.LOGIN_MODEL, ""), LoginModel.class);
         return loginModel;
@@ -310,6 +327,11 @@ public class AccountManager extends BaseManager{
                 Utils.d(TAG, "response fail" + t);
                 ExceptionModel exceptionModel = new ExceptionModel(TAG, t);
                 EventBus.getDefault().post(exceptionModel);
+            }
+
+            @Override
+            public void onNeedToRestart() {
+
             }
         });
     }
@@ -379,6 +401,11 @@ public class AccountManager extends BaseManager{
             public void onCustomCallbackFailure(String t) {
 
             }
+
+            @Override
+            public void onNeedToRestart() {
+
+            }
         });
     }
 
@@ -401,35 +428,65 @@ public class AccountManager extends BaseManager{
             public void onCustomCallbackFailure(String t) {
 
             }
+
+            @Override
+            public void onNeedToRestart() {
+
+            }
         });
     }
 
 
-    public static void getAccessToken()
+    public static void getAccessToken
+            //(final OnFinishGetAccessToken onFinishGetAccessToken)
+            (final CommerceManager.OnResponseListener onResponseListener)
     {
         getAccessToken(new CustomCallback() {
             @Override
             public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
-                /*String responses = new Gson().toJson(response.body());
-                Utils.d(TAG, "response " + responses);*/
-
-                SuccessModel successModel = (SuccessModel) response.body();
-                App.getInstance()
-                        .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
-                        .edit()
-                        .putString(Utils.ACCESS_TOKEN, successModel.getToken())
-                        .apply();
-
-                //AccessTokenModel accessTokenModel = (AccessTokenModel) response.body();
-                //Utils.d(TAG, accessTokenModel.getToken());
+                SuccessTokenModel successModel = (SuccessTokenModel) response.body();
+                setAccessTokenToPreferences(successModel.data.token);
+                onResponseListener.onSuccess(successModel);
+                //onFinishGetAccessToken.onFinishGetAccessToken(successModel.getToken());
             }
 
             @Override
             public void onCustomCallbackFailure(String t) {
-                Utils.d(TAG, "failure " + t.toString());
+                onResponseListener.onFailure(Utils.CODE_FAILED, t);
+            }
+
+            @Override
+            public void onNeedToRestart() {
+                Utils.d(TAG, "restart");
+                getAccessToken(onResponseListener);
             }
         });
     }
+
+    public static String getAccessTokenFromPreferences()
+    {
+        final String accessToken = App.getInstance()
+                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                .getString(Utils.ACCESS_TOKEN, "");
+        return accessToken;
+    }
+
+    public static void setAccessTokenToPreferences(String token)
+    {
+        App.getInstance()
+                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                .edit()
+                .putString(Utils.ACCESS_TOKEN, token)
+                .apply();
+    }
+
+    public OnFinishGetAccessToken onFinishGetAccessToken;
+    public interface OnFinishGetAccessToken
+    {
+        public Retrofit onFinishGetAccessToken(String accessToken);
+    }
+
+
 
     private static void getAccessToken(Callback callback)
     {

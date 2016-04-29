@@ -33,5 +33,8 @@ public class BitmapUtility {
         return outputBitmap;
     }
 
-    public static Bitmap getBitmapResource(int resourceId) { return BitmapFactory.decodeResource(App.getInstance().getResources(), resourceId); }
+    public static Bitmap getBitmapResource(int resourceId)
+    {
+        return BitmapFactory.decodeResource(App.getInstance().getResources(), resourceId);
+    }
 }

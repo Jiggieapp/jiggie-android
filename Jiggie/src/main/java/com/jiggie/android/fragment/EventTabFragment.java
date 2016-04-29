@@ -369,7 +369,6 @@ public class EventTabFragment extends Fragment
         i.putExtra(Common.FIELD_EVENT_DAY_END, event.getEnd_datetime());
         i.putExtra(Common.FIELD_EVENT_PICS, event.getPhotos());
         i.putExtra(Common.FIELD_EVENT_DESCRIPTION, event.getDescription());
-        //i.putExtra(Co)
         super.startActivity(i);
     }
 

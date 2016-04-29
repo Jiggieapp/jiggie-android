@@ -14,6 +14,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by rangg on 17/11/2015.
@@ -112,6 +113,38 @@ public class StringUtility {
         }
     }
 
+    public static long getCountdownTime(String timelimit) {
+        try {
+            if (TextUtils.isEmpty(timelimit))
+                return 0;
+
+            final Date date = Common.ISO8601_DATE_FORMAT.parse(timelimit);
+            final Calendar cal = Calendar.getInstance();
+
+            cal.setTime(date);
+
+            int offset = cal.getTimeZone().getOffset(cal.getTimeInMillis());;
+
+            long timeF = cal.getTimeInMillis() + offset;
+            long timeNow = System.currentTimeMillis();
+            long countdownTime = (timeF - timeNow);
+
+            return countdownTime;
+        } catch (ParseException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    public static String getTimeFormat(long milliseconds){
+
+        int seconds = (int) (milliseconds / 1000) % 60 ;
+        int minutes = (int) ((milliseconds / (1000*60)) % 60);
+        int hours   = (int) ((milliseconds / (1000*60*60)) % 24);
+
+        String time = String.format("%02d:%02d:%02d",hours,minutes,seconds);
+        return time;
+    }
+
     //added by Wandy 12-02-2016
     public static String getAge3(String dateBirth) {
         try {
@@ -146,5 +179,49 @@ public class StringUtility {
             query_pairs.put(URLDecoder.decode(pair.substring(0, idx), "UTF-8"), URLDecoder.decode(pair.substring(idx + 1), "UTF-8"));
         }
         return query_pairs;
+    }
+
+    public static String getRupiahFormat(String number) {
+        String displayedString = "";
+
+        int numPerThousand = (int)(Double.parseDouble(number) / 1000);
+        String strNumPerThousand = String.valueOf(numPerThousand);
+
+        if (strNumPerThousand.length() == 0) {
+            displayedString = "Rp0";
+        } else {
+            if (strNumPerThousand.length() > 3) {
+                int length = strNumPerThousand.length();
+
+                for (int i = length; i > 0; i -= 3) {
+                    if (i > 3) {
+                        String myStringPrt1 = strNumPerThousand.substring(0, i - 3);
+                        String myStringPrt2 = strNumPerThousand.substring(i - 3);
+
+                        String combinedString;
+
+                        combinedString = myStringPrt1 + ".";
+
+                        combinedString += myStringPrt2;
+                        strNumPerThousand = combinedString;
+
+                        displayedString = "Rp" + combinedString;
+                    }
+                }
+            } else {
+                displayedString = "Rp" + numPerThousand;
+            }
+        }
+
+        if(numPerThousand>=1){
+            displayedString = displayedString + "K";
+        }
+
+        return displayedString;
+    }
+
+    public static String getCCNumberFormat(String input){
+        String output = input.replaceAll("(\\d{4})(?=\\d)", "$1-");
+        return output;
     }
 }

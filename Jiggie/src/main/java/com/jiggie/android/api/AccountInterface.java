@@ -11,6 +11,7 @@ import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.MemberSettingResultModel;
 import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SuccessModel;
+import com.jiggie.android.model.SuccessTokenModel;
 
 import retrofit.Call;
 import retrofit.http.Body;
@@ -44,7 +45,7 @@ public interface AccountInterface{
     Call<Success2Model> postEditAbout(@Url String url, @Body AboutModel aboutModel);
 
     @POST
-    Call<SuccessModel> getAccessToken(@Url String url, @Body AccessTokenModel accessTokenModel);
+    Call<SuccessTokenModel> getAccessToken(@Url String url, @Body AccessTokenModel accessTokenModel);
 
     @GET(Utils.URL_VERIFY_PHONE_NUMBER)
     Call<Success2Model> verifyPhoneNumber(@Path("fb_id") String fb_id, @Path("phone") String phone);

@@ -1,10 +1,19 @@
 package com.jiggie.android.component;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
+import android.graphics.Point;
+import android.location.LocationManager;
+import android.os.Build;
+import android.provider.Settings;
+import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.Display;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -13,6 +22,8 @@ import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.BuildConfig;
 import com.jiggie.android.R;
+
+import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,71 +39,81 @@ import retrofit.Response;
  * Created by LTE on 1/29/2016.
  */
 public class Utils {
-
-    public static String BLANK = "";
-
-    public static String FROM_SIGN_IN = "sign_in";
-    public static String FROM_MEMBER_SETTING = "member_setting";
-    //public static String FROM_GET_MEMBER_SETTING = "get_member_setting";
-    public static String FROM_EVENT = "event";
-    public static String FROM_SOCIAL_FEED = "social_feed";
-    public static String FROM_SOCIAL_MATCH = "social_match";
-    public static String FROM_CHAT = "chat";
-    public static String FROM_CHAT_CONVERSATION = "chat_conversation";
-    public static String FROM_BLOCK_CHAT = "block_chat";
-    public static String FROM_DELETE_CHAT = "delete_chat";
-    public static String FROM_ADD_CHAT = "add_chat";
-    //public static String FROM_MORE = "more";
-    public static String FROM_EVENT_DETAIL = "event_detail";
-    public static String FROM_EVENT_GUEST = "event_guest";
-    public static String FROM_PROFILE_DETAIL = "profile_detail";
-    public static String FROM_PROFILE_SETTING = "profile_setting";
-    public static String FROM_PROFILE_EDIT = "profile_edit";
-    public static String FROM_SHARE_LINK = "share_link";
-    public static String FROM_SETUP_TAGS = "setup_tags";
-    public static String FROM_GUEST_CONNECT = "guest_connect";
-    public static String FROM_VERIFY_VERIFICATION_CODE = "verify_verification_code";
-    public static String FROM_WALKTHROUGH = "walkthrough";
-    public static String FROM_PRODUCT_LIST = "product_list";
-    public static String FROM_SUMMARY = "summary";
-    public static String FROM_COMPLETING_WALKTHROUGH_LOCATION = "complete_walkthrough_location";
-    public static String FROM_APPSFLYER = "appsflyer";
-    public static String FROM_MIXPANEL = "mixpanel";
+    public static final String FROM_SIGN_IN = "sign_in";
+    public static final String FROM_MEMBER_SETTING = "member_setting";
+    //public static final String FROM_GET_MEMBER_SETTING = "get_member_setting";
+    public static final String FROM_EVENT = "event";
+    public static final String FROM_SOCIAL_FEED = "social_feed";
+    public static final String FROM_SOCIAL_MATCH = "social_match";
+    public static final String FROM_CHAT = "chat";
+    public static final String FROM_CHAT_CONVERSATION = "chat_conversation";
+    public static final String FROM_BLOCK_CHAT = "block_chat";
+    public static final String FROM_DELETE_CHAT = "delete_chat";
+    public static final String FROM_ADD_CHAT = "add_chat";
+    //public static final String FROM_MORE = "more";
+    public static final String FROM_EVENT_DETAIL = "event_detail";
+    public static final String FROM_EVENT_GUEST = "event_guest";
+    public static final String FROM_PROFILE_DETAIL = "profile_detail";
+    public static final String FROM_PROFILE_SETTING = "profile_setting";
+    public static final String FROM_PROFILE_EDIT = "profile_edit";
+    public static final String FROM_SHARE_LINK = "share_link";
+    public static final String FROM_SETUP_TAGS = "setup_tags";
+    public static final String FROM_GUEST_CONNECT = "guest_connect";
+    public static final String FROM_VERIFY_VERIFICATION_CODE = "verify_verification_code";
+    public static final String FROM_WALKTHROUGH = "walkthrough";
+    public static final String FROM_PRODUCT_LIST = "product_list";
+    public static final String FROM_SUMMARY = "summary";
+    public static final String FROM_COMPLETING_WALKTHROUGH_LOCATION = "complete_walkthrough_location";
+    public static final String FROM_APPSFLYER = "appsflyer";
+    public static final String FROM_MIXPANEL = "mixpanel";
+    public static final String HAS_LOAD_GROUP_INFO = "has_load_group_info";
 
     public static boolean SHOW_WALKTHROUGH_EVENT = true;
     public static boolean SHOW_WALKTHROUGH_SOCIAL = true;
     public static boolean SHOW_WALKTHROUGH_CHAT = true;
-    public static String SET_WALKTHROUGH_EVENT = "walkthrough_event";
-    public static String SET_WALKTHROUGH_SOCIAL = "walkthrough_social";
-    public static String SET_WALKTHROUGH_CHAT = "walkthrough_chat";
-    public static String TAB_EVENT = "event";
-    public static String TAB_CHAT = "chat";
-    public static String TAB_SOCIAL = "social";
+    public static final String SET_WALKTHROUGH_EVENT = "walkthrough_event";
+    public static final String SET_WALKTHROUGH_SOCIAL = "walkthrough_social";
+    public static final String SET_WALKTHROUGH_CHAT = "walkthrough_chat";
+    public static final String TAB_EVENT = "event";
+    public static final String TAB_CHAT = "chat";
+    public static final String TAB_SOCIAL = "social";
 
     //ERROR CODE & MESSAGE
-    //public static String MSG_EXCEPTION = "Failed: ";
+    //public static final String MSG_EXCEPTION = "Failed: ";
     //changed by wandy 12-02-2016
     public static String MSG_EXCEPTION = "";
-    public static String RESPONSE_FAILED = "Failed response";
-    public static String MSG_EMPTY_DATA = "Empty data";
+    public static final String RESPONSE_FAILED = "Failed response";
+    public static final String MSG_EMPTY_DATA = "Empty data";
+    public static int CODE_FAILED = 0;
     public static int CODE_SUCCESS = 200;
     public static int CODE_EMPTY_DATA = 204;
+    public static final String BLANK = "";
     //--------------------
 
-    public static String PREFERENCE_SETTING = "setting";
-    public static String SETTING_MODEL = "setting_model";
-    public static String MEMBER_SETTING_MODEL = "member_setting_model";
-    public static String TAGS_LIST = "tags_list";
-    public static String EVENT_LIST = "event_list";
-    public static String PREFERENCE_LOGIN = "login";
-    public static String LOGIN_MODEL = "login_model";
-    public static String ACCESS_TOKEN = "access_token";
-    public static String PREFERENCE_TAGLIST = "taglist";
-    public static String TAGLIST_MODEL = "taglist_model";
-    public static String IS_FIRST_RUN = "is_first_run";
-    public static String IS_NEED_TO_BE_REDIRECTED_TO_EVENT_DETAIL
+    public static final String PREFERENCE_SETTING = "setting";
+    public static final String SETTING_MODEL = "setting_model";
+    public static final String MEMBER_SETTING_MODEL = "member_setting_model";
+    public static final String TAGS_LIST = "tags_list";
+    public static final String EVENT_LIST = "event_list";
+    public static final String PREFERENCE_LOGIN = "login";
+    public static final String LOGIN_MODEL = "login_model";
+    public static final String ACCESS_TOKEN = "access_token";
+    public static final String PREFERENCE_TAGLIST = "taglist";
+    public static final String TAGLIST_MODEL = "taglist_model";
+    public static final String IS_FIRST_RUN = "is_first_run";
+    public static final String IS_NEED_TO_BE_REDIRECTED_TO_EVENT_DETAIL
             = "is_already_redirected_to_event_detail";
     public static String DEVICE_ID = "";
+    public static final String GUEST_DETAilS = "guest_details";
+    public static final String VERSION_CODE = "version_code";
+    public static final String PREFERENCE_GPS = "gps";
+
+    //Ecommerce var-----------
+    public static final String TYPE_CC = "cc";
+    public static final String TYPE_VA = "va";
+    public static final String TYPE_BP = "bp";
+    public static final String TYPE_BCA = "bca";
+    //------------------------
 
     public static int myPixel(Activity a, int dip) {
         float scale = a.getResources().getDisplayMetrics().density;
@@ -101,48 +122,75 @@ public class Utils {
     }
     //-----
 
-    //public final static String BASE_URL = "http://api-dev.jiggieapp.com/";
-    //public final static String BASE_URL = "http://api.jiggieapp.com/";
-    public final static String BASE_URL = BuildConfig.BASE_URL;
-    public final static String URL_EVENTS = BASE_URL + "app/v3/events/list/{fb_id}";
+    //public static final String BASE_URL = "http://api-dev.jiggieapp.com/";
+    //public static final String BASE_URL = "http://api.jiggieapp.com/";
+    public static final String BASE_URL = BuildConfig.BASE_URL;
+    public static final String URL_EVENTS = BASE_URL + "app/v3/events/list/{fb_id}";
 
-    public final static String URL_LOGIN = BASE_URL + "app/v3/login";
-    public final static String URL_MEMBER_SETTING = BASE_URL + "app/v3/membersettings";
-    public final static String URL_GET_SETTING = BASE_URL + "app/v3/membersettings";
-    public final static String URL_EVENT_DETAIL = BASE_URL + "app/v3/event/details/{id}/{fb_id}/{gender_interest}";
-    public final static String URL_CHAT_CONVERSATION = BASE_URL + "app/v3/chat/conversation/{fb_id}/{to_id}";
-    public final static String URL_CHAT_LIST = BASE_URL + "app/v3/conversations";
-    public final static String URL_GUEST_INTEREST = BASE_URL + "app/v3/event/interest/{event_id}/{fb_id}/{gender_interest}";
-    public final static String URL_MEMBER_INFO = BASE_URL + "app/v3/memberinfo/{fb_id}";
-    public final static String URL_SHARE_APPS = BASE_URL + "app/v3/invitelink";
-    public final static String URL_SHARE_EVENT = BASE_URL + "app/v3/invitelink";
-    public final static String URL_SOCIAL_FEED = BASE_URL + "app/v3/partyfeed/list/{fb_id}/{gender_interest}";
-    public final static String URL_GUEST_MATCH = BASE_URL + "app/v3/partyfeed/match/{fb_id}/{from_id}/{type}";
-    public final static String URL_SOCIAL_MATCH = BASE_URL + "app/v3/partyfeed_socialmatch/match/{fb_id}/{from_id}/{type}";
-    public final static String URL_EDIT_ABOUT = BASE_URL + "app/v3/updateuserabout";
-    public final static String URL_GET_ACCESS_TOKEN = BASE_URL + "app/v3/userlogin";
-    public final static String URL_TAGSLIST = BASE_URL + "app/v3/user/tagslist";
-    public final static String URL_BLOCK_CHAT = BASE_URL + "app/v3/blockuserwithfbid";
-    public final static String URL_DELETE_CHAT = BASE_URL + "app/v3/deletemessageswithfbid";
-    public final static String URL_ADD_CHAT = BASE_URL + "app/v3/messages/add";
-    public final static String URL_VERIFY_PHONE_NUMBER = BASE_URL + "app/v3/user/phone/verification/send/{fb_id}/{phone}";
-    public final static String URL_VERIFY_VERIFICATION_CODE = BASE_URL + "app/v3/user/phone/verification/validate/{fb_id}/{token}";
-    public final static String URL_WALKTHROUGH = BASE_URL + "app/v3/count_walkthrough";
+    public static final String URL_LOGIN = BASE_URL + "app/v3/login";
+    public static final String URL_MEMBER_SETTING = BASE_URL + "app/v3/membersettings";
+    public static final String URL_GET_SETTING = BASE_URL + "app/v3/membersettings";
+    public static final String URL_EVENT_DETAIL = BASE_URL + "app/v3/event/details/{id}/{fb_id}/{gender_interest}";
+    public static final String URL_CHAT_CONVERSATION = BASE_URL + "app/v3/chat/conversation/{fb_id}/{to_id}";
+    public static final String URL_CHAT_LIST = BASE_URL + "app/v3/conversations";
+    public static final String URL_GUEST_INTEREST = BASE_URL + "app/v3/event/interest/{event_id}/{fb_id}/{gender_interest}";
+    public static final String URL_MEMBER_INFO = BASE_URL + "app/v3/memberinfo/{fb_id}";
+    public static final String URL_SHARE_APPS = BASE_URL + "app/v3/invitelink";
+    public static final String URL_SHARE_EVENT = BASE_URL + "app/v3/invitelink";
+    public static final String URL_SOCIAL_FEED = BASE_URL + "app/v3/partyfeed/list/{fb_id}/{gender_interest}";
+    public static final String URL_GUEST_MATCH = BASE_URL + "app/v3/partyfeed/match/{fb_id}/{from_id}/{type}";
+    public static final String URL_SOCIAL_MATCH = BASE_URL + "app/v3/partyfeed_socialmatch/match/{fb_id}/{from_id}/{type}";
+    public static final String URL_EDIT_ABOUT = BASE_URL + "app/v3/updateuserabout";
+    public static final String URL_GET_ACCESS_TOKEN = BASE_URL + "app/v3/userlogin";
+    public static final String URL_TAGSLIST = BASE_URL + "app/v3/user/tagslist";
+    public static final String URL_BLOCK_CHAT = BASE_URL + "app/v3/blockuserwithfbid";
+    public static final String URL_DELETE_CHAT = BASE_URL + "app/v3/deletemessageswithfbid";
+    public static final String URL_ADD_CHAT = BASE_URL + "app/v3/messages/add";
+    public static final String URL_VERIFY_PHONE_NUMBER = BASE_URL + "app/v3/user/phone/verification/send/{fb_id}/{phone}";
+    public static final String URL_VERIFY_VERIFICATION_CODE = BASE_URL + "app/v3/user/phone/verification/validate/{fb_id}/{token}";
+    public static final String URL_WALKTHROUGH = BASE_URL + "app/v3/count_walkthrough";
+    public static final String URL_GET_ORDER_LIST = BASE_URL + "app/v3/product/order_list/{fb_id}";
 
-    public final static String URL_APPSFLYER = BASE_URL + "app/v3/appsflyerinfo";
-    public final static String URL_MIXPANEL = BASE_URL + "app/v3/user/sync/superproperties/";
+    public static final String URL_APPSFLYER = BASE_URL + "app/v3/appsflyerinfo";
+    public static final String URL_MIXPANEL = BASE_URL + "app/v3/user/sync/superproperties/";
 
-    public final static String URL_PRODUCT_LIST = BASE_URL + "app/v3/product/list/{event_id}";
-    public final static String URL_SUMMARY = BASE_URL + "app/v3/product/summary";
+    public static final String URL_PRODUCT_LIST = BASE_URL + "app/v3/product/list/{event_id}";
+    public static final String URL_SUMMARY = BASE_URL + "app/v3/product/summary";
+    public static final String URL_PAYMENT = BASE_URL + "app/v3/product/payment";
+    public static final String URL_GET_CC = BASE_URL + "app/v3/product/credit_card/{fb_id}";
+    public static final String URL_POST_CC = BASE_URL + "app/v3/product/post_cc";
+    public static final String URL_DELETE_CC = BASE_URL + "app/v3/product/delete_cc";
+    public static final String URL_SUCCESS_SCREEN_VABP = BASE_URL + "app/v3/product/success_screen/{order_id}";
+    public static final String URL_SUCCESS_SCREEN_WALKTHROUGH = BASE_URL + "app/v3/product/walkthrough_payment";
+    public static final String URL_PAYMENT_METHOD = BASE_URL + "app/v3/product/payment_method";
+    public static final String URL_SUPPORT = BASE_URL + "app/v3/product/support";
+    public static final String URL_GUEST_INFO = BASE_URL + "app/v3/product/guest_info/{fb_id}";
+    public final static String URL_POST_LOCATION = BASE_URL + "app/v3/save_longlat";
+    public final static String URL_FREE_PAYMENT = BASE_URL + "app/v3/product/free_payment";
 
     public static void d(final String tag, final String value) {
-        //Log.d(tag, value);
+        if(BuildConfig.DEBUG)
+        {
+            Log.d(tag, value);
+        }
     }
 
     public static final String DATE_TODAY = "today";
     public static final String DATE_TOMORROW = "tomorrow";
     public static final String DATE_UPCOMING = "upcoming";
 
+    public static final String COMM_PRODUCT_LIST = "Product List";
+    public static final String COMM_PRODUCT_DETAIL = "Product Detail";
+    public static final String COMM_GUEST_INFO = "Guest Info";
+    public static final String COMM_PURCHASE_CONFIRMATION = "Purchase Confirmation";
+    public static final String COMM_PAYMENT_SELECTION = "Payment Selection";
+    public static final String COMM_VA_INSTRUCTION = "VA Instruction";
+    public static final String COMM_CREDIT_CARD = "Credit Card";
+    public static final String COMM_FINISH_VA = "Commerce Finish VA";
+    public static final String COMM_FINISH = "Commerce Finish";
+    public static final String COMM_ORDER_LIST = "Order List";
+
+    public static final String TAG = Utils.class.getSimpleName();
     //AppsFlyer properties----
     public static String AFinstall_type = "";
     public static String AFcampaign = "";
@@ -153,14 +201,17 @@ public class Utils {
     public static String AFsub1 = "";
     public static String AFsub2 = "";
 
-    public static String AF_ORGANIC = "Organic";
+    public static final String AF_ORGANIC = "Organic";
     //------------------------
+
+    public final static String NOL_RUPIAH = "0";
 
     public static String calculateTime(String date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         format.setTimeZone(TimeZone.getTimeZone("UTC"));
         //SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
-        //format.setTimeZone(TimeZone.getTimeZone("UTC"));
+        //format.setTimeZone(Ty/c  xv
+        //  meZone.getTimeZone("UTC"));
         try {
             Date d1 = format.parse(date);
             Calendar c = Calendar.getInstance();
@@ -252,7 +303,7 @@ public class Utils {
         else return;
     }*/
 
-    public static String print(Response response) {
+    public static final String print(Response response) {
         return new Gson().toJson(response.body());
     }
 
@@ -281,10 +332,63 @@ public class Utils {
 
     public static final String IS_ON = "is_on";
 
+    public static final String PAYMENT_STATUS_AWAITING_PAYMENT = "awaiting_payment";
+    public static final String PAYMENT_STATUS_EXPIRE = "expire";
+    public static final String PAYMENT_STATUS_PAID = "paid";
+    public static final String PAYMENT_STATUS_VOID = "void";
+    public static final String PAYMENT_STATUS_REFUND = "refund";
     private static final String SCHEME = "jiggie://";
     private static final String SCHEME_HOST_EVENT_DETAIL = "event_detail";
     private static final String SCHEME_HOST_EVENT_LIST = "event_list";
     public static final String[] JIGGIE_URLS =
             { SCHEME + SCHEME_HOST_EVENT_LIST
             , SCHEME + SCHEME_HOST_EVENT_DETAIL };
+
+    private static int screenWidth = 0;
+    public static final int REQUEST_CODE_CHOOSE_COUNTRY = 28;
+
+
+    public static int getScreenWidth(Context c) {
+        if (screenWidth == 0) {
+            WindowManager wm = (WindowManager) c.getSystemService(Context.WINDOW_SERVICE);
+            Display display = wm.getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            screenWidth = size.x;
+        }
+
+        return screenWidth;
+    }
+
+    public static boolean isLocationServicesAvailable(Context context) {
+        int locationMode = 0;
+        String locationProviders;
+        boolean isAvailable = false;
+
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            try {
+                locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+            } catch (Settings.SettingNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            isAvailable = (locationMode != Settings.Secure.LOCATION_MODE_OFF);
+        } else {
+            locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+            isAvailable = !TextUtils.isEmpty(locationProviders);
+        }*/
+
+        final LocationManager manager = (LocationManager) context.getSystemService( Context.LOCATION_SERVICE );
+
+        if ( manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+            isAvailable = true;
+        }else{
+            isAvailable = false;
+        }
+
+        boolean coarsePermissionCheck = (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED);
+        boolean finePermissionCheck = (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED);
+
+        return isAvailable && (coarsePermissionCheck || finePermissionCheck);
+    }
 }
