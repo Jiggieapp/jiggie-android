@@ -103,7 +103,8 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     AlertDialog dialog3ds;
     ProgressDialog progressDialog;
     public final static String PAYMENT_API = "https://api.veritrans.co.id/v2/token";
-    public final static String PAYMENT_API_SANDBOX = "https://api.sandbox.veritrans.co.id/v2/token";
+    //public final static String PAYMENT_API_SANDBOX = "https://api.sandbox.veritrans.co.id/v2/token";
+    public final static String PAYMENT_API_SANDBOX = "https://api.veritrans.co.id/v2/token";
     CCScreenModel.CardDetails cardDetails;
     @Bind(R.id.rel_disable)
     RelativeLayout relDisable;
@@ -118,10 +119,12 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     public final static String TAG = PurchaseInfoActivity.class.getSimpleName();
 
     public static String getPaymentApiUrl() {
-        if (VTConfig.VT_IsProduction) {
+        /*if (VTConfig.VT_IsProduction) {
             return PAYMENT_API;
         }
-        return PAYMENT_API_SANDBOX;
+        return PAYMENT_API_SANDBOX;*/
+
+        return PAYMENT_API;
     }
 
     @Override
@@ -417,8 +420,9 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
 
     private void access3dSecure() {
         //using 3d secure
-        VTConfig.VT_IsProduction = false;
-        VTConfig.CLIENT_KEY = "VT-client-gJRBbRZC0t_-JXUD";
+        VTConfig.VT_IsProduction = true;
+        //VTConfig.CLIENT_KEY = "VT-client-gJRBbRZC0t_-JXUD";
+        VTConfig.CLIENT_KEY = "VT-client-tHEKcD0xJGsm6uwH";
 
         VTDirect vtDirect = new VTDirect();
 

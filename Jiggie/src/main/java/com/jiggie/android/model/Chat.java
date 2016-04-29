@@ -75,11 +75,15 @@ public class Chat implements Model, Parcelable, BaseColumns {
     private void setData(ChatConversationModel.Data.ChatConversations.Messages data
             , String fromId, String title)
     {
-        this.header = data.getHeader();
+        if(data != null)
+        {
+            this.message = data.getMessage();
+            this.fromYou = data.isFromYou();
+            this.header = data.getHeader();
+            this.createdAt = data.getCreated_at();
+        }
+
         this.fromId = fromId;
-        this.message = data.getMessage();
-        this.fromYou = data.isFromYou();
-        this.createdAt = data.getCreated_at();
         this.title = title;
     }
 
