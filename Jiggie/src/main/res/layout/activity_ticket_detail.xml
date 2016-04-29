@@ -225,6 +225,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:text="@string/fill_your_contact_info"
+                    android:textColor="@color/blue_selector"
                     android:textAllCaps="true"/>
 
                 <RelativeLayout

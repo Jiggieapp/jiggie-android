@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#CC000000">
+    android:background="#CC000000"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/rel_title"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentTop="true"
+        android:layout_weight="0">
 
         <TextView
             android:id="@+id/txt_title_cc"
@@ -41,16 +42,19 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_below="@id/rel_title"
-        android:background="@color/divider_term" />
+        android:background="@color/divider_term"
+        android:layout_weight="0"/>
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/scrollContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/divider">
+        android:layout_height="0dp"
+        android:layout_below="@+id/divider"
+        android:layout_weight="1">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/txt_agree"
@@ -69,14 +73,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/txt_agree"
-                android:orientation="vertical">
-
-            </LinearLayout>
+                android:orientation="vertical"></LinearLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/lin_term"
+                android:layout_marginBottom="@dimen/padding_fars"
                 android:layout_marginLeft="@dimen/padding_standard"
                 android:layout_marginTop="@dimen/padding_fars">
 
@@ -99,23 +102,25 @@
                     android:textSize="14sp" />
             </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/rel_continue"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_alignParentBottom="true"
-                android:layout_gravity="bottom"
-                android:background="@drawable/bg_button_dark">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text="@string/continue_str"
-                    android:textAllCaps="true"
-                    android:textColor="@color/common_plus_signin_btn_text_dark"
-                    android:textSize="16sp" />
-            </RelativeLayout>
         </RelativeLayout>
     </ScrollView>
-</RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rel_continue"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:background="@drawable/bg_button_dark"
+        android:layout_weight="0">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/continue_str"
+            android:textAllCaps="true"
+            android:textColor="@color/common_plus_signin_btn_text_dark"
+            android:textSize="16sp" />
+    </RelativeLayout>
+</LinearLayout>

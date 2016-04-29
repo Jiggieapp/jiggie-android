@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.AddGuestActivity;
 import com.jiggie.android.component.Utils;
@@ -43,6 +44,8 @@ public abstract class AbstractTicketDetailActivity extends /*ToolbarWithDotActiv
     @Bind(R.id.rel_guest)
     RelativeLayout relGuest;
 
+    private static final String TAG = AbstractTicketDetailActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +78,10 @@ public abstract class AbstractTicketDetailActivity extends /*ToolbarWithDotActiv
         guestEmail = loginModel.getEmail();
         guestPhone = AccountManager.loadSetting().getData().getPhone();*/
         PostSummaryModel.Guest_detail guestDetail = guestPresenter.loadGuest();
-        if (guestDetail != null) {
+        if (!guestDetail.dial_code.isEmpty()
+                || !guestDetail.phone.isEmpty()
+                || !guestDetail.name.isEmpty()
+                || !guestDetail.email.isEmpty()) {
             lblFillYourContactInfo.setVisibility(View.GONE);
             relGuestDetail.setVisibility(View.VISIBLE);
             guestName = guestDetail.name;
