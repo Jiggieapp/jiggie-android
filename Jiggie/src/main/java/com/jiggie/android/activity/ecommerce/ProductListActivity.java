@@ -106,7 +106,6 @@ public class ProductListActivity extends ToolbarActivity
 
         appBarLayout.addOnOffsetChangedListener(this);
         final String eventPics = getIntent().getStringExtra("images");
-        Utils.d(TAG,"event pics " + eventPics);
         if(eventPics != null)
         {
             Glide.with(this)
@@ -129,6 +128,21 @@ public class ProductListActivity extends ToolbarActivity
                             + startTime);
         } catch (ParseException e) {
             throw new RuntimeException(App.getErrorMessage(e), e);
+        }
+
+        try {
+            final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse
+                    (eventDetail.getStart_datetime());
+            final Date endDate = Common.ISO8601_DATE_FORMAT_UTC.parse
+                    (eventDetail.getEnd_datetime());
+            String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format, Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));
+            toolbarHeaderView.bindTo(eventDetail.getTitle()
+                    , eventDetail.getVenue_name() + ", " + simpleDate);
+            floatHeaderView.bindTo(eventDetail.getTitle()
+                    , eventDetail.getVenue_name() + "\n"
+                            + simpleDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
 
     }
