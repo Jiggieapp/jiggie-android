@@ -20,6 +20,13 @@
             app:min_adapter_stack="6"
             android:layout_centerInParent="true"/>
 
+        <ListView
+            android:id="@+id/tempListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"/>
+
         <!--<FrameLayout
             android:id="@+id/cardEmpty"
             android:layout_width="match_parent"

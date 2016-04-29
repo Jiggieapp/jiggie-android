@@ -189,13 +189,27 @@
                     android:text="@string/age"
                     android:textStyle="bold" />
 
-                <SeekBar
+                <!--<SeekBar
                     android:id="@+id/slider_age"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/divider3"
                     android:paddingBottom="@dimen/padding_standard"
-                    android:paddingTop="@dimen/padding_standard" />
+                    android:paddingTop="@dimen/padding_standard" />-->
+
+                <com.appyvet.rangebar.RangeBar
+                    xmlns:custom="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/slider_age_double"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    custom:tickStart="12"
+                    custom:tickInterval="1"
+                    custom:tickEnd="50"
+                    custom:connectingLineColor="@color/holo_blue"
+                    custom:pinColor="@color/holo_blue"
+                    custom:selectorColor="@color/holo_blue"
+                    custom:tickColor="@color/holo_blue"
+                    />
 
                 <TextView
                     android:id="@+id/lbl_age_description"

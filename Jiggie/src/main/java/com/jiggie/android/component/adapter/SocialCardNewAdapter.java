@@ -1,17 +1,16 @@
 package com.jiggie.android.component.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.SocialModel;
@@ -57,7 +56,6 @@ public class SocialCardNewAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         SocialModel.Data.SocialFeeds model = getItem(position);
-        Utils.d(TAG, "count " + model.getFrom_first_name());
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(context);
             convertView = inflater.inflate(R.layout.item_social_card_general, parent, false);
@@ -71,8 +69,15 @@ public class SocialCardNewAdapter extends BaseAdapter {
         /*((ImageView)convertView.findViewById(com.andtinder.R.id.image)).setImageDrawable(model.getCardImageDrawable());
         ((TextView)convertView.findViewById(com.andtinder.R.id.title)).setText(model.getTitle());
         ((TextView)convertView.findViewById(com.andtinder.R.id.description)).setText(model.getDescription());*/
-        /*holder.generalTxtUser.setText(model.getFrom_first_name());
-        holder.generalTxtEvent.setText(model.getEvent_name());*/
+        /*holder.generalTxtUser.setText(model.getFrom_first_name());*/
+        Glide
+                .with(context)
+                .load(model.getImage()).asBitmap()
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .centerCrop()
+                .into(holder.generalImage);
+
+        holder.generalTxtEvent.setText(model.getEvent_name());
         holder.generalTxtUser.setText(context.getString(R.string.user_viewing
                 , model.getFrom_first_name()));
         holder.generalTxtConnect.setText(context.getString(R.string.connect_with
@@ -87,11 +92,11 @@ public class SocialCardNewAdapter extends BaseAdapter {
         @Bind(R.id.txtConnectGeneral)
         TextView generalTxtConnect;
 
-        /*@Bind(R.id.txtEventGeneral)
+        @Bind(R.id.txtEventGeneral)
         TextView generalTxtEvent;
 
         @Bind(R.id.imageUserGeneral)
-        ImageView generalImage;*/
+        ImageView generalImage;
 
         @Bind(R.id.txtUserGeneral)
         TextView generalTxtUser;

@@ -1,7 +1,5 @@
 package com.jiggie.android;
 
-import android.*;
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -23,18 +21,13 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.WindowManager;
 
-import com.appsflyer.AppsFlyerProperties;
-import com.birbit.android.jobqueue.JobManager;
-import com.birbit.android.jobqueue.config.Configuration;
-import com.birbit.android.jobqueue.log.CustomLogger;
-import com.birbit.android.jobqueue.scheduling.FrameworkJobSchedulerService;
-import com.birbit.android.jobqueue.scheduling.GcmJobSchedulerService;
+import com.android.volley.VolleyError;
+import com.appsflyer.AppsFlyerLib;
 import com.crashlytics.android.Crashlytics;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
+import com.facebook.AccessToken;
+import com.facebook.FacebookSdk;
 import com.google.gson.Gson;
 import com.jiggie.android.component.SimpleJSONObject;
 import com.jiggie.android.component.StringUtility;
@@ -45,10 +38,6 @@ import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.TrackManager;
 import com.jiggie.android.model.CommEventMixpanelModel;
 import com.jiggie.android.model.Common;
-import com.android.volley.VolleyError;
-import com.appsflyer.AppsFlyerLib;
-import com.facebook.AccessToken;
-import com.facebook.FacebookSdk;
 import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.PostAppsFlyerModel;
@@ -65,7 +54,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -90,7 +78,6 @@ public class App extends Application {
     private Thread.UncaughtExceptionHandler androidDefaultUEH;
 
     public static Activity runningActivity = null;
-    private JobManager jobManager;
 
     @Override
     public void onCreate() {

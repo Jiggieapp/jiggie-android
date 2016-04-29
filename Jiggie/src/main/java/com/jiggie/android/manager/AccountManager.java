@@ -126,6 +126,7 @@ public class AccountManager extends BaseManager{
             postMemberSetting(memberSettingModel, new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                    Utils.d(TAG, "hulalala " + Utils.print(response));
                     if (response.code() == Utils.CODE_SUCCESS) {
                         Success2Model dataTemp = (Success2Model) response.body();
                         dataTemp.setFrom(Utils.FROM_PROFILE_SETTING);
@@ -141,6 +142,7 @@ public class AccountManager extends BaseManager{
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
+                    Utils.d(TAG, "failure");
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.MSG_EXCEPTION + t.toString()));
                 }
 

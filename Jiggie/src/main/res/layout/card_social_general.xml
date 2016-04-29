@@ -3,11 +3,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ImageButton
+    <ImageView
         android:id="@+id/imageUserGeneral"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="220dp"
         android:layout_weight="1"
+        android:adjustViewBounds="true"
         android:background="?attr/selectableItemBackground"
         android:contentDescription="@null"
         android:scaleType="centerCrop" />
@@ -16,7 +17,7 @@
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="-32dp"
         android:background="@drawable/bg_circle_accent">
 
         <ImageView
@@ -26,30 +27,36 @@
             android:src="@mipmap/ic_chat" />
     </FrameLayout>
 
-    <TextView
-        android:id="@+id/txtUserGeneral"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_standard"
-        android:gravity="center_horizontal"
-        android:text="@string/user_viewing" />
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/txtEventGeneral"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:text="@string/location_viewing"
-        android:textColor="@color/colorAccent"
-        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/txtUserGeneral"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padding_standard"
+            android:gravity="left"
+            android:text="@string/user_viewing" />
 
-    <TextView
-        android:id="@+id/txtConnectGeneral"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/padding_standard"
-        android:gravity="center_horizontal"
-        android:text="@string/connect_with" />
+        <TextView
+            android:id="@+id/txtEventGeneral"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:text="@string/location_viewing"
+            android:textColor="@color/colorPrimary" />
+
+        <TextView
+            android:id="@+id/txtConnectGeneral"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/padding_standard"
+            android:gravity="left"
+            android:text="@string/connect_with" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -62,17 +69,16 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:background="?attr/selectableItemBackground"
+            android:background="@color/divider_term"
             android:text="@string/no"
-            android:textColor="@android:color/white"
-            android:textStyle="bold" />
+            android:textColor="@android:color/white" />
 
-        <View
+        <!--<View
             android:layout_width="0.5dp"
             android:layout_height="match_parent"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
-            android:background="@android:color/white" />
+            android:background="@android:color/white" />-->
 
         <Button
             android:id="@+id/btnYesGeneral"
@@ -81,13 +87,12 @@
             android:layout_weight="0.5"
             android:background="?attr/selectableItemBackground"
             android:text="@string/yes"
-            android:textColor="@android:color/white"
-            android:textStyle="bold" />
+            android:textColor="@android:color/white" />
     </LinearLayout>
 
-    <TextView
+    <!--<TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Lorem ipsumers"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true"/>-->
 </LinearLayout>

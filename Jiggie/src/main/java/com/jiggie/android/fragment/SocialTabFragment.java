@@ -7,53 +7,39 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.VolleyError;
-import com.birbit.android.jobqueue.JobManager;
 import com.bumptech.glide.DrawableTypeRequest;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.facebook.AccessToken;
 import com.jiggie.android.App;
 import com.jiggie.android.BuildConfig;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.chat.ChatActivity;
-import com.jiggie.android.activity.event.EventDetailActivity;
-import com.jiggie.android.activity.profile.ProfileDetailActivity;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.SimpleJSONObject;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.SocialCardNewAdapter;
-import com.jiggie.android.component.volley.VolleyHandler;
-import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.manager.WalkthroughManager;
-import com.jiggie.android.model.Common;
 import com.jiggie.android.model.Conversation;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.LoginModel;
@@ -63,13 +49,10 @@ import com.jiggie.android.model.SocialModel;
 import com.jiggie.android.model.Success2Model;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -116,6 +99,9 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
 
     @Bind(R.id.fling_adapter)
     SwipeFlingAdapterView flingAdapterView;
+
+    @Bind(R.id.tempListView)
+    ListView tempListView;
 
     //private SocialMatch current;
     private HomeMain homeMain;
@@ -216,35 +202,6 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                 , new IntentFilter(super.getString(R.string.broadcast_social)));*/
         App.getInstance().registerReceiver(this.refreshSocialReceiver
                 , new IntentFilter(SocialTabFragment.TAG));
-
-
-        //wandy 11-03-206
-        //generalTxtEvent.setTextColor(getActivity().getResources().getColor(R.color.));
-        /*cardsContainer.setOrientation(Orientations.Orientation.Ordered);
-        CardModel card = new CardModel("Title1", "Description goes here",
-                getActivity().getResources().getDrawable(R.drawable.like));
-        CardModel card2 = new CardModel("Title2", "Description goes here 2",
-                getActivity().getResources().getDrawable(R.drawable.badge_background));
-        CardModel card3 = new CardModel("Title3", "Description goes here 3",
-                getActivity().getResources().getDrawable(R.drawable.bg_circle_accent));
-
-        ArrayList<CardModel> arrayList = new ArrayList<>();
-        arrayList.add(card);
-        arrayList.add(card2);
-        arrayList.add(card3);
-
-        SimpleCardStackAdapter adapter = new SimpleCardStackAdapter(getActivity());
-        CardStackAdapter adapterr = new CardStackAdapter(getActivity(), arrayList) {
-            @Override
-            protected View getCardView(int i, CardModel cardModel, View view, ViewGroup viewGroup) {
-                return null;
-            }
-        };
-
-        adapter.add(card);
-        adapter.add(card2);
-        adapter.add(card3);
-        cardsContainer.setAdapter(adapterr);*/
     }
 
     private void onRefresh() {
@@ -341,6 +298,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         socialCardNewAdapter = new SocialCardNewAdapter(temp
                 , getActivity(), this);
         flingAdapterView.setAdapter(socialCardNewAdapter);
+        tempListView.setAdapter(socialCardNewAdapter);
         Utils.d(TAG, "temp " + socialCardNewAdapter.getCount());
         flingAdapterView.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
             @Override
