@@ -4,56 +4,60 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
 
-    <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grayLight">
+
+    <com.lorentzos.flingswipe.SwipeFlingAdapterView
+        android:id="@+id/fling_adapter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:rotation_degrees="16"
+        app:max_visible="4"
+        app:min_adapter_stack="6"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="?attr/actionBarSize"
+        android:paddingTop="@dimen/padding_standard"
+        android:layout_marginLeft="@dimen/padding_standard"
+        android:layout_marginRight="@dimen/padding_standard"/>
+
+    <!--<ListView
+        android:id="@+id/tempListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:visibility="gone"/>-->
+
+    <!--<FrameLayout
+        android:id="@+id/cardEmpty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/grayLight">
+        android:padding="@dimen/padding_standard">
 
-        <com.lorentzos.flingswipe.SwipeFlingAdapterView
-            android:id="@+id/fling_adapter"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:rotation_degrees="16"
-            app:max_visible="4"
-            app:min_adapter_stack="6"
-            android:layout_centerInParent="true"/>
+        <include layout="@layout/card_social_empty" />
+    </FrameLayout>-->
 
-        <ListView
-            android:id="@+id/tempListView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:visibility="gone"/>
-
-        <!--<FrameLayout
-            android:id="@+id/cardEmpty"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="@dimen/padding_standard">
-
-            <include layout="@layout/card_social_empty" />
-        </FrameLayout>-->
-
-        <ProgressBar
-            android:id="@id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:indeterminate="true" />
+    <ProgressBar
+        android:id="@id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminate="true" />
 
 
 
-        <!--<FrameLayout
-            android:id="@+id/layout_walkthrough"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone">
+    <!--<FrameLayout
+        android:id="@+id/layout_walkthrough"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
-            <include layout="@layout/walkthrough_screen"></include>
-        </FrameLayout>-->
-    </RelativeLayout>
-<!--
-</ScrollView>-->
+        <include layout="@layout/walkthrough_screen"></include>
+    </FrameLayout>-->
+</RelativeLayout>
+    <!--
+    </ScrollView>-->

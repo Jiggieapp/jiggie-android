@@ -100,8 +100,8 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     @Bind(R.id.fling_adapter)
     SwipeFlingAdapterView flingAdapterView;
 
-    @Bind(R.id.tempListView)
-    ListView tempListView;
+    /*@Bind(R.id.tempListView)
+    ListView tempListView;*/
 
     //private SocialMatch current;
     private HomeMain homeMain;
@@ -298,7 +298,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         socialCardNewAdapter = new SocialCardNewAdapter(temp
                 , getActivity(), this);
         flingAdapterView.setAdapter(socialCardNewAdapter);
-        tempListView.setAdapter(socialCardNewAdapter);
+        //tempListView.setAdapter(socialCardNewAdapter);
         Utils.d(TAG, "temp " + socialCardNewAdapter.getCount());
         flingAdapterView.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
             @Override
@@ -314,7 +314,6 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             @Override
             public void onRightCardExit(Object o) {
                 matchAsync(socialCardNewAdapter.getItem(0).getFrom_fb_id(), true);
-
             }
 
             @Override

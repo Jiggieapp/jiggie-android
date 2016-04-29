@@ -89,10 +89,4 @@
             android:text="@string/yes"
             android:textColor="@android:color/white" />
     </LinearLayout>
-
-    <!--<TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Lorem ipsumers"
-        android:layout_centerInParent="true"/>-->
 </LinearLayout>
