@@ -26,6 +26,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.MainActivity;
@@ -458,9 +459,10 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
             final List<Chat> failedItems = ChatTable.getUnProcessedItems(App.getInstance().getDatabase(), toId);
             final int length = message.getData().getMessages() == null ? 0 : message.getData().getMessages().size();
             final int failedLength = failedItems.size();
-
+            Utils.d(TAG,"isi " +  new Gson().toJson(message));
             adapter.clear();
-            final Chat chatHeader = new Chat(message.getData().getMessages().get(0)
+
+            final Chat chatHeader = new Chat(null
                     , message.getData().getFromId(), message.getData().getEvent_name());
             adapter.add(chatHeader);
             for (int i = 0; i < length; i++) {
