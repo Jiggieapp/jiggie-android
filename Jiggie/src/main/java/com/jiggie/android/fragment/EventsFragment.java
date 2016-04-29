@@ -237,6 +237,10 @@ public class EventsFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
+        if(Utils.isRefreshDetail){
+            onRefresh();
+            Utils.isRefreshDetail = false;
+        }
     }
 
     @Override

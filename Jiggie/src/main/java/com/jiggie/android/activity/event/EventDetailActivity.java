@@ -41,6 +41,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.activity.ecommerce.ProductListActivity;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
@@ -165,7 +166,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     ProgressDialog progressDialog;
     public static final String TAG = EventDetailActivity.class.getSimpleName();
     private File file;
-    private int count_like;
+    private int count_like, count_like_new;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,6 +186,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         event_pics = a.getStringArrayListExtra(Common.FIELD_EVENT_PICS);
         event_description = a.getStringExtra(Common.FIELD_EVENT_DESCRIPTION);
         count_like = a.getIntExtra(Common.FIELD_EVENT_LIKE, 0);
+        count_like_new = count_like;
 
 
         this.imagePagerIndicatorAdapter = new ImagePagerIndicatorAdapter(super.getSupportFragmentManager(), this.imageViewPager);
@@ -597,14 +599,14 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     void loveOnClick() {
         if (imgLove.isSelected()) {
             imgLove.setSelected(false);
-            count_like -= 1;
+            count_like_new = count_like - 1;
             actionLike(Utils.ACTION_LIKE_NO);
         } else {
             imgLove.setSelected(true);
-            count_like += 1;
+            count_like_new = count_like + 1;
             actionLike(Utils.ACTION_LIKE_YES);
         }
-        txtCountLike.setText(String.valueOf(count_like));
+        txtCountLike.setText(String.valueOf(count_like_new));
     }
 
     @OnClick(R.id.btnBook)
@@ -707,10 +709,10 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 //rollback like value
                 if (action.equals(Utils.ACTION_LIKE_YES)) {
                     imgLove.setSelected(false);
-                    txtCountLike.setText(String.valueOf(count_like - 1));
+                    txtCountLike.setText(String.valueOf(count_like));
                 } else {
                     imgLove.setSelected(true);
-                    txtCountLike.setText(String.valueOf(count_like + 1));
+                    txtCountLike.setText(String.valueOf(count_like));
                 }
 
             }
@@ -902,6 +904,14 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        redirectToHome();
+        Intent i = new Intent(this, MainActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        if(count_like!=count_like_new){
+            //i.putExtra(Utils.TAG_ISREFRESH, true);
+            Utils.isRefreshDetail = true;
+        }
+
+        startActivity(i);
+        finish();
     }
 }
