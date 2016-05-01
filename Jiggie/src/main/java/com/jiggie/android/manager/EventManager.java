@@ -89,6 +89,11 @@ public class EventManager extends BaseManager{
                     Utils.d("Failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT, Utils.MSG_EXCEPTION + t.toString()));
                 }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
             });
         }catch (IOException e){
             Utils.d(TAG, e.toString());
@@ -116,6 +121,11 @@ public class EventManager extends BaseManager{
                 public void onCustomCallbackFailure(String t) {
                     Utils.d("Failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT_DETAIL, Utils.MSG_EXCEPTION + t.toString()));
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
                 }
             });
         }catch (IOException e){
@@ -152,6 +162,11 @@ public class EventManager extends BaseManager{
                     onResponseListener.onFailure(new ExceptionModel(
                             Utils.FROM_SETUP_TAGS, Utils.RESPONSE_FAILED));
                 }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
             });
         }catch (IOException e){
             Utils.d("Exception", e.toString());
@@ -182,6 +197,11 @@ public class EventManager extends BaseManager{
                 public void onCustomCallbackFailure(String t) {
                     Utils.d("Failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SETUP_TAGS, Utils.MSG_EXCEPTION + t.toString()));
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
                 }
             });
         }catch (IOException e){

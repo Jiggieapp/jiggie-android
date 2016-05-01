@@ -103,7 +103,8 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     AlertDialog dialog3ds;
     ProgressDialog progressDialog;
     public final static String PAYMENT_API = "https://api.veritrans.co.id/v2/token";
-    public final static String PAYMENT_API_SANDBOX = "https://api.sandbox.veritrans.co.id/v2/token";
+    //public final static String PAYMENT_API_SANDBOX = "https://api.sandbox.veritrans.co.id/v2/token";
+    public final static String PAYMENT_API_SANDBOX = "https://api.veritrans.co.id/v2/token";
     CCScreenModel.CardDetails cardDetails;
     @Bind(R.id.rel_disable)
     RelativeLayout relDisable;
@@ -118,10 +119,12 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     public final static String TAG = PurchaseInfoActivity.class.getSimpleName();
 
     public static String getPaymentApiUrl() {
-        if (VTConfig.VT_IsProduction) {
+        /*if (VTConfig.VT_IsProduction) {
             return PAYMENT_API;
         }
-        return PAYMENT_API_SANDBOX;
+        return PAYMENT_API_SANDBOX;*/
+
+        return PAYMENT_API;
     }
 
     @Override
@@ -212,13 +215,27 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
 
         totalPrice = productSummary.getTotal_price();
         txtEventName.setText(eventName);
-        try {
+        /*try {
             final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(startTime);
+            final Date endDate = Common.ISO8601_DATE_FORMAT_UTC.parse(e);
             txtEventInfo.setText(venueName);
             txtEventInfoDate.setText(Common.SERVER_DATE_FORMAT_COMM.format(startDate)
             );
         } catch (ParseException e) {
             throw new RuntimeException(App.getErrorMessage(e), e);
+        }*/
+
+        try {
+            final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse
+                    (eventDetail.getStart_datetime());
+            final Date endDate = Common.ISO8601_DATE_FORMAT_UTC.parse
+                    (eventDetail.getEnd_datetime());
+            String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format
+                    , Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));
+            txtEventInfo.setText(venueName);
+            txtEventInfoDate.setText(simpleDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
 
         txtTikTitle.setText(dataProduct.getName() + " Ticket (" + dataProduct.getNum_buy() + "x)");
@@ -238,7 +255,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
         if (dataProduct.getTax_amount().equals(Utils.NOL_RUPIAH)) {
             txtTaxFill.setText(getString(R.string.free));
         } else {
-            txtTaxFill.setText(StringUtility.getRupiahFormat(dataProduct.getAdmin_fee()));
+            txtTaxFill.setText(StringUtility.getRupiahFormat(dataProduct.getTax_amount()));
         }
 
         if (totalPrice.equals(Utils.NOL_RUPIAH)) {
@@ -296,7 +313,9 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                     //action
                     if (position == 0) {
                         if (canPay()) {
-                            slidePay();
+                            if(isPaying==false){
+                                slidePay();
+                            }
                         } else {
                             Log.d("Pay status", "cannot pay");
                         }
@@ -368,6 +387,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     }
 
     private void slidePay() {
+        isPaying = true;
         if (Integer.parseInt(totalPrice) > 0) {
             if (paymentType.equals(Utils.TYPE_CC)) {
                 if (is_verified) {
@@ -400,8 +420,9 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
 
     private void access3dSecure() {
         //using 3d secure
-        VTConfig.VT_IsProduction = false;
-        VTConfig.CLIENT_KEY = "VT-client-gJRBbRZC0t_-JXUD";
+        VTConfig.VT_IsProduction = true;
+        //VTConfig.CLIENT_KEY = "VT-client-gJRBbRZC0t_-JXUD";
+        VTConfig.CLIENT_KEY = "VT-client-tHEKcD0xJGsm6uwH";
 
         VTDirect vtDirect = new VTDirect();
 
@@ -464,12 +485,16 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.dismiss();
+                            pagerSlide.setCurrentItem(1);
+                            isPaying = false;
                         }
                     });
                     dialog3ds.setOnCancelListener(new DialogInterface.OnCancelListener() {
                         @Override
                         public void onCancel(DialogInterface dialog) {
+                            dialog.dismiss();
                             pagerSlide.setCurrentItem(1);
+                            isPaying = false;
                         }
                     });
 
@@ -634,7 +659,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     }
 
     private void doPayment(PostPaymentModel postPaymentModel) {
-        isPaying = true;
+
         CommerceManager.loaderPayment(postPaymentModel, new CommerceManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
@@ -657,10 +682,9 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
 
             @Override
             public void onFailure(int responseCode, final String message) {
+                pagerSlide.setCurrentItem(1);
                 isPaying = false;
                 dismissLoadingDialog();
-
-                pagerSlide.setCurrentItem(1);
                 if (message != null && (message.contains("left") || message.contains("unavailable"))) {
                     final AlertDialog dialog = new AlertDialog.Builder(PurchaseInfoActivity.this)
                             .setMessage(message)
@@ -726,7 +750,6 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     }
 
     private void doFreePayment(PostFreePaymentModel postFreePaymentModel) {
-        isPaying = true;
         CommerceManager.loaderFreePayment(postFreePaymentModel, new CommerceManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
@@ -742,10 +765,9 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
 
             @Override
             public void onFailure(int responseCode, String message) {
+                pagerSlide.setCurrentItem(1);
                 isPaying = false;
                 dismissLoadingDialog();
-
-                pagerSlide.setCurrentItem(1);
                 if (message != null && (message.contains("left") || message.contains("unavailable"))) {
                     final AlertDialog dialog = new AlertDialog.Builder(PurchaseInfoActivity.this)
                             .setMessage(message)

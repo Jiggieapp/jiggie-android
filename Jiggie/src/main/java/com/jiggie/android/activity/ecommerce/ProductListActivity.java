@@ -1,5 +1,6 @@
 package com.jiggie.android.activity.ecommerce;
 
+import android.accounts.Account;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -24,11 +25,14 @@ import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.ProductListAdapter;
+import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.manager.BaseManager;
 import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.model.CommEventMixpanelModel;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.ProductListModel;
+import com.jiggie.android.model.SuccessTokenModel;
 import com.jiggie.android.view.HeaderView;
 
 import java.text.ParseException;
@@ -41,7 +45,7 @@ import butterknife.OnClick;
 
 public class ProductListActivity extends ToolbarActivity
         implements ViewTreeObserver.OnGlobalLayoutListener, SwipeRefreshLayout.OnRefreshListener, ProductListAdapter.ViewSelectedListener,
-        AppBarLayout.OnOffsetChangedListener{
+        AppBarLayout.OnOffsetChangedListener {
 
     ProductListAdapter adapter;
 
@@ -106,8 +110,8 @@ public class ProductListActivity extends ToolbarActivity
 
         appBarLayout.addOnOffsetChangedListener(this);
         final String eventPics = getIntent().getStringExtra("images");
-        if(eventPics != null)
-        {
+        Utils.d(TAG, "event pics " + eventPics);
+        if (eventPics != null) {
             Glide.with(this)
                     .load(eventPics)
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
@@ -118,7 +122,7 @@ public class ProductListActivity extends ToolbarActivity
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
 
-        try {
+        /*try {
             final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(eventDetail.getStart_datetime());
             final String startTime = Common.SERVER_DATE_FORMAT_COMM.format(startDate);
             toolbarHeaderView.bindTo(eventDetail.getTitle()
@@ -128,14 +132,15 @@ public class ProductListActivity extends ToolbarActivity
                             + startTime);
         } catch (ParseException e) {
             throw new RuntimeException(App.getErrorMessage(e), e);
-        }
+        }*/
 
         try {
             final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse
                     (eventDetail.getStart_datetime());
             final Date endDate = Common.ISO8601_DATE_FORMAT_UTC.parse
                     (eventDetail.getEnd_datetime());
-            String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format, Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));
+            String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format
+                    , Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));
             toolbarHeaderView.bindTo(eventDetail.getTitle()
                     , eventDetail.getVenue_name() + ", " + simpleDate);
             floatHeaderView.bindTo(eventDetail.getTitle()
@@ -146,6 +151,34 @@ public class ProductListActivity extends ToolbarActivity
         }
 
     }
+
+    public void checkTokenHeader()
+    {
+        if(AccountManager.getAccessTokenFromPreferences().isEmpty())
+        {
+            AccountManager.getAccessToken(new CommerceManager.OnResponseListener()
+            {
+                @Override
+                public void onSuccess(Object object) {
+                    //do restart here
+                    SuccessTokenModel successTokenModel = (SuccessTokenModel) object;
+                    final String token = successTokenModel.data.token;
+                    AccountManager.setAccessTokenToPreferences(token);
+                    BaseManager.reinstantianteRetrofit();
+                    CommerceManager.initCommerceService();
+                    loadData(eventId);
+                    //onNeedToRestart();
+                }
+
+                @Override
+                public void onFailure(int responseCode, String message) {
+                    //onCustomCallbackFailure(message);
+                }
+            });
+        }
+        else loadData(eventId);
+    }
+
 
     private void sendMixpanel(EventDetailModel.Data.EventDetail eventDetail){
         CommEventMixpanelModel commEventMixpanelModel = new CommEventMixpanelModel(eventDetail.getTitle(), eventDetail.getVenue_name(), eventDetail.getVenue().getCity(), eventDetail.getStart_datetime_str(),
@@ -192,7 +225,7 @@ public class ProductListActivity extends ToolbarActivity
     @Override
     public void onGlobalLayout() {
         this.recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-        this.loadData(eventId);
+        checkTokenHeader();
     }
 
     @Override

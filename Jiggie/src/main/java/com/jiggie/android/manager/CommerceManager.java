@@ -14,6 +14,7 @@ import com.jiggie.android.model.PostFreePaymentModel;
 import com.jiggie.android.model.PostPaymentModel;
 import com.jiggie.android.model.PostSummaryModel;
 import com.jiggie.android.model.ProductListModel;
+import com.jiggie.android.model.PurchaseHistoryModel;
 import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SummaryModel;
 import com.jiggie.android.model.SupportModel;
@@ -105,14 +106,14 @@ public class CommerceManager extends BaseManager{
         getInstance().postFreePayment(Utils.URL_FREE_PAYMENT, postFreePaymentModel).enqueue(callback);
     }
 
-    public static void loaderProductList(String event_id, final OnResponseListener onResponseListener){
+    public static void loaderProductList(final String event_id, final OnResponseListener onResponseListener){
         try {
             getProductList(event_id, new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
-                    String responses = new Gson().toJson(response.body());
-                    Utils.d("res", responses);
+                    /*String responses = new Gson().toJson(response.body());
+                    Utils.d("res", responses);*/
 
                     int responseCode = response.code();
                     if (responseCode == Utils.CODE_SUCCESS) {
@@ -127,6 +128,11 @@ public class CommerceManager extends BaseManager{
                 public void onCustomCallbackFailure(String t) {
                     Utils.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+                }
+
+                @Override
+                public void onNeedToRestart() {
+                    loaderProductList(event_id, onResponseListener);
                 }
             });
         }catch (IOException e){
@@ -172,6 +178,11 @@ public class CommerceManager extends BaseManager{
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
                 }
 
+                @Override
+                public void onNeedToRestart() {
+                    loaderSummary(postSummaryModel, onResponseListener);
+                }
+
             });
         }catch (IOException e){
             Utils.d("Exception", e.toString());
@@ -200,7 +211,12 @@ public class CommerceManager extends BaseManager{
                             /*if(dataTemp.getType() != null && dataTemp.getType().equals("paid")){
                                 onResponseListener.onFailure(dataTemp.getResponse(), dataTemp.getMsg());
                             }*/
-                            onResponseListener.onFailure(dataTemp.getResponse(), dataTemp.getMsg());
+                            if(dataTemp.getMsg()!=null){
+                                onResponseListener.onFailure(dataTemp.getResponse(), dataTemp.getMsg());
+                            }else{
+                                onResponseListener.onFailure(dataTemp.getResponse(), Utils.RESPONSE_FAILED);
+                            }
+
                         }
 
                     } else {
@@ -213,6 +229,11 @@ public class CommerceManager extends BaseManager{
                 public void onCustomCallbackFailure(String t) {
                     Utils.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+                }
+
+                @Override
+                public void onNeedToRestart() {
+                    loaderPayment(postPaymentModel, onResponseListener);
                 }
             });
         }catch (IOException e){
@@ -238,6 +259,11 @@ public class CommerceManager extends BaseManager{
             public void onCustomCallbackFailure(String t) {
                 onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
             }
+
+            @Override
+            public void onNeedToRestart() {
+                loaderPaymentMethod(onResponseListener);
+            }
         });
     }
 
@@ -253,11 +279,15 @@ public class CommerceManager extends BaseManager{
             public void onCustomCallbackFailure(String t) {
                 onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION);
             }
+
+            @Override
+            public void onNeedToRestart() {
+                loaderGuest(onResponseListener);
+            }
         });
     }
 
-    public static void loaderCCList(String fb_id, final OnResponseListener onResponseListener){
-
+    public static void loaderCCList(final String fb_id, final OnResponseListener onResponseListener){
         try {
             getCCList(fb_id, new CustomCallback() {
                 @Override
@@ -279,6 +309,11 @@ public class CommerceManager extends BaseManager{
                 public void onCustomCallbackFailure(String t) {
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
                 }
+
+                @Override
+                public void onNeedToRestart() {
+                    loaderCCList(fb_id, onResponseListener);
+                }
             });
         }catch (IOException e){
             Utils.d("Exception", e.toString());
@@ -286,7 +321,7 @@ public class CommerceManager extends BaseManager{
         }
     }
 
-    public static void loaderPostCC(PostCCModel postCCModel, final OnResponseListener onResponseListener){
+    public static void loaderPostCC(final PostCCModel postCCModel, final OnResponseListener onResponseListener){
 
         try {
             postCC(postCCModel, new CustomCallback() {
@@ -311,6 +346,11 @@ public class CommerceManager extends BaseManager{
                     Utils.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
                 }
+
+                @Override
+                public void onNeedToRestart() {
+                    loaderPostCC(postCCModel, onResponseListener);
+                }
             });
         }catch (IOException e){
             Utils.d("Exception", e.toString());
@@ -318,7 +358,7 @@ public class CommerceManager extends BaseManager{
         }
     }
 
-    public static void loaderDeleteCC(PostDeleteCCModel postDeleteCCModel, final OnResponseListener onResponseListener){
+    public static void loaderDeleteCC(final PostDeleteCCModel postDeleteCCModel, final OnResponseListener onResponseListener){
         try {
             deleteCC(postDeleteCCModel, new CustomCallback() {
                 @Override
@@ -341,6 +381,11 @@ public class CommerceManager extends BaseManager{
                     Utils.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
                 }
+
+                @Override
+                public void onNeedToRestart() {
+                    loaderDeleteCC(postDeleteCCModel, onResponseListener);
+                }
             });
         }catch (IOException e){
             Utils.d("Exception", e.toString());
@@ -348,7 +393,7 @@ public class CommerceManager extends BaseManager{
         }
     }
 
-    public static void loaderSucScreenVABP(String order_id, final OnResponseListener onResponseListener){
+    public static void loaderSucScreenVABP(final String order_id, final OnResponseListener onResponseListener){
         try {
             getSuccessScreenVABP(order_id, new CustomCallback() {
                 @Override
@@ -371,6 +416,11 @@ public class CommerceManager extends BaseManager{
                     Utils.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
                 }
+
+                @Override
+                public void onNeedToRestart() {
+                    loaderSucScreenVABP(order_id, onResponseListener);
+                }
             });
         }catch (IOException e){
             Utils.d("Exception", e.toString());
@@ -381,36 +431,6 @@ public class CommerceManager extends BaseManager{
     public static void loaderSucScreenWalkthrough(final OnResponseListener onResponseListener){
         try {
             getSuccessScreenWalkthrough(new CustomCallback() {
-                @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
-
-                    String responses = new Gson().toJson(response.body());
-                    //Utils.d("res", responses);
-
-                    int responseCode = response.code();
-                    if (responseCode == Utils.CODE_SUCCESS) {
-                        onResponseListener.onSuccess(response.body());
-                    } else {
-                        onResponseListener.onFailure(responseCode, Utils.RESPONSE_FAILED);
-                    }
-
-                }
-
-                @Override
-                public void onCustomCallbackFailure(String t) {
-                    Utils.d("Failure", t.toString());
-                    onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
-                }
-            });
-        }catch (IOException e){
-            Utils.d("Exception", e.toString());
-            onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
-        }
-    }
-
-    public static void loaderSucScreenCC(String order_id, final OnResponseListener onResponseListener){
-        try {
-            getSuccessScreenCC(order_id, new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
@@ -428,8 +448,48 @@ public class CommerceManager extends BaseManager{
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
+                    Utils.d("Failure", t.toString());
+                    onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+                }
+
+                @Override
+                public void onNeedToRestart() {
+                    loaderSucScreenWalkthrough(onResponseListener);
+                }
+            });
+        }catch (IOException e){
+            Utils.d("Exception", e.toString());
+            onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
+        }
+    }
+
+    public static void loaderSucScreenCC(final String order_id, final OnResponseListener onResponseListener){
+        try {
+            getSuccessScreenCC(order_id, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+
+                    String responses = new Gson().toJson(response.body());
+                    Utils.d("CongratsActivity", "response " + responses);
+
+                    int responseCode = response.code();
+                    if (responseCode == Utils.CODE_SUCCESS) {
+                        onResponseListener.onSuccess(response.body());
+                    } else {
+                        onResponseListener.onFailure(responseCode, Utils.RESPONSE_FAILED);
+                    }
+
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
                     //Utils.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+                }
+
+                @Override
+                public void onNeedToRestart() {
+                    loaderSucScreenCC(order_id, onResponseListener);
                 }
             });
         }catch (IOException e){
@@ -444,7 +504,7 @@ public class CommerceManager extends BaseManager{
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
-                    String responses = new Gson().toJson(response.body());
+                    //String responses = new Gson().toJson(response.body());
                     //Utils.d("res", responses);
 
                     int responseCode = response.code();
@@ -459,6 +519,11 @@ public class CommerceManager extends BaseManager{
                 public void onCustomCallbackFailure(String t) {
                     //Utils.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+                }
+
+                @Override
+                public void onNeedToRestart() {
+                    loaderSupport(onResponseListener);
                 }
             });
         }catch (IOException e){
@@ -498,8 +563,12 @@ public class CommerceManager extends BaseManager{
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Utils.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+                }
+
+                @Override
+                public void onNeedToRestart() {
+                    loaderFreePayment(postFreePaymentModel, onResponseListener);
                 }
             });
         }catch (IOException e){
@@ -515,4 +584,39 @@ public class CommerceManager extends BaseManager{
         public void onSuccess(Object object);
         public void onFailure(int responseCode, String message);
     }
+
+    /*public interface OnCustomResponseListener
+    {
+        public void onSuccess(Object object);
+        public void onFailure(int responseCode, String message);
+        public void onNeedToRestart();
+    }*/
+
+    private static void getOrderList(final String fb_id, CustomCallback callback)
+    {
+        getInstance().getOrderList(fb_id).enqueue(callback);
+    }
+
+    public static void getOrderList(final String fb_id, final CommerceManager.OnResponseListener onResponseListener)
+    {
+        getOrderList(fb_id, new CustomCallback() {
+            @Override
+            public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                PurchaseHistoryModel purchaseHistoryModel = (PurchaseHistoryModel) response.body();
+                onResponseListener.onSuccess(purchaseHistoryModel);
+            }
+
+            @Override
+            public void onCustomCallbackFailure(String t) {
+                Utils.d(TAG, "gagal " + t);
+                onResponseListener.onFailure(Utils.CODE_FAILED, t);
+            }
+
+            @Override
+            public void onNeedToRestart() {
+                getOrderList(fb_id, onResponseListener);
+            }
+        });
+    }
+
 }

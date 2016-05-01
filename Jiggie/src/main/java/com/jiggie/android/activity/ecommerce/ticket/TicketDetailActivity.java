@@ -89,6 +89,8 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
     RelativeLayout relMinus;
     @Bind(R.id.rel_plus)
     RelativeLayout relPlus;
+    @Bind(R.id.lbl_info_top)
+    TextView lblInfo;
 
     private Dialog dialogTerms;
 
@@ -231,6 +233,11 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
         return detailPurchase.getName().toUpperCase();
     }
 
+    @Override
+    protected String getPageInfo() {
+        return getResources().getString(R.string.ticket_info);
+    }
+
     private void preDefined() {
         Intent a = getIntent();
         eventId = a.getStringExtra(Common.FIELD_EVENT_ID);
@@ -274,6 +281,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
         }
 
         txtTicketDesc.setText(detailPurchase.getDescription());
+        lblInfo.setText(getPageInfo());
 
         //wandy 20-04-2016
         /*

@@ -21,4 +21,9 @@ public class NewCallback extends CustomCallback{
     public void onCustomCallbackFailure(String t) {
         Utils.d(TAG, "onCustomCallbackFailure " + t);
     }
+
+    @Override
+    public void onNeedToRestart() {
+
+    }
 }

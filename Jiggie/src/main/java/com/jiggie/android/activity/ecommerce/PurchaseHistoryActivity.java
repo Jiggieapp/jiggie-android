@@ -5,22 +5,21 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.MainActivity;
-import com.jiggie.android.api.OnResponseListener;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.OrderHistoryAdapter;
 import com.jiggie.android.manager.AccountManager;
-import com.jiggie.android.manager.PurchaseHistoryManager;
+import com.jiggie.android.manager.BaseManager;
+import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.model.Common;
-import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.PurchaseHistoryModel;
+import com.jiggie.android.model.SuccessTokenModel;
 
 import butterknife.Bind;
 
@@ -74,7 +73,7 @@ public class PurchaseHistoryActivity extends ToolbarActivity
     }
 
     private void loadOrderList() {
-        PurchaseHistoryManager.getOrderList(AccountManager.loadLogin().getFb_id(), new OnResponseListener() {
+        CommerceManager.getOrderList(AccountManager.loadLogin().getFb_id(), new CommerceManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
                 PurchaseHistoryModel purchaseHistoryModel = (PurchaseHistoryModel) object;
@@ -90,16 +89,20 @@ public class PurchaseHistoryActivity extends ToolbarActivity
 
                 if (swipeRefresh.isRefreshing())
                     swipeRefresh.setRefreshing(false);
-
             }
 
             @Override
-            public void onFailure(ExceptionModel exceptionModel) {
+            public void onFailure(int responseCode, String message) {
                 if (swipeRefresh.isRefreshing())
                     swipeRefresh.setRefreshing(false);
-                Toast.makeText(PurchaseHistoryActivity.this, exceptionModel.getMessage()
+                Toast.makeText(PurchaseHistoryActivity.this, message
                         , Toast.LENGTH_SHORT).show();
             }
+
+            /*@Override
+            public void onFailure(ExceptionModel exceptionModel) {
+
+            }*/
         });
     }
 
@@ -109,9 +112,39 @@ public class PurchaseHistoryActivity extends ToolbarActivity
             @Override
             public void run() {
                 swipeRefresh.setRefreshing(true);
-                loadOrderList();
+                //loadOrderList();
+                checkTokenHeader();
             }
         });
+    }
+
+    public void checkTokenHeader()
+    {
+        if(AccountManager.getAccessTokenFromPreferences().isEmpty())
+        {
+            Utils.d(TAG, "pref " +  AccountManager.getAccessTokenFromPreferences());
+            AccountManager.getAccessToken(new CommerceManager.OnResponseListener()
+            {
+                @Override
+                public void onSuccess(Object object) {
+                    //do restart here
+                    SuccessTokenModel successTokenModel = (SuccessTokenModel) object;
+                    final String token = successTokenModel.data.token;
+                    Utils.d(TAG, "success token model " +  successTokenModel.data.token);
+                    AccountManager.setAccessTokenToPreferences(token);
+                    BaseManager.reinstantianteRetrofit();
+                    CommerceManager.initCommerceService();;
+                    loadOrderList();
+                    //onNeedToRestart();
+                }
+
+                @Override
+                public void onFailure(int responseCode, String message) {
+                    //onCustomCallbackFailure(message);
+                }
+            });
+        }
+        else loadOrderList();
     }
 
     @Override

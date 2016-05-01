@@ -118,6 +118,7 @@
     <string name="something_went_wrong">Something went wrong</string>
     <string name="retry">Retry</string>
     <string name="event_date_format">%1$s to %2$s</string>
+    <string name="summary_created">%1$s - %2$s</string>
     <string name="book_now">Book now</string>
     <string name="external_site">(External site)</string>
     <string name="send">Send</string>
@@ -255,7 +256,7 @@
     <string name="vor_congrats_info">You have successfully booked a ticket for</string>
     <string name="vor_event_title">AFRO JACK LIFE IN JAKARTA 2016</string>
     <string name="vor_event_date">Sun, 29 Feb 2016</string>
-    <string name="vor_order_number">ORDER NUMBER</string>
+    <string name="vor_order_number">BOOKING NUMBER</string>
     <string name="vor_reservation_number">RESERVATION NUMBER</string>
     <string name="vor_order_number_fill">6GBF991</string>
     <string name="vor_guest_name">GUEST NAME</string>
@@ -265,8 +266,8 @@
     <string name="vor_status_paid">PAID</string>
     <string name="vor_payment_cc_new">ADD NEW CREDIT CARD</string>
     <string name="vor_payment_method">PAYMENT METHOD</string>
-    <string name="vor_payment_method_fill">MANDIRI VIRTUAL ACCOUNT</string>
-    <string name="vor_order_summary">ORDER SUMMARY</string>
+    <string name="vor_payment_method_fill">FREE</string>
+    <string name="vor_order_summary">BOOKING SUMMARY</string>
     <string name="vor_reservation_summary">RESERVATION SUMMARY</string>
     <string name="vor_order_summary_date">15 January 2016 - 16:12:49</string>
     <string name="vor_reg_ticket">REGULAR TICKET (x3)</string>
@@ -344,7 +345,7 @@
     <string name="pci_total_fill">Rp3.650K</string>
     <string name="pci_payment">CHOOSE PAYMENT METHOD</string>
     <string name="pci_slide">SWIPE TO PAY</string>
-    <string name="pci_slide_continue">SWIPE TO CONTINUE</string>
+    <string name="pci_slide_continue">SWIPE TO BOOK</string>
 
     <string name="unpaid">Unpaid</string>
     <string name="expired">Expired</string>
@@ -379,6 +380,8 @@
     <string name="ticket_info">Ticket Info</string>
     <string name="purchase_info">Booking Info</string>
     <string name="reservation_info">Reservation Info</string>
+    <string name="table_info">Table Info</string>
     <string name="select_payment_short">Select Payment</string>
     <string name="title_activity_country">Country Activity</string>
+    <string name="fill_your_contact_info">Fill Your Contact Info</string>
 </resources>

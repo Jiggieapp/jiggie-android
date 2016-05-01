@@ -111,6 +111,11 @@ public class ChatManager extends BaseManager{
                     Utils.d("Exception", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_CHAT_CONVERSATION, Utils.MSG_EXCEPTION + t.toString()));
                 }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
             });
         }catch (IOException e){
             Utils.d("Exception", e.toString());
@@ -147,6 +152,11 @@ public class ChatManager extends BaseManager{
                     Utils.d("Exception", t.toString());
                     onResponseListener.onFailure(new ExceptionModel(Utils.FROM_CHAT, Utils.MSG_EXCEPTION + t.toString()));
                 }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
             });
         }
         catch (IOException e){
@@ -182,6 +192,11 @@ public class ChatManager extends BaseManager{
                 public void onCustomCallbackFailure(String  t) {
                     Utils.d("Exception", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_CHAT, Utils.MSG_EXCEPTION + t.toString()));
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
                 }
             });
         }catch (IOException e){

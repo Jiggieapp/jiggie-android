@@ -68,6 +68,11 @@ public class TrackManager extends BaseManager{
                     Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_APPSFLYER, Utils.MSG_EXCEPTION + t.toString()));
                 }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
             });
         }catch (IOException e){
             Utils.d("exception", e.toString());
@@ -98,6 +103,11 @@ public class TrackManager extends BaseManager{
                 public void onCustomCallbackFailure(String t) {
                     Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MIXPANEL, Utils.MSG_EXCEPTION + t.toString()));
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
                 }
             });
         }catch (IOException e){

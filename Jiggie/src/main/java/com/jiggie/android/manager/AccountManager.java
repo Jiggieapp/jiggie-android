@@ -19,6 +19,7 @@ import com.jiggie.android.model.MemberSettingResultModel;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SuccessModel;
+import com.jiggie.android.model.SuccessTokenModel;
 
 import java.io.IOException;
 
@@ -108,6 +109,11 @@ public class AccountManager extends BaseManager{
                 public void onCustomCallbackFailure(String t) {
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SIGN_IN, Utils.MSG_EXCEPTION + t.toString()));
                 }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
             });
         }catch (IOException e){
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SIGN_IN, Utils.MSG_EXCEPTION + e.toString()));
@@ -136,6 +142,11 @@ public class AccountManager extends BaseManager{
                 public void onCustomCallbackFailure(String t) {
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.MSG_EXCEPTION + t.toString()));
                 }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
             });
         } catch (IOException e){
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.MSG_EXCEPTION + e.toString()));
@@ -161,6 +172,11 @@ public class AccountManager extends BaseManager{
                 @Override
                 public void onCustomCallbackFailure(String t) {
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_DETAIL, Utils.MSG_EXCEPTION + t.toString()));
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
                 }
             });
         }catch (IOException e){
@@ -192,6 +208,11 @@ public class AccountManager extends BaseManager{
                 public void onCustomCallbackFailure(String t) {
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_SETTING, Utils.MSG_EXCEPTION + t.toString()));
                 }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
             });
         }catch (IOException e){
             Utils.d("exception", e.toString());
@@ -218,6 +239,11 @@ public class AccountManager extends BaseManager{
                 public void onCustomCallbackFailure(String t) {
                     Utils.d("failure", t.toString());
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_EDIT, Utils.MSG_EXCEPTION + t.toString()));
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
                 }
             });
         }catch (IOException e){
@@ -302,6 +328,11 @@ public class AccountManager extends BaseManager{
                 ExceptionModel exceptionModel = new ExceptionModel(TAG, t);
                 EventBus.getDefault().post(exceptionModel);
             }
+
+            @Override
+            public void onNeedToRestart() {
+
+            }
         });
     }
 
@@ -370,6 +401,11 @@ public class AccountManager extends BaseManager{
             public void onCustomCallbackFailure(String t) {
 
             }
+
+            @Override
+            public void onNeedToRestart() {
+
+            }
         });
     }
 
@@ -392,6 +428,11 @@ public class AccountManager extends BaseManager{
             public void onCustomCallbackFailure(String t) {
 
             }
+
+            @Override
+            public void onNeedToRestart() {
+
+            }
         });
     }
 
@@ -403,24 +444,40 @@ public class AccountManager extends BaseManager{
         getAccessToken(new CustomCallback() {
             @Override
             public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
-                /*String responses = new Gson().toJson(response.body());
-                Utils.d(TAG, "response " + responses);*/
-
-                SuccessModel successModel = (SuccessModel) response.body();
-                App.getInstance()
-                        .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
-                        .edit()
-                        .putString(Utils.ACCESS_TOKEN, successModel.getToken())
-                        .apply();
-                //onResponseListener.onSuccess(successModel.getToken());
+                SuccessTokenModel successModel = (SuccessTokenModel) response.body();
+                setAccessTokenToPreferences(successModel.data.token);
+                onResponseListener.onSuccess(successModel);
                 //onFinishGetAccessToken.onFinishGetAccessToken(successModel.getToken());
             }
 
             @Override
             public void onCustomCallbackFailure(String t) {
-                //onResponseListener.onFailure(Utils.CODE_FAILED, t);
+                onResponseListener.onFailure(Utils.CODE_FAILED, t);
+            }
+
+            @Override
+            public void onNeedToRestart() {
+                Utils.d(TAG, "restart");
+                getAccessToken(onResponseListener);
             }
         });
+    }
+
+    public static String getAccessTokenFromPreferences()
+    {
+        final String accessToken = App.getInstance()
+                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                .getString(Utils.ACCESS_TOKEN, "");
+        return accessToken;
+    }
+
+    public static void setAccessTokenToPreferences(String token)
+    {
+        App.getInstance()
+                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                .edit()
+                .putString(Utils.ACCESS_TOKEN, token)
+                .apply();
     }
 
     public OnFinishGetAccessToken onFinishGetAccessToken;

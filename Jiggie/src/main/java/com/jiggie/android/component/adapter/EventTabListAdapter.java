@@ -113,7 +113,7 @@ public class EventTabListAdapter
     public int getItemCount() { return this.items.size(); }
 
     static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @Bind(R.id.hListView) RecyclerView tagListView;
+        @Bind(R.id.hListViewEventList) RecyclerView tagListView;
         @Bind(R.id.txtEventName) TextView txtTitle;
         @Bind(R.id.txtVenue) TextView txtVenueName;
         @Bind(R.id.txtDate) TextView txtDate;

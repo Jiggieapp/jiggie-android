@@ -105,7 +105,6 @@ public class App extends Application {
     private Thread.UncaughtExceptionHandler handler = new Thread.UncaughtExceptionHandler() {
         public void uncaughtException(Thread thread, Throwable ex) {
             // log it & phone home.
-            Utils.d("error", "masuk sini");
             if(runningActivity!=null){
                 finishAffinity(runningActivity);
             }
