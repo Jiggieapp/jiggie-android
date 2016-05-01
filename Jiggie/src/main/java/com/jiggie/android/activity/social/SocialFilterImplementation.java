@@ -1,5 +1,7 @@
 package com.jiggie.android.activity.social;
 
+import android.accounts.Account;
+
 import com.facebook.AccessToken;
 import com.google.gson.Gson;
 import com.jiggie.android.component.Utils;
@@ -41,7 +43,6 @@ public class SocialFilterImplementation implements SocialFilterPresenter{
                         //socialView.dismissProgressDialog();
                         socialView.hideErrorLayout();
                         MemberSettingResultModel result = (MemberSettingResultModel) object;
-                        Utils.d(TAG, "f " + new Gson().toJson(result));
                         socialView.updateUI(result);
                     }
 
@@ -54,8 +55,22 @@ public class SocialFilterImplementation implements SocialFilterPresenter{
     }
 
     @Override
-    public void updateSetting(MemberSettingResultModel memberSettingResultModel) {
-        MemberSettingModel memberSettingModel = new MemberSettingModel(memberSettingResultModel);
-        AccountManager.loaderMemberSetting(memberSettingModel);
+    public void updateSetting(final MemberSettingModel memberSettingModel) {
+       // MemberSettingModel memberSettingModel = new MemberSettingModel(memberSettingResultModel);
+        AccountManager.loaderMemberSetting(memberSettingModel, new OnResponseListener() {
+            @Override
+            public void onSuccess(Object object) {
+                AccountManager.saveMemberSetting(memberSettingModel);
+                SettingModel settingModel = AccountManager.loadSetting();
+                settingModel.getData().setGender_interest(memberSettingModel.getGender_interest());
+                AccountManager.saveSetting(settingModel);
+                socialView.onSuccess();
+            }
+
+            @Override
+            public void onFailure(int responseCode, String message) {
+                socialView.onFailure();
+            }
+        });
     }
 }

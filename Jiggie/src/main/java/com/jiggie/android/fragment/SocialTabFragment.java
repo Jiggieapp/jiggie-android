@@ -159,8 +159,8 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             AccountManager.anySettingChange = false;
         }*/
 
-
-        this.onRefresh();
+        if(temp.size() == 0)
+            this.onRefresh();
         App.getInstance().trackMixPanelEvent("View Social Feed");
     }
 
@@ -205,6 +205,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     }
 
     private void onRefresh() {
+        Utils.d(TAG, "disuruh refresh");
         if (!AccountManager.isInSettingPage) {
             currentSetting = AccountManager.loadSetting();
             if (super.getContext() == null) {
@@ -221,6 +222,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
 
             //showProgressDialog();
             this.progressBar.setVisibility(View.VISIBLE);
+            temp = new ArrayList<>();
             SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId()
                     , currentSetting.getData().getGender_interest());
         }
@@ -271,11 +273,11 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         }*/
         //setHomeTitle();
         //openDetail(current);
-        setHomeTitle();
+        //setHomeTitle();
         fillSocialCard(message);
     }
 
-
+    ArrayList<SocialModel.Data.SocialFeeds> temp = new ArrayList<>();
     protected void fillSocialCard(SocialModel message) {
         /*for (int i = 0; i < message.getData().getSocial_feeds().size(); i++) {
             final SocialModel.Data.SocialFeeds item = message.getData().getSocial_feeds().get(i);
@@ -285,10 +287,15 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         //this.cardEmpty.setVisibility(View.GONE);
         this.progressBar.setVisibility(View.GONE);
 
-        ArrayList<SocialModel.Data.SocialFeeds> temp = new ArrayList<>();
+
 
         for (final SocialModel.Data.SocialFeeds item : message.getData().getSocial_feeds()) {
-            temp.add(item);
+            //temp.add(item);
+            if(SocialManager.Type.isInbound(item))
+                temp.add(0, item);
+            else temp.add(item);
+            Utils.d(TAG, item.getFb_id() + "/" + item.getFrom_fb_id() + "/" + item.getType()
+                + "/" + item.getFrom_first_name());
         }
 
         /*cardStackAdapter = new SocialCardAdapter(temp, dummy, getActivity(), this);
@@ -299,7 +306,6 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                 , getActivity(), this);
         flingAdapterView.setAdapter(socialCardNewAdapter);
         //tempListView.setAdapter(socialCardNewAdapter);
-        Utils.d(TAG, "temp " + socialCardNewAdapter.getCount());
         flingAdapterView.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
             @Override
             public void removeFirstObjectInAdapter() {
@@ -313,12 +319,18 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
 
             @Override
             public void onRightCardExit(Object o) {
-                matchAsync(socialCardNewAdapter.getItem(0).getFrom_fb_id(), true);
+                if(SocialManager.Type.isInbound(socialCardNewAdapter.getItem(0)))
+                {
+                    match(socialCardNewAdapter.getItem(0).getFrom_fb_id()
+                        , socialCardNewAdapter.getItem(0).getFrom_first_name());
+                }
+                else matchAsync(socialCardNewAdapter.getItem(0).getFrom_fb_id(), true);
             }
 
             @Override
             public void onAdapterAboutToEmpty(int i) {
-
+                SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId()
+                        , currentSetting.getData().getGender_interest());
             }
 
             @Override
@@ -610,6 +622,33 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             SocialManager.loaderSocialMatch(AccessToken.getCurrentAccessToken().getUserId(), this.current.getFrom_fb_id(), confirm ? "approved" : "denied");
     }
 
+    private void match(final String userId, final String name)
+    {
+
+        showProgressDialog();
+        SocialManager.loaderSocialMatch(
+                AccessToken.getCurrentAccessToken().getUserId()
+                , /*userId*/ "102261920139380", "approved", new SocialManager.OnResponseListener() {
+                    @Override
+                    public void onSuccess(Object object) {
+                        socialCardNewAdapter.deleteFirstItem();
+                        dismissProgressDialog();
+                        final Intent intent = new Intent(getActivity()
+                                , ChatActivity.class);
+                        intent.putExtra(Conversation.FIELD_FROM_NAME, name);
+                        intent.putExtra(Conversation.FIELD_FACEBOOK_ID, userId);
+                        getActivity().sendBroadcast(new Intent(getString(R.string.broadcast_social_chat)));
+                        startActivity(intent);
+
+                    }
+
+                    @Override
+                    public void onFailure(int responseCode, String message) {
+                        dismissProgressDialog();
+                    }
+                });
+    }
+
     private void matchAsync(final String fromFbId, final boolean confirm) {
         /*SocialManager.loaderSocialMatchAsync
                 (AccessToken.getCurrentAccessToken().getUserId()
@@ -708,7 +747,13 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                     layoutSocialize.setVisibility(View.VISIBLE);
                     txtSocialize.setText(R.string.socialize_description_off);
                 }*/
-                //onRefresh();
+                if(intent.getExtras().getBoolean(Utils.IS_ON))
+                {
+                    temp = new ArrayList<>();
+                    socialCardNewAdapter.clear();
+                    onRefresh();
+                }
+
             }
         }
     };

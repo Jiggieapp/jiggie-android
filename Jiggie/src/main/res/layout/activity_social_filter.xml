@@ -6,27 +6,28 @@
     android:layout_height="match_parent"
     tools:context=".activity.social.SocialFilterActivity">
 
-   <!-- <android.support.design.widget.AppBarLayout
-        android:id="@+id/appBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">-->
+    <!-- <android.support.design.widget.AppBarLayout
+         android:id="@+id/appBar"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">-->
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
-            android:elevation="4dp"
-            app:titleTextColor="@android:color/white"
-            android:layout_marginBottom="@dimen/padding_standard"/>
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_marginBottom="@dimen/padding_standard"
+        android:background="@color/colorPrimary"
+        android:elevation="4dp"
+        app:titleTextColor="@android:color/white"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"/>
     <!--</android.support.design.widget.AppBarLayout>-->
 
     <ScrollView
         android:id="@+id/scrollView"
-        android:layout_below="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
         android:visibility="gone">
 
         <RelativeLayout
@@ -67,7 +68,7 @@
                 android:layout_marginTop="@dimen/padding_standard"
                 android:background="@color/divider_pantone" />
 
-            <TextView
+            <!--<TextView
                 android:id="@+id/lbl_location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -84,13 +85,13 @@
                 android:layout_below="@+id/lbl_location"
                 android:layout_marginBottom="@dimen/padding_standard"
                 android:layout_marginTop="@dimen/padding_standard"
-                android:background="@color/divider_pantone" />
+                android:background="@color/divider_pantone" /> -->
 
             <LinearLayout
                 android:id="@+id/container_interested"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/divider2"
+                android:layout_below="@+id/divider1"
                 android:orientation="horizontal"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin">
@@ -146,13 +147,36 @@
                     android:text="@string/maximum_distance"
                     android:textStyle="bold" />
 
-                <SeekBar
-                    android:id="@+id/slider_distance"
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/divider3"
-                    android:paddingBottom="@dimen/padding_standard"
-                    android:paddingTop="@dimen/padding_standard" />
+                    android:paddingTop="@dimen/padding_standard">
+
+                    <TextView
+                        android:id="@+id/lbl_min_distance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/padding_standard"
+                        android:text="1km" />
+
+                    <SeekBar
+                        android:id="@+id/slider_distance"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/padding_standard"
+                        android:paddingTop="@dimen/padding_standard" />
+
+                    <TextView
+                        android:id="@+id/lbl_max_distance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:paddingBottom="@dimen/padding_standard"
+                        android:text="160km" />
+
+
+                </RelativeLayout>
 
                 <TextView
                     android:id="@+id/lbl_location_description"
@@ -197,19 +221,40 @@
                     android:paddingBottom="@dimen/padding_standard"
                     android:paddingTop="@dimen/padding_standard" />-->
 
-                <com.appyvet.rangebar.RangeBar
-                    xmlns:custom="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/slider_age_double"
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    custom:tickStart="12"
-                    custom:tickInterval="1"
-                    custom:tickEnd="50"
-                    custom:connectingLineColor="@color/holo_blue"
-                    custom:pinColor="@color/holo_blue"
-                    custom:selectorColor="@color/holo_blue"
-                    custom:tickColor="@color/holo_blue"
-                    />
+                    android:layout_below="@+id/lbl_age_title"
+                    android:paddingTop="@dimen/padding_standard">
+
+                    <TextView
+                        android:id="@+id/lbl_min_age"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="12" />
+
+                    <com.appyvet.rangebar.RangeBar xmlns:custom="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/slider_age_double"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        custom:connectingLineColor="@color/holo_blue"
+                        custom:pinColor="@color/holo_blue"
+                        custom:selectorColor="@color/holo_blue"
+                        custom:tickColor="@color/holo_blue"
+                        custom:tickEnd="60"
+                        custom:tickInterval="1"
+                        custom:tickStart="12"
+                        android:paddingBottom="@dimen/padding_standard"/>
+
+                    <TextView
+                        android:id="@+id/lbl_max_age"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:text="60" />
+
+                </RelativeLayout>
+
 
                 <TextView
                     android:id="@+id/lbl_age_description"
@@ -240,7 +285,7 @@
         android:padding="@dimen/padding_standard"
         android:text="@string/reset_filter"
         android:textAllCaps="true"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/btnApply"
@@ -252,26 +297,26 @@
         android:text="Apply"
         android:textAllCaps="true"
         android:textColor="@color/blue_selector"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <FrameLayout
-        android:layout_height="match_parent"
+        android:id="@+id/layoutError"
         android:layout_width="match_parent"
-        android:id="@+id/layoutError">
+        android:layout_height="match_parent">
 
-        <include layout="@layout/view_failed"/>
+        <include layout="@layout/view_failed" />
     </FrameLayout>
 
     <FrameLayout
-        android:layout_height="match_parent"
+        android:id="@+id/progressBar"
         android:layout_width="match_parent"
-        android:id="@+id/progressBar">
+        android:layout_height="match_parent">
 
         <ProgressBar
-            android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:indeterminate="true"/>
+            android:indeterminate="true" />
     </FrameLayout>
 </RelativeLayout>
 

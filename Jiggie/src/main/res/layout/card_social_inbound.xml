@@ -41,9 +41,11 @@
             android:layout_height="96dp"
             android:layout_gravity="center_vertical"
             android:layout_margin="@dimen/padding_standard_half"
-            android:background="@drawable/bg_circle_accent">
+            android:background="@drawable/bg_circle_accent"
+            >
 
             <ImageView
+
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="22dp"

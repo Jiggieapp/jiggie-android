@@ -1,5 +1,6 @@
 package com.jiggie.android.activity.social;
 
+import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.MemberSettingResultModel;
 
 /**
@@ -12,5 +13,5 @@ public interface SocialFilterPresenter {
 
     void fetchSetting();
 
-    void updateSetting(MemberSettingResultModel memberSettingResultModel);
+    void updateSetting(MemberSettingModel memberSettingResultModel);
 }

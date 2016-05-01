@@ -13,4 +13,6 @@ public interface SocialView {
     void hideErrorLayout();
     void updateUI(MemberSettingResultModel memberSettingResultModel);
     void saveSocialSetting(MemberSettingResultModel memberSettingResultModel);
+    void onSuccess();
+    void onFailure();
 }

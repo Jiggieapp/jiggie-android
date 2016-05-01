@@ -1,7 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
     <ImageView
         android:id="@+id/imageUserGeneral"
@@ -18,7 +19,8 @@
         android:layout_height="64dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="-32dp"
-        android:background="@drawable/bg_circle_accent">
+        android:background="@drawable/bg_circle_accent"
+        android:id="@+id/chat_icon">
 
         <ImageView
             android:layout_width="match_parent"

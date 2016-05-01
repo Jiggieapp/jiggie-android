@@ -390,4 +390,6 @@
     <string name="sort_by_age">Sort users by age</string>
     <string name="reset_filter">Reset filters</string>
 
+    <string name="interested_ask">Interested?</string>
+    <string name="skip">Skip</string>
 </resources>

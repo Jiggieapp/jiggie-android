@@ -8,8 +8,10 @@
         android:id="@+id/card_general"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="?attr/actionBarSize"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:layout_marginLeft="@dimen/padding_standard"
+        android:layout_marginRight="@dimen/padding_standard"
+        android:layout_marginBottom="?attr/actionBarSize">
 
         <RelativeLayout
             android:layout_width="match_parent"

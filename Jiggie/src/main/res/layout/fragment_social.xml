@@ -4,8 +4,7 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,14 +14,12 @@
         android:id="@+id/fling_adapter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:rotation_degrees="16"
-        app:max_visible="4"
-        app:min_adapter_stack="6"
         android:layout_centerInParent="true"
         android:layout_marginBottom="?attr/actionBarSize"
-        android:paddingTop="@dimen/padding_standard"
-        android:layout_marginLeft="@dimen/padding_standard"
-        android:layout_marginRight="@dimen/padding_standard"/>
+
+        app:max_visible="4"
+        app:min_adapter_stack="3"
+        app:rotation_degrees="16" />
 
     <!--<ListView
         android:id="@+id/tempListView"
@@ -49,7 +46,6 @@
         android:indeterminate="true" />
 
 
-
     <!--<FrameLayout
         android:id="@+id/layout_walkthrough"
         android:layout_width="match_parent"
@@ -58,6 +54,5 @@
 
         <include layout="@layout/walkthrough_screen"></include>
     </FrameLayout>-->
-</RelativeLayout>
-    <!--
+</RelativeLayout><!--
     </ScrollView>-->
