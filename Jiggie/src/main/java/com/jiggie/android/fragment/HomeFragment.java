@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -40,6 +41,7 @@ import com.facebook.AccessToken;
 import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.activity.event.EventDetailActivity;
 import com.jiggie.android.activity.setup.CityActivity;
 import com.jiggie.android.component.FlowLayout;
@@ -55,6 +57,8 @@ import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.MemberSettingResultModel;
 import com.jiggie.android.model.PostLocationModel;
 import com.jiggie.android.model.TagsListModel;
+import com.nhaarman.supertooltips.ToolTip;
+import com.nhaarman.supertooltips.ToolTipRelativeLayout;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -87,7 +91,6 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     RelativeLayout relPlace;
     @Bind(R.id.view_shadow)
     View viewShadow;
-    //@Bind(R.id.fab) FloatingActionButton fab;
 
     private TabFragment lastSelectedFragment;
     private PageAdapter adapter;
@@ -281,6 +284,16 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
                 startActivityForResult(i, Utils.REQUEST_CODE_CHOOSE_COUNTRY);
             }
         });
+
+        //Tooltips PART============
+        /*ToolTip toolTip = new ToolTip()
+                .withText("A beautiful View").withTextColor(Color.WHITE)
+                .withColor(getActivity().getResources().getColor(R.color.blue_selector))
+                .withShadow()
+                .withAnimationType(ToolTip.ANIMATIONTYPE_FROMTOP);
+        activityMainTooltipRelativeLayout.showToolTipForView(toolTip, fab);*/
+        //myToolTipView.setOnToolTipViewClickedListener(MainActivity.this);
+        //End of Tooltips PART=====
     }
 
     @Override

@@ -150,4 +150,69 @@
         android:elevation="4dp"
         />
 
+    <com.jiggie.android.view.BubbleTextView
+        android:id="@+id/tooltips_chat"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:text="Hey, get closer with your new friend"
+        android:paddingTop="20dp"
+        android:textColor="@android:color/white"
+        android:textAlignment="center"
+        app:arrowWidth="8dp"
+        app:angle="@dimen/padding_standard_half"
+        app:arrowHeight="10dp"
+        app:arrowPosition="302dp"
+        app:arrowLocation="top"
+        app:bubbleColor="#00BAFF"
+        android:layout_marginTop="112dp"
+        android:layout_marginLeft="@dimen/padding_standard_half"
+        android:layout_marginRight="@dimen/padding_standard_half"
+        android:visibility="gone"
+        />
+
+    <com.jiggie.android.view.BubbleTextView
+        android:id="@+id/tooltips_event"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:text="Hey, discover event here"
+        android:paddingTop="20dp"
+        android:textColor="@android:color/white"
+        android:textAlignment="center"
+        app:arrowWidth="8dp"
+        app:angle="@dimen/padding_standard_half"
+        app:arrowHeight="10dp"
+        app:arrowPosition="48dp"
+        app:arrowLocation="top"
+        app:bubbleColor="#00BAFF"
+        android:layout_marginTop="112dp"
+        android:layout_marginLeft="@dimen/padding_standard_half"
+        android:layout_marginRight="@dimen/padding_standard_half"
+        android:visibility="gone"
+        />
+
+    <com.jiggie.android.view.BubbleTextView
+        android:id="@+id/tooltips_social"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:text="Hey, don\'t forget to check our social network!"
+        android:paddingTop="20dp"
+        android:textColor="@android:color/white"
+        android:textAlignment="center"
+        app:arrowWidth="8dp"
+        app:angle="@dimen/padding_standard_half"
+        app:arrowHeight="10dp"
+        app:arrowPosition="156dp"
+        app:arrowLocation="top"
+        app:bubbleColor="#00BAFF"
+        android:layout_marginTop="112dp"
+        android:layout_marginLeft="@dimen/padding_standard_half"
+        android:layout_marginRight="@dimen/padding_standard_half"
+        android:visibility="gone"
+        />
+
+    <!--<com.nhaarman.supertooltips.ToolTipRelativeLayout
+        android:id="@+id/activity_main_tooltipRelativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />-->
+
 </android.support.design.widget.CoordinatorLayout>

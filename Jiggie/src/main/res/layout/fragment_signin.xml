@@ -19,40 +19,40 @@
         android:src="@mipmap/signup1"
         android:id="@+id/imageView"/>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        android:orientation="vertical">
+        android:layout_width="match_parent">
 
         <android.support.v4.view.ViewPager
-            android:layout_marginTop="@dimen/padding_standard"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="match_parent"
             android:id="@+id/imageViewPager"/>
 
-        <it.sephiroth.android.library.widget.HListView
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="@dimen/padding_standard"
-            android:layout_width="wrap_content"
-            android:layout_height="5dp"
-            android:id="@+id/imagePagerIndicator"/>
+        <LinearLayout
+            android:layout_width="128dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/imagePagerIndicator"
+            android:orientation="horizontal"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/padding_far"
+            android:layout_marginTop="@dimen/padding_standard"
+            >
+
+        </LinearLayout>
 
         <TextView
-            android:layout_margin="@dimen/padding_standard"
+            android:id="@+id/txt_skip"
+            android:layout_marginBottom="@dimen/padding_standard"
+            android:layout_marginRight="@dimen/padding_standard"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:textColor="@android:color/white"
-            android:text="@string/we_dont_post"
-            android:gravity="center_horizontal"
-            android:textSize="16sp"/>
+            android:layout_width="wrap_content"
+            android:textColor="#00BAFF"
+            android:text="SKIP"
+            android:textSize="16sp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            />
 
-        <Button
-            android:textColor="@android:color/white"
-            android:text="@string/sign_in_facebook"
-            android:background="@drawable/btn_next"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:id="@+id/btnSignIn"/>
-    </LinearLayout>
+    </RelativeLayout>
 </RelativeLayout>
