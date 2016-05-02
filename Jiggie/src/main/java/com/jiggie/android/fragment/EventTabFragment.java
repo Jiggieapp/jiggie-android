@@ -39,6 +39,7 @@ import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.EventTabListAdapter;
 import com.jiggie.android.component.adapter.EventTagAdapter;
+import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventModel;
 import com.jiggie.android.model.ExceptionModel;
@@ -544,5 +545,21 @@ public class EventTabFragment extends Fragment
         });
 
         dialogWalkthrough.show();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(Utils.isRefreshDetail){
+            for(int i=0;i< events.size();i++){
+                if(events.get(i).get_id().equals(Utils.event_id_refresh)){
+                    events.get(i).setLikes(Utils.count_like_new);
+                }
+            }
+            adapter.notifyDataSetChanged();
+            Utils.isRefreshDetail = false;
+            Utils.event_id_refresh = Utils.BLANK;
+            Utils.count_like_new = 0;
+        }
     }
 }

@@ -213,6 +213,8 @@ public class Utils {
     public final static String NOL_RUPIAH = "0";
     public final static String TAG_ISREFRESH = "is_refresh";
     public static boolean isRefreshDetail = false;
+    public static String event_id_refresh = Utils.BLANK;
+    public static int count_like_new = 0;
 
     public static String calculateTime(String date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");

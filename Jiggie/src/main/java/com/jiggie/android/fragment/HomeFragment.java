@@ -719,7 +719,8 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Utils.REQUEST_CODE_CHOOSE_COUNTRY) {
             if (resultCode == Activity.RESULT_OK) {
-                txtPlace.setText(data.getStringExtra("cityname"));
+                if (data.getStringExtra("cityname").equalsIgnoreCase("jakarta"))
+                    txtPlace.setText("JKT");
                 //EventBus.getDefault().post(EventsFragment.TAG);
             }
         }

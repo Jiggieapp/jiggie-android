@@ -44,6 +44,13 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.citylist = arrCityList.get(position);
         holder.city = holder.citylist.getCity();
+
+        if(holder.city.equalsIgnoreCase("jakarta")){
+            holder.txtCityName.setTextColor(context.getResources().getColor(R.color.textDarkGray));
+        }else{
+            holder.txtCityName.setTextColor(context.getResources().getColor(R.color.divider_pantone));
+        }
+
         holder.txtCityName.setText(holder.city);
         holder.position = position;
     }
@@ -76,7 +83,9 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
         @Override
         public void onClick(View v) {
             if (listener != null) {
-                listener.onViewSelected(this.position, this.citylist);
+                if(city.equalsIgnoreCase("jakarta")){
+                    listener.onViewSelected(this.position, this.citylist);
+                }
             }
         }
     }

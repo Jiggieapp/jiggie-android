@@ -238,7 +238,8 @@ public class EventsFragment extends Fragment
     public void onResume() {
         super.onResume();
         if(Utils.isRefreshDetail){
-            onRefresh();
+            //onRefresh();
+            filter("", false);
             Utils.isRefreshDetail = false;
         }
     }
@@ -431,6 +432,7 @@ public class EventsFragment extends Fragment
 
     public void setEvents(ArrayList<EventModel.Data.Events> events) {
         this.events = events;
+        EventManager.events = events;
     }
 
     private void filter(String searchText, boolean isSearch) {

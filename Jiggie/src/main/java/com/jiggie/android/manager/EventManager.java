@@ -31,6 +31,7 @@ public class EventManager extends BaseManager{
 
     private static EventInterface eventInterface;
     public static final String TAG = EventManager.class.getSimpleName();
+    public static ArrayList<EventModel.Data.Events> events = new ArrayList<>();
 
     public static class FullfillmentTypes {
         public static final String PHONE_NUMBER = "phone_number";

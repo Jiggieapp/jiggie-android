@@ -714,7 +714,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                     imgLove.setSelected(true);
                     txtCountLike.setText(String.valueOf(count_like));
                 }
-
+                count_like_new = count_like;
             }
         });
     }
@@ -909,6 +909,31 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         if(count_like!=count_like_new){
             //i.putExtra(Utils.TAG_ISREFRESH, true);
             Utils.isRefreshDetail = true;
+            Utils.event_id_refresh = event_id;
+            Utils.count_like_new = count_like_new;
+            for(int j=0;j<EventManager.events.size();j++){
+                if(EventManager.events.get(j).get_id().equals(event_id)){
+                    EventManager.events.get(j).setLikes(count_like_new);
+                }
+            }
+
+            /*for(int j=0;j<EventManager.todayEvents.size();j++){
+                if(EventManager.todayEvents.get(j).get_id().equals(event_id)){
+                    EventManager.todayEvents.get(j).setLikes(count_like_new);
+                }
+            }
+
+            for(int j=0;j<EventManager.tomorrowEvents.size();j++){
+                if(EventManager.tomorrowEvents.get(j).get_id().equals(event_id)){
+                    EventManager.tomorrowEvents.get(j).setLikes(count_like_new);
+                }
+            }
+
+            for(int j=0;j<EventManager.upcomingEvents.size();j++){
+                if(EventManager.upcomingEvents.get(j).get_id().equals(event_id)){
+                    EventManager.upcomingEvents.get(j).setLikes(count_like_new);
+                }
+            }*/
         }
 
         startActivity(i);
