@@ -14,6 +14,8 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -158,7 +160,7 @@ public class SignInFragment extends Fragment {
             @Override
             public void onPageSelected(int position) {
                 if (getContext() != null) {
-                    if ((position == 4) && (previousPage == 5)) {
+                    /*if ((position == 4) && (previousPage == 5)) {
                         fadeHandler.removeCallbacks(fadeInRunnable);
                         fadeHandler.removeCallbacks(fadeOutRunnable);
                         fadeHandler.postDelayed(fadeOutRunnable, 200);
@@ -167,7 +169,21 @@ public class SignInFragment extends Fragment {
                         fadeHandler.removeCallbacks(fadeInRunnable);
                         fadeHandler.removeCallbacks(fadeOutRunnable);
                         fadeHandler.postDelayed(fadeInRunnable, 200);
-                    }
+                    }*/
+
+                    /*placeHolder.animate().alpha(1).setDuration(1000).setInterpolator(new DecelerateInterpolator()).withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            placeHolder.animate().alpha(0).setDuration(1000).setInterpolator(new AccelerateInterpolator()).start();
+                        }
+                    }).start();
+
+                    imageView.animate().alpha(1).setDuration(1000).setInterpolator(new DecelerateInterpolator()).withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            imageView.animate().alpha(0).setDuration(1000).setInterpolator(new AccelerateInterpolator()).start();
+                        }
+                    }).start();*/
 
                     TutorialFragmentAdapter.TutorialFragment fragment = (TutorialFragmentAdapter.TutorialFragment) tutorialAdapter.getItem(position);
 
@@ -183,6 +199,12 @@ public class SignInFragment extends Fragment {
 
                         imagePagerIndicator.setVisibility(View.VISIBLE);
                         txtSkip.setVisibility(View.VISIBLE);
+
+                        if(position==4){
+                            txtSkip.setText("NEXT");
+                        }else{
+                            txtSkip.setText("SKIP");
+                        }
                     }
 
                     btnSignIn = fragment.getBtnSignIn();
@@ -190,6 +212,13 @@ public class SignInFragment extends Fragment {
                         @Override
                         public void onClick(View v) {
                             onClickSignIn();
+                        }
+                    });
+
+                    fragment.getImageHelps().setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            imageViewPager.setCurrentItem(0);
                         }
                     });
 
@@ -215,13 +244,12 @@ public class SignInFragment extends Fragment {
         @Override
         public void run() {
             if (getContext() != null) {
-                /*placeHolder.setImageResource(R.mipmap.signup1);
-                Glide.with(getContext()).load(R.mipmap.signup2).skipMemoryCache(true).crossFade(1000).centerCrop().into(imageView);*/
+                placeHolder.setImageResource(R.mipmap.signup1);
+                Glide.with(getContext()).load(R.mipmap.signup2).skipMemoryCache(true).crossFade(1000).centerCrop().into(imageView);
 
                 //placeHolder.setImageResource(R.mipmap.signup1);
-                placeHolder.setBackgroundColor(Color.BLACK);
-                Glide.with(getContext()).load(R.mipmap.signup1).skipMemoryCache(true).crossFade(1000).into(imageView);
-                placeHolder.setImageResource(R.mipmap.signup1);
+                /*placeHolder.setBackgroundColor(Color.BLACK);
+                Glide.with(getContext()).load(R.mipmap.signup1).skipMemoryCache(true).crossFade(1000).into(imageView);*/
             }
         }
     };
@@ -230,12 +258,11 @@ public class SignInFragment extends Fragment {
         @Override
         public void run() {
             if (getContext() != null) {
-                /*placeHolder.setImageResource(R.mipmap.signup2);
-                Glide.with(getContext()).load(R.mipmap.signup1).skipMemoryCache(true).crossFade(1000).into(imageView);*/
-
-                placeHolder.setBackgroundColor(Color.BLACK);
+                placeHolder.setImageResource(R.mipmap.signup2);
                 Glide.with(getContext()).load(R.mipmap.signup1).skipMemoryCache(true).crossFade(1000).into(imageView);
-                placeHolder.setImageResource(R.mipmap.signup1);
+
+                /*placeHolder.setBackgroundColor(Color.BLACK);
+                Glide.with(getContext()).load(R.mipmap.signup1).skipMemoryCache(true).crossFade(1000).into(imageView);*/
             }
         }
     };

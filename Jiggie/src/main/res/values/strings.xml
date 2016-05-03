@@ -371,14 +371,6 @@
     <string name="msg_carr_4">Connect with other fun-loving people and make new friends</string>
     <string name="msg_carr_5"> Chat with your new friends and make plans to meet up</string>
 
-    <string name="title_carr_1_new">Browse Event</string>
-    <string name="title_carr_2_new">Event Details</string>
-    <string name="title_carr_3_new">Find New Friends</string>
-    <string name="title_carr_4_new">Socialize</string>
-    <string name="title_carr_5_new">Chat</string>
-
-    <string name="desc_logo">new experience with new friends</string>
-
     <string name="estimate">(ESTIMATE)</string>
     <string name="estimated_total">ESTIMATED TOTAL</string>
     <string name="paid_deposit">PAID DEPOSIT</string>

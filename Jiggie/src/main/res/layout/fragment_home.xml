@@ -76,14 +76,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <!--<android.support.v4.view.ViewPager-->
-    <com.jiggie.android.view.NonSwipeableViewPager
-        android:id="@+id/viewpagerw"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:borderWidth="0dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
     <!--<LinearLayout
         android:id="@+id/footerContainer"
         android:layout_width="match_parent"
@@ -121,7 +113,7 @@
         android:visibility="gone"
         android:elevation="2dp"/>
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="156dp"
@@ -131,7 +123,7 @@
         android:elevation="4dp"
         android:layout_gravity="bottom|end"
         app:behavior_peekHeight="1dp"
-
+        android:orientation="vertical"
         >
         <RelativeLayout
             android:layout_width="match_parent"
@@ -142,7 +134,7 @@
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/padding_standard"/>
         </RelativeLayout>
-    </FrameLayout>
+    </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -155,5 +147,13 @@
         app:layout_anchorGravity="top|right|end"
         android:elevation="4dp"
         />
+
+    <!--<android.support.v4.view.ViewPager-->
+    <com.jiggie.android.view.NonSwipeableViewPager
+        android:id="@+id/viewpagerw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:borderWidth="0dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 </android.support.design.widget.CoordinatorLayout>
