@@ -1,6 +1,6 @@
 package com.jiggie.android.component.callback;
 
-import retrofit.Response;
+import retrofit2.Response;
 
 /**
  * Created by Wandy on 3/8/2016.

@@ -19,23 +19,20 @@ import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.MemberSettingResultModel;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.Success2Model;
-import com.jiggie.android.model.SuccessModel;
 import com.jiggie.android.model.SuccessTokenModel;
-import com.squareup.okhttp.MultipartBuilder;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.greenrobot.event.EventBus;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
-import retrofit.http.Multipart;
-import retrofit.http.Part;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 /**
  * Created by LTE on 2/1/2016.
@@ -90,9 +87,9 @@ public class AccountManager extends BaseManager{
         try {
             postLogin(loginRequestModel, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
-                    String responses = new Gson().toJson(response.body());
-                    Utils.d(TAG, responses);
+                public void onCustomCallbackResponse(Response response) {
+                    /*String responses = new Gson().toJson(response.body());
+                    Utils.d(TAG, responses);*/
 
                     if (response.code() == Utils.CODE_SUCCESS) {
                         LoginResultModel dataLogin = (LoginResultModel) response.body();
@@ -132,7 +129,7 @@ public class AccountManager extends BaseManager{
         try {
             postMemberSetting(memberSettingModel, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
                     Utils.d(TAG, "hulalala " + Utils.print(response));
                     if (response.code() == Utils.CODE_SUCCESS) {
                         Success2Model dataTemp = (Success2Model) response.body();
@@ -169,7 +166,7 @@ public class AccountManager extends BaseManager{
         try {
             postMemberSetting(memberSettingModel, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
                     if (response.code() == Utils.CODE_SUCCESS) {
                         Success2Model dataTemp = (Success2Model) response.body();
                         dataTemp.setFrom(Utils.FROM_PROFILE_SETTING);
@@ -204,7 +201,7 @@ public class AccountManager extends BaseManager{
         try {
             getMemberInfo(fb_id, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
                     /*String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);*/
                     if (response.code() == Utils.CODE_SUCCESS) {
@@ -236,7 +233,7 @@ public class AccountManager extends BaseManager{
         try {
             getMemberInfo(fb_id, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
                     /*String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);*/
                     if (response.code() == Utils.CODE_SUCCESS) {
@@ -270,7 +267,7 @@ public class AccountManager extends BaseManager{
         try {
             getSetting(fb_id, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
                     if (response.code() == Utils.CODE_SUCCESS) {
                         MemberSettingResultModel data = (MemberSettingResultModel) response.body();
                         MemberSettingModel temp = new MemberSettingModel(data);
@@ -305,8 +302,8 @@ public class AccountManager extends BaseManager{
     {
         doUpload(file, new CustomCallback() {
             @Override
-            public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
-                Utils.d(TAG, "custom callback response");
+            public void onCustomCallbackResponse(Response response) {
+                Utils.d(TAG, "custom callback response " + Utils.print(response));
             }
 
             @Override
@@ -319,6 +316,10 @@ public class AccountManager extends BaseManager{
                 Utils.d(TAG, "custom callback response need to restart");
             }
         });
+    }
+
+    public static String getFileExt(String fileName) {
+        return fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
     }
 
     private static void doUpload(File file, Callback callback)
@@ -338,20 +339,31 @@ public class AccountManager extends BaseManager{
 
 
         // MultipartBody.Part is used to send also the actual file name
-        RequestBody filee = RequestBody.create(okhttp3.MediaType.parse("multipart/form-data"), file);
-        MultipartBody.Part body =
-                MultipartBody.Part.createFormData("picture", file.getName(), filee);
+        //TypedFile typedFile = new TypedFile("image/*", new File(path));
+        final String mime = "image/" + getFileExt(file.getName());
 
-        RequestBody fb_id = RequestBody.create(MediaType.parse("text/plain")
+        RequestBody filee = RequestBody.create(
+                //MediaType.parse("multipart/form-data")
+                MediaType.parse(mime)
+                , file);
+
+
+        MultipartBody.Part body =
+                MultipartBody.Part.createFormData("filefield", file.getName(), filee);
+        RequestBody fb_id = RequestBody.create(MediaType.parse("multipart/form-data")
                 , AccessToken.getCurrentAccessToken().getUserId());
+        Map<String, RequestBody> map = new HashMap<>();
+        map.put("fb_id", fb_id);
+
         getInstance().upload4(body, fb_id).enqueue(callback);
+        //getInstance().upload5(filee, fb_id).enqueue(callback);
     }
 
     public static void loaderSettingNew(String fb_id, final OnResponseListener onResponseListener){
         try {
             getSetting(fb_id, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
                     if (response.code() == Utils.CODE_SUCCESS) {
                         MemberSettingResultModel data = (MemberSettingResultModel) response.body();
                         MemberSettingModel temp = new MemberSettingModel(data);
@@ -393,7 +405,7 @@ public class AccountManager extends BaseManager{
         try {
             postEditAbout(aboutModel, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
                     /*String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);*/
                     if (response.code() == Utils.CODE_SUCCESS) {
@@ -486,7 +498,7 @@ public class AccountManager extends BaseManager{
     {
         getUserTagList(new CustomCallback() {
             @Override
-            public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+            public void onCustomCallbackResponse(Response response) {
                 MemberSettingResultModel memberSettingResultModel = (MemberSettingResultModel) response.body();
                 EventBus.getDefault().post(memberSettingResultModel.getData().getMembersettings().getExperiences());
             }
@@ -558,7 +570,7 @@ public class AccountManager extends BaseManager{
     public static void verifyPhoneNumber(final String phoneNumber) {
         verifyPhoneNumber(phoneNumber, new CustomCallback() {
             @Override
-            public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+            public void onCustomCallbackResponse(Response response) {
                 /*String responses = new Gson().toJson(response.body());
                 Utils.d(TAG, responses);*/
 
@@ -581,7 +593,7 @@ public class AccountManager extends BaseManager{
     public static void verifyVerificationCode(final String verificationCode) {
         verifyVerificationCode(verificationCode, new CustomCallback() {
             @Override
-            public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+            public void onCustomCallbackResponse(Response response) {
                 /*final String res = new Gson().toJson(response.body());
                 Utils.d(TAG, "response " + res);*/
 
@@ -612,7 +624,7 @@ public class AccountManager extends BaseManager{
     {
         getAccessToken(new CustomCallback() {
             @Override
-            public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+            public void onCustomCallbackResponse(Response response) {
                 SuccessTokenModel successModel = (SuccessTokenModel) response.body();
                 setAccessTokenToPreferences(successModel.data.token);
                 onResponseListener.onSuccess(successModel);

@@ -4,14 +4,12 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,7 +22,6 @@ import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.model.MemberInfoModel;
 import com.jiggie.android.view.RoundedImageView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -136,11 +133,6 @@ public class NewProfileDetailActivity extends ToolbarActivity
     public void onFailure() {
     }
 
-    @OnClick(R.id.fifth_profile_picture)
-    public void onFifthProfilePictureClick() {
-        profilePresenter.getPhoto();
-    }
-
     @Override
     public void getPhoto() {
 
@@ -196,6 +188,36 @@ public class NewProfileDetailActivity extends ToolbarActivity
     @Override
     public Bitmap onFinishTakePhoto ( int requestCode, Uri uri){
         return null;
+    }
+
+
+    @OnClick(R.id.main_profile_picture)
+    public void onMainProfilePictureClick() {
+        profilePresenter.getPhoto();
+    }
+
+
+    @OnClick(R.id.secondary_profile_picture)
+    public void onSecodaryProfilePictureClick() {
+        profilePresenter.getPhoto();
+    }
+
+
+    @OnClick(R.id.third_profile_picture)
+    public void onThirdProfilePictureClick() {
+        profilePresenter.getPhoto();
+    }
+
+
+    @OnClick(R.id.fourth_profile_picture)
+    public void onFourthProfilePictureClick() {
+        profilePresenter.getPhoto();
+    }
+
+
+    @OnClick(R.id.fifth_profile_picture)
+    public void onFifthProfilePictureClick() {
+        profilePresenter.getPhoto();
     }
 
 }

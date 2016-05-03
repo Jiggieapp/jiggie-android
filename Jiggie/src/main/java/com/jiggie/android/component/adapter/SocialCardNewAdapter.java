@@ -13,8 +13,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jiggie.android.R;
-import com.jiggie.android.component.Utils;
-import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.model.SocialModel;
 
 import java.util.ArrayList;

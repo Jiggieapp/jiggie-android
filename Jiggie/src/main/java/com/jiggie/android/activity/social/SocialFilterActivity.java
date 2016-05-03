@@ -11,17 +11,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appyvet.rangebar.RangeBar;
-import com.facebook.AccessToken;
-import com.google.gson.Gson;
 import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.fragment.SocialTabFragment;
-import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.MemberSettingResultModel;
-
-import org.w3c.dom.Text;
 
 import butterknife.Bind;
 import butterknife.OnClick;

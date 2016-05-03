@@ -19,9 +19,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import de.greenrobot.event.EventBus;
-import retrofit.Callback;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by LTE on 2/1/2016.
@@ -66,7 +65,7 @@ public class EventManager extends BaseManager{
         try {
             getEventList(fb_id, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
                     //String header = String.valueOf(response.code());
                     /*String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);*/
@@ -104,7 +103,7 @@ public class EventManager extends BaseManager{
         try {
             getEventDetail(_id, fb_id, gender_interest, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
                     /*String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);*/
                     if (response.code() == Utils.CODE_SUCCESS) {
@@ -138,7 +137,7 @@ public class EventManager extends BaseManager{
         try {
             getTagsList(new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
                     //String header = String.valueOf(response.code());
                     /*String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);*/
@@ -179,7 +178,7 @@ public class EventManager extends BaseManager{
         try {
             getTagsList(new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
                     //String header = String.valueOf(response.code());
                     /*String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);*/

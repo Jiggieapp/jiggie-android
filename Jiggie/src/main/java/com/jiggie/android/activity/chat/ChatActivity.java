@@ -16,16 +16,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.MainActivity;
@@ -36,8 +33,6 @@ import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.ChatAdapter;
 import com.jiggie.android.component.database.ChatTable;
 import com.jiggie.android.component.service.ChatSendService;
-import com.jiggie.android.component.volley.VolleyHandler;
-import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.fragment.ChatTabFragment;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.ChatManager;
@@ -48,11 +43,7 @@ import com.jiggie.android.model.ChatResponseModel;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.Conversation;
 import com.jiggie.android.model.ExceptionModel;
-import com.android.volley.VolleyError;
-import com.facebook.AccessToken;
 import com.jiggie.android.model.LoginModel;
-
-import org.json.JSONObject;
 
 import java.util.Date;
 import java.util.List;

@@ -5,12 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.jiggie.android.App;
-import com.jiggie.android.activity.ecommerce.CongratsActivity;
-import com.jiggie.android.activity.ecommerce.HowToPayActivity;
-import com.jiggie.android.activity.ecommerce.TermsConditionActivity;
-import com.jiggie.android.activity.profile.NewProfileDetailActivity;
-import com.jiggie.android.component.Utils;
-import com.jiggie.android.model.Common;
 
 /**
  * Created by Wandy on 3/23/2016.

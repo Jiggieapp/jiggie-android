@@ -27,7 +27,6 @@ import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.MemberInfoModel;
 import com.jiggie.android.model.SettingModel;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 

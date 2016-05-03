@@ -15,18 +15,14 @@ import android.widget.Toast;
 
 import com.jiggie.android.App;
 import com.jiggie.android.R;
-import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.component.FlowLayout;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.fragment.EventsFragment;
-import com.jiggie.android.fragment.HomeFragment;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.MemberSettingModel;
-import com.jiggie.android.model.MemberSettingResultModel;
-import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.TagsListModel;
 

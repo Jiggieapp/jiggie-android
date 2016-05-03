@@ -12,12 +12,12 @@ import okhttp3.Request;
 import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-//import retrofit.RxJavaCallAdapterFactory;
+//import retrofit2.RxJavaCallAdapterFactory;
 
 /**
  * Created by Wandy on 2/10/2016.
  */
-public abstract class BaseManager {
+public abstract class BaseManager implements Interceptor{
     public static final String TAG = BaseManager.class.getSimpleName();
     private Callback callback;
     public CustomCallback customCallback;
@@ -25,8 +25,18 @@ public abstract class BaseManager {
 
     public static OkHttpClient getHttpClient() {
         final String accessToken = AccountManager.getAccessTokenFromPreferences();
-        OkHttpClient httpClient = new OkHttpClient();
-        httpClient.networkInterceptors().add(new Interceptor() {
+        OkHttpClient httpClient = new OkHttpClient.Builder()
+                .addNetworkInterceptor(new Interceptor() {
+                    @Override
+                    public Response intercept(Chain chain) throws IOException {
+                        Request request = chain.request()
+                                .newBuilder()
+                                .addHeader("authorization", accessToken)
+                                .build();
+                        return chain.proceed(request);
+                    }
+        }).build();
+        /*httpClient.networkInterceptors().add(new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
                 Request request = chain.request()
@@ -35,8 +45,20 @@ public abstract class BaseManager {
                         .build();
                 return chain.proceed(request);
             }
-        });
+        });*/
         return httpClient;
+    }
+
+    @Override
+    public Response intercept(Interceptor.Chain chain) throws IOException {
+        Request request = chain.request();
+
+        long t1 = System.nanoTime();
+
+        Response response = chain.proceed(request);
+
+
+        return response;
     }
 
     /*public static Retrofit getRetrofit() {

@@ -1,5 +1,6 @@
 package com.jiggie.android.api;
 
+import com.jiggie.android.activity.profile.ProfileDetailModel;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.AboutModel;
 import com.jiggie.android.model.AccessTokenModel;
@@ -18,7 +19,11 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 import retrofit2.http.Url;
 
 /**
@@ -55,19 +60,8 @@ public interface AccountInterface{
 
     @Multipart
     @POST(Utils.URL_UPLOAD)
-    Call<Success2Model> upload(@Part("filefield") File file, @Part("fb_id") String fb_id);
+    Call<Success2Model> upload4(@Part MultipartBody.Part photo, @Part("fb_id") RequestBody fb_id);
 
-    @Multipart
-    @POST(Utils.URL_UPLOAD)
-    Call<Success2Model> upload(@Part("filefield") RequestBody requestBody);
-
-    @Multipart
-    @POST(Utils.URL_UPLOAD)
-    Call<Success2Model> upload3(@Part("filefield") RequestBody photo, @Part("fb_id") RequestBody fb_id);
-
-    @Multipart
-    @POST(Utils.URL_UPLOAD)
-    Call<Success2Model> upload4(@Part("filefield") MultipartBody.Part photo, @Part("fb_id") RequestBody fb_id);
-
-
+    @POST(Utils.URL_DELETE_PHOTO)
+    Call<Success2Model> deletePhoto(@Body ProfileDetailModel profileDetailModel);
 }

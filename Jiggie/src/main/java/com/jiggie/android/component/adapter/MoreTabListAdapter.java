@@ -1,16 +1,12 @@
 package com.jiggie.android.component.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,28 +15,16 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.facebook.AccessToken;
+import com.jiggie.android.App;
+import com.jiggie.android.R;
+import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.model.Common;
+import com.jiggie.android.model.SettingModel;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
-import retrofit.Response;
-import retrofit.Retrofit;
-
-import com.facebook.AccessToken;
-import com.jiggie.android.App;
-import com.jiggie.android.R;
-import com.jiggie.android.activity.profile.VerifyPhoneNumberActivity;
-import com.jiggie.android.activity.setup.SetupNotificationActivity;
-import com.jiggie.android.activity.setup.SetupTagsActivity;
-import com.jiggie.android.component.Utils;
-import com.jiggie.android.component.callback.CustomCallback;
-import com.jiggie.android.manager.AccountManager;
-import com.jiggie.android.model.Common;
-import com.jiggie.android.model.MemberSettingModel;
-import com.jiggie.android.model.SettingModel;
-
-import java.io.IOException;
 
 /**
  * Created by rangg on 05/11/2015.

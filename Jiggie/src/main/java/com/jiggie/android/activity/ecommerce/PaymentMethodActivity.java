@@ -31,7 +31,6 @@ import com.jiggie.android.model.SummaryModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.Bind;
 

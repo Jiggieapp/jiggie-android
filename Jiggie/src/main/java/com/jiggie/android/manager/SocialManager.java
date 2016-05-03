@@ -14,10 +14,8 @@ import com.jiggie.android.model.Success2Model;
 import java.io.IOException;
 
 import de.greenrobot.event.EventBus;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by LTE on 2/5/2016.
@@ -56,7 +54,7 @@ public class SocialManager extends BaseManager{
         /*try {
             getSocialFeed(fb_id, gender_interest, new CustomCallback() {
                 @Override
-                public void onCustomCallbackReponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackReponse(Response response) {
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());
                     Log.d("res", responses);
@@ -82,7 +80,7 @@ public class SocialManager extends BaseManager{
         try {
             getSocialFeed(fb_id, gender_interest, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());
                     Utils.d(TAG, responses);
@@ -116,7 +114,7 @@ public class SocialManager extends BaseManager{
         try {
             getSocialMatch(fb_id, from_id, type, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
 
                     //String header = String.valueOf(response.code());
                     //String responses = new Gson().toJson(response.body());
@@ -157,7 +155,7 @@ public class SocialManager extends BaseManager{
         try {
             getSocialMatch(fb_id, from_id, type, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
 
                     //String header = String.valueOf(response.code());
                     //String responses = new Gson().toJson(response.body());
@@ -195,7 +193,7 @@ public class SocialManager extends BaseManager{
             Utils.d(TAG, "from id " + from_id);
             getSocialMatch(fb_id, from_id, type, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
 
                     if (response.code() == Utils.CODE_SUCCESS) {
                         Success2Model dataTemp = (Success2Model) response.body();
@@ -228,7 +226,7 @@ public class SocialManager extends BaseManager{
         try {
             postLocation(postLocationModel, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
 
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());

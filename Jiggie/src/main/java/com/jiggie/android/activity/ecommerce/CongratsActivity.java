@@ -1,6 +1,5 @@
 package com.jiggie.android.activity.ecommerce;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
@@ -8,7 +7,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,23 +16,13 @@ import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
-import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.model.CommEventMixpanelModel;
 import com.jiggie.android.model.Common;
-import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.SucScreenCCModel;
-import com.jiggie.android.model.SummaryModel;
-import com.jiggie.android.view.InstructionItemView;
-
-import org.w3c.dom.Text;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
-
-import butterknife.Bind;
-import butterknife.ButterKnife;
 
 /**
  * Created by LTE on 3/1/2016.

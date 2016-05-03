@@ -1,9 +1,7 @@
 package com.jiggie.android.activity.setup.country;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.google.gson.Gson;
 import com.jiggie.android.App;
 
 import org.json.JSONArray;

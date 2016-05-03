@@ -13,7 +13,10 @@ import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
+import com.jiggie.android.App;
 import com.jiggie.android.component.Utils;
+import com.jiggie.android.component.volley.VolleyHandler;
+import com.jiggie.android.model.Common;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -31,10 +34,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import cz.msebera.android.httpclient.Header;
-import com.jiggie.android.App;
-import com.jiggie.android.R;
-import com.jiggie.android.component.volley.VolleyHandler;
-import com.jiggie.android.model.Common;
 
 /**
  * Created by rangg on 02/11/2015.

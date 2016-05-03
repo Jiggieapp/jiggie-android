@@ -2,10 +2,6 @@ package com.jiggie.android.component.volley;
 
 import android.content.Context;
 
-import com.jiggie.android.App;
-import com.jiggie.android.R;
-import com.jiggie.android.component.Utils;
-import com.jiggie.android.model.Model;
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkError;
@@ -17,6 +13,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.BasicNetwork;
 import com.android.volley.toolbox.DiskBasedCache;
 import com.android.volley.toolbox.HurlStack;
+import com.jiggie.android.App;
+import com.jiggie.android.R;
+import com.jiggie.android.component.Utils;
+import com.jiggie.android.model.Model;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -21,7 +21,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar"
         android:orientation="horizontal"
-        android:layout_weight="0.8">
+        android:layout_weight="0.93">
 
 
         <com.jiggie.android.view.RoundedImageView
@@ -93,7 +93,7 @@
         android:layout_below="@+id/images_container"
         android:layout_margin="@dimen/padding_standard"
         android:orientation="vertical"
-        android:layout_weight="1.2">
+        android:layout_weight="1.07">
 
         <TextView
             android:id="@+id/txtUser"

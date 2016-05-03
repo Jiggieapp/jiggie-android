@@ -2,15 +2,11 @@ package com.jiggie.android.activity.profile;
 
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
-import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.listener.OnResponseListener;
@@ -25,6 +21,8 @@ import java.io.IOException;
  */
 public class ProfileDetailPresenterImplementation implements ProfileDetailPresenter {
     ProfileDetailView profileDetailView;
+    private final String TAG = ProfileDetailPresenterImplementation.class.getSimpleName();
+    private MemberInfoModel memberInfoModel;
 
     @Override
     public void onResume() {
@@ -42,7 +40,7 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
             AccountManager.loaderMemberInfo(fb_id, new OnResponseListener() {
                 @Override
                 public void onSuccess(Object object) {
-                    MemberInfoModel memberInfoModel = (MemberInfoModel) object;
+                    memberInfoModel = (MemberInfoModel) object;
                     profileDetailView.onSuccess(memberInfoModel);
                     profileDetailView.loadImages(memberInfoModel.getData().getMemberinfo().getPhotos());
                 }
@@ -70,7 +68,6 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
             e.printStackTrace();
         }
 
-
         String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
         Cursor cursor = contentResolver.query(
@@ -80,8 +77,8 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
         int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
         String filePath = cursor.getString(columnIndex);
         cursor.close();
+        doUpload(filePath);
 
-        Utils.d("onfinish take photo", "filepath " + filePath);
         //Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
 
         //profileDetailView.onFinishTakePhoto(bitmap);
@@ -99,32 +96,35 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
         // Check for the freshest data.
         contentResolver.takePersistableUriPermission(uri, takeFlags);
 
-            /* now extract ID from Uri path using getLastPathSegment() and then split with ":"
-            then call get Uri to for Internal storage or External storage for media I have used getUri()
-            */
-
-
         String selectedImagePath = null;
         if (imageCursor.moveToFirst()) {
             selectedImagePath = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
         }
-        Utils.d("path", selectedImagePath); // use selectedImagePath
+        doUpload(selectedImagePath);
+    }
 
-        File file = new File(/*"content:///" +*/ selectedImagePath);
-        if(file.exists())
-            Utils.d("path", "exist");
-        else Utils.d("path", "not exist");
+    private void doUpload(final String path) {
+        File file = new File(path);
+        if (file.exists()) {
+            AccountManager.doUpload(file, new OnResponseListener() {
+                @Override
+                public void onSuccess(Object object) {
 
-        AccountManager.doUpload(file, new OnResponseListener() {
-            @Override
-            public void onSuccess(Object object) {
+                }
 
-            }
+                @Override
+                public void onFailure(int responseCode, String message) {
 
-            @Override
-            public void onFailure(int responseCode, String message) {
+                }
+            });
+        } else Utils.d(TAG, "not exist");
+    }
 
-            }
-        });
+    @Override
+    public void onImageClick(int position) {
+        if (memberInfoModel.getData().getMemberinfo().getPhotos().size() >= position)
+        {
+            ProfileM
+        }
     }
 }
