@@ -78,6 +78,9 @@ public class Utils {
     public static final String TAB_CHAT = "chat";
     public static final String TAB_SOCIAL = "social";
 
+    public static final String ACTION_LIKE_YES = "yes";
+    public static final String ACTION_LIKE_NO = "no";
+
     //ERROR CODE & MESSAGE
     //public static final String MSG_EXCEPTION = "Failed: ";
     //changed by wandy 12-02-2016
@@ -168,6 +171,9 @@ public class Utils {
     public final static String URL_POST_LOCATION = BASE_URL + "app/v3/save_longlat";
     public final static String URL_FREE_PAYMENT = BASE_URL + "app/v3/product/free_payment";
 
+    public final static String URL_LIKE_EVENT = BASE_URL + "app/v3/event/likes/{event_id}/{fb_id}/{action}";
+    public final static String URL_CITY = BASE_URL + "app/v3/user/citylist";
+
     public static void d(final String tag, final String value) {
         if(BuildConfig.DEBUG)
         {
@@ -205,6 +211,10 @@ public class Utils {
     //------------------------
 
     public final static String NOL_RUPIAH = "0";
+    public final static String TAG_ISREFRESH = "is_refresh";
+    public static boolean isRefreshDetail = false;
+    public static String event_id_refresh = Utils.BLANK;
+    public static int count_like_new = 0;
 
     public static String calculateTime(String date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -346,6 +356,7 @@ public class Utils {
 
     private static int screenWidth = 0;
     public static final int REQUEST_CODE_CHOOSE_COUNTRY = 28;
+    public static final int REQUEST_CODE_CHOOSE_CITY = 29;
 
 
     public static int getScreenWidth(Context c) {

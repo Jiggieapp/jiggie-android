@@ -43,6 +43,7 @@ import com.jiggie.android.activity.setup.SetupTagsActivity;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.gcm.GCMRegistrationService;
 import com.jiggie.android.component.service.FacebookImageSyncService;
+import com.jiggie.android.fragment.EventsFragment;
 import com.jiggie.android.fragment.HomeFragment;
 import com.jiggie.android.fragment.SignInFragment;
 import com.appsflyer.AppsFlyerLib;
@@ -117,12 +118,18 @@ public class MainActivity extends AppCompatActivity
             final String str = GoogleApiAvailability.getInstance().getErrorString(code);
             Toast.makeText(this, str, Toast.LENGTH_LONG).show();
         }
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         EventBus.getDefault().register(this);
+        /*Intent a = getIntent();
+        boolean isRefresh = a.getBooleanExtra(Utils.TAG_ISREFRESH, false);
+        if(isRefresh){
+            EventBus.getDefault().post(EventsFragment.TAG);
+        }*/
     }
 
     @Override

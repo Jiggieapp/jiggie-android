@@ -83,9 +83,12 @@ public class EventDetailModel {
             ArrayList<GuestViewed> guests_viewed;
             Venue venue;
 
+            boolean is_liked;
+            int likes;
+
             public EventDetail(String _id, String event_id, String start_datetime, String end_datetime, String venue_id, String venue_name, String start_datetime_str, String end_datetime_str,
                                String fullfillment_type, String fullfillment_value, ArrayList<String> photos, String description, String title, ArrayList<String> tags,
-                               ArrayList<GuestViewed> guests_viewed, Venue venue){
+                               ArrayList<GuestViewed> guests_viewed, Venue venue, boolean is_liked, int likes){
                 this._id = _id;
                 this.event_id = event_id;
                 this.start_datetime = start_datetime;
@@ -102,6 +105,8 @@ public class EventDetailModel {
                 this.tags = tags;
                 this.guests_viewed = guests_viewed;
                 this.venue = venue;
+                this.is_liked = is_liked;
+                this.likes = likes;
             }
 
             public String get_id() {
@@ -168,6 +173,14 @@ public class EventDetailModel {
                 return venue;
             }
 
+            public boolean is_liked() {
+                return is_liked;
+            }
+
+            public int getLikes() {
+                return likes;
+            }
+
             protected EventDetail(Parcel in) {
                 _id = in.readString();
                 event_id = in.readString();
@@ -200,6 +213,8 @@ public class EventDetailModel {
                     guests_viewed = null;
                 }
                 venue = (Venue) in.readValue(Venue.class.getClassLoader());
+                is_liked = in.readByte() != 0x00;
+                likes = in.readInt();
             }
 
             @Override
@@ -240,6 +255,8 @@ public class EventDetailModel {
                     dest.writeList(guests_viewed);
                 }
                 dest.writeValue(venue);
+                dest.writeByte((byte) (is_liked ? 0x01 : 0x00));
+                dest.writeInt(likes);
             }
 
             @SuppressWarnings("unused")

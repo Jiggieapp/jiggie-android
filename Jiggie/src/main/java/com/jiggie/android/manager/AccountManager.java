@@ -78,6 +78,10 @@ public class AccountManager extends BaseManager{
         getInstance().postEditAbout(Utils.URL_EDIT_ABOUT, aboutModel).enqueue(callback);
     }
 
+    private static void getCityList(Callback callback) throws IOException {
+        getInstance().getCityList().enqueue(callback);
+    }
+
     public static void loaderLogin(LoginModel loginRequestModel){
         try {
             postLogin(loginRequestModel, new CustomCallback() {
@@ -336,6 +340,79 @@ public class AccountManager extends BaseManager{
         });
     }
 
+    public static void getUserTags(final OnResponseListener onResponseListener)
+    {
+        try {
+            getUserTagList(new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                    int responseCode = response.code();
+                    if (responseCode == Utils.CODE_SUCCESS) {
+                        onResponseListener.onSuccess(response.body());
+                    } else {
+                        onResponseListener.onFailure(responseCode, Utils.RESPONSE_FAILED);
+                    }
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    Utils.d(TAG, "response fail" + t);
+                    onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+                }
+            });
+        }catch (Exception e){
+            onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
+        }
+
+    }
+
+    public static void loaderMemberSetting2(final MemberSettingModel memberSettingModel, final OnResponseListener onResponseListener){
+        try {
+            postMemberSetting(memberSettingModel, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                    int responseCode = response.code();
+                    if (responseCode == Utils.CODE_SUCCESS) {
+                        AccountManager.saveMemberSetting(memberSettingModel);
+                        onResponseListener.onSuccess(response.body());
+                    } else {
+                        onResponseListener.onFailure(responseCode, Utils.RESPONSE_FAILED);
+                    }
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+                }
+            });
+        } catch (IOException e){
+            onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
+        }
+    }
+
+    public static void loaderCityList(final OnResponseListener onResponseListener){
+        try {
+            getCityList(new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                    int responseCode = response.code();
+                    if (responseCode == Utils.CODE_SUCCESS) {
+                        onResponseListener.onSuccess(response.body());
+                    } else {
+                        onResponseListener.onFailure(responseCode, Utils.RESPONSE_FAILED);
+                    }
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+                }
+            });
+        } catch (IOException e){
+            onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
+        }
+    }
+
     private static SettingModel setSettingModelFromLogin(LoginResultModel data){
         boolean success = true;
         LoginResultModel.Data.Login login = data.getData().getLogin();
@@ -507,5 +584,10 @@ public class AccountManager extends BaseManager{
         String model = new Gson().toJson(memberSettingModel);
         App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
                 .putString(Utils.MEMBER_SETTING_MODEL, model).apply();
+    }
+
+    public interface OnResponseListener {
+        public void onSuccess(Object object);
+        public void onFailure(int responseCode, String message);
     }
 }

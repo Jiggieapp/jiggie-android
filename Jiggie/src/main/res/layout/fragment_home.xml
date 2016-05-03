@@ -4,13 +4,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.MainActivity">
+    tools:context=".activity.MainActivity"
+    android:id="@+id/cl_main">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:elevation="0dp"
+        app:elevation="0dp">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -20,13 +23,42 @@
             app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:titleTextColor="@android:color/white">
-            <ImageView
-                android:id="@+id/logo_image"
-                android:layout_width="@dimen/jiggie_logo_width"
-                android:layout_height="@dimen/jiggie_logo_height"
+
+            <RelativeLayout
+                android:id="@+id/rel_place"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:scaleType="fitXY"/>
+                android:layout_centerVertical="true">
+                <TextView
+                    android:id="@+id/txt_place"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:textColor="@color/background"
+                    android:text="JKT"
+                    android:layout_marginRight="4dp"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/font_subhead_size"
+                    />
+                <ImageView
+                    android:id="@+id/img_drop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_arrow_drop_down_white_24dp"
+                    android:layout_toRightOf="@id/txt_place"
+                    android:layout_centerVertical="true"
+                    />
+                <ImageView
+                    android:id="@+id/logo_image"
+                    android:layout_width="@dimen/jiggie_logo_width"
+                    android:layout_height="@dimen/jiggie_logo_height"
+                    android:layout_centerInParent="true"
+                    android:scaleType="fitXY"
+                    android:layout_toRightOf="@id/img_drop"
+                    android:layout_marginLeft="76dp"/>
+            </RelativeLayout>
+
         </android.support.v7.widget.Toolbar>
 
         <android.support.design.widget.TabLayout
@@ -43,14 +75,6 @@
             app:tabTextColor="@android:color/darker_gray"/>
 
     </android.support.design.widget.AppBarLayout>
-
-    <!--<android.support.v4.view.ViewPager-->
-    <com.jiggie.android.view.NonSwipeableViewPager
-        android:id="@+id/viewpagerw"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:borderWidth="0dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <!--<LinearLayout
         android:id="@+id/footerContainer"
@@ -81,13 +105,55 @@
         android:layout_margin="@dimen/fab_margin"
         android:src="@android:drawable/ic_dialog_email" />-->
 
-    <!--<android.support.design.widget.FloatingActionButton
+    <View
+        android:id="@+id/view_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#CC000000"
+        android:visibility="gone"
+        android:elevation="2dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="156dp"
+        android:id="@+id/bottom_sheet"
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
+        style="@style/Widget.Design.BottomSheet.Modal"
+        android:elevation="4dp"
+        android:layout_gravity="bottom|end"
+        app:behavior_peekHeight="1dp"
+        android:orientation="vertical"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <com.jiggie.android.component.FlowLayout
+                android:id="@+id/flowLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/padding_standard"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:layout_behavior="com.jiggie.android.component.behavior.ScrollingFABBehavior"
         android:background="@color/colorPrimary"
-        android:src="@drawable/ic_filter_list_white_24dp"/>-->
+        android:src="@drawable/ic_filter_list_white_24dp"
+        app:layout_anchor="@+id/bottom_sheet"
+        app:layout_anchorGravity="top|right|end"
+        android:elevation="4dp"
+        />
+
+    <!--<android.support.v4.view.ViewPager-->
+    <com.jiggie.android.view.NonSwipeableViewPager
+        android:id="@+id/viewpagerw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:borderWidth="0dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
 </android.support.design.widget.CoordinatorLayout>
