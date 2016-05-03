@@ -1,18 +1,21 @@
 package com.jiggie.android.component.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.profile.ProfileDetailActivity;
+import com.jiggie.android.model.Common;
 import com.jiggie.android.model.SocialModel;
 
 import java.util.ArrayList;
@@ -77,18 +80,23 @@ public class SocialCardNewAdapter extends BaseAdapter {
                 .centerCrop()
                 .into(holder.generalImage);
 
-        if(getItem(position).getType().equalsIgnoreCase("approved"))
-        {
+        holder.generalImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(context, ProfileDetailActivity.class);
+                i.putExtra(Common.FIELD_FACEBOOK_ID, getItem(0).getFrom_fb_id());
+                context.startActivity(i);
+            }
+        });
+
+        if (getItem(position).getType().equalsIgnoreCase("approved")) {
             holder.generalTxtEvent.setText(model.getEvent_name());
             holder.generalTxtUser.setText(context.getString(R.string.wants_to_go_with
                     , model.getFrom_first_name()));
             holder.generalTxtConnect.setText(
                     context.getResources().getString(R.string.interested_ask));
-            holder.chat_icon.setVisibility(View.GONE);
-
-        }
-        else
-        {
+            holder.chat_icon.setVisibility(View.VISIBLE);
+        } else {
             holder.generalTxtEvent.setText(model.getEvent_name());
             holder.generalTxtUser.setText(context.getString(R.string.user_viewing
                     , model.getFrom_first_name()));
@@ -96,6 +104,7 @@ public class SocialCardNewAdapter extends BaseAdapter {
                     , model.getFrom_first_name()));
             holder.generalBtnYes.setText(context.getResources().getString(R.string.connect));
             holder.generalBtnNo.setText(context.getResources().getString(R.string.skip));
+            holder.chat_icon.setVisibility(View.GONE);
         }
 
 
@@ -107,8 +116,8 @@ public class SocialCardNewAdapter extends BaseAdapter {
     }
 
     static class ViewHolder {
-        //@Bind(R.id.card_general)
-        //CardView cardView;
+        @Bind(R.id.card_general)
+        CardView cardView;
 
         @Bind(R.id.txtConnectGeneral)
         TextView generalTxtConnect;
@@ -127,8 +136,9 @@ public class SocialCardNewAdapter extends BaseAdapter {
         @Bind(R.id.btnNoGeneral)
         Button generalBtnNo;
 
-        @Bind(R.id.chat_icon)
-        FrameLayout chat_icon;
+        @Bind(R.id.chat_small_icon)
+        ImageView chat_icon;
+
 
         OnSocialCardClickListener onSocialCardClickListener;
 
@@ -147,6 +157,9 @@ public class SocialCardNewAdapter extends BaseAdapter {
         public void btnYesOnClick() {
             onSocialCardClickListener.onYesClick();
         }
+
+        @OnClick(R.id.card_general)
+        public void cardGeneralOnClick() { onSocialCardClickListener.onGeneralClick(); }
     }
 
     OnSocialCardClickListener onSocialCardClickListener;
@@ -155,6 +168,8 @@ public class SocialCardNewAdapter extends BaseAdapter {
         void onYesClick();
 
         void onNoClick();
+
+        void onGeneralClick();
     }
 
     public void deleteFirstItem() {
@@ -162,8 +177,7 @@ public class SocialCardNewAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public void clear()
-    {
+    public void clear() {
         data.clear();
         notifyDataSetChanged();
     }

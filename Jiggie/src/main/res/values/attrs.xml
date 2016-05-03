@@ -12,4 +12,10 @@
         <attr name="suffixText" format="string" />
         <attr name="timeMilliSeconds" format="string" />
     </declare-styleable>
+    <declare-styleable name="CustomSwipeFlingAdapterView">
+        <attr name="CustomSwipeFlingStyle" format="reference"/>
+        <attr name="allow_child_input_c" format="boolean"/>
+        <attr name="min_adapter_stack_c" format="integer"/>
+        <attr name="max_visible_c" format="integer"/>
+    </declare-styleable>
 </resources>

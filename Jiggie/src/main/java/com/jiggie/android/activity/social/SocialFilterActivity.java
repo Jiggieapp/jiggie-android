@@ -159,6 +159,7 @@ public class SocialFilterActivity extends ToolbarActivity implements SocialView 
         i.putExtra(Utils.IS_ON, switchSocialize.isChecked());
         sendBroadcast(i);
         dismissPleaseWaitDialog();
+        finish();
     }
 
     @Override

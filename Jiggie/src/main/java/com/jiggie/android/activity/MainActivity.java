@@ -35,6 +35,7 @@ import com.jiggie.android.BuildConfig;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.PurchaseHistoryActivity;
 import com.jiggie.android.activity.profile.FilterActivity;
+import com.jiggie.android.activity.profile.NewProfileDetailActivity;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
 import com.jiggie.android.activity.profile.ProfileSettingActivity;
 import com.jiggie.android.activity.setup.SetupTagsActivity;
@@ -516,7 +517,7 @@ public class MainActivity extends AppCompatActivity
                 target = SocialFilterActivity.class;
                 break;
             case R.id.action_profile:
-                target = ProfileDetailActivity.class;
+                target = NewProfileDetailActivity.class;
                 break;
             case R.id.action_support:
                 mailSupport();

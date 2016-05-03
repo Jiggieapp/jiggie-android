@@ -5,6 +5,7 @@ import android.content.Context;
 import com.facebook.AccessToken;
 import com.google.gson.Gson;
 import com.jiggie.android.App;
+import com.jiggie.android.activity.profile.ProfileDetailModel;
 import com.jiggie.android.api.AccountInterface;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.callback.CustomCallback;
@@ -303,11 +304,13 @@ public class AccountManager extends BaseManager{
         doUpload(file, new CustomCallback() {
             @Override
             public void onCustomCallbackResponse(Response response) {
+                onResponseListener.onSuccess(response);
                 Utils.d(TAG, "custom callback response " + Utils.print(response));
             }
 
             @Override
             public void onCustomCallbackFailure(String t) {
+                onResponseListener.onFailure(Utils.CODE_FAILED, t);
                 Utils.d(TAG, "custom callback response failure");
             }
 
@@ -662,6 +665,36 @@ public class AccountManager extends BaseManager{
     }
 
     public OnFinishGetAccessToken onFinishGetAccessToken;
+
+    public static void doDelete(String url, final OnResponseListener onResponseListener) {
+        doDelete(url, new CustomCallback() {
+            @Override
+            public void onCustomCallbackResponse(Response response) {
+                Utils.d(TAG, "success delete");
+                onResponseListener.onSuccess(response);
+            }
+
+            @Override
+            public void onCustomCallbackFailure(String t) {
+                Utils.d(TAG, "fail delete");
+                onResponseListener.onFailure(Utils.CODE_FAILED, t);
+            }
+
+            @Override
+            public void onNeedToRestart() {
+
+            }
+        });
+    }
+
+    private static void doDelete(final String url, Callback callback)
+    {
+        ProfileDetailModel profileDetailModel = new ProfileDetailModel(url
+                , AccessToken.getCurrentAccessToken().getUserId());
+        getInstance().deletePhoto(profileDetailModel).enqueue(callback);
+    }
+
+
     public interface OnFinishGetAccessToken
     {
         public Retrofit onFinishGetAccessToken(String accessToken);

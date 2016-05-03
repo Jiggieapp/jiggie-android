@@ -237,7 +237,8 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
     @SuppressWarnings("unused")
     @OnClick(R.id.btnEdit)
     void btnEditOnClick() {
-        super.startActivityForResult(new Intent(this, ProfileEditActivity.class).putExtra(Common.FIELD_ABOUT, AccountManager.loadLogin().getAbout()), 0);
+        super.startActivityForResult(new Intent(this, ProfileEditActivity.class)
+                .putExtra(Common.FIELD_ABOUT, AccountManager.loadLogin().getAbout()), 0);
     }
 
     @Override

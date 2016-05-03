@@ -23,4 +23,10 @@ public class ProfileDetailModel {
     public void setUrl(String url) {
         this.url = url;
     }
+
+    public ProfileDetailModel(final String url, final String fb_id)
+    {
+        this.url = url;
+        this.fb_id = fb_id;
+    }
 }

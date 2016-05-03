@@ -30,6 +30,7 @@ import com.jiggie.android.App;
 import com.jiggie.android.BuildConfig;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.chat.ChatActivity;
+import com.jiggie.android.activity.event.EventDetailActivity;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.SimpleJSONObject;
 import com.jiggie.android.component.StringUtility;
@@ -39,6 +40,7 @@ import com.jiggie.android.component.adapter.SocialCardNewAdapter;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.manager.WalkthroughManager;
+import com.jiggie.android.model.Common;
 import com.jiggie.android.model.Conversation;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.LoginModel;
@@ -46,7 +48,7 @@ import com.jiggie.android.model.PostWalkthroughModel;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.SocialModel;
 import com.jiggie.android.model.Success2Model;
-import com.lorentzos.flingswipe.SwipeFlingAdapterView;
+import com.jiggie.android.view.CustomSwipeFlingAdapterView;
 
 import java.util.ArrayList;
 
@@ -97,7 +99,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     Button inboundBtnNo;*/
 
     @Bind(R.id.fling_adapter)
-    SwipeFlingAdapterView flingAdapterView;
+    CustomSwipeFlingAdapterView flingAdapterView;
 
     /*@Bind(R.id.tempListView)
     ListView tempListView;*/
@@ -158,7 +160,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             AccountManager.anySettingChange = false;
         }*/
 
-        if(temp.size() == 0)
+        if (temp.size() == 0)
             this.onRefresh();
         App.getInstance().trackMixPanelEvent("View Social Feed");
     }
@@ -204,7 +206,6 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     }
 
     private void onRefresh() {
-        Utils.d(TAG, "disuruh refresh");
         if (!AccountManager.isInSettingPage) {
             currentSetting = AccountManager.loadSetting();
             if (super.getContext() == null) {
@@ -277,24 +278,17 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     }
 
     ArrayList<SocialModel.Data.SocialFeeds> temp = new ArrayList<>();
+
     protected void fillSocialCard(SocialModel message) {
-        /*for (int i = 0; i < message.getData().getSocial_feeds().size(); i++) {
-            final SocialModel.Data.SocialFeeds item = message.getData().getSocial_feeds().get(i);
-        }*/
-
-        //this.layoutSocialize.setVisibility(View.VISIBLE);
-        //this.cardEmpty.setVisibility(View.GONE);
         this.progressBar.setVisibility(View.GONE);
-
-
 
         for (final SocialModel.Data.SocialFeeds item : message.getData().getSocial_feeds()) {
             //temp.add(item);
-            if(SocialManager.Type.isInbound(item))
+            if (SocialManager.Type.isInbound(item))
                 temp.add(0, item);
             else temp.add(item);
             Utils.d(TAG, item.getFb_id() + "/" + item.getFrom_fb_id() + "/" + item.getType()
-                + "/" + item.getFrom_first_name());
+                    + "/" + item.getFrom_first_name());
         }
 
         /*cardStackAdapter = new SocialCardAdapter(temp, dummy, getActivity(), this);
@@ -305,7 +299,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                 , getActivity(), this);
         flingAdapterView.setAdapter(socialCardNewAdapter);
         //tempListView.setAdapter(socialCardNewAdapter);
-        flingAdapterView.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
+        flingAdapterView.setFlingListener(new CustomSwipeFlingAdapterView.onFlingListener() {
             @Override
             public void removeFirstObjectInAdapter() {
 
@@ -318,18 +312,17 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
 
             @Override
             public void onRightCardExit(Object o) {
-                if(SocialManager.Type.isInbound(socialCardNewAdapter.getItem(0)))
-                {
+                if (SocialManager.Type.isInbound(socialCardNewAdapter.getItem(0))) {
                     match(socialCardNewAdapter.getItem(0).getFrom_fb_id()
-                        , socialCardNewAdapter.getItem(0).getFrom_first_name());
-                }
-                else matchAsync(socialCardNewAdapter.getItem(0).getFrom_fb_id(), true);
+                            , socialCardNewAdapter.getItem(0).getFrom_first_name());
+                } else matchAsync(socialCardNewAdapter.getItem(0).getFrom_fb_id(), true);
             }
 
             @Override
             public void onAdapterAboutToEmpty(int i) {
-                SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId()
-                        , currentSetting.getData().getGender_interest());
+                if (socialCardNewAdapter.getCount() == 3 || socialCardNewAdapter.getCount() == 0)
+                    SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId()
+                            , currentSetting.getData().getGender_interest());
             }
 
             @Override
@@ -348,6 +341,14 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     @Override
     public void onNoClick() {
         flingAdapterView.getTopCardListener().selectLeft();
+    }
+
+    @Override
+    public void onGeneralClick() {
+        Intent i = new Intent(super.getContext(), EventDetailActivity.class);
+        i.putExtra(Common.FIELD_EVENT_ID, socialCardNewAdapter.getItem(0).getEvent_id());
+        i.putExtra(Common.FIELD_EVENT_NAME, socialCardNewAdapter.getItem(0).getEvent_name());
+        super.startActivity(i);
     }
 
     /*static class ViewHolder {
@@ -391,7 +392,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             } else {
                 if (getContext() != null) {
                     dismissProgressDialog();
-                    Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Empty data", Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
                     if (message.getFrom().equals(Utils.FROM_SOCIAL_MATCH) || message.getFrom().equals(Utils.FROM_EVENT_DETAIL)) {
                         enableButton(true);
@@ -422,7 +423,6 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
 
             //final String image = App.getFacebookImage(value.getFrom_fb_id(), generalImage.getWidth() * 2);
             final String image = value.getImage();
-            Utils.d(TAG, "image " + image);
             final DrawableTypeRequest<String> glideRequest = Glide.with(SocialTabFragment.this).load(image);
 
             App.getInstance().trackMixPanelEvent("View Feed Item");
@@ -536,7 +536,8 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     @SuppressWarnings("unused")
     @OnClick(R.id.imageUserInbound)
     void imageUserOnClick() {
-        super.startActivity(new Intent(super.getContext(), ProfileDetailActivity.class).putExtra(Common.FIELD_FACEBOOK_ID, current.getFrom_fb_id()));
+        super.startActivity(new Intent(super.getContext(), ProfileDetailActivity.class)
+        .putExtra(Common.FIELD_FACEBOOK_ID, current.getFrom_fb_id()));
     }
 
     @SuppressWarnings("unused")
@@ -621,13 +622,11 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             SocialManager.loaderSocialMatch(AccessToken.getCurrentAccessToken().getUserId(), this.current.getFrom_fb_id(), confirm ? "approved" : "denied");
     }
 
-    private void match(final String userId, final String name)
-    {
-
+    private void match(final String userId, final String name) {
         showProgressDialog();
         SocialManager.loaderSocialMatch(
                 AccessToken.getCurrentAccessToken().getUserId()
-                , /*userId*/ "102261920139380", "approved", new SocialManager.OnResponseListener() {
+                , userId /*"102261920139380"*/, "approved", new SocialManager.OnResponseListener() {
                     @Override
                     public void onSuccess(Object object) {
                         socialCardNewAdapter.deleteFirstItem();
@@ -654,7 +653,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                         , fromFbId, confirm ? "approved" : "denied");*/
         socialCardNewAdapter.deleteFirstItem();
         SocialManager.loaderSocialMatchAsync(AccessToken.getCurrentAccessToken().getUserId()
-                , fromFbId, confirm ? "approved" : "denied");
+                , fromFbId, confirm ? "approved" : "denied", confirm);
     }
 
     public void onEvent(Success2Model message) {
@@ -746,10 +745,10 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                     layoutSocialize.setVisibility(View.VISIBLE);
                     txtSocialize.setText(R.string.socialize_description_off);
                 }*/
-                if(intent.getExtras().getBoolean(Utils.IS_ON))
-                {
+                if (intent != null && intent.getExtras().getBoolean(Utils.IS_ON)) {
                     temp = new ArrayList<>();
-                    socialCardNewAdapter.clear();
+                    if (socialCardNewAdapter != null)
+                        socialCardNewAdapter.clear();
                     onRefresh();
                 }
 
@@ -859,5 +858,5 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             dialogWalkthrough.dismiss();
         }
     }
-}
 
+}

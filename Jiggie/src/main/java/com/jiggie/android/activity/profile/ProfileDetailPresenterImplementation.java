@@ -23,6 +23,7 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
     ProfileDetailView profileDetailView;
     private final String TAG = ProfileDetailPresenterImplementation.class.getSimpleName();
     private MemberInfoModel memberInfoModel;
+    private MemberInfoModel.Data.MemberInfo memberInfo;
 
     @Override
     public void onResume() {
@@ -41,6 +42,7 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
                 @Override
                 public void onSuccess(Object object) {
                     memberInfoModel = (MemberInfoModel) object;
+                    memberInfo = memberInfoModel.getData().getMemberinfo();
                     profileDetailView.onSuccess(memberInfoModel);
                     profileDetailView.loadImages(memberInfoModel.getData().getMemberinfo().getPhotos());
                 }
@@ -77,7 +79,7 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
         int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
         String filePath = cursor.getString(columnIndex);
         cursor.close();
-        doUpload(filePath);
+        doLoadImage(filePath);
 
         //Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
 
@@ -87,6 +89,15 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
 
     public ProfileDetailPresenterImplementation(ProfileDetailView profileDetailView) {
         this.profileDetailView = profileDetailView;
+    }
+
+    private void doLoadImage(final String url)
+    {
+        final int position = memberInfo.getPhotos().size();
+        profileDetailView.loadImageToCertainView(url
+                , memberInfo.getPhotos().size());
+        memberInfo.getPhotos().add(url);
+        doUpload(url, position);
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -100,21 +111,22 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
         if (imageCursor.moveToFirst()) {
             selectedImagePath = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
         }
-        doUpload(selectedImagePath);
+        doLoadImage(selectedImagePath);
     }
 
-    private void doUpload(final String path) {
+    private void doUpload(final String path, final int position) {
         File file = new File(path);
         if (file.exists()) {
             AccountManager.doUpload(file, new OnResponseListener() {
                 @Override
                 public void onSuccess(Object object) {
-
+                    profileDetailView.onFinishUpload(position);
                 }
 
                 @Override
                 public void onFailure(int responseCode, String message) {
-
+                    memberInfo.getPhotos().remove(position);
+                    profileDetailView.onFailUpload(position);
                 }
             });
         } else Utils.d(TAG, "not exist");
@@ -122,9 +134,31 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
 
     @Override
     public void onImageClick(int position) {
-        if (memberInfoModel.getData().getMemberinfo().getPhotos().size() >= position)
+        if (memberInfo.getPhotos().size() >= position) //ada isinya
         {
-            ProfileM
+            doDelete(memberInfo.getPhotos().get(position - 1), position - 1);
+        }
+        else
+        {
+            profileDetailView.getPhoto();
         }
     }
+
+    private void doDelete(final String url, final int position)
+    {
+        AccountManager.doDelete(url, new OnResponseListener() {
+                    @Override
+                    public void onSuccess(Object object) {
+                        memberInfo.getPhotos().remove(position);
+                        profileDetailView.loadImages(memberInfo.getPhotos());
+                    }
+
+                    @Override
+                    public void onFailure(int responseCode, String message) {
+
+                    }
+                }
+        );
+    }
+
 }
