@@ -19,13 +19,13 @@
             android:gravity="center_horizontal"
             android:id="@+id/textView"/>
 
-        <View
+        <ImageView
             android:layout_gravity="center_vertical"
             android:layout_marginStart="4dp"
             android:layout_marginLeft="4dp"
             android:layout_height="14dp"
             android:layout_width="14dp"
-            android:background="@mipmap/ic_check"
+            android:src="@mipmap/ic_check"
             android:id="@+id/checkView"/>
     </LinearLayout>
 

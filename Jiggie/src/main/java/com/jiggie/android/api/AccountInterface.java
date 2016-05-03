@@ -3,6 +3,7 @@ package com.jiggie.android.api;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.AboutModel;
 import com.jiggie.android.model.AccessTokenModel;
+import com.jiggie.android.model.CityModel;
 import com.jiggie.android.model.FilterModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.LoginResultModel;
@@ -67,4 +68,6 @@ public interface AccountInterface{
     @POST(Utils.URL_UPLOAD)
     Call<Success2Model> upload(@Part("filefield") RequestBody requestBody);
 
+    @GET(Utils.URL_CITY)
+    Call<CityModel> getCityList();
 }

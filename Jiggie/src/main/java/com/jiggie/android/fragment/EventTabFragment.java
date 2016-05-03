@@ -4,9 +4,14 @@ import android.animation.Animator;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,6 +39,7 @@ import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.EventTabListAdapter;
 import com.jiggie.android.component.adapter.EventTagAdapter;
+import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventModel;
 import com.jiggie.android.model.ExceptionModel;
@@ -100,6 +106,7 @@ public class EventTabFragment extends Fragment
     private View failedView;
     private Dialog dialogWalkthrough;
 
+
     public EventTabFragment() {
 
     }
@@ -133,6 +140,9 @@ public class EventTabFragment extends Fragment
         View view = this.rootView = inflater.inflate(R.layout.fragment_tab_event, container, false);
         ButterKnife.bind(this, view);
         //EventBus.getDefault().register(this);
+
+
+
         return view;
     }
 
@@ -369,6 +379,7 @@ public class EventTabFragment extends Fragment
         i.putExtra(Common.FIELD_EVENT_DAY_END, event.getEnd_datetime());
         i.putExtra(Common.FIELD_EVENT_PICS, event.getPhotos());
         i.putExtra(Common.FIELD_EVENT_DESCRIPTION, event.getDescription());
+        i.putExtra(Common.FIELD_EVENT_LIKE, event.getLikes());
         super.startActivity(i);
     }
 
@@ -503,7 +514,7 @@ public class EventTabFragment extends Fragment
         dialogWalkthrough = new Dialog(getActivity());
         dialogWalkthrough.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogWalkthrough.setContentView(R.layout.walkthrough_screen);
-        dialogWalkthrough.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialogWalkthrough.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialogWalkthrough.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 
         RelativeLayout layout = (RelativeLayout) dialogWalkthrough.findViewById(R.id.layout_walkthrough);
@@ -534,5 +545,21 @@ public class EventTabFragment extends Fragment
         });
 
         dialogWalkthrough.show();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(Utils.isRefreshDetail){
+            for(int i=0;i< events.size();i++){
+                if(events.get(i).get_id().equals(Utils.event_id_refresh)){
+                    events.get(i).setLikes(Utils.count_like_new);
+                }
+            }
+            adapter.notifyDataSetChanged();
+            Utils.isRefreshDetail = false;
+            Utils.event_id_refresh = Utils.BLANK;
+            Utils.count_like_new = 0;
+        }
     }
 }
