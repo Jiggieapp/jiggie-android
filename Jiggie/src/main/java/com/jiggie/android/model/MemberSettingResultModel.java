@@ -50,6 +50,42 @@ public class MemberSettingResultModel {
             public Payment payment;
             public String phone;
             public String updated_at;
+            public int from_age;
+            public int to_age;
+            public int distance;
+            public String area_event;
+
+            public int getFrom_age() {
+                return from_age;
+            }
+
+            public void setFrom_age(int from_age) {
+                this.from_age = from_age;
+            }
+
+            public int getTo_age() {
+                return to_age;
+            }
+
+            public void setTo_age(int to_age) {
+                this.to_age = to_age;
+            }
+
+            public int getDistance() {
+                return distance;
+            }
+
+            public void setDistance(int distance) {
+                this.distance = distance;
+            }
+
+            public String getArea_event() {
+                return area_event;
+            }
+
+            public void setArea_event(String area_event) {
+                this.area_event = area_event;
+            }
 
             public String get_id() {
                 return _id;
@@ -147,6 +183,7 @@ public class MemberSettingResultModel {
             public static final class Notifications {
                 public boolean chat;
                 public boolean feed;
+                public boolean location;
 
                 public boolean isLocation() {
                     return location;
@@ -172,7 +209,7 @@ public class MemberSettingResultModel {
                     this.feed = feed;
                 }
 
-                public boolean location;
+
 
                 public Notifications(boolean chat, boolean feed, boolean location) {
                     this.chat = chat;

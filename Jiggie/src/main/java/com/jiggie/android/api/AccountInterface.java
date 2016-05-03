@@ -12,11 +12,17 @@ import com.jiggie.android.model.MemberSettingResultModel;
 import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SuccessModel;
 import com.jiggie.android.model.SuccessTokenModel;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
+
+import java.io.File;
 
 import retrofit.Call;
 import retrofit.http.Body;
 import retrofit.http.GET;
+import retrofit.http.Multipart;
 import retrofit.http.POST;
+import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.http.Query;
 import retrofit.http.Url;
@@ -52,4 +58,13 @@ public interface AccountInterface{
 
     @GET(Utils.URL_VERIFY_VERIFICATION_CODE)
     Call<Success2Model> verifyVerificationCode(@Path("fb_id") String fb_id, @Path("token") String token);
+
+    @Multipart
+    @POST(Utils.URL_UPLOAD)
+    Call<Success2Model> upload(@Part("filefield") File file, @Part("fb_id") String fb_id);
+
+    @Multipart
+    @POST(Utils.URL_UPLOAD)
+    Call<Success2Model> upload(@Part("filefield") RequestBody requestBody);
+
 }

@@ -84,8 +84,8 @@ public class SocialManager extends BaseManager{
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
                     //String header = String.valueOf(response.code());
-                    /*String responses = new Gson().toJson(response.body());
-                    Utils.d("res", responses);*/
+                    String responses = new Gson().toJson(response.body());
+                    Utils.d(TAG, responses);
 
 
                     if(response.code()==Utils.CODE_SUCCESS){
@@ -112,6 +112,47 @@ public class SocialManager extends BaseManager{
         }
     }
 
+    public static void loaderSocialMatch(String fb_id, String from_id, String type, final OnResponseListener onResponseListener){
+        try {
+            getSocialMatch(fb_id, from_id, type, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+
+                    //String header = String.valueOf(response.code());
+                    //String responses = new Gson().toJson(response.body());
+                    //Utils.d("res", responses);
+
+                    if (response.code() == Utils.CODE_SUCCESS) {
+                        Success2Model dataTemp = (Success2Model) response.body();
+                        dataTemp.setFrom(TAG);
+                        onResponseListener.onSuccess(dataTemp);
+                        //EventBus.getDefault().post(dataTemp);
+                    } else {
+                        //EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_MATCH, Utils.RESPONSE_FAILED));
+                        onResponseListener.onFailure(Utils.CODE_FAILED, Utils.RESPONSE_FAILED);
+                    }
+
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    Log.d("Failure", t.toString());
+                    //EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_MATCH, Utils.MSG_EXCEPTION + t.toString()));
+                    onResponseListener.onFailure(Utils.CODE_FAILED, Utils.RESPONSE_FAILED);
+
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
+            });
+        }catch (IOException e){
+            Log.d("Exception", e.toString());
+            EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_MATCH, Utils.MSG_EXCEPTION + e.toString()));
+        }
+    }
+
     public static void loaderSocialMatch(String fb_id, String from_id, String type){
         try {
             getSocialMatch(fb_id, from_id, type, new CustomCallback() {
@@ -119,8 +160,8 @@ public class SocialManager extends BaseManager{
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
 
                     //String header = String.valueOf(response.code());
-                    String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
+                    //String responses = new Gson().toJson(response.body());
+                    //Utils.d("res", responses);
 
                     if (response.code() == Utils.CODE_SUCCESS) {
                         Success2Model dataTemp = (Success2Model) response.body();
@@ -146,6 +187,40 @@ public class SocialManager extends BaseManager{
         }catch (IOException e){
             Log.d("Exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_MATCH, Utils.MSG_EXCEPTION + e.toString()));
+        }
+    }
+
+    public static void loaderSocialMatchAsync(String fb_id, String from_id, String type){
+        try {
+            Utils.d(TAG, "from id " + from_id);
+            getSocialMatch(fb_id, from_id, type, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+
+                    if (response.code() == Utils.CODE_SUCCESS) {
+                        Success2Model dataTemp = (Success2Model) response.body();
+                        dataTemp.setFrom(TAG);
+                        //EventBus.getDefault().post(dataTemp);
+                    } else {
+                        //EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_MATCH, Utils.RESPONSE_FAILED));
+                    }
+
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    //Log.d("Failure", t.toString());
+                    EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_MATCH, Utils.MSG_EXCEPTION + t.toString()));
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
+            });
+        }catch (IOException e){
+            //Log.d("Exception", e.toString());
+            //EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_MATCH, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 

@@ -95,6 +95,7 @@ allprojects {
 }
 
 dependencies {
+
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }
@@ -126,7 +127,7 @@ dependencies {
     compile 'io.reactivex:rxjava:1.1.0'
     compile(name: 'VTAndroidAPI', ext: 'aar')
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
+    compile 'com.lorentzos.swipecards:library:1.0.9@aar'
 
-    //swipeable cards
-    //compile 'com.github.kikoso:SwipeableCards:1.1-RELEASE@aar'
+    compile 'com.appyvet:materialrangebar:1.3'
 }

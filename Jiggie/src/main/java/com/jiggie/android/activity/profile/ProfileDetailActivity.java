@@ -119,7 +119,6 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
 
         final String age = StringUtility.getAge2(message.getData().getMemberinfo().getBirthday());
 
-
         //Added by Aga 22-2-2016--------
         String[] photos;
 
@@ -188,10 +187,10 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
         }
         //-----------------------
 
-        for(String photo : photos)
+        /*for(String photo : photos)
         {
             Utils.d(TAG, "photos " + photo);
-        }
+        }*/
         this.pagerIndicatorAdapter.setImages(photos);
 
 
@@ -253,7 +252,6 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
                 txtDescription.setVisibility(View.VISIBLE);
                 this.txtDescription.setText(AccountManager.loadLogin().getAbout());
             }
-
         }
     }
 

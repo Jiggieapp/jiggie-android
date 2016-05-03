@@ -8,6 +8,7 @@ import com.jiggie.android.App;
 import com.jiggie.android.api.AccountInterface;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.callback.CustomCallback;
+import com.jiggie.android.listener.OnResponseListener;
 import com.jiggie.android.model.AboutModel;
 import com.jiggie.android.model.AccessTokenModel;
 import com.jiggie.android.model.ExceptionModel;
@@ -20,7 +21,11 @@ import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SuccessModel;
 import com.jiggie.android.model.SuccessTokenModel;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.MultipartBuilder;
+import com.squareup.okhttp.RequestBody;
 
+import java.io.File;
 import java.io.IOException;
 
 import de.greenrobot.event.EventBus;
@@ -125,6 +130,7 @@ public class AccountManager extends BaseManager{
             postMemberSetting(memberSettingModel, new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                    Utils.d(TAG, "hulalala " + Utils.print(response));
                     if (response.code() == Utils.CODE_SUCCESS) {
                         Success2Model dataTemp = (Success2Model) response.body();
                         dataTemp.setFrom(Utils.FROM_PROFILE_SETTING);
@@ -133,6 +139,7 @@ public class AccountManager extends BaseManager{
 
                         /*MemberSettingResultModel memberSettingModel = (MemberSettingResultModel) response.body();
                         AccountManager.saveMemberSetting(memberSettingModel);*/
+
                     } else {
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.RESPONSE_FAILED));
                     }
@@ -140,7 +147,44 @@ public class AccountManager extends BaseManager{
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
+                    Utils.d(TAG, "failure");
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.MSG_EXCEPTION + t.toString()));
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
+            });
+        } catch (IOException e){
+            EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.MSG_EXCEPTION + e.toString()));
+        }
+    }
+
+    public static void loaderMemberSetting
+            (final MemberSettingModel memberSettingModel, final OnResponseListener onResponseListener){
+        try {
+            postMemberSetting(memberSettingModel, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                    if (response.code() == Utils.CODE_SUCCESS) {
+                        Success2Model dataTemp = (Success2Model) response.body();
+                        dataTemp.setFrom(Utils.FROM_PROFILE_SETTING);
+                        AccountManager.saveMemberSetting(memberSettingModel);
+
+                        /*MemberSettingResultModel memberSettingModel = (MemberSettingResultModel) response.body();
+                        AccountManager.saveMemberSetting(memberSettingModel);*/
+                        onResponseListener.onSuccess(response.body());
+
+                    } else {
+                        //EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.RESPONSE_FAILED));
+                        onResponseListener.onFailure(Utils.CODE_FAILED, Utils.RESPONSE_FAILED);
+                    }
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    onResponseListener.onFailure(Utils.CODE_FAILED, Utils.RESPONSE_FAILED);
                 }
 
                 @Override
@@ -172,6 +216,40 @@ public class AccountManager extends BaseManager{
                 @Override
                 public void onCustomCallbackFailure(String t) {
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_DETAIL, Utils.MSG_EXCEPTION + t.toString()));
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
+            });
+        }catch (IOException e){
+            Utils.d("exception", e.toString());
+            EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_DETAIL, Utils.MSG_EXCEPTION + e.toString()));
+        }
+    }
+
+    public static void loaderMemberInfo(String fb_id, final OnResponseListener onResponseListener){
+        try {
+            getMemberInfo(fb_id, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                    /*String responses = new Gson().toJson(response.body());
+                    Utils.d("res", responses);*/
+                    if (response.code() == Utils.CODE_SUCCESS) {
+                        //Utils.d(TAG, "response " +  Utils.print(response));
+                        MemberInfoModel dataTemp = (MemberInfoModel) response.body();
+                        onResponseListener.onSuccess(dataTemp);
+                    }
+                    else
+                    {
+                        onResponseListener.onFailure(Utils.CODE_FAILED, Utils.RESPONSE_FAILED);
+                    }
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    onResponseListener.onFailure(Utils.CODE_FAILED, Utils.RESPONSE_FAILED);
                 }
 
                 @Override
@@ -219,6 +297,89 @@ public class AccountManager extends BaseManager{
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_SETTING, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
+
+    public static void doUpload(File file, final OnResponseListener onResponseListener)
+    {
+        doUpload(file, new CustomCallback() {
+            @Override
+            public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                Utils.d(TAG, "custom callback response");
+            }
+
+            @Override
+            public void onCustomCallbackFailure(String t) {
+                Utils.d(TAG, "custom callback response failure");
+            }
+
+            @Override
+            public void onNeedToRestart() {
+                Utils.d(TAG, "custom callback response need to restart");
+            }
+        });
+    }
+
+    private static void doUpload(File file, Callback callback)
+    {
+
+
+        RequestBody photo2 = RequestBody.create(MediaType.parse("application/image"), file);
+        RequestBody idE = RequestBody.create(MediaType.parse("text"), AccessToken.getCurrentAccessToken().getUserId());
+        RequestBody body2 = new MultipartBuilder()
+                .type(MultipartBuilder.FORM)
+                .addFormDataPart("filefield", file.getName()
+                        , photo2)
+                .addFormDataPart("fb_id", "fb_id", idE)
+                .build();
+
+
+        /*getInstance().upload(file
+                , AccessToken.getCurrentAccessToken().getUserId()).enqueue(callback);*/
+
+        getInstance().upload(body2).enqueue(callback);
+    }
+
+    public static void loaderSettingNew(String fb_id, final OnResponseListener onResponseListener){
+        try {
+            getSetting(fb_id, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                    Utils.d(TAG, Utils.print(response));
+                    if (response.code() == Utils.CODE_SUCCESS) {
+                        MemberSettingResultModel data = (MemberSettingResultModel) response.body();
+                        MemberSettingModel temp = new MemberSettingModel(data);
+                        saveMemberSetting(temp);
+                        /*App.getInstance().savePreference(Utils.MEMBER_SETTING_MODEL
+                                , new Gson().toJson(response.body()));*/
+
+                        SettingModel dataTemp = setSettingModelFromMemberSetting(data);
+                        //EventBus.getDefault().post(dataTemp);
+                        onResponseListener.onSuccess(data);
+                    } else {
+                        //EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_SETTING, Utils.RESPONSE_FAILED));
+                        onResponseListener.onFailure(Utils.CODE_FAILED, response.message());
+                    }
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    //EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_SETTING, Utils.MSG_EXCEPTION + t.toString()));
+                    onResponseListener.onFailure(Utils.CODE_FAILED, t);
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
+            });
+        }catch (IOException e){
+            Utils.d("exception", e.toString());
+            EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_SETTING, Utils.MSG_EXCEPTION + e.toString()));
+        }
+    }
+
+
+
+
 
     public static void loaderEditAbout(AboutModel aboutModel){
         try {
@@ -292,7 +453,7 @@ public class AccountManager extends BaseManager{
         return memberSettingModel;
     }*/
 
-    private static void saveMemberSetting(MemberSettingModel memberSettingModel) {
+    public static void saveMemberSetting(MemberSettingModel memberSettingModel) {
         /*if(memberSettingModel.getFb_id() == null)
             memberSettingModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
         */
@@ -508,4 +669,5 @@ public class AccountManager extends BaseManager{
         App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
                 .putString(Utils.MEMBER_SETTING_MODEL, model).apply();
     }
+
 }
