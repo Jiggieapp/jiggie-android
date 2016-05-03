@@ -14,7 +14,7 @@
         android:contentDescription="@null"
         android:scaleType="centerCrop" />
 
-    <FrameLayout
+    <!--<FrameLayout
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_gravity="center_horizontal"
@@ -23,11 +23,22 @@
         android:id="@+id/chat_icon">
 
         <ImageView
+            android:id="@+id/chat_small_icon"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/padding_standard"
-            android:src="@mipmap/ic_chat" />
-    </FrameLayout>
+            android:src="@drawable/ic_chat"
+            android:scaleType="centerCrop"/>
+    </FrameLayout>-->
+
+    <ImageView
+        android:id="@+id/chat_small_icon"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="-32dp"
+        android:src="@drawable/ic_chat"
+        android:scaleType="centerCrop"/>
 
     <LinearLayout
         android:layout_width="wrap_content"

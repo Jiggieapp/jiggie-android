@@ -401,6 +401,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
                 if (guestCount > 0) {
                     Intent intent = new Intent(SocialTabFragment.TAG);
+                    intent.putExtra(Utils.IS_ON
+                            , AccountManager.loadSetting().getData().getNotifications().isFeed());
                     sendBroadcast(intent);
 
                     final int width = imageGuest1.getWidth() * 2;

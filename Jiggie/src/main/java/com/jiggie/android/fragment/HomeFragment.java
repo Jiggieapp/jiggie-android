@@ -256,9 +256,17 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
                 }
 
 
+
             }
         });
         //behavior.setHideable(true);
+
+        viewShadow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //do nothing
+            }
+        });
 
         EventManager.loaderTags(new EventManager.OnResponseEventListener() {
             @Override
@@ -575,6 +583,14 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
             startFetchChat();
         } else {
             stopFetchChat();
+        }
+        
+        if (position == CHAT_TAB) {
+            fab.setVisibility(View.GONE);
+        } else if (position == SOCIAL_TAB) {
+            fab.setVisibility(View.GONE);
+        } else {
+            fab.setVisibility(View.VISIBLE);
         }
         this.lastSelectedFragment = (TabFragment) this.adapter.fragments[position];
         this.lastSelectedFragment.onTabSelected();

@@ -231,7 +231,7 @@
                         android:id="@+id/lbl_min_age"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="12" />
+                        android:text="18" />
 
                     <com.appyvet.rangebar.RangeBar xmlns:custom="http://schemas.android.com/apk/res-auto"
                         android:id="@+id/slider_age_double"

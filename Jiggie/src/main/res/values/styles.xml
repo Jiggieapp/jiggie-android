@@ -8,7 +8,7 @@
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="android:windowBackground">@color/background</item>
         <item name="android:windowActionModeOverlay">true</item>
-        <!--<item name="SwipeFlingStyle">@style/SwipeFling</item>-->
+        <item name="SwipeFlingStyle">@style/SwipeFling</item>
 
         <!-- To change the background of options menu-->
         <!--<item name="android:itemBackground">@color/skyBlue</item>-->

@@ -56,7 +56,7 @@ public class SocialFilterActivity extends ToolbarActivity implements SocialView 
     MemberSettingResultModel memberSettingResultModel;
 
     private static final String TAG = SocialFilterActivity.class.getSimpleName();
-    private final int MIN_AGE = 12;
+    private final int MIN_AGE = 18;
     private final int MAX_AGE = 60;
     private final int MAX_LOCATION = 160;
 
