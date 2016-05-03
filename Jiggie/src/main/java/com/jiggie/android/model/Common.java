@@ -33,6 +33,7 @@ public class Common {
     public static String FIELD_EVENT_DAY_END = "date_end";
     public static String FIELD_EVENT_PICS = "event_pics";
     public static String FIELD_EVENT_DESCRIPTION = "event_description";
+    public static String FIELD_EVENT_LIKE = "event_like";
 
     public static String FIELD_TRANS_TYPE = "type";
     public static String TYPE_PURCHASE = "purchase";

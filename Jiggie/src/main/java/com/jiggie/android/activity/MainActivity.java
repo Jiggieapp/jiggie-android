@@ -40,9 +40,11 @@ import com.jiggie.android.activity.profile.FilterActivity;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
 import com.jiggie.android.activity.profile.ProfileSettingActivity;
 import com.jiggie.android.activity.setup.SetupTagsActivity;
+import com.jiggie.android.activity.social.SocialFilterActivity;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.gcm.GCMRegistrationService;
 import com.jiggie.android.component.service.FacebookImageSyncService;
+import com.jiggie.android.fragment.EventsFragment;
 import com.jiggie.android.fragment.HomeFragment;
 import com.jiggie.android.fragment.SignInFragment;
 import com.appsflyer.AppsFlyerLib;
@@ -91,7 +93,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     @SuppressWarnings("StatementWithEmptyBody")
     protected void onCreate(Bundle savedInstanceState) {
-        super.setTheme(R.style.AppCustomTheme);
+        super.setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_main);
         this.active = true;
@@ -117,12 +119,18 @@ public class MainActivity extends AppCompatActivity
             final String str = GoogleApiAvailability.getInstance().getErrorString(code);
             Toast.makeText(this, str, Toast.LENGTH_LONG).show();
         }
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         EventBus.getDefault().register(this);
+        /*Intent a = getIntent();
+        boolean isRefresh = a.getBooleanExtra(Utils.TAG_ISREFRESH, false);
+        if(isRefresh){
+            EventBus.getDefault().post(EventsFragment.TAG);
+        }*/
     }
 
     @Override
@@ -515,6 +523,9 @@ public class MainActivity extends AppCompatActivity
         {
             case R.id.action_settings:
                 target = ProfileSettingActivity.class;
+                break;
+            case R.id.action_social_filter:
+                target = SocialFilterActivity.class;
                 break;
             case R.id.action_profile:
                 target = ProfileDetailActivity.class;

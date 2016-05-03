@@ -20,7 +20,6 @@ import java.util.Set;
 
 import de.greenrobot.event.EventBus;
 import retrofit.Callback;
-import retrofit.GsonConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
 
@@ -31,6 +30,7 @@ public class EventManager extends BaseManager{
 
     private static EventInterface eventInterface;
     public static final String TAG = EventManager.class.getSimpleName();
+    public static ArrayList<EventModel.Data.Events> events = new ArrayList<>();
 
     public static class FullfillmentTypes {
         public static final String PHONE_NUMBER = "phone_number";
@@ -61,6 +61,10 @@ public class EventManager extends BaseManager{
 
     private static void getTagsList(Callback callback) throws IOException {
         getInstance().getTagsList().enqueue(callback);
+    }
+
+    private static void actionLikeEvent(String _id, String fb_id, String action, Callback callback) throws IOException {
+        getInstance().actionLikeEvent(_id, fb_id, action).enqueue(callback);
     }
 
     public static void loaderEvent(String fb_id){
@@ -210,6 +214,72 @@ public class EventManager extends BaseManager{
         }
     }
 
+    public static void loaderLikeEvent(final String _id, final String fb_id, String action, final OnResponseEventListener onResponseListener){
+        try {
+            actionLikeEvent(_id, fb_id, action, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                    /*String responses = new Gson().toJson(response.body());
+                    Utils.d("res", responses);*/
+                    int responseCode = response.code();
+                    if (responseCode == Utils.CODE_SUCCESS) {
+                        onResponseListener.onSuccess(response.body());
+                    } else {
+                        onResponseListener.onFailure(responseCode, Utils.RESPONSE_FAILED);
+                    }
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    Utils.d("Failure", t.toString());
+                    onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
+            });
+        }catch (IOException e){
+            Utils.d("Exception", e.toString());
+            onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
+        }
+    }
+
+    public static void loaderTags(final OnResponseEventListener onResponseListener){
+        try {
+            getTagsList(new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                    //String header = String.valueOf(response.code());
+                    /*String responses = new Gson().toJson(response.body());
+                    Utils.d("res", responses);*/
+
+                    int responseCode = response.code();
+                    if (responseCode == Utils.CODE_SUCCESS) {
+                        onResponseListener.onSuccess(response.body());
+                    } else {
+                        onResponseListener.onFailure(responseCode, Utils.RESPONSE_FAILED);
+                    }
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    Utils.d("Failure", t.toString());
+                    onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
+            });
+        }catch (IOException e){
+            Utils.d("Exception", e.toString());
+            onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
+        }
+    }
+
     public static void saveTagsList(TagsListModel tagsListModel){
         String model = new Gson().toJson(tagsListModel);
         App.getInstance().getSharedPreferences(Utils.PREFERENCE_TAGLIST, Context.MODE_PRIVATE).edit()
@@ -236,6 +306,11 @@ public class EventManager extends BaseManager{
         }
 
         App.getInstance().savePreference(Utils.TAGS_LIST, setValues);
+    }
+
+    public interface OnResponseEventListener {
+        public void onSuccess(Object object);
+        public void onFailure(int responseCode, String message);
     }
 
 }
