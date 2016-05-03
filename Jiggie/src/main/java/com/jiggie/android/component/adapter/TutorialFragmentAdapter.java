@@ -57,26 +57,28 @@ public class TutorialFragmentAdapter extends FragmentPagerAdapter {
             final Bundle arg = new Bundle();
             final App app = App.getInstance();
 
+            arg.putInt(TutorialFragment.ARG_POSITION, position);
+
             if (position == 0) {
                 arg.putString(TutorialFragment.ARG_TITLE, app.getString(R.string.title_carr_1_new));
                 arg.putString(TutorialFragment.ARG_DESC, app.getString(R.string.msg_carr_1));
-                arg.putInt(TutorialFragment.ARG_IMAGE, R.drawable.ss_car_1);
+                arg.putInt(TutorialFragment.ARG_IMAGE, R.drawable.pic1carr);
             } else if (position == 1) {
                 arg.putString(TutorialFragment.ARG_TITLE, app.getString(R.string.title_carr_2_new));
                 arg.putString(TutorialFragment.ARG_DESC, app.getString(R.string.msg_carr_2));
-                arg.putInt(TutorialFragment.ARG_IMAGE, R.drawable.ss_car_2);
+                arg.putInt(TutorialFragment.ARG_IMAGE, R.drawable.pic2carr);
             } else if (position == 2) {
                 arg.putString(TutorialFragment.ARG_TITLE, app.getString(R.string.title_carr_3_new));
                 arg.putString(TutorialFragment.ARG_DESC, app.getString(R.string.msg_carr_3));
-                arg.putInt(TutorialFragment.ARG_IMAGE, R.drawable.ss_car_3);
+                arg.putInt(TutorialFragment.ARG_IMAGE, R.drawable.pic3carr);
             } else if (position == 3) {
                 arg.putString(TutorialFragment.ARG_TITLE, app.getString(R.string.title_carr_4_new));
                 arg.putString(TutorialFragment.ARG_DESC, app.getString(R.string.msg_carr_4));
-                arg.putInt(TutorialFragment.ARG_IMAGE, R.drawable.ss_car_4);
+                arg.putInt(TutorialFragment.ARG_IMAGE, R.drawable.pic4carr);
             } else if (position == 4) {
                 arg.putString(TutorialFragment.ARG_TITLE, app.getString(R.string.title_carr_5_new));
                 arg.putString(TutorialFragment.ARG_DESC, app.getString(R.string.msg_carr_5));
-                arg.putInt(TutorialFragment.ARG_IMAGE, R.drawable.ss_car_5);
+                arg.putInt(TutorialFragment.ARG_IMAGE, R.drawable.pic5carr);
             } else if (position == 5) {
                 arg.putString(TutorialFragment.ARG_TITLE, app.getString(R.string.app_name));
                 arg.putString(TutorialFragment.ARG_DESC, app.getString(R.string.see_whats_going));
@@ -98,6 +100,7 @@ public class TutorialFragmentAdapter extends FragmentPagerAdapter {
         public static final String ARG_TITLE = "arg-title";
         public static final String ARG_IMAGE = "arg-image";
         public static final String ARG_DESC = "arg-desc";
+        public static final String ARG_POSITION = "arg-pos";
 
         @Bind(R.id.txtDescription)
         TextView txtDescription;
@@ -107,12 +110,16 @@ public class TutorialFragmentAdapter extends FragmentPagerAdapter {
         View contentView;
         @Bind(R.id.txtTitle)
         TextView txtTitle;
-        @Bind(R.id.rel_logo)
-        RelativeLayout relLogo;
         @Bind(R.id.img_help)
         ImageView imgHelp;
         @Bind(R.id.btnSignIn)
         Button btnSignIn;
+        @Bind(R.id.txt_we_dont)
+        TextView txtWeDont;
+        @Bind(R.id.txtLogo)
+        TextView txtLogo;
+        @Bind(R.id.img_logo)
+        ImageView imgLogo;
 
         @Nullable
         @Override
@@ -130,20 +137,29 @@ public class TutorialFragmentAdapter extends FragmentPagerAdapter {
             this.txtDescription.setText(arg.getString(ARG_DESC));
             this.txtTitle.setText(arg.getString(ARG_TITLE));
 
-            if (!this.txtTitle.getText().toString().contains("jiggie")) {
+            if (!this.txtTitle.getText().toString().contains("Jiggie")) {
                 this.txtTitle.setVisibility(View.VISIBLE);
                 this.imageView.setImageResource(arg.getInt(ARG_IMAGE));
                 this.contentView.setVisibility(View.VISIBLE);
 
-                //this.txtDescription.setGravity(Gravity.CENTER_HORIZONTAL);
+                this.btnSignIn.setVisibility(View.GONE);
+                this.txtWeDont.setVisibility(View.GONE);
+                this.imgLogo.setVisibility(View.GONE);
+                this.txtLogo.setVisibility(View.GONE);
+
             } else {
-                //this.txtDescription.setGravity(Gravity.START);
                 this.imageView.setVisibility(View.GONE);
                 this.contentView.setVisibility(View.GONE);
 
-                /*final RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) this.contentView.getLayoutParams();
-                params.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
-                params.setMargins(super.getResources().getDimensionPixelSize(R.dimen.padding_standard), 0, 0, 0);*/
+                this.btnSignIn.setVisibility(View.VISIBLE);
+                this.txtWeDont.setVisibility(View.VISIBLE);
+                this.imgLogo.setVisibility(View.VISIBLE);
+                this.txtLogo.setVisibility(View.VISIBLE);
+
+            }
+
+            if(arg.getInt(ARG_POSITION)==4){
+
             }
         }
 
@@ -153,10 +169,6 @@ public class TutorialFragmentAdapter extends FragmentPagerAdapter {
 
         public ImageView getImageViews() {
             return this.imageView;
-        }
-
-        public RelativeLayout getRelLogo() {
-            return this.relLogo;
         }
 
         public ImageView getImageHelps() {

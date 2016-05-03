@@ -68,7 +68,7 @@ public class EventTagAdapter
             holder.txtTag.setBackground(context.getResources().getDrawable(R.drawable.btn_tag_greydark));
             holder.txtTag.setTextColor(context.getResources().getColor(R.color.greydark_tag));
         } else if (text.equalsIgnoreCase("Music")) {
-            holder.txtTag.setBackground(context.getResources().getDrawable(R.drawable.btn_tag_blue));
+            holder.txtTag.setBackground(context.getResources().getDrawable(R.drawable.btn_tag_blues));
             holder.txtTag.setTextColor(context.getResources().getColor(R.color.bluedark_tag));
         } else if (text.equalsIgnoreCase("Food & Drink")) {
             holder.txtTag.setBackground(context.getResources().getDrawable(R.drawable.btn_tag_yellow));

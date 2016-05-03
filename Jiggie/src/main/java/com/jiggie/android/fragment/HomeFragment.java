@@ -9,7 +9,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -41,7 +40,6 @@ import com.facebook.AccessToken;
 import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
-import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.activity.event.EventDetailActivity;
 import com.jiggie.android.activity.setup.CityActivity;
 import com.jiggie.android.component.FlowLayout;
@@ -57,8 +55,6 @@ import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.MemberSettingResultModel;
 import com.jiggie.android.model.PostLocationModel;
 import com.jiggie.android.model.TagsListModel;
-import com.nhaarman.supertooltips.ToolTip;
-import com.nhaarman.supertooltips.ToolTipRelativeLayout;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -66,6 +62,7 @@ import java.util.Set;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
+import it.sephiroth.android.library.tooltip.Tooltip;
 
 /**
  * Created by rangg on 21/10/2015.
@@ -107,6 +104,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     private ArrayList<String> selectedItems = new ArrayList<>();
     private boolean hasChanged;
     ProgressDialog progressDialog;
+    boolean isFirstClick = true;
 
     @Nullable
     @Override
@@ -242,6 +240,11 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
                 /*FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.myPixel(getActivity(), 156), 0);
                 bottomSheet.setLayoutParams(layoutParams);*/
 
+                if(isFirstClick){
+                    isFirstClick = false;
+                    behavior.setPeekHeight(Utils.myPixel(getActivity(), 156));
+                }
+
                 if (isAlreadyExpand) {
                     fab.setImageResource(R.drawable.ic_filter_list_white_24dp);
                     behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -250,7 +253,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
                     changeTags();
                 } else {
                     fab.setImageResource(R.drawable.ic_action_cancel);
-                    behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                     isAlreadyExpand = true;
                     viewShadow.setVisibility(View.VISIBLE);
                 }
@@ -259,6 +262,13 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
             }
         });
         //behavior.setHideable(true);
+
+        viewShadow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //do nothing
+            }
+        });
 
         EventManager.loaderTags(new EventManager.OnResponseEventListener() {
             @Override
@@ -293,6 +303,22 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
                 .withAnimationType(ToolTip.ANIMATIONTYPE_FROMTOP);
         activityMainTooltipRelativeLayout.showToolTipForView(toolTip, fab);*/
         //myToolTipView.setOnToolTipViewClickedListener(MainActivity.this);
+
+        Tooltip.make(getActivity(),
+                new Tooltip.Builder(101)
+                        .anchor(fab, Tooltip.Gravity.BOTTOM)
+                        .closePolicy(new Tooltip.ClosePolicy()
+                                .insidePolicy(true, false)
+                                .outsidePolicy(true, false), 3000)
+                                //.activateDelay(800)
+                        .showDelay(300)
+                        .text("Hello I'm tooltip")
+                        .maxWidth(500)
+                        .withArrow(true)
+                        .withOverlay(true)//.typeface(mYourCustomFont)
+                                //.floatingAnimation(Tooltip.AnimationBuilder.DEFAULT).withOverlay(true)
+                        .build()
+        ).show();
         //End of Tooltips PART=====
     }
 
@@ -469,7 +495,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
                 holder.checkView.setImageResource(R.drawable.ic_tick_greydark);
                 //holder.checkView.setImageResource(R.mipmap.ic_check);
             } else if (text.equalsIgnoreCase("Music")) {
-                holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_blue));
+                holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_blues));
                 holder.textView.setTextColor(getResources().getColor(R.color.bluedark_tag));
                 holder.checkView.setImageResource(R.drawable.ic_tick_blue);
                 //holder.checkView.setImageResource(R.mipmap.ic_check);
@@ -576,6 +602,15 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         } else {
             stopFetchChat();
         }
+
+        if (position == CHAT_TAB) {
+            fab.setVisibility(View.GONE);
+        } else if (position == SOCIAL_TAB) {
+            fab.setVisibility(View.GONE);
+        } else {
+            fab.setVisibility(View.VISIBLE);
+        }
+
         this.lastSelectedFragment = (TabFragment) this.adapter.fragments[position];
         this.lastSelectedFragment.onTabSelected();
     }

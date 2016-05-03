@@ -3,43 +3,6 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/rel_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true">
-        <ImageView
-            android:id="@+id/img_logo"
-            android:layout_width="128dp"
-            android:layout_height="96dp"
-            android:src="@drawable/logo"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentTop="true"/>
-
-        <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/txtLogo"
-            android:textSize="14sp"
-            android:layout_marginTop="@dimen/padding_standard"
-            android:layout_below="@id/img_logo"
-            android:textColor="@color/background"
-            android:text="@string/desc_logo"
-            android:singleLine="true"
-            />
-    </RelativeLayout>
-
-    <ImageView
-        android:id="@+id/img_help"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_helps"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="@dimen/padding_standard"
-        android:visibility="gone"/>
-
     <TextView
         android:id="@+id/txt_we_dont"
         android:layout_margin="@dimen/padding_standard"
@@ -60,21 +23,51 @@
         android:id="@+id/btnSignIn"
         android:layout_alignParentBottom="true"/>
 
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/txtLogo"
+        android:textSize="14sp"
+        android:layout_marginTop="@dimen/padding_standard"
+        android:textColor="@color/background"
+        android:text="@string/desc_logo"
+        android:singleLine="true"
+        android:layout_centerInParent="true"/>
+
+    <ImageView
+        android:id="@+id/img_logo"
+        android:layout_width="196dp"
+        android:layout_height="96dp"
+        android:src="@drawable/logo_jiggie"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/txtLogo"/>
+
+    <ImageView
+        android:id="@+id/img_help"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_help_outlines"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/padding_standard"
+        android:visibility="gone"/>
+
     <ImageView
         android:layout_marginRight="@dimen/padding_standard"
         android:layout_marginLeft="@dimen/padding_standard"
         android:layout_marginTop="@dimen/padding_standard"
-        android:layout_above="@+id/contentView"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:contentDescription="@null"
         android:id="@+id/imageView"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/contentView"/>
 
     <RelativeLayout
         android:id="@+id/contentView"
         android:layout_width="match_parent"
-        android:layout_height="184dp"
+        android:layout_height="216dp"
         android:background="@color/background"
         android:layout_alignParentBottom="true">
         <TextView
@@ -99,6 +92,8 @@
             android:layout_marginRight="@dimen/padding_standard"
             android:layout_marginTop="@dimen/padding_standard"
             android:layout_below="@id/txtTitle"
+            android:textAlignment="center"
             />
     </RelativeLayout>
+
 </RelativeLayout>
