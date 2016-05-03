@@ -320,22 +320,23 @@ public class AccountManager extends BaseManager{
 
     private static void doUpload(File file, Callback callback)
     {
-
-
-        RequestBody photo2 = RequestBody.create(MediaType.parse("application/image"), file);
+        /*RequestBody photo2 = RequestBody.create(MediaType.parse("application/image"), file);
         RequestBody idE = RequestBody.create(MediaType.parse("text"), AccessToken.getCurrentAccessToken().getUserId());
         RequestBody body2 = new MultipartBuilder()
                 .type(MultipartBuilder.FORM)
                 .addFormDataPart("filefield", file.getName()
                         , photo2)
                 .addFormDataPart("fb_id", "fb_id", idE)
-                .build();
-
-
+                .build();*/
         /*getInstance().upload(file
                 , AccessToken.getCurrentAccessToken().getUserId()).enqueue(callback);*/
 
-        getInstance().upload(body2).enqueue(callback);
+        //getInstance().upload(body2).enqueue(callback);
+
+        RequestBody photo = RequestBody.create(MediaType.parse("application/image"), file);
+        RequestBody fb_id = RequestBody.create(MediaType.parse("application/text")
+                , AccessToken.getCurrentAccessToken().getUserId());
+        getInstance().upload3(photo, fb_id).enqueue(callback);
     }
 
     public static void loaderSettingNew(String fb_id, final OnResponseListener onResponseListener){
@@ -343,7 +344,6 @@ public class AccountManager extends BaseManager{
             getSetting(fb_id, new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
-                    Utils.d(TAG, Utils.print(response));
                     if (response.code() == Utils.CODE_SUCCESS) {
                         MemberSettingResultModel data = (MemberSettingResultModel) response.body();
                         MemberSettingModel temp = new MemberSettingModel(data);

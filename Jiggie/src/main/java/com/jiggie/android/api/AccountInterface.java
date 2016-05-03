@@ -22,6 +22,7 @@ import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.Multipart;
 import retrofit.http.POST;
+import retrofit.http.PUT;
 import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -66,5 +67,10 @@ public interface AccountInterface{
     @Multipart
     @POST(Utils.URL_UPLOAD)
     Call<Success2Model> upload(@Part("filefield") RequestBody requestBody);
+
+    @Multipart
+    @PUT(Utils.URL_UPLOAD)
+    Call<Success2Model> upload3(@Part("filefield") RequestBody photo, @Part("fb_id") RequestBody fb_id);
+
 
 }

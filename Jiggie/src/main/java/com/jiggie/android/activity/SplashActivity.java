@@ -8,6 +8,7 @@ import com.jiggie.android.App;
 import com.jiggie.android.activity.ecommerce.CongratsActivity;
 import com.jiggie.android.activity.ecommerce.HowToPayActivity;
 import com.jiggie.android.activity.ecommerce.TermsConditionActivity;
+import com.jiggie.android.activity.profile.NewProfileDetailActivity;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.Common;
 
@@ -25,10 +26,8 @@ public class SplashActivity extends Activity
         App.runningActivity = this;
 
         Intent i = new Intent(this, MainActivity.class);
+        //Intent i = new Intent(this, NewProfileDetailActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        /*Intent i = new Intent(this, HowToPayActivity.class);
-        i.putExtra(Common.FIELD_WALKTHROUGH_PAYMENT, true);
-        i.putExtra(Common.FIELD_FROM_ORDER_LIST, false);*/
         startActivity(i);
         finish();
     }
