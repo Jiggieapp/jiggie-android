@@ -333,8 +333,8 @@ public class AccountManager extends BaseManager{
 
         //getInstance().upload(body2).enqueue(callback);
 
-        RequestBody photo = RequestBody.create(MediaType.parse("application/image"), file);
-        RequestBody fb_id = RequestBody.create(MediaType.parse("application/text")
+        RequestBody photo = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        RequestBody fb_id = RequestBody.create(MediaType.parse("text/plain")
                 , AccessToken.getCurrentAccessToken().getUserId());
         getInstance().upload3(photo, fb_id).enqueue(callback);
     }
