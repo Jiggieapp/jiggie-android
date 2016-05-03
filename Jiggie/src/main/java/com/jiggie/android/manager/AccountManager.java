@@ -21,18 +21,21 @@ import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SuccessModel;
 import com.jiggie.android.model.SuccessTokenModel;
-import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.MultipartBuilder;
-import com.squareup.okhttp.RequestBody;
 
 import java.io.File;
 import java.io.IOException;
 
 import de.greenrobot.event.EventBus;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit.Callback;
 import retrofit.GsonConverterFactory;
 import retrofit.Response;
 import retrofit.Retrofit;
+import retrofit.http.Multipart;
+import retrofit.http.Part;
 
 /**
  * Created by LTE on 2/1/2016.
@@ -333,10 +336,15 @@ public class AccountManager extends BaseManager{
 
         //getInstance().upload(body2).enqueue(callback);
 
-        RequestBody photo = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+
+        // MultipartBody.Part is used to send also the actual file name
+        RequestBody filee = RequestBody.create(okhttp3.MediaType.parse("multipart/form-data"), file);
+        MultipartBody.Part body =
+                MultipartBody.Part.createFormData("picture", file.getName(), filee);
+
         RequestBody fb_id = RequestBody.create(MediaType.parse("text/plain")
                 , AccessToken.getCurrentAccessToken().getUserId());
-        getInstance().upload3(photo, fb_id).enqueue(callback);
+        getInstance().upload4(body, fb_id).enqueue(callback);
     }
 
     public static void loaderSettingNew(String fb_id, final OnResponseListener onResponseListener){

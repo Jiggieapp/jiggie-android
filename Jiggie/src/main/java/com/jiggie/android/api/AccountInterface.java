@@ -3,30 +3,23 @@ package com.jiggie.android.api;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.AboutModel;
 import com.jiggie.android.model.AccessTokenModel;
-import com.jiggie.android.model.FilterModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.LoginResultModel;
 import com.jiggie.android.model.MemberInfoModel;
 import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.MemberSettingResultModel;
 import com.jiggie.android.model.Success2Model;
-import com.jiggie.android.model.SuccessModel;
 import com.jiggie.android.model.SuccessTokenModel;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
 
 import java.io.File;
 
-import retrofit.Call;
-import retrofit.http.Body;
-import retrofit.http.GET;
-import retrofit.http.Multipart;
-import retrofit.http.POST;
-import retrofit.http.PUT;
-import retrofit.http.Part;
-import retrofit.http.Path;
-import retrofit.http.Query;
-import retrofit.http.Url;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Url;
 
 /**
  * Created by LTE on 2/1/2016.
@@ -69,8 +62,12 @@ public interface AccountInterface{
     Call<Success2Model> upload(@Part("filefield") RequestBody requestBody);
 
     @Multipart
-    @PUT(Utils.URL_UPLOAD)
+    @POST(Utils.URL_UPLOAD)
     Call<Success2Model> upload3(@Part("filefield") RequestBody photo, @Part("fb_id") RequestBody fb_id);
+
+    @Multipart
+    @POST(Utils.URL_UPLOAD)
+    Call<Success2Model> upload4(@Part("filefield") MultipartBody.Part photo, @Part("fb_id") RequestBody fb_id);
 
 
 }
