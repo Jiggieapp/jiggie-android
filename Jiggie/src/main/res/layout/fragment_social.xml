@@ -21,6 +21,8 @@
         app:min_adapter_stack_c="3"
         app:rotation_degrees_c="16" />
 
+    
+
     <!--<ListView
         android:id="@+id/tempListView"
         android:layout_width="match_parent"
