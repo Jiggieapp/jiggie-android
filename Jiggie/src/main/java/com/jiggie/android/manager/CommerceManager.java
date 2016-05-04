@@ -1,22 +1,17 @@
 package com.jiggie.android.manager;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.jiggie.android.api.CommerceInterface;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.callback.CustomCallback;
 import com.jiggie.android.model.CCScreenModel;
-import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.PostCCModel;
 import com.jiggie.android.model.PostDeleteCCModel;
 import com.jiggie.android.model.PostFreePaymentModel;
 import com.jiggie.android.model.PostPaymentModel;
 import com.jiggie.android.model.PostSummaryModel;
-import com.jiggie.android.model.ProductListModel;
 import com.jiggie.android.model.PurchaseHistoryModel;
 import com.jiggie.android.model.Success2Model;
-import com.jiggie.android.model.SummaryModel;
 import com.jiggie.android.model.SupportModel;
 
 import org.json.JSONObject;
@@ -24,11 +19,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import de.greenrobot.event.EventBus;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by LTE on 2/22/2016.
@@ -110,7 +102,7 @@ public class CommerceManager extends BaseManager{
         try {
             getProductList(event_id, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
 
                     /*String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);*/
@@ -145,7 +137,7 @@ public class CommerceManager extends BaseManager{
         try {
             postSummary(postSummaryModel, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
 
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());
@@ -194,7 +186,7 @@ public class CommerceManager extends BaseManager{
         try {
             postPayment(postPaymentModel, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
 
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());
@@ -246,7 +238,7 @@ public class CommerceManager extends BaseManager{
     {
         getPaymentMethod(new CustomCallback() {
             @Override
-            public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+            public void onCustomCallbackResponse(Response response) {
                 int responseCode = response.code();
                 if (responseCode == Utils.CODE_SUCCESS) {
                     onResponseListener.onSuccess(response.body());
@@ -271,7 +263,7 @@ public class CommerceManager extends BaseManager{
     {
         getGuest(new CustomCallback() {
             @Override
-            public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+            public void onCustomCallbackResponse(Response response) {
                 onResponseListener.onSuccess(response.body());
             }
 
@@ -291,7 +283,7 @@ public class CommerceManager extends BaseManager{
         try {
             getCCList(fb_id, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
 
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());
@@ -326,7 +318,7 @@ public class CommerceManager extends BaseManager{
         try {
             postCC(postCCModel, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
 
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());
@@ -362,7 +354,7 @@ public class CommerceManager extends BaseManager{
         try {
             deleteCC(postDeleteCCModel, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
 
                     String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);
@@ -397,7 +389,7 @@ public class CommerceManager extends BaseManager{
         try {
             getSuccessScreenVABP(order_id, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
 
                     String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);
@@ -432,7 +424,7 @@ public class CommerceManager extends BaseManager{
         try {
             getSuccessScreenWalkthrough(new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
 
                     //String responses = new Gson().toJson(response.body());
                     //Utils.d("res", responses);
@@ -467,7 +459,7 @@ public class CommerceManager extends BaseManager{
         try {
             getSuccessScreenCC(order_id, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
 
                     String responses = new Gson().toJson(response.body());
                     Utils.d("CongratsActivity", "response " + responses);
@@ -502,7 +494,7 @@ public class CommerceManager extends BaseManager{
         try {
             getSupport(new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
 
                     //String responses = new Gson().toJson(response.body());
                     //Utils.d("res", responses);
@@ -536,7 +528,7 @@ public class CommerceManager extends BaseManager{
         try {
             postFreePayment(postFreePaymentModel, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
 
                     //String header = String.valueOf(response.code());
                     //String responses = new Gson().toJson(response.body());
@@ -601,7 +593,7 @@ public class CommerceManager extends BaseManager{
     {
         getOrderList(fb_id, new CustomCallback() {
             @Override
-            public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+            public void onCustomCallbackResponse(Response response) {
                 PurchaseHistoryModel purchaseHistoryModel = (PurchaseHistoryModel) response.body();
                 onResponseListener.onSuccess(purchaseHistoryModel);
             }

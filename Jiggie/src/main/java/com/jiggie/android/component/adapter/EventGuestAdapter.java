@@ -12,11 +12,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.jiggie.android.model.GuestModel;
 
 import java.util.ArrayList;

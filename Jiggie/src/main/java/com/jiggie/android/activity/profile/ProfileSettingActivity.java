@@ -3,7 +3,6 @@ package com.jiggie.android.activity.profile;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -14,6 +13,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
@@ -22,7 +22,6 @@ import com.jiggie.android.fragment.SocialTabFragment;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.MemberSettingModel;
-import com.facebook.AccessToken;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.Success2Model;
 

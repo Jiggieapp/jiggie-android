@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
@@ -19,7 +20,6 @@ import com.jiggie.android.manager.GuestManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.ExceptionModel;
-import com.facebook.AccessToken;
 import com.jiggie.android.model.GuestModel;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.Success2Model;

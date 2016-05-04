@@ -18,7 +18,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -50,13 +49,12 @@ import com.jiggie.android.model.PostWalkthroughModel;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.SocialModel;
 import com.jiggie.android.model.Success2Model;
-import com.lorentzos.flingswipe.SwipeFlingAdapterView;
+import com.jiggie.android.view.CustomSwipeFlingAdapterView;
 
 import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -102,7 +100,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     Button inboundBtnNo;*/
 
     @Bind(R.id.fling_adapter)
-    SwipeFlingAdapterView flingAdapterView;
+    CustomSwipeFlingAdapterView flingAdapterView;
 
     /*@Bind(R.id.tempListView)
     ListView tempListView;*/
@@ -301,8 +299,10 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         socialCardNewAdapter = new SocialCardNewAdapter(temp
                 , getActivity(), this);
         flingAdapterView.setAdapter(socialCardNewAdapter);
+
         //tempListView.setAdapter(socialCardNewAdapter);
-        flingAdapterView.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
+
+        flingAdapterView.setFlingListener(new CustomSwipeFlingAdapterView.onFlingListener() {
             @Override
             public void removeFirstObjectInAdapter() {
 
@@ -333,17 +333,18 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
 
             }
         });
+
         //flingAdapterView.init(getActivity(), socialCardNewAdapter);
     }
 
     @Override
     public void onYesClick() {
-        flingAdapterView.getTopCardListener().selectRight();
+        flingAdapterView.getTopCardListener2().selectRight();
     }
 
     @Override
     public void onNoClick() {
-        flingAdapterView.getTopCardListener().selectLeft();
+        flingAdapterView.getTopCardListener2().selectLeft();
     }
 
     @Override
@@ -863,4 +864,3 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     }
 
 }
-

@@ -1,10 +1,6 @@
 package com.jiggie.android.activity.social;
 
-import android.accounts.Account;
-
 import com.facebook.AccessToken;
-import com.google.gson.Gson;
-import com.jiggie.android.component.Utils;
 import com.jiggie.android.listener.OnResponseListener;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.MemberSettingModel;

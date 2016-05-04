@@ -13,10 +13,8 @@ import com.jiggie.android.model.Success2Model;
 import java.io.IOException;
 
 import de.greenrobot.event.EventBus;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by LTE on 2/29/2016.
@@ -45,7 +43,7 @@ public class WalkthroughManager extends BaseManager{
         try {
             postWalkthrough(postWalkthroughModel, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
 
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());

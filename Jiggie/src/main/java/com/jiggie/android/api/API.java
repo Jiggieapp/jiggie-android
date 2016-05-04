@@ -1,13 +1,6 @@
 package com.jiggie.android.api;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewTreeObserver;
-import android.widget.Toast;
-
 import com.android.volley.VolleyError;
-import com.jiggie.android.App;
-import com.jiggie.android.R;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
 

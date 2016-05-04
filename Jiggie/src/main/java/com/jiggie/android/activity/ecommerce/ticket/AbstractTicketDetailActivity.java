@@ -1,6 +1,5 @@
 package com.jiggie.android.activity.ecommerce.ticket;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -8,13 +7,9 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.jiggie.android.R;
-import com.jiggie.android.activity.ecommerce.AddGuestActivity;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
-import com.jiggie.android.model.Common;
-import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.PostSummaryModel;
-import com.jiggie.android.model.ProductListModel;
 import com.jiggie.android.presenter.GuestPresenter;
 
 import butterknife.Bind;

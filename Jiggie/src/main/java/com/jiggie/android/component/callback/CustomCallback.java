@@ -1,23 +1,17 @@
 package com.jiggie.android.component.callback;
 
-import android.accounts.Account;
-
-import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
-import com.jiggie.android.component.Utils;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.BaseManager;
-import com.jiggie.android.manager.ChatManager;
 import com.jiggie.android.manager.CommerceManager;
-import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.SuccessTokenModel;
 
 import java.net.SocketTimeoutException;
 
-import retrofit.Callback;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by Wandy on 2/12/2016.
@@ -27,7 +21,7 @@ public abstract class CustomCallback implements Callback {
     private final String TAG = CustomCallback.class.getSimpleName();
 
     @Override
-    public void onResponse(Response response, Retrofit retrofit) {
+    public void onResponse(Call call, Response response) {
         //Utils.d(TAG, "responsecode " + response.code());
         //AccountManager.setAccessTokenToPreferences("");
         //response.code() = 401;
@@ -50,7 +44,7 @@ public abstract class CustomCallback implements Callback {
             //onNeedToRestart();
             //onNeedToRestart();
         }
-        else onCustomCallbackResponse(response, retrofit);
+        else onCustomCallbackResponse(response);
         //this.response = response;
     }
 
@@ -77,7 +71,7 @@ public abstract class CustomCallback implements Callback {
     }
 
     @Override
-    public void onFailure(Throwable t) {
+    public void onFailure(Call call, Throwable t) {
         String d = t.toString();
         if (t instanceof java.net.UnknownHostException) {
             onCustomCallbackFailure(App.getInstance().getResources().getString(R.string.no_internet_connection));
@@ -88,7 +82,7 @@ public abstract class CustomCallback implements Callback {
         }
     }
 
-    public abstract void onCustomCallbackResponse(Response response, Retrofit retrofit);
+    public abstract void onCustomCallbackResponse(Response response);
     public abstract void onCustomCallbackFailure(String t);
     public abstract void onNeedToRestart();
 }

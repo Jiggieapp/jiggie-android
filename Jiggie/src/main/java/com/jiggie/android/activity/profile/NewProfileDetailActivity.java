@@ -4,14 +4,13 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,11 +19,14 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.facebook.AccessToken;
 import com.jiggie.android.R;
 import com.jiggie.android.component.StringUtility;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
+import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.model.Common;
+import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.MemberInfoModel;
 import com.jiggie.android.view.RoundedImageView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -48,15 +50,33 @@ public class NewProfileDetailActivity extends ToolbarActivity
     RoundedImageView fourthProfilePicture;
     @Bind(R.id.fifth_profile_picture)
     RoundedImageView fifthProfilePicture;
+    @Bind(R.id.main_profile_picture_plus)
+    ImageView mainProfilePicturePlus;
+    @Bind(R.id.secondary_profile_picture_plus)
+    ImageView secondaryProfilePicturePlus;
+    @Bind(R.id.third_profile_picture_plus)
+    ImageView thirdProfilePicturePlus;
+    @Bind(R.id.fourth_profile_picture_plus)
+    ImageView fourthProfilePicturePlus;
+    @Bind(R.id.fifth_profile_picture_plus)
+    ImageView fifthProfilePicturePlus;
+    @Bind(R.id.txtDescription)
+    TextView txtDescription;
+    @Bind(R.id.txtTitleDescription)
+    TextView txtTitleDescription;
+    @Bind(R.id.txtLocation)
+    TextView txtLocation;
 
     String fb_id;
-    ProfileDetailPresenterImplementation profilePresenter;
+    private ProfileDetailPresenterImplementation profilePresenter;
+    private ImageView.ScaleType scaleType = ImageView.ScaleType.FIT_XY;
 
     private float smallerRadius = 3.0f;
 
     private final String TAG = NewProfileDetailActivity.class.getSimpleName();
     private final int PICK_IMAGE_REQUEST = 1;
     private final int PICK_IMAGE_KITKAT_REQUEST = 2;
+    private final int EDIT_PROFILE = 9;
 
 
     @Override
@@ -75,45 +95,108 @@ public class NewProfileDetailActivity extends ToolbarActivity
         fourthProfilePicture.setRadius(smallerRadius);
         fifthProfilePicture.setRounded(true);
         fifthProfilePicture.setRadius(smallerRadius);
+
+        final LoginModel loginModel = AccountManager.loadLogin();
+
+        if (TextUtils.isEmpty(loginModel.getLocation())) {
+            txtLocation.setVisibility(View.GONE);
+        } else if (loginModel.getLocation().equalsIgnoreCase("n/a")) {
+            txtLocation.setVisibility(View.GONE);
+        } else {
+            txtLocation.setText(loginModel.getLocation());
+        }
+        txtDescription.setText(loginModel.getAbout());
         fetchDetail();
     }
 
     @Override
     public void loadImages(ArrayList<String> photos) {
-        for (int i = 0; i < photos.size(); i++) {
+        /*mainProfilePicture.setImageBitmap(null);
+        secondaryProfilePicture.setImageBitmap(null);
+        thirdProfilePicture.setImageBitmap(null);
+        fourthProfilePicture.setImageBitmap(null);
+        fifthProfilePicture.setImageBitmap(null);*/
+        int photoSize = photos.size();
+        if (photoSize > 5)
+            photoSize = 5;
+        for (int i = 0; i < photoSize; i++) {
             final String url = photos.get(i);
-            ImageView.ScaleType scaleType = ImageView.ScaleType.FIT_XY;
-            switch (i) {
-                case 0:
-                    mainProfilePicture.setScaleType(scaleType);
-                    loadIntoView(url, mainProfilePicture);
-                    break;
-                case 1:
-                    secondaryProfilePicture.setScaleType(scaleType);
-                    loadIntoView(url, secondaryProfilePicture);
-                    break;
-                case 2:
-                    thirdProfilePicture.setScaleType(scaleType);
-                    loadIntoView(url, thirdProfilePicture);
-                    break;
-                case 3:
-                    fourthProfilePicture.setScaleType(scaleType);
-                    loadIntoView(url, fourthProfilePicture);
-                    break;
-                case 4:
-                    fifthProfilePicture.setScaleType(scaleType);
-                    loadIntoView(url, fifthProfilePicture);
-                    break;
-            }
+            ImageView view = getImageView(i);
+            view.setScaleType(ImageView.ScaleType.FIT_XY);
+            loadIntoView(url, view, i);
+        }
+
+        for (int i = photos.size(); i < 5; i++) {
+            ImageView plusView = getPlusImageView(i);
+            plusView.setImageDrawable(getResources().getDrawable(R.drawable.plus_button_image_view));
+
+            ImageView view = getImageView(i);
+            view.setImageBitmap(null);
         }
     }
 
-    void loadIntoView(final String url, final ImageView view) {
+    @Override
+    public void onFinishUpload(int position) {
+        ImageView view = getImageView(position);
+        view.setImageAlpha(255);
+    }
+
+    @Override
+    public void onFailUpload(int position) {
+        ImageView view = getImageView(position);
+        view.setImageBitmap(null);
+    }
+
+    private void loadIntoView(final String url, final ImageView view
+            , final int position) {
         Glide
                 .with(this)
                 .load(url)
+                .asBitmap()
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .into(view);
+        ImageView plus = getPlusImageView(position);
+        plus.setImageDrawable(getResources().getDrawable(R.drawable.cross_button_image_view));
+    }
+
+    @Override
+    public void loadImageToCertainView(final String tempUrl, final int position) {
+        ImageView view = getImageView(position);
+        view.setImageAlpha(127);
+        view.setScaleType(scaleType);
+        loadIntoView(tempUrl, view, position);
+    }
+
+    private ImageView getImageView(int position) {
+        switch (position) {
+            case 0:
+                return mainProfilePicture;
+            case 1:
+                return secondaryProfilePicture;
+            case 2:
+                return thirdProfilePicture;
+            case 3:
+                return fourthProfilePicture;
+            case 4:
+                return fifthProfilePicture;
+        }
+        return null;
+    }
+
+    private ImageView getPlusImageView(int position) {
+        switch (position) {
+            case 0:
+                return mainProfilePicturePlus;
+            case 1:
+                return secondaryProfilePicturePlus;
+            case 2:
+                return thirdProfilePicturePlus;
+            case 3:
+                return fourthProfilePicturePlus;
+            case 4:
+                return fifthProfilePicturePlus;
+        }
+        return null;
     }
 
     @Override
@@ -136,14 +219,8 @@ public class NewProfileDetailActivity extends ToolbarActivity
     public void onFailure() {
     }
 
-    @OnClick(R.id.fifth_profile_picture)
-    public void onFifthProfilePictureClick() {
-        profilePresenter.getPhoto();
-    }
-
     @Override
     public void getPhoto() {
-
         if (Build.VERSION.SDK_INT < 19) {
             Intent intent = new Intent();
             intent.setType("image/*");
@@ -161,26 +238,39 @@ public class NewProfileDetailActivity extends ToolbarActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Uri uri = data.getData();
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+        if (resultCode == RESULT_OK &&
+                (requestCode == PICK_IMAGE_KITKAT_REQUEST || requestCode == PICK_IMAGE_KITKAT_REQUEST)) {
+            if (data != null && data.getData() != null) {
+                Uri uri = data.getData();
+                if (requestCode == PICK_IMAGE_REQUEST) {
+                    profilePresenter.onFinishTakePhoto(requestCode, uri, getContentResolver());
+                } else if (requestCode == PICK_IMAGE_KITKAT_REQUEST) {
+                    final int takeFlags = data.getFlags()
+                            & (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
-            profilePresenter.onFinishTakePhoto(requestCode, uri, getContentResolver());
-        } else if (requestCode == PICK_IMAGE_KITKAT_REQUEST && resultCode == RESULT_OK) {
-            final int takeFlags = data.getFlags()
-                    & (Intent.FLAG_GRANT_READ_URI_PERMISSION
-                    | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    String id = uri.getLastPathSegment().split(":")[1];
+                    final String[] imageColumns = {MediaStore.Images.Media.DATA};
+                    final String imageOrderBy = null;
 
-            String id = uri.getLastPathSegment().split(":")[1];
-            final String[] imageColumns = {MediaStore.Images.Media.DATA};
-            final String imageOrderBy = null;
+                    Uri urii = getUri();
+                    Cursor imageCursor = managedQuery(urii, imageColumns,
+                            MediaStore.Images.Media._ID + "=" + id, null, imageOrderBy);
 
-            Uri urii = getUri();
-            Cursor imageCursor = managedQuery(urii, imageColumns,
-                    MediaStore.Images.Media._ID + "=" + id, null, imageOrderBy);
+                    profilePresenter.onFinishTakeKitkatPhoto(requestCode, uri, takeFlags
+                            , getContentResolver(), imageCursor);
+                }
 
-            profilePresenter.onFinishTakeKitkatPhoto(requestCode, uri, takeFlags
-                    , getContentResolver(), imageCursor);
+            }
+        } else if (resultCode == RESULT_OK && requestCode == EDIT_PROFILE) {
+            if (TextUtils.isEmpty(AccountManager.loadLogin().getAbout())) {
+                txtDescription.setVisibility(View.GONE);
+            } else {
+                txtDescription.setVisibility(View.VISIBLE);
+                this.txtDescription.setText(AccountManager.loadLogin().getAbout());
+            }
         }
+
     }
 
     // By using this method get the Uri of Internal/External Storage for Media
@@ -194,8 +284,45 @@ public class NewProfileDetailActivity extends ToolbarActivity
 
 
     @Override
-    public Bitmap onFinishTakePhoto ( int requestCode, Uri uri){
+    public Bitmap onFinishTakePhoto(int requestCode, Uri uri) {
         return null;
+    }
+
+
+    @OnClick(R.id.main_profile_picture_plus)
+    public void onMainProfilePictureClick() {
+        profilePresenter.onImageClick(1);
+    }
+
+
+    @OnClick(R.id.secondary_profile_picture_plus)
+    public void onSecodaryProfilePictureClick() {
+        profilePresenter.onImageClick(2);
+    }
+
+
+    @OnClick(R.id.third_profile_picture_plus)
+    public void onThirdProfilePictureClick() {
+        profilePresenter.onImageClick(3);
+    }
+
+
+    @OnClick(R.id.fourth_profile_picture_plus)
+    public void onFourthProfilePictureClick() {
+        profilePresenter.onImageClick(4);
+    }
+
+
+    @OnClick(R.id.fifth_profile_picture_plus)
+    public void onFifthProfilePictureClick() {
+        profilePresenter.onImageClick(5);
+    }
+
+    @SuppressWarnings("unused")
+    @OnClick(R.id.btnEdit)
+    void btnEditOnClick() {
+        super.startActivityForResult(new Intent(this, ProfileEditActivity.class)
+                .putExtra(Common.FIELD_ABOUT, AccountManager.loadLogin().getAbout()), EDIT_PROFILE);
     }
 
 }

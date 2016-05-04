@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,8 +15,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
-import com.jiggie.android.component.Utils;
-import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.SocialModel;
 
@@ -83,14 +80,14 @@ public class SocialCardNewAdapter extends BaseAdapter {
                 .centerCrop()
                 .into(holder.generalImage);
 
-        /*holder.generalImage.setOnClickListener(new View.OnClickListener() {
+        holder.generalImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(context, ProfileDetailActivity.class);
                 i.putExtra(Common.FIELD_FACEBOOK_ID, getItem(0).getFrom_fb_id());
                 context.startActivity(i);
             }
-        });*/
+        });
 
         if (getItem(position).getType().equalsIgnoreCase("approved")) {
             holder.generalTxtEvent.setText(model.getEvent_name());
@@ -161,8 +158,8 @@ public class SocialCardNewAdapter extends BaseAdapter {
             onSocialCardClickListener.onYesClick();
         }
 
-        /*@OnClick(R.id.card_general)
-        public void cardGeneralOnClick() { onSocialCardClickListener.onGeneralClick(); }*/
+        @OnClick(R.id.card_general)
+        public void cardGeneralOnClick() { onSocialCardClickListener.onGeneralClick(); }
     }
 
     OnSocialCardClickListener onSocialCardClickListener;

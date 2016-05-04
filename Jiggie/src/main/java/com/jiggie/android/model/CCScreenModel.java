@@ -3,8 +3,6 @@ package com.jiggie.android.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import id.co.veritrans.android.api.VTModel.VTCardDetails;
-
 /**
  * Created by LTE on 3/15/2016.
  */
