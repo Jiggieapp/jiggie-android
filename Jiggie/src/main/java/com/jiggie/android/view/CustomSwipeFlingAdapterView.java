@@ -29,7 +29,7 @@ import com.lorentzos.flingswipe.SwipeFlingAdapterView;
  * Use with caution dinosaurs might appear!
  */
 
-public class CustomSwipeFlingAdapterView  extends SwipeFlingAdapterView {
+public class CustomSwipeFlingAdapterView extends SwipeFlingAdapterView {
 
     private int MAX_VISIBLE = 4;
     private int MIN_ADAPTER_STACK = 6;
@@ -43,22 +43,23 @@ public class CustomSwipeFlingAdapterView  extends SwipeFlingAdapterView {
     private boolean mInLayout = false;
     private View mActiveCard = null;
     private OnItemClickListener mOnItemClickListener;
+    private OnEventClickListener onEventClickListener;
     private FlingCardListener flingCardListener;
     private PointF mLastTouchPoint;
 
 
-    public CustomSwipeFlingAdapterView (Context context) {
+    public CustomSwipeFlingAdapterView(Context context) {
         this(context, null);
     }
 
-    public CustomSwipeFlingAdapterView (Context context, AttributeSet attrs) {
+    public CustomSwipeFlingAdapterView(Context context, AttributeSet attrs) {
         this(context, attrs, R.attr.CustomSwipeFlingStyle);
     }
 
-    public CustomSwipeFlingAdapterView (Context context, AttributeSet attrs, int defStyle) {
+    public CustomSwipeFlingAdapterView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CustomSwipeFlingAdapterView , defStyle, 0);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CustomSwipeFlingAdapterView, defStyle, 0);
         MAX_VISIBLE = a.getInt(R.styleable.CustomSwipeFlingAdapterView_max_visible_c, MAX_VISIBLE);
         MIN_ADAPTER_STACK = a.getInt(R.styleable.CustomSwipeFlingAdapterView_min_adapter_stack_c, MIN_ADAPTER_STACK);
         ROTATION_DEGREES = a.getFloat(R.styleable.CustomSwipeFlingAdapterView_rotation_degrees_c, ROTATION_DEGREES);
@@ -245,12 +246,10 @@ public class CustomSwipeFlingAdapterView  extends SwipeFlingAdapterView {
 
                     @Override
                     public void onClick(Object dataObject) {
-                        if (mOnItemClickListener != null)
-                        {
+                        if (mOnItemClickListener != null) {
                             Utils.d("sulalala", "on click");
                             mOnItemClickListener.onItemClicked(0, dataObject);
-                        }
-                        else Utils.d("sulalala", "on click nulls");
+                        } else Utils.d("sulalala", "on click nulls");
                     }
 
                     @Override
@@ -262,7 +261,7 @@ public class CustomSwipeFlingAdapterView  extends SwipeFlingAdapterView {
                 if (ALLOW_CHILD_INPUT) addOnTouchListenersRecursive((ViewGroup) mActiveCard);
                 else mActiveCard.setOnTouchListener(flingCardListener);
 
-               // addOnTouchListenersRecursive((ViewGroup) mActiveCard);
+                // addOnTouchListenersRecursive((ViewGroup) mActiveCard);
             }
         }
     }
@@ -271,7 +270,36 @@ public class CustomSwipeFlingAdapterView  extends SwipeFlingAdapterView {
         vg.setOnTouchListener(flingCardListener);
         for (int i = 0; i < vg.getChildCount(); ++i) {
             View nextChild = vg.getChildAt(i);
-            if (nextChild instanceof ViewGroup) addOnTouchListenersRecursive((ViewGroup) nextChild);
+            if (nextChild.getId() == R.id.btnNoGeneral) {
+                //Utils.d("sulalalala", "no no no");
+                //nextChild.setOnTouchListener(flingCardListener);
+                nextChild.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getTopCardListener2().selectLeft();
+                    }
+                });
+
+            } else if (nextChild.getId() == R.id.btnYesGeneral) {
+                nextChild.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getTopCardListener2().selectRight();
+                    }
+                });
+
+            }
+            else if(nextChild.getId() == R.id.txtEventGeneral)
+            {
+                nextChild.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onEventClickListener.onEventClicked();
+                    }
+                });
+            }
+            else if (nextChild instanceof ViewGroup)
+                addOnTouchListenersRecursive((ViewGroup) nextChild);
             else nextChild.setOnTouchListener(flingCardListener);
         }
     }
@@ -320,6 +348,11 @@ public class CustomSwipeFlingAdapterView  extends SwipeFlingAdapterView {
         this.mOnItemClickListener = onItemClickListener;
     }
 
+    public void setOnEventClickListener(OnEventClickListener onEventClickListener)
+    {
+        this.onEventClickListener = onEventClickListener;
+    }
+
 
     @Override
     public LayoutParams generateLayoutParams(AttributeSet attrs) {
@@ -340,6 +373,10 @@ public class CustomSwipeFlingAdapterView  extends SwipeFlingAdapterView {
 
     }
 
+    public interface OnEventClickListener
+    {
+        void onEventClicked();
+    }
 
     public interface OnItemClickListener {
         void onItemClicked(int itemPosition, Object dataObject);
@@ -356,7 +393,6 @@ public class CustomSwipeFlingAdapterView  extends SwipeFlingAdapterView {
 
         void onScroll(float scrollProgressPercent);
     }
-
 
 
 }

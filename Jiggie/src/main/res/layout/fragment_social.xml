@@ -21,7 +21,16 @@
         app:min_adapter_stack_c="3"
         app:rotation_degrees_c="16" />
 
-    
+
+    <!--<com.lorentzos.flingswipe.SwipeFlingAdapterView
+        android:id="@+id/fling_adapter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="?attr/actionBarSize"
+        app:max_visible="4"
+        app:min_adapter_stack="3"
+        app:rotation_degrees="16"  />-->
 
     <!--<ListView
         android:id="@+id/tempListView"

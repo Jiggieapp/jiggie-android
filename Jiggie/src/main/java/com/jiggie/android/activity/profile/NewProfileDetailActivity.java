@@ -143,10 +143,10 @@ public class NewProfileDetailActivity extends ToolbarActivity
 
     @Override
     public void onFailUpload(int position) {
-        ImageView view = getImageView(position);
+        ImageView view = removeTransparent(position);
         view.setImageBitmap(null);
         ImageView plus = getPlusImageView(position);
-        plus.setImageDrawable(getResources().getDrawable(R.drawable.cross_button_image_view));
+        plus.setImageDrawable(getResources().getDrawable(R.drawable.plus_button_image_view));
 
     }
 

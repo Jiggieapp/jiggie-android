@@ -47,6 +47,7 @@ import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import id.co.veritrans.android.api.BuildConfig;
 import id.co.veritrans.android.api.VTDirect;
 import id.co.veritrans.android.api.VTInterface.ITokenCallback;
 import id.co.veritrans.android.api.VTModel.VTCardDetails;
@@ -102,9 +103,8 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
 
     AlertDialog dialog3ds;
     ProgressDialog progressDialog;
-    public final static String PAYMENT_API = "https://api.veritrans.co.id/v2/token";
+    public final static String PAYMENT_API = com.jiggie.android.BuildConfig.PAYMENT_API;
     //public final static String PAYMENT_API_SANDBOX = "https://api.sandbox.veritrans.co.id/v2/token";
-    public final static String PAYMENT_API_SANDBOX = "https://api.veritrans.co.id/v2/token";
     CCScreenModel.CardDetails cardDetails;
     @Bind(R.id.rel_disable)
     RelativeLayout relDisable;
@@ -422,7 +422,8 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
         //using 3d secure
         VTConfig.VT_IsProduction = true;
         //VTConfig.CLIENT_KEY = "VT-client-gJRBbRZC0t_-JXUD";
-        VTConfig.CLIENT_KEY = "VT-client-tHEKcD0xJGsm6uwH";
+        //VTConfig.CLIENT_KEY = "VT-client-tHEKcD0xJGsm6uwH";
+        VTConfig.CLIENT_KEY = com.jiggie.android.BuildConfig.CLIENT_KEY;
 
         VTDirect vtDirect = new VTDirect();
 

@@ -81,14 +81,14 @@ public class SocialCardNewAdapter extends BaseAdapter {
                 .centerCrop()
                 .into(holder.generalImage);
 
-        holder.generalImage.setOnClickListener(new View.OnClickListener() {
+        /*holder.generalImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(context, ProfileDetailActivity.class);
                 i.putExtra(Common.FIELD_FACEBOOK_ID, getItem(0).getFrom_fb_id());
                 context.startActivity(i);
             }
-        });
+        });*/
 
         if (getItem(position).getType().equalsIgnoreCase("approved")) {
             holder.generalTxtEvent.setText(model.getEvent_name());
@@ -151,18 +151,18 @@ public class SocialCardNewAdapter extends BaseAdapter {
 
         @OnClick(R.id.btnNoGeneral)
         public void btnNoOnClick() {
-            Utils.d(TAG, "btn no click");
             onSocialCardClickListener.onNoClick();
         }
 
         @OnClick(R.id.btnYesGeneral)
         public void btnYesOnClick() {
-            Utils.d(TAG, "btn yes click");
             onSocialCardClickListener.onYesClick();
         }
 
-        @OnClick(R.id.card_general)
-        public void cardGeneralOnClick() { onSocialCardClickListener.onGeneralClick(); }
+        @OnClick(R.id.imageUserGeneral)
+        public void cardGeneralOnClick() {
+           // onSocialCardClickListener.onGeneralClick();
+        }
     }
 
     OnSocialCardClickListener onSocialCardClickListener;

@@ -302,9 +302,18 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         flingAdapterView.setOnItemClickListener(new CustomSwipeFlingAdapterView.OnItemClickListener() {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
+
                 Intent i = new Intent(getActivity(), ProfileDetailActivity.class);
                 i.putExtra(Common.FIELD_FACEBOOK_ID, socialCardNewAdapter.getItem(0).getFrom_fb_id());
                 getActivity().startActivity(i);
+
+            }
+        });
+
+        flingAdapterView.setOnEventClickListener(new CustomSwipeFlingAdapterView.OnEventClickListener() {
+            @Override
+            public void onEventClicked() {
+                onGeneralClick();
             }
         });
         /*flingAdapterView.setOnItemClickListener(new CustomSwipeFlingAdapterView.OnItemClickListener() {
