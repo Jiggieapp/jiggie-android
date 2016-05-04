@@ -201,7 +201,7 @@ public class CommerceManager extends BaseManager{
 
                         } else {
                             /*if(dataTemp.getType() != null && dataTemp.getType().equals("paid")){
-                                onResponseListener.onFailure(dataTemp.getResponse(), dataTemp.getMsg());
+                                onResponseListener.onFailure(dataTemp.getResponse(), dataTemp.getUrl());
                             }*/
                             if(dataTemp.getMsg()!=null){
                                 onResponseListener.onFailure(dataTemp.getResponse(), dataTemp.getMsg());
@@ -542,7 +542,7 @@ public class CommerceManager extends BaseManager{
 
                         } else {
                             /*if(dataTemp.getType() != null && dataTemp.getType().equals("paid")){
-                                onResponseListener.onFailure(dataTemp.getResponse(), dataTemp.getMsg());
+                                onResponseListener.onFailure(dataTemp.getResponse(), dataTemp.getUrl());
                             }*/
                             onResponseListener.onFailure(dataTemp.getResponse(), dataTemp.getMsg());
                         }

@@ -12,6 +12,8 @@ import com.jiggie.android.component.Utils;
 import com.jiggie.android.listener.OnResponseListener;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.MemberInfoModel;
+import com.jiggie.android.model.Success2Model;
+import com.jiggie.android.model.SuccessUploadModel;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,13 +65,13 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
 
     @Override
     public void onFinishTakePhoto(int requestCode, Uri uri, ContentResolver contentResolver) {
-        Bitmap bitmap = null;
+        /*Bitmap bitmap = null;
         try {
             bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        */
         String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
         Cursor cursor = contentResolver.query(
@@ -91,14 +93,7 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
         this.profileDetailView = profileDetailView;
     }
 
-    private void doLoadImage(final String url)
-    {
-        final int position = memberInfo.getPhotos().size();
-        profileDetailView.loadImageToCertainView(url
-                , memberInfo.getPhotos().size());
-        memberInfo.getPhotos().add(url);
-        doUpload(url, position);
-    }
+
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
@@ -114,12 +109,23 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
         doLoadImage(selectedImagePath);
     }
 
+    private void doLoadImage(final String url)
+    {
+        final int position = memberInfo.getPhotos().size();
+        profileDetailView.loadImageToCertainView(url
+                , memberInfo.getPhotos().size());
+        memberInfo.getPhotos().add(url);
+        doUpload(url, position);
+    }
+
     private void doUpload(final String path, final int position) {
         File file = new File(path);
         if (file.exists()) {
             AccountManager.doUpload(file, new OnResponseListener() {
                 @Override
                 public void onSuccess(Object object) {
+                    memberInfo.getPhotos().remove(position);
+                    memberInfo.getPhotos().add(position, ((SuccessUploadModel) object).getUrl());
                     profileDetailView.onFinishUpload(position);
                 }
 
@@ -129,14 +135,17 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
                     profileDetailView.onFailUpload(position);
                 }
             });
-        } else Utils.d(TAG, "not exist");
+        }
     }
 
     @Override
     public void onImageClick(int position) {
         if (memberInfo.getPhotos().size() >= position) //ada isinya
         {
-            doDelete(memberInfo.getPhotos().get(position - 1), position - 1);
+            profileDetailView.makeTransparent(position - 1);
+            final String url = memberInfo.getPhotos().get(position - 1);
+            Utils.d(TAG, "url " + url);
+            doDelete(url, position - 1);
         }
         else
         {

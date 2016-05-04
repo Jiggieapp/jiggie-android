@@ -20,8 +20,7 @@
         android:id="@+id/images_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
-        android:layout_weight="0.93"
+        android:layout_weight="0.9"
         android:orientation="horizontal">
 
         <RelativeLayout
@@ -34,7 +33,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="@dimen/padding_standard_half"
-                android:layout_marginTop="@dimen/padding_standard_half"
                 android:background="@drawable/border_rounded_imageview"
                 android:scaleType="centerInside" />
 
@@ -56,7 +54,7 @@
 
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginBottom="@dimen/padding_standard_half"
                 android:layout_marginLeft="@dimen/padding_standard_half"
                 android:layout_marginRight="@dimen/padding_standard_half"
@@ -66,8 +64,6 @@
                     android:id="@+id/secondary_profile_picture"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-
-                    android:layout_marginTop="@dimen/padding_standard_half"
                     android:background="@drawable/border_rounded_imageview"
                     android:scaleType="centerInside" />
 
@@ -83,7 +79,7 @@
 
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginBottom="@dimen/padding_standard_half"
                 android:layout_marginLeft="@dimen/padding_standard_half"
                 android:layout_marginRight="@dimen/padding_standard_half"
@@ -93,7 +89,6 @@
                     android:id="@+id/third_profile_picture"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-
                     android:background="@drawable/border_rounded_imageview"
                     android:scaleType="centerInside" />
 
@@ -108,7 +103,7 @@
 
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginBottom="@dimen/padding_standard_half"
                 android:layout_marginLeft="@dimen/padding_standard_half"
                 android:layout_marginRight="@dimen/padding_standard_half"
@@ -118,7 +113,6 @@
                     android:id="@+id/fourth_profile_picture"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-
                     android:background="@drawable/border_rounded_imageview"
                     android:scaleType="centerInside" />
 
@@ -134,7 +128,7 @@
 
             <RelativeLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginLeft="@dimen/padding_standard_half"
                 android:layout_marginRight="@dimen/padding_standard_half"
                 android:layout_weight="1">
@@ -165,7 +159,7 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/images_container"
         android:layout_margin="@dimen/padding_standard"
-        android:layout_weight="1.07"
+        android:layout_weight="1.1"
         android:orientation="vertical">
 
         <TextView

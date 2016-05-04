@@ -12,6 +12,7 @@ import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.MemberSettingResultModel;
 import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SuccessTokenModel;
+import com.jiggie.android.model.SuccessUploadModel;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -59,7 +60,7 @@ public interface AccountInterface{
 
     @Multipart
     @POST(Utils.URL_UPLOAD)
-    Call<Success2Model> upload4(@Part MultipartBody.Part photo, @Part("fb_id") RequestBody fb_id);
+    Call<SuccessUploadModel> upload4(@Part MultipartBody.Part photo, @Part("fb_id") RequestBody fb_id);
 
     @GET(Utils.URL_CITY)
     Call<CityModel> getCityList();

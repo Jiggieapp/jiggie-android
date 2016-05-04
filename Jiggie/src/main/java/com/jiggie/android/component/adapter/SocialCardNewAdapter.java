@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.SocialModel;
 
@@ -150,11 +151,13 @@ public class SocialCardNewAdapter extends BaseAdapter {
 
         @OnClick(R.id.btnNoGeneral)
         public void btnNoOnClick() {
+            Utils.d(TAG, "btn no click");
             onSocialCardClickListener.onNoClick();
         }
 
         @OnClick(R.id.btnYesGeneral)
         public void btnYesOnClick() {
+            Utils.d(TAG, "btn yes click");
             onSocialCardClickListener.onYesClick();
         }
 

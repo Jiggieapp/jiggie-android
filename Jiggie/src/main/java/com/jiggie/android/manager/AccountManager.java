@@ -308,7 +308,7 @@ public class AccountManager extends BaseManager{
         doUpload(file, new CustomCallback() {
             @Override
             public void onCustomCallbackResponse(Response response) {
-                onResponseListener.onSuccess(response);
+                onResponseListener.onSuccess(response.body());
                 Utils.d(TAG, "custom callback response " + Utils.print(response));
             }
 
@@ -331,22 +331,6 @@ public class AccountManager extends BaseManager{
 
     private static void doUpload(File file, Callback callback)
     {
-        /*RequestBody photo2 = RequestBody.create(MediaType.parse("application/image"), file);
-        RequestBody idE = RequestBody.create(MediaType.parse("text"), AccessToken.getCurrentAccessToken().getUserId());
-        RequestBody body2 = new MultipartBuilder()
-                .type(MultipartBuilder.FORM)
-                .addFormDataPart("filefield", file.getName()
-                        , photo2)
-                .addFormDataPart("fb_id", "fb_id", idE)
-                .build();*/
-        /*getInstance().upload(file
-                , AccessToken.getCurrentAccessToken().getUserId()).enqueue(callback);*/
-
-        //getInstance().upload(body2).enqueue(callback);
-
-
-        // MultipartBody.Part is used to send also the actual file name
-        //TypedFile typedFile = new TypedFile("image/*", new File(path));
         final String mime = "image/" + getFileExt(file.getName());
 
         RequestBody filee = RequestBody.create(
@@ -363,7 +347,6 @@ public class AccountManager extends BaseManager{
         map.put("fb_id", fb_id);
 
         getInstance().upload4(body, fb_id).enqueue(callback);
-        //getInstance().upload5(filee, fb_id).enqueue(callback);
     }
 
     public static void loaderSettingNew(String fb_id, final com.jiggie.android.listener.OnResponseListener onResponseListener){

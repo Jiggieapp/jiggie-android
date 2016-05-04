@@ -25,6 +25,7 @@ import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.MemberInfoModel;
+import com.jiggie.android.model.SuccessUploadModel;
 import com.jiggie.android.view.RoundedImageView;
 
 import java.util.ArrayList;
@@ -105,7 +106,7 @@ public class NewProfileDetailActivity extends ToolbarActivity
         } else {
             txtLocation.setText(loginModel.getLocation());
         }
-        txtDescription.setText(loginModel.getAbout());
+
         fetchDetail();
     }
 
@@ -121,8 +122,8 @@ public class NewProfileDetailActivity extends ToolbarActivity
             photoSize = 5;
         for (int i = 0; i < photoSize; i++) {
             final String url = photos.get(i);
-            ImageView view = getImageView(i);
-            view.setScaleType(ImageView.ScaleType.FIT_XY);
+            ImageView view = removeTransparent(i);
+            //view.setScaleType(ImageView.ScaleType.FIT_XY);
             loadIntoView(url, view, i);
         }
 
@@ -130,21 +131,23 @@ public class NewProfileDetailActivity extends ToolbarActivity
             ImageView plusView = getPlusImageView(i);
             plusView.setImageDrawable(getResources().getDrawable(R.drawable.plus_button_image_view));
 
-            ImageView view = getImageView(i);
+            ImageView view = removeTransparent(i);
             view.setImageBitmap(null);
         }
     }
 
     @Override
     public void onFinishUpload(int position) {
-        ImageView view = getImageView(position);
-        view.setImageAlpha(255);
+        ImageView view = removeTransparent(position);
     }
 
     @Override
     public void onFailUpload(int position) {
         ImageView view = getImageView(position);
         view.setImageBitmap(null);
+        ImageView plus = getPlusImageView(position);
+        plus.setImageDrawable(getResources().getDrawable(R.drawable.cross_button_image_view));
+
     }
 
     private void loadIntoView(final String url, final ImageView view
@@ -161,10 +164,28 @@ public class NewProfileDetailActivity extends ToolbarActivity
 
     @Override
     public void loadImageToCertainView(final String tempUrl, final int position) {
-        ImageView view = getImageView(position);
-        view.setImageAlpha(127);
-        view.setScaleType(scaleType);
+
+        ImageView view = makeTransparent(position);
         loadIntoView(tempUrl, view, position);
+    }
+
+    @Override
+    public ImageView makeTransparent(int position)
+    {
+        ImageView view = getImageView(position);
+        view.setImageAlpha(100);
+        view.setScaleType(scaleType);
+        return view;
+    }
+
+
+    @Override
+    public ImageView removeTransparent(int position)
+    {
+        ImageView view = getImageView(position);
+        view.setImageAlpha(255);
+        view.setScaleType(scaleType);
+        return view;
     }
 
     private ImageView getImageView(int position) {
@@ -211,7 +232,7 @@ public class NewProfileDetailActivity extends ToolbarActivity
         final String age = StringUtility.getAge2(memberInfo.getBirthday());
         final String name = memberInfo.getFirst_name() + " "
                 + memberInfo.getLast_name();
-
+        txtDescription.setText(memberInfo.getAbout());
         txtUser.setText(((TextUtils.isEmpty(age)) || (age.equals("0"))) ? name : String.format("%s, %s", name, age));
     }
 

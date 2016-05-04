@@ -288,8 +288,6 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             if (SocialManager.Type.isInbound(item))
                 temp.add(0, item);
             else temp.add(item);
-            Utils.d(TAG, item.getFb_id() + "/" + item.getFrom_fb_id() + "/" + item.getType()
-                    + "/" + item.getFrom_first_name());
         }
 
         /*cardStackAdapter = new SocialCardAdapter(temp, dummy, getActivity(), this);
@@ -301,6 +299,22 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         flingAdapterView.setAdapter(socialCardNewAdapter);
 
         //tempListView.setAdapter(socialCardNewAdapter);
+        flingAdapterView.setOnItemClickListener(new CustomSwipeFlingAdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClicked(int itemPosition, Object dataObject) {
+                Intent i = new Intent(getActivity(), ProfileDetailActivity.class);
+                i.putExtra(Common.FIELD_FACEBOOK_ID, socialCardNewAdapter.getItem(0).getFrom_fb_id());
+                getActivity().startActivity(i);
+            }
+        });
+        /*flingAdapterView.setOnItemClickListener(new CustomSwipeFlingAdapterView.OnItemClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), ProfileDetailActivity.class);
+                i.putExtra(Common.FIELD_FACEBOOK_ID, socialCardNewAdapter.getItem(0).getFrom_fb_id());
+                getActivity().startActivity(i);
+            }
+        });*/
 
         flingAdapterView.setFlingListener(new CustomSwipeFlingAdapterView.onFlingListener() {
             @Override
