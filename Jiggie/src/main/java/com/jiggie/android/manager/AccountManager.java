@@ -359,6 +359,11 @@ public class AccountManager extends BaseManager{
                     Utils.d(TAG, "response fail" + t);
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
                 }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
             });
         }catch (Exception e){
             onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
@@ -384,6 +389,11 @@ public class AccountManager extends BaseManager{
                 public void onCustomCallbackFailure(String t) {
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
                 }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
             });
         } catch (IOException e){
             onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
@@ -406,6 +416,11 @@ public class AccountManager extends BaseManager{
                 @Override
                 public void onCustomCallbackFailure(String t) {
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
                 }
             });
         } catch (IOException e){
@@ -515,52 +530,35 @@ public class AccountManager extends BaseManager{
 
 
     public static void getAccessToken
-            //(final OnFinishGetAccessToken onFinishGetAccessToken)
-            (final CommerceManager.OnResponseListener onResponseListener)
+        //(final OnFinishGetAccessToken onFinishGetAccessToken)
+    (final CommerceManager.OnResponseListener onResponseListener)
     {
         getAccessToken(new CustomCallback() {
             @Override
             public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
-                SuccessTokenModel successModel = (SuccessTokenModel) response.body();
-                setAccessTokenToPreferences(successModel.data.token);
-                onResponseListener.onSuccess(successModel);
+                /*String responses = new Gson().toJson(response.body());
+                Utils.d(TAG, "response " + responses);*/
+
+                SuccessModel successModel = (SuccessModel) response.body();
+                App.getInstance()
+                        .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                        .edit()
+                        .putString(Utils.ACCESS_TOKEN, successModel.getToken())
+                        .apply();
+                //onResponseListener.onSuccess(successModel.getToken());
                 //onFinishGetAccessToken.onFinishGetAccessToken(successModel.getToken());
             }
 
             @Override
             public void onCustomCallbackFailure(String t) {
-                onResponseListener.onFailure(Utils.CODE_FAILED, t);
+                //onResponseListener.onFailure(Utils.CODE_FAILED, t);
             }
 
             @Override
             public void onNeedToRestart() {
-                Utils.d(TAG, "restart");
-                getAccessToken(onResponseListener);
+
             }
         });
-    }
-
-    public static String getAccessTokenFromPreferences()
-    {
-        final String accessToken = App.getInstance()
-                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
-                .getString(Utils.ACCESS_TOKEN, "");
-        return accessToken;
-    }
-
-    public static void setAccessTokenToPreferences(String token)
-    {
-        App.getInstance()
-                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
-                .edit()
-                .putString(Utils.ACCESS_TOKEN, token)
-                .apply();
-    }
-
-    public OnFinishGetAccessToken onFinishGetAccessToken;
-    public interface OnFinishGetAccessToken
-    {
-        public Retrofit onFinishGetAccessToken(String accessToken);
     }
 
 
@@ -584,6 +582,29 @@ public class AccountManager extends BaseManager{
         String model = new Gson().toJson(memberSettingModel);
         App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
                 .putString(Utils.MEMBER_SETTING_MODEL, model).apply();
+    }
+
+    public static String getAccessTokenFromPreferences()
+    {
+        final String accessToken = App.getInstance()
+                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                .getString(Utils.ACCESS_TOKEN, "");
+        return accessToken;
+    }
+
+    public static void setAccessTokenToPreferences(String token)
+    {
+        App.getInstance()
+                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                .edit()
+                .putString(Utils.ACCESS_TOKEN, token)
+                .apply();
+    }
+
+    public OnFinishGetAccessToken onFinishGetAccessToken;
+    public interface OnFinishGetAccessToken
+    {
+        public Retrofit onFinishGetAccessToken(String accessToken);
     }
 
     public interface OnResponseListener {

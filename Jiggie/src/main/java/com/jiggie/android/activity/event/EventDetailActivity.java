@@ -167,6 +167,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     public static final String TAG = EventDetailActivity.class.getSimpleName();
     private File file;
     private int count_like, count_like_new;
+    boolean canClickLike = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -597,16 +598,23 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     @SuppressWarnings("unused")
     @OnClick(R.id.img_love)
     void loveOnClick() {
-        if (imgLove.isSelected()) {
-            imgLove.setSelected(false);
-            count_like_new = count_like - 1;
-            actionLike(Utils.ACTION_LIKE_NO);
-        } else {
-            imgLove.setSelected(true);
-            count_like_new = count_like + 1;
-            actionLike(Utils.ACTION_LIKE_YES);
+        if(canClickLike){
+            if (imgLove.isSelected()) {
+                imgLove.setSelected(false);
+                if(count_like_new>0){
+                    count_like_new = count_like_new - 1;
+                }
+
+                actionLike(Utils.ACTION_LIKE_NO);
+            } else {
+                imgLove.setSelected(true);
+                count_like_new = count_like_new + 1;
+                actionLike(Utils.ACTION_LIKE_YES);
+            }
+            txtCountLike.setText(String.valueOf(count_like_new));
+            canClickLike = false;
         }
-        txtCountLike.setText(String.valueOf(count_like_new));
+
     }
 
     @OnClick(R.id.btnBook)
@@ -702,11 +710,13 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             @Override
             public void onSuccess(Object object) {
                 //do nothing
+                canClickLike = true;
             }
 
             @Override
             public void onFailure(int responseCode, String message) {
                 //rollback like value
+                canClickLike = true;
                 if (action.equals(Utils.ACTION_LIKE_YES)) {
                     imgLove.setSelected(false);
                     txtCountLike.setText(String.valueOf(count_like));

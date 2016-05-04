@@ -235,6 +235,11 @@ public class EventManager extends BaseManager{
                     Utils.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
                 }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
             });
         }catch (IOException e){
             Utils.d("Exception", e.toString());
@@ -263,6 +268,11 @@ public class EventManager extends BaseManager{
                 public void onCustomCallbackFailure(String t) {
                     Utils.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
                 }
             });
         }catch (IOException e){

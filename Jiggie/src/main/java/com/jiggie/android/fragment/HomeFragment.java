@@ -304,7 +304,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         activityMainTooltipRelativeLayout.showToolTipForView(toolTip, fab);*/
         //myToolTipView.setOnToolTipViewClickedListener(MainActivity.this);
 
-        Tooltip.make(getActivity(),
+        /*Tooltip.make(getActivity(),
                 new Tooltip.Builder(101)
                         .anchor(fab, Tooltip.Gravity.BOTTOM)
                         .closePolicy(new Tooltip.ClosePolicy()
@@ -318,7 +318,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
                         .withOverlay(true)//.typeface(mYourCustomFont)
                                 //.floatingAnimation(Tooltip.AnimationBuilder.DEFAULT).withOverlay(true)
                         .build()
-        ).show();
+        ).show();*/
         //End of Tooltips PART=====
     }
 
