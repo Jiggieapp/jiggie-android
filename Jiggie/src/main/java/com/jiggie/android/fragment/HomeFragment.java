@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -49,6 +50,7 @@ import com.jiggie.android.component.Utils;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.manager.SocialManager;
+import com.jiggie.android.manager.TooltipsManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.MemberSettingModel;
@@ -240,7 +242,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
                 /*FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.myPixel(getActivity(), 156), 0);
                 bottomSheet.setLayoutParams(layoutParams);*/
 
-                if(isFirstClick){
+                if (isFirstClick) {
                     isFirstClick = false;
                     behavior.setPeekHeight(Utils.myPixel(getActivity(), 156));
                 }
@@ -295,31 +297,14 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
             }
         });
 
-        //Tooltips PART============
-        /*ToolTip toolTip = new ToolTip()
-                .withText("A beautiful View").withTextColor(Color.WHITE)
-                .withColor(getActivity().getResources().getColor(R.color.blue_selector))
-                .withShadow()
-                .withAnimationType(ToolTip.ANIMATIONTYPE_FROMTOP);
-        activityMainTooltipRelativeLayout.showToolTipForView(toolTip, fab);*/
-        //myToolTipView.setOnToolTipViewClickedListener(MainActivity.this);
+        //TOOLTIP PART===============
+        /*if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_EVENT_LIST)){
+            TooltipsManager.initTooltipWithPoint(getActivity(), new Point(TooltipsManager.getCenterPoint(getActivity())[0],
+                    TooltipsManager.getCenterPoint(getActivity())[1]), getActivity().getString(R.string.tooltip_event_list), Utils.myPixel(getActivity(), 320), TooltipsManager.ALREADY_TOOLTIP_EVENT_LIST);
+            TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_EVENT_LIST, true);
+        }*/
+        //END OF TOOLTIP PART===============
 
-        /*Tooltip.make(getActivity(),
-                new Tooltip.Builder(101)
-                        .anchor(fab, Tooltip.Gravity.BOTTOM)
-                        .closePolicy(new Tooltip.ClosePolicy()
-                                .insidePolicy(true, false)
-                                .outsidePolicy(true, false), 3000)
-                                //.activateDelay(800)
-                        .showDelay(300)
-                        .text("Hello I'm tooltip")
-                        .maxWidth(500)
-                        .withArrow(true)
-                        .withOverlay(true)//.typeface(mYourCustomFont)
-                                //.floatingAnimation(Tooltip.AnimationBuilder.DEFAULT).withOverlay(true)
-                        .build()
-        ).show();*/
-        //End of Tooltips PART=====
     }
 
     @Override
