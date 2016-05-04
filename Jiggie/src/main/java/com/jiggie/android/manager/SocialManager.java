@@ -29,6 +29,11 @@ public class SocialManager extends BaseManager{
     public static String lat = Utils.BLANK;
     public static  String lng = Utils.BLANK;
 
+    public static String STATE_INBOUND = "inbound";
+    public static String STATE_SUGGEST = "suggest";
+    public static String LAST_STATE_CARD = Utils.BLANK;
+    public static boolean isInSocial = false;
+
     public static void iniSocialService(){
         socialInterface = getRetrofit().create(SocialInterface.class);
     }

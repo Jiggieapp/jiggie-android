@@ -49,6 +49,7 @@ import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.SocialManager;
+import com.jiggie.android.manager.TooltipsManager;
 import com.jiggie.android.manager.WalkthroughManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.Conversation;
@@ -123,6 +124,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
     private int socialSize;
     public static final String TAG = SocialTabFragment.class.getSimpleName();
     private Dialog dialogWalkthrough;
+    boolean isFirstTIme = true;
 
     @Override
     public String getTitle() {
@@ -158,7 +160,7 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             }
 
             if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_SOCIAL, false)) {
-                showWalkthroughDialog();
+                //showWalkthroughDialog();
             }
         }
 
@@ -339,6 +341,15 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                         super.getView().setImageDrawable(circularBitmapDrawable);
                     }
                 });
+
+                SocialManager.LAST_STATE_CARD = SocialManager.STATE_INBOUND;
+                if(SocialManager.isInSocial){
+                    if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_INBOUND)){
+                        TooltipsManager.initTooltipWithAnchor(getActivity(), inboundBtnYes, getString(R.string.tooltip_yes_inbound), Utils.myPixel(getActivity(), 380));
+                        TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_INBOUND, true);
+                    }
+                }
+
             } else {
                 Glide.with(SocialTabFragment.this).load(image).into(generalImage);
                 this.enableButton(false);
@@ -359,6 +370,15 @@ public class SocialTabFragment extends Fragment implements TabFragment {
                         , TAG);*/
                 dismissProgressDialog();
                 enableButton(true);
+
+                SocialManager.LAST_STATE_CARD = SocialManager.STATE_SUGGEST;
+                if(SocialManager.isInSocial){
+                    if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_SUGGESTED)){
+                        TooltipsManager.initTooltipWithAnchor(getActivity(), generalBtnYes, getString(R.string.tooltip_yes_suggested), Utils.myPixel(getActivity(), 380));
+                        TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_SUGGESTED, true);
+                    }
+                }
+
             }
         }
 
@@ -377,6 +397,22 @@ public class SocialTabFragment extends Fragment implements TabFragment {
             enableButton(true);
         }
     }*/
+
+    public void checkTooltipsInSug(){
+        if(SocialManager.isInSocial){
+            if(SocialManager.LAST_STATE_CARD.equals(SocialManager.STATE_INBOUND)){
+                if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_INBOUND)){
+                    TooltipsManager.initTooltipWithAnchor(getActivity(), inboundBtnYes, getString(R.string.tooltip_yes_inbound), Utils.myPixel(getActivity(), 380));
+                    TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_INBOUND, true);
+                }
+            }else if(SocialManager.LAST_STATE_CARD.equals(SocialManager.STATE_SUGGEST)){
+                if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_SUGGESTED)){
+                    TooltipsManager.initTooltipWithAnchor(getActivity(), generalBtnYes, getString(R.string.tooltip_yes_suggested), Utils.myPixel(getActivity(), 380));
+                    TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_SUGGESTED, true);
+                }
+            }
+        }
+    }
 
     private CompoundButton.OnCheckedChangeListener socializeChanged = new CompoundButton.OnCheckedChangeListener() {
         @Override
@@ -461,12 +497,14 @@ public class SocialTabFragment extends Fragment implements TabFragment {
         this.btnYesOnClick();
         socialSize-=1;
         setHomeTitle();
+        TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_YES_INBOUND, false);
     }
 
     @SuppressWarnings("unused")
     @OnClick(R.id.btnYesGeneral)
     void btnYesOnClick() {
         this.match(true);
+        TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_YES_SUGGESTED, false);
     }
 
     @SuppressWarnings("unused")

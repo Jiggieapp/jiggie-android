@@ -124,6 +124,7 @@
         android:layout_gravity="bottom|end"
         app:behavior_peekHeight="1dp"
         android:orientation="vertical"
+        app:behavior_hideable="true"
         >
         <RelativeLayout
             android:layout_width="match_parent"
