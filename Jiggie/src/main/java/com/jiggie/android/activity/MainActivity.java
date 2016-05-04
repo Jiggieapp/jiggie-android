@@ -53,11 +53,13 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.manager.ShareManager;
 import com.jiggie.android.manager.SocialManager;
+import com.jiggie.android.manager.TooltipsManager;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.GuestInfo;
 import com.jiggie.android.model.ShareLinkModel;
 import com.jiggie.android.presenter.GuestPresenter;
 
+import java.util.Calendar;
 import java.util.Map;
 
 import de.greenrobot.event.EventBus;
@@ -105,6 +107,11 @@ public class MainActivity extends AppCompatActivity
             pref.edit().putBoolean(Utils.IS_FIRST_RUN, false).commit();
             App.getInstance().trackMixPanelEvent("Install");
         }
+
+        //TOOLTIP PART===============
+        //TooltipsManager.validateTime(Calendar.getInstance().getTimeInMillis());
+        //TooltipsManager.clearTimeTooltip();
+        //END OF TOOLTIP PART===============
 
         // validate GCM Version and update if necessary
         final GoogleApiAvailability api = GoogleApiAvailability.getInstance();

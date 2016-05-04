@@ -1,6 +1,7 @@
 package com.jiggie.android.component.adapter;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +18,7 @@ import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.volley.VolleyHandler;
+import com.jiggie.android.manager.TooltipsManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventModel;
 
@@ -127,6 +129,10 @@ public class EventTabListAdapter
             holder.txtPriceTitle.setShadowLayer(1.6f, 1.5f, 1.3f, context.getResources().getColor(android.R.color.black));
             holder.txtPriceFill.setShadowLayer(1.6f, 1.5f, 1.3f, context.getResources().getColor(android.R.color.black));
 
+            /*if(position==0){
+                Utils.initTooltipWithPoint(fragment.getActivity(), new Point(Utils.getCenterPoint(fragment.getActivity())[0], Utils.getCenterPoint(fragment.getActivity())[1]), fragment.getActivity().getString(R.string.tooltip_event_list), Utils.myPixel(fragment.getActivity(), 320));
+            }*/
+
         } catch (ParseException e) {
             throw new RuntimeException(App.getErrorMessage(e), e);
         }
@@ -178,6 +184,7 @@ public class EventTabListAdapter
         public void onClick(View v) {
             if (listener != null) {
                 listener.onViewSelected(this.event);
+                TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_EVENT_LIST, false);
             }
         }
     }
