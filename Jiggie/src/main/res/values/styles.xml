@@ -92,4 +92,27 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="TooltipText" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/background</item>
+    </style>
+
+    <style name="ToolTipStyle">
+        <item name="ttlm_padding">@dimen/padding_standard</item>
+        <item name="ttlm_strokeColor">#00BAFF</item>
+        <item name="ttlm_backgroundColor">#00BAFF</item>
+        <item name="ttlm_strokeWeight">2dip</item>
+        <item name="ttlm_cornerRadius">8dip</item>
+        <item name="ttlm_overlayStyle">@style/ToolTipOverlayCustomStyle</item>
+        <!--<item name="android:textAppearance">?android:attr/textAppearanceInverse</item>-->
+        <item name="android:textAppearance">@style/TooltipText</item>
+        <item name="android:gravity">center</item>
+        <item name="ttlm_elevation">4dip</item>
+    </style>
+
+    <style name="ToolTipOverlayCustomStyle">
+        <item name="android:color">@android:color/transparent</item>
+        <item name="ttlm_repeatCount">0</item>
+        <item name="ttlm_duration">0</item>
+    </style>
+
 </resources>

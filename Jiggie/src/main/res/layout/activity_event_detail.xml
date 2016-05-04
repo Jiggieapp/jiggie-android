@@ -254,7 +254,7 @@
                                         android:background="@drawable/btn_interested"
                                         android:gravity="center"
                                         android:singleLine="true"
-                                        android:textColor="@drawable/btn_interested_text"
+                                        android:textColor="@color/background"
                                         android:textSize="12sp" />
                                 </LinearLayout>
 

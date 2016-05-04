@@ -393,4 +393,7 @@
     <string name="title_activity_country">Country Activity</string>
     <string name="title_activity_city">City</string>
     <string name="fill_your_contact_info">Fill Your Contact Info</string>
+
+    <string name="tooltip_event_list">\“Explore more! Tap an event to see more info and booking options.\”</string>
+
 </resources>
