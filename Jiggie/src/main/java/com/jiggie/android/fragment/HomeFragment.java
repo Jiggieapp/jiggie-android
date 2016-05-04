@@ -292,8 +292,8 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         relPlace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), CityActivity.class);
-                startActivityForResult(i, Utils.REQUEST_CODE_CHOOSE_COUNTRY);
+                /*Intent i = new Intent(getActivity(), CityActivity.class);
+                startActivityForResult(i, Utils.REQUEST_CODE_CHOOSE_COUNTRY);*/
             }
         });
 

@@ -471,15 +471,13 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
 
                 });*/
 
-                });
-
-                SocialManager.LAST_STATE_CARD = SocialManager.STATE_INBOUND;
+                /*SocialManager.LAST_STATE_CARD = SocialManager.STATE_INBOUND;
                 if(SocialManager.isInSocial){
                     if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_INBOUND)){
                         TooltipsManager.initTooltipWithAnchor(getActivity(), inboundBtnYes, getString(R.string.tooltip_yes_inbound), Utils.myPixel(getActivity(), 380));
                         TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_INBOUND, true);
                     }
-                }
+                }*/
 
             } else {
                 //Glide.with(SocialTabFragment.this).load(image).into(generalImage);
@@ -502,13 +500,13 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                 dismissProgressDialog();
                 enableButton(true);
 
-                SocialManager.LAST_STATE_CARD = SocialManager.STATE_SUGGEST;
+                /*SocialManager.LAST_STATE_CARD = SocialManager.STATE_SUGGEST;
                 if(SocialManager.isInSocial){
                     if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_SUGGESTED)){
                         TooltipsManager.initTooltipWithAnchor(getActivity(), generalBtnYes, getString(R.string.tooltip_yes_suggested), Utils.myPixel(getActivity(), 380));
                         TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_SUGGESTED, true);
                     }
-                }
+                }*/
 
             }
         }
@@ -530,7 +528,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     }*/
 
     public void checkTooltipsInSug(){
-        if(SocialManager.isInSocial){
+        /*if(SocialManager.isInSocial){
             if(SocialManager.LAST_STATE_CARD.equals(SocialManager.STATE_INBOUND)){
                 if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_INBOUND)){
                     TooltipsManager.initTooltipWithAnchor(getActivity(), inboundBtnYes, getString(R.string.tooltip_yes_inbound), Utils.myPixel(getActivity(), 380));
@@ -542,10 +540,10 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                     TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_SUGGESTED, true);
                 }
             }
-        }
+        }*/
     }
 
-    private CompoundButton.OnCheckedChangeListener socializeChanged = new CompoundButton.OnCheckedChangeListener() {
+    /*private CompoundButton.OnCheckedChangeListener socializeChanged = new CompoundButton.OnCheckedChangeListener() {
 
         @Override
         public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
@@ -651,7 +649,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     @OnClick(R.id.btnNoGeneral)
     void btnNoOnClick() {
         this.match(false);
-    }
+    }*/
 
     private void enableButton(boolean isEnabled) {
         /*this.generalBtnYes.setEnabled(isEnabled);
