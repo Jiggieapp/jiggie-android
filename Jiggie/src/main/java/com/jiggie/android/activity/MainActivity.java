@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         //TOOLTIP PART===============
-        TooltipsManager.clearTimeTooltip();
+        //TooltipsManager.clearTimeTooltip();
         TooltipsManager.validateTime(Calendar.getInstance().getTimeInMillis());
 
         //END OF TOOLTIP PART===============
