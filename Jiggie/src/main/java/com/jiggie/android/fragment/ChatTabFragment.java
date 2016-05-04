@@ -16,7 +16,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,26 +36,17 @@ import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.ChatTabListAdapter;
-import com.jiggie.android.component.volley.VolleyHandler;
-import com.jiggie.android.component.volley.VolleyRequestListener;
-import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.ChatManager;
 import com.jiggie.android.manager.WalkthroughManager;
 import com.jiggie.android.model.ChatActionModel;
 import com.jiggie.android.model.ChatListModel;
 import com.jiggie.android.model.Conversation;
-import com.android.volley.VolleyError;
 import com.facebook.AccessToken;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.PostWalkthroughModel;
 
-import org.json.JSONArray;
-
-import java.util.ArrayList;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by rangg on 21/10/2015.

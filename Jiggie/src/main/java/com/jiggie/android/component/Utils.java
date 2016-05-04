@@ -171,6 +171,7 @@ public class Utils {
     public final static String URL_POST_LOCATION = BASE_URL + "app/v3/save_longlat";
     public final static String URL_FREE_PAYMENT = BASE_URL + "app/v3/product/free_payment";
 
+    public final static String URL_UPLOAD = BASE_URL + "app/v3/member/upload";
     public final static String URL_LIKE_EVENT = BASE_URL + "app/v3/event/likes/{event_id}/{fb_id}/{action}";
     public final static String URL_CITY = BASE_URL + "app/v3/user/citylist";
 

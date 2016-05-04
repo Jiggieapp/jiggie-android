@@ -40,6 +40,7 @@ import com.jiggie.android.activity.profile.FilterActivity;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
 import com.jiggie.android.activity.profile.ProfileSettingActivity;
 import com.jiggie.android.activity.setup.SetupTagsActivity;
+import com.jiggie.android.activity.social.SocialFilterActivity;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.gcm.GCMRegistrationService;
 import com.jiggie.android.component.service.FacebookImageSyncService;
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     @SuppressWarnings("StatementWithEmptyBody")
     protected void onCreate(Bundle savedInstanceState) {
-        super.setTheme(R.style.AppCustomTheme);
+        super.setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_main);
         this.active = true;
@@ -522,6 +523,9 @@ public class MainActivity extends AppCompatActivity
         {
             case R.id.action_settings:
                 target = ProfileSettingActivity.class;
+                break;
+            case R.id.action_social_filter:
+                target = SocialFilterActivity.class;
                 break;
             case R.id.action_profile:
                 target = ProfileDetailActivity.class;
