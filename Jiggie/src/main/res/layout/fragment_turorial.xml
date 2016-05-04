@@ -93,6 +93,7 @@
             android:layout_marginTop="@dimen/padding_standard"
             android:layout_below="@id/txtTitle"
             android:textAlignment="center"
+            android:gravity="center_horizontal"
             />
     </RelativeLayout>
 

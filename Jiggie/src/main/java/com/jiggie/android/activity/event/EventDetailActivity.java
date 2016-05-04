@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -54,6 +55,7 @@ import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.manager.GuestManager;
 import com.jiggie.android.manager.ShareManager;
+import com.jiggie.android.manager.TooltipsManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.ExceptionModel;
@@ -295,6 +297,17 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             file.delete();
 
         txtCountLike.setText(String.valueOf(count_like));
+
+        if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_LIKE)){
+            TooltipsManager.initTooltipWithAnchor(this, imgLove, getString(R.string.tooltip_like), Utils.myPixel(this, 380));
+            TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_LIKE, true);
+        }
+
+        if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_SHARE)){
+            TooltipsManager.initTooltipWithAnchor(this, imgShare, getString(R.string.tooltip_share), Utils.myPixel(this, 380));
+            TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_SHARE, true);
+        }
+
     }
 
     private void setToolbarTitles(String title, boolean backEnable) {
@@ -619,6 +632,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             }
             txtCountLike.setText(String.valueOf(count_like_new));
             canClickLike = false;
+            TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_LIKE, false);
         }
 
     }
@@ -677,6 +691,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     void shareOnClick() {
         try {
             this.shareEvent();
+            TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_SHARE, false);
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }

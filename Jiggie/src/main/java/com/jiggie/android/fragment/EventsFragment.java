@@ -106,7 +106,7 @@ public class EventsFragment extends Fragment
         }
 
         if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_EVENT, false)) {
-            showWalkthroughDialog();
+            //showWalkthroughDialog();
         }
     }
 
