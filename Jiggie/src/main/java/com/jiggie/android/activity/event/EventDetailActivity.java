@@ -73,6 +73,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -313,7 +314,10 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     {
         String[] photo = new String[photoArr.size()];
         photo = photoArr.toArray(photo);
-
+        if(event_pics == null)
+        {
+            event_pics = new ArrayList<String>(Arrays.asList(photo));
+        }
         imagePagerIndicatorAdapter.setImages(photo);
     }
 
