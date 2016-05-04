@@ -53,31 +53,34 @@ public class GCMRegistrationService extends Service implements GCMRegistration.L
 
     @Override
     public void onGCMCompleted(String regId) {
-        try {
-            final String id = URLEncoder.encode(regId, "UTF-8");
-            final String fbId = URLEncoder.encode(AccessToken.getCurrentAccessToken().getUserId(), "UTF-8");
-            final String url = String.format("apntoken/%s/%s", fbId, id);
+        if(regId != null)
+        {
+            try {
+                final String id = URLEncoder.encode(regId, "UTF-8");
+                final String fbId = URLEncoder.encode(AccessToken.getCurrentAccessToken().getUserId(), "UTF-8");
+                final String url = String.format("apntoken/%s/%s", fbId, id);
 
-            VolleyHandler.getInstance().createVolleyRequest(url, (Model)null, new VolleyRequestListener<Void, JSONObject>() {
-                @Override
-                public Void onResponseAsync(JSONObject jsonObject) { return null; }
+                VolleyHandler.getInstance().createVolleyRequest(url, (Model)null, new VolleyRequestListener<Void, JSONObject>() {
+                    @Override
+                    public Void onResponseAsync(JSONObject jsonObject) { return null; }
 
-                @Override
-                public void onResponseCompleted(Void value) {
-                    App.getSharedPreferences().edit().putBoolean(TAG_UPDATED, true).apply();
-                    isRunning = false;
-                    stopSelf();
-                }
+                    @Override
+                    public void onResponseCompleted(Void value) {
+                        App.getSharedPreferences().edit().putBoolean(TAG_UPDATED, true).apply();
+                        isRunning = false;
+                        stopSelf();
+                    }
 
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e("GCMRegistration", App.getErrorMessage(error), error);
-                    isRunning = false;
-                    stopSelf();
-                }
-            });
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("GCMRegistration", App.getErrorMessage(error), error);
+                        isRunning = false;
+                        stopSelf();
+                    }
+                });
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }
