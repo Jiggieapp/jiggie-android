@@ -298,7 +298,7 @@ public class TooltipsManager {
                         .anchor(point, Tooltip.Gravity.BOTTOM)
                         .closePolicy(new Tooltip.ClosePolicy()
                                 .insidePolicy(true, false)
-                                .outsidePolicy(true, false), 1 * 60 * 1000)
+                                .outsidePolicy(true, false), 1 * 3600 * 1000)
                                 //.activateDelay(800)
                                 //.showDelay(300)
                         .text(text)
