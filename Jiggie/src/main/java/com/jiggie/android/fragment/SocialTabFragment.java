@@ -297,7 +297,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         cardsContainer.setAdapter(cardStackAdapter);*/
 
         socialCardNewAdapter = new SocialCardNewAdapter(temp
-                , getActivity(), this);
+                , getActivity(), this, getActivity());
         flingAdapterView.setAdapter(socialCardNewAdapter);
 
         //tempListView.setAdapter(socialCardNewAdapter);
@@ -365,6 +365,11 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     @Override
     public void onYesClick() {
         flingAdapterView.getTopCardListener2().selectRight();
+        if(SocialManager.LAST_STATE_CARD.equals(SocialManager.STATE_INBOUND)){
+            TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_YES_INBOUND, false);
+        }else if(SocialManager.LAST_STATE_CARD.equals(SocialManager.STATE_INBOUND)){
+            TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_YES_SUGGESTED, false);
+        }
     }
 
     @Override
@@ -527,21 +532,21 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         }
     }*/
 
-    public void checkTooltipsInSug(){
-        /*if(SocialManager.isInSocial){
+    /*public void checkTooltipsInSug(){
+        if(SocialManager.isInSocial){
             if(SocialManager.LAST_STATE_CARD.equals(SocialManager.STATE_INBOUND)){
                 if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_INBOUND)){
-                    TooltipsManager.initTooltipWithAnchor(getActivity(), inboundBtnYes, getString(R.string.tooltip_yes_inbound), Utils.myPixel(getActivity(), 380));
+                    TooltipsManager.initTooltipWithAnchor(getActivity(), flingAdapterView.getV, getString(R.string.tooltip_yes_inbound), Utils.myPixel(getActivity(), 380));
                     TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_INBOUND, true);
-                }
+                }socialCardNewAdapter.
             }else if(SocialManager.LAST_STATE_CARD.equals(SocialManager.STATE_SUGGEST)){
                 if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_SUGGESTED)){
                     TooltipsManager.initTooltipWithAnchor(getActivity(), generalBtnYes, getString(R.string.tooltip_yes_suggested), Utils.myPixel(getActivity(), 380));
                     TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_SUGGESTED, true);
                 }
             }
-        }*/
-    }
+        }
+    }*/
 
     /*private CompoundButton.OnCheckedChangeListener socializeChanged = new CompoundButton.OnCheckedChangeListener() {
 
