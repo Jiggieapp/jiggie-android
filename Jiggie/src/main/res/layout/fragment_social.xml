@@ -4,102 +4,66 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
 
-    <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grayLight">
+
+    <com.jiggie.android.view.CustomSwipeFlingAdapterView
+        android:id="@+id/fling_adapter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="?attr/actionBarSize"
+        app:allow_child_input_c="true"
+        app:max_visible_c="4"
+        app:min_adapter_stack_c="3"
+        app:rotation_degrees_c="16" />
+
+
+    <!--<com.lorentzos.flingswipe.SwipeFlingAdapterView
+        android:id="@+id/fling_adapter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="?attr/actionBarSize"
+        app:max_visible="4"
+        app:min_adapter_stack="3"
+        app:rotation_degrees="16"  />-->
+
+    <!--<ListView
+        android:id="@+id/tempListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:visibility="gone"/>-->
+
+    <!--<FrameLayout
+        android:id="@+id/cardEmpty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/grayLight">
+        android:padding="@dimen/padding_standard">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="@dimen/padding_standard">
+        <include layout="@layout/card_social_empty" />
+    </FrameLayout>-->
 
-            <LinearLayout
-                android:id="@+id/layoutSocialize"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+    <ProgressBar
+        android:id="@id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminate="true" />
 
-                <Switch
-                    android:id="@+id/switchSocialize"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/socialize"
-                    android:textSize="16sp" />
 
-                <TextView
-                    android:id="@+id/txtSocialize"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="50dp"
-                    android:layout_marginRight="50dp"
-                    android:text="@string/socialize_description" />
-            </LinearLayout>
+    <!--<FrameLayout
+        android:id="@+id/layout_walkthrough"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
-            <android.support.v7.widget.CardView
-                android:id="@+id/card"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginBottom="?attr/actionBarSize"
-                android:layout_marginTop="@dimen/padding_standard"
-                android:layout_weight="1">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@android:color/white">
-
-                    <FrameLayout
-                        android:id="@+id/cardGeneral"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="?attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:visibility="gone">
-
-                        <include layout="@layout/card_social_general" />
-                    </FrameLayout>
-
-                    <FrameLayout
-                        android:id="@+id/cardInbound"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="?attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:visibility="gone">
-
-                        <include layout="@layout/card_social_inbound" />
-                    </FrameLayout>
-                </RelativeLayout>
-            </android.support.v7.widget.CardView>
-        </LinearLayout>
-
-        <FrameLayout
-            android:id="@+id/cardEmpty"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="@dimen/padding_standard">
-
-            <include layout="@layout/card_social_empty" />
-        </FrameLayout>
-
-        <ProgressBar
-            android:id="@id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:indeterminate="true" />
-
-        <FrameLayout
-            android:id="@+id/layout_walkthrough"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone">
-
-            <include layout="@layout/walkthrough_screen"></include>
-        </FrameLayout>
-    </RelativeLayout>
-<!--
-</ScrollView>-->
+        <include layout="@layout/walkthrough_screen"></include>
+    </FrameLayout>-->
+</RelativeLayout><!--
+    </ScrollView>-->

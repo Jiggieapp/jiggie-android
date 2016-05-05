@@ -113,6 +113,8 @@
     <string name="socialize">Socialize</string>
     <string name="socialize_description">Turn off if you do not wish to be seen by others</string>
     <string name="socialize_description_off">Turn on if you wish to be seen by others</string>
+    <string name="socialize_description_new">If you wish not to be seen by others, turn this off</string>
+
     <string name="wants_to_go_with">%1$s wants to go with you to</string>
     <string name="interested_question">Interested?</string>
     <string name="something_went_wrong">Something went wrong</string>
@@ -394,6 +396,11 @@
     <string name="title_activity_city">City</string>
     <string name="fill_your_contact_info">Fill Your Contact Info</string>
 
+    <string name="maximum_distance">Maximum distance</string>
+    <string name="sort_by_distance">Sort users by distance</string>
+    <string name="sort_by_age">Sort users by age</string>
+    <string name="reset_filter">Reset filters</string>
+
     <string name="tooltip_event_list">\“Explore more! Tap an event to see more info and booking options.\”</string>
     <string name="tooltip_like">\“Go ahead and tap here to let others know you like an event. This will also help teach Jiggie what events you like.\”</string>
     <string name="tooltip_social_tab">\“Lucky you, we found other guests who also like this event. Connect now!\”</string>
@@ -401,4 +408,7 @@
     <string name="tooltip_yes_suggested">\“Don\'t be shy! Tap \“Yes\” (or swipe card right) to let this person know you want to connect. If they also tap \“Yes\” then a chat conversation begins.</string>
     <string name="tooltip_yes_inbound">\“Congrats! Someone wants to connect with you. \“Tap here to begin chatting.\”</string>
 
+
+    <string name="interested_ask">Interested?</string>
+    <string name="skip">Skip</string>
 </resources>

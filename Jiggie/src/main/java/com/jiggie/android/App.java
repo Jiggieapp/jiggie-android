@@ -1,7 +1,5 @@
 package com.jiggie.android;
 
-import android.*;
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -25,8 +23,11 @@ import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
-import com.appsflyer.AppsFlyerProperties;
+import com.android.volley.VolleyError;
+import com.appsflyer.AppsFlyerLib;
 import com.crashlytics.android.Crashlytics;
+import com.facebook.AccessToken;
+import com.facebook.FacebookSdk;
 import com.google.gson.Gson;
 import com.jiggie.android.component.SimpleJSONObject;
 import com.jiggie.android.component.StringUtility;
@@ -37,10 +38,6 @@ import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.TrackManager;
 import com.jiggie.android.model.CommEventMixpanelModel;
 import com.jiggie.android.model.Common;
-import com.android.volley.VolleyError;
-import com.appsflyer.AppsFlyerLib;
-import com.facebook.AccessToken;
-import com.facebook.FacebookSdk;
 import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.PostAppsFlyerModel;
@@ -57,7 +54,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -93,19 +89,20 @@ public class App extends Application {
 
         FacebookSdk.sdkInitialize(this);
         AppsFlyerLib.setAppsFlyerKey(super.getString(R.string.appsflyer_devkey));
-        Fabric.with(this, new Crashlytics());
+        //Fabric.with(this, new Crashlytics());
         //endregion
         this.database = new DatabaseConnection(this);
 
         // Setup handler for uncaught exceptions.
         androidDefaultUEH = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(handler);
+
     }
 
     private Thread.UncaughtExceptionHandler handler = new Thread.UncaughtExceptionHandler() {
         public void uncaughtException(Thread thread, Throwable ex) {
             // log it & phone home.
-            if(runningActivity!=null){
+            if (runningActivity != null) {
                 finishAffinity(runningActivity);
             }
             androidDefaultUEH.uncaughtException(thread, ex);
@@ -1002,4 +999,7 @@ public class App extends Application {
         //App.getInstance().
         android.os.Process.killProcess(android.os.Process.myPid());
     }
+
+
+
 }

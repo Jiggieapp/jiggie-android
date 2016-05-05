@@ -8,23 +8,22 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.jiggie.android.component.Utils;
-import com.jiggie.android.component.activity.ToolbarActivity;
 import com.facebook.AccessToken;
-
-import butterknife.Bind;
-import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
-
+import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.component.Utils;
+import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.AboutModel;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.Success2Model;
+
+import butterknife.Bind;
+import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by rangg on 17/11/2015.

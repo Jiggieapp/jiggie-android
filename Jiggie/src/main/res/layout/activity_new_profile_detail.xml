@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_marginBottom="@dimen/padding_standard"
+        android:background="@color/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark"
+        app:titleTextColor="@android:color/white" />
+
+
+    <LinearLayout
+        android:id="@+id/images_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.9"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.52">
+
+            <com.jiggie.android.view.RoundedImageView
+                android:id="@+id/main_profile_picture"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/padding_standard_half"
+                android:background="@drawable/border_rounded_imageview"
+                android:scaleType="centerInside" />
+
+            <ImageView
+                android:id="@+id/main_profile_picture_plus"
+                android:layout_width="@dimen/plus_button_image_width"
+                android:layout_height="@dimen/plus_button_image_width"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/plus_button_image_view" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1.48"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginBottom="@dimen/padding_standard_half"
+                android:layout_marginLeft="@dimen/padding_standard_half"
+                android:layout_marginRight="@dimen/padding_standard_half"
+                android:layout_weight="1">
+
+                <com.jiggie.android.view.RoundedImageView
+                    android:id="@+id/secondary_profile_picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/border_rounded_imageview"
+                    android:scaleType="centerInside" />
+
+                <ImageView
+                    android:id="@+id/secondary_profile_picture_plus"
+                    android:layout_width="@dimen/plus_button_image_width_small"
+                    android:layout_height="@dimen/plus_button_image_width_small"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/plus_button_image_view" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginBottom="@dimen/padding_standard_half"
+                android:layout_marginLeft="@dimen/padding_standard_half"
+                android:layout_marginRight="@dimen/padding_standard_half"
+                android:layout_weight="1">
+
+                <com.jiggie.android.view.RoundedImageView
+                    android:id="@+id/third_profile_picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/border_rounded_imageview"
+                    android:scaleType="centerInside" />
+
+                <ImageView
+                    android:id="@+id/third_profile_picture_plus"
+                    android:layout_width="@dimen/plus_button_image_width_small"
+                    android:layout_height="@dimen/plus_button_image_width_small"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/plus_button_image_view" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginBottom="@dimen/padding_standard_half"
+                android:layout_marginLeft="@dimen/padding_standard_half"
+                android:layout_marginRight="@dimen/padding_standard_half"
+                android:layout_weight="1">
+
+                <com.jiggie.android.view.RoundedImageView
+                    android:id="@+id/fourth_profile_picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/border_rounded_imageview"
+                    android:scaleType="centerInside" />
+
+                <ImageView
+                    android:id="@+id/fourth_profile_picture_plus"
+                    android:layout_width="@dimen/plus_button_image_width_small"
+                    android:layout_height="@dimen/plus_button_image_width_small"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/plus_button_image_view" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginLeft="@dimen/padding_standard_half"
+                android:layout_marginRight="@dimen/padding_standard_half"
+                android:layout_weight="1">
+
+                <com.jiggie.android.view.RoundedImageView
+                    android:id="@+id/fifth_profile_picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:background="@drawable/border_rounded_imageview"
+                    android:scaleType="centerInside" />
+
+                <ImageView
+                    android:id="@+id/fifth_profile_picture_plus"
+                    android:layout_width="@dimen/plus_button_image_width_small"
+                    android:layout_height="@dimen/plus_button_image_width_small"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/plus_button_image_view" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/images_container"
+        android:layout_margin="@dimen/padding_standard"
+        android:layout_weight="1.1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txtUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="@android:color/black"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/lblPhoneNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="@android:color/holo_blue_dark"
+            android:textStyle=""
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/txtLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginBottom="@dimen/padding_standard"
+            android:layout_marginTop="@dimen/padding_standard"
+            android:background="@android:color/darker_gray" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/padding_standard_half"
+                    android:layout_marginRight="@dimen/padding_standard_half"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txtTitleDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/padding_standard_half"
+                        android:text="@string/about" />
+
+                    <TextView
+                        android:id="@+id/txtDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/btnEdit"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@null"
+                    android:padding="5dp"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/ic_pencil" />
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</LinearLayout>

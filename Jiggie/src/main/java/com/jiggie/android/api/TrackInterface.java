@@ -4,10 +4,10 @@ import com.jiggie.android.model.PostAppsFlyerModel;
 import com.jiggie.android.model.PostMixpanelModel;
 import com.jiggie.android.model.Success2Model;
 
-import retrofit.Call;
-import retrofit.http.Body;
-import retrofit.http.POST;
-import retrofit.http.Url;
+import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.POST;
+import retrofit2.http.Url;
 
 /**
  * Created by LTE on 2/25/2016.

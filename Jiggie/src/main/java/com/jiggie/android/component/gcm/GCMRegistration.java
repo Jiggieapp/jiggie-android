@@ -4,9 +4,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Handler;
 
-import com.jiggie.android.R;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
+import com.jiggie.android.R;
 
 import java.io.IOException;
 import java.util.concurrent.Executor;

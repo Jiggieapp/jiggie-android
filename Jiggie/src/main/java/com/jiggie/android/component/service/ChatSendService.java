@@ -2,12 +2,6 @@ package com.jiggie.android.component.service;
 
 import android.util.Log;
 
-import com.google.gson.Gson;
-import com.jiggie.android.App;
-import com.jiggie.android.component.database.ChatTable;
-import com.jiggie.android.component.database.DatabaseConnection;
-import com.jiggie.android.component.volley.VolleyHandler;
-import com.jiggie.android.model.Chat;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.RequestFuture;
 import com.google.android.gms.gcm.GcmNetworkManager;
@@ -15,6 +9,12 @@ import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.OneoffTask;
 import com.google.android.gms.gcm.Task;
 import com.google.android.gms.gcm.TaskParams;
+import com.google.gson.Gson;
+import com.jiggie.android.App;
+import com.jiggie.android.component.database.ChatTable;
+import com.jiggie.android.component.database.DatabaseConnection;
+import com.jiggie.android.component.volley.VolleyHandler;
+import com.jiggie.android.model.Chat;
 import com.jiggie.android.model.ChatAddModel;
 
 import org.json.JSONException;

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -32,7 +31,6 @@ import java.lang.reflect.Field;
 import java.util.Calendar;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 
 /**
  * Created by LTE on 2/26/2016.

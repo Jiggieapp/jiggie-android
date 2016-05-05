@@ -7,10 +7,7 @@ import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.graphics.Point;
 import android.location.LocationManager;
-import android.os.Build;
-import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -24,18 +21,13 @@ import com.jiggie.android.App;
 import com.jiggie.android.BuildConfig;
 import com.jiggie.android.R;
 
-import org.json.JSONObject;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Locale;
 import java.util.TimeZone;
 
-import it.sephiroth.android.library.tooltip.Tooltip;
-import retrofit.Response;
+import retrofit2.Response;
 
 /**
  * Created by LTE on 1/29/2016.
@@ -173,9 +165,11 @@ public class Utils {
     public final static String URL_POST_LOCATION = BASE_URL + "app/v3/save_longlat";
     public final static String URL_FREE_PAYMENT = BASE_URL + "app/v3/product/free_payment";
 
+    public final static String URL_UPLOAD = BASE_URL + "app/v3/member/upload";
     public final static String URL_LIKE_EVENT = BASE_URL + "app/v3/event/likes/{event_id}/{fb_id}/{action}";
     public final static String URL_CITY = BASE_URL + "app/v3/user/citylist";
 
+    public final static String URL_DELETE_PHOTO = BASE_URL + "app/v3/remove_profileimage";
     public static void d(final String tag, final String value) {
         if(BuildConfig.DEBUG)
         {

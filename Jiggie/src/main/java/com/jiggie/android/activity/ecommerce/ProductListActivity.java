@@ -1,6 +1,5 @@
 package com.jiggie.android.activity.ecommerce;
 
-import android.accounts.Account;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -21,7 +19,6 @@ import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.ticket.ReservationActivity;
 import com.jiggie.android.activity.ecommerce.ticket.TicketDetailActivity;
-import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.ProductListAdapter;
@@ -268,7 +265,6 @@ public class ProductListActivity extends ToolbarActivity
 
             @Override
             public void onFailure(int responseCode, String message) {
-                Utils.d(String.valueOf(responseCode), message);
                 //Toast.makeText(ProductListActivity.this, message, Toast.LENGTH_LONG);
                 swipeRefresh.setRefreshing(false);
                 isLoading = false;
