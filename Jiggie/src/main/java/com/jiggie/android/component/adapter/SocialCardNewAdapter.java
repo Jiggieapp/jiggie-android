@@ -106,7 +106,7 @@ public class SocialCardNewAdapter extends BaseAdapter {
             SocialManager.LAST_STATE_CARD = SocialManager.STATE_INBOUND;
                 if(SocialManager.isInSocial){
                     if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_INBOUND)){
-            if(position==0){
+            if(position==data.size()-1){
                 TooltipsManager.initTooltipWithAnchor(a, holder.generalBtnYes, a.getString(R.string.tooltip_yes_inbound), Utils.myPixel(a, 380));
                 TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_INBOUND, true);
             }
@@ -126,7 +126,7 @@ public class SocialCardNewAdapter extends BaseAdapter {
             SocialManager.LAST_STATE_CARD = SocialManager.STATE_SUGGEST;
                 if(SocialManager.isInSocial){
                     if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_SUGGESTED)){
-            if(position==0){
+            if(position==data.size()-1){
                 TooltipsManager.initTooltipWithAnchor(a, holder.generalBtnYes, a.getString(R.string.tooltip_yes_suggested), Utils.myPixel(a, 380));
                 TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_SUGGESTED, true);
             }

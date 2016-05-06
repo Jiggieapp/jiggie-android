@@ -59,6 +59,7 @@ import com.jiggie.android.model.PostLocationModel;
 import com.jiggie.android.model.TagsListModel;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 import butterknife.Bind;
@@ -107,6 +108,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     private boolean hasChanged;
     ProgressDialog progressDialog;
     boolean isFirstClick = true;
+    View bottomSheet;
 
     @Nullable
     @Override
@@ -217,7 +219,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
 
         //PART OF BOTTOM SHEET FILTER=================
         CoordinatorLayout coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.cl_main);
-        final View bottomSheet = coordinatorLayout.findViewById(R.id.bottom_sheet);
+        bottomSheet = coordinatorLayout.findViewById(R.id.bottom_sheet);
         final BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
 
         behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
@@ -298,15 +300,15 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         });
 
         //TOOLTIP PART===============
-        if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_EVENT_LIST)){
+        if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_EVENT_LIST)) {
             TooltipsManager.initTooltipWithPoint(getActivity(), new Point(TooltipsManager.getCenterPoint(getActivity())[0],
                     TooltipsManager.getCenterPoint(getActivity())[1]), getActivity().getString(R.string.tooltip_event_list), Utils.myPixel(getActivity(), 380));
             TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_EVENT_LIST, true);
         }
 
-        if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_SOCIAL_TAB)){
+        if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_SOCIAL_TAB)) {
             TooltipsManager.initTooltipWithPoint(getActivity(), new Point(TooltipsManager.getCenterPoint(getActivity())[0],
-                    TooltipsManager.getCenterPoint(getActivity())[1]/3), getActivity().getString(R.string.tooltip_social_tab), Utils.myPixel(getActivity(), 380));
+                    TooltipsManager.getCenterPoint(getActivity())[1] / 3), getActivity().getString(R.string.tooltip_social_tab), Utils.myPixel(getActivity(), 380));
             TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_SOCIAL_TAB, true);
         }
 
@@ -460,13 +462,32 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     }
 
     private void onTagClick(ViewHolder holder) {
-        final boolean selected = holder.checkView.getVisibility() != View.VISIBLE;
+        /*final boolean selected = holder.checkView.getVisibility() != View.VISIBLE;
         if (selected) {
             this.selectedItems.add(holder.text);
         } else {
             this.selectedItems.remove(holder.text);
         }
-        setSelected(holder, selected, holder.text);
+        setSelected(holder, selected, holder.text);*/
+
+        boolean selected = holder.checkView.getVisibility() != View.VISIBLE;
+        boolean doNothing = false;
+
+        if (selected)
+            this.selectedItems.add(holder.text);
+        else {
+            if (this.selectedItems.size() == 1) {
+                doNothing = true;
+                selected = false;
+            } else {
+                this.selectedItems.remove(holder.text);
+            }
+        }
+
+        if (!doNothing) {
+            //holder.checkView.setVisibility(selected ? View.VISIBLE : View.GONE);
+            setSelected(holder, selected, holder.text);
+        }
     }
 
     private void setSelected(ViewHolder holder, boolean selected, String text) {
@@ -502,10 +523,10 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
             }
 
         } else {
-            holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_grey));
-            holder.textView.setTextColor(getResources().getColor(R.color.grey_tag));
+            holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_grey_f));
+            holder.textView.setTextColor(getResources().getColor(R.color.divider_pantone));
             //holder.checkView.setImageResource(R.drawable.ic_tick_grey);
-            holder.checkView.setImageResource(R.drawable.ic_tick_yellow);
+            //holder.checkView.setImageResource(R.drawable.ic_tick_yellow);
         }
 
 
@@ -597,18 +618,20 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
 
         if (position == CHAT_TAB) {
             fab.setVisibility(View.GONE);
+            bottomSheet.setVisibility(View.GONE);
             SocialManager.isInSocial = false;
         } else if (position == SOCIAL_TAB) {
             fab.setVisibility(View.GONE);
             TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_SOCIAL_TAB, false);
             SocialManager.isInSocial = true;
-            //apa nih ga?
-            //SocialTabFragment sc = (SocialTabFragment)this.adapter.fragments[position];
-            //sc.checkTooltipsInSug();
-            //Log.d("","");
+            /*SocialTabFragment sc = (SocialTabFragment)this.adapter.fragments[position];
+            sc.checkTooltipsInSug();*/
+            //Log.d("", "");
+            bottomSheet.setVisibility(View.GONE);
         } else {
             fab.setVisibility(View.VISIBLE);
             SocialManager.isInSocial = false;
+            bottomSheet.setVisibility(View.VISIBLE);
         }
 
         this.lastSelectedFragment = (TabFragment) this.adapter.fragments[position];
@@ -746,9 +769,9 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         getActivity().registerReceiver(fetchChatReceiver
                 , new IntentFilter(Utils.FETCH_CHAT_RECEIVER));
 
-        if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_SOCIAL_TAB)){
+        if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_SOCIAL_TAB)) {
             TooltipsManager.initTooltipWithPoint(getActivity(), new Point(TooltipsManager.getCenterPoint(getActivity())[0],
-                    TooltipsManager.getCenterPoint(getActivity())[1]/3), getActivity().getString(R.string.tooltip_social_tab), Utils.myPixel(getActivity(), 380));
+                    TooltipsManager.getCenterPoint(getActivity())[1] / 3), getActivity().getString(R.string.tooltip_social_tab), Utils.myPixel(getActivity(), 380));
             TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_SOCIAL_TAB, true);
         }
     }
