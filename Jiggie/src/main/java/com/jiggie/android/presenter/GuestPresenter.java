@@ -1,17 +1,11 @@
 package com.jiggie.android.presenter;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-
 import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.model.GuestInfo;
 import com.jiggie.android.model.PostSummaryModel;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Created by Wandy on 4/20/2016.

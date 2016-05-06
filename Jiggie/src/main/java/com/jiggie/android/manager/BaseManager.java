@@ -1,39 +1,23 @@
 package com.jiggie.android.manager;
 
-import android.content.Context;
-
-import com.jiggie.android.App;
-import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.callback.CustomCallback;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
 
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManagerFactory;
-
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Retrofit;
-//import retrofit.RxJavaCallAdapterFactory;
+import okhttp3.Callback;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+//import retrofit2.RxJavaCallAdapterFactory;
 
 /**
  * Created by Wandy on 2/10/2016.
  */
-public abstract class BaseManager {
+public abstract class BaseManager implements Interceptor{
     public static final String TAG = BaseManager.class.getSimpleName();
     private Callback callback;
     public CustomCallback customCallback;
@@ -41,8 +25,18 @@ public abstract class BaseManager {
 
     public static OkHttpClient getHttpClient() {
         final String accessToken = AccountManager.getAccessTokenFromPreferences();
-        OkHttpClient httpClient = new OkHttpClient();
-        httpClient.networkInterceptors().add(new Interceptor() {
+        OkHttpClient httpClient = new OkHttpClient.Builder()
+                .addNetworkInterceptor(new Interceptor() {
+                    @Override
+                    public Response intercept(Chain chain) throws IOException {
+                        Request request = chain.request()
+                                .newBuilder()
+                                .addHeader("authorization", accessToken)
+                                .build();
+                        return chain.proceed(request);
+                    }
+        }).build();
+        /*httpClient.networkInterceptors().add(new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
                 Request request = chain.request()
@@ -51,8 +45,20 @@ public abstract class BaseManager {
                         .build();
                 return chain.proceed(request);
             }
-        });
+        });*/
         return httpClient;
+    }
+
+    @Override
+    public Response intercept(Interceptor.Chain chain) throws IOException {
+        Request request = chain.request();
+
+        long t1 = System.nanoTime();
+
+        Response response = chain.proceed(request);
+
+
+        return response;
     }
 
     /*public static Retrofit getRetrofit() {

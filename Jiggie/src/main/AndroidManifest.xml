@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.jiggie.android"
-    android:versionCode="1147"
-    android:versionName="1.1.47">
+    android:versionCode="1153"
+    android:versionName="1.1.53">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -396,13 +396,3 @@
     </application>
 
 </manifest>
-
-    <!--
-    <com.lorentzos.flingswipe.SwipeFlingAdapterView
-    android:id="@+id/fling_adapter"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:rotation_degrees="16"
-    app:max_visible="4"
-    app:min_adapter_stack="6"
-    android:layout_centerInParent="true"/>-->

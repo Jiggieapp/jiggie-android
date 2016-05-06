@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -49,6 +50,7 @@ import com.jiggie.android.component.Utils;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.manager.SocialManager;
+import com.jiggie.android.manager.TooltipsManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.MemberSettingModel;
@@ -240,7 +242,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
                 /*FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.myPixel(getActivity(), 156), 0);
                 bottomSheet.setLayoutParams(layoutParams);*/
 
-                if(isFirstClick){
+                if (isFirstClick) {
                     isFirstClick = false;
                     behavior.setPeekHeight(Utils.myPixel(getActivity(), 156));
                 }
@@ -290,36 +292,26 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         relPlace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), CityActivity.class);
-                startActivityForResult(i, Utils.REQUEST_CODE_CHOOSE_COUNTRY);
+                /*Intent i = new Intent(getActivity(), CityActivity.class);
+                startActivityForResult(i, Utils.REQUEST_CODE_CHOOSE_COUNTRY);*/
             }
         });
 
-        //Tooltips PART============
-        /*ToolTip toolTip = new ToolTip()
-                .withText("A beautiful View").withTextColor(Color.WHITE)
-                .withColor(getActivity().getResources().getColor(R.color.blue_selector))
-                .withShadow()
-                .withAnimationType(ToolTip.ANIMATIONTYPE_FROMTOP);
-        activityMainTooltipRelativeLayout.showToolTipForView(toolTip, fab);*/
-        //myToolTipView.setOnToolTipViewClickedListener(MainActivity.this);
+        //TOOLTIP PART===============
+        if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_EVENT_LIST)){
+            TooltipsManager.initTooltipWithPoint(getActivity(), new Point(TooltipsManager.getCenterPoint(getActivity())[0],
+                    TooltipsManager.getCenterPoint(getActivity())[1]), getActivity().getString(R.string.tooltip_event_list), Utils.myPixel(getActivity(), 380));
+            TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_EVENT_LIST, true);
+        }
 
-        Tooltip.make(getActivity(),
-                new Tooltip.Builder(101)
-                        .anchor(fab, Tooltip.Gravity.BOTTOM)
-                        .closePolicy(new Tooltip.ClosePolicy()
-                                .insidePolicy(true, false)
-                                .outsidePolicy(true, false), 3000)
-                                //.activateDelay(800)
-                        .showDelay(300)
-                        .text("Hello I'm tooltip")
-                        .maxWidth(500)
-                        .withArrow(true)
-                        .withOverlay(true)//.typeface(mYourCustomFont)
-                                //.floatingAnimation(Tooltip.AnimationBuilder.DEFAULT).withOverlay(true)
-                        .build()
-        ).show();
-        //End of Tooltips PART=====
+        if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_SOCIAL_TAB)){
+            TooltipsManager.initTooltipWithPoint(getActivity(), new Point(TooltipsManager.getCenterPoint(getActivity())[0],
+                    TooltipsManager.getCenterPoint(getActivity())[1]/3), getActivity().getString(R.string.tooltip_social_tab), Utils.myPixel(getActivity(), 380));
+            TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_SOCIAL_TAB, true);
+        }
+
+        //END OF TOOLTIP PART===============
+
     }
 
     @Override
@@ -605,10 +597,18 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
 
         if (position == CHAT_TAB) {
             fab.setVisibility(View.GONE);
+            SocialManager.isInSocial = false;
         } else if (position == SOCIAL_TAB) {
             fab.setVisibility(View.GONE);
+            TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_SOCIAL_TAB, false);
+            SocialManager.isInSocial = true;
+            //apa nih ga?
+            //SocialTabFragment sc = (SocialTabFragment)this.adapter.fragments[position];
+            //sc.checkTooltipsInSug();
+            //Log.d("","");
         } else {
             fab.setVisibility(View.VISIBLE);
+            SocialManager.isInSocial = false;
         }
 
         this.lastSelectedFragment = (TabFragment) this.adapter.fragments[position];
@@ -745,6 +745,12 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         super.onResume();
         getActivity().registerReceiver(fetchChatReceiver
                 , new IntentFilter(Utils.FETCH_CHAT_RECEIVER));
+
+        if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_SOCIAL_TAB)){
+            TooltipsManager.initTooltipWithPoint(getActivity(), new Point(TooltipsManager.getCenterPoint(getActivity())[0],
+                    TooltipsManager.getCenterPoint(getActivity())[1]/3), getActivity().getString(R.string.tooltip_social_tab), Utils.myPixel(getActivity(), 380));
+            TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_SOCIAL_TAB, true);
+        }
     }
 
     @Override

@@ -16,7 +16,6 @@ import com.facebook.AccessToken;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.MainActivity;
-import com.jiggie.android.activity.ecommerce.ProductListActivity;
 import com.jiggie.android.component.BitmapUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.BaseActivity;

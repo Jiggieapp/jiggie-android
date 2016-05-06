@@ -15,23 +15,36 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark"
         app:titleTextColor="@android:color/white" />
 
+
     <LinearLayout
         android:id="@+id/images_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/toolbar"
-        android:orientation="horizontal"
-        android:layout_weight="0.8">
+        android:layout_weight="0.9"
+        android:orientation="horizontal">
 
-
-        <com.jiggie.android.view.RoundedImageView
-            android:id="@+id/main_profile_picture"
-            android:layout_width="match_parent"
+        <RelativeLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/padding_standard_half"
-            android:layout_marginTop="@dimen/padding_standard_half"
-            android:layout_weight="0.52"
-            android:scaleType="centerInside" />
+            android:layout_weight="0.52">
+
+            <com.jiggie.android.view.RoundedImageView
+                android:id="@+id/main_profile_picture"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/padding_standard_half"
+                android:background="@drawable/border_rounded_imageview"
+                android:scaleType="centerInside" />
+
+            <ImageView
+                android:id="@+id/main_profile_picture_plus"
+                android:layout_width="@dimen/plus_button_image_width"
+                android:layout_height="@dimen/plus_button_image_width"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/plus_button_image_view" />
+
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,50 +52,104 @@
             android:layout_weight="1.48"
             android:orientation="vertical">
 
-            <com.jiggie.android.view.RoundedImageView
-                android:id="@+id/secondary_profile_picture"
-                android:layout_width="match_parent"
+            <RelativeLayout
+                android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginBottom="@dimen/padding_standard_half"
                 android:layout_marginLeft="@dimen/padding_standard_half"
                 android:layout_marginRight="@dimen/padding_standard_half"
-                android:layout_marginTop="@dimen/padding_standard_half"
-                android:layout_weight="1"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_add_circle_outline_white_24dp" />
+                android:layout_weight="1">
 
-            <com.jiggie.android.view.RoundedImageView
-                android:id="@+id/third_profile_picture"
-                android:layout_width="match_parent"
+                <com.jiggie.android.view.RoundedImageView
+                    android:id="@+id/secondary_profile_picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/border_rounded_imageview"
+                    android:scaleType="centerInside" />
+
+                <ImageView
+                    android:id="@+id/secondary_profile_picture_plus"
+                    android:layout_width="@dimen/plus_button_image_width_small"
+                    android:layout_height="@dimen/plus_button_image_width_small"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/plus_button_image_view" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginBottom="@dimen/padding_standard_half"
                 android:layout_marginLeft="@dimen/padding_standard_half"
                 android:layout_marginRight="@dimen/padding_standard_half"
-                android:layout_weight="1"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_add_circle_outline_white_24dp" />
+                android:layout_weight="1">
 
-            <com.jiggie.android.view.RoundedImageView
-                android:id="@+id/fourth_profile_picture"
-                android:layout_width="match_parent"
+                <com.jiggie.android.view.RoundedImageView
+                    android:id="@+id/third_profile_picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/border_rounded_imageview"
+                    android:scaleType="centerInside" />
+
+                <ImageView
+                    android:id="@+id/third_profile_picture_plus"
+                    android:layout_width="@dimen/plus_button_image_width_small"
+                    android:layout_height="@dimen/plus_button_image_width_small"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/plus_button_image_view" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginBottom="@dimen/padding_standard_half"
                 android:layout_marginLeft="@dimen/padding_standard_half"
                 android:layout_marginRight="@dimen/padding_standard_half"
-                android:layout_weight="1"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_add_circle_outline_white_24dp" />
+                android:layout_weight="1">
 
-            <com.jiggie.android.view.RoundedImageView
-                android:id="@+id/fifth_profile_picture"
-                android:layout_width="match_parent"
+                <com.jiggie.android.view.RoundedImageView
+                    android:id="@+id/fourth_profile_picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/border_rounded_imageview"
+                    android:scaleType="centerInside" />
+
+                <ImageView
+                    android:id="@+id/fourth_profile_picture_plus"
+                    android:layout_width="@dimen/plus_button_image_width_small"
+                    android:layout_height="@dimen/plus_button_image_width_small"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/plus_button_image_view" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginLeft="@dimen/padding_standard_half"
                 android:layout_marginRight="@dimen/padding_standard_half"
-                android:layout_weight="1"
-                android:background="@color/dividercomm2"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_add_circle_outline_white_24dp" />
+                android:layout_weight="1">
+
+                <com.jiggie.android.view.RoundedImageView
+                    android:id="@+id/fifth_profile_picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+
+                    android:background="@drawable/border_rounded_imageview"
+                    android:scaleType="centerInside" />
+
+                <ImageView
+                    android:id="@+id/fifth_profile_picture_plus"
+                    android:layout_width="@dimen/plus_button_image_width_small"
+                    android:layout_height="@dimen/plus_button_image_width_small"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/plus_button_image_view" />
+
+            </RelativeLayout>
 
         </LinearLayout>
     </LinearLayout>
@@ -92,8 +159,8 @@
         android:layout_height="match_parent"
         android:layout_below="@+id/images_container"
         android:layout_margin="@dimen/padding_standard"
-        android:orientation="vertical"
-        android:layout_weight="1.2">
+        android:layout_weight="1.1"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/txtUser"
@@ -124,43 +191,48 @@
             android:layout_marginTop="@dimen/padding_standard"
             android:background="@android:color/darker_gray" />
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="wrap_content">
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/padding_standard_half"
-                android:layout_marginRight="@dimen/padding_standard_half"
-                android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/txtTitleDescription"
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/padding_standard_half"
-                    android:text="@string/about" />
+                    android:layout_marginEnd="@dimen/padding_standard_half"
+                    android:layout_marginRight="@dimen/padding_standard_half"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/txtDescription"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="16sp" />
+                    <TextView
+                        android:id="@+id/txtTitleDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/padding_standard_half"
+                        android:text="@string/about" />
 
+                    <TextView
+                        android:id="@+id/txtDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp" />
+
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/btnEdit"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:contentDescription="@null"
+                    android:padding="5dp"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/ic_pencil" />
             </LinearLayout>
-
-            <ImageButton
-                android:id="@+id/btnEdit"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:background="?attr/selectableItemBackground"
-                android:contentDescription="@null"
-                android:padding="5dp"
-                android:scaleType="fitCenter"
-                android:src="@mipmap/ic_pencil" />
-        </LinearLayout>
+        </ScrollView>
     </LinearLayout>
 </LinearLayout>

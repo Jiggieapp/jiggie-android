@@ -366,10 +366,18 @@
     <!--END HERE-->
 
     <string name="msg_carr_1">Discover upcoming food bazaars, music, art \u0026 culture and nightlife events</string>
-    <string name="msg_carr_2">Get detailed information on events and book your tickets</string>
+    <string name="msg_carr_2">Get detailed information on events and book your ticket or table</string>
     <string name="msg_carr_3">Check out other guests who like the same events you do</string>
-    <string name="msg_carr_4">Connect with other fun-loving people and make new friends</string>
-    <string name="msg_carr_5"> Chat with your new friends and make plans to meet up</string>
+    <string name="msg_carr_4">Connect to people who want to chat with you</string>
+    <string name="msg_carr_5">Chat with your new friends and make plans to meet up</string>
+
+    <string name="title_carr_1_new">Browse Event</string>
+    <string name="title_carr_2_new">Book Tickets \u0026 Tables</string>
+    <string name="title_carr_3_new">Find New Friends</string>
+    <string name="title_carr_4_new">Social</string>
+    <string name="title_carr_5_new">Chat</string>
+
+    <string name="desc_logo">new experience with new friends</string>
 
     <string name="estimate">(ESTIMATE)</string>
     <string name="estimated_total">ESTIMATED TOTAL</string>
@@ -385,6 +393,7 @@
     <string name="table_info">Table Info</string>
     <string name="select_payment_short">Select Payment</string>
     <string name="title_activity_country">Country Activity</string>
+    <string name="title_activity_city">City</string>
     <string name="fill_your_contact_info">Fill Your Contact Info</string>
 
     <string name="maximum_distance">Maximum distance</string>
@@ -392,7 +401,16 @@
     <string name="sort_by_age">Sort users by age</string>
     <string name="reset_filter">Reset filters</string>
 
+    <string name="tooltip_event_list">\“Explore more! Tap an event to see more info and booking options.\”</string>
+    <string name="tooltip_like">\“Go ahead and tap here to let others know you like an event. This will also help teach Jiggie what events you like.\”</string>
+    <string name="tooltip_social_tab">\“Lucky you, we found other guests who also like this event. Connect now!\”</string>
+    <string name="tooltip_share">\“Share this event with your friends and see who wants to go\”</string>
+    <string name="tooltip_yes_suggested">\“Don\'t be shy! Tap \“Yes\” (or swipe card right) to let this person know you want to connect. If they also tap \“Yes\” then a chat conversation begins.</string>
+    <string name="tooltip_yes_inbound">\“Congrats! Someone wants to connect with you. \“Tap here to begin chatting.\”</string>
+
+
     <string name="interested_ask">Interested?</string>
     <string name="skip">Skip</string>
-    <string name="title_activity_city">City</string>
+
+    <string name="empty_social">You currently have no cards available</string>
 </resources>

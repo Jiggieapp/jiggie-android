@@ -7,6 +7,7 @@ import com.facebook.AccessToken;
 import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.BuildConfig;
+import com.jiggie.android.R;
 import com.jiggie.android.api.SocialInterface;
 import com.jiggie.android.component.SimpleJSONObject;
 import com.jiggie.android.component.StringUtility;
@@ -22,10 +23,8 @@ import com.jiggie.android.model.Success2Model;
 import java.io.IOException;
 
 import de.greenrobot.event.EventBus;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by LTE on 2/5/2016.
@@ -36,6 +35,11 @@ public class SocialManager extends BaseManager{
     public static final String TAG = SocialManager.class.getSimpleName() ;
     public static String lat = Utils.BLANK;
     public static  String lng = Utils.BLANK;
+
+    public static String STATE_INBOUND = "inbound";
+    public static String STATE_SUGGEST = "suggest";
+    public static String LAST_STATE_CARD = Utils.BLANK;
+    public static boolean isInSocial = false;
 
     public static void iniSocialService(){
         socialInterface = getRetrofit().create(SocialInterface.class);
@@ -60,11 +64,12 @@ public class SocialManager extends BaseManager{
         getInstance().postLocation(Utils.URL_POST_LOCATION, postLocationModel).enqueue(callback);
     }
 
+
     public static void loaderSocialFeed(String fb_id, String gender_interest){
         /*try {
             getSocialFeed(fb_id, gender_interest, new CustomCallback() {
                 @Override
-                public void onCustomCallbackReponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackReponse(Response response) {
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());
                     Log.d("res", responses);
@@ -88,19 +93,20 @@ public class SocialManager extends BaseManager{
         }*/
 
         try {
+            Utils.d(TAG, "load social feed");
             getSocialFeed(fb_id, gender_interest, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
                     //String header = String.valueOf(response.code());
-                    String responses = new Gson().toJson(response.body());
-                    Utils.d(TAG, responses);
-
+                    //String responses = new Gson().toJson(response.body());
+                    //Utils.d(TAG, responses);
 
                     if(response.code()==Utils.CODE_SUCCESS){
                         SocialModel dataTemp = (SocialModel) response.body();
                         EventBus.getDefault().post(dataTemp);
                     }else{
-                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_FEED, "Empty data"));
+                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_FEED
+                                , App.getInstance().getResources().getString(R.string.empty_social)));
                     }
 
                 }
@@ -124,7 +130,7 @@ public class SocialManager extends BaseManager{
         try {
             getSocialMatch(fb_id, from_id, type, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
 
                     //String header = String.valueOf(response.code());
                     //String responses = new Gson().toJson(response.body());
@@ -165,7 +171,7 @@ public class SocialManager extends BaseManager{
         try {
             getSocialMatch(fb_id, from_id, type, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
 
                     //String header = String.valueOf(response.code());
                     //String responses = new Gson().toJson(response.body());
@@ -228,11 +234,12 @@ public class SocialManager extends BaseManager{
             app.trackMixPanelEvent("Passed Feed Item");
         }
     }
+
     public static void loaderSocialMatchAsync(String fb_id, String from_id, final String type, final boolean confirm){
         try {
             getSocialMatch(fb_id, from_id, type, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
                     trackMixPanel(confirm);
                     if (response.code() == Utils.CODE_SUCCESS) {
                         Success2Model dataTemp = (Success2Model) response.body();
@@ -264,7 +271,7 @@ public class SocialManager extends BaseManager{
         try {
             postLocation(postLocationModel, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
 
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());

@@ -10,16 +10,27 @@
     android:layout_height="match_parent"
     android:background="@color/grayLight">
 
-    <com.lorentzos.flingswipe.SwipeFlingAdapterView
+    <com.jiggie.android.view.CustomSwipeFlingAdapterView
         android:id="@+id/fling_adapter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_marginBottom="?attr/actionBarSize"
+        app:allow_child_input_c="true"
+        app:max_visible_c="4"
+        app:min_adapter_stack_c="3"
+        app:rotation_degrees_c="16" />
 
+
+    <!--<com.lorentzos.flingswipe.SwipeFlingAdapterView
+        android:id="@+id/fling_adapter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="?attr/actionBarSize"
         app:max_visible="4"
         app:min_adapter_stack="3"
-        app:rotation_degrees="16" />
+        app:rotation_degrees="16"  />-->
 
     <!--<ListView
         android:id="@+id/tempListView"
@@ -29,14 +40,14 @@
         android:layout_marginRight="25dp"
         android:visibility="gone"/>-->
 
-    <!--<FrameLayout
+    <FrameLayout
         android:id="@+id/cardEmpty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/padding_standard">
 
         <include layout="@layout/card_social_empty" />
-    </FrameLayout>-->
+    </FrameLayout>
 
     <ProgressBar
         android:id="@id/progressBar"

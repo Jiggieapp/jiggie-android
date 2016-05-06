@@ -1,5 +1,6 @@
 package com.jiggie.android.component.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
@@ -8,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,6 +18,7 @@ import com.jiggie.android.R;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.manager.SocialManager;
+import com.jiggie.android.manager.TooltipsManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.SocialModel;
 
@@ -34,12 +35,14 @@ public class SocialCardNewAdapter extends BaseAdapter {
     private final static String TAG = SocialCardNewAdapter.class.getSimpleName();
     ArrayList<SocialModel.Data.SocialFeeds> data;
     Context context;
+    Activity a;
 
     public SocialCardNewAdapter(ArrayList<SocialModel.Data.SocialFeeds> data
-            , Context mContext, OnSocialCardClickListener onSocialCardClickListener) {
+            , Context mContext, OnSocialCardClickListener onSocialCardClickListener, Activity a) {
         this.data = data;
         context = mContext;
         this.onSocialCardClickListener = onSocialCardClickListener;
+        this.a = a;
     }
 
 
@@ -99,6 +102,17 @@ public class SocialCardNewAdapter extends BaseAdapter {
             holder.generalTxtConnect.setText(
                     context.getResources().getString(R.string.interested_ask));
             holder.chat_icon.setVisibility(View.VISIBLE);
+
+            SocialManager.LAST_STATE_CARD = SocialManager.STATE_INBOUND;
+                if(SocialManager.isInSocial){
+                    if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_INBOUND)){
+            if(position==0){
+                TooltipsManager.initTooltipWithAnchor(a, holder.generalBtnYes, a.getString(R.string.tooltip_yes_inbound), Utils.myPixel(a, 380));
+                TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_INBOUND, true);
+            }
+
+                    }
+                }
         } else {
             holder.generalTxtEvent.setText(model.getEvent_name());
             holder.generalTxtUser.setText(context.getString(R.string.user_viewing
@@ -108,6 +122,17 @@ public class SocialCardNewAdapter extends BaseAdapter {
             holder.generalBtnYes.setText(context.getResources().getString(R.string.connect));
             holder.generalBtnNo.setText(context.getResources().getString(R.string.skip));
             holder.chat_icon.setVisibility(View.GONE);
+
+            SocialManager.LAST_STATE_CARD = SocialManager.STATE_SUGGEST;
+                if(SocialManager.isInSocial){
+                    if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_SUGGESTED)){
+            if(position==0){
+                TooltipsManager.initTooltipWithAnchor(a, holder.generalBtnYes, a.getString(R.string.tooltip_yes_suggested), Utils.myPixel(a, 380));
+                TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_SUGGESTED, true);
+            }
+
+                    }
+                }
         }
 
 
@@ -161,8 +186,10 @@ public class SocialCardNewAdapter extends BaseAdapter {
             onSocialCardClickListener.onYesClick();
         }
 
-        /*@OnClick(R.id.card_general)
-        public void cardGeneralOnClick() { onSocialCardClickListener.onGeneralClick(); }*/
+        @OnClick(R.id.imageUserGeneral)
+        public void cardGeneralOnClick() {
+           // onSocialCardClickListener.onGeneralClick();
+        }
     }
 
     OnSocialCardClickListener onSocialCardClickListener;

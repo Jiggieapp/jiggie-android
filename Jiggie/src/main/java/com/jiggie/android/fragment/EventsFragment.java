@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -105,7 +106,7 @@ public class EventsFragment extends Fragment
         }
 
         if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_EVENT, false)) {
-            showWalkthroughDialog();
+            //showWalkthroughDialog();
         }
     }
 
@@ -262,8 +263,6 @@ public class EventsFragment extends Fragment
         this.viewPagerEvents.setPagingEnabled(true);
         this.refreshLayout.setOnRefreshListener(this);
         super.setHasOptionsMenu(true);
-
-
     }
 
     @Override

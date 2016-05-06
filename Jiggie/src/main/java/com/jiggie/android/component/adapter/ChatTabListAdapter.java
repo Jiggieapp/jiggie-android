@@ -12,13 +12,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.model.ChatListModel;
 import com.jiggie.android.model.Common;
-import com.jiggie.android.model.Conversation;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import java.text.ParseException;
 import java.util.ArrayList;

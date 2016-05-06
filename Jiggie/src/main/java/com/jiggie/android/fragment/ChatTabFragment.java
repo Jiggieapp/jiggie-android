@@ -28,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.chat.ChatActivity;
@@ -41,7 +42,6 @@ import com.jiggie.android.manager.WalkthroughManager;
 import com.jiggie.android.model.ChatActionModel;
 import com.jiggie.android.model.ChatListModel;
 import com.jiggie.android.model.Conversation;
-import com.facebook.AccessToken;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.PostWalkthroughModel;
 
@@ -97,7 +97,7 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         App.getInstance().trackMixPanelEvent("Conversations List");
 
         if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_CHAT, false)) {
-            showWalkthroughDialog();
+            //showWalkthroughDialog();
         }
 
         //if ((this.adapter != null) && (this.adapter.getItemCount() == 0)||ChatManager.NEED_REFRESH_CHATLIST)
@@ -402,7 +402,8 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         dialogWalkthrough.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogWalkthrough.setContentView(R.layout.walkthrough_screen);
         dialogWalkthrough.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialogWalkthrough.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        dialogWalkthrough.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT
+                , WindowManager.LayoutParams.MATCH_PARENT);
 
         RelativeLayout layout = (RelativeLayout)dialogWalkthrough.findViewById(R.id.layout_walkthrough);
         ImageView imgWk = (ImageView)dialogWalkthrough.findViewById(R.id.img_wk);

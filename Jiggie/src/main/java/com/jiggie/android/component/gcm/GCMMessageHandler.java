@@ -15,8 +15,6 @@ import com.jiggie.android.R;
 import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.activity.chat.ChatActivity;
 import com.jiggie.android.activity.event.EventDetailActivity;
-import com.jiggie.android.component.Utils;
-import com.jiggie.android.manager.ChatManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.Conversation;
 

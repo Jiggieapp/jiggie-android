@@ -5,12 +5,10 @@ import android.content.Context;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 
 import com.jiggie.android.R;
-import com.jiggie.android.component.Utils;
 
 /**
  * Created by anton on 11/12/15.

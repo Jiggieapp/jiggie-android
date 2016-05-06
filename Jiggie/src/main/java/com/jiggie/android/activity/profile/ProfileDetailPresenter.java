@@ -1,7 +1,6 @@
 package com.jiggie.android.activity.profile;
 
 import android.content.ContentResolver;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 
@@ -21,4 +20,7 @@ public interface ProfileDetailPresenter {
     void onFinishTakePhoto(int requestCode, Uri uri, ContentResolver contentResolver);
 
     void onFinishTakeKitkatPhoto(int requestCode, Uri uri, int takeFlags, ContentResolver contentResolver, Cursor imageCursor);
+
+    void onImageClick(int position);
+
 }

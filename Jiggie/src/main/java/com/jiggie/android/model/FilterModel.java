@@ -1,10 +1,5 @@
 package com.jiggie.android.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import java.util.ArrayList;
-
 public final class FilterModel {
     public final long response;
     public final String msg;
