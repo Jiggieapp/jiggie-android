@@ -493,7 +493,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     private void setSelected(ViewHolder holder, boolean selected, String text) {
         if (selected) {
             if (text.equalsIgnoreCase("Art & Culture")) {
-                holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_red));
+                holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_red_f));
                 holder.textView.setTextColor(getResources().getColor(R.color.pink));
                 holder.checkView.setImageResource(R.drawable.ic_tick_pink);
                 //holder.checkView.setImageResource(R.mipmap.ic_check);
@@ -513,7 +513,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
                 holder.checkView.setImageResource(R.drawable.ic_tick_blue);
                 //holder.checkView.setImageResource(R.mipmap.ic_check);
             } else if (text.equalsIgnoreCase("Food & Drink")) {
-                holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_yellow));
+                holder.container.setBackground(getResources().getDrawable(R.drawable.btn_yellow_tag_f));
                 holder.textView.setTextColor(getResources().getColor(R.color.yellow_warning));
                 holder.checkView.setImageResource(R.drawable.ic_tick_yellow);
                 //holder.checkView.setImageResource(R.mipmap.ic_check);
