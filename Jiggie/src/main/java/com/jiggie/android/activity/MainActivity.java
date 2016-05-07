@@ -102,6 +102,12 @@ public class MainActivity extends AppCompatActivity
             final SharedPreferences pref = App.getSharedPreferences();
             pref.edit().putBoolean(Utils.IS_FIRST_RUN, false).commit();
             App.getInstance().trackMixPanelEvent("Install");
+
+            //TOOLTIP PART===============
+            //TooltipsManager.clearTimeTooltip();
+            //TooltipsManager.validateTime(Calendar.getInstance().getTimeInMillis());
+
+            //END OF TOOLTIP PART===============
         }
 
         //TOOLTIP PART===============

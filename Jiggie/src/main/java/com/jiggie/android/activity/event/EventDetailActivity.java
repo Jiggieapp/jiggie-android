@@ -298,11 +298,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
         txtCountLike.setText(String.valueOf(count_like));
 
-        if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_LIKE)){
-            TooltipsManager.initTooltipWithAnchor(this, imgLove, getString(R.string.tooltip_like), Utils.myPixel(this, 380));
-            TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_LIKE, true);
-        }
-
         if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_SHARE)){
             TooltipsManager.initTooltipWithAnchor(this, imgShare, getString(R.string.tooltip_share), Utils.myPixel(this, 380));
             TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_SHARE, true);
@@ -534,8 +529,14 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
                 if (eventDetail.is_liked()) {
                     imgLove.setSelected(true);
+                    TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_LIKE, false);
+
                 } else {
                     imgLove.setSelected(false);
+                    if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_LIKE)){
+                        TooltipsManager.initTooltipWithAnchor(this, imgLove, getString(R.string.tooltip_like), Utils.myPixel(this, 380));
+                        TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_LIKE, true);
+                    }
                 }
 
             } catch (ParseException e) {

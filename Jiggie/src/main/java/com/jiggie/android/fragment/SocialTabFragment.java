@@ -120,7 +120,6 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     public static final String TAG = SocialTabFragment.class.getSimpleName();
     private Dialog dialogWalkthrough;
     private SocialCardNewAdapter socialCardNewAdapter;
-    boolean isFirstTIme = true;
 
     @Override
     public String getTitle() {
@@ -544,6 +543,11 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         if (this.progressBar.getVisibility() == View.VISIBLE)
             this.progressBar.setVisibility(View.GONE);
         dismissProgressDialog();
+    }
+
+    public void refreshCard(){
+        socialCardNewAdapter.notifyDataSetChanged();
+        flingAdapterView.setAdapter(socialCardNewAdapter);
     }
 
     /*public void onEvent(EventDetailModel message){

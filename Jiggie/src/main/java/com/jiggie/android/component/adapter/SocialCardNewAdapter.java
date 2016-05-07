@@ -104,15 +104,15 @@ public class SocialCardNewAdapter extends BaseAdapter {
             holder.chat_icon.setVisibility(View.VISIBLE);
 
             SocialManager.LAST_STATE_CARD = SocialManager.STATE_INBOUND;
-                if(SocialManager.isInSocial){
-                    if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_INBOUND)){
-            if(position==data.size()-1){
-                TooltipsManager.initTooltipWithAnchor(a, holder.generalBtnYes, a.getString(R.string.tooltip_yes_inbound), Utils.myPixel(a, 380));
-                TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_INBOUND, true);
-            }
+            if(SocialManager.isInSocial){
+                if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_INBOUND)){
+                    //if(position==data.size()-1){
+                        TooltipsManager.initTooltipWithAnchor(a, holder.generalBtnYes, a.getString(R.string.tooltip_yes_inbound), Utils.myPixel(a, 380));
+                        TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_INBOUND, true);
+                    //}
 
-                    }
                 }
+            }
         } else {
             holder.generalTxtEvent.setText(model.getEvent_name());
             holder.generalTxtUser.setText(context.getString(R.string.user_viewing
@@ -124,15 +124,15 @@ public class SocialCardNewAdapter extends BaseAdapter {
             holder.chat_icon.setVisibility(View.GONE);
 
             SocialManager.LAST_STATE_CARD = SocialManager.STATE_SUGGEST;
-                if(SocialManager.isInSocial){
-                    if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_SUGGESTED)){
-            if(position==data.size()-1){
-                TooltipsManager.initTooltipWithAnchor(a, holder.generalBtnYes, a.getString(R.string.tooltip_yes_suggested), Utils.myPixel(a, 380));
-                TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_SUGGESTED, true);
-            }
+            if(SocialManager.isInSocial){
+                if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_SUGGESTED)){
+                    //if(position==data.size()-1){
+                        TooltipsManager.initTooltipWithAnchor(a, holder.generalBtnYes, a.getString(R.string.tooltip_yes_suggested), Utils.myPixel(a, 380));
+                        TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_SUGGESTED, true);
+                    //}
 
-                    }
                 }
+            }
         }
 
 
