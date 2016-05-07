@@ -79,8 +79,6 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     Toolbar toolbar;
     @Bind(R.id.tab)
     TabLayout tab;
-    /*@Bind(R.id.bottom_sheet)
-    RelativeLayout bottomSheet;*/
     @Bind(R.id.fab)
     FloatingActionButton fab;
     @Bind(R.id.flowLayout)
@@ -225,10 +223,10 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                /*if(newState==BottomSheetBehavior.STATE_SETTLING){
+                if(newState==BottomSheetBehavior.STATE_SETTLING){
                     boolean isShow = bottomSheet.isShown();
                     behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                }*/
+                }
                 Log.d("state", String.valueOf(newState));
             }
 
@@ -241,9 +239,6 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.myPixel(getActivity(), 156), 0);
-                bottomSheet.setLayoutParams(layoutParams);*/
-
                 if (isFirstClick) {
                     isFirstClick = false;
                     behavior.setPeekHeight(Utils.myPixel(getActivity(), 156));
@@ -265,7 +260,6 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
 
             }
         });
-        //behavior.setHideable(true);
 
         viewShadow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -401,10 +395,10 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
                     final ViewHolder holder = new ViewHolder(getActivity(), view, res);
 
                     holder.textView.setText(holder.text);
-                    //holder.textView.setTextColor(getResources().getColor(android.R.color.white));
-                    //holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_blue));
-                    //selectedItems.add(holder.text);
+
+
                     flowLayout.addView(view);
+
                     if (result.contains(res)) {
                         selectedItems.add(res);
                         //holder.checkView.setVisibility(View.GONE);
@@ -462,13 +456,6 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     }
 
     private void onTagClick(ViewHolder holder) {
-        /*final boolean selected = holder.checkView.getVisibility() != View.VISIBLE;
-        if (selected) {
-            this.selectedItems.add(holder.text);
-        } else {
-            this.selectedItems.remove(holder.text);
-        }
-        setSelected(holder, selected, holder.text);*/
 
         boolean selected = holder.checkView.getVisibility() != View.VISIBLE;
         boolean doNothing = false;
@@ -493,7 +480,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     private void setSelected(ViewHolder holder, boolean selected, String text) {
         if (selected) {
             if (text.equalsIgnoreCase("Art & Culture")) {
-                holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_red));
+                holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_red_f));
                 holder.textView.setTextColor(getResources().getColor(R.color.pink));
                 holder.checkView.setImageResource(R.drawable.ic_tick_pink);
                 //holder.checkView.setImageResource(R.mipmap.ic_check);
@@ -513,7 +500,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
                 holder.checkView.setImageResource(R.drawable.ic_tick_blue);
                 //holder.checkView.setImageResource(R.mipmap.ic_check);
             } else if (text.equalsIgnoreCase("Food & Drink")) {
-                holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_yellow));
+                holder.container.setBackground(getResources().getDrawable(R.drawable.btn_yellow_tag_f));
                 holder.textView.setTextColor(getResources().getColor(R.color.yellow_warning));
                 holder.checkView.setImageResource(R.drawable.ic_tick_yellow);
                 //holder.checkView.setImageResource(R.mipmap.ic_check);
