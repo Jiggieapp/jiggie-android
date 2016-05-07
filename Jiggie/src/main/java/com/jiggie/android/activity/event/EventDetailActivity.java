@@ -82,6 +82,7 @@ import java.util.concurrent.ExecutionException;
 import butterknife.Bind;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
+import it.sephiroth.android.library.tooltip.Tooltip;
 import it.sephiroth.android.library.widget.HListView;
 import rx.Observable;
 import rx.Subscriber;
@@ -299,7 +300,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         txtCountLike.setText(String.valueOf(count_like));
 
         if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_SHARE)){
-            TooltipsManager.initTooltipWithAnchor(this, imgShare, getString(R.string.tooltip_share), Utils.myPixel(this, 380));
+            TooltipsManager.initTooltipWithAnchor(this, imgShare, getString(R.string.tooltip_share), Utils.myPixel(this, 380), Tooltip.Gravity.BOTTOM);
             TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_SHARE, true);
         }
 
@@ -534,7 +535,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 } else {
                     imgLove.setSelected(false);
                     if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_LIKE)){
-                        TooltipsManager.initTooltipWithAnchor(this, imgLove, getString(R.string.tooltip_like), Utils.myPixel(this, 380));
+                        TooltipsManager.initTooltipWithAnchor(this, imgLove, getString(R.string.tooltip_like), Utils.myPixel(this, 380), Tooltip.Gravity.BOTTOM);
                         TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_LIKE, true);
                     }
                 }

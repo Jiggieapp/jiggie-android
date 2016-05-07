@@ -164,9 +164,9 @@ public class TooltipsManager {
                 can = false;
             }else if(CAN_SHOW_TOOLTIP_SOCIAL_TAB){
                 can = false;
-            }else if(CAN_SHOW_TOOLTIP_SHARE){
+            }/*else if(CAN_SHOW_TOOLTIP_SHARE){
                 can = false;
-            }else{
+            }*/else{
                 if(CAN_SHOW_YES_SUGGESTED){
                     if (ALREADY_SHOW_YES_SUGGESTED_TODAY){
                         can = false;
@@ -184,11 +184,11 @@ public class TooltipsManager {
                 can = false;
             }else if(CAN_SHOW_TOOLTIP_SOCIAL_TAB){
                 can = false;
-            }else if(CAN_SHOW_TOOLTIP_SHARE){
+            }/*else if(CAN_SHOW_TOOLTIP_SHARE){
                 can = false;
             }else if(CAN_SHOW_YES_SUGGESTED){
                 can = false;
-            }else{
+            }*/else{
                 if(CAN_SHOW_YES_INBOUND){
                     if (ALREADY_SHOW_YES_INBOUND_TODAY){
                         can = false;
@@ -272,10 +272,10 @@ public class TooltipsManager {
                 .putBoolean(ALREADY_TOOLTIP_SHARE, ALREADY_SHOW_TOOLTIP_SHARE_TODAY).putBoolean(ALREADY_TOOLTIP_YES_SUGGESTED, ALREADY_SHOW_YES_SUGGESTED_TODAY).putBoolean(ALREADY_TOOLTIP_YES_INBOUND, ALREADY_SHOW_YES_INBOUND_TODAY).commit();
     }
 
-    public static void initTooltipWithAnchor(Context a, View viewAnchor, String text, int width){
+    public static void initTooltipWithAnchor(Context a, View viewAnchor, String text, int width, Tooltip.Gravity gravity){
         tooltip = Tooltip.make(a,
                 new Tooltip.Builder(101)
-                        .anchor(viewAnchor, Tooltip.Gravity.BOTTOM)
+                        .anchor(viewAnchor, gravity)
                         .closePolicy(new Tooltip.ClosePolicy()
                                 .insidePolicy(true, false)
                                 .outsidePolicy(true, false), 1 * 60 * 1000)
@@ -292,10 +292,10 @@ public class TooltipsManager {
         tooltip.show();
     }
 
-    public static void initTooltipWithPoint(Context a, Point point, String text, int width){
+    public static void initTooltipWithPoint(Context a, Point point, String text, int width, Tooltip.Gravity gravity){
         tooltip = Tooltip.make(a,
                 new Tooltip.Builder(101)
-                        .anchor(point, Tooltip.Gravity.BOTTOM)
+                        .anchor(point, gravity)
                         .closePolicy(new Tooltip.ClosePolicy()
                                 .insidePolicy(true, false)
                                 .outsidePolicy(true, false), 1 * 3600 * 1000)

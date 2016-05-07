@@ -103,7 +103,7 @@ public class SocialCardNewAdapter extends BaseAdapter {
                     context.getResources().getString(R.string.interested_ask));
             holder.chat_icon.setVisibility(View.VISIBLE);
 
-            SocialManager.LAST_STATE_CARD = SocialManager.STATE_INBOUND;
+            /*SocialManager.LAST_STATE_CARD = SocialManager.STATE_INBOUND;
             if(SocialManager.isInSocial){
                 if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_INBOUND)){
                     //if(position==data.size()-1){
@@ -112,7 +112,7 @@ public class SocialCardNewAdapter extends BaseAdapter {
                     //}
 
                 }
-            }
+            }*/
         } else {
             holder.generalTxtEvent.setText(model.getEvent_name());
             holder.generalTxtUser.setText(context.getString(R.string.user_viewing
@@ -123,7 +123,7 @@ public class SocialCardNewAdapter extends BaseAdapter {
             holder.generalBtnNo.setText(context.getResources().getString(R.string.skip));
             holder.chat_icon.setVisibility(View.GONE);
 
-            SocialManager.LAST_STATE_CARD = SocialManager.STATE_SUGGEST;
+            /*SocialManager.LAST_STATE_CARD = SocialManager.STATE_SUGGEST;
             if(SocialManager.isInSocial){
                 if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_SUGGESTED)){
                     //if(position==data.size()-1){
@@ -132,15 +132,25 @@ public class SocialCardNewAdapter extends BaseAdapter {
                     //}
 
                 }
-            }
+            }*/
         }
 
+        setBtnYesGeneral(holder.generalBtnYes);
 
         return convertView;
     }
 
     public void removeFirstObject() {
 
+    }
+
+    Button lastYes;
+    public void setBtnYesGeneral(Button btn) {
+        lastYes = btn;
+    }
+
+    public Button getBtnYesGeneral(){
+        return lastYes;
     }
 
     static class ViewHolder {

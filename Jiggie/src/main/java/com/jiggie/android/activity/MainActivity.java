@@ -105,14 +105,14 @@ public class MainActivity extends AppCompatActivity
 
             //TOOLTIP PART===============
             //TooltipsManager.clearTimeTooltip();
-            //TooltipsManager.validateTime(Calendar.getInstance().getTimeInMillis());
+            TooltipsManager.validateTime(Calendar.getInstance().getTimeInMillis());
 
             //END OF TOOLTIP PART===============
         }
 
         //TOOLTIP PART===============
-        TooltipsManager.clearTimeTooltip();
-        TooltipsManager.validateTime(Calendar.getInstance().getTimeInMillis());
+        /*TooltipsManager.clearTimeTooltip();
+        TooltipsManager.validateTime(Calendar.getInstance().getTimeInMillis());*/
 
         //END OF TOOLTIP PART===============
 
