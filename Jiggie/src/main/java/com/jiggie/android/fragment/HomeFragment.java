@@ -613,10 +613,12 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
             SocialManager.isInSocial = false;
         } else if (position == SOCIAL_TAB) {
             fab.setVisibility(View.GONE);
+
             TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_SOCIAL_TAB, false);
             SocialManager.isInSocial = true;
             SocialTabFragment sc = (SocialTabFragment)this.adapter.fragments[position];
             sc.checkTooltipsInSug();
+
             //sc.refreshCard();
             //Log.d("", "");
             bottomSheet.setVisibility(View.GONE);
