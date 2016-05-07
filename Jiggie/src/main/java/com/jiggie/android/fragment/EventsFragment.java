@@ -173,6 +173,7 @@ public class EventsFragment extends Fragment
             super(fm);
             Bundle bundle = new Bundle();
             bundle.putInt("position", 0);
+
             todayFragment = new EventTabFragment();
             todayFragment.setArguments(bundle);
 
@@ -262,7 +263,18 @@ public class EventsFragment extends Fragment
         this.viewPagerEvents.getViewTreeObserver().addOnGlobalLayoutListener(this);
         this.viewPagerEvents.setPagingEnabled(true);
         this.refreshLayout.setOnRefreshListener(this);
+
+        //this.refreshLayout.canChildScrollUp();
+        //this.refreshLayout.setNestedScrollingEnabled(true);
+
         super.setHasOptionsMenu(true);
+
+
+        todayFragment.handleSwipeIssue(refreshLayout);
+
+        tomorrowFragment.handleSwipeIssue(refreshLayout);
+
+        upcomingFragment.handleSwipeIssue(refreshLayout);
     }
 
     @Override

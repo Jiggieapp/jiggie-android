@@ -15,6 +15,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -107,7 +108,7 @@ public class EventTabFragment extends Fragment
     private static final String TAG = EventTabFragment.class.getSimpleName();
     private View failedView;
     private Dialog dialogWalkthrough;
-
+    SwipeRefreshLayout swipeRefreshLayout;
 
     public EventTabFragment() {
 
@@ -175,6 +176,30 @@ public class EventTabFragment extends Fragment
             txtWkDesc.setText(R.string.wk_event_desc);
         }*/
         this.onTabSelected();
+
+        /*recyclerView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if (listView.getChildAt(0) != null) {
+                    swipeRefreshLayout.ca
+                }
+            }
+        });*/
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int topRowVerticalPosition =
+                        (recyclerView == null || recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
+                swipeRefreshLayout.setEnabled(topRowVerticalPosition >= 0);
+
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
     }
 
 
@@ -565,5 +590,9 @@ public class EventTabFragment extends Fragment
             Utils.event_id_refresh = Utils.BLANK;
             Utils.count_like_new = 0;
         }
+    }
+
+    public void handleSwipeIssue(final SwipeRefreshLayout swipeRefreshLayout){
+        this.swipeRefreshLayout = swipeRefreshLayout;
     }
 }
