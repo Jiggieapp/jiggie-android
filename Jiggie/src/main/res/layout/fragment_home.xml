@@ -78,6 +78,14 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <!--<android.support.v4.view.ViewPager-->
+    <com.jiggie.android.view.NonSwipeableViewPager
+        android:id="@+id/viewpagerw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:borderWidth="0dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
     <View
         android:id="@+id/view_shadow"
         android:layout_width="match_parent"
@@ -120,13 +128,5 @@
         app:layout_anchorGravity="top|right|end"
         android:elevation="4dp"
         />
-
-    <!--<android.support.v4.view.ViewPager-->
-    <com.jiggie.android.view.NonSwipeableViewPager
-        android:id="@+id/viewpagerw"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:borderWidth="0dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 </android.support.design.widget.CoordinatorLayout>
