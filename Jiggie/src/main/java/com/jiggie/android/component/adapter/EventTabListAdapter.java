@@ -126,8 +126,17 @@ public class EventTabListAdapter
                 holder.relLike.setVisibility(View.GONE);
             }
 
-            holder.txtPriceTitle.setShadowLayer(1.6f, 1.5f, 1.3f, context.getResources().getColor(android.R.color.black));
-            holder.txtPriceFill.setShadowLayer(1.6f, 1.5f, 1.3f, context.getResources().getColor(android.R.color.black));
+            if(item.getLowest_price() == 0)
+            {
+                holder.txtPriceFill.setVisibility(View.GONE);
+                holder.txtPriceTitle.setVisibility(View.GONE);
+            }
+            else
+            {
+                holder.txtPriceTitle.setShadowLayer(1.6f, 1.5f, 1.3f, context.getResources().getColor(android.R.color.black));
+                holder.txtPriceFill.setShadowLayer(1.6f, 1.5f, 1.3f, context.getResources().getColor(android.R.color.black));
+                holder.txtPriceFill.setText(item.getLowest_price());
+            }
 
             /*if(position==0){
                 Utils.initTooltipWithPoint(fragment.getActivity(), new Point(Utils.getCenterPoint(fragment.getActivity())[0], Utils.getCenterPoint(fragment.getActivity())[1]), fragment.getActivity().getString(R.string.tooltip_event_list), Utils.myPixel(fragment.getActivity(), 320));

@@ -18,6 +18,7 @@ public class Common {
     public static final String FIELD_GENDER = "gender";
     public static final String FIELD_CHAT = "chat";
     public static final String FIELD_FEED = "feed";
+    public static final String FIELD_EVENT_LOWEST_PRICE = "lowest_price";
 
     public static String FIELD_MATCH_ME = "matchme";
     public static String FIELD_PHONE = "phone";

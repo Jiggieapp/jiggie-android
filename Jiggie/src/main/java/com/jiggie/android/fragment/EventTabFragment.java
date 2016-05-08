@@ -291,63 +291,9 @@ public class EventTabFragment extends Fragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        /*inflater.inflate(R.menu.menu_event, menu);
-        final MenuItem searchMenu = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenu);
-        final Handler handler = new Handler();*/
-        /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String query) {
-                searchText = ((TextUtils.isEmpty(query)) || (query.trim().length() == 0)) ? null : query.trim();
-                handler.removeCallbacksAndMessages(null);
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        //filter(true);
-                    }
-                }, getResources().getInteger(R.integer.event_search_delay));
-                return true;
-            }
-        });*/
-        /*MenuItemCompat.setOnActionExpandListener(searchMenu, new MenuItemCompat.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                return true;
-            }
-
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                searchText = null;
-                //filter(true);
-                return true;
-            }
-        });
-        super.onCreateOptionsMenu(menu, inflater);
-        this.searchText = null;*/
 
         super.onCreateOptionsMenu(menu, inflater);
     }
-
-    /*@Override
-    public void onRefresh() {
-        if (super.getContext() == null) {
-            // fragment has been destroyed.
-            return;
-        } else if (this.isLoading) {
-            // refresh is ongoing
-            return;
-        }
-        this.isLoading = true;
-        this.refreshLayout.setRefreshing(true);
-        final AccessToken token = AccessToken.getCurrentAccessToken();
-
-        EventManager.loaderEvent(token.getUserId());
-    }*/
 
     @Override
     public void onDestroyView() {

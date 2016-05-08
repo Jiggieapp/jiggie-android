@@ -142,7 +142,6 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     public void onTabSelected() {
         //wandy 03-03-2016
         //currentSetting = AccountManager.loadSetting();
-        Utils.d(TAG, "on Tab selected");
         boolean a = AccountManager.anySettingChange;
         if (this.current == null) {
             /*if (switchSocialize.isChecked()) {
@@ -286,6 +285,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         //setHomeTitle();
         isRefreshing = false;
         fillSocialCard(message);
+
     }
 
     ArrayList<SocialModel.Data.SocialFeeds> temp = new ArrayList<>();
@@ -303,7 +303,6 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     protected void fillSocialCard(SocialModel message) {
         this.progressBar.setVisibility(View.GONE);
         this.cardEmpty.setVisibility(View.GONE);
-
         for (final SocialModel.Data.SocialFeeds item : message.getData().getSocial_feeds()) {
             //temp.add(item);
             final boolean isExist = checkAlreadyExist(item.getFrom_fb_id());
@@ -783,6 +782,11 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                         getActivity().sendBroadcast(new Intent(getString(R.string.broadcast_social_chat)));
                         startActivity(intent);
 
+                        if(socialCardNewAdapter.getCount() == 0)
+                        {
+                            progressBar.setVisibility(View.GONE);
+                            cardEmpty.setVisibility(View.VISIBLE);
+                        }
                     }
 
                     @Override
@@ -797,6 +801,11 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                 (AccessToken.getCurrentAccessToken().getUserId()
                         , fromFbId, confirm ? "approved" : "denied");*/
         socialCardNewAdapter.deleteFirstItem();
+        if(socialCardNewAdapter.getCount() == 0)
+        {
+            this.progressBar.setVisibility(View.GONE);
+            this.cardEmpty.setVisibility(View.VISIBLE);
+        }
         SocialManager.loaderSocialMatchAsync(AccessToken.getCurrentAccessToken().getUserId()
                 , fromFbId, confirm ? "approved" : "denied", confirm);
     }

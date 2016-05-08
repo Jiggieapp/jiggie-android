@@ -19,7 +19,7 @@ public class EventModel {
         this.data = data;
     }
 
-    public static class Data{
+    public static class Data {
 
         ArrayList<Events> events;
 
@@ -44,6 +44,15 @@ public class EventModel {
             String date_day;
             String description;
             ArrayList<String> photos;
+            Integer lowest_price;
+
+            public Integer getLowest_price() {
+                return lowest_price;
+            }
+
+            public void setLowest_price(Integer lowest_price) {
+                this.lowest_price = lowest_price;
+            }
 
             public String getDescription() {
                 return description;
@@ -67,10 +76,13 @@ public class EventModel {
                 this.date_day = in.readString();
                 this.photos = in.readArrayList(null);
                 this.description = in.readString();
+                this.lowest_price = in.readInt();
             }
 
             @Override
-            public int describeContents() { return 0; }
+            public int describeContents() {
+                return 0;
+            }
 
             @Override
             public void writeToParcel(Parcel dest, int flags) {
@@ -87,13 +99,19 @@ public class EventModel {
                 dest.writeString(this.date_day);
                 dest.writeList(this.photos);
                 dest.writeString(this.description);
+                dest.writeInt(this.lowest_price);
             }
 
             public static final Creator<Events> CREATOR = new Creator<Events>() {
                 @Override
-                public Events createFromParcel(Parcel in) { return new Events(in); }
+                public Events createFromParcel(Parcel in) {
+                    return new Events(in);
+                }
+
                 @Override
-                public Events[] newArray(int size) { return new Events[size]; }
+                public Events[] newArray(int size) {
+                    return new Events[size];
+                }
             };
 
             public String get_id() {

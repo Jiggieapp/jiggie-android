@@ -107,6 +107,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     ProgressDialog progressDialog;
     boolean isFirstClick = true;
     View bottomSheet;
+     AppCompatActivity activity;
 
     @Nullable
     @Override
@@ -132,7 +133,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
 
         ButterKnife.bind(this, this.rootView);
 
-        final AppCompatActivity activity = (AppCompatActivity) super.getActivity();
+        activity = (AppCompatActivity) super.getActivity();
         //this.toolbar.setNavigationIcon(R.drawable.logo);
         //this.toolbar.getLogo().set;
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
@@ -144,7 +145,6 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         activity.setSupportActionBar(toolbar);
 
         this.adapter = new PageAdapter(this, activity.getSupportFragmentManager());
-        Utils.d(TAG, "onActivityCreated " + adapter.getCount());
         this.viewPager.setOffscreenPageLimit(this.adapter.getCount());
         this.viewPager.setAdapter(this.adapter);
 
@@ -608,12 +608,13 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         }
 
         if (position == CHAT_TAB) {
+            showToolbar();
             fab.setVisibility(View.GONE);
             bottomSheet.setVisibility(View.GONE);
             SocialManager.isInSocial = false;
         } else if (position == SOCIAL_TAB) {
+            showToolbar();
             fab.setVisibility(View.GONE);
-
             TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_SOCIAL_TAB, false);
             SocialManager.isInSocial = true;
             SocialTabFragment sc = (SocialTabFragment)this.adapter.fragments[position];
@@ -630,6 +631,18 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
 
         this.lastSelectedFragment = (TabFragment) this.adapter.fragments[position];
         this.lastSelectedFragment.onTabSelected();
+    }
+
+    private void showToolbar()
+    {
+        CoordinatorLayout coordinator = (CoordinatorLayout) getActivity().findViewById(R.id.cl_main);
+        AppBarLayout appbar = (AppBarLayout) getActivity().findViewById(R.id.appBar);
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appbar.getLayoutParams();
+        AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
+
+        int[] consumed = new int[2];
+        //behavior.onNestedPreScroll(coordinator, appbar, null, 0, -1000, consumed);
+        behavior.onNestedFling(coordinator, appbar, null, 0, -1000, true);
     }
 
     private void startFetchChat() {
