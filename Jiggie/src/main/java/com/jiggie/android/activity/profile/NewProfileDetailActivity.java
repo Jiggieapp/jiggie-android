@@ -170,8 +170,7 @@ public class NewProfileDetailActivity extends ToolbarActivity
     }
 
     @Override
-    public ImageView makeTransparent(int position)
-    {
+    public ImageView makeTransparent(int position) {
         ImageView view = getImageView(position);
         view.setImageAlpha(100);
         view.setScaleType(scaleType);
@@ -180,8 +179,7 @@ public class NewProfileDetailActivity extends ToolbarActivity
 
 
     @Override
-    public ImageView removeTransparent(int position)
-    {
+    public ImageView removeTransparent(int position) {
         ImageView view = getImageView(position);
         view.setImageAlpha(255);
         view.setScaleType(scaleType);
@@ -270,17 +268,22 @@ public class NewProfileDetailActivity extends ToolbarActivity
                             & (Intent.FLAG_GRANT_READ_URI_PERMISSION
                             | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
-                    String id = uri.getLastPathSegment().split(":")[1];
-                    final String[] imageColumns = {MediaStore.Images.Media.DATA};
-                    final String imageOrderBy = null;
+                    try {
+                        String id = uri.getLastPathSegment().split(":")[1];
+                        final String[] imageColumns = {MediaStore.Images.Media.DATA};
+                        final String imageOrderBy = null;
 
-                    Uri urii = getUri();
-                    Cursor imageCursor = managedQuery(urii, imageColumns,
-                            MediaStore.Images.Media._ID + "=" + id, null, imageOrderBy);
+                        Uri urii = getUri();
+                        Cursor imageCursor = managedQuery(urii, imageColumns,
+                                MediaStore.Images.Media._ID + "=" + id, null, imageOrderBy);
 
-                    profilePresenter.onFinishTakeKitkatPhoto(requestCode, uri, takeFlags
-                            , getContentResolver(), imageCursor);
+                        profilePresenter.onFinishTakeKitkatPhoto(requestCode, uri, takeFlags
+                                , getContentResolver(), imageCursor);
+                    } catch (IndexOutOfBoundsException e) {
+                        Utils.d(TAG, "out of bound exception");
+                    }
                 }
+
 
             }
         } else if (resultCode == RESULT_OK && requestCode == EDIT_PROFILE) {
