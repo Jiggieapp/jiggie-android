@@ -346,7 +346,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             if(EventManager.dataLike.size()>0){
                 boolean exist = false;
                 for(int i = 0;i<EventManager.dataLike.size();i++){
-                    String eventId = EventManager.dataLike.get(0).getEvent_id();
+                    String eventId = EventManager.dataLike.get(i).getEvent_id();
                     if(eventId.equals(event_id)){
                         imgLove.setSelected(EventManager.dataLike.get(i).isLiked());
                         exist = true;
@@ -368,7 +368,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     private void setLike(){
         try{
             for(int i = 0;i<EventManager.dataLike.size();i++){
-                String eventId = EventManager.dataLike.get(0).getEvent_id();
+                String eventId = EventManager.dataLike.get(i).getEvent_id();
                 if(eventId.equals(event_id)){
                     EventManager.dataLike.get(i).setIsLiked(imgLove.isSelected());
                     break;
