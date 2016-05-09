@@ -543,9 +543,9 @@ public class MainActivity extends AppCompatActivity
             case R.id.action_support:
                 mailSupport();
                 break;
-            case R.id.action_filter:
+            /*case R.id.action_filter:
                 target = FilterActivity.class;
-                break;
+                break;*/
             case R.id.action_invite:
                 inviteFriends();
                 break;

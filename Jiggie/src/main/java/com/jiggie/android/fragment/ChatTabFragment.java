@@ -140,6 +140,22 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
                 onRefresh();
             }
         });
+
+        //wandy 08-05-2016
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int topRowVerticalPosition =
+                        (recyclerView == null || recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
+                refreshLayout.setEnabled(topRowVerticalPosition >= 0);
+
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
     }
 
     @Override

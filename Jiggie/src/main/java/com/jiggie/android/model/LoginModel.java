@@ -21,6 +21,7 @@ public class LoginModel {
     String email;
     String gender;
     String device_id;
+    String age;
 
     public String getVersion() {
         return version;
@@ -148,5 +149,14 @@ public class LoginModel {
 
     public void setDevice_id(String device_id) {
         this.device_id = device_id;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+
+    public String getAge()
+    {
+        return age;
     }
 }

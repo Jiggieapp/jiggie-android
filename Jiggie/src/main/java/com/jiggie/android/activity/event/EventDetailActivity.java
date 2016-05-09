@@ -718,7 +718,10 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     @OnClick(R.id.rel_desc_more)
     void moreDescOnClick() {
         relDescMore.setVisibility(View.GONE);
-        txtDescription.setText(Html.fromHtml(event_description));
+        if(event_description != null)
+        {
+            txtDescription.setText(Html.fromHtml(event_description));
+        }
     }
 
     @Override
