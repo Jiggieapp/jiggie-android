@@ -91,6 +91,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         urlImage = App.getFacebookImage(toId, width);
                     }
                     //---------
+                    Utils.d(TAG, "profileImage " + urlImage);
 
                     Glide.with(this.activity).load(urlImage).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.imageView) {
                         @Override
@@ -136,7 +137,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        Utils.d(TAG, "itemCount " + items.size());
         return this.items.size();
     }
 

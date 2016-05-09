@@ -45,6 +45,8 @@ public class SocialFilterActivity extends ToolbarActivity implements SocialView 
     RangeBar sliderAgeDouble;
     @Bind(R.id.slider_distance)
     SeekBar sliderLocation;
+    @Bind(R.id.lbl_max_distance)
+    TextView lblMaxDistance;
 
     SocialFilterPresenter presenter;
     MemberSettingResultModel.Data.MemberSettings memberSettings;
@@ -62,11 +64,26 @@ public class SocialFilterActivity extends ToolbarActivity implements SocialView 
         super.bindView();
         super.setBackEnabled(true);
 
-
         presenter = new SocialFilterImplementation(this);
         sliderLocation.setMax(MAX_LOCATION);
-        btnRetryOnClick();
+        sliderLocation.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                lblMaxDistance.setText(progress + " km");
+            }
 
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+        sliderAgeDouble.bringToFront();
+        btnRetryOnClick();
     }
 
     @OnClick(R.id.btnRetry)
@@ -140,7 +157,7 @@ public class SocialFilterActivity extends ToolbarActivity implements SocialView 
         else sliderLocation.setProgress(distance);
 
         if (fromAge > 0 || toAge > 0) {
-            if (fromAge < 12) fromAge = 12;
+            if (fromAge < MIN_AGE) fromAge = MIN_AGE;
             if (toAge > 60) toAge = 60;
             sliderAgeDouble.setRangePinsByValue(fromAge, toAge);
         }

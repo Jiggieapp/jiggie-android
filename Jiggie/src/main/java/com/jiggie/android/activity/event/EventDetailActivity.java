@@ -231,7 +231,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             if (event_pics != null)
                 fillPhotos(event_pics);
 
-            if (event_description != null) {
+            /*if (event_description != null) {
                 String subDes = "";
                 if (event_description.length() > 300) {
                     subDes = event_description.substring(0, 300);
@@ -240,8 +240,30 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 }
 
                 txtDescription.setText(Html.fromHtml(subDes));
-            }
+            }*/
 
+            if (event_description != null) {
+                txtDescription.setText(Html.fromHtml(event_description));
+                txtDescription.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        int lineCnt = txtDescription.getLineCount();
+                        if (lineCnt < 4) {
+                            relDescMore.setVisibility(View.GONE);
+                        } else {
+                            relDescMore.setVisibility(View.VISIBLE);
+
+                            String subDes = "";
+                            if (event_description.length() > 270) {
+                                subDes = event_description.substring(0, 270);
+                            } else {
+                                subDes = event_description;
+                            }
+                            txtDescription.setText(Html.fromHtml(subDes));
+                        }
+                    }
+                });
+            }
             scrollView.setVisibility(View.VISIBLE);
             elementContainers.setVisibility(View.INVISIBLE);
             elementContainers2.setVisibility(View.INVISIBLE);
@@ -287,7 +309,9 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             }
         }
 
-        if (event_name != null) {
+        if (event_name != null)
+
+        {
             super.setToolbarTitle(event_name.toUpperCase(), true);
         }
 
@@ -297,19 +321,33 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         this.txtGuestCounter.setVisibility(View.GONE);
         //this.scrollView.setVisibility(View.INVISIBLE);
         this.collapsingToolbarLayout.setTitleEnabled(false);
-        this.imageGuests = new ImageView[]{imageGuest1, imageGuest2, imageGuest3, imageGuest4};
+        this.imageGuests = new ImageView[]
+
+                {
+                        imageGuest1, imageGuest2, imageGuest3, imageGuest4
+                }
+
+        ;
 
         final FragmentManager fragmentManager = super.getSupportFragmentManager();
-        ((SupportMapFragment) fragmentManager.findFragmentById(R.id.map)).getMapAsync(this);
+        ((SupportMapFragment) fragmentManager.findFragmentById(R.id.map)).
 
-        super.registerReceiver(this.guestInvitedReceiver, new IntentFilter(super.getString(R.string.broadcastGuestInvited)));
+                getMapAsync(this);
+
+        super.
+
+                registerReceiver(this.guestInvitedReceiver, new IntentFilter(super.getString(R.string.broadcastGuestInvited)
+
+                ));
 
         if (file != null && file.exists())
             file.delete();
 
         txtCountLike.setText(String.valueOf(count_like));
 
-        if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_SHARE)) {
+        if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_SHARE))
+
+        {
             TooltipsManager.initTooltipWithAnchor(this, imgShare, getString(R.string.tooltip_share), Utils.myPixel(this, 380), Tooltip.Gravity.BOTTOM);
             TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_SHARE, true);
         }
@@ -555,6 +593,29 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 throw new RuntimeException(App.getErrorMessage(e), e);
             }
 
+            if (event_description != null) {
+                txtDescription.setText(Html.fromHtml(event_description));
+                txtDescription.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        int lineCnt = txtDescription.getLineCount();
+                        if (lineCnt < 4) {
+                            relDescMore.setVisibility(View.GONE);
+                        } else {
+                            relDescMore.setVisibility(View.VISIBLE);
+
+                            String subDes = "";
+                            if (event_description.length() > 270) {
+                                subDes = event_description.substring(0, 270);
+                            } else {
+                                subDes = event_description;
+                            }
+                            txtDescription.setText(Html.fromHtml(subDes));
+                        }
+                    }
+                });
+            }
+
         }
     }
 
@@ -719,8 +780,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     @OnClick(R.id.rel_desc_more)
     void moreDescOnClick() {
         relDescMore.setVisibility(View.GONE);
-        if(event_description != null)
-        {
+        if (event_description != null) {
             txtDescription.setText(Html.fromHtml(event_description));
         }
     }

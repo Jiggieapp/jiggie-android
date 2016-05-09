@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.ChatListModel;
 import com.jiggie.android.model.Common;
 
@@ -34,6 +35,7 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
     private ConversationSelectedListener listener;
     private ConversationLongClickListener longClickListener;
     private Fragment fragment;
+    private static final String TAG = ChatTabListAdapter.class.getSimpleName();
 
     private ArrayList<ChatListModel.Data.ChatLists> items;
 
@@ -114,6 +116,7 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
                 urlImage = App.getFacebookImage(item.getFb_id(), width);
             }
             //---------
+            Utils.d(TAG, "profile image " + urlImage + " " + item.getProfile_image());
 
             Glide.with(this.fragment).load(urlImage).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.imageView) {
                 @Override

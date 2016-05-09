@@ -231,26 +231,27 @@
                         android:id="@+id/lbl_min_age"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="18" />
+                        android:text="18"
+                        android:layout_alignParentTop="true"/>
 
                     <com.appyvet.rangebar.RangeBar xmlns:custom="http://schemas.android.com/apk/res-auto"
                         android:id="@+id/slider_age_double"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="72dp"
                         custom:connectingLineColor="@color/holo_blue"
                         custom:pinColor="@color/holo_blue"
                         custom:selectorColor="@color/holo_blue"
                         custom:tickColor="@color/holo_blue"
                         custom:tickEnd="60"
                         custom:tickInterval="1"
-                        custom:tickStart="12"
-                        android:paddingBottom="@dimen/padding_standard"/>
+                        custom:tickStart="18"/>
 
                     <TextView
                         android:id="@+id/lbl_max_age"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
                         android:text="60" />
 
                 </RelativeLayout>
