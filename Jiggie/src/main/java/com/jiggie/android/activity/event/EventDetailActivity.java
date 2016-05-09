@@ -231,7 +231,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             if (event_pics != null)
                 fillPhotos(event_pics);
 
-            if (event_description != null) {
+            /*if (event_description != null) {
                 String subDes = "";
                 if (event_description.length() > 300) {
                     subDes = event_description.substring(0, 300);
@@ -240,7 +240,29 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 }
 
                 txtDescription.setText(Html.fromHtml(subDes));
-            }
+            }*/
+
+            txtDescription.setText(Html.fromHtml(event_description));
+            txtDescription.post(new Runnable() {
+                @Override
+                public void run() {
+                    int lineCnt = txtDescription.getLineCount();
+                    if(lineCnt<4){
+                        relDescMore.setVisibility(View.GONE);
+                    }else{
+                        relDescMore.setVisibility(View.VISIBLE);
+                        if (event_description != null) {
+                            String subDes = "";
+                            if (event_description.length() > 270) {
+                                subDes = event_description.substring(0, 270);
+                            } else {
+                                subDes = event_description;
+                            }
+                            txtDescription.setText(Html.fromHtml(subDes));
+                        }
+                    }
+                }
+            });
 
             scrollView.setVisibility(View.VISIBLE);
             elementContainers.setVisibility(View.INVISIBLE);
@@ -395,6 +417,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         if (message.getFrom().equalsIgnoreCase(TAG)) {
             try {
                 eventDetail = message.getData().getEvents_detail();
+                event_description = eventDetail.getDescription();
                 App.getInstance().trackMixPanelViewEventDetail("View Event Details", eventDetail);
                 elementContainers.setVisibility(View.VISIBLE);
                 elementContainers2.setVisibility(View.VISIBLE);
