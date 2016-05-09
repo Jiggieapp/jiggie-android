@@ -59,6 +59,11 @@ public class SocialFilterImplementation implements SocialFilterPresenter{
                 AccountManager.saveMemberSetting(memberSettingModel);
                 SettingModel settingModel = AccountManager.loadSetting();
                 settingModel.getData().setGender_interest(memberSettingModel.getGender_interest());
+                boolean isFeed;
+                if(memberSettingModel.getFeed() == 0)
+                    isFeed = false;
+                else isFeed = true;
+                settingModel.getData().getNotifications().setFeed(isFeed);
                 AccountManager.saveSetting(settingModel);
                 socialView.onSuccess();
             }

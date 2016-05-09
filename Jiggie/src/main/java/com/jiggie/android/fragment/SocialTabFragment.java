@@ -172,16 +172,13 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         }*/
 
         Utils.d(TAG, "isFeed " + AccountManager.loadSetting().getData().getNotifications().isFeed());
-        if(AccountManager.loadSetting().getData().getNotifications().isFeed())
-        {
+        if (AccountManager.loadSetting().getData().getNotifications().isFeed()) {
             if (temp.size() == 0)
                 this.onRefresh();
             else {
                 cardEmpty.setVisibility(View.GONE);
             }
-        }
-        else
-        {
+        } else {
             flingAdapterView.setVisibility(View.GONE);
             cardEmpty.setVisibility(View.GONE);
             progressBar.setVisibility(View.GONE);
@@ -232,26 +229,25 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     private boolean isRefreshing = false;
 
     private void onRefresh() {
-            if (!AccountManager.isInSettingPage) {
-                flingAdapterView.setVisibility(View.VISIBLE);
-                if (super.getContext() == null) {
-                    // fragment already destroyed.
-                    return;
-                } else if (this.progressBar.getVisibility() == View.VISIBLE) {
-                    // refreshing is ongoing.
-                    return;
-                }
-
-                this.progressBar.setVisibility(View.VISIBLE);
-                this.cardEmpty.setVisibility(View.GONE);
-                temp = new ArrayList<>();
-                isRefreshing = true;
-                SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId()
-                        , currentSetting.getData().getGender_interest());
+        if (!AccountManager.isInSettingPage) {
+            flingAdapterView.setVisibility(View.VISIBLE);
+            if (super.getContext() == null) {
+                // fragment already destroyed.
+                return;
+            } else if (this.progressBar.getVisibility() == View.VISIBLE) {
+                // refreshing is ongoing.
+                return;
             }
-        }
 
+            this.progressBar.setVisibility(View.VISIBLE);
+            this.cardEmpty.setVisibility(View.GONE);
+            temp = new ArrayList<>();
+            isRefreshing = true;
+            SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId()
+                    , currentSetting.getData().getGender_interest());
+        }
     }
+
 
     public void onEvent(SocialModel message) {
         /*current = null;
