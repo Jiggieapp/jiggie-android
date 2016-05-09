@@ -174,7 +174,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     public static final String TAG = EventDetailActivity.class.getSimpleName();
     private File file;
     private int count_like, count_like_new;
-    boolean canClickLike = true;
+    boolean canClickLike = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -636,6 +636,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 txtCountLike.setText(String.valueOf(count_like));
 
                 setLike();
+                canClickLike = true;
                 //END of Like PART===================
 
             } catch (ParseException e) {
