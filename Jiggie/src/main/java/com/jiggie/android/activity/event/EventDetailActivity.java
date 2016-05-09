@@ -80,7 +80,11 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -176,6 +180,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     private File file;
     private int count_like, count_like_new;
     boolean canClickLike = false;
+    Timer timerLike;
+    TimerTask timerTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -246,6 +252,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             }*/
 
             if (event_description != null) {
+                event_description = event_description.replace("\n", "<br />");
                 txtDescription.setText(Html.fromHtml(event_description));
                 txtDescription.post(new Runnable() {
                     @Override
@@ -262,6 +269,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                             } else {
                                 subDes = event_description;
                             }
+                            subDes = subDes.replace("\n", "<br />");
                             txtDescription.setText(Html.fromHtml(subDes));
                         }
                     }
@@ -646,6 +654,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             }
 
             if (event_description != null) {
+                event_description = event_description.replace("\n", "<br />");
                 txtDescription.setText(Html.fromHtml(event_description));
                 txtDescription.post(new Runnable() {
                     @Override
@@ -662,6 +671,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                             } else {
                                 subDes = event_description;
                             }
+                            subDes = subDes.replace("\n", "<br />");
                             txtDescription.setText(Html.fromHtml(subDes));
                         }
                     }
@@ -679,9 +689,9 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             }
         } else {
             if (isActive()) {
-                //if(progressDialog!=null&&progressDialog.isShowing()){
-                progressDialog.dismiss();
-                //}
+                if(progressDialog!=null && progressDialog.isShowing()){
+                    progressDialog.dismiss();
+                }
 
                 if (!message.getMessage().equals(Utils.RESPONSE_FAILED + " " + "empty data")) {
                     Toast.makeText(EventDetailActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
@@ -759,7 +769,28 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             canClickLike = false;
             TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_LIKE, false);
             setLike();
+            //runBackgroundLike();
         }
+
+    }
+
+    private void runBackgroundLike(){
+        if(timerLike!=null){
+            timerLike.cancel();
+        }
+        timerLike = new Timer();
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                if(imgLove.isSelected()){
+                    actionLike(Utils.ACTION_LIKE_NO);
+                }else{
+                    actionLike(Utils.ACTION_LIKE_YES);
+                }
+            }
+        };
+        timerLike.schedule(timerTask, 3000);
+
 
     }
 
@@ -834,6 +865,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     void moreDescOnClick() {
         relDescMore.setVisibility(View.GONE);
         if (event_description != null) {
+            event_description = event_description.replace("\n", "<br />");
             txtDescription.setText(Html.fromHtml(event_description));
         }
     }
