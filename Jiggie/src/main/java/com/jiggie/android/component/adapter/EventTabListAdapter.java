@@ -5,6 +5,7 @@ import android.graphics.Point;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -135,7 +136,12 @@ public class EventTabListAdapter
             {
                 holder.txtPriceTitle.setShadowLayer(1.6f, 1.5f, 1.3f, context.getResources().getColor(android.R.color.black));
                 holder.txtPriceFill.setShadowLayer(1.6f, 1.5f, 1.3f, context.getResources().getColor(android.R.color.black));
-                holder.txtPriceFill.setText(item.getLowest_price());
+                try {
+                    holder.txtPriceFill.setText(item.getLowest_price());
+                }catch (Exception e){
+                    Log.d("lower price", "problem");
+                }
+
             }
 
             /*if(position==0){

@@ -298,6 +298,7 @@ public class MainActivity extends AppCompatActivity
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        App.getSharedPreferences().edit().putBoolean(Utils.PREFERENCE_GPS, true).commit();
                         dialog.dismiss();
                         final Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                         startActivity(intent);
@@ -306,6 +307,7 @@ public class MainActivity extends AppCompatActivity
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        App.getSharedPreferences().edit().putBoolean(Utils.PREFERENCE_GPS, true).commit();
                         dialog.dismiss();
                     }
                 }).create();
