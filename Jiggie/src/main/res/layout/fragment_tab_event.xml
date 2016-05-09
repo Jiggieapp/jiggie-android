@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/contentView"
     android:layout_width="match_parent"
@@ -28,8 +28,7 @@
             android:id="@+id/recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            android:scrollbars="vertical"/>
 
         <!--<LinearLayout
             android:id="@+id/footerContainer"
@@ -67,4 +66,4 @@
 
         <include layout="@layout/walkthrough_screen"></include>
     </RelativeLayout>
-</RelativeLayout>
+</FrameLayout>

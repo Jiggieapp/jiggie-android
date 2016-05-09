@@ -40,14 +40,14 @@
         android:layout_marginRight="25dp"
         android:visibility="gone"/>-->
 
-    <!--<FrameLayout
+    <FrameLayout
         android:id="@+id/cardEmpty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/padding_standard">
 
         <include layout="@layout/card_social_empty" />
-    </FrameLayout>-->
+    </FrameLayout>
 
     <ProgressBar
         android:id="@id/progressBar"

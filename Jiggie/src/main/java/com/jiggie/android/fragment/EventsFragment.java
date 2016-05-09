@@ -106,7 +106,7 @@ public class EventsFragment extends Fragment
         }
 
         if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_EVENT, false)) {
-            showWalkthroughDialog();
+            //showWalkthroughDialog();
         }
     }
 
@@ -155,6 +155,7 @@ public class EventsFragment extends Fragment
         this.refreshLayout.setRefreshing(true);
         final AccessToken token = AccessToken.getCurrentAccessToken();
 
+
         EventManager.loaderEvent(token.getUserId());
     }
 
@@ -173,6 +174,7 @@ public class EventsFragment extends Fragment
             super(fm);
             Bundle bundle = new Bundle();
             bundle.putInt("position", 0);
+
             todayFragment = new EventTabFragment();
             todayFragment.setArguments(bundle);
 
@@ -262,7 +264,18 @@ public class EventsFragment extends Fragment
         this.viewPagerEvents.getViewTreeObserver().addOnGlobalLayoutListener(this);
         this.viewPagerEvents.setPagingEnabled(true);
         this.refreshLayout.setOnRefreshListener(this);
+
+        //this.refreshLayout.canChildScrollUp();
+        //this.refreshLayout.setNestedScrollingEnabled(true);
+
         super.setHasOptionsMenu(true);
+
+
+        todayFragment.handleSwipeIssue(refreshLayout);
+
+        tomorrowFragment.handleSwipeIssue(refreshLayout);
+
+        upcomingFragment.handleSwipeIssue(refreshLayout);
     }
 
     @Override
@@ -278,31 +291,6 @@ public class EventsFragment extends Fragment
         int size = message.size();
 
         setEvents(message);
-        /*ArrayList<EventModel.Data.Events> todayEvents = new ArrayList<>();
-        ArrayList<EventModel.Data.Events> tomorrowEvents = new ArrayList<>();
-        ArrayList<EventModel.Data.Events> upcomingEvents = new ArrayList<>();*/
-        //adapter.clear();
-        //events.clear();
-
-        /*if (searchText == null)
-            adapter.addAll(events);*/
-        /*for (EventModel.Data.Events tempEvent : getEvents()) {
-            //new Date(event.getDate_day());
-            Utils.d(TAG, "event " + tempEvent.getTitle());
-
-            final String diffDays = Utils.calculateTime(tempEvent.getStart_datetime());
-            if (diffDays.equals(Utils.DATE_TODAY)) {
-                todayEvents.add(tempEvent);
-            } else if (diffDays.equals(Utils.DATE_TOMORROW)) {
-                tomorrowEvents.add(tempEvent);
-            } else if (diffDays.equals(Utils.DATE_UPCOMING)) {
-                upcomingEvents.add(tempEvent);
-            }
-        }
-
-        todayFragment.onEvent(todayEvents);
-        tomorrowFragment.onEvent(tomorrowEvents);
-        upcomingFragment.onEvent(upcomingEvents);*/
         boolean isExpanded = false;
         //if(searchText != null  /* && !searchText.isEmpty()*/)
         if (searchView == null) {

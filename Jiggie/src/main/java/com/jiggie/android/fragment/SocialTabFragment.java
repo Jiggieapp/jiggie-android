@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,6 +41,7 @@ import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.SocialCardNewAdapter;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.SocialManager;
+import com.jiggie.android.manager.TooltipsManager;
 import com.jiggie.android.manager.WalkthroughManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.Conversation;
@@ -56,6 +58,7 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import de.greenrobot.event.EventBus;
+import it.sephiroth.android.library.tooltip.Tooltip;
 
 /**
  * Created by rangg on 21/10/2015.
@@ -66,12 +69,14 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
 
     @Bind(R.id.progressBar)
     ProgressBar progressBar;
+    @Bind(R.id.cardEmpty)
+    View cardEmpty;
+
     /*@Bind(R.id.cardGeneral)
     View cardGeneral;
     @Bind(R.id.cardInbound)
     View cardInbound;
-    @Bind(R.id.cardEmpty)
-    View cardEmpty;
+
     @Bind(R.id.card)
     View card;
 
@@ -137,7 +142,6 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     public void onTabSelected() {
         //wandy 03-03-2016
         //currentSetting = AccountManager.loadSetting();
-
         boolean a = AccountManager.anySettingChange;
         if (this.current == null) {
             /*if (switchSocialize.isChecked()) {
@@ -151,7 +155,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             }*/
 
             if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_SOCIAL, false)) {
-                showWalkthroughDialog();
+                //showWalkthroughDialog();
             }
         }
 
@@ -163,6 +167,11 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
 
         if (temp.size() == 0)
             this.onRefresh();
+        else
+        {
+            cardEmpty.setVisibility(View.GONE);
+        }
+
         App.getInstance().trackMixPanelEvent("View Social Feed");
     }
 
@@ -206,6 +215,8 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                 , new IntentFilter(SocialTabFragment.TAG));
     }
 
+    private boolean isRefreshing = false;
+
     private void onRefresh() {
         if (!AccountManager.isInSettingPage) {
             currentSetting = AccountManager.loadSetting();
@@ -223,7 +234,9 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
 
             //showProgressDialog();
             this.progressBar.setVisibility(View.VISIBLE);
+            this.cardEmpty.setVisibility(View.GONE);
             temp = new ArrayList<>();
+            isRefreshing = true;
             SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId()
                     , currentSetting.getData().getGender_interest());
         }
@@ -275,30 +288,45 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         //setHomeTitle();
         //openDetail(current);
         //setHomeTitle();
+        isRefreshing = false;
         fillSocialCard(message);
+
     }
 
     ArrayList<SocialModel.Data.SocialFeeds> temp = new ArrayList<>();
 
+    protected boolean checkAlreadyExist(String id)
+    {
+        for(SocialModel.Data.SocialFeeds feeds : temp)
+        {
+            if(feeds.getFrom_fb_id().equals(id))
+                return true;
+        }
+        return false;
+    }
+
     protected void fillSocialCard(SocialModel message) {
         this.progressBar.setVisibility(View.GONE);
-
+        this.cardEmpty.setVisibility(View.GONE);
         for (final SocialModel.Data.SocialFeeds item : message.getData().getSocial_feeds()) {
             //temp.add(item);
-            if (SocialManager.Type.isInbound(item))
-                temp.add(0, item);
-            else temp.add(item);
+            final boolean isExist = checkAlreadyExist(item.getFrom_fb_id());
+            if(!isExist)
+            {
+                if (SocialManager.Type.isInbound(item))
+                    temp.add(0, item);
+                else {
+                    temp.add(item);
+                }
+            }
         }
 
-        /*cardStackAdapter = new SocialCardAdapter(temp, dummy, getActivity(), this);
-        cardsContainer.setOrientation(Orientations.Orientation.Ordered);
-        cardsContainer.setAdapter(cardStackAdapter);*/
+        SocialManager.countData = message.getData().getSocial_feeds().size();
 
         socialCardNewAdapter = new SocialCardNewAdapter(temp
-                , getActivity(), this);
+                , getActivity(), this, getActivity());
         flingAdapterView.setAdapter(socialCardNewAdapter);
 
-        //tempListView.setAdapter(socialCardNewAdapter);
         flingAdapterView.setOnItemClickListener(new CustomSwipeFlingAdapterView.OnItemClickListener() {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
@@ -316,14 +344,6 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                 onGeneralClick();
             }
         });
-        /*flingAdapterView.setOnItemClickListener(new CustomSwipeFlingAdapterView.OnItemClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getActivity(), ProfileDetailActivity.class);
-                i.putExtra(Common.FIELD_FACEBOOK_ID, socialCardNewAdapter.getItem(0).getFrom_fb_id());
-                getActivity().startActivity(i);
-            }
-        });*/
 
         flingAdapterView.setFlingListener(new CustomSwipeFlingAdapterView.onFlingListener() {
             @Override
@@ -346,9 +366,13 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
 
             @Override
             public void onAdapterAboutToEmpty(int i) {
-                if (socialCardNewAdapter.getCount() == 3 || socialCardNewAdapter.getCount() == 0)
+                if (socialCardNewAdapter.getCount() == 3 /*|| socialCardNewAdapter.getCount() == 0*/
+                        && !isRefreshing) {
+                    isRefreshing = true;
                     SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId()
                             , currentSetting.getData().getGender_interest());
+                }
+
             }
 
             @Override
@@ -357,12 +381,39 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             }
         });
 
-        //flingAdapterView.init(getActivity(), socialCardNewAdapter);
+        /*if(SocialManager.isInSocial){
+            if(socialCardNewAdapter.getCount()>0){
+                if (SocialManager.Type.isInbound(socialCardNewAdapter.getItem(0))){
+                    if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_INBOUND)){
+                        //TooltipsManager.initTooltipWithAnchor(getActivity(), socialCardNewAdapter.getBtnYesGeneral(), getString(R.string.tooltip_yes_inbound), Utils.myPixel(getActivity(), 380));
+                        int addedX = TooltipsManager.getCenterPoint(getActivity())[0]+(TooltipsManager.getCenterPoint(getActivity())[0]/2);
+                        int addedY = TooltipsManager.getCenterPoint(getActivity())[1]+(TooltipsManager.getCenterPoint(getActivity())[1]/2);
+                        TooltipsManager.initTooltipWithPoint(getActivity(), new Point(addedX,addedY), getActivity().getString(R.string.tooltip_yes_inbound), Utils.myPixel(getActivity(), 380), Tooltip.Gravity.TOP);
+                        TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_INBOUND, true);
+                    }
+                }else{
+                    if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_SUGGESTED)){
+                        //TooltipsManager.initTooltipWithAnchor(getActivity(), socialCardNewAdapter.getBtnYesGeneral(), getString(R.string.tooltip_yes_suggested), Utils.myPixel(getActivity(), 380), Tooltip.Gravity.TOP);
+                        int addedX = TooltipsManager.getCenterPoint(getActivity())[0]+(TooltipsManager.getCenterPoint(getActivity())[0]/2);
+                        int addedY = TooltipsManager.getCenterPoint(getActivity())[1]+(TooltipsManager.getCenterPoint(getActivity())[1]/2);
+                        TooltipsManager.initTooltipWithPoint(getActivity(), new Point(addedX,addedY), getActivity().getString(R.string.tooltip_yes_suggested), Utils.myPixel(getActivity(), 380), Tooltip.Gravity.TOP);
+                        TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_SUGGESTED, true);
+                    }
+                }
+            }
+
+        }*/
+
     }
 
     @Override
     public void onYesClick() {
         flingAdapterView.getTopCardListener2().selectRight();
+        if (SocialManager.LAST_STATE_CARD.equals(SocialManager.STATE_INBOUND)) {
+            TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_YES_INBOUND, false);
+        } else if (SocialManager.LAST_STATE_CARD.equals(SocialManager.STATE_INBOUND)) {
+            TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_YES_SUGGESTED, false);
+        }
     }
 
     @Override
@@ -405,25 +456,33 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     }*/
 
     public void onEvent(ExceptionModel message) {
+        isRefreshing = false;
         String ex = message.getMessage();
         //Utils.d(TAG, "exception " + ex);
-        if (message.getFrom().equals(Utils.FROM_SOCIAL_FEED) || message.getFrom().equals(Utils.FROM_SOCIAL_MATCH) || message.getFrom().equals(Utils.FROM_EVENT_DETAIL)) {
-            if (ex.equals(Utils.RESPONSE_FAILED + " " + "empty data")) {
+        if (message.getFrom().equals(Utils.FROM_SOCIAL_FEED)
+                || message.getFrom().equals(Utils.FROM_SOCIAL_MATCH)
+                || message.getFrom().equals(Utils.FROM_EVENT_DETAIL)) {
+            //if (ex.equals(Utils.RESPONSE_FAILED + " " + "empty data")) {
+            /*if (ex.contains("Empty data"))
+            {
                 //this.layoutSocialize.setVisibility(View.GONE);
-                //this.cardEmpty.setVisibility(View.VISIBLE);
+                this.cardEmpty.setVisibility(View.VISIBLE);
+                this.progressBar.setVisibility(View.GONE);
                 dismissProgressDialog();
                 //this.cardGeneral.setVisibility(View.GONE);
                 //this.cardInbound.setVisibility(View.GONE);
-                this.progressBar.setVisibility(View.GONE);
                 //this.card.setVisibility(View.GONE);
-            } else {
-                if (getContext() != null) {
-                    dismissProgressDialog();
-                    Toast.makeText(getContext(), "Empty data", Toast.LENGTH_SHORT).show();
-                    progressBar.setVisibility(View.GONE);
-                    if (message.getFrom().equals(Utils.FROM_SOCIAL_MATCH) || message.getFrom().equals(Utils.FROM_EVENT_DETAIL)) {
-                        enableButton(true);
-                    }
+            }*/
+            this.cardEmpty.setVisibility(View.VISIBLE);
+            this.progressBar.setVisibility(View.GONE);
+            dismissProgressDialog();
+        } else {
+            if (getContext() != null) {
+                dismissProgressDialog();
+                Toast.makeText(getContext(), "Empty data", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
+                if (message.getFrom().equals(Utils.FROM_SOCIAL_MATCH) || message.getFrom().equals(Utils.FROM_EVENT_DETAIL)) {
+                    enableButton(true);
                 }
             }
         }
@@ -466,7 +525,17 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                         circularBitmapDrawable.setCircular(true);
                         super.getView().setImageDrawable(circularBitmapDrawable);
                     }
+
                 });*/
+
+                /*SocialManager.LAST_STATE_CARD = SocialManager.STATE_INBOUND;
+                if(SocialManager.isInSocial){
+                    if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_INBOUND)){
+                        TooltipsManager.initTooltipWithAnchor(getActivity(), inboundBtnYes, getString(R.string.tooltip_yes_inbound), Utils.myPixel(getActivity(), 380));
+                        TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_INBOUND, true);
+                    }
+                }*/
+
             } else {
                 //Glide.with(SocialTabFragment.this).load(image).into(generalImage);
                 this.enableButton(false);
@@ -487,6 +556,15 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                         , TAG);*/
                 dismissProgressDialog();
                 enableButton(true);
+
+                /*SocialManager.LAST_STATE_CARD = SocialManager.STATE_SUGGEST;
+                if(SocialManager.isInSocial){
+                    if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_SUGGESTED)){
+                        TooltipsManager.initTooltipWithAnchor(getActivity(), generalBtnYes, getString(R.string.tooltip_yes_suggested), Utils.myPixel(getActivity(), 380));
+                        TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_SUGGESTED, true);
+                    }
+                }*/
+
             }
         }
 
@@ -506,7 +584,50 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         }
     }*/
 
+    public void checkTooltipsInSug(){
+
+        if(SocialManager.isInSocial){
+            if(socialCardNewAdapter != null)
+            {
+                if(socialCardNewAdapter.getCount()>0){
+                    if (SocialManager.Type.isInbound(socialCardNewAdapter.getItem(0))){
+                        if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_INBOUND)){
+                            //TooltipsManager.initTooltipWithAnchor(getActivity(), socialCardNewAdapter.getBtnYesGeneral(), getString(R.string.tooltip_yes_inbound), Utils.myPixel(getActivity(), 380));
+                            int addedX = TooltipsManager.getCenterPoint(getActivity())[0]+(TooltipsManager.getCenterPoint(getActivity())[0]/3);
+                            int addedY = TooltipsManager.getCenterPoint(getActivity())[1]+(Utils.myPixel(getActivity(), 212));
+                            TooltipsManager.initTooltipWithPoint(getActivity(), new Point(addedX,addedY), getActivity().getString(R.string.tooltip_yes_inbound), Utils.myPixel(getActivity(), 380), Tooltip.Gravity.TOP);
+                            TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_INBOUND, true);
+                        }
+                    }else{
+                        if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_SUGGESTED)){
+                            //TooltipsManager.initTooltipWithAnchor(getActivity(), socialCardNewAdapter.getBtnYesGeneral(), getString(R.string.tooltip_yes_suggested), Utils.myPixel(getActivity(), 380), Tooltip.Gravity.TOP);
+                            int addedX = TooltipsManager.getCenterPoint(getActivity())[0]+(TooltipsManager.getCenterPoint(getActivity())[0]/3);
+                            int addedY = TooltipsManager.getCenterPoint(getActivity())[1]+(Utils.myPixel(getActivity(), 212));
+                            TooltipsManager.initTooltipWithPoint(getActivity(), new Point(addedX,addedY), getActivity().getString(R.string.tooltip_yes_suggested), Utils.myPixel(getActivity(), 380), Tooltip.Gravity.TOP);
+                            TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_SUGGESTED, true);
+                        }
+                    }
+                }
+            }
+        }
+
+        /*if(SocialManager.isInSocial){
+            if(SocialManager.LAST_STATE_CARD.equals(SocialManager.STATE_INBOUND)){
+                if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_INBOUND)){
+                    TooltipsManager.initTooltipWithAnchor(getActivity(), socialCardNewAdapter.getBtnYesGeneral(), getString(R.string.tooltip_yes_inbound), Utils.myPixel(getActivity(), 380));
+                    TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_INBOUND, true);
+                }
+            }else if(SocialManager.LAST_STATE_CARD.equals(SocialManager.STATE_SUGGEST)){
+                if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_SUGGESTED)){
+                    TooltipsManager.initTooltipWithAnchor(getActivity(), socialCardNewAdapter.getBtnYesGeneral(), getString(R.string.tooltip_yes_suggested), Utils.myPixel(getActivity(), 380));
+                    TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_SUGGESTED, true);
+                }
+            }
+        }*/
+    }
+
     /*private CompoundButton.OnCheckedChangeListener socializeChanged = new CompoundButton.OnCheckedChangeListener() {
+
         @Override
         public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
             final String url = String.format("partyfeed/settings/%s/%s", AccessToken.getCurrentAccessToken().getUserId(), isChecked ? "yes" : "no");
@@ -541,10 +662,10 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                 public void onErrorResponse(VolleyError error) {
                     if (getContext() != null) {
                         Toast.makeText(getContext(), App.getErrorMessage(error), Toast.LENGTH_SHORT).show();
-                        *//*switchSocialize.setOnCheckedChangeListener(null);
+                        switchSocialize.setOnCheckedChangeListener(null);
                         switchSocialize.setChecked(!isChecked);
                         switchSocialize.setOnCheckedChangeListener(socializeChanged);
-                        *//*
+
                         //txtSocialize.setText(isChecked ? R.string.socialize_description_off : R.string.socialize_description);
                         //dialog.dismiss();
                         dismissProgressDialog();
@@ -553,8 +674,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             });
         }
     };
-*/
-    /*@SuppressWarnings("unused")
+    @SuppressWarnings("unused")
     @OnClick(R.id.imageUserGeneral)
     void imageUserGeneralOnClick() {
         this.imageUserOnClick();
@@ -582,20 +702,22 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             super.startActivity(i);
         }
 
-    }*/
+    }
 
-    /*@SuppressWarnings("unused")
+    @SuppressWarnings("unused")
     @OnClick(R.id.btnYesInbound)
     void btnYesInboundOnClick() {
         this.btnYesOnClick();
         socialSize -= 1;
         setHomeTitle();
+        TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_YES_INBOUND, false);
     }
 
     @SuppressWarnings("unused")
     @OnClick(R.id.btnYesGeneral)
     void btnYesOnClick() {
         this.match(true);
+        TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_YES_SUGGESTED, false);
     }
 
     @SuppressWarnings("unused")
@@ -665,6 +787,11 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                         getActivity().sendBroadcast(new Intent(getString(R.string.broadcast_social_chat)));
                         startActivity(intent);
 
+                        if(socialCardNewAdapter.getCount() == 0)
+                        {
+                            progressBar.setVisibility(View.GONE);
+                            cardEmpty.setVisibility(View.VISIBLE);
+                        }
                     }
 
                     @Override
@@ -679,6 +806,11 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                 (AccessToken.getCurrentAccessToken().getUserId()
                         , fromFbId, confirm ? "approved" : "denied");*/
         socialCardNewAdapter.deleteFirstItem();
+        if(socialCardNewAdapter.getCount() == 0)
+        {
+            this.progressBar.setVisibility(View.GONE);
+            this.cardEmpty.setVisibility(View.VISIBLE);
+        }
         SocialManager.loaderSocialMatchAsync(AccessToken.getCurrentAccessToken().getUserId()
                 , fromFbId, confirm ? "approved" : "denied", confirm);
     }
@@ -774,6 +906,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                 }*/
                 if (intent != null && intent.getExtras().getBoolean(Utils.IS_ON)) {
                     temp = new ArrayList<>();
+                    cardEmpty.setVisibility(View.GONE);
                     if (socialCardNewAdapter != null)
                         socialCardNewAdapter.clear();
                     onRefresh();

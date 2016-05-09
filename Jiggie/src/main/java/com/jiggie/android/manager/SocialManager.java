@@ -7,6 +7,7 @@ import com.facebook.AccessToken;
 import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.BuildConfig;
+import com.jiggie.android.R;
 import com.jiggie.android.api.SocialInterface;
 import com.jiggie.android.component.SimpleJSONObject;
 import com.jiggie.android.component.StringUtility;
@@ -35,6 +36,12 @@ public class SocialManager extends BaseManager{
     public static String lat = Utils.BLANK;
     public static  String lng = Utils.BLANK;
 
+    public static String STATE_INBOUND = "inbound";
+    public static String STATE_SUGGEST = "suggest";
+    public static String LAST_STATE_CARD = Utils.BLANK;
+    public static boolean isInSocial = false;
+    public static int countData = 0;
+
     public static void iniSocialService(){
         socialInterface = getRetrofit().create(SocialInterface.class);
     }
@@ -57,6 +64,7 @@ public class SocialManager extends BaseManager{
     private static void postLocation(PostLocationModel postLocationModel, Callback callback) throws IOException {
         getInstance().postLocation(Utils.URL_POST_LOCATION, postLocationModel).enqueue(callback);
     }
+
 
     public static void loaderSocialFeed(String fb_id, String gender_interest){
         /*try {
@@ -86,19 +94,20 @@ public class SocialManager extends BaseManager{
         }*/
 
         try {
+            Utils.d(TAG, "load social feed");
             getSocialFeed(fb_id, gender_interest, new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response) {
                     //String header = String.valueOf(response.code());
-                    String responses = new Gson().toJson(response.body());
-                    Utils.d(TAG, responses);
-
+                    //String responses = new Gson().toJson(response.body());
+                    //Utils.d(TAG, responses);
 
                     if(response.code()==Utils.CODE_SUCCESS){
                         SocialModel dataTemp = (SocialModel) response.body();
                         EventBus.getDefault().post(dataTemp);
                     }else{
-                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_FEED, "Empty data"));
+                        EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_FEED
+                                , App.getInstance().getResources().getString(R.string.empty_social)));
                     }
 
                 }

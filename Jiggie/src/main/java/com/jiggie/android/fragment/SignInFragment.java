@@ -387,7 +387,8 @@ public class SignInFragment extends Fragment {
                 loginModel.setUser_last_name(object.optString("last_name"));
                 loginModel.setEmail(object.optString("email"));
                 loginModel.setGender(object.optString("gender"));
-
+                loginModel.setAge(StringUtility.getAge2(loginModel.getBirthday()));
+                Utils.d(TAG, "getAge " + loginModel.getAge());
                 //Added by Aga 11-2-2016
                 loginModel.setDevice_type("2");
                 //------------

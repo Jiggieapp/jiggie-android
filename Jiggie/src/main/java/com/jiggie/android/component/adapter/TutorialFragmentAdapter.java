@@ -62,23 +62,23 @@ public class TutorialFragmentAdapter extends FragmentPagerAdapter {
             if (position == 0) {
                 arg.putString(TutorialFragment.ARG_TITLE, app.getString(R.string.title_carr_1_new));
                 arg.putString(TutorialFragment.ARG_DESC, app.getString(R.string.msg_carr_1));
-                arg.putInt(TutorialFragment.ARG_IMAGE, R.drawable.pic1carr);
+                arg.putInt(TutorialFragment.ARG_IMAGE, R.drawable.pic1carr_min);
             } else if (position == 1) {
                 arg.putString(TutorialFragment.ARG_TITLE, app.getString(R.string.title_carr_2_new));
                 arg.putString(TutorialFragment.ARG_DESC, app.getString(R.string.msg_carr_2));
-                arg.putInt(TutorialFragment.ARG_IMAGE, R.drawable.pic2carr);
+                arg.putInt(TutorialFragment.ARG_IMAGE, R.drawable.pic2carr_min);
             } else if (position == 2) {
                 arg.putString(TutorialFragment.ARG_TITLE, app.getString(R.string.title_carr_3_new));
                 arg.putString(TutorialFragment.ARG_DESC, app.getString(R.string.msg_carr_3));
-                arg.putInt(TutorialFragment.ARG_IMAGE, R.drawable.pic3carr);
+                arg.putInt(TutorialFragment.ARG_IMAGE, R.drawable.pic3carr_min);
             } else if (position == 3) {
                 arg.putString(TutorialFragment.ARG_TITLE, app.getString(R.string.title_carr_4_new));
                 arg.putString(TutorialFragment.ARG_DESC, app.getString(R.string.msg_carr_4));
-                arg.putInt(TutorialFragment.ARG_IMAGE, R.drawable.pic4carr);
+                arg.putInt(TutorialFragment.ARG_IMAGE, R.drawable.pic4carr_min);
             } else if (position == 4) {
                 arg.putString(TutorialFragment.ARG_TITLE, app.getString(R.string.title_carr_5_new));
                 arg.putString(TutorialFragment.ARG_DESC, app.getString(R.string.msg_carr_5));
-                arg.putInt(TutorialFragment.ARG_IMAGE, R.drawable.pic5carr);
+                arg.putInt(TutorialFragment.ARG_IMAGE, R.drawable.pic5carr_min);
             } else if (position == 5) {
                 arg.putString(TutorialFragment.ARG_TITLE, app.getString(R.string.app_name));
                 arg.putString(TutorialFragment.ARG_DESC, app.getString(R.string.see_whats_going));

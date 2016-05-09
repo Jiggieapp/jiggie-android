@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -54,6 +55,7 @@ import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.manager.GuestManager;
 import com.jiggie.android.manager.ShareManager;
+import com.jiggie.android.manager.TooltipsManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.ExceptionModel;
@@ -80,6 +82,7 @@ import java.util.concurrent.ExecutionException;
 import butterknife.Bind;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
+import it.sephiroth.android.library.tooltip.Tooltip;
 import it.sephiroth.android.library.widget.HListView;
 import rx.Observable;
 import rx.Subscriber;
@@ -163,6 +166,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     String event_day = "";
     String event_end = "";
     String event_description = "";
+    int lowest_price;
 
     ProgressDialog progressDialog;
     public static final String TAG = EventDetailActivity.class.getSimpleName();
@@ -189,7 +193,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         event_description = a.getStringExtra(Common.FIELD_EVENT_DESCRIPTION);
         count_like = a.getIntExtra(Common.FIELD_EVENT_LIKE, 0);
         count_like_new = count_like;
-
+        lowest_price = a.getIntExtra(Common.FIELD_EVENT_LOWEST_PRICE, 0);
 
         this.imagePagerIndicatorAdapter = new ImagePagerIndicatorAdapter(super.getSupportFragmentManager(), this.imageViewPager);
         this.imagePagerIndicator.setAdapter(this.imagePagerIndicatorAdapter.getIndicatorAdapter());
@@ -227,11 +231,11 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             if (event_pics != null)
                 fillPhotos(event_pics);
 
-            if (event_description != null){
+            if (event_description != null) {
                 String subDes = "";
-                if(event_description.length()>300){
-                    subDes = event_description.substring(0,300);
-                }else{
+                if (event_description.length() > 300) {
+                    subDes = event_description.substring(0, 300);
+                } else {
                     subDes = event_description;
                 }
 
@@ -272,6 +276,15 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 }
                 //end of wandy 17-03-2016
             }
+
+            if (lowest_price == 0) {
+                txtPriceFill.setVisibility(View.GONE);
+                txtPriceTitle.setVisibility(View.GONE);
+            } else {
+                txtPriceTitle.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
+                txtPriceFill.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
+                txtPriceFill.setText(lowest_price);
+            }
         }
 
         if (event_name != null) {
@@ -295,6 +308,12 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             file.delete();
 
         txtCountLike.setText(String.valueOf(count_like));
+
+        if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_SHARE)) {
+            TooltipsManager.initTooltipWithAnchor(this, imgShare, getString(R.string.tooltip_share), Utils.myPixel(this, 380), Tooltip.Gravity.BOTTOM);
+            TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_SHARE, true);
+        }
+
     }
 
     private void setToolbarTitles(String title, boolean backEnable) {
@@ -366,8 +385,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     private void fillPhotos(ArrayList<String> photoArr) {
         String[] photo = new String[photoArr.size()];
         photo = photoArr.toArray(photo);
-        if(event_pics == null)
-        {
+        if (event_pics == null) {
             event_pics = new ArrayList<String>(Arrays.asList(photo));
         }
         imagePagerIndicatorAdapter.setImages(photo);
@@ -521,8 +539,14 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
                 if (eventDetail.is_liked()) {
                     imgLove.setSelected(true);
+                    TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_LIKE, false);
+
                 } else {
                     imgLove.setSelected(false);
+                    if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_LIKE)) {
+                        TooltipsManager.initTooltipWithAnchor(this, imgLove, getString(R.string.tooltip_like), Utils.myPixel(this, 380), Tooltip.Gravity.BOTTOM);
+                        TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_LIKE, true);
+                    }
                 }
 
             } catch (ParseException e) {
@@ -604,10 +628,10 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     @SuppressWarnings("unused")
     @OnClick(R.id.img_love)
     void loveOnClick() {
-        if(canClickLike){
+        if (canClickLike) {
             if (imgLove.isSelected()) {
                 imgLove.setSelected(false);
-                if(count_like_new>0){
+                if (count_like_new > 0) {
                     count_like_new = count_like_new - 1;
                 }
 
@@ -619,6 +643,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             }
             txtCountLike.setText(String.valueOf(count_like_new));
             canClickLike = false;
+            TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_LIKE, false);
         }
 
     }
@@ -677,6 +702,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     void shareOnClick() {
         try {
             this.shareEvent();
+            TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_SHARE, false);
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
@@ -692,7 +718,10 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     @OnClick(R.id.rel_desc_more)
     void moreDescOnClick() {
         relDescMore.setVisibility(View.GONE);
-        txtDescription.setText(Html.fromHtml(event_description));
+        if(event_description != null)
+        {
+            txtDescription.setText(Html.fromHtml(event_description));
+        }
     }
 
     @Override
@@ -922,13 +951,13 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         super.onBackPressed();
         Intent i = new Intent(this, MainActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        if(count_like!=count_like_new){
+        if (count_like != count_like_new) {
             //i.putExtra(Utils.TAG_ISREFRESH, true);
             Utils.isRefreshDetail = true;
             Utils.event_id_refresh = event_id;
             Utils.count_like_new = count_like_new;
-            for(int j=0;j<EventManager.events.size();j++){
-                if(EventManager.events.get(j).get_id().equals(event_id)){
+            for (int j = 0; j < EventManager.events.size(); j++) {
+                if (EventManager.events.get(j).get_id().equals(event_id)) {
                     EventManager.events.get(j).setLikes(count_like_new);
                 }
             }

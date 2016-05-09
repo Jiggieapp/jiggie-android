@@ -57,7 +57,7 @@ public class EventTagAdapter
         String text = this.tags[position];
 
         if (text.equalsIgnoreCase("Art & Culture")) {
-            holder.txtTag.setBackground(context.getResources().getDrawable(R.drawable.btn_tag_red));
+            holder.txtTag.setBackground(context.getResources().getDrawable(R.drawable.btn_tag_red_f));
             holder.txtTag.setTextColor(context.getResources().getColor(R.color.pink));
         } else if (text.equalsIgnoreCase("Fashion")) {
             holder.txtTag.setBackground(context.getResources().getDrawable(R.drawable.btn_tag_green));
@@ -69,7 +69,7 @@ public class EventTagAdapter
             holder.txtTag.setBackground(context.getResources().getDrawable(R.drawable.btn_tag_blues));
             holder.txtTag.setTextColor(context.getResources().getColor(R.color.bluedark_tag));
         } else if (text.equalsIgnoreCase("Food & Drink")) {
-            holder.txtTag.setBackground(context.getResources().getDrawable(R.drawable.btn_tag_yellow));
+            holder.txtTag.setBackground(context.getResources().getDrawable(R.drawable.btn_yellow_tag_f));
             holder.txtTag.setTextColor(context.getResources().getColor(R.color.yellow_warning));
         } else if (text.equalsIgnoreCase("Featured")) {
                 /*holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_blue));

@@ -59,6 +59,7 @@ import com.jiggie.android.model.PostLocationModel;
 import com.jiggie.android.model.TagsListModel;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 import butterknife.Bind;
@@ -78,8 +79,6 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     Toolbar toolbar;
     @Bind(R.id.tab)
     TabLayout tab;
-    /*@Bind(R.id.bottom_sheet)
-    RelativeLayout bottomSheet;*/
     @Bind(R.id.fab)
     FloatingActionButton fab;
     @Bind(R.id.flowLayout)
@@ -107,6 +106,8 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     private boolean hasChanged;
     ProgressDialog progressDialog;
     boolean isFirstClick = true;
+    View bottomSheet;
+     AppCompatActivity activity;
 
     @Nullable
     @Override
@@ -132,7 +133,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
 
         ButterKnife.bind(this, this.rootView);
 
-        final AppCompatActivity activity = (AppCompatActivity) super.getActivity();
+        activity = (AppCompatActivity) super.getActivity();
         //this.toolbar.setNavigationIcon(R.drawable.logo);
         //this.toolbar.getLogo().set;
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
@@ -144,7 +145,6 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         activity.setSupportActionBar(toolbar);
 
         this.adapter = new PageAdapter(this, activity.getSupportFragmentManager());
-        Utils.d(TAG, "onActivityCreated " + adapter.getCount());
         this.viewPager.setOffscreenPageLimit(this.adapter.getCount());
         this.viewPager.setAdapter(this.adapter);
 
@@ -217,16 +217,16 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
 
         //PART OF BOTTOM SHEET FILTER=================
         CoordinatorLayout coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.cl_main);
-        final View bottomSheet = coordinatorLayout.findViewById(R.id.bottom_sheet);
+        bottomSheet = coordinatorLayout.findViewById(R.id.bottom_sheet);
         final BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
 
         behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                /*if(newState==BottomSheetBehavior.STATE_SETTLING){
+                if(newState==BottomSheetBehavior.STATE_SETTLING){
                     boolean isShow = bottomSheet.isShown();
                     behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                }*/
+                }
                 Log.d("state", String.valueOf(newState));
             }
 
@@ -239,9 +239,6 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, Utils.myPixel(getActivity(), 156), 0);
-                bottomSheet.setLayoutParams(layoutParams);*/
-
                 if (isFirstClick) {
                     isFirstClick = false;
                     behavior.setPeekHeight(Utils.myPixel(getActivity(), 156));
@@ -263,7 +260,6 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
 
             }
         });
-        //behavior.setHideable(true);
 
         viewShadow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -292,17 +288,28 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         relPlace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getActivity(), CityActivity.class);
-                startActivityForResult(i, Utils.REQUEST_CODE_CHOOSE_COUNTRY);
+                /*Intent i = new Intent(getActivity(), CityActivity.class);
+                startActivityForResult(i, Utils.REQUEST_CODE_CHOOSE_COUNTRY);*/
             }
         });
 
         //TOOLTIP PART===============
-        /*if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_EVENT_LIST)){
-            TooltipsManager.initTooltipWithPoint(getActivity(), new Point(TooltipsManager.getCenterPoint(getActivity())[0],
-                    TooltipsManager.getCenterPoint(getActivity())[1]), getActivity().getString(R.string.tooltip_event_list), Utils.myPixel(getActivity(), 320), TooltipsManager.ALREADY_TOOLTIP_EVENT_LIST);
-            TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_EVENT_LIST, true);
-        }*/
+        if(tab.getSelectedTabPosition()==EVENT_TAB){
+            if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_EVENT_LIST)) {
+                TooltipsManager.initTooltipWithPoint(getActivity(), new Point(TooltipsManager.getCenterPoint(getActivity())[0],
+                        TooltipsManager.getCenterPoint(getActivity())[1]), getActivity().getString(R.string.tooltip_event_list), Utils.myPixel(getActivity(), 380), Tooltip.Gravity.BOTTOM);
+                TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_EVENT_LIST, true);
+            }
+
+            if(SocialManager.countData>0){
+                if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_SOCIAL_TAB)) {
+                    TooltipsManager.initTooltipWithPoint(getActivity(), new Point(TooltipsManager.getCenterPoint(getActivity())[0],
+                            TooltipsManager.getCenterPoint(getActivity())[1] / 3), getActivity().getString(R.string.tooltip_social_tab), Utils.myPixel(getActivity(), 380), Tooltip.Gravity.BOTTOM);
+                    TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_SOCIAL_TAB, true);
+                }
+            }
+        }
+
         //END OF TOOLTIP PART===============
 
     }
@@ -392,10 +399,10 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
                     final ViewHolder holder = new ViewHolder(getActivity(), view, res);
 
                     holder.textView.setText(holder.text);
-                    //holder.textView.setTextColor(getResources().getColor(android.R.color.white));
-                    //holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_blue));
-                    //selectedItems.add(holder.text);
+
+
                     flowLayout.addView(view);
+
                     if (result.contains(res)) {
                         selectedItems.add(res);
                         //holder.checkView.setVisibility(View.GONE);
@@ -453,19 +460,31 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     }
 
     private void onTagClick(ViewHolder holder) {
-        final boolean selected = holder.checkView.getVisibility() != View.VISIBLE;
-        if (selected) {
+
+        boolean selected = holder.checkView.getVisibility() != View.VISIBLE;
+        boolean doNothing = false;
+
+        if (selected)
             this.selectedItems.add(holder.text);
-        } else {
-            this.selectedItems.remove(holder.text);
+        else {
+            if (this.selectedItems.size() == 1) {
+                doNothing = true;
+                selected = false;
+            } else {
+                this.selectedItems.remove(holder.text);
+            }
         }
-        setSelected(holder, selected, holder.text);
+
+        if (!doNothing) {
+            //holder.checkView.setVisibility(selected ? View.VISIBLE : View.GONE);
+            setSelected(holder, selected, holder.text);
+        }
     }
 
     private void setSelected(ViewHolder holder, boolean selected, String text) {
         if (selected) {
             if (text.equalsIgnoreCase("Art & Culture")) {
-                holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_red));
+                holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_red_f));
                 holder.textView.setTextColor(getResources().getColor(R.color.pink));
                 holder.checkView.setImageResource(R.drawable.ic_tick_pink);
                 //holder.checkView.setImageResource(R.mipmap.ic_check);
@@ -485,7 +504,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
                 holder.checkView.setImageResource(R.drawable.ic_tick_blue);
                 //holder.checkView.setImageResource(R.mipmap.ic_check);
             } else if (text.equalsIgnoreCase("Food & Drink")) {
-                holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_yellow));
+                holder.container.setBackground(getResources().getDrawable(R.drawable.btn_yellow_tag_f));
                 holder.textView.setTextColor(getResources().getColor(R.color.yellow_warning));
                 holder.checkView.setImageResource(R.drawable.ic_tick_yellow);
                 //holder.checkView.setImageResource(R.mipmap.ic_check);
@@ -495,10 +514,10 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
             }
 
         } else {
-            holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_grey));
-            holder.textView.setTextColor(getResources().getColor(R.color.grey_tag));
+            holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_grey_f));
+            holder.textView.setTextColor(getResources().getColor(R.color.divider_pantone));
             //holder.checkView.setImageResource(R.drawable.ic_tick_grey);
-            holder.checkView.setImageResource(R.drawable.ic_tick_yellow);
+            //holder.checkView.setImageResource(R.drawable.ic_tick_yellow);
         }
 
 
@@ -589,15 +608,41 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         }
 
         if (position == CHAT_TAB) {
+            showToolbar();
             fab.setVisibility(View.GONE);
+            bottomSheet.setVisibility(View.GONE);
+            SocialManager.isInSocial = false;
         } else if (position == SOCIAL_TAB) {
+            showToolbar();
             fab.setVisibility(View.GONE);
+            TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_SOCIAL_TAB, false);
+            SocialManager.isInSocial = true;
+            SocialTabFragment sc = (SocialTabFragment)this.adapter.fragments[position];
+            sc.checkTooltipsInSug();
+
+            //sc.refreshCard();
+            //Log.d("", "");
+            bottomSheet.setVisibility(View.GONE);
         } else {
             fab.setVisibility(View.VISIBLE);
+            SocialManager.isInSocial = false;
+            bottomSheet.setVisibility(View.VISIBLE);
         }
 
         this.lastSelectedFragment = (TabFragment) this.adapter.fragments[position];
         this.lastSelectedFragment.onTabSelected();
+    }
+
+    private void showToolbar()
+    {
+        CoordinatorLayout coordinator = (CoordinatorLayout) getActivity().findViewById(R.id.cl_main);
+        AppBarLayout appbar = (AppBarLayout) getActivity().findViewById(R.id.appBar);
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appbar.getLayoutParams();
+        AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
+
+        int[] consumed = new int[2];
+        //behavior.onNestedPreScroll(coordinator, appbar, null, 0, -1000, consumed);
+        behavior.onNestedFling(coordinator, appbar, null, 0, -1000, true);
     }
 
     private void startFetchChat() {
@@ -730,6 +775,12 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         super.onResume();
         getActivity().registerReceiver(fetchChatReceiver
                 , new IntentFilter(Utils.FETCH_CHAT_RECEIVER));
+
+        if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_SOCIAL_TAB)) {
+            TooltipsManager.initTooltipWithPoint(getActivity(), new Point(TooltipsManager.getCenterPoint(getActivity())[0],
+                    TooltipsManager.getCenterPoint(getActivity())[1] / 3), getActivity().getString(R.string.tooltip_social_tab), Utils.myPixel(getActivity(), 380), Tooltip.Gravity.BOTTOM);
+            TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_SOCIAL_TAB, true);
+        }
     }
 
     @Override

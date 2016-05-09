@@ -102,11 +102,18 @@ public class MainActivity extends AppCompatActivity
             final SharedPreferences pref = App.getSharedPreferences();
             pref.edit().putBoolean(Utils.IS_FIRST_RUN, false).commit();
             App.getInstance().trackMixPanelEvent("Install");
+
+            //TOOLTIP PART===============
+            //TooltipsManager.clearTimeTooltip();
+            TooltipsManager.validateTime(Calendar.getInstance().getTimeInMillis());
+
+            //END OF TOOLTIP PART===============
         }
 
         //TOOLTIP PART===============
-        //TooltipsManager.validateTime(Calendar.getInstance().getTimeInMillis());
-        //TooltipsManager.clearTimeTooltip();
+        /*TooltipsManager.clearTimeTooltip();
+        TooltipsManager.validateTime(Calendar.getInstance().getTimeInMillis());*/
+
         //END OF TOOLTIP PART===============
 
         // validate GCM Version and update if necessary
@@ -536,9 +543,9 @@ public class MainActivity extends AppCompatActivity
             case R.id.action_support:
                 mailSupport();
                 break;
-            case R.id.action_filter:
+            /*case R.id.action_filter:
                 target = FilterActivity.class;
-                break;
+                break;*/
             case R.id.action_invite:
                 inviteFriends();
                 break;
