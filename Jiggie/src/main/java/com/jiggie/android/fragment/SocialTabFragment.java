@@ -14,6 +14,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -33,6 +36,7 @@ import com.jiggie.android.R;
 import com.jiggie.android.activity.chat.ChatActivity;
 import com.jiggie.android.activity.event.EventDetailActivity;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
+import com.jiggie.android.activity.social.SocialFilterActivity;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.SimpleJSONObject;
 import com.jiggie.android.component.StringUtility;
@@ -171,7 +175,6 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
 
         }*/
 
-        Utils.d(TAG, "isFeed " + AccountManager.loadSetting().getData().getNotifications().isFeed());
         if (AccountManager.loadSetting().getData().getNotifications().isFeed()) {
             if (temp.size() == 0)
                 this.onRefresh();
@@ -224,6 +227,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                 , new IntentFilter(super.getString(R.string.broadcast_social)));*/
         App.getInstance().registerReceiver(this.refreshSocialReceiver
                 , new IntentFilter(SocialTabFragment.TAG));
+        super.setHasOptionsMenu(true);
     }
 
     private boolean isRefreshing = false;
@@ -877,14 +881,14 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     private BroadcastReceiver refreshSocialReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (getContext() != null) {
-                if (intent != null && intent.getExtras().getBoolean(Utils.IS_ON)) {
+            if (getContext() != null && intent != null) {
+                if (intent.getExtras() != null && intent.getExtras().getBoolean(Utils.IS_ON)) {
                     temp = new ArrayList<>();
                     cardEmpty.setVisibility(View.GONE);
                     if (socialCardNewAdapter != null)
                         socialCardNewAdapter.clear();
                     onRefresh();
-                } else if (intent != null && !intent.getExtras().getBoolean(Utils.IS_ON)) {
+                } else if (intent.getExtras() != null && !intent.getExtras().getBoolean(Utils.IS_ON)) {
                     flingAdapterView.setVisibility(View.GONE);
                     cardEmpty.setVisibility(View.GONE);
                     progressBar.setVisibility(View.GONE);
@@ -996,4 +1000,21 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         }
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_filter, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId())
+        {
+            case R.id.action_social_filter:
+                Intent i = new Intent(getActivity(), SocialFilterActivity.class);
+                startActivity(i);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

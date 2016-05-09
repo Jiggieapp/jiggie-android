@@ -51,7 +51,7 @@
                         android:layout_width="match_parent"
                         android:id="@+id/txtPriceTitle"
                         android:layout_above="@+id/txtPriceFill"
-                        android:text="Starts From"
+                        android:text="@string/start_from"
                         />
 
                     <TextView

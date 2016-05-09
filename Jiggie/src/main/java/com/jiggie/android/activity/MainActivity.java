@@ -536,9 +536,9 @@ public class MainActivity extends AppCompatActivity
             case R.id.action_settings:
                 target = ProfileSettingActivity.class;
                 break;
-            case R.id.action_social_filter:
+            /*case R.id.action_social_filter:
                 target = SocialFilterActivity.class;
-                break;
+                break;*/
             case R.id.action_profile:
                 target = NewProfileDetailActivity.class;
                 break;

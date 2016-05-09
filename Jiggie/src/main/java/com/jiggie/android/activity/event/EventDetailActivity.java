@@ -78,6 +78,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -307,13 +308,18 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             } else {
                 txtPriceTitle.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
                 txtPriceFill.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
-                txtPriceFill.setText(lowest_price);
+                try {
+                    String str = String.format(Locale.US, "Rp %,d", lowest_price);
+                    txtPriceFill.setText(str);
+                }
+                catch (Exception e)
+                {
+
+                }
             }
         }
 
-        if (event_name != null)
-
-        {
+        if (event_name != null) {
             super.setToolbarTitle(event_name.toUpperCase(), true);
         }
 
@@ -324,7 +330,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         //this.scrollView.setVisibility(View.INVISIBLE);
         this.collapsingToolbarLayout.setTitleEnabled(false);
         this.imageGuests = new ImageView[]
-
                 {
                         imageGuest1, imageGuest2, imageGuest3, imageGuest4
                 }
@@ -333,14 +338,10 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
         final FragmentManager fragmentManager = super.getSupportFragmentManager();
         ((SupportMapFragment) fragmentManager.findFragmentById(R.id.map)).
-
                 getMapAsync(this);
+        super.registerReceiver(this.guestInvitedReceiver, new IntentFilter(super.getString(R.string.broadcastGuestInvited)
 
-        super.
-
-                registerReceiver(this.guestInvitedReceiver, new IntentFilter(super.getString(R.string.broadcastGuestInvited)
-
-                ));
+        ));
 
         if (file != null && file.exists())
             file.delete();
@@ -357,41 +358,41 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         cekLike();
     }
 
-    private void cekLike(){
-        try{
-            if(EventManager.dataLike.size()>0){
+    private void cekLike() {
+        try {
+            if (EventManager.dataLike.size() > 0) {
                 boolean exist = false;
-                for(int i = 0;i<EventManager.dataLike.size();i++){
+                for (int i = 0; i < EventManager.dataLike.size(); i++) {
                     String eventId = EventManager.dataLike.get(i).getEvent_id();
-                    if(eventId.equals(event_id)){
+                    if (eventId.equals(event_id)) {
                         imgLove.setSelected(EventManager.dataLike.get(i).isLiked());
                         exist = true;
                         break;
                     }
                 }
-                if(!exist){
+                if (!exist) {
                     EventManager.dataLike.add(new likeModel(event_id, false));
                 }
-            }else{
+            } else {
                 EventManager.dataLike.add(new likeModel(event_id, false));
             }
-        }catch (Exception e){
-            Log.d("cekLike","exception");
+        } catch (Exception e) {
+            Log.d("cekLike", "exception");
         }
 
     }
 
-    private void setLike(){
-        try{
-            for(int i = 0;i<EventManager.dataLike.size();i++){
+    private void setLike() {
+        try {
+            for (int i = 0; i < EventManager.dataLike.size(); i++) {
                 String eventId = EventManager.dataLike.get(i).getEvent_id();
-                if(eventId.equals(event_id)){
+                if (eventId.equals(event_id)) {
                     EventManager.dataLike.get(i).setIsLiked(imgLove.isSelected());
                     break;
                 }
             }
-        }catch (Exception e){
-            Log.d("setLike","exception");
+        } catch (Exception e) {
+            Log.d("setLike", "exception");
         }
 
     }

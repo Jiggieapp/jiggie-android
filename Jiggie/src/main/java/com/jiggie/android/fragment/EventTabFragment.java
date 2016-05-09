@@ -355,6 +355,7 @@ public class EventTabFragment extends Fragment
         i.putExtra(Common.FIELD_EVENT_PICS, event.getPhotos());
         i.putExtra(Common.FIELD_EVENT_DESCRIPTION, event.getDescription());
         i.putExtra(Common.FIELD_EVENT_LIKE, event.getLikes());
+        i.putExtra(Common.FIELD_EVENT_LOWEST_PRICE, event.getLowest_price());
         super.startActivity(i);
     }
 

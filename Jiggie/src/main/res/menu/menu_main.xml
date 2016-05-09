@@ -10,11 +10,11 @@
         app:showAsAction="never"
         android:orderInCategory="2"/>
 
-    <item
+    <!--<item
         android:id="@+id/action_social_filter"
         android:title="@string/filter_title"
         app:showAsAction="never"
-        android:orderInCategory="2"/>
+        android:orderInCategory="2"/>-->
 
     <item
         android:id="@+id/action_invite"

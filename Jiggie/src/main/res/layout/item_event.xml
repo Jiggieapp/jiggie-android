@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/txtPriceFill"
                 android:layout_marginLeft="@dimen/padding_standard_half"
-                android:text="Starts From"
+                android:text="@string/start_from"
                 android:textColor="@android:color/white" />
 
             <TextView

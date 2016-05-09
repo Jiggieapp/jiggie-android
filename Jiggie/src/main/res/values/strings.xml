@@ -414,4 +414,5 @@
     <string name="skip">Skip</string>
 
     <string name="empty_social">You currently have no cards available</string>
+    <string name="start_from">Start from</string>
 </resources>

@@ -271,6 +271,7 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
         if (AccountManager.anySettingChange) {
             AccountManager.anySettingChange = false;
             Intent i = new Intent(SocialTabFragment.TAG);
+            i.putExtra(Utils.IS_ON, switchSocial.isChecked());
             sendBroadcast(i);
         }
     }
