@@ -12,6 +12,7 @@ import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.EventModel;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.TagsListModel;
+import com.jiggie.android.model.likeModel;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class EventManager extends BaseManager{
     private static EventInterface eventInterface;
     public static final String TAG = EventManager.class.getSimpleName();
     public static ArrayList<EventModel.Data.Events> events = new ArrayList<>();
+    public static ArrayList<likeModel> dataLike = new ArrayList<>();
 
     public static class FullfillmentTypes {
         public static final String PHONE_NUMBER = "phone_number";

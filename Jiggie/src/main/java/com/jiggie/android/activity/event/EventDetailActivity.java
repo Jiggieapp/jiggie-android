@@ -22,6 +22,7 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.ImageView;
@@ -61,6 +62,7 @@ import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.GuestModel;
 import com.jiggie.android.model.ShareLinkModel;
+import com.jiggie.android.model.likeModel;
 
 import org.json.JSONObject;
 
@@ -352,6 +354,46 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_SHARE, true);
         }
 
+        cekLike();
+    }
+
+    private void cekLike(){
+        try{
+            if(EventManager.dataLike.size()>0){
+                boolean exist = false;
+                for(int i = 0;i<EventManager.dataLike.size();i++){
+                    String eventId = EventManager.dataLike.get(i).getEvent_id();
+                    if(eventId.equals(event_id)){
+                        imgLove.setSelected(EventManager.dataLike.get(i).isLiked());
+                        exist = true;
+                        break;
+                    }
+                }
+                if(!exist){
+                    EventManager.dataLike.add(new likeModel(event_id, false));
+                }
+            }else{
+                EventManager.dataLike.add(new likeModel(event_id, false));
+            }
+        }catch (Exception e){
+            Log.d("cekLike","exception");
+        }
+
+    }
+
+    private void setLike(){
+        try{
+            for(int i = 0;i<EventManager.dataLike.size();i++){
+                String eventId = EventManager.dataLike.get(i).getEvent_id();
+                if(eventId.equals(event_id)){
+                    EventManager.dataLike.get(i).setIsLiked(imgLove.isSelected());
+                    break;
+                }
+            }
+        }catch (Exception e){
+            Log.d("setLike","exception");
+        }
+
     }
 
     private void setToolbarTitles(String title, boolean backEnable) {
@@ -576,6 +618,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                     throw new RuntimeException(App.getErrorMessage(e), e);
                 }
 
+                //Like PART====================
                 if (eventDetail.is_liked()) {
                     imgLove.setSelected(true);
                     TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_LIKE, false);
@@ -591,6 +634,9 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 count_like = eventDetail.getLikes();
                 count_like_new = count_like;
                 txtCountLike.setText(String.valueOf(count_like));
+
+                setLike();
+                //END of Like PART===================
 
             } catch (ParseException e) {
                 swipeRefresh.setRefreshing(false);
@@ -710,6 +756,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             txtCountLike.setText(String.valueOf(count_like_new));
             canClickLike = false;
             TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_LIKE, false);
+            setLike();
         }
 
     }
