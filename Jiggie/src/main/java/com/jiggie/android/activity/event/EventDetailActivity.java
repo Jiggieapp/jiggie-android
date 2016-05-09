@@ -79,7 +79,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -175,6 +179,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     private File file;
     private int count_like, count_like_new;
     boolean canClickLike = false;
+    Timer timerLike;
+    TimerTask timerTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -719,7 +725,28 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             canClickLike = false;
             TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_LIKE, false);
             setLike();
+            //runBackgroundLike();
         }
+
+    }
+
+    private void runBackgroundLike(){
+        if(timerLike!=null){
+            timerLike.cancel();
+        }
+        timerLike = new Timer();
+        timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                if(imgLove.isSelected()){
+                    actionLike(Utils.ACTION_LIKE_NO);
+                }else{
+                    actionLike(Utils.ACTION_LIKE_YES);
+                }
+            }
+        };
+        timerLike.schedule(timerTask, 3000);
+
 
     }
 
