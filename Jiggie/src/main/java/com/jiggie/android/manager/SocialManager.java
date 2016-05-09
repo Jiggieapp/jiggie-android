@@ -94,7 +94,6 @@ public class SocialManager extends BaseManager{
         }*/
 
         try {
-            Utils.d(TAG, "load social feed");
             getSocialFeed(fb_id, gender_interest, new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response) {

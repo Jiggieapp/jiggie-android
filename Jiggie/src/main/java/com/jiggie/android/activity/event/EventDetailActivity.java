@@ -588,6 +588,10 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                     }
                 }
 
+                count_like = eventDetail.getLikes();
+                count_like_new = count_like;
+                txtCountLike.setText(String.valueOf(count_like));
+
             } catch (ParseException e) {
                 swipeRefresh.setRefreshing(false);
                 throw new RuntimeException(App.getErrorMessage(e), e);

@@ -22,9 +22,13 @@ import com.jiggie.android.manager.TooltipsManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventModel;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -135,7 +139,10 @@ public class EventTabListAdapter
             {
                 holder.txtPriceTitle.setShadowLayer(1.6f, 1.5f, 1.3f, context.getResources().getColor(android.R.color.black));
                 holder.txtPriceFill.setShadowLayer(1.6f, 1.5f, 1.3f, context.getResources().getColor(android.R.color.black));
-                holder.txtPriceFill.setText(item.getLowest_price());
+                Utils.d(TAG, "item broh " + item.getLowest_price());
+                String str = String.format(Locale.US, "Rp %,d", item.getLowest_price());
+                holder.txtPriceFill.setText(str);
+                //holder.txtPriceFill.setText("Lorem ipsum");
             }
 
             /*if(position==0){
@@ -175,7 +182,6 @@ public class EventTabListAdapter
         TextView txtPriceTitle;
         @Bind(R.id.txtPriceFill)
         TextView txtPriceFill;
-
 
         //private EventTagArrayAdapter eventTagAdapter;
         private ViewSelectedListener listener;

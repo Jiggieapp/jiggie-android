@@ -113,7 +113,8 @@
     <string name="socialize">Socialize</string>
     <string name="socialize_description">Turn off if you do not wish to be seen by others</string>
     <string name="socialize_description_off">Turn on if you wish to be seen by others</string>
-    <string name="socialize_description_new">If you wish not to be seen by others, turn this off</string>
+    <string name="socialize_description_new_off">If you wish not to be seen by others, turn this off</string>
+    <string name="socialize_description_new_on">If you wish to be seen by others, turn this on</string>
 
     <string name="wants_to_go_with">%1$s wants to go with you to</string>
     <string name="interested_question">Interested?</string>

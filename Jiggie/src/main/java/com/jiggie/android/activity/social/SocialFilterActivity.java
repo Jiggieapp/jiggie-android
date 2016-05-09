@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.Switch;
@@ -47,6 +48,8 @@ public class SocialFilterActivity extends ToolbarActivity implements SocialView 
     SeekBar sliderLocation;
     @Bind(R.id.lbl_max_distance)
     TextView lblMaxDistance;
+    @Bind(R.id.txtSocialize)
+    TextView txtSocialize;
 
     SocialFilterPresenter presenter;
     MemberSettingResultModel.Data.MemberSettings memberSettings;
@@ -83,8 +86,24 @@ public class SocialFilterActivity extends ToolbarActivity implements SocialView 
             }
         });
         sliderAgeDouble.bringToFront();
+
+        switchSocialize.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                setSocializeText(isChecked);
+            }
+        });
         btnRetryOnClick();
     }
+
+    private void setSocializeText(final boolean isChecked) {
+        if (isChecked) {
+            txtSocialize.setText(getResources().getString(R.string.socialize_description_new_off));
+        } else {
+            txtSocialize.setText(getResources().getString(R.string.socialize_description_new_on));
+        }
+    }
+
 
     @OnClick(R.id.btnRetry)
     void btnRetryOnClick() {
@@ -135,7 +154,9 @@ public class SocialFilterActivity extends ToolbarActivity implements SocialView 
         MemberSettingResultModel.Data.MemberSettings.Notifications notifications
                 = memberSettings.getNotifications();
         final boolean isSocialize = notifications.isFeed();
+
         switchSocialize.setChecked(isSocialize);
+        setSocializeText(isSocialize);
 
         final String interestedIn = memberSettings.getGender_interest();
         if (interestedIn.equalsIgnoreCase("female")) {
