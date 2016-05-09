@@ -170,6 +170,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         else
         {
             cardEmpty.setVisibility(View.GONE);
+
         }
 
         App.getInstance().trackMixPanelEvent("View Social Feed");

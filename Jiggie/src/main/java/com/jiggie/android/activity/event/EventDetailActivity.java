@@ -395,6 +395,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         if (message.getFrom().equalsIgnoreCase(TAG)) {
             try {
                 eventDetail = message.getData().getEvents_detail();
+                event_description = eventDetail.getDescription();
                 App.getInstance().trackMixPanelViewEventDetail("View Event Details", eventDetail);
                 elementContainers.setVisibility(View.VISIBLE);
                 elementContainers2.setVisibility(View.VISIBLE);
