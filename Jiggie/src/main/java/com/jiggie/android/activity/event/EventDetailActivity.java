@@ -708,25 +708,25 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     @SuppressWarnings("unused")
     @OnClick(R.id.img_love)
     void loveOnClick() {
-        if (canClickLike) {
+        //if (canClickLike) {
             if (imgLove.isSelected()) {
                 imgLove.setSelected(false);
                 if (count_like_new > 0) {
                     count_like_new = count_like_new - 1;
                 }
 
-                actionLike(Utils.ACTION_LIKE_NO);
+                //actionLike(Utils.ACTION_LIKE_NO);
             } else {
                 imgLove.setSelected(true);
                 count_like_new = count_like_new + 1;
-                actionLike(Utils.ACTION_LIKE_YES);
+                //actionLike(Utils.ACTION_LIKE_YES);
             }
             txtCountLike.setText(String.valueOf(count_like_new));
             canClickLike = false;
             TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_LIKE, false);
             setLike();
-            //runBackgroundLike();
-        }
+            runBackgroundLike();
+        //}
 
     }
 
@@ -738,10 +738,12 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         timerTask = new TimerTask() {
             @Override
             public void run() {
-                if(imgLove.isSelected()){
+                if(!eventDetail.is_liked()&&imgLove.isSelected()){
+                    actionLike(Utils.ACTION_LIKE_YES);
+                }else if(eventDetail.is_liked()&&!imgLove.isSelected()){
                     actionLike(Utils.ACTION_LIKE_NO);
                 }else{
-                    actionLike(Utils.ACTION_LIKE_YES);
+                    //do nothing
                 }
             }
         };
