@@ -289,7 +289,7 @@ public class CustomSwipeFlingAdapterView extends SwipeFlingAdapterView {
                 });
 
             }
-            else if(nextChild.getId() == R.id.txtEventGeneral)
+            else if(nextChild.getId() == R.id.lbl_container)
             {
                 nextChild.setOnClickListener(new OnClickListener() {
                     @Override

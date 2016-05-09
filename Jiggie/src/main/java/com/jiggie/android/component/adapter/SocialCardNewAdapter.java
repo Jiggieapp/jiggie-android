@@ -75,10 +75,6 @@ public class SocialCardNewAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        /*((ImageView)convertView.findViewById(com.andtinder.R.id.image)).setImageDrawable(model.getCardImageDrawable());
-        ((TextView)convertView.findViewById(com.andtinder.R.id.title)).setText(model.getTitle());
-        ((TextView)convertView.findViewById(com.andtinder.R.id.description)).setText(model.getDescription());*/
-        /*holder.generalTxtUser.setText(model.getFrom_first_name());*/
         Glide
                 .with(context)
                 .load(model.getImage()).asBitmap()
@@ -86,14 +82,6 @@ public class SocialCardNewAdapter extends BaseAdapter {
                 .centerCrop()
                 .into(holder.generalImage);
 
-        /*holder.generalImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(context, ProfileDetailActivity.class);
-                i.putExtra(Common.FIELD_FACEBOOK_ID, getItem(0).getFrom_fb_id());
-                context.startActivity(i);
-            }
-        });*/
 
         if (getItem(position).getType().equalsIgnoreCase("approved")) {
             holder.generalTxtEvent.setText(model.getEvent_name());
@@ -102,17 +90,6 @@ public class SocialCardNewAdapter extends BaseAdapter {
             holder.generalTxtConnect.setText(
                     context.getResources().getString(R.string.interested_ask));
             holder.chat_icon.setVisibility(View.VISIBLE);
-
-            /*SocialManager.LAST_STATE_CARD = SocialManager.STATE_INBOUND;
-            if(SocialManager.isInSocial){
-                if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_INBOUND)){
-                    //if(position==data.size()-1){
-                        TooltipsManager.initTooltipWithAnchor(a, holder.generalBtnYes, a.getString(R.string.tooltip_yes_inbound), Utils.myPixel(a, 380));
-                        TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_INBOUND, true);
-                    //}
-
-                }
-            }*/
         } else {
             holder.generalTxtEvent.setText(model.getEvent_name());
             holder.generalTxtUser.setText(context.getString(R.string.user_viewing
@@ -123,20 +100,8 @@ public class SocialCardNewAdapter extends BaseAdapter {
             holder.generalBtnNo.setText(context.getResources().getString(R.string.skip));
             holder.chat_icon.setVisibility(View.GONE);
 
-            /*SocialManager.LAST_STATE_CARD = SocialManager.STATE_SUGGEST;
-            if(SocialManager.isInSocial){
-                if(TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_SUGGESTED)){
-                    //if(position==data.size()-1){
-                        TooltipsManager.initTooltipWithAnchor(a, holder.generalBtnYes, a.getString(R.string.tooltip_yes_suggested), Utils.myPixel(a, 380));
-                        TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_SUGGESTED, true);
-                    //}
-
-                }
-            }*/
         }
-
         setBtnYesGeneral(holder.generalBtnYes);
-
         return convertView;
     }
 
