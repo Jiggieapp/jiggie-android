@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 
@@ -139,6 +140,7 @@ public class TutorialFragmentAdapter extends FragmentPagerAdapter {
 
             if (!this.txtTitle.getText().toString().contains("Jiggie")) {
                 this.txtTitle.setVisibility(View.VISIBLE);
+                //Glide.with(getActivity()).load(arg.getInt(ARG_IMAGE)).into(imageView);
                 this.imageView.setImageResource(arg.getInt(ARG_IMAGE));
                 this.contentView.setVisibility(View.VISIBLE);
 

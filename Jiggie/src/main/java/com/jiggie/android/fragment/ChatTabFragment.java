@@ -51,7 +51,8 @@ import butterknife.ButterKnife;
 /**
  * Created by rangg on 21/10/2015.
  */
-public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefreshLayout.OnRefreshListener, ChatTabListAdapter.ConversationSelectedListener, ChatTabListAdapter.ConversationLongClickListener {
+public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefreshLayout.OnRefreshListener
+        , ChatTabListAdapter.ConversationSelectedListener, ChatTabListAdapter.ConversationLongClickListener {
     @Bind(R.id.swipe_refresh)
     SwipeRefreshLayout refreshLayout;
     @Bind(R.id.recycler)

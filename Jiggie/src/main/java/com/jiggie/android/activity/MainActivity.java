@@ -647,6 +647,4 @@ public class MainActivity extends AppCompatActivity
             hideProgressDialog();
         }
     }
-
-
 }

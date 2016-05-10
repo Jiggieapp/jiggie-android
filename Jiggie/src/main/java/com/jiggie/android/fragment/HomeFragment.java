@@ -649,12 +649,12 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     }
 
     private void startFetchChat() {
-        if (AccountManager.loadMemberSetting().getChat() == 0)
-            ((ChatTabFragment) this.adapter.getItem(CHAT_TAB)).startRepeatingTask();
+       /* if (AccountManager.loadMemberSetting().getChat() == 0)
+            ((ChatTabFragment) this.adapter.getItem(CHAT_TAB)).startRepeatingTask();*/
     }
 
     private void stopFetchChat() {
-        ((ChatTabFragment) this.adapter.getItem(CHAT_TAB)).stopRepeatingTask();
+        //((ChatTabFragment) this.adapter.getItem(CHAT_TAB)).stopRepeatingTask();
     }
 
     @Override
@@ -700,9 +700,8 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
                     //new EventTabFragment()
                     new EventsFragment()
                     , new SocialTabFragment()
-                    , new ChatTabFragment()
-
-                    //,new MoreTabFragment()
+                    //, new ChatTabFragment()
+                    , new FriendsFragment()
             };
             ((TabFragment) this.fragments[0]).setHomeMain(homeMain);
             ((TabFragment) this.fragments[1]).setHomeMain(homeMain);
