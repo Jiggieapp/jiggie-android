@@ -675,7 +675,23 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                     }
                 });
             }
+        }
 
+        lowest_price = eventDetail.getLowest_price();
+        if (lowest_price == 0) {
+            txtPriceFill.setVisibility(View.GONE);
+            txtPriceTitle.setVisibility(View.GONE);
+        } else {
+            txtPriceTitle.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
+            txtPriceFill.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
+            txtPriceFill.setVisibility(View.VISIBLE);
+            txtPriceTitle.setVisibility(View.VISIBLE);
+            try {
+                String str = String.format(Locale.US, "Rp %,d", lowest_price);
+                txtPriceFill.setText(str);
+            } catch (Exception e) {
+                Utils.d(TAG, "exception " + e.toString());
+            }
         }
     }
 
