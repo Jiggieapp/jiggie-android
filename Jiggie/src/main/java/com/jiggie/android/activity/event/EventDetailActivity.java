@@ -317,7 +317,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 txtPriceTitle.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
                 txtPriceFill.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
                 try {
-                    String str = String.format(Locale.US, "Rp %,d", lowest_price + "");
+                    String str = String.format(Locale.US, "Rp %,d", lowest_price);
                     txtPriceFill.setText(str);
                 } catch (Exception e) {
                     Utils.d(TAG, "exception " + e.toString());

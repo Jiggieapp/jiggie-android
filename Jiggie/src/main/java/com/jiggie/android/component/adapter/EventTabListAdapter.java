@@ -146,7 +146,6 @@ public class EventTabListAdapter
                 holder.txtPriceFill.setVisibility(View.VISIBLE);
                 try {
                     String str = String.format(Locale.US, "Rp %,d", item.getLowest_price());
-                    Utils.d(TAG, "str " + str);
                     holder.txtPriceFill.setText(str);
                 }
                 catch (Exception e)

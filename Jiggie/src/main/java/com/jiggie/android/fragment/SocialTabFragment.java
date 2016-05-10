@@ -121,7 +121,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
 
     private SocialModel.Data.SocialFeeds current;
     boolean confirm;
-    SettingModel currentSetting;
+
     private int socialSize;
     public static final String TAG = SocialTabFragment.class.getSimpleName();
     private Dialog dialogWalkthrough;
@@ -145,7 +145,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     @Override
     public void onTabSelected() {
         //wandy 03-03-2016
-        //currentSetting = AccountManager.loadSetting();
+
         boolean a = AccountManager.anySettingChange;
         if (this.current == null) {
             /*if (switchSocialize.isChecked()) {
@@ -211,8 +211,6 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         this.cardEmpty.setVisibility(View.GONE);
         this.card.setVisibility(View.GONE);*/
 
-        currentSetting = AccountManager.loadSetting();
-
         //wandy 22-02-2016
         //currentSetting = null;
 
@@ -247,6 +245,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             this.cardEmpty.setVisibility(View.GONE);
             temp = new ArrayList<>();
             isRefreshing = true;
+            SettingModel currentSetting = AccountManager.loadSetting();
             SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId()
                     , currentSetting.getData().getGender_interest());
         }
@@ -386,6 +385,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                 if (socialCardNewAdapter.getCount() == 3 /*|| socialCardNewAdapter.getCount() == 0*/
                         && !isRefreshing) {
                     isRefreshing = true;
+                    SettingModel currentSetting = AccountManager.loadSetting();
                     SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId()
                             , currentSetting.getData().getGender_interest());
                 }
