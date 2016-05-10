@@ -1,6 +1,7 @@
 package com.jiggie.android.activity.social;
 
 import com.facebook.AccessToken;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.listener.OnResponseListener;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.MemberSettingModel;
@@ -58,6 +59,7 @@ public class SocialFilterImplementation implements SocialFilterPresenter{
             public void onSuccess(Object object) {
                 AccountManager.saveMemberSetting(memberSettingModel);
                 SettingModel settingModel = AccountManager.loadSetting();
+                Utils.d(TAG, "getGenderInterest " + memberSettingModel.getGender_interest());
                 settingModel.getData().setGender_interest(memberSettingModel.getGender_interest());
                 boolean isFeed;
                 if(memberSettingModel.getFeed() == 0)

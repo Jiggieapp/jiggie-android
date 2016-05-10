@@ -131,6 +131,7 @@ public class EventTabListAdapter
                 holder.relLike.setVisibility(View.GONE);
             }
 
+            Utils.d(TAG, "lowestPrice " + item.getLowest_price() + " " + item.getTitle());
             if(item.getLowest_price() == 0)
             {
                 holder.txtPriceFill.setVisibility(View.GONE);
@@ -138,15 +139,19 @@ public class EventTabListAdapter
             }
             else
             {
+
                 holder.txtPriceTitle.setShadowLayer(1.6f, 1.5f, 1.3f, context.getResources().getColor(android.R.color.black));
                 holder.txtPriceFill.setShadowLayer(1.6f, 1.5f, 1.3f, context.getResources().getColor(android.R.color.black));
+                holder.txtPriceTitle.setVisibility(View.VISIBLE);
+                holder.txtPriceFill.setVisibility(View.VISIBLE);
                 try {
                     String str = String.format(Locale.US, "Rp %,d", item.getLowest_price());
+                    Utils.d(TAG, "str " + str);
                     holder.txtPriceFill.setText(str);
                 }
                 catch (Exception e)
                 {
-
+                    Utils.d(TAG, "exception " + e.toString());
                 }
             }
 

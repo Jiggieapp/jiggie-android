@@ -301,8 +301,13 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         //setHomeTitle();
 
         isRefreshing = false;
-        fillSocialCard(message);
-
+        if (message.getData().getSocial_feeds() != null) {
+            fillSocialCard(message);
+        } else {
+            progressBar.setVisibility(View.GONE);
+            temp.clear();
+            socialCardNewAdapter.clear();
+        }
     }
 
     ArrayList<SocialModel.Data.SocialFeeds> temp = new ArrayList<>();
@@ -316,7 +321,6 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     }
 
     protected void fillSocialCard(SocialModel message) {
-
         for (final SocialModel.Data.SocialFeeds item : message.getData().getSocial_feeds()) {
             //temp.add(item);
             final boolean isExist = checkAlreadyExist(item.getFrom_fb_id());
@@ -470,7 +474,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         } else {
             if (getContext() != null) {
                 dismissProgressDialog();
-                Toast.makeText(getContext(), "Empty data", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), "Empty data", Toast.LENGTH_SHORT).show();
                 progressBar.setVisibility(View.GONE);
                 if (message.getFrom().equals(Utils.FROM_SOCIAL_MATCH) || message.getFrom().equals(Utils.FROM_EVENT_DETAIL)) {
                     enableButton(true);

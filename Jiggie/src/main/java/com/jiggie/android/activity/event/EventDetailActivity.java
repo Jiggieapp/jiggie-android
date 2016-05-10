@@ -317,12 +317,10 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 txtPriceTitle.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
                 txtPriceFill.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
                 try {
-                    String str = String.format(Locale.US, "Rp %,d", lowest_price);
+                    String str = String.format(Locale.US, "Rp %,d", lowest_price + "");
                     txtPriceFill.setText(str);
-                }
-                catch (Exception e)
-                {
-
+                } catch (Exception e) {
+                    Utils.d(TAG, "exception " + e.toString());
                 }
             }
         }
@@ -689,7 +687,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             }
         } else {
             if (isActive()) {
-                if(progressDialog!=null && progressDialog.isShowing()){
+                if (progressDialog != null && progressDialog.isShowing()) {
                     progressDialog.dismiss();
                 }
 
@@ -753,40 +751,40 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     @OnClick(R.id.img_love)
     void loveOnClick() {
         //if (canClickLike) {
-            if (imgLove.isSelected()) {
-                imgLove.setSelected(false);
-                if (count_like_new > 0) {
-                    count_like_new = count_like_new - 1;
-                }
-
-                //actionLike(Utils.ACTION_LIKE_NO);
-            } else {
-                imgLove.setSelected(true);
-                count_like_new = count_like_new + 1;
-                //actionLike(Utils.ACTION_LIKE_YES);
+        if (imgLove.isSelected()) {
+            imgLove.setSelected(false);
+            if (count_like_new > 0) {
+                count_like_new = count_like_new - 1;
             }
-            txtCountLike.setText(String.valueOf(count_like_new));
-            canClickLike = false;
-            TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_LIKE, false);
-            setLike();
-            runBackgroundLike();
+
+            //actionLike(Utils.ACTION_LIKE_NO);
+        } else {
+            imgLove.setSelected(true);
+            count_like_new = count_like_new + 1;
+            //actionLike(Utils.ACTION_LIKE_YES);
+        }
+        txtCountLike.setText(String.valueOf(count_like_new));
+        canClickLike = false;
+        TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_LIKE, false);
+        setLike();
+        runBackgroundLike();
         //}
 
     }
 
-    private void runBackgroundLike(){
-        if(timerLike!=null){
+    private void runBackgroundLike() {
+        if (timerLike != null) {
             timerLike.cancel();
         }
         timerLike = new Timer();
         timerTask = new TimerTask() {
             @Override
             public void run() {
-                if(!eventDetail.is_liked()&&imgLove.isSelected()){
+                if (!eventDetail.is_liked() && imgLove.isSelected()) {
                     actionLike(Utils.ACTION_LIKE_YES);
-                }else if(eventDetail.is_liked()&&!imgLove.isSelected()){
+                } else if (eventDetail.is_liked() && !imgLove.isSelected()) {
                     actionLike(Utils.ACTION_LIKE_NO);
-                }else{
+                } else {
                     //do nothing
                 }
             }
