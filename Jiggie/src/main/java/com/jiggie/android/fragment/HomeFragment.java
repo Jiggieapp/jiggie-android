@@ -355,7 +355,8 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
                 .equalsIgnoreCase(Utils.MSG_EMPTY_DATA)) {
             showToast(getResources().getString(R.string.preferred_experience));
         } else {
-            showToast(exceptionModel.getMessage());
+            if(!exceptionModel.getMessage().contains("no card"))
+                showToast(exceptionModel.getMessage());
         }
         //this.progressDialog.setVisibility(View.GONE);
         //this.failedView.setVisibility(View.VISIBLE);
