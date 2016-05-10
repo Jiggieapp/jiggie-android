@@ -28,6 +28,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -223,9 +224,10 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if(newState==BottomSheetBehavior.STATE_SETTLING){
-                    boolean isShow = bottomSheet.isShown();
-                    behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                    /*boolean isShow = bottomSheet.isShown();
+                    behavior.setState(BottomSheetBehavior.STATE_EXPANDED);*/
+                    behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 }
                 Log.d("state", String.valueOf(newState));
             }
