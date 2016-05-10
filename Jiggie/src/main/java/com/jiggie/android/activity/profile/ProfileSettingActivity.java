@@ -3,7 +3,6 @@ package com.jiggie.android.activity.profile;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -14,6 +13,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
@@ -22,7 +22,6 @@ import com.jiggie.android.fragment.SocialTabFragment;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.MemberSettingModel;
-import com.facebook.AccessToken;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.Success2Model;
 
@@ -36,13 +35,20 @@ import de.greenrobot.event.EventBus;
  * Created by rangg on 17/11/2015.
  */
 public class ProfileSettingActivity extends ToolbarActivity implements CompoundButton.OnCheckedChangeListener {
-    @Bind(R.id.txtGenderInterest) TextView txtGenderInterest;
-    @Bind(R.id.scrollView) ScrollView scrollView;
-    @Bind(R.id.switchSocial) Switch switchSocial;
-    @Bind(R.id.progressBar) View progressBar;
-    @Bind(R.id.txtGender) TextView txtGender;
-    @Bind(R.id.switchChat) Switch switchChat;
-    @Bind(R.id.layoutError) View layoutError;
+    @Bind(R.id.txtGenderInterest)
+    TextView txtGenderInterest;
+    @Bind(R.id.scrollView)
+    ScrollView scrollView;
+    @Bind(R.id.switchSocial)
+    Switch switchSocial;
+    @Bind(R.id.progressBar)
+    View progressBar;
+    @Bind(R.id.txtGender)
+    TextView txtGender;
+    @Bind(R.id.switchChat)
+    Switch switchChat;
+    @Bind(R.id.layoutError)
+    View layoutError;
 
     public final static String TAG = ProfileSettingActivity.class.getSimpleName();
 
@@ -93,8 +99,7 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
     }
 
     @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-    {
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         this.sendServerSetting();
     }
 
@@ -126,14 +131,17 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
 
     @SuppressWarnings("unused")
     @OnClick(R.id.layoutPrivacy)
-    void layoutPrivacyOnClick() { super.startActivity(new Intent(this, PrivacyPolicyActivity.class)); }
+    void layoutPrivacyOnClick() {
+        super.startActivity(new Intent(this, PrivacyPolicyActivity.class));
+    }
 
     @SuppressWarnings("unused")
     @OnClick(R.id.layoutTerm)
-    void layoutTermOnClick() { super.startActivity(new Intent(this, TermOfUseActivity.class)); }
+    void layoutTermOnClick() {
+        super.startActivity(new Intent(this, TermOfUseActivity.class));
+    }
 
-    private void sendBroadcastToFetchChatReceiver(boolean isOn)
-    {
+    private void sendBroadcastToFetchChatReceiver(boolean isOn) {
         Intent i = new Intent(Utils.FETCH_CHAT_RECEIVER);
         i.putExtra(Utils.IS_ON, isOn);
         sendBroadcast(i);
@@ -151,19 +159,19 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
         memberSettingModel.setFeed(this.switchSocial.isChecked() ? 1 : 0);
 
         int index_gender = Arrays.binarySearch(genders, this.txtGender.getText().toString(), String.CASE_INSENSITIVE_ORDER);
-        if(index_gender<0){
+        if (index_gender < 0) {
             String gender = checkGender(setting.getData().getGender());
             memberSettingModel.setGender(gender);
-        }else{
+        } else {
             String gender = checkGender(genders[Arrays.binarySearch(genders, this.txtGender.getText().toString(), String.CASE_INSENSITIVE_ORDER)]);
             memberSettingModel.setGender(gender);
         }
 
         int index_gender_interest = Arrays.binarySearch(genderInterest, this.txtGenderInterest.getText().toString(), String.CASE_INSENSITIVE_ORDER);
-        if(index_gender_interest<0){
+        if (index_gender_interest < 0) {
             String gender_interest = checkGender(setting.getData().getGender_interest());
             memberSettingModel.setGender_interest(gender_interest);
-        }else{
+        } else {
             String gender_interest = checkGender(genderInterest[Arrays.binarySearch(genderInterest, this.txtGenderInterest.getText().toString(), String.CASE_INSENSITIVE_ORDER)]);
             memberSettingModel.setGender_interest(gender_interest);
         }
@@ -175,12 +183,12 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
 
         AccountManager.loaderMemberSetting(memberSettingModel);
 
-        if(index_gender>=0) {
+        if (index_gender >= 0) {
             String gender = checkGender(genders[Arrays.binarySearch(genders, this.txtGender.getText().toString(), String.CASE_INSENSITIVE_ORDER)]);
             setting.getData().setGender(gender);
         }
 
-        if(index_gender_interest>=0){
+        if (index_gender_interest >= 0) {
             String gender_interest = checkGender(genderInterest[Arrays.binarySearch(genderInterest, this.txtGenderInterest.getText().toString(), String.CASE_INSENSITIVE_ORDER)]);
             setting.getData().setGender_interest(gender_interest);
         }
@@ -191,33 +199,33 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
         AccountManager.saveSetting(setting);
     }
 
-    public void onEvent(Success2Model message){
+    public void onEvent(Success2Model message) {
         if (isActive()) {
             refreshView(setting);
             dialog.dismiss();
             AccountManager.anySettingChange = true;
 
             //wandy 11-03-2016
-            if(switchChat.isChecked())
+            if (switchChat.isChecked())
                 sendBroadcastToFetchChatReceiver(true);
             else sendBroadcastToFetchChatReceiver(false);
             //end of wandy 11-03-2016
         }
     }
 
-    public void onEvent(SettingModel message){
+    public void onEvent(SettingModel message) {
         if (isActive())
             refreshView(message);
         AccountManager.saveSetting(message);
     }
 
-    public void onEvent(ExceptionModel message){
-        if(message.getFrom().equals(Utils.FROM_PROFILE_SETTING)){
+    public void onEvent(ExceptionModel message) {
+        if (message.getFrom().equals(Utils.FROM_PROFILE_SETTING)) {
             if (isActive()) {
                 layoutError.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
             }
-        }else{
+        } else {
             if (isActive()) {
                 Toast.makeText(ProfileSettingActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
                 refreshView(AccountManager.loadSetting());
@@ -232,25 +240,25 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
         EventBus.getDefault().unregister(this);
     }
 
-    private String checkGender(String gInput){
+    private String checkGender(String gInput) {
         String gOutput = "";
-        if(gInput.equals(getResources().getString(R.string.man))){
+        if (gInput.equals(getResources().getString(R.string.man))) {
             gOutput = "male";
-        }else if(gInput.equals(getResources().getString(R.string.woman))){
+        } else if (gInput.equals(getResources().getString(R.string.woman))) {
             gOutput = "female";
-        }else{
+        } else {
             gOutput = "both";
         }
         return gOutput;
     }
 
-    private String checkGenderShow(String gInput){
+    private String checkGenderShow(String gInput) {
         String gOutput = "";
-        if(gInput.equals("male")){
+        if (gInput.equals("male")) {
             gOutput = getResources().getString(R.string.man);
-        }else if(gInput.equals("female")){
+        } else if (gInput.equals("female")) {
             gOutput = getResources().getString(R.string.woman);
-        }else{
+        } else {
             gOutput = "Both";
         }
         return gOutput;
@@ -260,10 +268,10 @@ public class ProfileSettingActivity extends ToolbarActivity implements CompoundB
     protected void onDestroy() {
         super.onDestroy();
         AccountManager.isInSettingPage = false;
-        if(AccountManager.anySettingChange)
-        {
+        if (AccountManager.anySettingChange) {
             AccountManager.anySettingChange = false;
             Intent i = new Intent(SocialTabFragment.TAG);
+            i.putExtra(Utils.IS_ON, switchSocial.isChecked());
             sendBroadcast(i);
         }
     }

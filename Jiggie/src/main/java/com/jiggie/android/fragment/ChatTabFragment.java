@@ -16,7 +16,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +28,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.chat.ChatActivity;
@@ -37,26 +37,16 @@ import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.ChatTabListAdapter;
-import com.jiggie.android.component.volley.VolleyHandler;
-import com.jiggie.android.component.volley.VolleyRequestListener;
-import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.ChatManager;
 import com.jiggie.android.manager.WalkthroughManager;
 import com.jiggie.android.model.ChatActionModel;
 import com.jiggie.android.model.ChatListModel;
 import com.jiggie.android.model.Conversation;
-import com.android.volley.VolleyError;
-import com.facebook.AccessToken;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.PostWalkthroughModel;
 
-import org.json.JSONArray;
-
-import java.util.ArrayList;
-
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by rangg on 21/10/2015.
@@ -107,7 +97,7 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         App.getInstance().trackMixPanelEvent("Conversations List");
 
         if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_CHAT, false)) {
-            showWalkthroughDialog();
+            //showWalkthroughDialog();
         }
 
         //if ((this.adapter != null) && (this.adapter.getItemCount() == 0)||ChatManager.NEED_REFRESH_CHATLIST)
@@ -148,6 +138,22 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
             public void onGlobalLayout() {
                 refreshLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 onRefresh();
+            }
+        });
+
+        //wandy 08-05-2016
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int topRowVerticalPosition =
+                        (recyclerView == null || recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
+                refreshLayout.setEnabled(topRowVerticalPosition >= 0);
+
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
             }
         });
     }
@@ -412,7 +418,8 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         dialogWalkthrough.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogWalkthrough.setContentView(R.layout.walkthrough_screen);
         dialogWalkthrough.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-        dialogWalkthrough.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        dialogWalkthrough.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT
+                , WindowManager.LayoutParams.MATCH_PARENT);
 
         RelativeLayout layout = (RelativeLayout)dialogWalkthrough.findViewById(R.id.layout_walkthrough);
         ImageView imgWk = (ImageView)dialogWalkthrough.findViewById(R.id.img_wk);

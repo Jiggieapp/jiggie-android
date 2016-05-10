@@ -1,10 +1,5 @@
 package com.jiggie.android.model;
 
-import android.content.Context;
-
-import com.jiggie.android.App;
-import com.jiggie.android.component.Utils;
-
 /**
  * Created by Wandy on 2/10/2016.
  */

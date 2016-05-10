@@ -8,7 +8,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -27,6 +26,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.jiggie.android.App;
+import com.jiggie.android.BuildConfig;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.CongratsActivity;
 import com.jiggie.android.activity.ecommerce.HowToPayActivity;
@@ -121,8 +121,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
 
     AlertDialog dialog3ds;
     ProgressDialog progressDialog;
-    public final static String PAYMENT_API = "https://api.veritrans.co.id/v2/token";
-    public final static String PAYMENT_API_SANDBOX = "https://api.sandbox.veritrans.co.id/v2/token";
+    public final static String PAYMENT_API = BuildConfig.PAYMENT_API;
     CCScreenModel.CardDetails cardDetails;
     @Bind(R.id.minus_button)
     RelativeLayout minusButton;
@@ -562,8 +561,8 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         //using 3d secure
         VTConfig.VT_IsProduction = true;
         //VTConfig.CLIENT_KEY = "VT-client-gJRBbRZC0t_-JXUD";
-        VTConfig.CLIENT_KEY = "VT-client-tHEKcD0xJGsm6uwH";
-
+        //VTConfig.CLIENT_KEY = "VT-client-tHEKcD0xJGsm6uwH";
+        VTConfig.CLIENT_KEY = BuildConfig.CLIENT_KEY;
         VTDirect vtDirect = new VTDirect();
 
         final VTCardDetails vtCardDetails = new VTCardDetails();

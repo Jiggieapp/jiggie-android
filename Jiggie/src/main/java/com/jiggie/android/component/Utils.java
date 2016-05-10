@@ -7,12 +7,10 @@ import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.graphics.Point;
 import android.location.LocationManager;
-import android.os.Build;
-import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
@@ -23,17 +21,13 @@ import com.jiggie.android.App;
 import com.jiggie.android.BuildConfig;
 import com.jiggie.android.R;
 
-import org.json.JSONObject;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Locale;
 import java.util.TimeZone;
 
-import retrofit.Response;
+import retrofit2.Response;
 
 /**
  * Created by LTE on 1/29/2016.
@@ -77,6 +71,9 @@ public class Utils {
     public static final String TAB_EVENT = "event";
     public static final String TAB_CHAT = "chat";
     public static final String TAB_SOCIAL = "social";
+
+    public static final String ACTION_LIKE_YES = "yes";
+    public static final String ACTION_LIKE_NO = "no";
 
     //ERROR CODE & MESSAGE
     //public static final String MSG_EXCEPTION = "Failed: ";
@@ -168,6 +165,11 @@ public class Utils {
     public final static String URL_POST_LOCATION = BASE_URL + "app/v3/save_longlat";
     public final static String URL_FREE_PAYMENT = BASE_URL + "app/v3/product/free_payment";
 
+    public final static String URL_UPLOAD = BASE_URL + "app/v3/member/upload";
+    public final static String URL_LIKE_EVENT = BASE_URL + "app/v3/event/likes/{event_id}/{fb_id}/{action}";
+    public final static String URL_CITY = BASE_URL + "app/v3/user/citylist";
+
+    public final static String URL_DELETE_PHOTO = BASE_URL + "app/v3/remove_profileimage";
     public static void d(final String tag, final String value) {
         if(BuildConfig.DEBUG)
         {
@@ -205,6 +207,10 @@ public class Utils {
     //------------------------
 
     public final static String NOL_RUPIAH = "0";
+    public final static String TAG_ISREFRESH = "is_refresh";
+    public static boolean isRefreshDetail = false;
+    public static String event_id_refresh = Utils.BLANK;
+    public static int count_like_new = 0;
 
     public static String calculateTime(String date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -346,6 +352,7 @@ public class Utils {
 
     private static int screenWidth = 0;
     public static final int REQUEST_CODE_CHOOSE_COUNTRY = 28;
+    public static final int REQUEST_CODE_CHOOSE_CITY = 29;
 
 
     public static int getScreenWidth(Context c) {
@@ -386,9 +393,10 @@ public class Utils {
             isAvailable = false;
         }
 
-        boolean coarsePermissionCheck = (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED);
-        boolean finePermissionCheck = (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED);
+        /*boolean coarsePermissionCheck = (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED);
+        boolean finePermissionCheck = (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED);*/
 
-        return isAvailable && (coarsePermissionCheck || finePermissionCheck);
+        //return isAvailable && (coarsePermissionCheck || finePermissionCheck);
+        return  isAvailable;
     }
 }

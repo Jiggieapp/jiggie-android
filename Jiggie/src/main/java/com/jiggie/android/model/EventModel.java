@@ -19,7 +19,7 @@ public class EventModel {
         this.data = data;
     }
 
-    public static class Data{
+    public static class Data {
 
         ArrayList<Events> events;
 
@@ -40,9 +40,19 @@ public class EventModel {
             String end_datetime;
             String special_type;
             ArrayList<String> tags;
+            int likes;
             String date_day;
             String description;
             ArrayList<String> photos;
+            Integer lowest_price;
+
+            public Integer getLowest_price() {
+                return lowest_price;
+            }
+
+            public void setLowest_price(Integer lowest_price) {
+                this.lowest_price = lowest_price;
+            }
 
             public String getDescription() {
                 return description;
@@ -62,13 +72,17 @@ public class EventModel {
                 this.end_datetime = in.readString();
                 this.special_type = in.readString();
                 this.tags = in.readArrayList(null);
+                this.likes = in.readInt();
                 this.date_day = in.readString();
                 this.photos = in.readArrayList(null);
                 this.description = in.readString();
+                this.lowest_price = in.readInt();
             }
 
             @Override
-            public int describeContents() { return 0; }
+            public int describeContents() {
+                return 0;
+            }
 
             @Override
             public void writeToParcel(Parcel dest, int flags) {
@@ -81,16 +95,23 @@ public class EventModel {
                 dest.writeString(this.end_datetime);
                 dest.writeString(this.special_type);
                 dest.writeList(this.tags);
+                dest.writeInt(this.likes);
                 dest.writeString(this.date_day);
                 dest.writeList(this.photos);
                 dest.writeString(this.description);
+                dest.writeInt(this.lowest_price);
             }
 
             public static final Creator<Events> CREATOR = new Creator<Events>() {
                 @Override
-                public Events createFromParcel(Parcel in) { return new Events(in); }
+                public Events createFromParcel(Parcel in) {
+                    return new Events(in);
+                }
+
                 @Override
-                public Events[] newArray(int size) { return new Events[size]; }
+                public Events[] newArray(int size) {
+                    return new Events[size];
+                }
             };
 
             public String get_id() {
@@ -155,6 +176,14 @@ public class EventModel {
 
             public void setTags(ArrayList<String> tags) {
                 this.tags = tags;
+            }
+
+            public int getLikes() {
+                return likes;
+            }
+
+            public void setLikes(int likes) {
+                this.likes = likes;
             }
 
             public String getDate_day() {

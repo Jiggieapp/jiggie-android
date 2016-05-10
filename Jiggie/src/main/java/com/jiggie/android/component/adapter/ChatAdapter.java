@@ -15,12 +15,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.Chat;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -91,6 +91,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         urlImage = App.getFacebookImage(toId, width);
                     }
                     //---------
+                    Utils.d(TAG, "profileImage " + urlImage);
 
                     Glide.with(this.activity).load(urlImage).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.imageView) {
                         @Override
@@ -136,7 +137,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        Utils.d(TAG, "itemCount " + items.size());
         return this.items.size();
     }
 

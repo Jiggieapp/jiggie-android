@@ -18,6 +18,7 @@
     <color name="translucent_scrim_bottom_center">#0D000000</color>
 
     <color name="blue_selector">#2196F3</color>
+    <color name="holo_blue">#2196F3</color>
     <color name="skyBlue">#87CEEB</color>
     <color name="divider">#b3b3b3</color>
     <color name="grey_dot">#CA3FE6</color>
@@ -29,6 +30,7 @@
 
     <color name="light_grey">#10000000</color>
     <color name="red_void">#F44336</color>
+    <color name="pink">#F8A4E3</color>
     <color name="yellow_warning">#FFB300</color>
     <color name="green_material">#4CAF50</color>
     <color name="gray_term">#4A4A4A</color>
@@ -37,4 +39,9 @@
     <color name="disable_continue">#2F7793</color>
     <color name="divider_pantone">#DADADA</color>
     <color name="text_shadow">#7F000000</color>
+    <color name="grey_tag">#EDEDED</color>
+    <color name="blue_tag">#83DDFF</color>
+    <color name="green_tag">#9AE084</color>
+    <color name="bluedark_tag">#5E35DD</color>
+    <color name="greydark_tag">#47585F</color>
 </resources>

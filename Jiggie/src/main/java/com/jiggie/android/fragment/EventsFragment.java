@@ -4,11 +4,16 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -28,6 +33,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -64,8 +70,6 @@ public class EventsFragment extends Fragment
     /*ViewPager viewPagerEvents;*/ NonSwipeableViewPager viewPagerEvents;
     @Bind(R.id.swipe_refresh)
     SwipeRefreshLayout refreshLayout;
-    @Bind(R.id.coordinatorLayout)
-    CoordinatorLayout coordinatorLayout;
 
     private PageAdapter pageAdapter;
     private View rootView;
@@ -102,7 +106,7 @@ public class EventsFragment extends Fragment
         }
 
         if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_EVENT, false)) {
-            showWalkthroughDialog();
+            //showWalkthroughDialog();
         }
     }
 
@@ -151,10 +155,17 @@ public class EventsFragment extends Fragment
         this.refreshLayout.setRefreshing(true);
         final AccessToken token = AccessToken.getCurrentAccessToken();
 
+
         EventManager.loaderEvent(token.getUserId());
     }
 
     EventTabFragment todayFragment, tomorrowFragment, upcomingFragment;
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
+    }
 
     private class PageAdapter extends FragmentPagerAdapter {
         private final Fragment[] fragments;
@@ -163,6 +174,7 @@ public class EventsFragment extends Fragment
             super(fm);
             Bundle bundle = new Bundle();
             bundle.putInt("position", 0);
+
             todayFragment = new EventTabFragment();
             todayFragment.setArguments(bundle);
 
@@ -228,6 +240,11 @@ public class EventsFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
+        if(Utils.isRefreshDetail){
+            //onRefresh();
+            filter("", false);
+            Utils.isRefreshDetail = false;
+        }
     }
 
     @Override
@@ -247,7 +264,18 @@ public class EventsFragment extends Fragment
         this.viewPagerEvents.getViewTreeObserver().addOnGlobalLayoutListener(this);
         this.viewPagerEvents.setPagingEnabled(true);
         this.refreshLayout.setOnRefreshListener(this);
+
+        //this.refreshLayout.canChildScrollUp();
+        //this.refreshLayout.setNestedScrollingEnabled(true);
+
         super.setHasOptionsMenu(true);
+
+
+        todayFragment.handleSwipeIssue(refreshLayout);
+
+        tomorrowFragment.handleSwipeIssue(refreshLayout);
+
+        upcomingFragment.handleSwipeIssue(refreshLayout);
     }
 
     @Override
@@ -263,31 +291,6 @@ public class EventsFragment extends Fragment
         int size = message.size();
 
         setEvents(message);
-        /*ArrayList<EventModel.Data.Events> todayEvents = new ArrayList<>();
-        ArrayList<EventModel.Data.Events> tomorrowEvents = new ArrayList<>();
-        ArrayList<EventModel.Data.Events> upcomingEvents = new ArrayList<>();*/
-        //adapter.clear();
-        //events.clear();
-
-        /*if (searchText == null)
-            adapter.addAll(events);*/
-        /*for (EventModel.Data.Events tempEvent : getEvents()) {
-            //new Date(event.getDate_day());
-            Utils.d(TAG, "event " + tempEvent.getTitle());
-
-            final String diffDays = Utils.calculateTime(tempEvent.getStart_datetime());
-            if (diffDays.equals(Utils.DATE_TODAY)) {
-                todayEvents.add(tempEvent);
-            } else if (diffDays.equals(Utils.DATE_TOMORROW)) {
-                tomorrowEvents.add(tempEvent);
-            } else if (diffDays.equals(Utils.DATE_UPCOMING)) {
-                upcomingEvents.add(tempEvent);
-            }
-        }
-
-        todayFragment.onEvent(todayEvents);
-        tomorrowFragment.onEvent(tomorrowEvents);
-        upcomingFragment.onEvent(upcomingEvents);*/
         boolean isExpanded = false;
         //if(searchText != null  /* && !searchText.isEmpty()*/)
         if (searchView == null) {
@@ -379,8 +382,7 @@ public class EventsFragment extends Fragment
                                     filter(searchText, true);
                                 } else {
                                     boolean isExpanded = false;
-                                    if(searchView != null && !searchView.isIconified())
-                                    {
+                                    if (searchView != null && !searchView.isIconified()) {
                                         isExpanded = true;
                                     }
                                     filter("", isExpanded);
@@ -417,6 +419,7 @@ public class EventsFragment extends Fragment
 
     public void setEvents(ArrayList<EventModel.Data.Events> events) {
         this.events = events;
+        EventManager.events = events;
     }
 
     private void filter(String searchText, boolean isSearch) {
@@ -527,7 +530,7 @@ public class EventsFragment extends Fragment
         dialogWalkthrough = new Dialog(getActivity());
         dialogWalkthrough.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogWalkthrough.setContentView(R.layout.walkthrough_screen);
-        dialogWalkthrough.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialogWalkthrough.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialogWalkthrough.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 
         RelativeLayout layout = (RelativeLayout) dialogWalkthrough.findViewById(R.id.layout_walkthrough);

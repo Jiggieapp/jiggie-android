@@ -13,10 +13,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import de.greenrobot.event.EventBus;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by LTE on 2/4/2016.
@@ -49,7 +47,7 @@ public class GuestManager extends BaseManager{
         try {
             getGuestInterest(event_id, fb_id, gender_interest, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
 
                     //String header = String.valueOf(response.code());
                     /*String responses = new Gson().toJson(response.body());
@@ -86,7 +84,7 @@ public class GuestManager extends BaseManager{
         try {
             getGuestConnect(fb_id, from_id, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
 
                     //String header = String.valueOf(response.code());
                     /*String responses = new Gson().toJson(response.body());

@@ -1,15 +1,11 @@
 package com.jiggie.android.activity;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.LayerDrawable;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -20,42 +16,46 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.appsflyer.AppsFlyerConversionListener;
+import com.appsflyer.AppsFlyerLib;
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.jiggie.android.App;
 import com.jiggie.android.BuildConfig;
 import com.jiggie.android.R;
-import com.jiggie.android.activity.ecommerce.ProductListActivity;
 import com.jiggie.android.activity.ecommerce.PurchaseHistoryActivity;
 import com.jiggie.android.activity.profile.FilterActivity;
+import com.jiggie.android.activity.profile.NewProfileDetailActivity;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
 import com.jiggie.android.activity.profile.ProfileSettingActivity;
 import com.jiggie.android.activity.setup.SetupTagsActivity;
+import com.jiggie.android.activity.social.SocialFilterActivity;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.gcm.GCMRegistrationService;
 import com.jiggie.android.component.service.FacebookImageSyncService;
+import com.jiggie.android.fragment.EventsFragment;
 import com.jiggie.android.fragment.HomeFragment;
 import com.jiggie.android.fragment.SignInFragment;
-import com.appsflyer.AppsFlyerLib;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.manager.ShareManager;
 import com.jiggie.android.manager.SocialManager;
+import com.jiggie.android.manager.TooltipsManager;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.GuestInfo;
 import com.jiggie.android.model.ShareLinkModel;
 import com.jiggie.android.presenter.GuestPresenter;
 
+import java.util.Calendar;
 import java.util.Map;
 
 import de.greenrobot.event.EventBus;
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     @SuppressWarnings("StatementWithEmptyBody")
     protected void onCreate(Bundle savedInstanceState) {
-        super.setTheme(R.style.AppCustomTheme);
+        super.setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_main);
         this.active = true;
@@ -102,7 +102,19 @@ public class MainActivity extends AppCompatActivity
             final SharedPreferences pref = App.getSharedPreferences();
             pref.edit().putBoolean(Utils.IS_FIRST_RUN, false).commit();
             App.getInstance().trackMixPanelEvent("Install");
+
+            //TOOLTIP PART===============
+            //TooltipsManager.clearTimeTooltip();
+            TooltipsManager.validateTime(Calendar.getInstance().getTimeInMillis());
+
+            //END OF TOOLTIP PART===============
         }
+
+        //TOOLTIP PART===============
+        /*TooltipsManager.clearTimeTooltip();
+        TooltipsManager.validateTime(Calendar.getInstance().getTimeInMillis());*/
+
+        //END OF TOOLTIP PART===============
 
         // validate GCM Version and update if necessary
         final GoogleApiAvailability api = GoogleApiAvailability.getInstance();
@@ -117,12 +129,18 @@ public class MainActivity extends AppCompatActivity
             final String str = GoogleApiAvailability.getInstance().getErrorString(code);
             Toast.makeText(this, str, Toast.LENGTH_LONG).show();
         }
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         EventBus.getDefault().register(this);
+        /*Intent a = getIntent();
+        boolean isRefresh = a.getBooleanExtra(Utils.TAG_ISREFRESH, false);
+        if(isRefresh){
+            EventBus.getDefault().post(EventsFragment.TAG);
+        }*/
     }
 
     @Override
@@ -280,6 +298,7 @@ public class MainActivity extends AppCompatActivity
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        App.getSharedPreferences().edit().putBoolean(Utils.PREFERENCE_GPS, true).commit();
                         dialog.dismiss();
                         final Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                         startActivity(intent);
@@ -288,6 +307,7 @@ public class MainActivity extends AppCompatActivity
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        App.getSharedPreferences().edit().putBoolean(Utils.PREFERENCE_GPS, true).commit();
                         dialog.dismiss();
                     }
                 }).create();
@@ -516,15 +536,18 @@ public class MainActivity extends AppCompatActivity
             case R.id.action_settings:
                 target = ProfileSettingActivity.class;
                 break;
+            /*case R.id.action_social_filter:
+                target = SocialFilterActivity.class;
+                break;*/
             case R.id.action_profile:
-                target = ProfileDetailActivity.class;
+                target = NewProfileDetailActivity.class;
                 break;
             case R.id.action_support:
                 mailSupport();
                 break;
-            case R.id.action_filter:
+            /*case R.id.action_filter:
                 target = FilterActivity.class;
-                break;
+                break;*/
             case R.id.action_invite:
                 inviteFriends();
                 break;

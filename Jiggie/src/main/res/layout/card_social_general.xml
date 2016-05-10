@@ -1,88 +1,106 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
 
-    <ImageButton
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="?attr/selectableItemBackground"
+    <ImageView
         android:id="@+id/imageUserGeneral"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:layout_weight="1"
+        android:adjustViewBounds="true"
+        android:background="?attr/selectableItemBackground"
         android:contentDescription="@null"
-        android:scaleType="centerCrop"/>
+        android:scaleType="fitXY" />
 
-    <FrameLayout
-        android:background="@drawable/bg_circle_accent"
+    <!--<FrameLayout
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="-32dp"
-        android:layout_height="64dp"
-        android:layout_width="64dp">
+        android:background="@drawable/bg_circle_accent"
+        android:id="@+id/chat_icon">
 
         <ImageView
-            android:layout_margin="@dimen/padding_standard"
-            android:layout_height="match_parent"
+            android:id="@+id/chat_small_icon"
             android:layout_width="match_parent"
-            android:src="@mipmap/ic_chat"/>
-    </FrameLayout>
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/padding_standard"
+            android:src="@drawable/ic_chat"
+            android:scaleType="centerCrop"/>
+    </FrameLayout>-->
 
-    <TextView
-        android:layout_marginTop="@dimen/padding_standard"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:gravity="center_horizontal"
-        android:text="@string/user_viewing"
-        android:id="@+id/txtUserGeneral"/>
-
-    <TextView
-        android:text="@string/location_viewing"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:gravity="center_horizontal"
-        android:id="@+id/txtEventGeneral"
-        android:textColor="@color/colorAccent"
-        android:textStyle="bold"/>
-
-    <TextView
-        android:layout_marginBottom="@dimen/padding_standard"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:text="@string/connect_with"
-        android:gravity="center_horizontal"
-        android:id="@+id/txtConnectGeneral"/>
+    <ImageView
+        android:id="@+id/chat_small_icon"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="-32dp"
+        android:src="@drawable/ic_chat"
+        android:scaleType="centerCrop"/>
 
     <LinearLayout
-        android:background="@color/colorAccent"
+        android:id="@+id/lbl_container"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txtUserGeneral"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padding_standard"
+            android:gravity="left"
+            android:text="@string/user_viewing" />
+
+        <TextView
+            android:id="@+id/txtEventGeneral"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:text="@string/location_viewing"
+            android:textColor="@color/colorPrimary" />
+
+        <TextView
+            android:id="@+id/txtConnectGeneral"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/padding_standard"
+            android:gravity="left"
+            android:text="@string/connect_with" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
         android:orientation="horizontal">
 
         <Button
-            android:background="?attr/selectableItemBackground"
-            android:textColor="@android:color/white"
+            android:id="@+id/btnNoGeneral"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:layout_width="0dp"
+            android:background="@color/divider_term"
             android:text="@string/no"
-            android:textStyle="bold"
-            android:id="@+id/btnNoGeneral"/>
+            android:textColor="@android:color/white" />
 
-        <View
-            android:background="@android:color/white"
+        <!--<View
+            android:layout_width="0.5dp"
             android:layout_height="match_parent"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
-            android:layout_width="0.5dp"/>
+            android:background="@android:color/white" />-->
 
         <Button
-            android:background="?attr/selectableItemBackground"
-            android:textColor="@android:color/white"
+            android:id="@+id/btnYesGeneral"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:layout_width="0dp"
+            android:background="?attr/selectableItemBackground"
             android:text="@string/yes"
-            android:textStyle="bold"
-            android:id="@+id/btnYesGeneral"/>
+            android:textColor="@android:color/white" />
     </LinearLayout>
 </LinearLayout>

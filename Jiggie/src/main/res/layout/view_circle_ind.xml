@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content" android:layout_height="wrap_content"
+    android:layout_margin="@dimen/padding_standard_half">
+    <ImageView
+        android:id="@+id/img_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/selector_circle_ind"
+        android:layout_centerInParent="true"/>
+
+</RelativeLayout>

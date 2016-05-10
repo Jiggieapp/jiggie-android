@@ -18,6 +18,7 @@ public class Common {
     public static final String FIELD_GENDER = "gender";
     public static final String FIELD_CHAT = "chat";
     public static final String FIELD_FEED = "feed";
+    public static final String FIELD_EVENT_LOWEST_PRICE = "lowest_price";
 
     public static String FIELD_MATCH_ME = "matchme";
     public static String FIELD_PHONE = "phone";
@@ -33,6 +34,7 @@ public class Common {
     public static String FIELD_EVENT_DAY_END = "date_end";
     public static String FIELD_EVENT_PICS = "event_pics";
     public static String FIELD_EVENT_DESCRIPTION = "event_description";
+    public static String FIELD_EVENT_LIKE = "event_like";
 
     public static String FIELD_TRANS_TYPE = "type";
     public static String TYPE_PURCHASE = "purchase";

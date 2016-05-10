@@ -27,7 +27,6 @@ import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.MemberInfoModel;
 import com.jiggie.android.model.SettingModel;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -119,7 +118,6 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
 
         final String age = StringUtility.getAge2(message.getData().getMemberinfo().getBirthday());
 
-
         //Added by Aga 22-2-2016--------
         String[] photos;
 
@@ -188,10 +186,10 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
         }
         //-----------------------
 
-        for(String photo : photos)
+        /*for(String photo : photos)
         {
             Utils.d(TAG, "photos " + photo);
-        }
+        }*/
         this.pagerIndicatorAdapter.setImages(photos);
 
 
@@ -239,7 +237,8 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
     @SuppressWarnings("unused")
     @OnClick(R.id.btnEdit)
     void btnEditOnClick() {
-        super.startActivityForResult(new Intent(this, ProfileEditActivity.class).putExtra(Common.FIELD_ABOUT, AccountManager.loadLogin().getAbout()), 0);
+        super.startActivityForResult(new Intent(this, ProfileEditActivity.class)
+                .putExtra(Common.FIELD_ABOUT, AccountManager.loadLogin().getAbout()), 0);
     }
 
     @Override
@@ -253,7 +252,6 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
                 txtDescription.setVisibility(View.VISIBLE);
                 this.txtDescription.setText(AccountManager.loadLogin().getAbout());
             }
-
         }
     }
 

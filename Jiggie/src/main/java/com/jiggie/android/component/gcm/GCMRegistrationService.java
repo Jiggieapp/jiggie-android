@@ -6,12 +6,12 @@ import android.os.AsyncTask;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.android.volley.VolleyError;
+import com.facebook.AccessToken;
 import com.jiggie.android.App;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.model.Model;
-import com.android.volley.VolleyError;
-import com.facebook.AccessToken;
 
 import org.json.JSONObject;
 
