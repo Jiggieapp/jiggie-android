@@ -50,6 +50,19 @@ public class PurchaseHistoryActivity extends ToolbarActivity
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         this.swipeRefresh.setOnRefreshListener(this);
         this.recyclerView.setLayoutManager(layoutManager);
+        this.recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int topRowVerticalPosition =
+                        (recyclerView == null || recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
+                swipeRefresh.setEnabled(topRowVerticalPosition >= 0);
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
         //this.recyclerView.setAdapter(adapter);
         //loadOrderList();
         onRefresh();

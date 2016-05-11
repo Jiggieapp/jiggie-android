@@ -26,4 +26,6 @@ public interface ProfileDetailView {
     ImageView removeTransparent(final int position);
 
     Bitmap onFinishTakePhoto(int requestCode, Uri uri);
+    void doCrop(String imagePath);
+
 }

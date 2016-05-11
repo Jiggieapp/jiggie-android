@@ -138,6 +138,7 @@ dependencies {
     compile 'com.lorentzos.swipecards:library:1.0.9@aar'
 
     compile 'com.appyvet:materialrangebar:1.3'
+    compile 'com.theartofdev.edmodo:android-image-cropper:2.1.+'
 
     //swipeable cards
     //compile 'com.github.kikoso:SwipeableCards:1.1-RELEASE@aar'
