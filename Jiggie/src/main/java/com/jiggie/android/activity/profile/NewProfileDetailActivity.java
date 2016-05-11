@@ -32,6 +32,8 @@ import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.MemberInfoModel;
 import com.jiggie.android.model.SuccessUploadModel;
 import com.jiggie.android.view.RoundedImageView;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.ArrayList;
 
@@ -331,7 +333,8 @@ public class NewProfileDetailActivity extends ToolbarActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK &&
-                (requestCode == PICK_IMAGE_KITKAT_REQUEST || requestCode == PICK_IMAGE_KITKAT_REQUEST)) {
+                (requestCode == PICK_IMAGE_KITKAT_REQUEST
+                        || requestCode == PICK_IMAGE_KITKAT_REQUEST)) {
             if (data != null && data.getData() != null) {
                 Uri uri = data.getData();
                 if (requestCode == PICK_IMAGE_REQUEST) {
@@ -367,6 +370,15 @@ public class NewProfileDetailActivity extends ToolbarActivity
                 this.txtDescription.setText(AccountManager.loadLogin().getAbout());
             }
         }
+        else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
+                profilePresenter.doLoadImage(resultUri.toString());
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
+        }
 
     }
 
@@ -384,7 +396,6 @@ public class NewProfileDetailActivity extends ToolbarActivity
     public Bitmap onFinishTakePhoto(int requestCode, Uri uri) {
         return null;
     }
-
 
     @OnClick(R.id.main_profile_picture_plus)
     public void onMainProfilePictureClick() {
@@ -422,4 +433,11 @@ public class NewProfileDetailActivity extends ToolbarActivity
                 .putExtra(Common.FIELD_ABOUT, AccountManager.loadLogin().getAbout()), EDIT_PROFILE);
     }
 
+    @Override
+    public void doCrop(String imagePath) {
+        Utils.d(TAG, "doCrop");
+        CropImage.activity(Uri.parse(imagePath))
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .start(this);
+    }
 }
