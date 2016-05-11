@@ -75,7 +75,8 @@ import rx.schedulers.Schedulers;
  */
 public class SignInFragment extends Fragment {
     private static final String[] FACEBOOK_PERMISSIONS = new String[]{
-            "public_profile", "email", "user_about_me", "user_birthday", "user_photos", "user_location"
+            "public_profile", "email", "user_about_me", "user_birthday", "user_photos", "user_location",
+            "user_friends"
     };
 
     /*@Bind(R.id.imagePagerIndicator)
@@ -345,7 +346,7 @@ public class SignInFragment extends Fragment {
                 final Bundle parameters = new Bundle();
 
                 final GraphRequest request = GraphRequest.newMeRequest(token, profileCallback);
-                parameters.putString("fields", "id, email, gender, birthday, bio, first_name, last_name, location");
+                parameters.putString("fields", "id, email, gender, birthday, bio, first_name, last_name, location, friends");
                 request.setParameters(parameters);
                 request.executeAsync();
             }
@@ -368,6 +369,7 @@ public class SignInFragment extends Fragment {
 
             try {
                 final Date birthDay = Common.FACEBOOK_DATE_FORMAT.parse(object.optString("birthday"));
+                Utils.d(TAG, "respose friends " + object.optString("friends"));
                 final JSONObject location = object.optJSONObject("location");
 
                 //Added by Aga 2-2-2016
@@ -388,7 +390,7 @@ public class SignInFragment extends Fragment {
                 loginModel.setEmail(object.optString("email"));
                 loginModel.setGender(object.optString("gender"));
                 loginModel.setAge(StringUtility.getAge2(loginModel.getBirthday()));
-                Utils.d(TAG, "getAge " + loginModel.getAge());
+                //Utils.d(TAG, "friends " + object.opt("user_friends"));
                 //Added by Aga 11-2-2016
                 loginModel.setDevice_type("2");
                 //------------

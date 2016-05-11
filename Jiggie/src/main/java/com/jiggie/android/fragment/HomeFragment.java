@@ -706,7 +706,6 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
             ((TabFragment) this.fragments[0]).setHomeMain(homeMain);
             ((TabFragment) this.fragments[1]).setHomeMain(homeMain);
             ((TabFragment) this.fragments[2]).setHomeMain(homeMain);
-            //((TabFragment)this.fragments[3]).setHomeMain(homeMain);
         }
 
         @Override
