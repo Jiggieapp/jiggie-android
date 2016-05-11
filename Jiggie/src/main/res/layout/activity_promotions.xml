@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@drawable/shape_edittext_stroke">
+
+        <ImageView
+            android:id="@+id/img_promo"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_promo"
+            android:layout_margin="@dimen/padding_standard_half"
+            android:layout_centerVertical="true"/>
+
+        <View
+            android:id="@+id/divider_edt"
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="@color/textDarkGray"
+            android:layout_toRightOf="@id/img_promo"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/padding_standard_half"
+            android:background="@null"
+            android:layout_toRightOf="@id/divider_edt"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>
