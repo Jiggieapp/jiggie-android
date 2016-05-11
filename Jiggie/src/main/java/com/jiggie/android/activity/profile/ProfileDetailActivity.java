@@ -2,7 +2,9 @@ package com.jiggie.android.activity.profile;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
@@ -38,7 +40,7 @@ import it.sephiroth.android.library.widget.HListView;
 /**
  * Created by rangg on 14/11/2015.
  */
-public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeObserver.OnGlobalLayoutListener, SwipeRefreshLayout.OnRefreshListener {
+public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeObserver.OnGlobalLayoutListener, SwipeRefreshLayout.OnRefreshListener, AppBarLayout.OnOffsetChangedListener {
     @Bind(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbarLayout;
     @Bind(R.id.imagePagerIndicator)
@@ -59,6 +61,8 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
     TextView txtTitleDescription;
     @Bind(R.id.lblPhoneNumber)
     TextView lblPhoneNumber;
+    @Bind(R.id.appBar)
+    AppBarLayout appBar;
 
     private ImagePagerIndicatorAdapter pagerIndicatorAdapter;
     //private UserProfile currentProfile;
@@ -82,6 +86,7 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
         this.collapsingToolbarLayout.setTitleEnabled(false);
         this.refreshLayout.getViewTreeObserver().addOnGlobalLayoutListener(this);
         this.refreshLayout.setOnRefreshListener(this);
+        this.appBar.addOnOffsetChangedListener(this);
     }
 
     @Override
@@ -96,8 +101,7 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
             isMe = true;
         }
 
-        if(!isMe)
-        {
+        if (!isMe) {
             App.getInstance().trackMixPanelEvent("View Member Profile");
         }
 
@@ -112,6 +116,15 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
         AccountManager.loaderMemberInfo(fb_id);
     }
 
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        if (verticalOffset==0) {
+            refreshLayout.setEnabled(true);
+        } else {
+            refreshLayout.setEnabled(false);
+        }
+    }
+
     public void onEvent(MemberInfoModel message) {
         super.setToolbarTitle(message.getData().getMemberinfo().getFirst_name(), true);
         memberInfoModel = message;
@@ -121,57 +134,45 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
         //Added by Aga 22-2-2016--------
         String[] photos;
 
-        if(isMe){
+        if (isMe) {
             final String dataPath = App.getInstance().getDataPath(Common.PREF_IMAGES);
             final HashSet<String> profileImages = (HashSet<String>) App.getSharedPreferences().getStringSet(Common.PREF_IMAGES, new HashSet<String>());
             photos = profileImages.toArray(new String[profileImages.size()]);
             final int size = photos.length;
-            if(size > 0)
-            {
-                for (int i = 0; i < size; i++)
-                {
+            if (size > 0) {
+                for (int i = 0; i < size; i++) {
                     photos[i] = String.format("file:///%s%s", dataPath, photos[i]);
                 }
-            }
-            else
-            {
+            } else {
                 final ArrayList<String> userPhotos = message.getData().getMemberinfo().getPhotos();
                 photos = new String[userPhotos.size()];
-                for (int i = 0; i < userPhotos.size(); i++)
-                {
+                for (int i = 0; i < userPhotos.size(); i++) {
                     photos[i] = userPhotos.get(i);
                 }
             }
 
             final LoginModel loginModel = AccountManager.loadLogin();
 
-            if (TextUtils.isEmpty(loginModel.getLocation()))
-            {
+            if (TextUtils.isEmpty(loginModel.getLocation())) {
                 txtLocation.setVisibility(View.GONE);
-            }
-            else if (loginModel.getLocation().equalsIgnoreCase("n/a"))
-            {
+            } else if (loginModel.getLocation().equalsIgnoreCase("n/a")) {
                 txtLocation.setVisibility(View.GONE);
-            }
-            else
-            {
+            } else {
                 txtLocation.setText(loginModel.getLocation());
             }
 
-            if(TextUtils.isEmpty(message.getData().getMemberinfo().getAbout())){
+            if (TextUtils.isEmpty(message.getData().getMemberinfo().getAbout())) {
                 if (TextUtils.isEmpty(loginModel.getAbout()))
                     txtDescription.setVisibility(View.GONE);
-                else
-                {
+                else {
                     txtDescription.setText(loginModel.getAbout());
                 }
-            }else{
+            } else {
                 txtDescription.setText(message.getData().getMemberinfo().getAbout());
             }
 
 
-        }
-        else{
+        } else {
             photos = message.getData().getMemberinfo().getPhotos().toArray(new String[message.getData().getMemberinfo().getPhotos().size()]);
             txtLocation.setText(message.getData().getMemberinfo().getLocation());
             //AccountManager.loadLogin().getAbout()
@@ -193,7 +194,6 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
         this.pagerIndicatorAdapter.setImages(photos);
 
 
-
         String name = message.getData().getMemberinfo().getFirst_name() + " " + message.getData().getMemberinfo().getLast_name();
 
         txtUser.setText(((TextUtils.isEmpty(age)) || (age.equals("0"))) ? name : String.format("%s, %s", name, age));
@@ -211,12 +211,9 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
             lblPhoneNumber.setVisibility(View.GONE);
             SettingModel settingModel = AccountManager.loadSetting();
             final String phoneNo = settingModel.getData().getPhone();
-            if(phoneNo == null || phoneNo.isEmpty())
-            {
+            if (phoneNo == null || phoneNo.isEmpty()) {
                 lblPhoneNumber.setText(getResources().getString(R.string.verify_your_phone_number));
-            }
-            else
-            {
+            } else {
                 lblPhoneNumber.setText(phoneNo);
             }
         } else //guest
@@ -246,9 +243,9 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
 
-            if (TextUtils.isEmpty(AccountManager.loadLogin().getAbout())){
+            if (TextUtils.isEmpty(AccountManager.loadLogin().getAbout())) {
                 txtDescription.setVisibility(View.GONE);
-            }else{
+            } else {
                 txtDescription.setVisibility(View.VISIBLE);
                 this.txtDescription.setText(AccountManager.loadLogin().getAbout());
             }
