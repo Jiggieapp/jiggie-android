@@ -17,6 +17,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.support.multidex.MultiDex;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -97,6 +98,12 @@ public class App extends Application {
         androidDefaultUEH = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(handler);
 
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 
     private Thread.UncaughtExceptionHandler handler = new Thread.UncaughtExceptionHandler() {
@@ -524,6 +531,13 @@ public class App extends Application {
                 json.putString("AFinstall_type", Utils.AFinstall_type);
             else
                 json.putString("AFinstall_type", Utils.AF_ORGANIC);
+        } else {
+            if (!Utils.AFmedia_source.equals(""))
+                json.putString("AFmedia_source", Utils.AFmedia_source);
+            if (!Utils.AFcampaign.equals(""))
+                json.putString("AFcampaign", Utils.AFcampaign);
+            if (!Utils.AFinstall_type.equals(""))
+                json.putString("AFinstall_type", Utils.AFinstall_type);
         }
 
         //Added by Aga
