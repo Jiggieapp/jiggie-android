@@ -421,6 +421,15 @@
     <string name="promo_desc">You just got 10.000 Credits for Tame Impala live in Jakarta</string>
     <string name="promo_use_now">USE NOW</string>
     <string name="promo_remind_later">REMIND ME LATER</string>
+    <string name="promo_apply_code">APPLY CODE</string>
+    <string name="promo_want">Want a free ticket?</string>
+    <string name="promo_invite">INVITE YOUR FRIENDS</string>
+    <string name="promo_share">SHARE YOUR PROMO CODE</string>
+    <string name="promo_code_desc">Send friends 100 points towards a free ticket and you get 100 points when they book a ticket.</string>
+    <string name="promo_fb">Share referral link on Facebook</string>
+    <string name="promo_cp">Share referral link on Contact Phone</string>
+    <string name="promo_msg">Message friend for free credits</string>
+    <string name="promo_copy">Copy your referral link</string>
     <!--END OF PROMO PART-->
 
 </resources>

@@ -1,16 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:id="@+id/appBar"
+        android:layout_alignParentTop="true">
+
+        <android.support.v7.widget.Toolbar
+            android:theme="@style/ThemeOverlay.AppCompat.Dark"
+            android:background="@color/colorPrimary"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:titleTextColor="@android:color/white"
+            android:id="@+id/toolbar"
+            android:elevation="4dp">
+            <ImageView
+                android:id="@+id/img_history"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="right|center_vertical"
+                android:layout_marginRight="@dimen/padding_standard"
+                android:layout_weight="0"
+                android:src="@drawable/ic_historys" />
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
 
     <RelativeLayout
+        android:id="@+id/rel_code"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@drawable/shape_edittext_stroke">
+        android:background="@drawable/shape_edittext_stroke"
+        android:layout_below="@id/appBar"
+        android:layout_marginLeft="@dimen/padding_standard_half"
+        android:layout_marginRight="@dimen/padding_standard_half"
+        android:layout_marginTop="@dimen/padding_standard_half">
 
         <ImageView
             android:id="@+id/img_promo"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:src="@drawable/ic_promo"
             android:layout_margin="@dimen/padding_standard_half"
             android:layout_centerVertical="true"/>
@@ -19,7 +52,7 @@
             android:id="@+id/divider_edt"
             android:layout_width="2dp"
             android:layout_height="match_parent"
-            android:background="@color/textDarkGray"
+            android:background="@color/divider_pantone"
             android:layout_toRightOf="@id/img_promo"/>
 
         <EditText
@@ -31,5 +64,64 @@
             android:layout_toRightOf="@id/divider_edt"/>
 
     </RelativeLayout>
+
+    <Button
+        android:id="@+id/btnApply"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_below="@id/rel_code"
+        android:background="@drawable/bg_button_ticket_detail"
+        android:enabled="true"
+        android:text="@string/promo_apply_code"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:layout_marginTop="@dimen/padding_standard"
+        android:layout_marginLeft="@dimen/padding_standard_half"
+        android:layout_marginRight="@dimen/padding_standard_half"/>
+
+    <RelativeLayout
+        android:id="@+id/rel_want"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnApply"
+        android:layout_marginTop="@dimen/padding_far"
+        android:layout_marginLeft="@dimen/padding_standard"
+        android:layout_marginRight="@dimen/padding_standard">
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/divider_pantone"
+            android:layout_centerVertical="true"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/background"
+            android:layout_centerInParent="true">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/promo_want"
+                android:textSize="14sp"
+                android:layout_margin="@dimen/padding_standard"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btn_invite"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_below="@id/rel_want"
+        android:background="@drawable/shape_invite_friend_stroke"
+        android:text="@string/promo_invite"
+        android:textColor="@color/blue_selector"
+        android:textSize="16sp"
+        android:layout_marginTop="@dimen/padding_standard"
+        android:layout_marginLeft="@dimen/padding_standard_half"
+        android:layout_marginRight="@dimen/padding_standard_half"/>
 
 </RelativeLayout>
