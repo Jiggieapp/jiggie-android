@@ -109,8 +109,6 @@ public class EventsFragment extends Fragment
         if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_EVENT, false)) {
             //showWalkthroughDialog();
         }
-
-        tesShowPromoDialog();
     }
 
     public void setHomeMain(HomeMain homeMain) {
@@ -527,20 +525,6 @@ public class EventsFragment extends Fragment
         if (TAG.equalsIgnoreCase(tag)) {
             onRefresh();
         }
-    }
-
-    private void tesShowPromoDialog(){
-        Dialog dialog = new Dialog(getActivity());
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_promo);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-
-        Button btnUseNow = (Button)dialog.findViewById(R.id.btn_use_now);
-
-
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.show();
     }
 
     private void showWalkthroughDialog() {

@@ -98,8 +98,8 @@
                 android:textColor="@android:color/white"
                 android:textSize="14sp"
                 android:layout_marginTop="@dimen/padding_standard"
-                android:layout_marginLeft="@dimen/padding_standard_half"
-                android:layout_marginRight="@dimen/padding_standard_half"
+                android:layout_marginLeft="@dimen/padding_standard"
+                android:layout_marginRight="@dimen/padding_standard"
                 android:foreground="?android:attr/selectableItemBackground"/>
 
             <Button
@@ -108,12 +108,12 @@
                 android:layout_height="?attr/actionBarSize"
                 android:layout_below="@id/btn_share_fb"
                 android:background="@drawable/shape_shr_cp"
-                android:text="@string/promo_fb"
+                android:text="@string/promo_cp"
                 android:textColor="@android:color/white"
                 android:textSize="14sp"
                 android:layout_marginTop="@dimen/padding_standard"
-                android:layout_marginLeft="@dimen/padding_standard_half"
-                android:layout_marginRight="@dimen/padding_standard_half"
+                android:layout_marginLeft="@dimen/padding_standard"
+                android:layout_marginRight="@dimen/padding_standard"
                 android:foreground="?android:attr/selectableItemBackground"/>
 
             <Button
@@ -122,12 +122,12 @@
                 android:layout_height="?attr/actionBarSize"
                 android:layout_below="@id/btn_share_cp"
                 android:background="@drawable/shape_shr_msg"
-                android:text="@string/promo_fb"
+                android:text="@string/promo_msg"
                 android:textColor="@android:color/white"
                 android:textSize="14sp"
                 android:layout_marginTop="@dimen/padding_standard"
-                android:layout_marginLeft="@dimen/padding_standard_half"
-                android:layout_marginRight="@dimen/padding_standard_half"
+                android:layout_marginLeft="@dimen/padding_standard"
+                android:layout_marginRight="@dimen/padding_standard"
                 android:foreground="?android:attr/selectableItemBackground"/>
 
             <Button
@@ -136,12 +136,12 @@
                 android:layout_height="?attr/actionBarSize"
                 android:layout_below="@id/btn_share_msg"
                 android:background="@drawable/shape_shr_cy"
-                android:text="@string/promo_fb"
+                android:text="@string/promo_copy"
                 android:textColor="@android:color/white"
                 android:textSize="14sp"
                 android:layout_marginTop="@dimen/padding_standard"
-                android:layout_marginLeft="@dimen/padding_standard_half"
-                android:layout_marginRight="@dimen/padding_standard_half"
+                android:layout_marginLeft="@dimen/padding_standard"
+                android:layout_marginRight="@dimen/padding_standard"
                 android:layout_marginBottom="@dimen/padding_standard"
                 android:foreground="?android:attr/selectableItemBackground"/>
         </RelativeLayout>

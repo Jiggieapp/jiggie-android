@@ -430,6 +430,16 @@
     <string name="promo_cp">Share referral link on Contact Phone</string>
     <string name="promo_msg">Message friend for free credits</string>
     <string name="promo_copy">Copy your referral link</string>
+    <string name="promo_menu">Promotions</string>
     <!--END OF PROMO PART-->
+
+    <!--INVITE FRIENDS PART-->
+    <string name="in_dummy_name">Wandy Effendi</string>
+    <string name="in_dummy_phone">+62 77867588</string>
+    <string name="in_dummy_email">wandy@jiggieapp.com</string>
+    <string name="in_invite">INVITE</string>
+    <string name="in_sent">SENT</string>
+    <string name="in_credit">+100 credits</string>
+    <!--END OF INVITE FRIENDS PART-->
 
 </resources>

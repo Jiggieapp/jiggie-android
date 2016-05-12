@@ -79,7 +79,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme" />
         <activity
-            android:name=".activity.promo.PromotionsActivity"
+            android:name=".activity.SplashActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
@@ -117,7 +117,15 @@
             android:theme="@style/SplashTheme" />
         -->
         <activity
-            android:name=".activity.SplashActivity"
+            android:name=".activity.invite.InviteFriendsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme" />
+        <activity
+            android:name=".activity.promo.PromotionsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme"/>
+        <activity
+            android:name=".activity.invite.InviteCodeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme" />
         <activity
