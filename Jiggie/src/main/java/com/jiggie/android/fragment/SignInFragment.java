@@ -29,6 +29,7 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.gson.Gson;
@@ -53,6 +54,7 @@ import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.TagsListModel;
 import com.jiggie.android.view.CircleIndicatorView;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.ParseException;
@@ -201,9 +203,9 @@ public class SignInFragment extends Fragment {
                         imagePagerIndicator.setVisibility(View.VISIBLE);
                         txtSkip.setVisibility(View.VISIBLE);
 
-                        if(position==4){
+                        if (position == 4) {
                             txtSkip.setText("NEXT");
-                        }else{
+                        } else {
                             txtSkip.setText("SKIP");
                         }
                     }
@@ -274,7 +276,7 @@ public class SignInFragment extends Fragment {
 
     }*/
 
-    private void onClickSignIn(){
+    private void onClickSignIn() {
         this.btnSignIn.setEnabled(false);
         this.progressDialog = App.showProgressDialog(getContext());
 
@@ -294,7 +296,8 @@ public class SignInFragment extends Fragment {
             @Override
             public void onGCMCompleted(String regId) {
                 gcmId = regId;
-                LoginManager.getInstance().logInWithReadPermissions(SignInFragment.this, Arrays.asList(FACEBOOK_PERMISSIONS));
+                LoginManager.getInstance().logInWithReadPermissions(SignInFragment.this
+                        , Arrays.asList(FACEBOOK_PERMISSIONS));
             }
         }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
@@ -346,7 +349,8 @@ public class SignInFragment extends Fragment {
                 final Bundle parameters = new Bundle();
 
                 final GraphRequest request = GraphRequest.newMeRequest(token, profileCallback);
-                parameters.putString("fields", "id, email, gender, birthday, bio, first_name, last_name, location, friends");
+                parameters.putString("fields", "id, email, gender, birthday, bio, first_name" +
+                        ", last_name, location, friends");
                 request.setParameters(parameters);
                 request.executeAsync();
             }
@@ -369,11 +373,10 @@ public class SignInFragment extends Fragment {
 
             try {
                 final Date birthDay = Common.FACEBOOK_DATE_FORMAT.parse(object.optString("birthday"));
-                Utils.d(TAG, "respose friends " + object.optString("friends"));
                 final JSONObject location = object.optJSONObject("location");
 
                 //Added by Aga 2-2-2016
-                LoginModel loginModel = new LoginModel();
+                final LoginModel loginModel = new LoginModel();
                 //loginModel.setVersion("1.1.0");
                 String v = App.getVersionName(getActivity());
                 loginModel.setVersion(v);
@@ -390,25 +393,46 @@ public class SignInFragment extends Fragment {
                 loginModel.setEmail(object.optString("email"));
                 loginModel.setGender(object.optString("gender"));
                 loginModel.setAge(StringUtility.getAge2(loginModel.getBirthday()));
-                //Utils.d(TAG, "friends " + object.opt("user_friends"));
                 //Added by Aga 11-2-2016
                 loginModel.setDevice_type("2");
                 //------------
 
                 loginModel.setDevice_id(Utils.DEVICE_ID);
 
-                //String sd = String.valueOf(new Gson().toJson(loginModel));
+                /*try {
+                    AccountManager.getFriendList(new JSONObject(object.optString("friends")), new com.jiggie.android.listener.OnResponseListener() {
+                        @Override
+                        public void onSuccess(Object object) {
+                            String name = loginModel.getUser_first_name() + " " + loginModel.getUser_last_name();
 
-                AccountManager.loaderLogin(loginModel);
+                            AccountManager.loaderLogin(loginModel);
+                            App.getInstance().setUserLoggedIn();
+                            App.getSharedPreferences().edit()
+                                    .putString(Common.PREF_FACEBOOK_NAME, name)
+                                    .putString(Common.PREF_FACEBOOK_ID, loginModel.getFb_id())
+                                    .apply();
+                            AccountManager.saveLogin(loginModel);
+                        }
+
+                        @Override
+                        public void onFailure(int responseCode, String message) {
+
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }*/
 
                 String name = loginModel.getUser_first_name() + " " + loginModel.getUser_last_name();
-
+                AccountManager.loaderLogin(loginModel);
                 App.getInstance().setUserLoggedIn();
                 App.getSharedPreferences().edit()
                         .putString(Common.PREF_FACEBOOK_NAME, name)
                         .putString(Common.PREF_FACEBOOK_ID, loginModel.getFb_id())
                         .apply();
                 AccountManager.saveLogin(loginModel);
+
+
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
@@ -416,9 +440,6 @@ public class SignInFragment extends Fragment {
     };
 
     public void onEvent(SettingModel message) {
-        String responses = new Gson().toJson(message);
-        Utils.d("res", responses);
-
         final MainActivity activity = (MainActivity) getActivity();
         final App app = App.getInstance();
         progressDialog.dismiss();
@@ -539,6 +560,7 @@ public class SignInFragment extends Fragment {
                 , MainActivity.class)
                 .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
                         | Intent.FLAG_ACTIVITY_NEW_TASK));
+
     }
 
     private Set<String> getTags() {

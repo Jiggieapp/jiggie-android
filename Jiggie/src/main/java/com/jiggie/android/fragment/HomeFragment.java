@@ -71,7 +71,8 @@ import it.sephiroth.android.library.tooltip.Tooltip;
 /**
  * Created by rangg on 21/10/2015.
  */
-public class HomeFragment extends Fragment implements ViewPager.OnPageChangeListener, ViewTreeObserver.OnGlobalLayoutListener, HomeMain {
+public class HomeFragment extends Fragment
+        implements ViewPager.OnPageChangeListener, ViewTreeObserver.OnGlobalLayoutListener, HomeMain {
     @Nullable @Bind(R.id.appBar)
     AppBarLayout appBarLayout;
     @Bind(R.id.viewpagerw)

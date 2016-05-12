@@ -62,7 +62,7 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     @Bind(R.id.contentView2)
     FrameLayout contentView2;
 
-    private ChatTabListAdapter adapter;
+    protected ChatTabListAdapter adapter;
     private boolean isLoading;
     private HomeMain homeMain;
     private View failedView;
@@ -118,13 +118,18 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         return view;
     }
 
+    protected void setAdapter()
+    {
+        this.recyclerView.setLayoutManager(new LinearLayoutManager(super.getContext()));
+        this.recyclerView.setAdapter(this.adapter = new ChatTabListAdapter(this, this, this));
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ButterKnife.bind(this, this.rootView);
 
-        this.recyclerView.setLayoutManager(new LinearLayoutManager(super.getContext()));
-        this.recyclerView.setAdapter(this.adapter = new ChatTabListAdapter(this, this, this));
+        setAdapter();
         this.refreshLayout.setOnRefreshListener(this);
         this.handler = new Handler();
 
@@ -161,7 +166,6 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
 
     @Override
     public void onRefresh() {
-        //ChatManager.NEED_REFRESH_CHATLIST = false;
         if (super.getContext() == null) {
             // fragment has been destroyed.
             return;
@@ -176,7 +180,7 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         fetchChat();
     }
 
-    private void fetchChat()
+    protected void fetchChat()
     {
         //ChatManager.loaderChatList(AccessToken.getCurrentAccessToken().getUserId());
         ChatManager.loaderChatList2(AccessToken.getCurrentAccessToken().getUserId()

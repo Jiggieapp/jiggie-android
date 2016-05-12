@@ -204,7 +204,6 @@ public class MainActivity extends AppCompatActivity
         if (mLastLocation != null) {
             SocialManager.lat = String.valueOf(mLastLocation.getLatitude());
             SocialManager.lng = String.valueOf(mLastLocation.getLongitude());
-            Log.d(getString(R.string.tag_location),"lat: "+String.valueOf(mLastLocation.getLatitude())+" lon: "+String.valueOf(mLastLocation.getLongitude()));
 
             HomeFragment.sendLocationInfo();
         }else{
@@ -358,7 +357,6 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     //wandy 20-04-2016
                     //sblm navigate to home, pastikan sudah ambil guest info sekali aja
-                    final int versionCode = BuildConfig.VERSION_CODE;
                     if(!App.getInstance().getSharedPreferences().getBoolean(Utils.HAS_LOAD_GROUP_INFO, false))
                     {
                         App.getSharedPreferences().edit().putBoolean
@@ -367,7 +365,6 @@ public class MainActivity extends AppCompatActivity
                         guestPresenter.loadGuestInfo(new GuestPresenter.OnFinishGetGuestInfo() {
                             @Override
                             public void onFinish(GuestInfo guestInfo) {
-                                Utils.d(TAG, "on finish " + guestInfo.data.guest_detail.name);
                                 guestPresenter.saveGuest(guestInfo);
                                 navigateToHome();
                             }

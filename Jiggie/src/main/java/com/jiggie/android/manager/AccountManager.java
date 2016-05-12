@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.facebook.AccessToken;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.jiggie.android.App;
 import com.jiggie.android.activity.profile.ProfileDetailModel;
 import com.jiggie.android.api.AccountInterface;
@@ -18,12 +19,18 @@ import com.jiggie.android.model.LoginResultModel;
 import com.jiggie.android.model.MemberInfoModel;
 import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.MemberSettingResultModel;
+import com.jiggie.android.model.PostFriendModel;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SuccessTokenModel;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,20 +45,19 @@ import retrofit2.Retrofit;
 /**
  * Created by LTE on 2/1/2016.
  */
-public class AccountManager extends BaseManager{
+public class AccountManager extends BaseManager {
     private static final String TAG = AccountManager.class.getSimpleName();
     static AccountInterface accountInterface;
 
     public static boolean anySettingChange = false;
     public static boolean isInSettingPage = false;
 
-    public static void initAccountService(){
+    public static void initAccountService() {
         accountInterface = getRetrofit().create(AccountInterface.class);
     }
 
-    private static AccountInterface getInstance(){
-        if(accountInterface == null)
-        {
+    private static AccountInterface getInstance() {
+        if (accountInterface == null) {
             /*accountInterface = retrofitService.createService()
                     .create(AccountInterface.class);*/
             accountInterface = getRetrofit().create(AccountInterface.class);
@@ -88,7 +94,7 @@ public class AccountManager extends BaseManager{
         getInstance().getCityList().enqueue(callback);
     }
 
-    public static void loaderLogin(LoginModel loginRequestModel){
+    public static void loaderLogin(LoginModel loginRequestModel) {
         try {
             postLogin(loginRequestModel, new CustomCallback() {
                 @Override
@@ -125,17 +131,16 @@ public class AccountManager extends BaseManager{
 
                 }
             });
-        }catch (IOException e){
+        } catch (IOException e) {
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SIGN_IN, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 
-    public static void loaderMemberSetting(final MemberSettingModel memberSettingModel){
+    public static void loaderMemberSetting(final MemberSettingModel memberSettingModel) {
         try {
             postMemberSetting(memberSettingModel, new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response) {
-                    Utils.d(TAG, "hulalala " + Utils.print(response));
                     if (response.code() == Utils.CODE_SUCCESS) {
                         Success2Model dataTemp = (Success2Model) response.body();
                         dataTemp.setFrom(Utils.FROM_PROFILE_SETTING);
@@ -161,13 +166,13 @@ public class AccountManager extends BaseManager{
 
                 }
             });
-        } catch (IOException e){
+        } catch (IOException e) {
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 
     public static void loaderMemberSetting
-            (final MemberSettingModel memberSettingModel, final com.jiggie.android.listener.OnResponseListener onResponseListener){
+            (final MemberSettingModel memberSettingModel, final com.jiggie.android.listener.OnResponseListener onResponseListener) {
         try {
             postMemberSetting(memberSettingModel, new CustomCallback() {
                 @Override
@@ -197,12 +202,12 @@ public class AccountManager extends BaseManager{
 
                 }
             });
-        } catch (IOException e){
+        } catch (IOException e) {
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 
-    public static void loaderMemberInfo(String fb_id){
+    public static void loaderMemberInfo(String fb_id) {
         try {
             getMemberInfo(fb_id, new CustomCallback() {
                 @Override
@@ -228,13 +233,13 @@ public class AccountManager extends BaseManager{
 
                 }
             });
-        }catch (IOException e){
+        } catch (IOException e) {
             Utils.d("exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_DETAIL, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 
-    public static void loaderMemberInfo(String fb_id, final com.jiggie.android.listener.OnResponseListener onResponseListener){
+    public static void loaderMemberInfo(String fb_id, final com.jiggie.android.listener.OnResponseListener onResponseListener) {
         try {
             getMemberInfo(fb_id, new CustomCallback() {
                 @Override
@@ -245,9 +250,7 @@ public class AccountManager extends BaseManager{
                         //Utils.d(TAG, "response " +  Utils.print(response));
                         MemberInfoModel dataTemp = (MemberInfoModel) response.body();
                         onResponseListener.onSuccess(dataTemp);
-                    }
-                    else
-                    {
+                    } else {
                         onResponseListener.onFailure(Utils.CODE_FAILED, Utils.RESPONSE_FAILED);
                     }
                 }
@@ -262,13 +265,13 @@ public class AccountManager extends BaseManager{
 
                 }
             });
-        }catch (IOException e){
+        } catch (IOException e) {
             Utils.d("exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_DETAIL, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 
-    public static void loaderSetting(String fb_id){
+    public static void loaderSetting(String fb_id) {
         try {
             getSetting(fb_id, new CustomCallback() {
                 @Override
@@ -297,14 +300,13 @@ public class AccountManager extends BaseManager{
 
                 }
             });
-        }catch (IOException e){
+        } catch (IOException e) {
             Utils.d("exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_SETTING, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 
-    public static void doUpload(File file, final com.jiggie.android.listener.OnResponseListener onResponseListener)
-    {
+    public static void doUpload(File file, final com.jiggie.android.listener.OnResponseListener onResponseListener) {
         doUpload(file, new CustomCallback() {
             @Override
             public void onCustomCallbackResponse(Response response) {
@@ -329,8 +331,7 @@ public class AccountManager extends BaseManager{
         return fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());
     }
 
-    private static void doUpload(File file, Callback callback)
-    {
+    private static void doUpload(File file, Callback callback) {
         final String mime = "image/" + getFileExt(file.getName());
 
         RequestBody filee = RequestBody.create(
@@ -349,7 +350,7 @@ public class AccountManager extends BaseManager{
         getInstance().upload4(body, fb_id).enqueue(callback);
     }
 
-    public static void loaderSettingNew(String fb_id, final com.jiggie.android.listener.OnResponseListener onResponseListener){
+    public static void loaderSettingNew(String fb_id, final com.jiggie.android.listener.OnResponseListener onResponseListener) {
         try {
             getSetting(fb_id, new CustomCallback() {
                 @Override
@@ -381,13 +382,13 @@ public class AccountManager extends BaseManager{
 
                 }
             });
-        }catch (IOException e){
+        } catch (IOException e) {
             Utils.d("exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_SETTING, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 
-    public static void loaderEditAbout(AboutModel aboutModel){
+    public static void loaderEditAbout(AboutModel aboutModel) {
         try {
             postEditAbout(aboutModel, new CustomCallback() {
                 @Override
@@ -413,40 +414,38 @@ public class AccountManager extends BaseManager{
 
                 }
             });
-        }catch (IOException e){
+        } catch (IOException e) {
             Utils.d("exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_PROFILE_EDIT, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
 
-    private static void saveTagsList()
-    {
+    private static void saveTagsList() {
 
     }
 
-    public static SettingModel loadSetting(){
+    public static SettingModel loadSetting() {
         SettingModel settingModel = new Gson().fromJson(App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING,
                 Context.MODE_PRIVATE).getString(Utils.SETTING_MODEL, ""), SettingModel.class);
         return settingModel;
     }
 
-    public static void saveLogin(LoginModel loginModel){
+    public static void saveLogin(LoginModel loginModel) {
         String model = new Gson().toJson(loginModel);
         App.getInstance().getSharedPreferences(Utils.PREFERENCE_LOGIN, Context.MODE_PRIVATE).edit()
                 .putString(Utils.LOGIN_MODEL, model).apply();
     }
 
-    public static LoginModel loadLogin(){
+    public static LoginModel loadLogin() {
         LoginModel loginModel = new Gson().fromJson(App.getInstance().getSharedPreferences(Utils.PREFERENCE_LOGIN,
                 Context.MODE_PRIVATE).getString(Utils.LOGIN_MODEL, ""), LoginModel.class);
         return loginModel;
     }
 
-    public static MemberSettingModel loadMemberSetting()
-    {
+    public static MemberSettingModel loadMemberSetting() {
         MemberSettingModel memberSettingModel = new Gson().fromJson(App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING,
                 Context.MODE_PRIVATE).getString(Utils.MEMBER_SETTING_MODEL, ""), MemberSettingModel.class);
-        if(memberSettingModel.getFb_id() == null)
+        if (memberSettingModel.getFb_id() == null)
             memberSettingModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
         return memberSettingModel;
     }
@@ -468,20 +467,18 @@ public class AccountManager extends BaseManager{
                 .putString(Utils.MEMBER_SETTING_MODEL, model).apply();
     }
 
-    public static void saveSetting(SettingModel settingModel){
+    public static void saveSetting(SettingModel settingModel) {
         String model = new Gson().toJson(settingModel);
         App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
                 .putString(Utils.SETTING_MODEL, model).apply();
     }
 
-    private static void getUserTagList(Callback callback)
-    {
+    private static void getUserTagList(Callback callback) {
         getInstance().getUserTagList(AccessToken.getCurrentAccessToken()
                 .getUserId()).enqueue(callback);
     }
 
-    public static void getUserTagList()
-    {
+    public static void getUserTagList() {
         getUserTagList(new CustomCallback() {
             @Override
             public void onCustomCallbackResponse(Response response) {
@@ -503,8 +500,7 @@ public class AccountManager extends BaseManager{
         });
     }
 
-    public static void getUserTags(final OnResponseListener onResponseListener)
-    {
+    public static void getUserTags(final OnResponseListener onResponseListener) {
         try {
             getUserTagList(new CustomCallback() {
                 @Override
@@ -528,13 +524,13 @@ public class AccountManager extends BaseManager{
 
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
         }
 
     }
 
-    public static void loaderMemberSetting2(final MemberSettingModel memberSettingModel, final OnResponseListener onResponseListener){
+    public static void loaderMemberSetting2(final MemberSettingModel memberSettingModel, final OnResponseListener onResponseListener) {
         try {
             postMemberSetting(memberSettingModel, new CustomCallback() {
                 @Override
@@ -558,12 +554,12 @@ public class AccountManager extends BaseManager{
 
                 }
             });
-        } catch (IOException e){
+        } catch (IOException e) {
             onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
         }
     }
 
-    public static void loaderCityList(final OnResponseListener onResponseListener){
+    public static void loaderCityList(final OnResponseListener onResponseListener) {
         try {
             getCityList(new CustomCallback() {
                 @Override
@@ -586,12 +582,12 @@ public class AccountManager extends BaseManager{
 
                 }
             });
-        } catch (IOException e){
+        } catch (IOException e) {
             onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
         }
     }
 
-    private static SettingModel setSettingModelFromLogin(LoginResultModel data){
+    private static SettingModel setSettingModelFromLogin(LoginResultModel data) {
         boolean success = true;
         LoginResultModel.Data.Login login = data.getData().getLogin();
 
@@ -614,7 +610,7 @@ public class AccountManager extends BaseManager{
         return model;
     }
 
-    private static SettingModel setSettingModelFromMemberSetting(MemberSettingResultModel data){
+    private static SettingModel setSettingModelFromMemberSetting(MemberSettingResultModel data) {
         boolean success = true;
         MemberSettingResultModel.Data.MemberSettings memberSettingResultModel = data.getData().getMembersettings();
         SettingModel.Data.Notifications notifications = new SettingModel.Data.Notifications(memberSettingResultModel.getNotifications().isChat(), memberSettingResultModel.getNotifications().isFeed(),
@@ -635,8 +631,7 @@ public class AccountManager extends BaseManager{
         return model;
     }
 
-    public static void verifyPhoneNumber(final String phoneNumber, Callback callback)
-    {
+    public static void verifyPhoneNumber(final String phoneNumber, Callback callback) {
         getInstance().verifyPhoneNumber(AccessToken.getCurrentAccessToken().getUserId()
                 , phoneNumber).enqueue(callback);
     }
@@ -694,8 +689,7 @@ public class AccountManager extends BaseManager{
 
     public static void getAccessToken
         //(final OnFinishGetAccessToken onFinishGetAccessToken)
-    (final CommerceManager.OnResponseListener onResponseListener)
-    {
+    (final CommerceManager.OnResponseListener onResponseListener) {
         getAccessToken(new CustomCallback() {
             @Override
             public void onCustomCallbackResponse(Response response) {
@@ -718,9 +712,7 @@ public class AccountManager extends BaseManager{
     }
 
 
-
-    private static void getAccessToken(Callback callback)
-    {
+    private static void getAccessToken(Callback callback) {
         final String fb_token = AccessToken.getCurrentAccessToken().getToken();
         AccessTokenModel accessTokenModel = new AccessTokenModel();
         accessTokenModel.setToken(fb_token);
@@ -728,8 +720,7 @@ public class AccountManager extends BaseManager{
                 accessTokenModel).enqueue(callback);
     }
 
-    private static void verifyVerificationCode(final String verificationCode, Callback callback)
-    {
+    private static void verifyVerificationCode(final String verificationCode, Callback callback) {
         getInstance().verifyVerificationCode(AccessToken.getCurrentAccessToken().getUserId()
                 , verificationCode).enqueue(callback);
     }
@@ -740,16 +731,14 @@ public class AccountManager extends BaseManager{
                 .putString(Utils.MEMBER_SETTING_MODEL, model).apply();
     }
 
-    public static String getAccessTokenFromPreferences()
-    {
+    public static String getAccessTokenFromPreferences() {
         final String accessToken = App.getInstance()
                 .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
                 .getString(Utils.ACCESS_TOKEN, "");
         return accessToken;
     }
 
-    public static void setAccessTokenToPreferences(String token)
-    {
+    public static void setAccessTokenToPreferences(String token) {
         App.getInstance()
                 .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
                 .edit()
@@ -780,21 +769,101 @@ public class AccountManager extends BaseManager{
         });
     }
 
-    private static void doDelete(final String url, Callback callback)
-    {
+    private static void doDelete(final String url, Callback callback) {
         ProfileDetailModel profileDetailModel = new ProfileDetailModel(url
                 , AccessToken.getCurrentAccessToken().getUserId());
         getInstance().deletePhoto(profileDetailModel).enqueue(callback);
     }
 
 
-    public interface OnFinishGetAccessToken
-    {
+    public interface OnFinishGetAccessToken {
         public Retrofit onFinishGetAccessToken(String accessToken);
     }
 
     public interface OnResponseListener {
         void onSuccess(Object object);
+
         void onFailure(int responseCode, String message);
+    }
+
+
+    public static void postFriendList(JSONObject jsonObject, final com.jiggie.android.listener.OnResponseListener onResponseListener)
+    {
+        //{"data":[{"name":"Setiady Wiguna","id":"10153311635578981"},{"name":"Jannes Santoso","id":"1117131014972812"}],"paging":{"next":"https:\/\/graph.facebook.com\/v2.5\/10153418311072858\/friends?access_token=EAAL8dk6nZCCsBAJeH6fy2Clq22cKp8vXpfqyA9j7VjFQSxSX677mfvSynkkjtMXCx4E9acmIOgy9iA9qhSJMouPbGPUXWSklu2wgzICJ6vo1IhS6jZCtNuuFd7BYofauuNxP1XVRHO31BKsrL5q6ZBzgNZB8D1dE8JoGqAL2z0rOkw4ZBkxuIim3SYAAq8b4EqC1FiFCFtIbv6QZC2MRSs&limit=25&offset=25&__after_id=enc_AdBZAwjSpSYc1PHJGsGblSCR8i28loiQ2hqKKGUA6y0GLRkenVdnzldYIWAphbtheEEz3VFpvetRzV2IsssZAMo7bq"},"summary":{"total_count":810}}
+        try {
+            ArrayList<String> friends = new ArrayList<>();
+            JSONArray arr = jsonObject.getJSONArray("data");
+            for(int i=0; i<arr.length();i++)
+            {
+                JSONObject tamp = (JSONObject) arr.get(i);
+                friends.add(tamp.get("id").toString());
+            }
+            postFriendList(friends, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response) {
+                    onResponseListener.onSuccess(response);
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    onResponseListener.onFailure(Utils.CODE_FAILED, "Lorem ipsum");
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void getFriendList(JSONObject jsonObject, final com.jiggie.android.listener.OnResponseListener onResponseListener)
+    {
+        //{"data":[{"name":"Setiady Wiguna","id":"10153311635578981"},{"name":"Jannes Santoso","id":"1117131014972812"}],"paging":{"next":"https:\/\/graph.facebook.com\/v2.5\/10153418311072858\/friends?access_token=EAAL8dk6nZCCsBAJeH6fy2Clq22cKp8vXpfqyA9j7VjFQSxSX677mfvSynkkjtMXCx4E9acmIOgy9iA9qhSJMouPbGPUXWSklu2wgzICJ6vo1IhS6jZCtNuuFd7BYofauuNxP1XVRHO31BKsrL5q6ZBzgNZB8D1dE8JoGqAL2z0rOkw4ZBkxuIim3SYAAq8b4EqC1FiFCFtIbv6QZC2MRSs&limit=25&offset=25&__after_id=enc_AdBZAwjSpSYc1PHJGsGblSCR8i28loiQ2hqKKGUA6y0GLRkenVdnzldYIWAphbtheEEz3VFpvetRzV2IsssZAMo7bq"},"summary":{"total_count":810}}
+        try {
+            ArrayList<String> friends = new ArrayList<>();
+            JSONArray arr = jsonObject.getJSONArray("data");
+            for(int i=0; i<arr.length();i++)
+            {
+                JSONObject tamp = (JSONObject) arr.get(i);
+                friends.add(tamp.get("id").toString());
+            }
+            getFriendList(friends, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response) {
+                    onResponseListener.onSuccess(response.body());
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    onResponseListener.onFailure(Utils.CODE_FAILED, "Lorem ipsum");
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void getFriendList(ArrayList<String> friendsFbId, Callback callback)
+    {
+        getInstance()
+                //.postFriendList(AccessToken.getCurrentAccessToken().getUserId(), friendsFbId)
+                .getFriendList(new PostFriendModel(AccessToken.getCurrentAccessToken().getUserId(), friendsFbId))
+                .enqueue(callback);
+    }
+
+    private static void postFriendList(ArrayList<String> friendsFbId, Callback callback)
+    {
+        getInstance()
+                //.postFriendList(AccessToken.getCurrentAccessToken().getUserId(), friendsFbId)
+                .postFriendList(new PostFriendModel(AccessToken.getCurrentAccessToken().getUserId(), friendsFbId))
+                .enqueue(callback);
     }
 }

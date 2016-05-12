@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.facebook.AccessToken;
 import com.jiggie.android.R;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
@@ -44,7 +43,7 @@ public class FriendsFragment extends Fragment implements TabFragment, HomeMain{
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         //pageAdapter = new PageAdapter(this, getActivity().getSupportFragmentManager());
-        pageAdapter = new PageAdapter( super.getActivity().getSupportFragmentManager());
+        pageAdapter = new PageAdapter(super.getActivity().getSupportFragmentManager());
         viewPager.setAdapter(pageAdapter);
         tab.setupWithViewPager(viewPager);
     }
@@ -56,7 +55,6 @@ public class FriendsFragment extends Fragment implements TabFragment, HomeMain{
 
     @Override
     public void onTabSelected() {
-
     }
 
     @Override
@@ -71,7 +69,11 @@ public class FriendsFragment extends Fragment implements TabFragment, HomeMain{
 
     @Override
     public void onTabTitleChanged(TabFragment fragment) {
+        final int position = this.pageAdapter.getFragmentPosition(fragment);
+        final TabLayout.Tab tabSmall = position >= 0 ? this.tab.getTabAt(position) : null;
 
+        if (tabSmall != null)
+            tabSmall.setText(fragment.getTitle());
     }
 
     private class PageAdapter extends FragmentPagerAdapter
@@ -82,7 +84,7 @@ public class FriendsFragment extends Fragment implements TabFragment, HomeMain{
             super(fm);
             this.fragments = new  Fragment[] {
                     new ChatTabFragment(),
-                    new ActiveChatsFragment()
+                    new FriendListFragment()
             };
         }
 
@@ -90,7 +92,7 @@ public class FriendsFragment extends Fragment implements TabFragment, HomeMain{
             super(fm);
             this.fragments = new  Fragment[] {
                     new ChatTabFragment(),
-                    new ActiveChatsFragment()
+                    new FriendListFragment()
             };
         }
 
@@ -102,6 +104,16 @@ public class FriendsFragment extends Fragment implements TabFragment, HomeMain{
         @Override
         public int getCount() {
             return fragments.length;
+        }
+
+        public int getFragmentPosition(Object fragment) {
+            final int length = this.fragments.length;
+
+            for (int i = 0; i < length; i++) {
+                if (fragment == this.fragments[i])
+                    return i;
+            }
+            return -1;
         }
     }
 }

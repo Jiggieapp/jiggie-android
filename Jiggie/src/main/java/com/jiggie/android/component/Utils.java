@@ -170,6 +170,9 @@ public class Utils {
     public final static String URL_CITY = BASE_URL + "app/v3/user/citylist";
 
     public final static String URL_DELETE_PHOTO = BASE_URL + "app/v3/remove_profileimage";
+    public final static String URL_POST_FRIEND_LIST = BASE_URL + "app/v3/credit/social_friends";
+    public final static String URL_LIST_SOCIAL_FRIENDS = BASE_URL + "app/v3/credit/list_social_friends";
+
     public static void d(final String tag, final String value) {
         if(BuildConfig.DEBUG)
         {
