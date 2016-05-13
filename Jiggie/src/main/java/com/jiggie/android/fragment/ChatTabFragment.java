@@ -94,7 +94,7 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     @Override
     public String getTitle() {
         //return this.title == null ? (this.title = this.homeMain.getContext().getString(R.string.chat)) : this.title;
-        return this.homeMain.getContext().getString(R.string.active);
+        return this.homeMain.getContext().getString(R.string.chat);
     }
 
     @Override

@@ -648,12 +648,12 @@ public class HomeFragment extends Fragment
     }
 
     private void startFetchChat() {
-       /* if (AccountManager.loadMemberSetting().getChat() == 0)
-            ((ChatTabFragment) this.adapter.getItem(CHAT_TAB)).startRepeatingTask();*/
+        if (AccountManager.loadMemberSetting().getChat() == 0)
+            ((FriendsFragment) this.adapter.getItem(CHAT_TAB)).startRepeatingTask();
     }
 
     private void stopFetchChat() {
-        //((ChatTabFragment) this.adapter.getItem(CHAT_TAB)).stopRepeatingTask();
+        ((FriendsFragment) this.adapter.getItem(CHAT_TAB)).stopRepeatingTask();
     }
 
     @Override

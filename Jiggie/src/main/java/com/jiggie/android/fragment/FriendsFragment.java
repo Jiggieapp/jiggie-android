@@ -2,6 +2,7 @@ package com.jiggie.android.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -139,5 +140,16 @@ public class FriendsFragment extends Fragment implements TabFragment, HomeMain, 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         ChatTabFragment.getInstance().onActivityResult(requestCode, resultCode, data);
         //super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    void startRepeatingTask()
+    {
+        ChatTabFragment.getInstance().startRepeatingTask();
+    }
+
+    void stopRepeatingTask()
+    {
+        ChatTabFragment.getInstance().stopRepeatingTask();
     }
 }
