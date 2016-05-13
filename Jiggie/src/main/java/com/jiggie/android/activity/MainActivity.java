@@ -34,10 +34,12 @@ import com.jiggie.android.App;
 import com.jiggie.android.BuildConfig;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.PurchaseHistoryActivity;
+import com.jiggie.android.activity.invite.InviteCodeActivity;
 import com.jiggie.android.activity.profile.FilterActivity;
 import com.jiggie.android.activity.profile.NewProfileDetailActivity;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
 import com.jiggie.android.activity.profile.ProfileSettingActivity;
+import com.jiggie.android.activity.promo.PromotionsActivity;
 import com.jiggie.android.activity.setup.SetupTagsActivity;
 import com.jiggie.android.activity.social.SocialFilterActivity;
 import com.jiggie.android.component.Utils;
@@ -549,7 +551,11 @@ public class MainActivity extends AppCompatActivity
                 target = FilterActivity.class;
                 break;*/
             case R.id.action_invite:
-                inviteFriends();
+                //inviteFriends();
+                startActivity(new Intent(MainActivity.this, InviteCodeActivity.class));
+                break;
+            case R.id.action_promo:
+                startActivity(new Intent(MainActivity.this, PromotionsActivity.class));
                 break;
             case R.id.action_orderlist:
                 startActivity(new Intent(this, PurchaseHistoryActivity.class));

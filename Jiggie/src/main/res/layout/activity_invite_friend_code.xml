@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:id="@+id/appBar"
+        android:layout_alignParentTop="true">
+
+        <android.support.v7.widget.Toolbar
+            android:theme="@style/ThemeOverlay.AppCompat.Dark"
+            android:background="@color/colorPrimary"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:titleTextColor="@android:color/white"
+            android:id="@+id/toolbar"
+            android:elevation="4dp">
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/appBar">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/img_illustration"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:src="@drawable/illustrations"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/padding_far"/>
+
+            <TextView
+                android:id="@+id/txt_share_promote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/img_illustration"
+                android:layout_centerHorizontal="true"
+                android:text="@string/promo_share"
+                android:textStyle="bold"
+                android:paddingLeft="@dimen/padding_standard"
+                android:paddingRight="@dimen/padding_standard"
+                android:layout_marginTop="@dimen/padding_standard"
+                android:textColor="@android:color/black"/>
+
+            <RelativeLayout
+                android:id="@+id/rel_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_dash"
+                android:layout_margin="@dimen/padding_standard"
+                android:layout_below="@+id/txt_share_promote">
+
+                <TextView
+                    android:id="@+id/txt_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="WAND7S"
+                    android:textSize="36sp"
+                    android:textStyle="bold"
+                    android:paddingLeft="@dimen/padding_standard"
+                    android:paddingRight="@dimen/padding_standard"
+                    android:layout_marginTop="@dimen/padding_far"
+                    android:textColor="@color/purple"
+                    android:textAllCaps="true"
+                    android:layout_margin="@dimen/padding_standard"/>
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/txt_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rel_code"
+                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="@dimen/padding_far"
+                android:layout_marginRight="@dimen/padding_far"
+                android:text="@string/promo_code_desc"
+                android:textSize="14sp"
+                android:textAlignment="center"
+                android:gravity="center"/>
+
+            <Button
+                android:id="@+id/btn_share_fb"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_below="@id/txt_desc"
+                android:background="@drawable/shape_shr_fb"
+                android:text="@string/promo_fb"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:layout_marginTop="@dimen/padding_standard"
+                android:layout_marginLeft="@dimen/padding_standard"
+                android:layout_marginRight="@dimen/padding_standard"
+                android:foreground="?android:attr/selectableItemBackground"/>
+
+            <Button
+                android:id="@+id/btn_share_cp"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_below="@id/btn_share_fb"
+                android:background="@drawable/shape_shr_cp"
+                android:text="@string/promo_cp"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:layout_marginTop="@dimen/padding_standard"
+                android:layout_marginLeft="@dimen/padding_standard"
+                android:layout_marginRight="@dimen/padding_standard"
+                android:foreground="?android:attr/selectableItemBackground"/>
+
+            <Button
+                android:id="@+id/btn_share_msg"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_below="@id/btn_share_cp"
+                android:background="@drawable/shape_shr_msg"
+                android:text="@string/promo_msg"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:layout_marginTop="@dimen/padding_standard"
+                android:layout_marginLeft="@dimen/padding_standard"
+                android:layout_marginRight="@dimen/padding_standard"
+                android:foreground="?android:attr/selectableItemBackground"/>
+
+            <Button
+                android:id="@+id/btn_share_copy"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_below="@id/btn_share_msg"
+                android:background="@drawable/shape_shr_cy"
+                android:text="@string/promo_copy"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:layout_marginTop="@dimen/padding_standard"
+                android:layout_marginLeft="@dimen/padding_standard"
+                android:layout_marginRight="@dimen/padding_standard"
+                android:layout_marginBottom="@dimen/padding_standard"
+                android:foreground="?android:attr/selectableItemBackground"/>
+        </RelativeLayout>
+    </ScrollView>
+
+
+</RelativeLayout>

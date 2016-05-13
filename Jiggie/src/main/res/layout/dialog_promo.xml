@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent" android:background="#E6000000"
+    android:id="@+id/layout_dialog_promo">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="466dp"
+        android:layout_marginTop="@dimen/padding_standard"
+        android:layout_marginRight="@dimen/padding_standard"
+        android:layout_marginLeft="@dimen/padding_standard"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@color/background"
+        >
+        <ImageView
+            android:id="@+id/img_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/image_check2"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/padding_far"/>
+
+        <TextView
+            android:id="@+id/txt_success"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/img_check"
+            android:layout_centerHorizontal="true"
+            android:text="@string/promo_success"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:paddingLeft="@dimen/padding_standard"
+            android:paddingRight="@dimen/padding_standard"
+            android:layout_marginTop="@dimen/padding_far"
+            android:textColor="@android:color/black"/>
+
+        <TextView
+            android:id="@+id/txt_desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_success"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/padding_standard"
+            android:layout_marginLeft="@dimen/padding_far"
+            android:layout_marginRight="@dimen/padding_far"
+            android:text="@string/promo_desc"
+            android:textSize="14sp"
+            android:textAlignment="center"
+            android:gravity="center"/>
+
+        <Button
+            android:id="@+id/btn_use_now"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_below="@id/txt_desc"
+            android:layout_marginTop="@dimen/padding_fars"
+            android:layout_marginRight="@dimen/padding_standard"
+            android:layout_marginLeft="@dimen/padding_standard"
+            android:background="@drawable/selector_use_promo"
+            android:textColor="@drawable/selector_text_color"
+            android:textSize="16sp"
+            android:textAllCaps="true"
+            android:text="@string/promo_use_now"
+            android:elevation="1dp"
+            />
+
+        <Button
+            android:id="@+id/btn_later"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_below="@id/btn_use_now"
+            android:layout_marginTop="@dimen/padding_standard_half"
+            android:layout_marginRight="@dimen/padding_standard"
+            android:layout_marginLeft="@dimen/padding_standard"
+            android:background="@drawable/selector_use_promo"
+            android:textColor="@drawable/selector_text_color"
+            android:textSize="16sp"
+            android:textAllCaps="true"
+            android:text="@string/promo_remind_later"
+            android:elevation="1dp"
+            />
+    </RelativeLayout>
+
+</RelativeLayout>

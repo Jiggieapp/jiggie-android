@@ -44,4 +44,9 @@
     <color name="green_tag">#9AE084</color>
     <color name="bluedark_tag">#5E35DD</color>
     <color name="greydark_tag">#47585F</color>
+
+    <color name="share_fb">#3341AB</color>
+    <color name="share_cp">#BD10E0</color>
+    <color name="share_msg">#00CE0A</color>
+    <color name="share_copy">#00BCFB</color>
 </resources>

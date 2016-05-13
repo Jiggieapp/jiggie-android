@@ -29,20 +29,26 @@
         android:orderInCategory="3"/>
 
     <item
+        android:id="@+id/action_promo"
+        android:title="@string/promo_menu"
+        app:showAsAction="never"
+        android:orderInCategory="4"/>
+
+    <item
         android:id="@+id/action_settings"
         android:title="@string/settings"
         app:showAsAction="never"
-        android:orderInCategory="4"/>
+        android:orderInCategory="5"/>
 
     <item
         android:id="@+id/action_support"
         android:title="@string/support"
         app:showAsAction="never"
-        android:orderInCategory="5"/>
+        android:orderInCategory="6"/>
 
     <item
         android:id="@+id/action_logout"
         android:title="@string/logout"
         app:showAsAction="never"
-        android:orderInCategory="6"/>
+        android:orderInCategory="7"/>
 </menu>
