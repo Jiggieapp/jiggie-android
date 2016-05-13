@@ -51,46 +51,42 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         try {
+            holder.contact = dataRest.get(position);
             holder.txtName.setText(dataRest.get(position).getName());
 
             String phoneNumber = Utils.BLANK;
             for(int i=0;i<dataRest.get(position).getPhone().size();i++){
-                phoneNumber = phoneNumber.concat(", "+dataRest.get(position).getPhone().get(i));
+                //phoneNumber = phoneNumber.concat(", "+dataRest.get(position).getPhone().get(i));
+                phoneNumber = dataRest.get(position).getPhone().get(i);
             }
 
             String email = Utils.BLANK;
             for(int i=0;i<dataRest.get(position).getEmail().size();i++){
-                email = email.concat(", "+dataRest.get(position).getEmail().get(i));
+                //email = email.concat(", "+dataRest.get(position).getEmail().get(i));
+                email = dataRest.get(position).getEmail().get(i);
             }
 
             holder.txtPhone.setText(phoneNumber);
             holder.txtEmail.setText(email);
 
             String photo = Utils.BLANK;
-            for(int i=0;i<dataRest.size();i++){
-                boolean isFound = false;
-                for(int j=0;j<data.size();j++){
-                    if(dataRest.get(i).getRecord_id().equals(data.get(j).getId())){
-                        isFound = true;
-                        photo = data.get(j).getPhotoThumbnail();
-                        break;
+            for(int i=0;i<data.size();i++){
+                String as = dataRest.get(position).getRecord_id();
+                String bs = data.get(i).getId();
+                if(as.equals(bs)){
+                    photo = data.get(i).getPhotoThumbnail();
+                    if(!photo.equals(Utils.BLANK)){
+                        Glide.with(a).load(photo).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.imgPhoto) {
+                            @Override
+                            protected void setResource(Bitmap resource) {
+                                final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(a.getResources(), resource);
+                                circularBitmapDrawable.setCircular(true);
+                                super.getView().setImageDrawable(circularBitmapDrawable);
+                            }
+                        });
                     }
-                }
-
-                if(isFound){
                     break;
                 }
-            }
-
-            if(!photo.equals(Utils.BLANK)){
-                Glide.with(a).load(photo).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.imgPhoto) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(a.getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        super.getView().setImageDrawable(circularBitmapDrawable);
-                    }
-                });
             }
 
             if(dataRest.get(position).is_active()){
@@ -126,6 +122,7 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
 
         private InviteSelectedListener listener;
         private Activity a;
+        private ResponseContactModel.Data.Contact contact;
 
         public ViewHolder(View itemView, final InviteSelectedListener listener, final Activity a) {
             super(itemView);
@@ -137,7 +134,7 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
                     if (listener != null){
                         btnInvite.setEnabled(false);
                         btnInvite.setText(a.getString(R.string.in_sent));
-                        listener.onInviteSelected();
+                        listener.onInviteSelected(contact);
                     }
                 }
             });
@@ -145,7 +142,7 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
     }
 
     public interface InviteSelectedListener {
-        void onInviteSelected();
+        void onInviteSelected(ResponseContactModel.Data.Contact contact);
     }
 
 }

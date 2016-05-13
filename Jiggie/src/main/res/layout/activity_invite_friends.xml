@@ -27,10 +27,52 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical"/>
+            android:layout_height="match_parent">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"
+                android:layout_alignParentTop="true"
+                android:layout_above="@+id/rel_invite_all"/>
+
+            <RelativeLayout
+                android:id="@+id/rel_invite_all"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@drawable/bg_button_ticket_detail"
+                android:enabled="true"
+                android:layout_alignParentBottom="true"
+                >
+                <TextView
+                    android:id="@+id/txt_invite_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="true"
+                    android:text="@string/in_invite_all"
+                    android:textColor="@color/background"
+                    android:textSize="14sp"
+                    android:layout_marginTop="@dimen/padding_standard_half"
+                    android:layout_marginBottom="@dimen/padding_standard_half"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentTop="true"/>
+                <TextView
+                    android:id="@+id/txt_invite_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAllCaps="true"
+                    android:text="@string/in_invite_desc"
+                    android:textColor="@color/background"
+                    android:layout_marginBottom="@dimen/padding_standard_half"
+                    android:textSize="10sp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/txt_invite_all"/>
+            </RelativeLayout>
+        </RelativeLayout>
+
     </android.support.v4.widget.SwipeRefreshLayout>
+
 </android.support.design.widget.CoordinatorLayout>

@@ -42,6 +42,10 @@ public class InviteManager extends BaseManager {
         getInstance().postInviteAll(Utils.URL_INVITE_ALL, postInviteAllModel).enqueue(callback);
     }
 
+    private static void getInviteCode(String fb_id, Callback callback) throws IOException {
+        getInstance().getInviteCode(fb_id).enqueue(callback);
+    }
+
     public static void loaderPostContact(final PostContactModel postContactModel, final OnResponseListener onResponseListener){
         try {
             postContact(postContactModel, new CustomCallback() {
@@ -127,6 +131,36 @@ public class InviteManager extends BaseManager {
                 }
             });
         }catch (IOException e){
+            Utils.d("Exception", e.toString());
+            onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
+        }
+    }
+
+    public static void loaderInviteCode(final String fb_id, final OnResponseListener onResponseListener) {
+        try {
+            getInviteCode(fb_id, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response) {
+                    int responseCode = response.code();
+                    if (responseCode == Utils.CODE_SUCCESS) {
+                        onResponseListener.onSuccess(response.body());
+                    } else {
+                        onResponseListener.onFailure(responseCode, Utils.RESPONSE_FAILED);
+                    }
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    Utils.d("Failure", t.toString());
+                    onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+                }
+
+                @Override
+                public void onNeedToRestart() {
+                    loaderInviteCode(fb_id, onResponseListener);
+                }
+            });
+        } catch (IOException e) {
             Utils.d("Exception", e.toString());
             onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
         }

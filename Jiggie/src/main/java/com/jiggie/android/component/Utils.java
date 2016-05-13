@@ -175,6 +175,7 @@ public class Utils {
     public final static String URL_POST_CONTACT = BASE_URL + "app/v3/credit/contact";
     public final static String URL_INVITE = BASE_URL + "app/v3/credit/invite";
     public final static String URL_INVITE_ALL = BASE_URL + "app/v3/credit/invite_all";
+    public static final String URL_INVITE_CODE = BASE_URL + "/app/v3/credit/invite_code/{fb_id}";
     //END OF INVITE URL============
 
     public static void d(final String tag, final String value) {

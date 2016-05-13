@@ -601,7 +601,7 @@ public class App extends Application {
             }
         }
 
-        if (eventName.equals("View Event Details")) {
+        if (eventName.equals("View Event Details")||eventName.equals("Like Event Detail")||eventName.equals("Unlike Event Detail")) {
             if (eventDetail != null) {
                 try {
                     json.putString("Event Description", eventDetail.getDescription());

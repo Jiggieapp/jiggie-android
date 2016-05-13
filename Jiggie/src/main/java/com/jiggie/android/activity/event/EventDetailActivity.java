@@ -772,12 +772,14 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             if (count_like_new > 0) {
                 count_like_new = count_like_new - 1;
             }
-
+            App.getInstance().trackMixPanelViewEventDetail("Like Event Detail", eventDetail);
             //actionLike(Utils.ACTION_LIKE_NO);
         } else {
             imgLove.setSelected(true);
             count_like_new = count_like_new + 1;
             //actionLike(Utils.ACTION_LIKE_YES);
+
+            App.getInstance().trackMixPanelViewEventDetail("Unlike Event Detail", eventDetail);
         }
         txtCountLike.setText(String.valueOf(count_like_new));
         canClickLike = false;

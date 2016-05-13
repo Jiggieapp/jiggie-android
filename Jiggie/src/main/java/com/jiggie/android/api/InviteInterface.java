@@ -1,5 +1,7 @@
 package com.jiggie.android.api;
 
+import com.jiggie.android.component.Utils;
+import com.jiggie.android.model.InviteCodeModel;
 import com.jiggie.android.model.PostContactModel;
 import com.jiggie.android.model.PostInviteAllModel;
 import com.jiggie.android.model.PostInviteModel;
@@ -8,8 +10,10 @@ import com.jiggie.android.model.Success2Model;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Url;
 
 /**
@@ -26,5 +30,8 @@ public interface InviteInterface {
 
     @POST
     Call<Success2Model> postInviteAll(@Url String url, @Body PostInviteAllModel postInviteModel);
+
+    @GET(Utils.URL_INVITE_CODE)
+    Call<InviteCodeModel> getInviteCode(@Path("fb_id") String fb_id);
 
 }
