@@ -170,6 +170,13 @@ public class Utils {
     public final static String URL_CITY = BASE_URL + "app/v3/user/citylist";
 
     public final static String URL_DELETE_PHOTO = BASE_URL + "app/v3/remove_profileimage";
+
+    //INVITE URL=============
+    public final static String URL_POST_CONTACT = BASE_URL + "app/v3/credit/contact";
+    public final static String URL_INVITE = BASE_URL + "app/v3/credit/invite";
+    public final static String URL_INVITE_ALL = BASE_URL + "app/v3/credit/invite_all";
+    //END OF INVITE URL============
+
     public static void d(final String tag, final String value) {
         if(BuildConfig.DEBUG)
         {
@@ -211,6 +218,8 @@ public class Utils {
     public static boolean isRefreshDetail = false;
     public static String event_id_refresh = Utils.BLANK;
     public static int count_like_new = 0;
+
+    public static final String TYPE_ANDROID = "2";
 
     public static String calculateTime(String date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
