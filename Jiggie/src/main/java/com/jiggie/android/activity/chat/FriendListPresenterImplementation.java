@@ -27,7 +27,6 @@ public class FriendListPresenterImplementation implements FriendListPresenter {
 
     @Override
     public void loadFriendList(JSONObject object) {
-        Utils.d(TAG, object.toString());
         AccountManager.getFriendList(object
                 , new com.jiggie.android.listener.OnResponseListener() {
             @Override
@@ -53,7 +52,8 @@ public class FriendListPresenterImplementation implements FriendListPresenter {
                 HttpMethod.GET,
                 new GraphRequest.Callback() {
                     public void onCompleted(GraphResponse response) {
-                        loadFriendList(response.getJSONObject());
+                        if(response.getJSONObject() != null)
+                            loadFriendList(response.getJSONObject());
                     }
                 }
         ).executeAsync();

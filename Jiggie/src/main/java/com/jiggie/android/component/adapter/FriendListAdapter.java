@@ -28,17 +28,19 @@ import butterknife.ButterKnife;
 public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.ViewHolder> {
     private ArrayList<FriendListModel.Data.List_social_friends> data;
     private Context context;
+    private ConversationSelectedListener listener;
 
-    public FriendListAdapter(Context context)
+    public FriendListAdapter(Context context, FriendListAdapter.ConversationSelectedListener listener)
     {
         data = new ArrayList<>();
         this.context = context;
+        this.listener = listener;
     }
 
     @Override
     public FriendListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_friend, parent, false));
+                .inflate(R.layout.item_friend, parent, false), this.listener);
 
     }
 
@@ -74,16 +76,22 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
 
         //Conversation conversation;
         FriendListModel.Data.List_social_friends friends;
+        private ConversationSelectedListener listener;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(View itemView, ConversationSelectedListener listener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
+            this.listener = listener;
         }
 
         @Override
         public void onClick(View v) {
+            if(listener != null)
+            {
+                listener.onConversationSelected(this.friends);
+            }
         }
 
         @Override
@@ -100,5 +108,9 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
     public void clear()
     {
         data.clear();
+    }
+
+    public interface ConversationSelectedListener {
+        void onConversationSelected(FriendListModel.Data.List_social_friends conversation);
     }
 }

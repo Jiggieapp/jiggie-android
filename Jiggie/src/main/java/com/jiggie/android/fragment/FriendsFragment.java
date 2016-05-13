@@ -6,6 +6,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import com.jiggie.android.R;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
+import com.jiggie.android.component.Utils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -30,6 +32,8 @@ public class FriendsFragment extends Fragment implements TabFragment, HomeMain{
     @Bind(R.id.tab_friends)
     TabLayout tab;
 
+    private final static String TAG = FriendsFragment.class.getSimpleName();
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -43,7 +47,7 @@ public class FriendsFragment extends Fragment implements TabFragment, HomeMain{
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         //pageAdapter = new PageAdapter(this, getActivity().getSupportFragmentManager());
-        pageAdapter = new PageAdapter(super.getActivity().getSupportFragmentManager());
+        pageAdapter = new PageAdapter(this, super.getActivity().getSupportFragmentManager());
         viewPager.setAdapter(pageAdapter);
         tab.setupWithViewPager(viewPager);
     }
@@ -73,7 +77,9 @@ public class FriendsFragment extends Fragment implements TabFragment, HomeMain{
         final TabLayout.Tab tabSmall = position >= 0 ? this.tab.getTabAt(position) : null;
 
         if (tabSmall != null)
+        {
             tabSmall.setText(fragment.getTitle());
+        }
     }
 
     private class PageAdapter extends FragmentPagerAdapter
@@ -83,9 +89,12 @@ public class FriendsFragment extends Fragment implements TabFragment, HomeMain{
         public PageAdapter(HomeMain homeMain, FragmentManager fm) {
             super(fm);
             this.fragments = new  Fragment[] {
-                    new ChatTabFragment(),
-                    new FriendListFragment()
+                    ChatTabFragment.getInstance(),
+                    FriendListFragment.getInstance()
             };
+
+            ((TabFragment) this.fragments[0]).setHomeMain(homeMain);
+            ((TabFragment) this.fragments[1]).setHomeMain(homeMain);
         }
 
         public PageAdapter(FragmentManager fm) {
@@ -94,6 +103,11 @@ public class FriendsFragment extends Fragment implements TabFragment, HomeMain{
                     new ChatTabFragment(),
                     new FriendListFragment()
             };
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return ((TabFragment) this.fragments[position]).getTitle();
         }
 
         @Override
