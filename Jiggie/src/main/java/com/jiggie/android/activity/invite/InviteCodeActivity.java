@@ -1,6 +1,7 @@
 package com.jiggie.android.activity.invite;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
@@ -51,6 +52,26 @@ public class InviteCodeActivity extends ToolbarActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(InviteCodeActivity.this, InviteFriendsActivity.class));
+            }
+        });
+
+        btnShareMsg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Intent.ACTION_SEND)
+                        .putExtra(Intent.EXTRA_TEXT, "link referral here..")
+                        .putExtra(Intent.EXTRA_SUBJECT, "Lets Go Out With Jiggie");
+
+                /*if (file != null && file.exists()) {
+                    i.putExtra(Intent.EXTRA_STREAM,
+                            Uri.parse("file:" + file.getAbsolutePath()));
+                }*/
+
+                i.setType("text/plain");
+                /*if (progressDialog != null && progressDialog.isShowing())
+                    progressDialog.dismiss();*/
+
+                startActivity(Intent.createChooser(i, getString(R.string.share)));
             }
         });
     }
