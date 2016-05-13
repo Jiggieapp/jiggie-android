@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
 
+import com.jiggie.android.App;
+import com.jiggie.android.component.ImageCompressionAsyncTask;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.listener.OnResponseListener;
 import com.jiggie.android.manager.AccountManager;
@@ -16,6 +18,8 @@ import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SuccessUploadModel;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
@@ -65,13 +69,6 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
 
     @Override
     public void onFinishTakePhoto(int requestCode, Uri uri, ContentResolver contentResolver) {
-        /*Bitmap bitmap = null;
-        try {
-            bitmap = MediaStore.Images.Media.getBitmap(contentResolver, uri);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        */
         String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
         Cursor cursor = contentResolver.query(
@@ -82,18 +79,8 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
         String filePath = cursor.getString(columnIndex);
         cursor.close();
         doLoadImage(filePath);
-
-        //Bitmap yourSelectedImage = BitmapFactory.decodeFile(filePath);
-
-        //profileDetailView.onFinishTakePhoto(bitmap);
+        //profileDetailView.doCrop(filePath);
     }
-
-
-    public ProfileDetailPresenterImplementation(ProfileDetailView profileDetailView) {
-        this.profileDetailView = profileDetailView;
-    }
-
-
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
@@ -107,15 +94,42 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
             selectedImagePath = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
         }
         doLoadImage(selectedImagePath);
+        //profileDetailView.doCrop(selectedImagePath);
     }
 
-    private void doLoadImage(final String url)
+
+    public ProfileDetailPresenterImplementation(ProfileDetailView profileDetailView) {
+        this.profileDetailView = profileDetailView;
+    }
+
+    protected void doLoadImage(final String url)
     {
-        final int position = memberInfo.getPhotos().size();
-        profileDetailView.loadImageToCertainView(url
-                , memberInfo.getPhotos().size());
-        memberInfo.getPhotos().add(url);
-        doUpload(url, position);
+        ImageCompressionAsyncTask imageCompression = new ImageCompressionAsyncTask() {
+            @Override
+            protected void onPostExecute(byte[] imageBytes) {
+                final int position = memberInfo.getPhotos().size();
+                // image here is compressed & ready to be sent to the server
+                //FileUtils.writeByteArrayToFile(new File("pathname"), myByteArray);
+                FileOutputStream fos = null;
+                try {
+                    File file = new File(App.getInstance().getFilesDir().getPath(), "profile"+position+".jpg");
+                    fos = new FileOutputStream(file.getAbsolutePath());
+                    fos.write(imageBytes);
+                    fos.close();
+
+                    final String url = file.getAbsolutePath();
+                    profileDetailView.loadImageToCertainView(url
+                            , memberInfo.getPhotos().size());
+                    memberInfo.getPhotos().add(url);
+                    doUpload(url, position);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        imageCompression.execute(url);
     }
 
     private void doUpload(final String path, final int position) {
@@ -124,7 +138,8 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
             AccountManager.doUpload(file, new OnResponseListener() {
                 @Override
                 public void onSuccess(Object object) {
-                    memberInfo.getPhotos().remove(position);
+                    //memberInfo.getPhotos().remove(position);
+                    Utils.d(TAG, "url " + ((SuccessUploadModel) object).getUrl());
                     memberInfo.getPhotos().add(position, ((SuccessUploadModel) object).getUrl());
                     profileDetailView.onFinishUpload(position);
                 }

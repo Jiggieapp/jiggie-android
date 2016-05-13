@@ -527,6 +527,4 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         if(handler != null)
         handler.removeCallbacks(mHandlerTask);
     }
-
-
 }

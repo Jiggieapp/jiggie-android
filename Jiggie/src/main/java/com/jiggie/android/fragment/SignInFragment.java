@@ -467,7 +467,6 @@ public class SignInFragment extends Fragment {
                     @Override
                     public void onSuccess(Object object) {
                         subscriber.onNext((TagsListModel) object);
-
                     }
 
                     @Override
