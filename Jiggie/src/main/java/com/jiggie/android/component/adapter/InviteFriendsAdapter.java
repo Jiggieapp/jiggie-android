@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.ContactPhoneModel;
+import com.jiggie.android.model.ResponseContactModel;
 
 import java.util.ArrayList;
 
@@ -29,27 +31,57 @@ import butterknife.ButterKnife;
 public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdapter.ViewHolder> {
 
     private ArrayList<ContactPhoneModel> data = new ArrayList<>();
+    private ArrayList<ResponseContactModel.Data.Contact> dataRest = new ArrayList<>();
     private InviteSelectedListener listener;
     private Activity a;
+    private static final String TAG = InviteFriendsAdapter.class.getSimpleName();
 
-    public InviteFriendsAdapter(Activity a, ArrayList<ContactPhoneModel> data, InviteSelectedListener listener) {
+    public InviteFriendsAdapter(Activity a, ArrayList<ContactPhoneModel> data, ArrayList<ResponseContactModel.Data.Contact> dataRest, InviteSelectedListener listener) {
         this.listener = listener;
         this.data = data;
         this.a = a;
+        this.dataRest = dataRest;
     }
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return dataRest.size();
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         try {
-            holder.txtName.setText(data.get(position).getName());
-            holder.txtPhone.setText(data.get(position).getPhoneNumber());
-            holder.txtEmail.setText(data.get(position).getEmail());
-            String photo = data.get(position).getPhotoThumbnail();
+            holder.txtName.setText(dataRest.get(position).getName());
+
+            String phoneNumber = Utils.BLANK;
+            for(int i=0;i<dataRest.get(position).getPhone().size();i++){
+                phoneNumber = phoneNumber.concat(", "+dataRest.get(position).getPhone().get(i));
+            }
+
+            String email = Utils.BLANK;
+            for(int i=0;i<dataRest.get(position).getEmail().size();i++){
+                email = email.concat(", "+dataRest.get(position).getEmail().get(i));
+            }
+
+            holder.txtPhone.setText(phoneNumber);
+            holder.txtEmail.setText(email);
+
+            String photo = Utils.BLANK;
+            for(int i=0;i<dataRest.size();i++){
+                boolean isFound = false;
+                for(int j=0;j<data.size();j++){
+                    if(dataRest.get(i).getRecord_id().equals(data.get(j).getId())){
+                        isFound = true;
+                        photo = data.get(j).getPhotoThumbnail();
+                        break;
+                    }
+                }
+
+                if(isFound){
+                    break;
+                }
+            }
+
             if(!photo.equals(Utils.BLANK)){
                 Glide.with(a).load(photo).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.imgPhoto) {
                     @Override
@@ -60,8 +92,15 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
                     }
                 });
             }
-        }catch (Exception e){
 
+            if(dataRest.get(position).is_active()){
+                holder.btnInvite.setEnabled(true);
+            }else{
+                holder.btnInvite.setEnabled(false);
+            }
+
+        }catch (Exception e){
+            Log.d(TAG, e.toString());
         }
     }
 

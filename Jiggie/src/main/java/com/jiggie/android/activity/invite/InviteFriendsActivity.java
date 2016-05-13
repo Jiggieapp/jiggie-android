@@ -11,11 +11,16 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
+import com.facebook.AccessToken;
+import com.google.gson.Gson;
 import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.InviteFriendsAdapter;
+import com.jiggie.android.manager.InviteManager;
 import com.jiggie.android.model.ContactPhoneModel;
+import com.jiggie.android.model.PostContactModel;
+import com.jiggie.android.model.ResponseContactModel;
 
 import java.util.ArrayList;
 
@@ -36,6 +41,8 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     ArrayList<ContactPhoneModel> dataContact = new ArrayList<ContactPhoneModel>();
+    boolean isLoading = false;
+    ArrayList<PostContactModel.Contact> contactToPost = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,12 +54,18 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Invite Friend by Phone");
 
-        getContactPhoneInvite();
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        this.recyclerView.setLayoutManager(layoutManager);
+
+        isLoading = true;
+        swipeRefresh.setRefreshing(true);
+        onRefresh();
+
     }
 
     @Override
     public void onRefresh() {
-
+        getContactPhoneInvite();
     }
 
     @Override
@@ -73,21 +86,6 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                 String email = Utils.BLANK;
                 String photoThumbnail = Utils.BLANK;
 
-                String[] projection = new String[] { ContactsContract.CommonDataKinds.Phone.CONTACT_ID, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY,
-                        ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI, ContactsContract.CommonDataKinds.Email.TYPE};
-
-                /*if(Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0)
-                {
-                    Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",new String[]{ id }, null);
-                    while (pCur.moveToNext())
-                    {
-                        //String contactNumber = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        //alContacts.add(contactNumber);
-                        phoneNumber = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        break;
-                    }
-                    pCur.close();
-                }*/
                 try {
                     if(Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0)
                     {
@@ -127,38 +125,49 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
 
                 }
 
-
-                /*if(Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI))) > 0)
-                {
-                    Cursor pCur2 = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",new String[]{ id }, null);
-                    while (pCur2.moveToNext())
-                    {
-                        //String contactNumber = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        //alContacts.add(contactNumber);
-                        photoThumbnail = pCur2.getString(pCur2.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI));
-                        break;
-                    }
-                    pCur2.close();
-                }*/
-
-                /*if(Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.))) > 0)
-                {
-                    Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",new String[]{ id }, null);
-                    while (pCur.moveToNext())
-                    {
-                        //String contactNumber = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                        //alContacts.add(contactNumber);
-                        photoThumbnail = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI));
-                        break;
-                    }
-                    pCur.close();
-                }*/
-
             } while (cursor.moveToNext()) ;
         }
 
-        this.recyclerView.setAdapter(this.adapter = new InviteFriendsAdapter(this, dataContact, this));
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        this.recyclerView.setLayoutManager(layoutManager);
+        for(int i=0;i<dataContact.size();i++){
+            ArrayList<String> arrEmail = new ArrayList<>();
+            arrEmail.add(dataContact.get(i).getEmail());
+            ArrayList<String> arrPhone = new ArrayList<>();
+            arrPhone.add(dataContact.get(i).getPhoneNumber());
+            contactToPost.add(new PostContactModel.Contact(dataContact.get(i).getId(), dataContact.get(i).getName(), arrEmail, arrPhone));
+        }
+
+        if(contactToPost.size()>0){
+            PostContactModel postContactModel = new PostContactModel(AccessToken.getCurrentAccessToken().getUserId(), Utils.TYPE_ANDROID, contactToPost);
+
+            String sd = String.valueOf(new Gson().toJson(postContactModel));
+
+            InviteManager.loaderPostContact(postContactModel, new InviteManager.OnResponseListener() {
+                @Override
+                public void onSuccess(Object object) {
+                    ResponseContactModel responseContactModel = (ResponseContactModel)object;
+                    if(responseContactModel!=null){
+                        setAdapters(responseContactModel.getData().getContact());
+                    }else{
+                        isLoading = false;
+                        swipeRefresh.setRefreshing(false);
+                    }
+
+                }
+
+                @Override
+                public void onFailure(int responseCode, String message) {
+                    isLoading = false;
+                    swipeRefresh.setRefreshing(false);
+                }
+            });
+        }
+
+
+    }
+
+    private void setAdapters(ArrayList<ResponseContactModel.Data.Contact> data){
+        recyclerView.setAdapter(adapter = new InviteFriendsAdapter(this, dataContact, data, this));
+        isLoading = false;
+        swipeRefresh.setRefreshing(false);
     }
 }
