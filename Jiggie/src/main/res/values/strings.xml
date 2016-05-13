@@ -54,6 +54,7 @@
     <string name="later">Later</string>
     <string name="events">Events</string>
     <string name="chat">Chat</string>
+    <string name="active">Active</string>
     <string name="social">Social</string>
     <string name="more">More</string>
     <string name="open_drawer">Open drawer</string>

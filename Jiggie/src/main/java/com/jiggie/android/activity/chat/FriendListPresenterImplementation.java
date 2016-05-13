@@ -4,12 +4,9 @@ import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
-import com.jiggie.android.component.Utils;
-import com.jiggie.android.manager.AccountManager;
-import com.jiggie.android.model.ChatListModel;
+import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.model.FriendListModel;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -27,7 +24,7 @@ public class FriendListPresenterImplementation implements FriendListPresenter {
 
     @Override
     public void loadFriendList(JSONObject object) {
-        AccountManager.getFriendList(object
+        SocialManager.getFriendList(object
                 , new com.jiggie.android.listener.OnResponseListener() {
             @Override
             public void onSuccess(Object object) {

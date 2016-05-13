@@ -1,5 +1,6 @@
 package com.jiggie.android.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,16 +8,24 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.chat.ChatActivity;
 import com.jiggie.android.activity.chat.FriendListPresenterImplementation;
 import com.jiggie.android.activity.chat.FriendsFragmentView;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.ChatTabListAdapter;
 import com.jiggie.android.component.adapter.FriendListAdapter;
+import com.jiggie.android.listener.OnResponseListener;
+import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.model.ChatListModel;
 import com.jiggie.android.model.Conversation;
 import com.jiggie.android.model.FriendListModel;
+import com.jiggie.android.model.PostFriendModel;
+
+import java.util.ArrayList;
 
 /**
  * Created by Wandy on 5/10/2016.
@@ -28,13 +37,18 @@ public class FriendListFragment extends ChatTabFragment implements FriendsFragme
     private FriendListPresenterImplementation friendListPresenterImplementation;
     private FriendListAdapter adapterrr;
     private static FriendListFragment instance;
+    OnFriendClickListener onFriendClickListener;
 
-    public static FriendListFragment getInstance()
+    public static FriendListFragment getInstance(OnFriendClickListener onFriendClickListener)
     {
         if(instance == null)
+        {
             instance = new FriendListFragment();
+            instance.onFriendClickListener = onFriendClickListener;
+        }
         return instance;
     }
+
 
     @Nullable
     @Override
@@ -89,11 +103,73 @@ public class FriendListFragment extends ChatTabFragment implements FriendsFragme
 
 
     @Override
-    public void onConversationSelected(FriendListModel.Data.List_social_friends conversation) {
-        final Intent intent = new Intent(super.getActivity(), ChatActivity.class);
-        intent.putExtra(Conversation.FIELD_PROFILE_IMAGE, conversation.getImg_url());
-        intent.putExtra(Conversation.FIELD_FACEBOOK_ID, conversation.getFb_id());
-        intent.putExtra(Conversation.FIELD_FROM_NAME, conversation.getFirst_name());
-        super.startActivityForResult(intent, 0);
+    public void onConversationSelected(final FriendListModel.Data.List_social_friends conversation) {
+        final boolean isConnect = conversation.getIs_connect().equalsIgnoreCase("true");
+        //final boolean isConnect = false;
+        if(isConnect)
+        {
+            /*final Intent intent = new Intent(super.getActivity(), ChatActivity.class);
+            intent.putExtra(Conversation.FIELD_PROFILE_IMAGE, conversation.getImg_url());
+            intent.putExtra(Conversation.FIELD_FACEBOOK_ID, conversation.getFb_id());
+            intent.putExtra(Conversation.FIELD_FROM_NAME, conversation.getFirst_name());
+            super.startActivityForResult(intent, 0);*/
+
+            onFriendClickListener.doRedirect(conversation);
+        }
+        else
+        {
+            ArrayList<String> friend_fb_id = new ArrayList<>();
+            friend_fb_id.add(conversation.getFb_id());
+            PostFriendModel postFriendModel = new PostFriendModel(
+                    AccessToken.getCurrentAccessToken().getUserId(), friend_fb_id);
+            showProgressDialog();
+            SocialManager.postFriendList(postFriendModel, new OnResponseListener() {
+                @Override
+                public void onSuccess(Object object) {
+                    dismissProgressDialog();
+                    final Intent intent = new Intent(getActivity(), ChatActivity.class);
+                    intent.putExtra(Conversation.FIELD_PROFILE_IMAGE, conversation.getImg_url());
+                    intent.putExtra(Conversation.FIELD_FACEBOOK_ID, conversation.getFb_id());
+                    intent.putExtra(Conversation.FIELD_FROM_NAME, conversation.getFirst_name());
+                    FriendListFragment.this.startActivityForResult(intent, 0);
+                }
+
+                @Override
+                public void onFailure(int responseCode, String message) {
+                    dismissProgressDialog();
+                    Toast.makeText(FriendListFragment.this.getActivity()
+                            , getActivity().getResources().getString(R.string.socket_timeout_exception)
+                                    , Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    private ProgressDialog progressDialog;
+    private void showProgressDialog()
+    {
+        progressDialog = ProgressDialog.show(
+                FriendListFragment.this.getActivity()
+                , ""
+                , getActivity().getResources().getString(R.string.please_wait));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+    }
+
+    private void dismissProgressDialog()
+    {
+        if(progressDialog != null && progressDialog.isShowing())
+            progressDialog.dismiss();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    public interface OnFriendClickListener
+    {
+        void doRedirect(FriendListModel.Data.List_social_friends listSocialFriends);
     }
 }

@@ -75,10 +75,4 @@ public interface AccountInterface{
 
     @POST(Utils.URL_POST_FRIEND_LIST)
     Call<Success2Model> postFriendList(@Path("fb_id") String fb_id, @Path("friends_fb_id") ArrayList<String> friendsFbId);
-
-    @POST(Utils.URL_POST_FRIEND_LIST)
-    Call<Success2Model> postFriendList(@Body PostFriendModel postFriend);
-
-    @POST(Utils.URL_LIST_SOCIAL_FRIENDS)
-    Call<FriendListModel> getFriendList(@Body PostFriendModel postFriend);
 }

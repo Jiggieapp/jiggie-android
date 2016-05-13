@@ -1,5 +1,6 @@
 package com.jiggie.android.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -13,9 +14,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.jiggie.android.R;
+import com.jiggie.android.activity.chat.ChatActivity;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
+import com.jiggie.android.model.Conversation;
+import com.jiggie.android.model.FriendListModel;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -23,7 +27,7 @@ import butterknife.ButterKnife;
 /**
  * Created by Wandy on 5/10/2016.
  */
-public class FriendsFragment extends Fragment implements TabFragment, HomeMain{
+public class FriendsFragment extends Fragment implements TabFragment, HomeMain, FriendListFragment.OnFriendClickListener {
     private HomeMain homeMain;
     private String title;
     @Bind(R.id.view_pager_friends)
@@ -76,33 +80,24 @@ public class FriendsFragment extends Fragment implements TabFragment, HomeMain{
         final int position = this.pageAdapter.getFragmentPosition(fragment);
         final TabLayout.Tab tabSmall = position >= 0 ? this.tab.getTabAt(position) : null;
 
-        if (tabSmall != null)
-        {
+        if (tabSmall != null) {
             tabSmall.setText(fragment.getTitle());
         }
     }
 
-    private class PageAdapter extends FragmentPagerAdapter
-    {
+
+    private class PageAdapter extends FragmentPagerAdapter {
         private final Fragment[] fragments;
 
         public PageAdapter(HomeMain homeMain, FragmentManager fm) {
             super(fm);
-            this.fragments = new  Fragment[] {
+            this.fragments = new Fragment[]{
                     ChatTabFragment.getInstance(),
-                    FriendListFragment.getInstance()
+                    FriendListFragment.getInstance(FriendsFragment.this)
             };
 
             ((TabFragment) this.fragments[0]).setHomeMain(homeMain);
             ((TabFragment) this.fragments[1]).setHomeMain(homeMain);
-        }
-
-        public PageAdapter(FragmentManager fm) {
-            super(fm);
-            this.fragments = new  Fragment[] {
-                    new ChatTabFragment(),
-                    new FriendListFragment()
-            };
         }
 
         @Override
@@ -129,5 +124,20 @@ public class FriendsFragment extends Fragment implements TabFragment, HomeMain{
             }
             return -1;
         }
+    }
+
+    @Override
+    public void doRedirect(FriendListModel.Data.List_social_friends conversation) {
+        final Intent intent = new Intent(super.getActivity(), ChatActivity.class);
+        intent.putExtra(Conversation.FIELD_PROFILE_IMAGE, conversation.getImg_url());
+        intent.putExtra(Conversation.FIELD_FACEBOOK_ID, conversation.getFb_id());
+        intent.putExtra(Conversation.FIELD_FROM_NAME, conversation.getFirst_name());
+        super.startActivityForResult(intent, 0);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        ChatTabFragment.getInstance().onActivityResult(requestCode, resultCode, data);
+        //super.onActivityResult(requestCode, resultCode, data);
     }
 }

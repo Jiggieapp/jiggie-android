@@ -4,13 +4,11 @@ import android.content.Context;
 
 import com.facebook.AccessToken;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.jiggie.android.App;
 import com.jiggie.android.activity.profile.ProfileDetailModel;
 import com.jiggie.android.api.AccountInterface;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.callback.CustomCallback;
-import com.jiggie.android.listener.OnResponseListener;
 import com.jiggie.android.model.AboutModel;
 import com.jiggie.android.model.AccessTokenModel;
 import com.jiggie.android.model.ExceptionModel;
@@ -19,18 +17,12 @@ import com.jiggie.android.model.LoginResultModel;
 import com.jiggie.android.model.MemberInfoModel;
 import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.MemberSettingResultModel;
-import com.jiggie.android.model.PostFriendModel;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SuccessTokenModel;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -786,84 +778,4 @@ public class AccountManager extends BaseManager {
         void onFailure(int responseCode, String message);
     }
 
-
-    public static void postFriendList(JSONObject jsonObject, final com.jiggie.android.listener.OnResponseListener onResponseListener)
-    {
-        //{"data":[{"name":"Setiady Wiguna","id":"10153311635578981"},{"name":"Jannes Santoso","id":"1117131014972812"}],"paging":{"next":"https:\/\/graph.facebook.com\/v2.5\/10153418311072858\/friends?access_token=EAAL8dk6nZCCsBAJeH6fy2Clq22cKp8vXpfqyA9j7VjFQSxSX677mfvSynkkjtMXCx4E9acmIOgy9iA9qhSJMouPbGPUXWSklu2wgzICJ6vo1IhS6jZCtNuuFd7BYofauuNxP1XVRHO31BKsrL5q6ZBzgNZB8D1dE8JoGqAL2z0rOkw4ZBkxuIim3SYAAq8b4EqC1FiFCFtIbv6QZC2MRSs&limit=25&offset=25&__after_id=enc_AdBZAwjSpSYc1PHJGsGblSCR8i28loiQ2hqKKGUA6y0GLRkenVdnzldYIWAphbtheEEz3VFpvetRzV2IsssZAMo7bq"},"summary":{"total_count":810}}
-        try {
-            ArrayList<String> friends = new ArrayList<>();
-            JSONArray arr = jsonObject.getJSONArray("data");
-            for(int i=0; i<arr.length();i++)
-            {
-                JSONObject tamp = (JSONObject) arr.get(i);
-                friends.add(tamp.get("id").toString());
-            }
-            postFriendList(friends, new CustomCallback() {
-                @Override
-                public void onCustomCallbackResponse(Response response) {
-                    onResponseListener.onSuccess(response);
-                }
-
-                @Override
-                public void onCustomCallbackFailure(String t) {
-                    onResponseListener.onFailure(Utils.CODE_FAILED, "Lorem ipsum");
-                }
-
-                @Override
-                public void onNeedToRestart() {
-
-                }
-            });
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void getFriendList(JSONObject jsonObject, final com.jiggie.android.listener.OnResponseListener onResponseListener)
-    {
-        //{"data":[{"name":"Setiady Wiguna","id":"10153311635578981"},{"name":"Jannes Santoso","id":"1117131014972812"}],"paging":{"next":"https:\/\/graph.facebook.com\/v2.5\/10153418311072858\/friends?access_token=EAAL8dk6nZCCsBAJeH6fy2Clq22cKp8vXpfqyA9j7VjFQSxSX677mfvSynkkjtMXCx4E9acmIOgy9iA9qhSJMouPbGPUXWSklu2wgzICJ6vo1IhS6jZCtNuuFd7BYofauuNxP1XVRHO31BKsrL5q6ZBzgNZB8D1dE8JoGqAL2z0rOkw4ZBkxuIim3SYAAq8b4EqC1FiFCFtIbv6QZC2MRSs&limit=25&offset=25&__after_id=enc_AdBZAwjSpSYc1PHJGsGblSCR8i28loiQ2hqKKGUA6y0GLRkenVdnzldYIWAphbtheEEz3VFpvetRzV2IsssZAMo7bq"},"summary":{"total_count":810}}
-        try {
-            ArrayList<String> friends = new ArrayList<>();
-            JSONArray arr = jsonObject.getJSONArray("data");
-            for(int i=0; i<arr.length();i++)
-            {
-                JSONObject tamp = (JSONObject) arr.get(i);
-                friends.add(tamp.get("id").toString());
-            }
-            getFriendList(friends, new CustomCallback() {
-                @Override
-                public void onCustomCallbackResponse(Response response) {
-                    onResponseListener.onSuccess(response.body());
-                }
-
-                @Override
-                public void onCustomCallbackFailure(String t) {
-                    onResponseListener.onFailure(Utils.CODE_FAILED, "Lorem ipsum");
-                }
-
-                @Override
-                public void onNeedToRestart() {
-
-                }
-            });
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void getFriendList(ArrayList<String> friendsFbId, Callback callback)
-    {
-        getInstance()
-                //.postFriendList(AccessToken.getCurrentAccessToken().getUserId(), friendsFbId)
-                .getFriendList(new PostFriendModel(AccessToken.getCurrentAccessToken().getUserId(), friendsFbId))
-                .enqueue(callback);
-    }
-
-    private static void postFriendList(ArrayList<String> friendsFbId, Callback callback)
-    {
-        getInstance()
-                //.postFriendList(AccessToken.getCurrentAccessToken().getUserId(), friendsFbId)
-                .postFriendList(new PostFriendModel(AccessToken.getCurrentAccessToken().getUserId(), friendsFbId))
-                .enqueue(callback);
-    }
 }
