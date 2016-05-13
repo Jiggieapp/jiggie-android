@@ -48,6 +48,7 @@ import com.jiggie.android.component.service.FacebookImageSyncService;
 import com.jiggie.android.fragment.EventsFragment;
 import com.jiggie.android.fragment.HomeFragment;
 import com.jiggie.android.fragment.SignInFragment;
+import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.manager.ShareManager;
 import com.jiggie.android.manager.SocialManager;
@@ -568,6 +569,8 @@ public class MainActivity extends AppCompatActivity
                                 App.getSharedPreferences().edit().clear().putBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, true).apply();
                                 App.getSharedPreferences().edit().clear().apply();
                                 LoginManager.getInstance().logOut();
+
+                                AccountManager.onLogout();
 
                                 //getActivity().finish();
 

@@ -111,11 +111,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                                 Log.e("Email", name + " " + email);
                             }
                             emailCur.close();
-
-
-
                             dataContact.add(new ContactPhoneModel(id, name, phoneNumber, email, photoThumbnail));
-
                             break;
                         }
                         pCur.close();
@@ -138,9 +134,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
 
         if(contactToPost.size()>0){
             PostContactModel postContactModel = new PostContactModel(AccessToken.getCurrentAccessToken().getUserId(), Utils.TYPE_ANDROID, contactToPost);
-
             String sd = String.valueOf(new Gson().toJson(postContactModel));
-
             InviteManager.loaderPostContact(postContactModel, new InviteManager.OnResponseListener() {
                 @Override
                 public void onSuccess(Object object) {

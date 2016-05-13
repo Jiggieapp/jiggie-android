@@ -5,5 +5,5 @@ package com.jiggie.android.activity.invite;
  */
 public interface InviteCodePresenter {
 
-    void shareToFb();
+    void getInviteCode();
 }

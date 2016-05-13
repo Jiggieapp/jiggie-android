@@ -95,6 +95,7 @@ public class Utils {
     public static final String PREFERENCE_LOGIN = "login";
     public static final String LOGIN_MODEL = "login_model";
     public static final String ACCESS_TOKEN = "access_token";
+    public static final String INVITE_CODE = "invite_code";
     public static final String PREFERENCE_TAGLIST = "taglist";
     public static final String TAGLIST_MODEL = "taglist_model";
     public static final String IS_FIRST_RUN = "is_first_run";
@@ -170,17 +171,15 @@ public class Utils {
     public final static String URL_CITY = BASE_URL + "app/v3/user/citylist";
 
     public final static String URL_DELETE_PHOTO = BASE_URL + "app/v3/remove_profileimage";
-<<<<<<< HEAD
     public final static String URL_POST_FRIEND_LIST = BASE_URL + "app/v3/credit/social_friends";
     public final static String URL_LIST_SOCIAL_FRIENDS = BASE_URL + "app/v3/credit/list_social_friends";
-=======
 
     //INVITE URL=============
     public final static String URL_POST_CONTACT = BASE_URL + "app/v3/credit/contact";
     public final static String URL_INVITE = BASE_URL + "app/v3/credit/invite";
     public final static String URL_INVITE_ALL = BASE_URL + "app/v3/credit/invite_all";
+    public final static String URL_GET_INVITE_CODE = BASE_URL + "app/v3/credit/invite_code/{fb_id}";
     //END OF INVITE URL============
->>>>>>> a3f092672848170dd5e5d26167624739fe2767cf
 
     public static void d(final String tag, final String value) {
         if(BuildConfig.DEBUG)

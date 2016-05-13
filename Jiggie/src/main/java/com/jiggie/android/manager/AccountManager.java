@@ -9,6 +9,7 @@ import com.jiggie.android.activity.profile.ProfileDetailModel;
 import com.jiggie.android.api.AccountInterface;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.callback.CustomCallback;
+import com.jiggie.android.listener.OnResponseListener;
 import com.jiggie.android.model.AboutModel;
 import com.jiggie.android.model.AccessTokenModel;
 import com.jiggie.android.model.ExceptionModel;
@@ -738,6 +739,28 @@ public class AccountManager extends BaseManager {
                 .apply();
     }
 
+    public static String getInviteCodeFromPreference() {
+        final String accessToken = App.getInstance()
+                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                .getString(Utils.INVITE_CODE, "");
+        return accessToken;
+    }
+
+    public static void setInviteCodeToPreferences(String token) {
+        App.getInstance()
+                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                .edit()
+                .putString(Utils.INVITE_CODE, token)
+                .apply();
+    }
+
+    public static void onLogout()
+    {
+        App.getInstance()
+                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                .edit().clear().apply();
+    }
+
     public OnFinishGetAccessToken onFinishGetAccessToken;
 
     public static void doDelete(String url, final com.jiggie.android.listener.OnResponseListener onResponseListener) {
@@ -774,8 +797,32 @@ public class AccountManager extends BaseManager {
 
     public interface OnResponseListener {
         void onSuccess(Object object);
-
         void onFailure(int responseCode, String message);
     }
 
+    //wandy 13-05-2016
+    public static void getInviteCode(final com.jiggie.android.listener.OnResponseListener onResponseListener)
+    {
+        getInviteCode(new CustomCallback() {
+            @Override
+            public void onCustomCallbackResponse(Response response) {
+                onResponseListener.onSuccess(response.body());
+            }
+
+            @Override
+            public void onCustomCallbackFailure(String t) {
+                onResponseListener.onFailure(Utils.CODE_FAILED, t);
+            }
+
+            @Override
+            public void onNeedToRestart() {
+                getInviteCode(onResponseListener);
+            }
+        });
+    }
+
+    private static void getInviteCode(final Callback callback)
+    {
+        getInstance().getInviteCode(AccessToken.getCurrentAccessToken().getUserId()).enqueue(callback);
+    }
 }

@@ -449,7 +449,6 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
             final List<Chat> failedItems = ChatTable.getUnProcessedItems(App.getInstance().getDatabase(), toId);
             final int length = message.getData().getMessages() == null ? 0 : message.getData().getMessages().size();
             final int failedLength = failedItems.size();
-            Utils.d(TAG,"isi " +  new Gson().toJson(message));
             adapter.clear();
 
             final Chat chatHeader = new Chat(null

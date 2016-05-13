@@ -67,7 +67,6 @@ public class CommerceManager extends BaseManager{
             @Override
             public void onFailure(Call<ProductListModel> call, Throwable t) {
                 callback.onFailure(call, t);
-                Utils.d(TAG, "dianggap fail iscancelled");
             }
         });
 
@@ -149,7 +148,6 @@ public class CommerceManager extends BaseManager{
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Utils.d(TAG, "is cancelled failed");
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
                 }
 
@@ -159,7 +157,6 @@ public class CommerceManager extends BaseManager{
                 }
             });
         }catch (IOException e){
-            Utils.d("Exception", e.toString());
             onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
         }
     }
@@ -197,7 +194,6 @@ public class CommerceManager extends BaseManager{
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Utils.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
                 }
 
@@ -208,7 +204,6 @@ public class CommerceManager extends BaseManager{
 
             });
         }catch (IOException e){
-            Utils.d("Exception", e.toString());
             onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
         }
     }

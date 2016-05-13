@@ -52,12 +52,8 @@ public abstract class BaseManager implements Interceptor{
     @Override
     public Response intercept(Interceptor.Chain chain) throws IOException {
         Request request = chain.request();
-
         long t1 = System.nanoTime();
-
         Response response = chain.proceed(request);
-
-
         return response;
     }
 

@@ -7,6 +7,7 @@ import com.jiggie.android.model.AboutModel;
 import com.jiggie.android.model.AccessTokenModel;
 import com.jiggie.android.model.CityModel;
 import com.jiggie.android.model.FriendListModel;
+import com.jiggie.android.model.InviteCodeResultModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.LoginResultModel;
 import com.jiggie.android.model.MemberInfoModel;
@@ -75,4 +76,7 @@ public interface AccountInterface{
 
     @POST(Utils.URL_POST_FRIEND_LIST)
     Call<Success2Model> postFriendList(@Path("fb_id") String fb_id, @Path("friends_fb_id") ArrayList<String> friendsFbId);
+
+    @GET(Utils.URL_GET_INVITE_CODE)
+    Call<InviteCodeResultModel> getInviteCode(@Path("fb_id") String fbId);
 }

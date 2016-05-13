@@ -444,4 +444,6 @@
     <!--END OF INVITE FRIENDS PART-->
 
     <string name="friends_title">Friends</string>
+    <string name="lets_go_out">Lets go out with Jiggie</string>
+    <string name="invite_code_has_been_copied">Your invite code has been copied</string>
 </resources>
