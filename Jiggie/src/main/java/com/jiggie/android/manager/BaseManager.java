@@ -2,6 +2,7 @@ package com.jiggie.android.manager;
 
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.callback.CustomCallback;
+import com.jiggie.android.model.SuccessTokenModel;
 
 import java.io.IOException;
 
@@ -91,5 +92,36 @@ public abstract class BaseManager implements Interceptor{
     {
         retrofit = null;
         //getRetrofit();
+    }
+
+    public static void isTokenAlready(final OnExistListener onExistListener) {
+        if (AccountManager.getAccessTokenFromPreferences().isEmpty()) {
+            AccountManager.getAccessToken(new CommerceManager.OnResponseListener() {
+                @Override
+                public void onSuccess(Object object) {
+                    //do restart here
+                    SuccessTokenModel successTokenModel = (SuccessTokenModel) object;
+                    final String token = successTokenModel.data.token;
+                    AccountManager.setAccessTokenToPreferences(token);
+                    BaseManager.reinstantianteRetrofit();
+                    CommerceManager.initCommerceService();
+                    //loadData(eventId);
+                    //onNeedToRestart();
+                    onExistListener.onExist(true);
+                }
+
+                @Override
+                public void onFailure(int responseCode, String message) {
+                    //onCustomCallbackFailure(message);
+                    onExistListener.onExist(false);
+                }
+            });
+        } else {
+            onExistListener.onExist(true);
+        }
+    }
+
+    public interface OnExistListener {
+        public void onExist(boolean isExist);
     }
 }
