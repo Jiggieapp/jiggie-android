@@ -90,7 +90,7 @@ public class App extends Application {
 
         FacebookSdk.sdkInitialize(this);
         AppsFlyerLib.setAppsFlyerKey(super.getString(R.string.appsflyer_devkey));
-        //Fabric.with(this, new Crashlytics());
+        Fabric.with(this, new Crashlytics());
         //endregion
         this.database = new DatabaseConnection(this);
 
@@ -601,7 +601,7 @@ public class App extends Application {
             }
         }
 
-        if (eventName.equals("View Event Details")) {
+        if (eventName.equals("View Event Details")||eventName.equals("Like Event Detail")||eventName.equals("Unlike Event Detail")) {
             if (eventDetail != null) {
                 try {
                     json.putString("Event Description", eventDetail.getDescription());

@@ -1,8 +1,7 @@
 package com.jiggie.android.activity.invite;
 
 import android.app.ProgressDialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,24 +9,19 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
 import com.facebook.FacebookSdk;
-import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.google.gson.Gson;
 import com.jiggie.android.R;
-import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.InviteCodeResultModel;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -55,6 +49,10 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
     Button btnShareCopy;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+    @Bind(R.id.rel_content)
+    RelativeLayout relContent;
+    /*@Bind(R.id.progressBar)
+    ProgressBar progressBar;*/
 
     private static String TAG = InviteCodeActivity.class.getSimpleName();
     InviteCodePresenterImplementation inviteCodePresenterImplementation;
@@ -65,7 +63,7 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
 
     private void showProgressDialog()
     {
-        progressDialog = ProgressDialog.show(this, "", getResources().getString(R.string.please_wait));
+        progressDialog = ProgressDialog.show(this, "", getResources().getString(R.string.wait));
         progressDialog.setCancelable(false);
         progressDialog.show();
     }
@@ -106,24 +104,12 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
         btnShareCp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(InviteCodeActivity.this, InviteFriendsActivity.class));
+                final String textInvite = inviteCodeResultModel.getData().getInvite_code().getMsg_share();
+                startActivity(new Intent(InviteCodeActivity.this, InviteFriendsActivity.class)
+                        .putExtra("msg_share", textInvite));
             }
         });
-
-        /*btnShareMsg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_SEND)
-                        .putExtra(Intent.EXTRA_TEXT, "link referral here..")
-                        .putExtra(Intent.EXTRA_SUBJECT, "Lets Go Out With Jiggie");
-
-                i.setType("text/plain");
-
-                startActivity(Intent.createChooser(i, getString(R.string.share)));
-            }
-        });*/
     }
-
 
 
     @OnClick(R.id.btn_share_fb)
@@ -206,13 +192,18 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
     }
 
     @OnClick(R.id.btn_share_copy)
-    public void onBtnShareCopyClick()
-    {
-        ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-        final String textInvite = inviteCodeResultModel.getData().getInvite_code().getMsg_share()
-                + "\n" + inviteCodeResultModel.getData().getInvite_code().getMsg_invite();
-        ClipData clip = ClipData.newPlainText("Jiggie", textInvite);
-        clipboard.setPrimaryClip(clip);
-        Toast.makeText(this, "Your invite code has been copied", Toast.LENGTH_SHORT).show();
+    public void onBtnShareCopyClick() {
+        setClipboard(inviteCodeResultModel.getData().getInvite_code().getInvite_url());
+    }
+
+    private void setClipboard(String text) {
+        if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
+            android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            clipboard.setText(text);
+        } else {
+            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            android.content.ClipData clip = android.content.ClipData.newPlainText("Copied referral link", text);
+            clipboard.setPrimaryClip(clip);
+        }
     }
 }

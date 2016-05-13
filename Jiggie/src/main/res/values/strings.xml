@@ -441,6 +441,8 @@
     <string name="in_invite">INVITE</string>
     <string name="in_sent">SENT</string>
     <string name="in_credit">+100 credits</string>
+    <string name="in_invite_all">INVITE ALL</string>
+    <string name="in_invite_desc">For 350.000 Credits</string>
     <!--END OF INVITE FRIENDS PART-->
 
     <string name="friends_title">Friends</string>
