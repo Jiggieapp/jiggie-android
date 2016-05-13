@@ -142,12 +142,6 @@ public class EventTabFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = this.rootView = inflater.inflate(R.layout.fragment_tab_event, container, false);
         ButterKnife.bind(this, view);
-        //EventBus.getDefault().register(this);
-
-
-
-
-
         return view;
     }
 

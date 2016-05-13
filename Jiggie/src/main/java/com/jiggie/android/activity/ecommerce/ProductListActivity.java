@@ -235,6 +235,8 @@ public class ProductListActivity extends ToolbarActivity
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
+        Utils.d(TAG, "iscancelled destroy");
+        CommerceManager.doCancel();
     }
 
     @Override
@@ -258,6 +260,7 @@ public class ProductListActivity extends ToolbarActivity
         CommerceManager.loaderProductList(eventId, new CommerceManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
+                if(swipeRefresh.getContext() == null) return;
                 ProductListModel data = (ProductListModel) object;
 
                 if (data != null) {
@@ -299,7 +302,6 @@ public class ProductListActivity extends ToolbarActivity
     public void onOffsetChanged(AppBarLayout appBarLayout, int offset) {
         int maxScroll = appBarLayout.getTotalScrollRange();
         float percentage = (float) Math.abs(offset) / (float) maxScroll;
-
         if (percentage == 1f && isHideToolbarView) {
             toolbarHeaderView.setVisibility(View.VISIBLE);
             isHideToolbarView = !isHideToolbarView;

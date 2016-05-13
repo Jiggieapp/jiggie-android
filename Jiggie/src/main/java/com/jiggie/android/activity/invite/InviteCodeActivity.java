@@ -9,10 +9,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookSdk;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.jiggie.android.R;
 import com.jiggie.android.component.activity.ToolbarActivity;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 
 /**
  * Created by LTE on 5/12/2016.
@@ -74,5 +81,27 @@ public class InviteCodeActivity extends ToolbarActivity {
                 startActivity(Intent.createChooser(i, getString(R.string.share)));
             }
         });
+    }
+
+    CallbackManager callbackManager;
+    ShareDialog shareDialog;
+
+    @OnClick(R.id.btn_share_fb)
+    public void shareToFb() {
+        FacebookSdk.sdkInitialize(this);
+        callbackManager = CallbackManager.Factory.create();
+        shareDialog = new ShareDialog(this);
+        // this part is optional
+        //shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() { ... });
+        if (ShareDialog.canShow(ShareLinkContent.class)) {
+            ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                    .setContentTitle("Hello Facebook")
+                    .setContentDescription(
+                            "The 'Hello Facebook' sample  showcases simple Facebook integration")
+                    .setContentUrl(Uri.parse("http://developers.facebook.com/android"))
+                    .build();
+
+            shareDialog.show(linkContent);
+        }
     }
 }

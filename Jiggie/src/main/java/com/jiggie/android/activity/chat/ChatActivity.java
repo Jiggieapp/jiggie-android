@@ -251,7 +251,6 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
         final Intent resultIntent = new Intent();
         resultIntent.putExtra(Conversation.FIELD_FACEBOOK_ID, toId);
         resultIntent.putExtra(Conversation.FIELD_LAST_UPDATED, chat.getCreatedAt());
-
         super.setResult(RESULT_REPLIED, resultIntent);
 
         //Added by Aga-----

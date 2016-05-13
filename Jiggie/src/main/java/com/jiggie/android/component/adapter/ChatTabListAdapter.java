@@ -66,31 +66,6 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_conversation, parent, false), this.listener, this.longClickListener);
     }
 
-    /*@Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        try {
-            final Conversation item = this.items.get(position);
-            holder.conversation = item;
-            holder.txtUser.setText(item.getFromName());
-            holder.txtMessage.setText(item.getLastMessage());
-            holder.txtTime.setText(item.getSimpleDate());
-            holder.txtUnread.setText(String.valueOf(item.getUnread()));
-            holder.txtUnread.setVisibility(item.getUnread() == 0 ? View.INVISIBLE : View.VISIBLE);
-            holder.txtTime.setTextColor(ContextCompat.getColor(this.fragment.getContext(), item.getUnread() == 0 ? android.R.color.darker_gray : R.color.colorAccent));
-
-            Glide.with(this.fragment).load(item.getProfileImage()).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.imageView) {
-                @Override
-                protected void setResource(Bitmap resource) {
-                    final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(fragment.getResources(), resource);
-                    circularBitmapDrawable.setCircular(true);
-                    super.getView().setImageDrawable(circularBitmapDrawable);
-                }
-            });
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-    }*/
-
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         try {
@@ -116,8 +91,6 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
                 urlImage = App.getFacebookImage(item.getFb_id(), width);
             }
             //---------
-            Utils.d(TAG, "profile image " + urlImage + " " + item.getProfile_image());
-
             Glide.with(this.fragment).load(urlImage).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.imageView) {
                 @Override
                 protected void setResource(Bitmap resource) {
@@ -198,6 +171,5 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
         return unreadCount;
     }
 
-    //public List<Conversation> getItems() { return this.items; }
     public List<ChatListModel.Data.ChatLists> getItems() { return this.items; }
 }
