@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.jiggie.android"
-    android:versionCode="1166"
-    android:versionName="1.1.66">
+    android:versionCode="1167"
+    android:versionName="1.1.67">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -124,7 +124,7 @@
         <activity
             android:name=".activity.promo.PromotionsActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme"/>
+            android:theme="@style/SplashTheme" />
         <activity
             android:name=".activity.invite.InviteCodeActivity"
             android:screenOrientation="portrait"
@@ -407,8 +407,11 @@
             </intent-filter>-->
         </activity>
 
-        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"/>
+        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity" />
 
+        <provider
+            android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider840535009393707"
+            android:exported="true" />
     </application>
-
 </manifest>

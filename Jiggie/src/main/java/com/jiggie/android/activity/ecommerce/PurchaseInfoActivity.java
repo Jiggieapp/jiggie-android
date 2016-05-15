@@ -304,7 +304,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
         private Fragment[] fragments;
 
         public SlideAdapter(FragmentManager fm, ViewPager viewPager) {
-            super(fm);
+                super(fm);
             this.fragments = new Fragment[2];
             viewPager.setAdapter(this);
             viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -317,7 +317,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                                 slidePay();
                             }
                         } else {
-                            Log.d("Pay status", "cannot pay");
+                            Utils.d("Pay status", "cannot pay");
                         }
                     }
 

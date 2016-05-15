@@ -251,7 +251,6 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
         final Intent resultIntent = new Intent();
         resultIntent.putExtra(Conversation.FIELD_FACEBOOK_ID, toId);
         resultIntent.putExtra(Conversation.FIELD_LAST_UPDATED, chat.getCreatedAt());
-
         super.setResult(RESULT_REPLIED, resultIntent);
 
         //Added by Aga-----
@@ -450,7 +449,6 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
             final List<Chat> failedItems = ChatTable.getUnProcessedItems(App.getInstance().getDatabase(), toId);
             final int length = message.getData().getMessages() == null ? 0 : message.getData().getMessages().size();
             final int failedLength = failedItems.size();
-            Utils.d(TAG,"isi " +  new Gson().toJson(message));
             adapter.clear();
 
             final Chat chatHeader = new Chat(null

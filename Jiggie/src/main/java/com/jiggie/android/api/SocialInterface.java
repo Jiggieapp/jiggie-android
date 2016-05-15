@@ -1,6 +1,8 @@
 package com.jiggie.android.api;
 
 import com.jiggie.android.component.Utils;
+import com.jiggie.android.model.FriendListModel;
+import com.jiggie.android.model.PostFriendModel;
 import com.jiggie.android.model.PostLocationModel;
 import com.jiggie.android.model.SocialModel;
 import com.jiggie.android.model.Success2Model;
@@ -25,5 +27,11 @@ public interface SocialInterface {
 
     @POST
     Call<Success2Model> postLocation(@Url String url, @Body PostLocationModel postLocationModel);
+
+    @POST(Utils.URL_POST_FRIEND_LIST)
+    Call<Success2Model> postFriendList(@Body PostFriendModel postFriend);
+
+    @POST(Utils.URL_LIST_SOCIAL_FRIENDS)
+    Call<FriendListModel> getFriendList(@Body PostFriendModel postFriend);
 
 }

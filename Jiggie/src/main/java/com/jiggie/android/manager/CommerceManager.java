@@ -10,6 +10,7 @@ import com.jiggie.android.model.PostDeleteCCModel;
 import com.jiggie.android.model.PostFreePaymentModel;
 import com.jiggie.android.model.PostPaymentModel;
 import com.jiggie.android.model.PostSummaryModel;
+import com.jiggie.android.model.ProductListModel;
 import com.jiggie.android.model.PurchaseHistoryModel;
 import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SupportModel;
@@ -19,6 +20,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
@@ -32,6 +34,15 @@ public class CommerceManager extends BaseManager{
     public static ArrayList<CCScreenModel> arrCCLocal = new ArrayList<>();
     public static SupportModel.Data.Support supportData = null;
     public static String lastPaymentType = Utils.BLANK;
+    private static Call<ProductListModel> callProductList;
+
+    public static Call<ProductListModel> getCallProductList() {
+        return callProductList;
+    }
+
+    public static void setCallProductList(Call<ProductListModel> callProductList) {
+        CommerceManager.callProductList = callProductList;
+    }
 
     public static void initCommerceService(){
         commerceInterface = getRetrofit().create(CommerceInterface.class);
@@ -40,12 +51,35 @@ public class CommerceManager extends BaseManager{
     private static CommerceInterface getInstance(){
         if(commerceInterface == null)
             initCommerceService();
-
         return commerceInterface;
     }
 
-    private static void getProductList(String event_id, Callback callback) throws IOException {
-        getInstance().getProductList(event_id).enqueue(callback);
+    private static void getProductList(String event_id, final CustomCallback callback) throws IOException {
+        /*if(callProductList != null)
+            callProductList.cancel();*/
+        callProductList = getInstance().getProductList(event_id);
+        callProductList.enqueue(new Callback<ProductListModel>() {
+            @Override
+            public void onResponse(Call<ProductListModel> call, Response<ProductListModel> response) {
+                callback.onResponse(call, response);
+            }
+
+            @Override
+            public void onFailure(Call<ProductListModel> call, Throwable t) {
+                callback.onFailure(call, t);
+            }
+        });
+
+        //getInstance().getProductList(event_id).enqueue(callback);
+    }
+
+    public static void doCancel()
+    {
+        if(callProductList != null)
+        {
+            callProductList.cancel();
+            //callProductList = null;
+        }
     }
 
     private static void postSummary(PostSummaryModel postSummaryModel, Callback callback) throws IOException {
@@ -104,21 +138,16 @@ public class CommerceManager extends BaseManager{
                 @Override
                 public void onCustomCallbackResponse(Response response) {
 
-                    /*String responses = new Gson().toJson(response.body());
-                    Utils.d("res", responses);*/
-
                     int responseCode = response.code();
                     if (responseCode == Utils.CODE_SUCCESS) {
                         onResponseListener.onSuccess(response.body());
                     } else {
                         onResponseListener.onFailure(responseCode, Utils.RESPONSE_FAILED);
                     }
-
                 }
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Utils.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
                 }
 
@@ -128,7 +157,6 @@ public class CommerceManager extends BaseManager{
                 }
             });
         }catch (IOException e){
-            Utils.d("Exception", e.toString());
             onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
         }
     }
@@ -166,7 +194,6 @@ public class CommerceManager extends BaseManager{
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Utils.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
                 }
 
@@ -177,7 +204,6 @@ public class CommerceManager extends BaseManager{
 
             });
         }catch (IOException e){
-            Utils.d("Exception", e.toString());
             onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
         }
     }

@@ -2,17 +2,23 @@ package com.jiggie.android.api;
 
 import com.jiggie.android.activity.profile.ProfileDetailModel;
 import com.jiggie.android.component.Utils;
+import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.AboutModel;
 import com.jiggie.android.model.AccessTokenModel;
 import com.jiggie.android.model.CityModel;
+import com.jiggie.android.model.FriendListModel;
+import com.jiggie.android.model.InviteCodeResultModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.LoginResultModel;
 import com.jiggie.android.model.MemberInfoModel;
 import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.MemberSettingResultModel;
+import com.jiggie.android.model.PostFriendModel;
 import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SuccessTokenModel;
 import com.jiggie.android.model.SuccessUploadModel;
+
+import java.util.ArrayList;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -67,4 +73,10 @@ public interface AccountInterface{
 
     @POST(Utils.URL_DELETE_PHOTO)
     Call<Success2Model> deletePhoto(@Body ProfileDetailModel profileDetailModel);
+
+    @POST(Utils.URL_POST_FRIEND_LIST)
+    Call<Success2Model> postFriendList(@Path("fb_id") String fb_id, @Path("friends_fb_id") ArrayList<String> friendsFbId);
+
+    @GET(Utils.URL_GET_INVITE_CODE)
+    Call<InviteCodeResultModel> getInviteCode(@Path("fb_id") String fbId);
 }

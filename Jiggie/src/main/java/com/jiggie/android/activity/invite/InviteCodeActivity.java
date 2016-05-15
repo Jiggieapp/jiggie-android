@@ -1,7 +1,9 @@
 package com.jiggie.android.activity.invite;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
@@ -11,20 +13,23 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookSdk;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
+import com.google.gson.Gson;
 import com.jiggie.android.R;
-import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
-import com.jiggie.android.manager.BaseManager;
-import com.jiggie.android.manager.InviteManager;
-import com.jiggie.android.model.InviteCodeModel;
+import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.model.InviteCodeResultModel;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 
 /**
  * Created by LTE on 5/12/2016.
  */
-public class InviteCodeActivity extends ToolbarActivity {
+public class InviteCodeActivity extends ToolbarActivity implements InviteCodeView {
 
     @Bind(R.id.appBar)
     AppBarLayout appBar;
@@ -46,11 +51,32 @@ public class InviteCodeActivity extends ToolbarActivity {
     Toolbar toolbar;
     @Bind(R.id.rel_content)
     RelativeLayout relContent;
-    @Bind(R.id.progressBar)
-    ProgressBar progressBar;
+    /*@Bind(R.id.progressBar)
+    ProgressBar progressBar;*/
 
-    String invite_url = Utils.BLANK;
-    String invite_msg = Utils.BLANK;
+    private static String TAG = InviteCodeActivity.class.getSimpleName();
+    InviteCodePresenterImplementation inviteCodePresenterImplementation;
+    private ProgressDialog progressDialog;
+    InviteCodeResultModel inviteCodeResultModel;
+    CallbackManager callbackManager;
+    ShareDialog shareDialog;
+
+    private void showProgressDialog()
+    {
+        progressDialog = ProgressDialog.show(this, "", getResources().getString(R.string.wait));
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+    }
+
+    private void dismissProgressDialog()
+    {
+        if(progressDialog != null && progressDialog.isShowing())
+        {
+            progressDialog.dismiss();
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_invite_friend_code);
@@ -60,80 +86,114 @@ public class InviteCodeActivity extends ToolbarActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Invite Friends");
 
+        inviteCodePresenterImplementation = new InviteCodePresenterImplementation(this);
+        if(getInviteCodeResultModel() == null)
+        {
+            showProgressDialog();
+            inviteCodePresenterImplementation.getInviteCode();
+        }
+        else
+        {
+            initView();
+        }
+    }
+
+    private void initView()
+    {
+        txtCode.setText(inviteCodeResultModel.getData().getInvite_code().getCode());
         btnShareCp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(InviteCodeActivity.this, InviteFriendsActivity.class));
+                final String textInvite = inviteCodeResultModel.getData().getInvite_code().getMsg_share();
+                startActivity(new Intent(InviteCodeActivity.this, InviteFriendsActivity.class)
+                        .putExtra("msg_share", textInvite));
             }
         });
+    }
 
-        btnShareMsg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_SEND)
-                        .putExtra(Intent.EXTRA_TEXT, invite_url)
-                        .putExtra(Intent.EXTRA_SUBJECT, invite_msg);
 
-                /*if (file != null && file.exists()) {
-                    i.putExtra(Intent.EXTRA_STREAM,
-                            Uri.parse("file:" + file.getAbsolutePath()));
-                }*/
+    @OnClick(R.id.btn_share_fb)
+    public void shareToFb() {
+        if(getInviteCodeResultModel() == null)
+        {
+            //inviteCodePresenterImplementation.getInviteCode();
+        }
+        else
+        {
+            FacebookSdk.sdkInitialize(this);
+            callbackManager = CallbackManager.Factory.create();
+            shareDialog = new ShareDialog(this);
+            // this part is optional
+            //shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() { ... });
+            if (ShareDialog.canShow(ShareLinkContent.class)) {
+                ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                        .setContentTitle(getInviteCodeResultModel().getData().getInvite_code().getMsg_share())
+                        .setContentDescription(
+                                getInviteCodeResultModel().getData().getInvite_code().getMsg_invite())
+                        .setContentUrl(Uri.parse(getInviteCodeResultModel().getData().getInvite_code().getInvite_url()))
+                        .build();
 
-                i.setType("text/plain");
-                /*if (progressDialog != null && progressDialog.isShowing())
-                    progressDialog.dismiss();*/
-
-                startActivity(Intent.createChooser(i, getString(R.string.share)));
+                shareDialog.show(linkContent);
             }
-        });
+        }
 
-        btnShareCopy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setClipboard(invite_url);
-            }
-        });
+    }
 
-        relContent.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.GONE);
-        /*BaseManager.isTokenAlready(new BaseManager.OnExistListener() {
-            @Override
-            public void onExist(boolean isExist) {
-                if(isExist){
-                    InviteManager.loaderInviteCode(AccessToken.getCurrentAccessToken().getUserId(), new InviteManager.OnResponseListener() {
-                        @Override
-                        public void onSuccess(Object object) {
-                            InviteCodeModel inviteCodeModel = (InviteCodeModel)object;
-                            if(inviteCodeModel!=null){
-                                InviteCodeModel.Data.InviteCode inviteCode = inviteCodeModel.getData().getInvite_code();
-                                txtCode.setText(inviteCode.getCode());
-                                txtDesc.setText(inviteCode.getMsg_invite());
-                                invite_url = inviteCode.getInvite_url();
-                                invite_msg = inviteCode.getMsg_invite();
+    private InviteCodeResultModel getInviteCodeResultModel() {
+        final String inv = AccountManager.getInviteCodeFromPreference();
+        if(inv.isEmpty())
+            return null;
+        else
+        {
+             inviteCodeResultModel
+                    = new Gson().fromJson(inv, InviteCodeResultModel.class);
+            return inviteCodeResultModel;
+        }
+    }
 
-                                relContent.setVisibility(View.VISIBLE);
-                                progressBar.setVisibility(View.GONE);
-                            }else{
-                                relContent.setVisibility(View.GONE);
-                                progressBar.setVisibility(View.GONE);
-                            }
 
-                        }
+    private void setInviteCodeResultModel(InviteCodeResultModel inviteCodeResultModel) {
+        AccountManager.setInviteCodeToPreferences(new Gson().toJson(inviteCodeResultModel).toString());
+        inviteCodeResultModel = getInviteCodeResultModel();
+        initView();
+    }
 
-                        @Override
-                        public void onFailure(int responseCode, String message) {
-                            relContent.setVisibility(View.GONE);
-                            progressBar.setVisibility(View.GONE);
-                        }
-                    });
-                }else{
-                    //do nothing
-                    relContent.setVisibility(View.GONE);
-                    progressBar.setVisibility(View.GONE);
-                }
-            }
-        });*/
+    @Override
+    public void onFinishGetInviteCode(InviteCodeResultModel inviteCodeResultModel) {
+        dismissProgressDialog();
+        setInviteCodeResultModel(inviteCodeResultModel);
 
+    }
+
+    @Override
+    public void onFailedToGetInviteCode(String message) {
+        dismissProgressDialog();
+    }
+
+    @OnClick(R.id.btn_share_msg)
+    public void onBtnShareMessageClick()
+    {
+        if(getInviteCodeResultModel() == null)
+        {
+            //inviteCodePresenterImplementation.getInviteCode();
+        }
+        else
+        {
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            final String textInvite = inviteCodeResultModel.getData().getInvite_code().getMsg_share()
+                + "\n" + inviteCodeResultModel.getData().getInvite_code().getMsg_invite();
+            sendIntent.putExtra(Intent.EXTRA_TEXT, textInvite);
+            sendIntent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.lets_go_out));
+            sendIntent.setType("text/plain");
+            //startActivity(sendIntent);
+            startActivity(Intent.createChooser(sendIntent, getString(R.string.share)));
+        }
+    }
+
+    @OnClick(R.id.btn_share_copy)
+    public void onBtnShareCopyClick() {
+        setClipboard(inviteCodeResultModel.getData().getInvite_code().getInvite_url());
     }
 
     private void setClipboard(String text) {

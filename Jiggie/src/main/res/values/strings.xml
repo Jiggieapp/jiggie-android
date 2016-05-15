@@ -54,6 +54,7 @@
     <string name="later">Later</string>
     <string name="events">Events</string>
     <string name="chat">Chat</string>
+    <string name="active">Active</string>
     <string name="social">Social</string>
     <string name="more">More</string>
     <string name="open_drawer">Open drawer</string>
@@ -444,4 +445,7 @@
     <string name="in_invite_desc">For 350.000 Credits</string>
     <!--END OF INVITE FRIENDS PART-->
 
+    <string name="friends_title">Friends</string>
+    <string name="lets_go_out">Lets go out with Jiggie</string>
+    <string name="invite_code_has_been_copied">Your invite code has been copied</string>
 </resources>

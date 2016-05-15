@@ -71,7 +71,8 @@ import it.sephiroth.android.library.tooltip.Tooltip;
 /**
  * Created by rangg on 21/10/2015.
  */
-public class HomeFragment extends Fragment implements ViewPager.OnPageChangeListener, ViewTreeObserver.OnGlobalLayoutListener, HomeMain {
+public class HomeFragment extends Fragment
+        implements ViewPager.OnPageChangeListener, ViewTreeObserver.OnGlobalLayoutListener, HomeMain {
     @Nullable @Bind(R.id.appBar)
     AppBarLayout appBarLayout;
     @Bind(R.id.viewpagerw)
@@ -553,8 +554,6 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         //PART of postLocation
         PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), SocialManager.lat, SocialManager.lng);
         //PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), "-6.2216706", "106.8401574");
-        String responses = new Gson().toJson(postLocationModel);
-        Utils.d("res", responses);
 
         SocialManager.loaderLocation(postLocationModel, new SocialManager.OnResponseListener() {
             @Override
@@ -650,11 +649,11 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
 
     private void startFetchChat() {
         if (AccountManager.loadMemberSetting().getChat() == 0)
-            ((ChatTabFragment) this.adapter.getItem(CHAT_TAB)).startRepeatingTask();
+            ((FriendsFragment) this.adapter.getItem(CHAT_TAB)).startRepeatingTask();
     }
 
     private void stopFetchChat() {
-        ((ChatTabFragment) this.adapter.getItem(CHAT_TAB)).stopRepeatingTask();
+        ((FriendsFragment) this.adapter.getItem(CHAT_TAB)).stopRepeatingTask();
     }
 
     @Override
@@ -700,14 +699,12 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
                     //new EventTabFragment()
                     new EventsFragment()
                     , new SocialTabFragment()
-                    , new ChatTabFragment()
-
-                    //,new MoreTabFragment()
+                    //, new ChatTabFragment()
+                    , new FriendsFragment()
             };
             ((TabFragment) this.fragments[0]).setHomeMain(homeMain);
             ((TabFragment) this.fragments[1]).setHomeMain(homeMain);
             ((TabFragment) this.fragments[2]).setHomeMain(homeMain);
-            //((TabFragment)this.fragments[3]).setHomeMain(homeMain);
         }
 
         @Override

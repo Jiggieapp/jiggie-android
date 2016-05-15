@@ -31,7 +31,7 @@ public interface InviteInterface {
     @POST
     Call<Success2Model> postInviteAll(@Url String url, @Body PostInviteAllModel postInviteModel);
 
-    @GET(Utils.URL_INVITE_CODE)
+    @GET(Utils.URL_GET_INVITE_CODE)
     Call<InviteCodeModel> getInviteCode(@Path("fb_id") String fb_id);
 
 }

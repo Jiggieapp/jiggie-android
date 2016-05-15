@@ -53,6 +53,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
     ArrayList<ResponseContactModel.Data.Contact> dataRest = new ArrayList<ResponseContactModel.Data.Contact>();
     @Bind(R.id.rel_invite_all)
     RelativeLayout relInviteAll;
+    String text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,9 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         this.recyclerView.setLayoutManager(layoutManager);
+
+        Intent a = getIntent();
+        text = a.getStringExtra("msg_share");
 
         isLoading = true;
         swipeRefresh.setRefreshing(true);
@@ -123,13 +127,12 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                 }
             });
         }
-
     }
 
     private void openSMS(String telp){
         Uri uri = Uri.parse("smsto:"+telp);
         Intent it = new Intent(Intent.ACTION_SENDTO, uri);
-        //it.putExtra("sms_body", "The SMS text");
+        it.putExtra("sms_body", text);
         startActivity(it);
     }
 

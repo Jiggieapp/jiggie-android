@@ -273,9 +273,7 @@ public class EventsFragment extends Fragment
 
 
         todayFragment.handleSwipeIssue(refreshLayout);
-
         tomorrowFragment.handleSwipeIssue(refreshLayout);
-
         upcomingFragment.handleSwipeIssue(refreshLayout);
     }
 
