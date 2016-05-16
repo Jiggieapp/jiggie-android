@@ -34,6 +34,7 @@ import okhttp3.RequestBody;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by LTE on 2/1/2016.
@@ -51,11 +52,33 @@ public class AccountManager extends BaseManager {
 
     private static AccountInterface getInstance() {
         if (accountInterface == null) {
-            /*accountInterface = retrofitService.createService()
-                    .create(AccountInterface.class);*/
             accountInterface = getRetrofit().create(AccountInterface.class);
         }
         return accountInterface;
+    }
+
+    public static SuccessTokenModel getAccessToken2()
+    {
+        try {
+            final String fb_token = AccessToken.getCurrentAccessToken().getToken();
+            AccessTokenModel accessTokenModel = new AccessTokenModel();
+            accessTokenModel.setToken(fb_token);
+            /*return getBasicRetrofit()
+                    .create(AccountInterface.class)
+                    .getAccessToken(Utils.URL_GET_ACCESS_TOKEN,accessTokenModel)
+                    .execute().body();*/
+            Response<SuccessTokenModel> response = getRetrofit()
+                    .create(AccountInterface.class)
+                    .getAccessToken(Utils.URL_GET_ACCESS_TOKEN, accessTokenModel).execute();
+            Utils.d(TAG, "before return");
+            return response.body();
+            /*return getRetrofit()
+                    .create(AccountInterface.class)
+                    .getAccessToken(Utils.URL_GET_ACCESS_TOKEN, accessTokenModel).execute().body();*/
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /*@Override
@@ -712,6 +735,8 @@ public class AccountManager extends BaseManager {
         getInstance().getAccessToken(Utils.URL_GET_ACCESS_TOKEN,
                 accessTokenModel).enqueue(callback);
     }
+
+
 
     private static void verifyVerificationCode(final String verificationCode, Callback callback) {
         getInstance().verifyVerificationCode(AccessToken.getCurrentAccessToken().getUserId()

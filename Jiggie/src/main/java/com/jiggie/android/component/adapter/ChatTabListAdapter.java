@@ -55,7 +55,9 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
     }*/
 
     public void add(ChatListModel.Data.ChatLists item) { this.items.add(item); }
-    public void remove(ChatListModel.Data.ChatLists item) { this.items.remove(item); }
+    public void remove(
+            ChatListModel.Data.ChatLists item) { this.items.remove(item);
+    }
     public void move(ChatListModel.Data.ChatLists item, int position) {
         this.items.remove(item);
         this.items.add(position, item);

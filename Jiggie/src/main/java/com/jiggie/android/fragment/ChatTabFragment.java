@@ -47,6 +47,7 @@ import com.jiggie.android.model.PostWalkthroughModel;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by rangg on 21/10/2015.
@@ -139,6 +140,8 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ButterKnife.bind(this, this.rootView);
+
+        EventBus.getDefault().register(this);
 
         setAdapter();
         this.refreshLayout.setOnRefreshListener(this);
@@ -236,6 +239,7 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
             getInstance().adapter.remove(conversation);
             changed = true;
         }else if(from.equals(Utils.FROM_DELETE_CHAT)){
+            Utils.d(TAG, "delete");
             App.getInstance().trackMixPanelEvent("Delete Messages");
             conversation.setLast_message(null);
             conversation.setUnread(0);

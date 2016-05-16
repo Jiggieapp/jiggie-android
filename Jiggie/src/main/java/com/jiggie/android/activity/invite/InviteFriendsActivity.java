@@ -79,7 +79,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
             @Override
             public void onClick(View v) {
                 ArrayList<PostInviteAllModel.Contact> contacts = new ArrayList<PostInviteAllModel.Contact>();
-                for(int i=0;i<dataRest.size();i++){
+                for (int i = 0; i < dataRest.size(); i++) {
                     contacts.add(new PostInviteAllModel.Contact(dataRest.get(i).getName(), dataRest.get(i).getPhone(), dataRest.get(i).getEmail(), dataRest.get(i).getUniq_id()));
                 }
                 PostInviteAllModel postInviteAllModel = new PostInviteAllModel(AccessToken.getCurrentAccessToken().getUserId(), contacts);
@@ -106,14 +106,14 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
 
     @Override
     public void onInviteSelected(ResponseContactModel.Data.Contact contact) {
-        if(contact.getEmail().get(0).equals(Utils.BLANK)){
-            if(contact.getPhone().get(0).equals(Utils.BLANK)){
+        if (contact.getEmail().get(0).equals(Utils.BLANK)) {
+            if (contact.getPhone().get(0).equals(Utils.BLANK)) {
                 //do nothing
-            }else{
+            } else {
                 openSMS(contact.getPhone().get(0));
             }
 
-        }else{
+        } else {
             PostInviteModel postInviteModel = new PostInviteModel(AccessToken.getCurrentAccessToken().getUserId(), new PostInviteModel.Contact(contact.getName(), contact.getEmail(), contact.getUniq_id()));
             InviteManager.loaderInvite(postInviteModel, new InviteManager.OnResponseListener() {
                 @Override
@@ -129,8 +129,8 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
         }
     }
 
-    private void openSMS(String telp){
-        Uri uri = Uri.parse("smsto:"+telp);
+    private void openSMS(String telp) {
+        Uri uri = Uri.parse("smsto:" + telp);
         Intent it = new Intent(Intent.ACTION_SENDTO, uri);
         it.putExtra("sms_body", text);
         startActivity(it);
@@ -198,7 +198,27 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
 
             String sd = String.valueOf(new Gson().toJson(postContactModel));
 
-            BaseManager.isTokenAlready(new BaseManager.OnExistListener() {
+            InviteManager.loaderPostContact(postContactModel, new InviteManager.OnResponseListener() {
+                @Override
+                public void onSuccess(Object object) {
+                    ResponseContactModel responseContactModel = (ResponseContactModel) object;
+                    if (responseContactModel != null) {
+                        setAdapters(responseContactModel.getData().getContact());
+                    } else {
+                        isLoading = false;
+                        swipeRefresh.setRefreshing(false);
+                    }
+
+                }
+
+                @Override
+                public void onFailure(int responseCode, String message) {
+                    isLoading = false;
+                    swipeRefresh.setRefreshing(false);
+                }
+            });
+
+            /*BaseManager.isTokenAlready(new BaseManager.OnExistListener() {
                 @Override
                 public void onExist(boolean isExist) {
                     if (isExist) {
@@ -225,12 +245,8 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                         //do nothing
                     }
                 }
-            });
-
-
+            });*/
         }
-
-
     }
 
     private void setAdapters(ArrayList<ResponseContactModel.Data.Contact> data) {
