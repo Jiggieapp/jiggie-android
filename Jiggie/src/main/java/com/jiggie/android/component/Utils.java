@@ -207,6 +207,13 @@ public class Utils {
     public static final String COMM_FINISH = "Commerce Finish";
     public static final String COMM_ORDER_LIST = "Order List";
 
+    public static final String REFERRAL_FACEBOOK = "Share Referral Facebook";
+    public static final String REFERRAL_PHONE = "Share Referral Phone";
+    public static final String REFERRAL_PHONE_SINGULAR = "Share Referral Phone Singular";
+    public static final String REFERRAL_PHONE_ALL = "Share Referral Phone All";
+    public static final String REFERRAL_MESSAGE = "Share Referral Message";
+    public static final String REFERRAL_COPY = "Share Referral Copy";
+
     public static final String TAG = Utils.class.getSimpleName();
     //AppsFlyer properties----
     public static String AFinstall_type = "";

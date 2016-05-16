@@ -43,6 +43,7 @@ import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.PostAppsFlyerModel;
 import com.jiggie.android.model.PostMixpanelModel;
+import com.jiggie.android.model.ReferEventMixpanelModel;
 import com.jiggie.android.model.SettingModel;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
@@ -445,6 +446,78 @@ public class App extends Application {
             mixpanelAPI = MixpanelAPI.getInstance(this, super.getString(R.string.mixpanel_token));
         return mixpanelAPI;
     }
+
+    //TRACK MIXPANEL REFERRAL===================
+    public void trackMixPanelReferral(String eventName, ReferEventMixpanelModel referEventMixpanelModel) {
+
+        //USER PART-----------
+        LoginModel login = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin();
+        SettingModel settingModel = AccountManager.loadSetting() == null ? null : AccountManager.loadSetting();
+        setPeopleMixpanelRefer(login, settingModel);
+        //END OF USER PART---------
+
+        //EVENT PART--------------
+        setEventMixpanelRefer(eventName, referEventMixpanelModel);
+        //END OF EVENT PART-------
+
+    }
+
+    private void setEventMixpanelRefer(String eventName, ReferEventMixpanelModel referEventMixpanelModel) {
+        SimpleJSONObject json = new SimpleJSONObject();
+
+        if (eventName.equals(Utils.REFERRAL_FACEBOOK)||eventName.equals(Utils.REFERRAL_PHONE)||eventName.equals(Utils.REFERRAL_PHONE_ALL)||eventName.equals(Utils.REFERRAL_MESSAGE)||
+                eventName.equals(Utils.REFERRAL_COPY)) {
+            json.putString("Promo Code", referEventMixpanelModel.getPromo_code());
+            json.putString("Promo URL", referEventMixpanelModel.getPromo_url());
+        }else{
+            json.putString("Promo Code", referEventMixpanelModel.getPromo_code());
+            json.putString("Promo URL", referEventMixpanelModel.getPromo_url());
+            json.putString("Contact Full Name", referEventMixpanelModel.getContact_fullname());
+            json.putString("Contact Email", referEventMixpanelModel.getContact_email().toString());
+            json.putString("Contact Phone", referEventMixpanelModel.getContact_phone().toString());
+        }
+        getInstanceMixpanel().track(eventName, json);
+    }
+
+    public void setPeopleMixpanelRefer(LoginModel login, SettingModel settingModel) {
+        getInstanceMixpanel().getPeople().identify(mixpanelAPI.getDistinctId());
+
+        SimpleJSONObject json = new SimpleJSONObject();
+        if (login != null) {
+            json.putString("FB ID", login.getFb_id());
+            json.putString("First Name", login.getUser_first_name());
+            json.putString("Last Name", login.getUser_last_name());
+            json.putString("Device", Build.DEVICE);
+            json.putString("Birthday", login.getBirthday());
+            json.putString("City Country", login.getBirthday());
+
+            final String location = login == null ? null : login.getLocation();
+            String[] locations = null;
+            try {
+                locations = TextUtils.isEmpty(location) ? new String[]{"", ""} : location.split(",");
+            } catch (Exception e) {
+
+            }
+            try {
+                json.putString("City Country", locations[0].trim() + " " + locations[1].trim());
+            } catch (Exception e) {
+                json.putString("City Country", locations[0].trim());
+            }
+            json.putString("Email", login.getEmail());
+
+            if (settingModel != null) {
+                json.putString("Gender", settingModel.getData().getGender());
+                json.putString("Gender Interest", settingModel.getData().getGender_interest());
+            }
+
+            json.putString("Name and FB ID", login.getUser_first_name() + "_" + login.getUser_last_name() + "_" + login.getFb_id());
+        }
+        json.putString("App Version", getVersionCode(this));
+        json.putString("OS", "Android");
+        json.putString("OS Version", this.getDeviceOSName());
+        getInstanceMixpanel().getPeople().set(json);
+    }
+    //END OF TRACK MIXPANEL REFERRAL============
 
     public void setSuperPropertiesMixpanel(LoginModel login, SettingModel settingModel) {
         SimpleJSONObject json = new SimpleJSONObject();
