@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
+import com.jiggie.android.manager.InviteManager;
 import com.jiggie.android.model.ContactPhoneModel;
 import com.jiggie.android.model.ResponseContactModel;
 
@@ -84,19 +85,31 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
                                 super.getView().setImageDrawable(circularBitmapDrawable);
                             }
                         });
+                    }else{
+                        photo = Utils.BLANK;
                     }
                     break;
                 }
             }
 
             if(dataRest.get(position).is_active()){
-                holder.btnInvite.setEnabled(true);
+                setInviteEnable(holder.btnInvite, true);
             }else{
-                holder.btnInvite.setEnabled(false);
+                setInviteEnable(holder.btnInvite, false);
             }
 
+            InviteManager.arrBtnInvite.add(holder.btnInvite);
         }catch (Exception e){
             Log.d(TAG, e.toString());
+        }
+    }
+
+    public void setInviteEnable(Button btnInvite, boolean enable){
+        btnInvite.setEnabled(enable);
+        if(enable){
+            btnInvite.setText(a.getString(R.string.in_invite));
+        }else {
+            btnInvite.setText(a.getString(R.string.in_sent));
         }
     }
 

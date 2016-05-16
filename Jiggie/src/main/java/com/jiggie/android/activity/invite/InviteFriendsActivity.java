@@ -36,7 +36,7 @@ import butterknife.Bind;
 /**
  * Created by LTE on 5/12/2016.
  */
-public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefreshLayout.OnRefreshListener, InviteFriendsAdapter.InviteSelectedListener {
+public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefreshLayout.OnRefreshListener, InviteFriendsAdapter.InviteSelectedListener, AppBarLayout.OnOffsetChangedListener {
 
     @Bind(R.id.appBar)
     AppBarLayout appBar;
@@ -71,15 +71,13 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
         Intent a = getIntent();
         text = a.getStringExtra("msg_share");
 
-        isLoading = true;
-        swipeRefresh.setRefreshing(true);
         onRefresh();
 
         relInviteAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ArrayList<PostInviteAllModel.Contact> contacts = new ArrayList<PostInviteAllModel.Contact>();
-                for(int i=0;i<dataRest.size();i++){
+                for (int i = 0; i < dataRest.size(); i++) {
                     contacts.add(new PostInviteAllModel.Contact(dataRest.get(i).getName(), dataRest.get(i).getPhone(), dataRest.get(i).getEmail(), dataRest.get(i).getUniq_id()));
                 }
                 PostInviteAllModel postInviteAllModel = new PostInviteAllModel(AccessToken.getCurrentAccessToken().getUserId(), contacts);
@@ -94,14 +92,31 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
 
                     }
                 });
+                for(int i=0;i<InviteManager.arrBtnInvite.size();i++){
+                    adapter.setInviteEnable(InviteManager.arrBtnInvite.get(i), false);
+                }
             }
         });
+        appBar.addOnOffsetChangedListener(this);
 
     }
 
     @Override
     public void onRefresh() {
+        isLoading = true;
+        swipeRefresh.setRefreshing(true);
         getContactPhoneInvite();
+        swipeRefresh.setEnabled(false);
+    }
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        /*if (verticalOffset==0) {
+            swipeRefresh.setEnabled(true);
+        } else {
+            swipeRefresh.setEnabled(false);
+        }*/
+        swipeRefresh.setEnabled(false);
     }
 
     @Override
@@ -149,7 +164,8 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
 
                 try {
                     if (Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-                        Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id}, null);
+                        Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id},
+                                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME+" ASC");
                         while (pCur.moveToNext()) {
                             //String contactNumber = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                             //alContacts.add(contactNumber);
@@ -196,7 +212,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
         if (contactToPost.size() > 0) {
             final PostContactModel postContactModel = new PostContactModel(AccessToken.getCurrentAccessToken().getUserId(), Utils.TYPE_ANDROID, contactToPost);
 
-            String sd = String.valueOf(new Gson().toJson(postContactModel));
+
 
             BaseManager.isTokenAlready(new BaseManager.OnExistListener() {
                 @Override
@@ -206,6 +222,9 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                             @Override
                             public void onSuccess(Object object) {
                                 ResponseContactModel responseContactModel = (ResponseContactModel) object;
+
+                                String sd = String.valueOf(new Gson().toJson(responseContactModel));
+
                                 if (responseContactModel != null) {
                                     setAdapters(responseContactModel.getData().getContact());
                                 } else {
@@ -238,5 +257,6 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
         recyclerView.setAdapter(adapter = new InviteFriendsAdapter(this, dataContact, data, this));
         isLoading = false;
         swipeRefresh.setRefreshing(false);
+        swipeRefresh.setEnabled(false);
     }
 }

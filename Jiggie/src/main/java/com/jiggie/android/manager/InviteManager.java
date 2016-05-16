@@ -1,5 +1,7 @@
 package com.jiggie.android.manager;
 
+import android.widget.Button;
+
 import com.jiggie.android.api.InviteInterface;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.callback.CustomCallback;
@@ -8,6 +10,7 @@ import com.jiggie.android.model.PostInviteAllModel;
 import com.jiggie.android.model.PostInviteModel;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -18,6 +21,7 @@ import retrofit2.Response;
 public class InviteManager extends BaseManager {
 
     private static InviteInterface inviteInterface;
+    public static ArrayList<Button> arrBtnInvite = new ArrayList<>();
 
     public static void initInviteService(){
         inviteInterface = getRetrofit().create(InviteInterface.class);
