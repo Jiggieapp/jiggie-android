@@ -181,6 +181,10 @@ public class Utils {
     public final static String URL_GET_INVITE_CODE = BASE_URL + "app/v3/credit/invite_code/{fb_id}";
     //END OF INVITE URL============
 
+    //REDEEM CODE URL===============
+    public final static String URL_REDEEM_CODE = BASE_URL + "app/v3/credit/redeem_code";
+    //END OF REDEEM CODE URL===============
+
     public static void d(final String tag, final String value) {
         if(BuildConfig.DEBUG)
         {
@@ -202,6 +206,13 @@ public class Utils {
     public static final String COMM_FINISH_VA = "Commerce Finish VA";
     public static final String COMM_FINISH = "Commerce Finish";
     public static final String COMM_ORDER_LIST = "Order List";
+
+    public static final String REFERRAL_FACEBOOK = "Share Referral Facebook";
+    public static final String REFERRAL_PHONE = "Share Referral Phone";
+    public static final String REFERRAL_PHONE_SINGULAR = "Share Referral Phone Singular";
+    public static final String REFERRAL_PHONE_ALL = "Share Referral Phone All";
+    public static final String REFERRAL_MESSAGE = "Share Referral Message";
+    public static final String REFERRAL_COPY = "Share Referral Copy";
 
     public static final String TAG = Utils.class.getSimpleName();
     //AppsFlyer properties----
