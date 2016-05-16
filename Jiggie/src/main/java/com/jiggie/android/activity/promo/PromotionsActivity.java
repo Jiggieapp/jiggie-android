@@ -9,9 +9,13 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 
+import com.facebook.AccessToken;
 import com.jiggie.android.R;
 import com.jiggie.android.component.activity.ToolbarActivity;
+import com.jiggie.android.manager.RedeemCodeManager;
+import com.jiggie.android.model.PostRedeemCodeModel;
 
 import butterknife.Bind;
 
@@ -23,6 +27,8 @@ public class PromotionsActivity extends ToolbarActivity {
     Toolbar toolbar;
     @Bind(R.id.btnApply)
     Button btnApply;
+    @Bind(R.id.edt_code)
+    EditText edtCode;
 
     /*CallbackManager callbackManager;
     ShareDialog shareDialog;*/
@@ -40,7 +46,18 @@ public class PromotionsActivity extends ToolbarActivity {
         btnApply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tesShowPromoDialog();
+                RedeemCodeManager.loaderRedeemCode(new PostRedeemCodeModel(AccessToken.getCurrentAccessToken().getUserId(), edtCode.getText().toString()), new RedeemCodeManager.OnResponseListener() {
+                    @Override
+                    public void onSuccess(Object object) {
+                        //tesShowPromoDialog();
+                    }
+
+                    @Override
+                    public void onFailure(int responseCode, String message) {
+
+                    }
+                });
+
             }
         });
 

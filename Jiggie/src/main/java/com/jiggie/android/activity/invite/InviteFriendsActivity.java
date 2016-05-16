@@ -76,7 +76,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
         relInviteAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<PostInviteAllModel.Contact> contacts = new ArrayList<PostInviteAllModel.Contact>();
+                /*ArrayList<PostInviteAllModel.Contact> contacts = new ArrayList<PostInviteAllModel.Contact>();
                 for (int i = 0; i < dataRest.size(); i++) {
                     contacts.add(new PostInviteAllModel.Contact(dataRest.get(i).getName(), dataRest.get(i).getPhone(), dataRest.get(i).getEmail(), dataRest.get(i).getUniq_id()));
                 }
@@ -91,7 +91,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                     public void onFailure(int responseCode, String message) {
 
                     }
-                });
+                });*/
                 for(int i=0;i<InviteManager.arrBtnInvite.size();i++){
                     adapter.setInviteEnable(InviteManager.arrBtnInvite.get(i), false);
                 }
@@ -164,8 +164,10 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
 
                 try {
                     if (Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+                        /*Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id},
+                                ContactsContract.CommonDataKinds.Phone.SORT_KEY_PRIMARY+" ASC");*/
                         Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id},
-                                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME+" ASC");
+                                null);
                         while (pCur.moveToNext()) {
                             //String contactNumber = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                             //alContacts.add(contactNumber);

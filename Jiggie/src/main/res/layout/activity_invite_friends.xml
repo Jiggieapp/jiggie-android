@@ -43,10 +43,9 @@
                 android:id="@+id/rel_invite_all"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@drawable/bg_button_ticket_detail"
+                android:background="@drawable/btn_blue_rectangle"
                 android:enabled="true"
                 android:layout_alignParentBottom="true"
-                android:foreground="?android:attr/selectableItemBackground"
                 >
                 <TextView
                     android:id="@+id/txt_invite_all"
