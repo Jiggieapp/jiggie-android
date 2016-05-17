@@ -131,6 +131,12 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     CardView cardView;
     @Bind(R.id.lblSelectPayment)
     TextView lblSelectPayment;
+    @Bind(R.id.txt_credittab_title)
+    TextView txtCredittabTitle;
+    @Bind(R.id.txt_credittab_fill)
+    TextView txtCredittabFill;
+    @Bind(R.id.rel_credittab)
+    RelativeLayout relCredittab;
     private SlideAdapter slideAdapter;
     int payDeposit = 0, maxDeposit = 0, latestDeposit = 0;
     private final int INCREMENT_VALUE = 500000;
@@ -283,6 +289,11 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         txtTotalFill.setText(StringUtility.getRupiahFormat(minDeposit));
         txtTotalTicketFill.setVisibility(View.GONE);
 
+        if (productSummary.getCredit().getCredit_used() != 0) {
+            relCredittab.setVisibility(View.VISIBLE);
+            txtCredittabFill.setText("- " + StringUtility.getRupiahFormat(String.valueOf(productSummary.getCredit().getCredit_used())));
+        }
+
         //initTermView(dataProduct);
         checkEnability(txtPayment.getText().toString());
     }
@@ -321,10 +332,10 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
             }
         }
 
-        if(payDeposit==0){
+        if (payDeposit == 0) {
             lblSelectPayment.setVisibility(View.INVISIBLE);
             cardView.setVisibility(View.INVISIBLE);
-        }else{
+        } else {
             lblSelectPayment.setVisibility(View.VISIBLE);
             cardView.setVisibility(View.VISIBLE);
         }
@@ -383,7 +394,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                     //action
                     if (position == 0) {
                         if (canPay()) {
-                            if(isPaying==false){
+                            if (isPaying == false) {
                                 slidePay();
                             }
 
@@ -415,9 +426,9 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                 if (position == 0) {
                     arg.putString(SlideFragment.ARG_TITLE, "");
                 } else if (position == 1) {
-                    if(payDeposit==0){
+                    if (payDeposit == 0) {
                         arg.putString(SlideFragment.ARG_TITLE, app.getString(R.string.pci_slide_continue));
-                    }else{
+                    } else {
                         arg.putString(SlideFragment.ARG_TITLE, app.getString(R.string.pci_slide));
                     }
 
@@ -434,7 +445,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     private boolean canPay() {
         boolean can = true;
 
-        if(payDeposit!=0){
+        if (payDeposit != 0) {
             for (int i = 0; i < arrTermItemView.size(); i++) {
                 ImageView img = arrTermItemView.get(i).getImgCheck();
                 if (!img.isSelected()) {
@@ -912,13 +923,13 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
 
     private void checkEnability(String namePayment) {
 
-        if(payDeposit==0){
+        if (payDeposit == 0) {
             pagerSlide.setVisibility(View.VISIBLE);
             relDisable.setVisibility(View.GONE);
 
             lblSelectPayment.setVisibility(View.INVISIBLE);
             cardView.setVisibility(View.INVISIBLE);
-        }else{
+        } else {
             boolean isItEnable = true;
             if (namePayment.equals(Utils.BLANK) || namePayment.equals(getString(R.string.pci_payment))) {
                 isItEnable = false;

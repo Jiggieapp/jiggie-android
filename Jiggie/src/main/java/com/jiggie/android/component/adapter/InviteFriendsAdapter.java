@@ -99,6 +99,9 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
             }
 
             InviteManager.arrBtnInvite.add(holder.btnInvite);
+
+            holder.txtCredit.setText("+"+String.valueOf(dataRest.get(position).getCredit())+" credits");
+
         }catch (Exception e){
             Log.d(TAG, e.toString());
         }

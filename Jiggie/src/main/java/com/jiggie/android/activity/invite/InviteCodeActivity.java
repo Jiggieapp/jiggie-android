@@ -99,7 +99,7 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
             Utils.d(TAG, "masuk sini?");
             initView();
         }
-        initView();
+        //initView();
     }
 
     private void initView()
@@ -108,9 +108,7 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
         btnShareCp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //final String textInvite = inviteCodeResultModel.getData().getInvite_code().getMsg_share();
-                startActivity(new Intent(InviteCodeActivity.this, InviteFriendsActivity.class)
-                        .putExtra("msg_share", "text invite"));
+                startActivity(new Intent(InviteCodeActivity.this, InviteFriendsActivity.class));
             }
         });
     }

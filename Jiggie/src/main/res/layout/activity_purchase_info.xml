@@ -205,7 +205,6 @@
                             android:layout_below="@id/txt_fee_title"
                             android:layout_marginLeft="@dimen/padding_standard"
                             android:layout_marginTop="@dimen/padding_standard_half"
-                            android:paddingBottom="@dimen/padding_standard_half"
                             android:text="@string/pci_f3"
                             android:textColor="@color/textDarkGray"
                             android:textSize="@dimen/font_body_size" />
@@ -218,10 +217,37 @@
                             android:layout_below="@id/txt_fee_fill"
                             android:layout_marginRight="@dimen/padding_standard"
                             android:layout_marginTop="@dimen/padding_standard_half"
-                            android:paddingBottom="@dimen/padding_standard_half"
                             android:text="@string/pci_f3_fill"
                             android:textColor="@color/purple"
                             android:textSize="@dimen/font_body_size" />
+
+                        <TextView
+                            android:id="@+id/txt_credit_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_below="@id/txt_tax_title"
+                            android:layout_marginLeft="@dimen/padding_standard"
+                            android:layout_marginTop="@dimen/padding_standard_half"
+                            android:paddingBottom="@dimen/padding_standard_half"
+                            android:text="@string/pci_f4"
+                            android:textColor="@color/textDarkGray"
+                            android:textSize="@dimen/font_body_size"
+                            android:visibility="gone"/>
+
+                        <TextView
+                            android:id="@+id/txt_credit_fill"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_below="@id/txt_tax_fill"
+                            android:layout_marginRight="@dimen/padding_standard"
+                            android:layout_marginTop="@dimen/padding_standard_half"
+                            android:paddingBottom="@dimen/padding_standard_half"
+                            android:text="@string/pci_f4_fill"
+                            android:textColor="@color/purple"
+                            android:textSize="@dimen/font_body_size"
+                            android:visibility="gone"/>
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -254,60 +280,99 @@
                             android:textColor="@color/purple"
                             android:textSize="@dimen/font_body_size" />
 
-                        <TextView
-                            android:id="@+id/txt_taxx_title"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:id="@+id/lin_taxetc"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_below="@id/txt_dft_title"
-                            android:layout_marginLeft="@dimen/padding_standard"
-                            android:layout_marginTop="@dimen/padding_standard_half"
-                            android:text="@string/pci_f3"
-                            android:textColor="@color/textDarkGray"
-                            android:textSize="@dimen/font_body_size" />
+                            android:orientation="vertical"
+                            android:layout_below="@id/txt_dft_title">
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+                                <TextView
+                                    android:id="@+id/txt_taxx_title"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentLeft="true"
+                                    android:layout_marginLeft="@dimen/padding_standard"
+                                    android:layout_marginTop="@dimen/padding_standard_half"
+                                    android:text="@string/pci_f3"
+                                    android:textColor="@color/textDarkGray"
+                                    android:textSize="@dimen/font_body_size" />
 
-                        <TextView
-                            android:id="@+id/txt_taxx_fill"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_below="@id/txt_dft_fill"
-                            android:layout_marginRight="@dimen/padding_standard"
-                            android:layout_marginTop="@dimen/padding_standard_half"
-                            android:text="@string/pci_f2_fill"
-                            android:textColor="@color/purple"
-                            android:textSize="@dimen/font_body_size" />
+                                <TextView
+                                    android:id="@+id/txt_taxx_fill"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentRight="true"
+                                    android:layout_marginRight="@dimen/padding_standard"
+                                    android:layout_marginTop="@dimen/padding_standard_half"
+                                    android:text="@string/pci_f2_fill"
+                                    android:textColor="@color/purple"
+                                    android:textSize="@dimen/font_body_size" />
+                            </RelativeLayout>
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+                                <TextView
+                                    android:id="@+id/txt_ser_title"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentLeft="true"
+                                    android:layout_marginLeft="@dimen/padding_standard"
+                                    android:layout_marginTop="@dimen/padding_standard_half"
+                                    android:text="@string/pci_f3b"
+                                    android:textColor="@color/textDarkGray"
+                                    android:textSize="@dimen/font_body_size" />
 
-                        <TextView
-                            android:id="@+id/txt_ser_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_below="@id/txt_taxx_title"
-                            android:layout_marginLeft="@dimen/padding_standard"
-                            android:layout_marginTop="@dimen/padding_standard_half"
-                            android:text="@string/pci_f3b"
-                            android:textColor="@color/textDarkGray"
-                            android:textSize="@dimen/font_body_size" />
+                                <TextView
+                                    android:id="@+id/txt_ser_fill"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentRight="true"
+                                    android:layout_marginRight="@dimen/padding_standard"
+                                    android:layout_marginTop="@dimen/padding_standard_half"
+                                    android:text="@string/pci_f2_fill"
+                                    android:textColor="@color/purple"
+                                    android:textSize="@dimen/font_body_size" />
+                            </RelativeLayout>
+                            <RelativeLayout
+                                android:id="@+id/rel_credittab"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone">
+                                <TextView
+                                    android:id="@+id/txt_credittab_title"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentLeft="true"
+                                    android:layout_marginLeft="@dimen/padding_standard"
+                                    android:layout_marginTop="@dimen/padding_standard_half"
+                                    android:paddingBottom="@dimen/padding_standard_half"
+                                    android:text="@string/pci_f4"
+                                    android:textColor="@color/textDarkGray"
+                                    android:textSize="@dimen/font_body_size"/>
 
-                        <TextView
-                            android:id="@+id/txt_ser_fill"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_below="@id/txt_taxx_fill"
-                            android:layout_marginRight="@dimen/padding_standard"
-                            android:layout_marginTop="@dimen/padding_standard_half"
-                            android:text="@string/pci_f2_fill"
-                            android:textColor="@color/purple"
-                            android:textSize="@dimen/font_body_size" />
+                                <TextView
+                                    android:id="@+id/txt_credittab_fill"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentRight="true"
+                                    android:layout_marginRight="@dimen/padding_standard"
+                                    android:layout_marginTop="@dimen/padding_standard_half"
+                                    android:paddingBottom="@dimen/padding_standard_half"
+                                    android:text="@string/pci_f4_fill"
+                                    android:textColor="@color/purple"
+                                    android:textSize="@dimen/font_body_size"/>
+                            </RelativeLayout>
+                        </LinearLayout>
 
                         <View
                             android:id="@+id/divider4"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
-                            android:layout_below="@id/txt_ser_fill"
+                            android:layout_below="@id/lin_taxetc"
                             android:layout_marginLeft="@dimen/padding_standard"
                             android:layout_marginRight="@dimen/padding_standard"
                             android:background="@color/divider_pantone" />
