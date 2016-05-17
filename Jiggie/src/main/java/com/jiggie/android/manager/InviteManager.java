@@ -5,9 +5,11 @@ import android.widget.Button;
 import com.jiggie.android.api.InviteInterface;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.callback.CustomCallback;
+import com.jiggie.android.model.ContactPhoneModel;
 import com.jiggie.android.model.PostContactModel;
 import com.jiggie.android.model.PostInviteAllModel;
 import com.jiggie.android.model.PostInviteModel;
+import com.jiggie.android.model.ResponseContactModel;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,6 +24,10 @@ public class InviteManager extends BaseManager {
 
     private static InviteInterface inviteInterface;
     public static ArrayList<Button> arrBtnInvite = new ArrayList<>();
+    public static ArrayList<ContactPhoneModel> dataContact = new ArrayList<ContactPhoneModel>();
+    public static ArrayList<ResponseContactModel.Data.Contact> dataRest = new ArrayList<ResponseContactModel.Data.Contact>();
+    public static String msg_share = Utils.BLANK;
+    public static String total_credit = Utils.BLANK;
 
     public static void initInviteService(){
         inviteInterface = getRetrofit().create(InviteInterface.class);

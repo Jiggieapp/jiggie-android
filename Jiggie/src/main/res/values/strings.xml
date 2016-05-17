@@ -340,10 +340,14 @@
     <string name="pci_f1">Regular Ticket (3x)</string>
     <string name="pci_f2">Administrative Fee</string>
     <string name="pci_f3">Tax</string>
+    <string name="pci_f4">Credit</string>
+    <string name="pci_f5">Discount</string>
 
     <string name="pci_f1_fill">Rp3.000K</string>
     <string name="pci_f2_fill">Rp500K</string>
     <string name="pci_f3_fill">Rp150K</string>
+    <string name="pci_f4_fill">- Rp50K</string>
+    <string name="pci_f5_fill">Rp100K</string>
 
     <string name="pci_total">Total Price</string>
     <string name="pci_total_fill">Rp3.650K</string>

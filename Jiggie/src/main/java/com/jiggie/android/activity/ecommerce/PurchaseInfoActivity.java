@@ -13,7 +13,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -26,6 +25,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.jiggie.android.App;
+import com.jiggie.android.BuildConfig;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.summary.AbstractPurchaseSumaryActivity;
 import com.jiggie.android.component.StringUtility;
@@ -47,7 +47,6 @@ import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import id.co.veritrans.android.api.BuildConfig;
 import id.co.veritrans.android.api.VTDirect;
 import id.co.veritrans.android.api.VTInterface.ITokenCallback;
 import id.co.veritrans.android.api.VTModel.VTCardDetails;
@@ -103,7 +102,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
 
     AlertDialog dialog3ds;
     ProgressDialog progressDialog;
-    public final static String PAYMENT_API = com.jiggie.android.BuildConfig.PAYMENT_API;
+    public final static String PAYMENT_API = BuildConfig.PAYMENT_API;
     //public final static String PAYMENT_API_SANDBOX = "https://api.sandbox.veritrans.co.id/v2/token";
     CCScreenModel.CardDetails cardDetails;
     @Bind(R.id.rel_disable)
@@ -113,6 +112,10 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     boolean isPaying = false;
     @Bind(R.id.lblSelectPayment)
     TextView lblSelectPayment;
+    @Bind(R.id.txt_credit_fill)
+    TextView txtCreditFill;
+    @Bind(R.id.txt_credit_title)
+    TextView txtCreditTitle;
 
 
     private SlideAdapter slideAdapter;
@@ -264,6 +267,11 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
             txtTotalTicketFill.setText(StringUtility.getRupiahFormat(totalPrice));
         }
 
+        if (productSummary.getCredit().getCredit_used() != 0) {
+            txtCreditTitle.setVisibility(View.VISIBLE);
+            txtCreditFill.setVisibility(View.VISIBLE);
+            txtCreditFill.setText("- " + StringUtility.getRupiahFormat(String.valueOf(productSummary.getCredit().getCredit_used())));
+        }
 
         txtTotalFill.setVisibility(View.GONE);
         //initTermView(dataProduct);
@@ -304,7 +312,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
         private Fragment[] fragments;
 
         public SlideAdapter(FragmentManager fm, ViewPager viewPager) {
-                super(fm);
+            super(fm);
             this.fragments = new Fragment[2];
             viewPager.setAdapter(this);
             viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -313,7 +321,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                     //action
                     if (position == 0) {
                         if (canPay()) {
-                            if(isPaying==false){
+                            if (isPaying == false) {
                                 slidePay();
                             }
                         } else {
@@ -423,7 +431,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
         VTConfig.VT_IsProduction = true;
         //VTConfig.CLIENT_KEY = "VT-client-gJRBbRZC0t_-JXUD";
         //VTConfig.CLIENT_KEY = "VT-client-tHEKcD0xJGsm6uwH";
-        VTConfig.CLIENT_KEY = com.jiggie.android.BuildConfig.CLIENT_KEY;
+        VTConfig.CLIENT_KEY = BuildConfig.CLIENT_KEY;
 
         VTDirect vtDirect = new VTDirect();
 

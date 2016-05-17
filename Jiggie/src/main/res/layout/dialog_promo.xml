@@ -5,7 +5,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="466dp"
+        android:layout_height="420dp"
         android:layout_marginTop="@dimen/padding_standard"
         android:layout_marginRight="@dimen/padding_standard"
         android:layout_marginLeft="@dimen/padding_standard"
@@ -64,6 +64,7 @@
             android:textAllCaps="true"
             android:text="@string/promo_use_now"
             android:elevation="1dp"
+            android:visibility="invisible"
             />
 
         <Button
@@ -79,6 +80,23 @@
             android:textSize="16sp"
             android:textAllCaps="true"
             android:text="@string/promo_remind_later"
+            android:elevation="1dp"
+            android:visibility="gone"
+            />
+
+        <Button
+            android:id="@+id/btn_ok"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_below="@id/btn_use_now"
+            android:layout_marginTop="@dimen/padding_standard_half"
+            android:layout_marginRight="@dimen/padding_standard"
+            android:layout_marginLeft="@dimen/padding_standard"
+            android:background="@drawable/selector_use_promo"
+            android:textColor="@drawable/selector_text_color"
+            android:textSize="16sp"
+            android:textAllCaps="true"
+            android:text="@string/ok"
             android:elevation="1dp"
             />
     </RelativeLayout>

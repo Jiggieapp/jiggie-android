@@ -57,8 +57,9 @@ public final class SummaryModel{
             public final String total_adminfee;
             public final String total_price;
             public final LastPayment last_payment;
+            public final Credit credit;
 
-            public Product_summary(String code, String order_status, String payment_status, long order_id, String fb_id, String event_id, String event_name, ArrayList<Product_list> product_list, Guest_detail guest_detail, String total_tax_amount, String total_tip_amount, String total_adminfee, String total_price, LastPayment last_payment){
+            public Product_summary(String code, String order_status, String payment_status, long order_id, String fb_id, String event_id, String event_name, ArrayList<Product_list> product_list, Guest_detail guest_detail, String total_tax_amount, String total_tip_amount, String total_adminfee, String total_price, LastPayment last_payment, Credit credit){
                 this.code = code;
                 this.order_status = order_status;
                 this.payment_status = payment_status;
@@ -73,6 +74,7 @@ public final class SummaryModel{
                 this.total_adminfee = total_adminfee;
                 this.total_price = total_price;
                 this.last_payment = last_payment;
+                this.credit = credit;
             }
 
             public String getCode() {
@@ -129,6 +131,10 @@ public final class SummaryModel{
 
             public LastPayment getLast_payment() {
                 return last_payment;
+            }
+
+            public Credit getCredit() {
+                return credit;
             }
 
             public static final class Product_list implements Parcelable {
@@ -438,6 +444,7 @@ public final class SummaryModel{
                 total_adminfee = in.readString();
                 total_price = in.readString();
                 last_payment = (LastPayment) in.readValue(LastPayment.class.getClassLoader());
+                credit = (Credit) in.readValue(Credit.class.getClassLoader());
             }
 
             public static class LastPayment implements Parcelable {
@@ -516,6 +523,45 @@ public final class SummaryModel{
                 }
             }
 
+            public static class Credit implements Parcelable {
+                int credit_used;
+
+                public Credit(int credit_used){
+                    this.credit_used = credit_used;
+                }
+
+                public int getCredit_used() {
+                    return credit_used;
+                }
+
+                protected Credit(Parcel in) {
+                    credit_used = in.readInt();
+                }
+
+                @Override
+                public int describeContents() {
+                    return 0;
+                }
+
+                @Override
+                public void writeToParcel(Parcel dest, int flags) {
+                    dest.writeInt(credit_used);
+                }
+
+                @SuppressWarnings("unused")
+                public static final Parcelable.Creator<Credit> CREATOR = new Parcelable.Creator<Credit>() {
+                    @Override
+                    public Credit createFromParcel(Parcel in) {
+                        return new Credit(in);
+                    }
+
+                    @Override
+                    public Credit[] newArray(int size) {
+                        return new Credit[size];
+                    }
+                };
+            }
+
             @Override
             public int describeContents() {
                 return 0;
@@ -542,6 +588,7 @@ public final class SummaryModel{
                 dest.writeString(total_adminfee);
                 dest.writeString(total_price);
                 dest.writeValue(last_payment);
+                dest.writeValue(credit);
             }
 
             @SuppressWarnings("unused")
