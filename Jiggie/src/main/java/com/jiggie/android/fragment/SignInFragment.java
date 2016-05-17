@@ -563,7 +563,7 @@ public class SignInFragment extends Fragment {
                         | Intent.FLAG_ACTIVITY_NEW_TASK));*//*
                 *//*.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)*//*
                 *//*intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)*//*);*/
-        Intent i = new Intent(getActivity(), MainActivity.class);
+        Intent i = new Intent(App.getInstance(), MainActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
 

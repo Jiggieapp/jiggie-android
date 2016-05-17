@@ -119,7 +119,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                     AlertDialog.Builder builder = new AlertDialog.Builder(InviteFriendsActivity.this);
                     builder.setTitle("Contacts access needed");
                     builder.setPositiveButton(android.R.string.ok, null);
-                    builder.setMessage("please confirm Contacts access");//TODO put real question
+                    builder.setMessage(getResources().getString(R.string.confirm_contact));//TODO put real question
                     builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
                         @TargetApi(Build.VERSION_CODES.M)
                         @Override
