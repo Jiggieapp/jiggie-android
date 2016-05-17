@@ -136,12 +136,18 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         this.recyclerView.setAdapter(getInstance().adapter);
     }
 
+    void registerEventBus()
+    {
+        EventBus.getDefault().register(ChatTabFragment.this);
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ButterKnife.bind(this, this.rootView);
 
-        EventBus.getDefault().register(this);
+        if(!EventBus.getDefault().isRegistered(this))
+            registerEventBus();
 
         setAdapter();
         this.refreshLayout.setOnRefreshListener(this);
@@ -217,13 +223,13 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     }
 
     public void onEvent(ChatListModel message){
-        adapter.clear();
+        getInstance().adapter.clear();
         for (int i = 0; i < message.getData().getChat_lists().size(); i++)
             getInstance().adapter.add(message.getData().getChat_lists().get(i));
         isLoading = false;
         if (getContext() != null) {
-            getEmptyView().setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
-            recyclerView.setVisibility(adapter.getItemCount() == 0 ? View.GONE : View.VISIBLE);
+            getEmptyView().setVisibility(getInstance().adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+            recyclerView.setVisibility(getInstance().adapter.getItemCount() == 0 ? View.GONE : View.VISIBLE);
             if(refreshLayout.isRefreshing())
                 refreshLayout.setRefreshing(false);
             getInstance().adapter.notifyDataSetChanged();
@@ -239,7 +245,6 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
             getInstance().adapter.remove(conversation);
             changed = true;
         }else if(from.equals(Utils.FROM_DELETE_CHAT)){
-            Utils.d(TAG, "delete");
             App.getInstance().trackMixPanelEvent("Delete Messages");
             conversation.setLast_message(null);
             conversation.setUnread(0);

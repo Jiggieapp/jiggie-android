@@ -67,7 +67,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:text="WAND7S"
+                        android:text=""
                         android:textSize="36sp"
                         android:textStyle="bold"
                         android:paddingLeft="@dimen/padding_standard"
@@ -87,7 +87,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginLeft="@dimen/padding_far"
                     android:layout_marginRight="@dimen/padding_far"
-                    android:text="@string/promo_code_desc"
+                    android:text=""
                     android:textSize="14sp"
                     android:textAlignment="center"
                     android:gravity="center"/>
