@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -72,6 +74,28 @@ public class PromotionsActivity extends ToolbarActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(PromotionsActivity.this, InviteFriendsActivity.class));
+            }
+        });
+
+        edtCode.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String a = s.toString();
+                String b = a.toUpperCase();
+                if(!a.equals(b)){
+                    s.replace(0, a.length(), b);
+                }
+
             }
         });
     }

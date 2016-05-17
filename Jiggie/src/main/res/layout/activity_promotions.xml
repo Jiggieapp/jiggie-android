@@ -61,9 +61,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_margin="@dimen/padding_standard_half"
             android:background="@null"
-            android:layout_toRightOf="@id/divider_edt"/>
+            android:layout_toRightOf="@id/divider_edt"
+            android:textSize="36sp"
+            android:textColor="@color/purple"
+            android:layout_margin="@dimen/padding_standard_half"
+            android:singleLine="true"/>
 
     </RelativeLayout>
 
