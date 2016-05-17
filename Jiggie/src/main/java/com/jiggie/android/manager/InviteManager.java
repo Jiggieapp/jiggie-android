@@ -9,6 +9,7 @@ import com.jiggie.android.model.ContactPhoneModel;
 import com.jiggie.android.model.PostContactModel;
 import com.jiggie.android.model.PostInviteAllModel;
 import com.jiggie.android.model.PostInviteModel;
+import com.jiggie.android.model.ReferEventMixpanelModel;
 import com.jiggie.android.model.ResponseContactModel;
 
 import java.io.IOException;
@@ -28,6 +29,8 @@ public class InviteManager extends BaseManager {
     public static ArrayList<ResponseContactModel.Data.Contact> dataRest = new ArrayList<ResponseContactModel.Data.Contact>();
     public static String msg_share = Utils.BLANK;
     public static String total_credit = Utils.BLANK;
+
+    public static ReferEventMixpanelModel referEventMixpanelModel;
 
     public static void initInviteService(){
         inviteInterface = getRetrofit().create(InviteInterface.class);

@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.google.gson.Gson;
+import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
@@ -33,7 +34,9 @@ import com.jiggie.android.component.adapter.InviteFriendsAdapter;
 import com.jiggie.android.manager.InviteManager;
 import com.jiggie.android.model.ContactPhoneModel;
 import com.jiggie.android.model.PostContactModel;
+import com.jiggie.android.model.PostInviteAllModel;
 import com.jiggie.android.model.PostInviteModel;
+import com.jiggie.android.model.ReferEventMixpanelModel;
 import com.jiggie.android.model.ResponseContactModel;
 
 import java.util.ArrayList;
@@ -81,9 +84,12 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
         relInviteAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*ArrayList<PostInviteAllModel.Contact> contacts = new ArrayList<PostInviteAllModel.Contact>();
-                for (int i = 0; i < dataRest.size(); i++) {
-                    contacts.add(new PostInviteAllModel.Contact(dataRest.get(i).getName(), dataRest.get(i).getPhone(), dataRest.get(i).getEmail(), dataRest.get(i).getUniq_id()));
+
+                App.getInstance().trackMixPanelReferral(Utils.REFERRAL_PHONE_ALL, new ReferEventMixpanelModel(InviteManager.referEventMixpanelModel.getPromo_code(), InviteManager.referEventMixpanelModel.getPromo_url()));
+
+                ArrayList<PostInviteAllModel.Contact> contacts = new ArrayList<PostInviteAllModel.Contact>();
+                for (int i = 0; i < InviteManager.dataRest.size(); i++) {
+                    contacts.add(new PostInviteAllModel.Contact(InviteManager.dataRest.get(i).getName(), InviteManager.dataRest.get(i).getPhone(), InviteManager.dataRest.get(i).getEmail(), InviteManager.dataRest.get(i).getUniq_id()));
                 }
                 PostInviteAllModel postInviteAllModel = new PostInviteAllModel(AccessToken.getCurrentAccessToken().getUserId(), contacts);
                 InviteManager.loaderInviteAll(postInviteAllModel, new InviteManager.OnResponseListener() {
@@ -96,7 +102,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                     public void onFailure(int responseCode, String message) {
 
                     }
-                });*/
+                });
                 for (int i = 0; i < InviteManager.arrBtnInvite.size(); i++) {
                     adapter.setInviteEnable(InviteManager.arrBtnInvite.get(i), false);
                 }
@@ -242,6 +248,10 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
 
     @Override
     public void onInviteSelected(ResponseContactModel.Data.Contact contact) {
+
+        App.getInstance().trackMixPanelReferral(Utils.REFERRAL_PHONE_SINGULAR, new ReferEventMixpanelModel(InviteManager.referEventMixpanelModel.getPromo_code(), InviteManager.referEventMixpanelModel.getPromo_url(),
+                contact.getName(),contact.getEmail(), contact.getPhone()));
+
         if (contact.getEmail().get(0).equals(Utils.BLANK)) {
             if (contact.getPhone().get(0).equals(Utils.BLANK)) {
                 //do nothing
