@@ -36,9 +36,6 @@ public class PromotionsActivity extends ToolbarActivity {
     @Bind(R.id.btn_invite)
     Button btnInvite;
 
-    /*CallbackManager callbackManager;
-    ShareDialog shareDialog;*/
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,10 +52,10 @@ public class PromotionsActivity extends ToolbarActivity {
                 RedeemCodeManager.loaderRedeemCode(new PostRedeemCodeModel(AccessToken.getCurrentAccessToken().getUserId(), edtCode.getText().toString()), new RedeemCodeManager.OnResponseListener() {
                     @Override
                     public void onSuccess(Object object) {
-                        try{
-                            SuccessRedeemCodeModel successRedeemCodeModel = (SuccessRedeemCodeModel)object;
+                        try {
+                            SuccessRedeemCodeModel successRedeemCodeModel = (SuccessRedeemCodeModel) object;
                             tesShowPromoDialog(successRedeemCodeModel.getData().getRedeem_code().getMsg());
-                        }catch (Exception e){
+                        } catch (Exception e) {
 
                         }
                     }
@@ -68,7 +65,6 @@ public class PromotionsActivity extends ToolbarActivity {
 
                     }
                 });
-                //tesShowPromoDialog();
             }
         });
 
@@ -78,45 +74,7 @@ public class PromotionsActivity extends ToolbarActivity {
                 startActivity(new Intent(PromotionsActivity.this, InviteFriendsActivity.class));
             }
         });
-
-        /*FacebookSdk.sdkInitialize(getApplicationContext());
-        callbackManager = CallbackManager.Factory.create();
-        shareDialog = new ShareDialog(this);
-        // this part is optional
-        shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
-            @Override
-            public void onSuccess(Sharer.Result result) {
-
-            }
-
-            @Override
-            public void onCancel() {
-
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-
-            }
-        });
-
-        if (ShareDialog.canShow(ShareLinkContent.class)) {
-            ShareLinkContent linkContent = new ShareLinkContent.Builder()
-                    .setContentTitle("Hello Facebook")
-                    .setContentDescription(
-                            "The 'Hello Facebook' sample  showcases simple Facebook integration")
-                    .setContentUrl(Uri.parse("http://developers.facebook.com/android"))
-                    .build();
-
-            shareDialog.show(linkContent);
-        }*/
     }
-
-    /*@Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
-    }*/
 
     private void tesShowPromoDialog(String text) {
         final Dialog dialog = new Dialog(PromotionsActivity.this);
