@@ -73,6 +73,7 @@ public abstract class BaseManager implements Interceptor {
                         .create(AccountInterface.class)
                         .getAccessToken(Utils.URL_GET_ACCESS_TOKEN, params[0]).execute();
                 AccountManager.setAccessTokenToPreferences(responsee.body().data.token);
+                //Utils.d(TAG, "token di invitecode " + responsee.body().data.token);
                 return responsee.body().data.token;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -103,6 +104,8 @@ public abstract class BaseManager implements Interceptor {
     }*/
 
     public static Retrofit getRetrofit() {
+        if(AccountManager.getAccessTokenFromPreferences().isEmpty())
+            retrofit = null;
         if (retrofit == null) {
             OkHttpClient okHttpClient = getHttpClient();
             retrofit = new Retrofit.Builder()

@@ -51,7 +51,11 @@ public class AccountManager extends BaseManager {
     }
 
     private static AccountInterface getInstance() {
+        Utils.d(TAG, "token " + AccountManager.getAccessTokenFromPreferences() + "n ");
+        if(AccountManager.getAccessTokenFromPreferences().isEmpty())
+            accountInterface = null;
         if (accountInterface == null) {
+            Utils.d(TAG, "token null fak" );
             accountInterface = getRetrofit().create(AccountInterface.class);
         }
         return accountInterface;

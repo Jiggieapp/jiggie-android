@@ -19,11 +19,14 @@ import com.facebook.FacebookSdk;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.google.gson.Gson;
+import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.manager.InviteManager;
 import com.jiggie.android.model.InviteCodeResultModel;
+import com.jiggie.android.model.ReferEventMixpanelModel;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -108,6 +111,7 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
         btnShareCp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                App.getInstance().trackMixPanelReferral(Utils.REFERRAL_PHONE, new ReferEventMixpanelModel(InviteManager.referEventMixpanelModel.getPromo_code(), InviteManager.referEventMixpanelModel.getPromo_url()));
                 startActivity(new Intent(InviteCodeActivity.this, InviteFriendsActivity.class));
             }
         });
@@ -122,6 +126,7 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
         }
         else
         {
+            App.getInstance().trackMixPanelReferral(Utils.REFERRAL_FACEBOOK, new ReferEventMixpanelModel(InviteManager.referEventMixpanelModel.getPromo_code(), InviteManager.referEventMixpanelModel.getPromo_url()));
             FacebookSdk.sdkInitialize(this);
             callbackManager = CallbackManager.Factory.create();
             shareDialog = new ShareDialog(this);
@@ -157,6 +162,9 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
     private void setInviteCodeResultModel(InviteCodeResultModel inviteCodeResultModel) {
         AccountManager.setInviteCodeToPreferences(new Gson().toJson(inviteCodeResultModel).toString());
         inviteCodeResultModel = getInviteCodeResultModel();
+        InviteManager.referEventMixpanelModel = new ReferEventMixpanelModel(
+                inviteCodeResultModel.getData().getInvite_code().getCode()
+                , inviteCodeResultModel.getData().getInvite_code().getInvite_url());
         initView();
     }
 
@@ -180,6 +188,7 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
         }
         else
         {
+            App.getInstance().trackMixPanelReferral(Utils.REFERRAL_MESSAGE, new ReferEventMixpanelModel(InviteManager.referEventMixpanelModel.getPromo_code(), InviteManager.referEventMixpanelModel.getPromo_url()));
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
             final String textInvite = inviteCodeResultModel.getData().getInvite_code().getMsg_share()
@@ -201,6 +210,7 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
     }
 
     private void setClipboard(String text) {
+        App.getInstance().trackMixPanelReferral(Utils.REFERRAL_COPY, new ReferEventMixpanelModel(InviteManager.referEventMixpanelModel.getPromo_code(), InviteManager.referEventMixpanelModel.getPromo_url()));
         if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
             android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
             clipboard.setText(text);
