@@ -213,45 +213,29 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
 
         if (contactToPost.size() > 0) {
             final PostContactModel postContactModel = new PostContactModel(AccessToken.getCurrentAccessToken().getUserId(), Utils.TYPE_ANDROID, contactToPost);
-
-
-
-            BaseManager.isTokenAlready(new BaseManager.OnExistListener() {
+            InviteManager.loaderPostContact(postContactModel, new InviteManager.OnResponseListener() {
                 @Override
-                public void onExist(boolean isExist) {
-                    if (isExist) {
-                        InviteManager.loaderPostContact(postContactModel, new InviteManager.OnResponseListener() {
-                            @Override
-                            public void onSuccess(Object object) {
-                                ResponseContactModel responseContactModel = (ResponseContactModel) object;
+                public void onSuccess(Object object) {
+                    ResponseContactModel responseContactModel = (ResponseContactModel) object;
 
-                                String sd = String.valueOf(new Gson().toJson(responseContactModel));
+                    String sd = String.valueOf(new Gson().toJson(responseContactModel));
 
-                                if (responseContactModel != null) {
-                                    setAdapters(responseContactModel.getData().getContact());
-                                } else {
-                                    isLoading = false;
-                                    swipeRefresh.setRefreshing(false);
-                                }
-
-                            }
-
-                            @Override
-                            public void onFailure(int responseCode, String message) {
-                                isLoading = false;
-                                swipeRefresh.setRefreshing(false);
-                            }
-                        });
+                    if (responseContactModel != null) {
+                        setAdapters(responseContactModel.getData().getContact());
                     } else {
-                        //do nothing
+                        isLoading = false;
+                        swipeRefresh.setRefreshing(false);
                     }
+
+                }
+
+                @Override
+                public void onFailure(int responseCode, String message) {
+                    isLoading = false;
+                    swipeRefresh.setRefreshing(false);
                 }
             });
-
-
         }
-
-
     }
 
     private void setAdapters(ArrayList<ResponseContactModel.Data.Contact> data) {

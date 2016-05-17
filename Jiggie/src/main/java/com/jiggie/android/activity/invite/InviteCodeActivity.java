@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
@@ -19,6 +20,7 @@ import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.google.gson.Gson;
 import com.jiggie.android.R;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.InviteCodeResultModel;
@@ -94,6 +96,7 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
         }
         else
         {
+            Utils.d(TAG, "masuk sini?");
             initView();
         }
         initView();
@@ -195,6 +198,9 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
     @OnClick(R.id.btn_share_copy)
     public void onBtnShareCopyClick() {
         setClipboard(inviteCodeResultModel.getData().getInvite_code().getInvite_url());
+        Toast.makeText(this
+                , getResources().getString(R.string.invite_code_has_been_copied)
+                , Toast.LENGTH_SHORT);
     }
 
     private void setClipboard(String text) {
