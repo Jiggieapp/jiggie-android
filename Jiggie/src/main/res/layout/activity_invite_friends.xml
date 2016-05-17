@@ -69,7 +69,8 @@
                     android:layout_marginBottom="@dimen/padding_standard_half"
                     android:textSize="10sp"
                     android:layout_centerHorizontal="true"
-                    android:layout_below="@id/txt_invite_all"/>
+                    android:layout_below="@id/txt_invite_all"
+                    android:visibility="invisible"/>
             </RelativeLayout>
         </RelativeLayout>
 
