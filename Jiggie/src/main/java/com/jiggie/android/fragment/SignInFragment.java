@@ -556,10 +556,16 @@ public class SignInFragment extends Fragment {
 
         AccountManager.saveSetting(currentSettingModel);
         App.getSharedPreferences().edit().putBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, true).apply();
+        /*getActivity().finish();
         App.getInstance().startActivity(new Intent(App.getInstance()
                 , MainActivity.class)
-                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        | Intent.FLAG_ACTIVITY_NEW_TASK));
+                *//*.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        | Intent.FLAG_ACTIVITY_NEW_TASK));*//*
+                *//*.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)*//*
+                *//*intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)*//*);*/
+        Intent i = new Intent(getActivity(), MainActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
 
     }
 

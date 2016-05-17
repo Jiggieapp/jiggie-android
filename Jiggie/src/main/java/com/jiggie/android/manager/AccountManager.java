@@ -461,9 +461,12 @@ public class AccountManager extends BaseManager {
     public static MemberSettingModel loadMemberSetting() {
         MemberSettingModel memberSettingModel = new Gson().fromJson(App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING,
                 Context.MODE_PRIVATE).getString(Utils.MEMBER_SETTING_MODEL, ""), MemberSettingModel.class);
-        if (memberSettingModel.getFb_id() == null)
-            memberSettingModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
-        return memberSettingModel;
+        if (memberSettingModel != null) {
+            if (memberSettingModel.getFb_id() == null)
+                memberSettingModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
+            return memberSettingModel;
+        }
+        return null;
     }
 
     /*public static MemberSettingResultModel loadMemberSetting()
@@ -753,6 +756,7 @@ public class AccountManager extends BaseManager {
         final String accessToken = App.getInstance()
                 .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
                 .getString(Utils.ACCESS_TOKEN, "");
+
         return accessToken;
     }
 
@@ -784,6 +788,7 @@ public class AccountManager extends BaseManager {
         App.getInstance()
                 .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
                 .edit().clear().apply();
+        App.getInstance().getSharedPreferences().edit().clear().apply();
     }
 
     public OnFinishGetAccessToken onFinishGetAccessToken;

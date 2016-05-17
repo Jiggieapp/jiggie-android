@@ -93,8 +93,10 @@ public class FriendsFragment extends Fragment implements TabFragment, HomeMain, 
         public PageAdapter(HomeMain homeMain, FragmentManager fm) {
             super(fm);
             this.fragments = new Fragment[]{
-                    ChatTabFragment.getInstance(),
-                    FriendListFragment.getInstance(FriendsFragment.this)
+                    ChatTabFragment.getInstance()
+                    //,atTabFragment.getInstance()
+                    //FriendListFragment.getInstance(FriendsFragment.this)
+                    , FriendListFragment.getInstance(FriendsFragment.this)
             };
 
             ((TabFragment) this.fragments[0]).setHomeMain(homeMain);

@@ -27,6 +27,8 @@ import com.jiggie.android.model.PostFriendModel;
 
 import java.util.ArrayList;
 
+import de.greenrobot.event.EventBus;
+
 /**
  * Created by Wandy on 5/10/2016.
  */
@@ -78,13 +80,26 @@ public class FriendListFragment extends ChatTabFragment implements FriendsFragme
     }
 
     @Override
+    void registerEventBus() {
+        //EventBus.getDefault().register(FriendListFragment.this);
+    }
+
+    @Override
     public void setAdapter(FriendListModel friendListModel) {
-        adapterrr.clear();
-        for(FriendListModel.Data.List_social_friends list_social_friends : friendListModel.getData().getList_social_friends())
+        if(adapterrr != null)
         {
-            adapterrr.add(list_social_friends);
+            adapterrr.clear();
         }
-        adapterrr.notifyDataSetChanged();
+
+        if(friendListModel != null)
+        {
+            for(FriendListModel.Data.List_social_friends list_social_friends : friendListModel.getData().getList_social_friends())
+            {
+                //list_social_friends.setIs_connect("false");
+                adapterrr.add(list_social_friends);
+            }
+            adapterrr.notifyDataSetChanged();
+        }
         if(refreshLayout.isRefreshing())
             refreshLayout.setRefreshing(false);
     }
@@ -132,6 +147,8 @@ public class FriendListFragment extends ChatTabFragment implements FriendsFragme
                     intent.putExtra(Conversation.FIELD_FACEBOOK_ID, conversation.getFb_id());
                     intent.putExtra(Conversation.FIELD_FROM_NAME, conversation.getFirst_name());
                     FriendListFragment.this.startActivityForResult(intent, 0);
+                    conversation.setIs_connect("true");
+                    //adapterrr.notifyDataSetChanged();
                 }
 
                 @Override
@@ -151,7 +168,7 @@ public class FriendListFragment extends ChatTabFragment implements FriendsFragme
         progressDialog = ProgressDialog.show(
                 FriendListFragment.this.getActivity()
                 , ""
-                , getActivity().getResources().getString(R.string.please_wait));
+                , getActivity().getResources().getString(R.string.wait));
         progressDialog.setCancelable(false);
         progressDialog.show();
     }

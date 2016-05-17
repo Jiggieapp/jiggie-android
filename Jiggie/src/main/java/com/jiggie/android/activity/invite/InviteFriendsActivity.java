@@ -360,7 +360,6 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                         isLoading = false;
                         swipeRefresh.setRefreshing(false);
                     }
-
                 }
 
                 @Override

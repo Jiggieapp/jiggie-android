@@ -648,7 +648,8 @@ public class HomeFragment extends Fragment
     }
 
     private void startFetchChat() {
-        if (AccountManager.loadMemberSetting().getChat() == 0)
+        if (AccountManager.loadMemberSetting() != null
+                && AccountManager.loadMemberSetting().getChat() == 0)
             ((FriendsFragment) this.adapter.getItem(CHAT_TAB)).startRepeatingTask();
     }
 
