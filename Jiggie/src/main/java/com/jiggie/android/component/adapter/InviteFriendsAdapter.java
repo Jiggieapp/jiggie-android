@@ -67,8 +67,21 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
                 email = dataRest.get(position).getEmail().get(i);
             }
 
-            holder.txtPhone.setText(phoneNumber);
-            holder.txtEmail.setText(email);
+            if(phoneNumber.equals(Utils.BLANK)){
+                holder.txtPhone.setVisibility(View.GONE);
+            }else{
+                holder.txtPhone.setText(phoneNumber);
+                holder.txtPhone.setVisibility(View.VISIBLE);
+            }
+
+            if(email.equals(Utils.BLANK)||email==null){
+                holder.txtEmail.setVisibility(View.GONE);
+            }else{
+                holder.txtEmail.setText(email);
+                holder.txtEmail.setVisibility(View.VISIBLE);
+            }
+
+
 
             String photo = Utils.BLANK;
             for(int i=0;i<data.size();i++){

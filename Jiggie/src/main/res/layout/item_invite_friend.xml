@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/padding_standard_half">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:layout_height="48dp"
@@ -17,10 +16,12 @@
     <LinearLayout
         android:id="@+id/lin_content"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="78dp"
         android:orientation="vertical"
         android:layout_toRightOf="@id/img_photo"
-        android:layout_marginLeft="@dimen/padding_standard_half">
+        android:layout_marginLeft="@dimen/padding_standard_half"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/lin_btn_in">
 
         <TextView
             android:id="@+id/txt_name"
@@ -49,6 +50,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/lin_btn_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"

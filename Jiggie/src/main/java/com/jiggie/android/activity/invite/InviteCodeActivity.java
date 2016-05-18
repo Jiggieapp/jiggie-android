@@ -111,7 +111,7 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
         btnShareCp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                App.getInstance().trackMixPanelReferral(Utils.REFERRAL_PHONE, new ReferEventMixpanelModel(InviteManager.referEventMixpanelModel.getPromo_code(), InviteManager.referEventMixpanelModel.getPromo_url()));
+                //App.getInstance().trackMixPanelReferral(Utils.REFERRAL_PHONE, new ReferEventMixpanelModel(InviteManager.referEventMixpanelModel.getPromo_code(), InviteManager.referEventMixpanelModel.getPromo_url()));
                 startActivity(new Intent(InviteCodeActivity.this, InviteFriendsActivity.class));
             }
         });
