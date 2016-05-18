@@ -19,6 +19,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +40,7 @@ import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.PostFreePaymentModel;
 import com.jiggie.android.model.PostPaymentModel;
 import com.jiggie.android.model.SummaryModel;
+import com.jiggie.android.view.DiscountView;
 import com.jiggie.android.view.TermsItemView;
 
 import java.text.ParseException;
@@ -116,11 +118,8 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     TextView txtCreditFill;
     @Bind(R.id.txt_credit_title)
     TextView txtCreditTitle;
-    @Bind(R.id.txt_discount_title)
-    TextView txtDiscountTitle;
-    @Bind(R.id.txt_discount_fill)
-    TextView txtDiscountFill;
-
+    @Bind(R.id.lin_discount)
+    LinearLayout linDiscount;
 
     private SlideAdapter slideAdapter;
     public final static String TAG = PurchaseInfoActivity.class.getSimpleName();
@@ -277,10 +276,14 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
             txtCreditFill.setText("- " + StringUtility.getRupiahFormat(String.valueOf(productSummary.getCredit().getCredit_used())));
         }
 
-        if (productSummary.getDiscount().getTotal_discount() != 0) {
-            txtDiscountTitle.setVisibility(View.VISIBLE);
-            txtDiscountFill.setVisibility(View.VISIBLE);
-            txtDiscountFill.setText("- " + StringUtility.getRupiahFormat(String.valueOf(productSummary.getDiscount().getTotal_discount())));
+        if (productSummary.getDiscount().getData().size() > 0) {
+            for (int i = 0; i < productSummary.getDiscount().getData().size(); i++) {
+                String title = productSummary.getDiscount().getData().get(i).getName();
+                String value = String.valueOf(productSummary.getDiscount().getData().get(i).getAmount_used());
+                DiscountView discountView = new DiscountView(PurchaseInfoActivity.this, title, value, false, getResources().getColor(R.color.textDarkGray), getResources().getColor(R.color.purple));
+                linDiscount.addView(discountView);
+            }
+            linDiscount.setVisibility(View.VISIBLE);
         }
 
         txtTotalFill.setVisibility(View.GONE);

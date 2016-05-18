@@ -2,6 +2,7 @@ package com.jiggie.android.activity.invite;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -67,6 +68,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
     @Bind(R.id.txt_invite_desc)
     TextView txtInviteDesc;
     final int PERMISSION_REQUEST_CONTACT = 18;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -187,8 +189,8 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
             onRefresh();
         }else{
             try {
-                txtInviteDesc.setText(InviteManager.total_credit);
-                txtInviteDesc.setVisibility(View.VISIBLE);
+                /*txtInviteDesc.setText(InviteManager.total_credit);
+                txtInviteDesc.setVisibility(View.VISIBLE);*/
             }catch (Exception e){
                 Log.d("total credit problem", e.toString());
             }
@@ -227,8 +229,19 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
     public void onRefresh() {
         isLoading = true;
         swipeRefresh.setRefreshing(true);
+        showProgressDialog();
         getContactPhoneInvite();
         //swipeRefresh.setEnabled(false);
+    }
+
+    private void showProgressDialog(){
+        progressDialog = App.showProgressDialog(InviteFriendsActivity.this);
+    }
+
+    private void dismissProgressDialog(){
+        if(progressDialog!=null&&progressDialog.isShowing()){
+            progressDialog.dismiss();
+        }
     }
 
     @Override
@@ -295,10 +308,10 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
 
                 try {
                     if (Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-                        /*Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id},
-                                ContactsContract.CommonDataKinds.Phone.SORT_KEY_PRIMARY+" ASC");*/
                         Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id},
-                                null);
+                                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME+" ASC");
+                        /*Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id},
+                                null);*/
                         while (pCur.moveToNext()) {
                             //String contactNumber = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                             //alContacts.add(contactNumber);
@@ -334,6 +347,8 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
             } while (cursor.moveToNext());
         }
 
+        String responses = new Gson().toJson(InviteManager.dataContact);
+
         for (int i = 0; i < InviteManager.dataContact.size(); i++) {
             ArrayList<String> arrEmail = new ArrayList<>();
             arrEmail.add(InviteManager.dataContact.get(i).getEmail());
@@ -356,8 +371,8 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                         //==============
                         try {
                             InviteManager.total_credit = "For " + String.valueOf(responseContactModel.getData().getTot_credit()) + " Credits";
-                            txtInviteDesc.setText(InviteManager.total_credit);
-                            txtInviteDesc.setVisibility(View.VISIBLE);
+                            /*txtInviteDesc.setText(InviteManager.total_credit);
+                            txtInviteDesc.setVisibility(View.VISIBLE);*/
                         }catch (Exception e){
                             Log.d("total credit problem", e.toString());
                         }
@@ -387,5 +402,6 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
         isLoading = false;
         swipeRefresh.setRefreshing(false);
         swipeRefresh.setEnabled(false);
+        dismissProgressDialog();
     }
 }
