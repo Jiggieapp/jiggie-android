@@ -298,10 +298,10 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
             txtCredittabFill.setText("- " + StringUtility.getRupiahFormat(String.valueOf(productSummary.getCredit().getCredit_used())));
         }
 
-        /*if (productSummary.getDiscount().getTotal_discount() != 0) {
+        if (productSummary.getDiscount().getTotal_discount() != 0) {
             relDiscounttab.setVisibility(View.VISIBLE);
             txtDiscountFill.setText("- " + StringUtility.getRupiahFormat(String.valueOf(productSummary.getDiscount().getTotal_discount())));
-        }*/
+        }
 
         //initTermView(dataProduct);
         checkEnability(txtPayment.getText().toString());

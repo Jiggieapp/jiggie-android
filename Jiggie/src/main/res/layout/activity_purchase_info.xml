@@ -259,7 +259,7 @@
                             android:text="@string/pci_f5"
                             android:textColor="@color/textDarkGray"
                             android:textSize="@dimen/font_body_size"
-                            android:visibility="visible"/>
+                            android:visibility="gone"/>
 
                         <TextView
                             android:id="@+id/txt_discount_fill"
@@ -273,7 +273,7 @@
                             android:text="@string/pci_f5_fill"
                             android:textColor="@color/purple"
                             android:textSize="@dimen/font_body_size"
-                            android:visibility="visible"/>
+                            android:visibility="gone"/>
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -393,7 +393,7 @@
                                 android:id="@+id/rel_discounttab"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:visibility="visible">
+                                android:visibility="gone">
                                 <TextView
                                     android:id="@+id/txt_discounttab_title"
                                     android:layout_width="wrap_content"
