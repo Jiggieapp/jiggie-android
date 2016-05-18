@@ -137,6 +137,10 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     TextView txtCredittabFill;
     @Bind(R.id.rel_credittab)
     RelativeLayout relCredittab;
+    @Bind(R.id.rel_discounttab)
+    RelativeLayout relDiscounttab;
+    @Bind(R.id.txt_discount_fill)
+    TextView txtDiscountFill;
     private SlideAdapter slideAdapter;
     int payDeposit = 0, maxDeposit = 0, latestDeposit = 0;
     private final int INCREMENT_VALUE = 500000;
@@ -293,6 +297,11 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
             relCredittab.setVisibility(View.VISIBLE);
             txtCredittabFill.setText("- " + StringUtility.getRupiahFormat(String.valueOf(productSummary.getCredit().getCredit_used())));
         }
+
+        /*if (productSummary.getDiscount().getTotal_discount() != 0) {
+            relDiscounttab.setVisibility(View.VISIBLE);
+            txtDiscountFill.setText("- " + StringUtility.getRupiahFormat(String.valueOf(productSummary.getDiscount().getTotal_discount())));
+        }*/
 
         //initTermView(dataProduct);
         checkEnability(txtPayment.getText().toString());

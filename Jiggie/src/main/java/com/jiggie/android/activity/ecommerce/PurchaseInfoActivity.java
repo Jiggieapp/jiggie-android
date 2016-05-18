@@ -116,6 +116,10 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     TextView txtCreditFill;
     @Bind(R.id.txt_credit_title)
     TextView txtCreditTitle;
+    @Bind(R.id.txt_discount_title)
+    TextView txtDiscountTitle;
+    @Bind(R.id.txt_discount_fill)
+    TextView txtDiscountFill;
 
 
     private SlideAdapter slideAdapter;
@@ -272,6 +276,12 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
             txtCreditFill.setVisibility(View.VISIBLE);
             txtCreditFill.setText("- " + StringUtility.getRupiahFormat(String.valueOf(productSummary.getCredit().getCredit_used())));
         }
+
+        /*if (productSummary.getDiscount().getTotal_discount() != 0) {
+            txtDiscountTitle.setVisibility(View.VISIBLE);
+            txtDiscountFill.setVisibility(View.VISIBLE);
+            txtDiscountFill.setText("- " + StringUtility.getRupiahFormat(String.valueOf(productSummary.getDiscount().getTotal_discount())));
+        }*/
 
         txtTotalFill.setVisibility(View.GONE);
         //initTermView(dataProduct);
