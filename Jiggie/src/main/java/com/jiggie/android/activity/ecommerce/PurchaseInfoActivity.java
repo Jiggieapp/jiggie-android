@@ -277,11 +277,11 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
             txtCreditFill.setText("- " + StringUtility.getRupiahFormat(String.valueOf(productSummary.getCredit().getCredit_used())));
         }
 
-        /*if (productSummary.getDiscount().getTotal_discount() != 0) {
+        if (productSummary.getDiscount().getTotal_discount() != 0) {
             txtDiscountTitle.setVisibility(View.VISIBLE);
             txtDiscountFill.setVisibility(View.VISIBLE);
             txtDiscountFill.setText("- " + StringUtility.getRupiahFormat(String.valueOf(productSummary.getDiscount().getTotal_discount())));
-        }*/
+        }
 
         txtTotalFill.setVisibility(View.GONE);
         //initTermView(dataProduct);

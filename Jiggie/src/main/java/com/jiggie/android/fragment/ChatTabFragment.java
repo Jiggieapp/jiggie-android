@@ -120,10 +120,15 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         //startRepeatingTask();
     }
 
+    protected int getLayout()
+    {
+        return R.layout.fragment_recycler;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = this.rootView = inflater.inflate(R.layout.fragment_recycler, container, false);
+        View view = this.rootView = inflater.inflate(getLayout(), container, false);
         ButterKnife.bind(this, view);
 
         return view;

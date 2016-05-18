@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -43,6 +44,8 @@ import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.event.EventDetailActivity;
+import com.jiggie.android.activity.invite.InviteFriendsActivity;
+import com.jiggie.android.activity.promo.PromotionsActivity;
 import com.jiggie.android.activity.setup.CityActivity;
 import com.jiggie.android.component.FlowLayout;
 import com.jiggie.android.component.HomeMain;
@@ -65,6 +68,7 @@ import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 import it.sephiroth.android.library.tooltip.Tooltip;
 
@@ -83,6 +87,8 @@ public class HomeFragment extends Fragment
     TabLayout tab;
     @Bind(R.id.fab)
     FloatingActionButton fab;
+    @Bind(R.id.fab_invite)
+    FloatingActionButton fabInvite;
     @Bind(R.id.flowLayout)
     FlowLayout flowLayout;
     @Bind(R.id.txt_place)
@@ -96,7 +102,7 @@ public class HomeFragment extends Fragment
     private PageAdapter adapter;
     private View rootView;
     public final String TAG = HomeFragment.class.getSimpleName();
-    Animation makeInAnimation, makeOutAnimation;
+    Animation makeInAnimation, makeOutAnimation, makeInAnimationInvite, makeOutAnimationInvite;
 
     final int EVENT_TAB = 0;
     final int SOCIAL_TAB = 1;
@@ -167,19 +173,46 @@ public class HomeFragment extends Fragment
         this.viewPager.getViewTreeObserver().addOnGlobalLayoutListener(this);
 
         //Load animation
-        /*makeOutAnimation = AnimationUtils.loadAnimation(this.getActivity(),
+        makeOutAnimation = makeOutAnimationInvite = AnimationUtils.loadAnimation(this.getActivity(),
                 R.anim.slide_down);
 
-        makeInAnimation = AnimationUtils.loadAnimation(this.getActivity(),
-                R.anim.slide_up);*/
+        makeInAnimation = makeInAnimationInvite = AnimationUtils.loadAnimation(this.getActivity(),
+                R.anim.slide_up);
+
 
 
         /*makeInAnimation = AnimationUtils.makeInAnimation(this.getActivity(), false);
-        makeOutAnimation = AnimationUtils.makeOutAnimation(this.getActivity(), true);
+        makeOutAnimation = AnimationUtils.makeOutAnimation(this.getActivity(), true);*/
+
+        makeOutAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+                //if(fabInvite.getVisibility() == View.VISIBLE)
+                //{
+                    //fabInvite.setVisibility(View.GONE);
+                    fabInvite.startAnimation(makeOutAnimationInvite);
+                //}
+                fab.setVisibility(View.VISIBLE);
+            }
+        });
 
         makeInAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationEnd(Animation animation) {
+                fab.setVisibility(View.GONE);
+                /*if(fabInvite.getVisibility() == View.GONE)
+                {*/
+                    fabInvite.startAnimation(makeInAnimationInvite);
+                /*}*/
+
             }
 
             @Override
@@ -188,13 +221,29 @@ public class HomeFragment extends Fragment
 
             @Override
             public void onAnimationStart(Animation animation) {
-                fab.setVisibility(View.VISIBLE);
+
             }
         });
-        makeOutAnimation.setAnimationListener(new Animation.AnimationListener() {
+
+        makeInAnimationInvite.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationEnd(Animation animation) {
-                fab.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+                fabInvite.setVisibility(View.VISIBLE);
+            }
+        });
+
+        makeOutAnimationInvite.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                fabInvite.setVisibility(View.GONE);
             }
 
             @Override
@@ -204,7 +253,7 @@ public class HomeFragment extends Fragment
             @Override
             public void onAnimationStart(Animation animation) {
             }
-        });*/
+        });
 
         if (isNeedToBeRedirected()) {
             Intent i = new Intent(super.getActivity(), EventDetailActivity.class);
@@ -261,6 +310,14 @@ public class HomeFragment extends Fragment
                 }
 
 
+            }
+        });
+
+        fabInvite.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v) {
+                getActivity().startActivity(new Intent(getActivity(), InviteFriendsActivity.class));
             }
         });
 
@@ -611,12 +668,35 @@ public class HomeFragment extends Fragment
 
         if (position == CHAT_TAB) {
             showToolbar();
+            //fab.startAnimation(makeOutAnimation);
             fab.setVisibility(View.GONE);
+            //fabInvite.startAnimation(makeInAnimation);
+            fabInvite.setVisibility(View.VISIBLE);
+
+
             bottomSheet.setVisibility(View.GONE);
             SocialManager.isInSocial = false;
         } else if (position == SOCIAL_TAB) {
             showToolbar();
+
+            /*if(fab.getVisibility() == View.VISIBLE)
+            {
+                fab.startAnimation(makeOutAnimation);
+                fab.setVisibility(View.GONE);
+
+            }
+
+
+            if(fabInvite.getVisibility() == View.VISIBLE)
+            {
+                fabInvite.startAnimation(makeOutAnimation);
+                fabInvite.setVisibility(View.GONE);
+            }*/
+
             fab.setVisibility(View.GONE);
+            fabInvite.setVisibility(View.GONE);
+
+
             TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_SOCIAL_TAB, false);
             SocialManager.isInSocial = true;
             SocialTabFragment sc = (SocialTabFragment)this.adapter.fragments[position];
@@ -626,7 +706,11 @@ public class HomeFragment extends Fragment
             //Log.d("", "");
             bottomSheet.setVisibility(View.GONE);
         } else {
+            //fab.startAnimation(makeInAnimation);
             fab.setVisibility(View.VISIBLE);
+            //fabInvite.startAnimation( makeOutAnimation);
+            fabInvite.setVisibility(View.GONE);
+
             SocialManager.isInSocial = false;
             bottomSheet.setVisibility(View.VISIBLE);
         }
@@ -810,4 +894,10 @@ public class HomeFragment extends Fragment
             }
         }
     }
+
+    /*@OnClick(R.id.fab_invite)
+    void onFabInviteClick()
+    {
+        getActivity().startActivity(new Intent(getActivity(), InviteFriendsActivity.class));
+    }*/
 }

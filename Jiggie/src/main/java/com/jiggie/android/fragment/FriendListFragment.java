@@ -85,6 +85,11 @@ public class FriendListFragment extends ChatTabFragment implements FriendsFragme
     }
 
     @Override
+    protected int getLayout() {
+        return R.layout.fragment_friend_list;
+    }
+
+    @Override
     public void setAdapter(FriendListModel friendListModel) {
         if(adapterrr != null)
         {
