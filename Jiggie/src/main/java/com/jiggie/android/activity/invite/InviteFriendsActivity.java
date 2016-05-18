@@ -349,7 +349,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                 public void onSuccess(Object object) {
                     ResponseContactModel responseContactModel = (ResponseContactModel) object;
 
-                    String sd = String.valueOf(new Gson().toJson(responseContactModel));
+                    //String sd = String.valueOf(new Gson().toJson(responseContactModel));
 
                     if (responseContactModel != null) {
 

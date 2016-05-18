@@ -66,17 +66,23 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
     CallbackManager callbackManager;
     ShareDialog shareDialog;
 
-    private void showProgressDialog()
-    {
+    private ReferEventMixpanelModel reverEventMixpanelModel;
+
+    private ReferEventMixpanelModel getReferEventMixPanelModel(final String code, final String url) {
+        if (reverEventMixpanelModel == null) {
+            return new ReferEventMixpanelModel(code, url);
+        }
+        return reverEventMixpanelModel;
+    }
+
+    private void showProgressDialog() {
         progressDialog = ProgressDialog.show(this, "", getResources().getString(R.string.wait));
         progressDialog.setCancelable(false);
         progressDialog.show();
     }
 
-    private void dismissProgressDialog()
-    {
-        if(progressDialog != null && progressDialog.isShowing())
-        {
+    private void dismissProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
     }
@@ -92,20 +98,16 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
         getSupportActionBar().setTitle("Invite Friends");
 
         inviteCodePresenterImplementation = new InviteCodePresenterImplementation(this);
-        if(getInviteCodeResultModel() == null)
-        {
+        if (getInviteCodeResultModel() == null) {
             showProgressDialog();
             inviteCodePresenterImplementation.getInviteCode();
-        }
-        else
-        {
+        } else {
             initView();
         }
         //initView();
     }
 
-    private void initView()
-    {
+    private void initView() {
         txtCode.setText(inviteCodeResultModel.getData().getInvite_code().getCode());
         txtDesc.setText(inviteCodeResultModel.getData().getInvite_code().getMsg_invite());
         btnShareCp.setOnClickListener(new View.OnClickListener() {
@@ -120,13 +122,13 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
 
     @OnClick(R.id.btn_share_fb)
     public void shareToFb() {
-        if(getInviteCodeResultModel() == null)
-        {
+        if (getInviteCodeResultModel() == null) {
             //inviteCodePresenterImplementation.getInviteCode();
-        }
-        else
-        {
-            App.getInstance().trackMixPanelReferral(Utils.REFERRAL_FACEBOOK, new ReferEventMixpanelModel(InviteManager.referEventMixpanelModel.getPromo_code(), InviteManager.referEventMixpanelModel.getPromo_url()));
+        } else {
+            App.getInstance().trackMixPanelReferral(Utils.REFERRAL_FACEBOOK
+                    , getReferEventMixPanelModel
+                            (/*InviteManager.referEventMixpanelModel.getPromo_code()*/ getInviteCodeResultModel().getData().getInvite_code().getCode()
+                                    , /*InviteManager.referEventMixpanelModel.getPromo_url()*/ getInviteCodeResultModel().getData().getInvite_code().getInvite_url()));
             FacebookSdk.sdkInitialize(this);
             callbackManager = CallbackManager.Factory.create();
             shareDialog = new ShareDialog(this);
@@ -148,11 +150,10 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
 
     private InviteCodeResultModel getInviteCodeResultModel() {
         final String inv = AccountManager.getInviteCodeFromPreference();
-        if(inv.isEmpty())
+        if (inv.isEmpty())
             return null;
-        else
-        {
-             inviteCodeResultModel
+        else {
+            inviteCodeResultModel
                     = new Gson().fromJson(inv, InviteCodeResultModel.class);
             return inviteCodeResultModel;
         }
@@ -162,7 +163,7 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
     private void setInviteCodeResultModel(InviteCodeResultModel inviteCodeResultModel) {
         AccountManager.setInviteCodeToPreferences(new Gson().toJson(inviteCodeResultModel).toString());
         inviteCodeResultModel = getInviteCodeResultModel();
-        InviteManager.referEventMixpanelModel = new ReferEventMixpanelModel(
+        InviteManager.referEventMixpanelModel = getReferEventMixPanelModel(
                 inviteCodeResultModel.getData().getInvite_code().getCode()
                 , inviteCodeResultModel.getData().getInvite_code().getInvite_url());
         initView();
@@ -180,19 +181,18 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
     }
 
     @OnClick(R.id.btn_share_msg)
-    public void onBtnShareMessageClick()
-    {
-        if(getInviteCodeResultModel() == null)
-        {
+    public void onBtnShareMessageClick() {
+        if (getInviteCodeResultModel() == null) {
             //inviteCodePresenterImplementation.getInviteCode();
-        }
-        else
-        {
-            App.getInstance().trackMixPanelReferral(Utils.REFERRAL_MESSAGE, new ReferEventMixpanelModel(InviteManager.referEventMixpanelModel.getPromo_code(), InviteManager.referEventMixpanelModel.getPromo_url()));
+        } else {
+            App.getInstance().trackMixPanelReferral(Utils.REFERRAL_MESSAGE
+                    , getReferEventMixPanelModel
+                            (getInviteCodeResultModel().getData().getInvite_code().getCode()
+                                    , getInviteCodeResultModel().getData().getInvite_code().getInvite_url()));
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
             final String textInvite = inviteCodeResultModel.getData().getInvite_code().getMsg_share()
-                + "\n" + inviteCodeResultModel.getData().getInvite_code().getMsg_invite();
+                    + "\n" + inviteCodeResultModel.getData().getInvite_code().getMsg_invite();
             sendIntent.putExtra(Intent.EXTRA_TEXT, textInvite);
             sendIntent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.lets_go_out));
             sendIntent.setType("text/plain");
@@ -206,12 +206,16 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
         setClipboard(inviteCodeResultModel.getData().getInvite_code().getInvite_url());
         Toast.makeText(this
                 , getResources().getString(R.string.invite_code_has_been_copied)
-                , Toast.LENGTH_SHORT);
+                , Toast.LENGTH_SHORT).show();
     }
 
     private void setClipboard(String text) {
-        App.getInstance().trackMixPanelReferral(Utils.REFERRAL_COPY, new ReferEventMixpanelModel(InviteManager.referEventMixpanelModel.getPromo_code(), InviteManager.referEventMixpanelModel.getPromo_url()));
-        if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
+        App.getInstance().trackMixPanelReferral(Utils.REFERRAL_COPY
+                , getReferEventMixPanelModel
+                        (getInviteCodeResultModel().getData().getInvite_code().getCode()
+                                , getInviteCodeResultModel().getData().getInvite_code().getInvite_url()));
+
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
             android.text.ClipboardManager clipboard = (android.text.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
             clipboard.setText(text);
         } else {
