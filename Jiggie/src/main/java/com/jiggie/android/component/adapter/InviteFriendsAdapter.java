@@ -100,6 +100,7 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
                         });
                     }else{
                         photo = Utils.BLANK;
+                        Glide.clear(holder.imgPhoto);
                     }
                     break;
                 }

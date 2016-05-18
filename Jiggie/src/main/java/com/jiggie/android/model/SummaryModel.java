@@ -58,8 +58,9 @@ public final class SummaryModel{
             public final String total_price;
             public final LastPayment last_payment;
             public final Credit credit;
+            public final Discount discount;
 
-            public Product_summary(String code, String order_status, String payment_status, long order_id, String fb_id, String event_id, String event_name, ArrayList<Product_list> product_list, Guest_detail guest_detail, String total_tax_amount, String total_tip_amount, String total_adminfee, String total_price, LastPayment last_payment, Credit credit){
+            public Product_summary(String code, String order_status, String payment_status, long order_id, String fb_id, String event_id, String event_name, ArrayList<Product_list> product_list, Guest_detail guest_detail, String total_tax_amount, String total_tip_amount, String total_adminfee, String total_price, LastPayment last_payment, Credit credit, Discount discount){
                 this.code = code;
                 this.order_status = order_status;
                 this.payment_status = payment_status;
@@ -75,6 +76,7 @@ public final class SummaryModel{
                 this.total_price = total_price;
                 this.last_payment = last_payment;
                 this.credit = credit;
+                this.discount = discount;
             }
 
             public String getCode() {
@@ -135,6 +137,10 @@ public final class SummaryModel{
 
             public Credit getCredit() {
                 return credit;
+            }
+
+            public Discount getDiscount() {
+                return discount;
             }
 
             public static final class Product_list implements Parcelable {
@@ -445,6 +451,7 @@ public final class SummaryModel{
                 total_price = in.readString();
                 last_payment = (LastPayment) in.readValue(LastPayment.class.getClassLoader());
                 credit = (Credit) in.readValue(Credit.class.getClassLoader());
+                discount = (Discount) in.readValue(Discount.class.getClassLoader());
             }
 
             public static class LastPayment implements Parcelable {
@@ -562,6 +569,142 @@ public final class SummaryModel{
                 };
             }
 
+            public static final class Discount implements Parcelable {
+                public final ArrayList<Data_> data;
+                public final int total_discount;
+                public final int tot_price_before_discount;
+                public final int tot_price_after_discount;
+
+                public Discount(ArrayList<Data_> data, int total_discount, int tot_price_before_discount, int tot_price_after_discount){
+                    this.data = data;
+                    this.total_discount = total_discount;
+                    this.tot_price_before_discount = tot_price_before_discount;
+                    this.tot_price_after_discount = tot_price_after_discount;
+                }
+
+                public ArrayList<Data_> getData() {
+                    return data;
+                }
+
+                public int getTotal_discount() {
+                    return total_discount;
+                }
+
+                public int getTot_price_before_discount() {
+                    return tot_price_before_discount;
+                }
+
+                public int getTot_price_after_discount() {
+                    return tot_price_after_discount;
+                }
+
+                public static final class Data_ implements Parcelable {
+                    public final String name;
+                    public final int amount_used;
+                    public final String start_date;
+                    public final String end_date;
+
+                    public Data_(String name, int amount_used, String start_date, String end_date){
+                        this.name = name;
+                        this.amount_used = amount_used;
+                        this.start_date = start_date;
+                        this.end_date = end_date;
+                    }
+
+                    public String getName() {
+                        return name;
+                    }
+
+                    public int getAmount_used() {
+                        return amount_used;
+                    }
+
+                    public String getStart_date() {
+                        return start_date;
+                    }
+
+                    public String getEnd_date() {
+                        return end_date;
+                    }
+
+                    protected Data_(Parcel in) {
+                        name = in.readString();
+                        amount_used = in.readInt();
+                        start_date = in.readString();
+                        end_date = in.readString();
+                    }
+
+                    @Override
+                    public int describeContents() {
+                        return 0;
+                    }
+
+                    @Override
+                    public void writeToParcel(Parcel dest, int flags) {
+                        dest.writeString(name);
+                        dest.writeInt(amount_used);
+                        dest.writeString(start_date);
+                        dest.writeString(end_date);
+                    }
+
+                    @SuppressWarnings("unused")
+                    public static final Parcelable.Creator<Data_> CREATOR = new Parcelable.Creator<Data_>() {
+                        @Override
+                        public Data_ createFromParcel(Parcel in) {
+                            return new Data_(in);
+                        }
+
+                        @Override
+                        public Data_[] newArray(int size) {
+                            return new Data_[size];
+                        }
+                    };
+                }
+
+                protected Discount(Parcel in) {
+                    if (in.readByte() == 0x01) {
+                        data = new ArrayList<Data_>();
+                        in.readList(data, Data_.class.getClassLoader());
+                    } else {
+                        data = null;
+                    }
+                    total_discount = in.readInt();
+                    tot_price_before_discount = in.readInt();
+                    tot_price_after_discount = in.readInt();
+                }
+
+                @Override
+                public int describeContents() {
+                    return 0;
+                }
+
+                @Override
+                public void writeToParcel(Parcel dest, int flags) {
+                    if (data == null) {
+                        dest.writeByte((byte) (0x00));
+                    } else {
+                        dest.writeByte((byte) (0x01));
+                        dest.writeList(data);
+                    }
+                    dest.writeInt(total_discount);
+                    dest.writeInt(tot_price_before_discount);
+                    dest.writeInt(tot_price_after_discount);
+                }
+
+                @SuppressWarnings("unused")
+                public static final Parcelable.Creator<Discount> CREATOR = new Parcelable.Creator<Discount>() {
+                    @Override
+                    public Discount createFromParcel(Parcel in) {
+                        return new Discount(in);
+                    }
+
+                    @Override
+                    public Discount[] newArray(int size) {
+                        return new Discount[size];
+                    }
+                };
+            }
+
             @Override
             public int describeContents() {
                 return 0;
@@ -589,6 +732,7 @@ public final class SummaryModel{
                 dest.writeString(total_price);
                 dest.writeValue(last_payment);
                 dest.writeValue(credit);
+                dest.writeValue(discount);
             }
 
             @SuppressWarnings("unused")

@@ -229,7 +229,6 @@
                             android:layout_below="@id/txt_tax_title"
                             android:layout_marginLeft="@dimen/padding_standard"
                             android:layout_marginTop="@dimen/padding_standard_half"
-                            android:paddingBottom="@dimen/padding_standard_half"
                             android:text="@string/pci_f4"
                             android:textColor="@color/textDarkGray"
                             android:textSize="@dimen/font_body_size"
@@ -243,11 +242,38 @@
                             android:layout_below="@id/txt_tax_fill"
                             android:layout_marginRight="@dimen/padding_standard"
                             android:layout_marginTop="@dimen/padding_standard_half"
-                            android:paddingBottom="@dimen/padding_standard_half"
                             android:text="@string/pci_f4_fill"
                             android:textColor="@color/purple"
                             android:textSize="@dimen/font_body_size"
                             android:visibility="gone"/>
+
+                        <TextView
+                            android:id="@+id/txt_discount_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_below="@id/txt_credit_title"
+                            android:layout_marginLeft="@dimen/padding_standard"
+                            android:layout_marginTop="@dimen/padding_standard_half"
+                            android:paddingBottom="@dimen/padding_standard_half"
+                            android:text="@string/pci_f5"
+                            android:textColor="@color/textDarkGray"
+                            android:textSize="@dimen/font_body_size"
+                            android:visibility="visible"/>
+
+                        <TextView
+                            android:id="@+id/txt_discount_fill"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_below="@id/txt_credit_fill"
+                            android:layout_marginRight="@dimen/padding_standard"
+                            android:layout_marginTop="@dimen/padding_standard_half"
+                            android:paddingBottom="@dimen/padding_standard_half"
+                            android:text="@string/pci_f5_fill"
+                            android:textColor="@color/purple"
+                            android:textSize="@dimen/font_body_size"
+                            android:visibility="visible"/>
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -348,7 +374,6 @@
                                     android:layout_alignParentLeft="true"
                                     android:layout_marginLeft="@dimen/padding_standard"
                                     android:layout_marginTop="@dimen/padding_standard_half"
-                                    android:paddingBottom="@dimen/padding_standard_half"
                                     android:text="@string/pci_f4"
                                     android:textColor="@color/textDarkGray"
                                     android:textSize="@dimen/font_body_size"/>
@@ -360,8 +385,36 @@
                                     android:layout_alignParentRight="true"
                                     android:layout_marginRight="@dimen/padding_standard"
                                     android:layout_marginTop="@dimen/padding_standard_half"
-                                    android:paddingBottom="@dimen/padding_standard_half"
                                     android:text="@string/pci_f4_fill"
+                                    android:textColor="@color/purple"
+                                    android:textSize="@dimen/font_body_size"/>
+                            </RelativeLayout>
+                            <RelativeLayout
+                                android:id="@+id/rel_discounttab"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:visibility="visible">
+                                <TextView
+                                    android:id="@+id/txt_discounttab_title"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentLeft="true"
+                                    android:layout_marginLeft="@dimen/padding_standard"
+                                    android:layout_marginTop="@dimen/padding_standard_half"
+                                    android:paddingBottom="@dimen/padding_standard_half"
+                                    android:text="@string/pci_f5"
+                                    android:textColor="@color/textDarkGray"
+                                    android:textSize="@dimen/font_body_size"/>
+
+                                <TextView
+                                    android:id="@+id/txt_discounttab_fill"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentRight="true"
+                                    android:layout_marginRight="@dimen/padding_standard"
+                                    android:layout_marginTop="@dimen/padding_standard_half"
+                                    android:paddingBottom="@dimen/padding_standard_half"
+                                    android:text="@string/pci_f5_fill"
                                     android:textColor="@color/purple"
                                     android:textSize="@dimen/font_body_size"/>
                             </RelativeLayout>
