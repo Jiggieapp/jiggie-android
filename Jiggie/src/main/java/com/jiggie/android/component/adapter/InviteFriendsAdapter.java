@@ -58,13 +58,24 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
             String phoneNumber = Utils.BLANK;
             for(int i=0;i<dataRest.get(position).getPhone().size();i++){
                 //phoneNumber = phoneNumber.concat(", "+dataRest.get(position).getPhone().get(i));
-                phoneNumber = dataRest.get(position).getPhone().get(i);
+                if(i==0){
+                    phoneNumber = dataRest.get(position).getPhone().get(i);
+                }else{
+                    phoneNumber = phoneNumber.concat(", "+dataRest.get(position).getPhone().get(i));
+                }
+
             }
 
             String email = Utils.BLANK;
             for(int i=0;i<dataRest.get(position).getEmail().size();i++){
                 //email = email.concat(", "+dataRest.get(position).getEmail().get(i));
-                email = dataRest.get(position).getEmail().get(i);
+
+                if(i==0){
+                    email = dataRest.get(position).getEmail().get(i);
+                }else{
+                    email = email.concat(", "+dataRest.get(position).getEmail().get(i));
+                }
+
             }
 
             if(phoneNumber.equals(Utils.BLANK)){

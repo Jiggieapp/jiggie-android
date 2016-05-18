@@ -263,13 +263,21 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
     public void onInviteSelected(ResponseContactModel.Data.Contact contact) {
 
         App.getInstance().trackMixPanelReferral(Utils.REFERRAL_PHONE_SINGULAR, new ReferEventMixpanelModel(InviteManager.referEventMixpanelModel.getPromo_code(), InviteManager.referEventMixpanelModel.getPromo_url(),
-                contact.getName(),contact.getEmail(), contact.getPhone()));
+                contact.getName(), contact.getEmail(), contact.getPhone()));
 
-        if (contact.getEmail().get(0).equals(Utils.BLANK)) {
-            if (contact.getPhone().get(0).equals(Utils.BLANK)) {
+        if (contact.getEmail().size()==0) {
+            if (contact.getPhone().size()==0) {
                 //do nothing
             } else {
-                openSMS(contact.getPhone().get(0));
+                String phoneNumber = Utils.BLANK;
+                for(int i=0;i<contact.getPhone().size();i++){
+                    if(i!=(contact.getPhone().size()-1)){
+                        phoneNumber = contact.getPhone().get(i)+";";
+                    }else{
+                        phoneNumber = contact.getPhone().get(i);
+                    }
+                }
+                openSMS(phoneNumber);
             }
 
         } else {
@@ -302,8 +310,11 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
             do {
                 String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
                 String name = Utils.BLANK;
-                String phoneNumber = Utils.BLANK;
-                String email = Utils.BLANK;
+                /*String phoneNumber = Utils.BLANK;
+                String email = Utils.BLANK;*/
+
+                ArrayList<String> phoneNumber = new ArrayList<>();
+                ArrayList<String> email = new ArrayList<>();
                 String photoThumbnail = Utils.BLANK;
 
                 try {
@@ -318,8 +329,15 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                             name = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                             //email = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.MIMETYPE));
                             if (Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-                                phoneNumber = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+                                Cursor Cur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id}, null);
+                                while (Cur.moveToNext()) {
+                                    String mPhone = Cur.getString(Cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                                    phoneNumber.add(mPhone);
+                                }
+                                Cur.close();
                             }
+
                             photoThumbnail = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI));
                             if (photoThumbnail == null) {
                                 photoThumbnail = Utils.BLANK;
@@ -327,7 +345,8 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
 
                             Cursor emailCur = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?", new String[]{id}, null);
                             while (emailCur.moveToNext()) {
-                                email = emailCur.getString(emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                                String mEmail = emailCur.getString(emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                                email.add(mEmail);
                                 Log.e("Email", name + " " + email);
                             }
                             emailCur.close();
@@ -350,12 +369,15 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
         String responses = new Gson().toJson(InviteManager.dataContact);
 
         for (int i = 0; i < InviteManager.dataContact.size(); i++) {
-            ArrayList<String> arrEmail = new ArrayList<>();
+            /*ArrayList<String> arrEmail = new ArrayList<>();
             arrEmail.add(InviteManager.dataContact.get(i).getEmail());
             ArrayList<String> arrPhone = new ArrayList<>();
-            arrPhone.add(InviteManager.dataContact.get(i).getPhoneNumber());
-            contactToPost.add(new PostContactModel.Contact(InviteManager.dataContact.get(i).getId(), InviteManager.dataContact.get(i).getName(), arrEmail, arrPhone));
+            arrPhone.add(InviteManager.dataContact.get(i).getPhoneNumber());*/
+            contactToPost.add(new PostContactModel.Contact(InviteManager.dataContact.get(i).getId(), InviteManager.dataContact.get(i).getName(), InviteManager.dataContact.get(i).getEmail(),
+                    InviteManager.dataContact.get(i).getPhoneNumber()));
         }
+
+        String ds = new Gson().toJson(contactToPost);
 
         if (contactToPost.size() > 0) {
             final PostContactModel postContactModel = new PostContactModel(AccessToken.getCurrentAccessToken().getUserId(), Utils.TYPE_ANDROID, contactToPost);
