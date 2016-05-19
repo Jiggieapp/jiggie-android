@@ -207,7 +207,8 @@ public class CongratsActivity extends ToolbarActivity {
                     if(product_list.getTax_amount().equals(Utils.NOL_RUPIAH)){
                         txtTaxFill.setText(getString(R.string.free));
                     }else{
-                        txtTaxFill.setText(StringUtility.getRupiahFormat(product_list.getTax_amount()));
+                        //txtTaxFill.setText(StringUtility.getRupiahFormat(product_list.getTax_amount()));
+                        txtTaxFill.setText(StringUtility.getRupiahFormat(summary.getTotal_tax_amount()));
                     }
 
                     if(summary.getTotal_price().equals(Utils.NOL_RUPIAH)){

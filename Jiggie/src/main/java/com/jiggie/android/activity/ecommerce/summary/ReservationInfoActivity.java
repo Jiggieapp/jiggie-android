@@ -279,7 +279,8 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
 
         txtDftTitle.setText(dataProduct.getName());
         txtDftFill.setText(StringUtility.getRupiahFormat(dataProduct.getTotal_price()));
-        txtTaxxFill.setText(StringUtility.getRupiahFormat(dataProduct.getTax_amount()));
+        //txtTaxxFill.setText(StringUtility.getRupiahFormat(dataProduct.getTax_amount()));
+        txtTaxxFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_tax_amount()));
         txtSerFill.setText(StringUtility.getRupiahFormat(dataProduct.getAdmin_fee()));
         maxDeposit = Integer.parseInt(productSummary.getTotal_price());
         txtEstTotFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_price()));

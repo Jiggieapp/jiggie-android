@@ -261,7 +261,8 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
         if (dataProduct.getTax_amount().equals(Utils.NOL_RUPIAH)) {
             txtTaxFill.setText(getString(R.string.free));
         } else {
-            txtTaxFill.setText(StringUtility.getRupiahFormat(dataProduct.getTax_amount()));
+            //txtTaxFill.setText(StringUtility.getRupiahFormat(dataProduct.getTax_amount()));
+            txtTaxFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_tax_amount()));
         }
 
         if (totalPrice.equals(Utils.NOL_RUPIAH)) {
