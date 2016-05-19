@@ -29,7 +29,7 @@ public final class ResponseContactModel {
     }
 
     public static final class Data {
-        public final ArrayList<Contact> contact;
+        public ArrayList<Contact> contact;
         public final int tot_credit;
         public final String msg_invite;
         public final String msg_share;
@@ -45,10 +45,16 @@ public final class ResponseContactModel {
             return contact;
         }
 
+        public void setContact(ArrayList<Contact> contact)
+        {
+            this.contact = contact;
+        }
+
+
         public static final class Contact {
             public final String record_id;
             public final String name;
-            public final ArrayList<String> email;
+            public ArrayList<String> email;
             public final ArrayList<String> phone;
             public final boolean is_active;
             public final String uniq_id;
@@ -74,6 +80,16 @@ public final class ResponseContactModel {
 
             public ArrayList<String> getEmail() {
                 return email;
+            }
+
+            public void setEmail(ArrayList<String> email)
+            {
+                this.email = email;
+            }
+
+            public void clearEmail()
+            {
+                this.email.clear();
             }
 
             public ArrayList<String> getPhone() {

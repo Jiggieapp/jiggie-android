@@ -7,10 +7,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.FragmentManager;
@@ -45,6 +45,7 @@ import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.activity.ecommerce.ProductListActivity;
+import com.jiggie.android.activity.invite.InviteFriendsActivity;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
@@ -83,8 +84,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -240,16 +239,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             if (event_pics != null)
                 fillPhotos(event_pics);
 
-            /*if (event_description != null) {
-                String subDes = "";
-                if (event_description.length() > 300) {
-                    subDes = event_description.substring(0, 300);
-                } else {
-                    subDes = event_description;
-                }
-
-                txtDescription.setText(Html.fromHtml(subDes));
-            }*/
 
             if (event_description != null) {
                 event_description = event_description.replace("\n", "<br />");
@@ -311,13 +300,16 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             }
 
             if (lowest_price == 0) {
-                txtPriceFill.setVisibility(View.GONE);
-                txtPriceTitle.setVisibility(View.GONE);
+                txtPriceTitle.setVisibility(View.VISIBLE);
+                txtPriceFill.setVisibility(View.VISIBLE);
+                txtPriceFill.setText(getResources().getString(R.string.free));
+
             } else {
                 txtPriceTitle.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
                 txtPriceFill.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
                 try {
-                    String str = String.format(Locale.US, "Rp %,d", lowest_price);
+                    //String str = String.format(Locale.US, "Rp %,d", lowest_price);
+                    String str = StringUtility.getRupiahFormat(lowest_price + "");
                     txtPriceFill.setText(str);
                 } catch (Exception e) {
                     Utils.d(TAG, "exception " + e.toString());
@@ -362,6 +354,34 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         }
 
         cekLike();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Execute some code after 2 seconds have passed
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                cekCounter();
+            }
+        }, 1000);
+
+    }
+
+    private void cekCounter()
+    {
+        final int counter = AccountManager.getCounterEvent();
+        if(counter+1 < 2)
+        {
+            AccountManager.setCounterEvent(counter+1);
+        }
+        else if(counter+1 == 2)
+        {
+            AccountManager.setCounterEvent(3);
+            startActivity(new Intent(this, InviteFriendsActivity.class));
+        }
     }
 
     private void cekLike() {
@@ -679,15 +699,16 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
         lowest_price = eventDetail.getLowest_price();
         if (lowest_price == 0) {
-            txtPriceFill.setVisibility(View.GONE);
-            txtPriceTitle.setVisibility(View.GONE);
+            txtPriceTitle.setVisibility(View.VISIBLE);
+            txtPriceFill.setVisibility(View.VISIBLE);
+            txtPriceFill.setText(getResources().getString(R.string.free));
+
         } else {
             txtPriceTitle.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
             txtPriceFill.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
-            txtPriceFill.setVisibility(View.VISIBLE);
-            txtPriceTitle.setVisibility(View.VISIBLE);
             try {
-                String str = String.format(Locale.US, "Rp %,d", lowest_price);
+                //String str = String.format(Locale.US, "Rp %,d", lowest_price);
+                String str = StringUtility.getRupiahFormat(lowest_price + "");
                 txtPriceFill.setText(str);
             } catch (Exception e) {
                 Utils.d(TAG, "exception " + e.toString());

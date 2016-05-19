@@ -1,6 +1,7 @@
 package com.jiggie.android.manager;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.facebook.AccessToken;
 import com.google.gson.Gson;
@@ -51,11 +52,9 @@ public class AccountManager extends BaseManager {
     }
 
     private static AccountInterface getInstance() {
-        Utils.d(TAG, "token " + AccountManager.getAccessTokenFromPreferences() + "n ");
         if(AccountManager.getAccessTokenFromPreferences().isEmpty())
             accountInterface = null;
         if (accountInterface == null) {
-            Utils.d(TAG, "token null fak" );
             accountInterface = getRetrofit().create(AccountInterface.class);
         }
         return accountInterface;
@@ -760,7 +759,6 @@ public class AccountManager extends BaseManager {
         final String accessToken = App.getInstance()
                 .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
                 .getString(Utils.ACCESS_TOKEN, "");
-
         return accessToken;
     }
 
@@ -770,6 +768,42 @@ public class AccountManager extends BaseManager {
                 .edit()
                 .putString(Utils.ACCESS_TOKEN, token)
                 .apply();
+    }
+
+    public static void setCounterEvent(final int counter)
+    {
+        App.getInstance()
+                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                .edit()
+                .putInt(Utils.COUNTER_EVENT, counter)
+                .apply();
+    }
+
+    public static int getCounterEvent()
+    {
+        final int accessToken = App.getInstance()
+                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                .getInt(Utils.COUNTER_EVENT, 0);
+        return accessToken;
+    }
+
+    public static void setInviteCodeResultModel(final String inviteCodeResultModel)
+    {
+
+    }
+
+    private static void saveToPreferenceSetting(final String key, final Object value)
+    {
+        SharedPreferences.Editor spref = App.getInstance()
+                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit();
+        if(value instanceof String)
+        {
+            spref.putString(key, (String) value).apply();
+        }
+        else if(value instanceof Integer)
+        {
+            spref.putInt(key, (int)value).apply();
+        }
     }
 
     public static String getInviteCodeFromPreference() {

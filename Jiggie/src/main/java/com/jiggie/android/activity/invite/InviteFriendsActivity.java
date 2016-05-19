@@ -2,6 +2,7 @@ package com.jiggie.android.activity.invite;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,8 +32,10 @@ import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.InviteFriendsAdapter;
+import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.InviteManager;
 import com.jiggie.android.model.ContactPhoneModel;
+import com.jiggie.android.model.InviteCodeResultModel;
 import com.jiggie.android.model.PostContactModel;
 import com.jiggie.android.model.PostInviteAllModel;
 import com.jiggie.android.model.PostInviteModel;
@@ -67,6 +70,10 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
     @Bind(R.id.txt_invite_desc)
     TextView txtInviteDesc;
     final int PERMISSION_REQUEST_CONTACT = 18;
+    ProgressDialog progressDialog;
+    private ReferEventMixpanelModel reverEventMixpanelModel;
+    private InviteCodeResultModel inviteCodeResultModel;
+    private final String TAG = InviteFriendsActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +91,13 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
         relInviteAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (getInviteCodeResultModel() != null) {
+                    App.getInstance().trackMixPanelReferral(Utils.REFERRAL_PHONE_ALL
+                            , getReferEventMixPanelModel(
+                                    inviteCodeResultModel.getData().getInvite_code().getCode(),
+                                    inviteCodeResultModel.getData().getInvite_code().getInvite_url()));
+                }
 
-                App.getInstance().trackMixPanelReferral(Utils.REFERRAL_PHONE_ALL, new ReferEventMixpanelModel(InviteManager.referEventMixpanelModel.getPromo_code(), InviteManager.referEventMixpanelModel.getPromo_url()));
 
                 ArrayList<PostInviteAllModel.Contact> contacts = new ArrayList<PostInviteAllModel.Contact>();
                 for (int i = 0; i < InviteManager.dataRest.size(); i++) {
@@ -115,7 +127,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
         swipeRefresh.setRefreshing(true);
     }
 
-    public void askForContactPermission(){
+    public void askForContactPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ContextCompat.checkSelfPermission(InviteFriendsActivity.this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
 
@@ -153,11 +165,10 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                     // app-defined int constant. The callback method gets the
                     // result of the request.
                 }
-            }else{
+            } else {
                 startingData();
             }
-        }
-        else{
+        } else {
             startingData();
         }
     }
@@ -181,15 +192,15 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
         askForContactPermission();
     }
 
-    private void startingData(){
+    private void startingData() {
         if (InviteManager.dataRest.size() == 0) {
             swipeRefresh.setEnabled(true);
             onRefresh();
-        }else{
+        } else {
             try {
-                txtInviteDesc.setText(InviteManager.total_credit);
-                txtInviteDesc.setVisibility(View.VISIBLE);
-            }catch (Exception e){
+                /*txtInviteDesc.setText(InviteManager.total_credit);
+                txtInviteDesc.setVisibility(View.VISIBLE);*/
+            } catch (Exception e) {
                 Log.d("total credit problem", e.toString());
             }
 
@@ -227,8 +238,19 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
     public void onRefresh() {
         isLoading = true;
         swipeRefresh.setRefreshing(true);
+        showProgressDialog();
         getContactPhoneInvite();
         //swipeRefresh.setEnabled(false);
+    }
+
+    private void showProgressDialog() {
+        progressDialog = App.showProgressDialog(InviteFriendsActivity.this);
+    }
+
+    private void dismissProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
     }
 
     @Override
@@ -240,23 +262,73 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
         }*/
         if (InviteManager.dataRest.size() == 0) {
             swipeRefresh.setEnabled(true);
-        }else{
+        } else {
             swipeRefresh.setEnabled(false);
         }
 
     }
 
+    /*private ReferEventMixpanelModel getReferEventMixPanelModel(final String code, final String url) {
+        if (reverEventMixpanelModel == null) {
+            return new ReferEventMixpanelModel(code, url);
+        }
+        return reverEventMixpanelModel;
+    }*/
+
+
+    private InviteCodeResultModel getInviteCodeResultModel() {
+        final String inv = AccountManager.getInviteCodeFromPreference();
+        if (inv.isEmpty())
+            return null;
+        else {
+            inviteCodeResultModel
+                    = new Gson().fromJson(inv, InviteCodeResultModel.class);
+            return inviteCodeResultModel;
+        }
+    }
+
+    private ReferEventMixpanelModel getReferEventMixPanelModel
+            (final String code, final String url, final String name, final ArrayList<String> email, final ArrayList<String> phone) {
+        if (reverEventMixpanelModel == null) {
+            reverEventMixpanelModel = new ReferEventMixpanelModel(code, url, name, email, phone);
+            return reverEventMixpanelModel;
+        }
+        return reverEventMixpanelModel;
+    }
+
+    private ReferEventMixpanelModel getReferEventMixPanelModel
+            (final String code, final String url) {
+        if (reverEventMixpanelModel == null) {
+            reverEventMixpanelModel = new ReferEventMixpanelModel(code, url);
+            return reverEventMixpanelModel;
+        }
+        return reverEventMixpanelModel;
+    }
+
+
     @Override
     public void onInviteSelected(ResponseContactModel.Data.Contact contact) {
+        if (getInviteCodeResultModel() != null) {
+            App.getInstance().trackMixPanelReferral(Utils.REFERRAL_PHONE_SINGULAR
+                    , getReferEventMixPanelModel(
+                            inviteCodeResultModel.getData().getInvite_code().getCode(),
+                            inviteCodeResultModel.getData().getInvite_code().getInvite_url()
+                            , contact.getName(), contact.getEmail(), contact.getPhone()));
+        }
 
-        App.getInstance().trackMixPanelReferral(Utils.REFERRAL_PHONE_SINGULAR, new ReferEventMixpanelModel(InviteManager.referEventMixpanelModel.getPromo_code(), InviteManager.referEventMixpanelModel.getPromo_url(),
-                contact.getName(),contact.getEmail(), contact.getPhone()));
-
-        if (contact.getEmail().get(0).equals(Utils.BLANK)) {
-            if (contact.getPhone().get(0).equals(Utils.BLANK)) {
+        if (contact.getEmail().size() == 0) {
+            if (contact.getPhone().size() == 0) {
                 //do nothing
             } else {
-                openSMS(contact.getPhone().get(0));
+                String phoneNumber = Utils.BLANK;
+                for (int i = 0; i < contact.getPhone().size(); i++) {
+                    if (i != (contact.getPhone().size() - 1)) {
+                        phoneNumber = contact.getPhone().get(i) + ";";
+                    } else {
+                        phoneNumber = contact.getPhone().get(i);
+                    }
+                }
+                openSMS(phoneNumber);
             }
 
         } else {
@@ -289,24 +361,34 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
             do {
                 String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
                 String name = Utils.BLANK;
-                String phoneNumber = Utils.BLANK;
-                String email = Utils.BLANK;
+                /*String phoneNumber = Utils.BLANK;
+                String email = Utils.BLANK;*/
+
+                ArrayList<String> phoneNumber = new ArrayList<>();
+                ArrayList<String> email = new ArrayList<>();
                 String photoThumbnail = Utils.BLANK;
 
                 try {
                     if (Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-                        /*Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id},
-                                ContactsContract.CommonDataKinds.Phone.SORT_KEY_PRIMARY+" ASC");*/
                         Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id},
-                                null);
+                                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
+                        /*Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id},
+                                null);*/
                         while (pCur.moveToNext()) {
                             //String contactNumber = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                             //alContacts.add(contactNumber);
                             name = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                             //email = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.MIMETYPE));
                             if (Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-                                phoneNumber = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+                                Cursor Cur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id}, null);
+                                while (Cur.moveToNext()) {
+                                    String mPhone = Cur.getString(Cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                                    phoneNumber.add(mPhone);
+                                }
+                                Cur.close();
                             }
+
                             photoThumbnail = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI));
                             if (photoThumbnail == null) {
                                 photoThumbnail = Utils.BLANK;
@@ -314,7 +396,8 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
 
                             Cursor emailCur = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?", new String[]{id}, null);
                             while (emailCur.moveToNext()) {
-                                email = emailCur.getString(emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                                String mEmail = emailCur.getString(emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                                email.add(mEmail);
                                 Log.e("Email", name + " " + email);
                             }
                             emailCur.close();
@@ -326,45 +409,57 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                         }
                         pCur.close();
                     }
-
                 } catch (Exception e) {
 
                 }
-
             } while (cursor.moveToNext());
         }
 
+        String responses = new Gson().toJson(InviteManager.dataContact);
+
         for (int i = 0; i < InviteManager.dataContact.size(); i++) {
-            ArrayList<String> arrEmail = new ArrayList<>();
+            /*ArrayList<String> arrEmail = new ArrayList<>();
             arrEmail.add(InviteManager.dataContact.get(i).getEmail());
             ArrayList<String> arrPhone = new ArrayList<>();
-            arrPhone.add(InviteManager.dataContact.get(i).getPhoneNumber());
-            contactToPost.add(new PostContactModel.Contact(InviteManager.dataContact.get(i).getId(), InviteManager.dataContact.get(i).getName(), arrEmail, arrPhone));
+            arrPhone.add(InviteManager.dataContact.get(i).getPhoneNumber());*/
+            contactToPost.add(new PostContactModel.Contact(InviteManager.dataContact.get(i).getId()
+                    , InviteManager.dataContact.get(i).getName(), InviteManager.dataContact.get(i).getEmail(),
+                    InviteManager.dataContact.get(i).getPhoneNumber()));
         }
 
+        String ds = new Gson().toJson(contactToPost);
+
         if (contactToPost.size() > 0) {
-            final PostContactModel postContactModel = new PostContactModel(AccessToken.getCurrentAccessToken().getUserId(), Utils.TYPE_ANDROID, contactToPost);
+            final PostContactModel postContactModel = new PostContactModel(AccessToken.getCurrentAccessToken().getUserId()
+                    , Utils.TYPE_ANDROID, contactToPost);
             InviteManager.loaderPostContact(postContactModel, new InviteManager.OnResponseListener() {
                 @Override
                 public void onSuccess(Object object) {
                     ResponseContactModel responseContactModel = (ResponseContactModel) object;
 
-                    //String sd = String.valueOf(new Gson().toJson(responseContactModel));
-
+                    String sd = String.valueOf(new Gson().toJson(responseContactModel));
                     if (responseContactModel != null) {
-
                         //==============
                         try {
                             InviteManager.total_credit = "For " + String.valueOf(responseContactModel.getData().getTot_credit()) + " Credits";
-                            txtInviteDesc.setText(InviteManager.total_credit);
-                            txtInviteDesc.setVisibility(View.VISIBLE);
-                        }catch (Exception e){
+                            /*txtInviteDesc.setText(InviteManager.total_credit);
+                            txtInviteDesc.setVisibility(View.VISIBLE);*/
+                        } catch (Exception e) {
                             Log.d("total credit problem", e.toString());
                         }
 
                         InviteManager.msg_share = responseContactModel.getData().getMsg_share();
                         //==============
 
+
+                        for (int i = 0; i < responseContactModel.getData().getContact().size(); i++) {
+                            ResponseContactModel.Data.Contact c = responseContactModel.getData().getContact().get(i);
+                            if (c.getEmail().size() == 1 && c.getEmail().get(0).equals("")) //fak kosong binatang
+                            {
+                                //contact.getEmail().clear();
+                                responseContactModel.getData().getContact().get(i).getEmail().clear();
+                            }
+                        }
                         setAdapters(responseContactModel.getData().getContact(), InviteManager.dataContact);
                     } else {
                         isLoading = false;
@@ -387,5 +482,6 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
         isLoading = false;
         swipeRefresh.setRefreshing(false);
         swipeRefresh.setEnabled(false);
+        dismissProgressDialog();
     }
 }

@@ -20,6 +20,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +44,7 @@ import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.PostFreePaymentModel;
 import com.jiggie.android.model.PostPaymentModel;
 import com.jiggie.android.model.SummaryModel;
+import com.jiggie.android.view.DiscountView;
 import com.jiggie.android.view.TermsItemView;
 
 import java.text.ParseException;
@@ -137,10 +139,8 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     TextView txtCredittabFill;
     @Bind(R.id.rel_credittab)
     RelativeLayout relCredittab;
-    @Bind(R.id.rel_discounttab)
-    RelativeLayout relDiscounttab;
-    @Bind(R.id.txt_discount_fill)
-    TextView txtDiscountFill;
+    @Bind(R.id.lin_discounttab)
+    LinearLayout linDiscounttab;
     private SlideAdapter slideAdapter;
     int payDeposit = 0, maxDeposit = 0, latestDeposit = 0;
     private final int INCREMENT_VALUE = 500000;
@@ -298,9 +298,14 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
             txtCredittabFill.setText("- " + StringUtility.getRupiahFormat(String.valueOf(productSummary.getCredit().getCredit_used())));
         }
 
-        if (productSummary.getDiscount().getTotal_discount() != 0) {
-            relDiscounttab.setVisibility(View.VISIBLE);
-            txtDiscountFill.setText("- " + StringUtility.getRupiahFormat(String.valueOf(productSummary.getDiscount().getTotal_discount())));
+        if (productSummary.getDiscount().getData().size() > 0) {
+            for (int i = 0; i < productSummary.getDiscount().getData().size(); i++) {
+                String title = productSummary.getDiscount().getData().get(i).getName();
+                String value = String.valueOf(productSummary.getDiscount().getData().get(i).getAmount_used());
+                DiscountView discountView = new DiscountView(ReservationInfoActivity.this, title, value, false, getResources().getColor(R.color.textDarkGray), getResources().getColor(R.color.purple));
+                linDiscounttab.addView(discountView);
+            }
+            linDiscounttab.setVisibility(View.VISIBLE);
         }
 
         //initTermView(dataProduct);

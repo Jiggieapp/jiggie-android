@@ -30,7 +30,7 @@ public class InviteManager extends BaseManager {
     public static String msg_share = Utils.BLANK;
     public static String total_credit = Utils.BLANK;
 
-    public static ReferEventMixpanelModel referEventMixpanelModel;
+    private static ReferEventMixpanelModel referEventMixpanelModel;
 
     public static void initInviteService(){
         inviteInterface = getRetrofit().create(InviteInterface.class);

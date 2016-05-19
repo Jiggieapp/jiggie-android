@@ -70,7 +70,8 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
 
     private ReferEventMixpanelModel getReferEventMixPanelModel(final String code, final String url) {
         if (reverEventMixpanelModel == null) {
-            return new ReferEventMixpanelModel(code, url);
+            reverEventMixpanelModel = new ReferEventMixpanelModel(code, url);
+            return reverEventMixpanelModel;
         }
         return reverEventMixpanelModel;
     }
@@ -127,8 +128,8 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
         } else {
             App.getInstance().trackMixPanelReferral(Utils.REFERRAL_FACEBOOK
                     , getReferEventMixPanelModel
-                            (/*InviteManager.referEventMixpanelModel.getPromo_code()*/ getInviteCodeResultModel().getData().getInvite_code().getCode()
-                                    , /*InviteManager.referEventMixpanelModel.getPromo_url()*/ getInviteCodeResultModel().getData().getInvite_code().getInvite_url()));
+                            ( getInviteCodeResultModel().getData().getInvite_code().getCode()
+                            ,getInviteCodeResultModel().getData().getInvite_code().getInvite_url()));
             FacebookSdk.sdkInitialize(this);
             callbackManager = CallbackManager.Factory.create();
             shareDialog = new ShareDialog(this);
@@ -163,9 +164,9 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
     private void setInviteCodeResultModel(InviteCodeResultModel inviteCodeResultModel) {
         AccountManager.setInviteCodeToPreferences(new Gson().toJson(inviteCodeResultModel).toString());
         inviteCodeResultModel = getInviteCodeResultModel();
-        InviteManager.referEventMixpanelModel = getReferEventMixPanelModel(
+        /*InviteManager.referEventMixpanelModel = getReferEventMixPanelModel(
                 inviteCodeResultModel.getData().getInvite_code().getCode()
-                , inviteCodeResultModel.getData().getInvite_code().getInvite_url());
+                , inviteCodeResultModel.getData().getInvite_code().getInvite_url());*/
         initView();
     }
 

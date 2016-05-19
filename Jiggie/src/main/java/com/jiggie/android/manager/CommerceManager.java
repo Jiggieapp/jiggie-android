@@ -57,8 +57,9 @@ public class CommerceManager extends BaseManager{
     private static void getProductList(String event_id, final CustomCallback callback) throws IOException {
         /*if(callProductList != null)
             callProductList.cancel();*/
-        callProductList = getInstance().getProductList(event_id);
-        callProductList.enqueue(new Callback<ProductListModel>() {
+        getInstance().getProductList(event_id).enqueue(callback);
+
+        /*callProductList.enqueue(new Callback<ProductListModel>() {
             @Override
             public void onResponse(Call<ProductListModel> call, Response<ProductListModel> response) {
                 callback.onResponse(call, response);
@@ -68,7 +69,7 @@ public class CommerceManager extends BaseManager{
             public void onFailure(Call<ProductListModel> call, Throwable t) {
                 callback.onFailure(call, t);
             }
-        });
+        });*/
 
         //getInstance().getProductList(event_id).enqueue(callback);
     }

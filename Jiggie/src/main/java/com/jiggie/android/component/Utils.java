@@ -95,6 +95,7 @@ public class Utils {
     public static final String PREFERENCE_LOGIN = "login";
     public static final String LOGIN_MODEL = "login_model";
     public static final String ACCESS_TOKEN = "access_token";
+    public static final String COUNTER_EVENT = "counter_event";
     public static final String INVITE_CODE = "invite_code";
     public static final String PREFERENCE_TAGLIST = "taglist";
     public static final String TAGLIST_MODEL = "taglist_model";

@@ -58,13 +58,22 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
             String phoneNumber = Utils.BLANK;
             for(int i=0;i<dataRest.get(position).getPhone().size();i++){
                 //phoneNumber = phoneNumber.concat(", "+dataRest.get(position).getPhone().get(i));
-                phoneNumber = dataRest.get(position).getPhone().get(i);
+                if(i==0){
+                    phoneNumber = dataRest.get(position).getPhone().get(i);
+                }else{
+                    phoneNumber = phoneNumber.concat(", "+dataRest.get(position).getPhone().get(i));
+                }
+
             }
 
             String email = Utils.BLANK;
             for(int i=0;i<dataRest.get(position).getEmail().size();i++){
                 //email = email.concat(", "+dataRest.get(position).getEmail().get(i));
-                email = dataRest.get(position).getEmail().get(i);
+                if(i==0){
+                    email = dataRest.get(position).getEmail().get(i);
+                }else{
+                    email = email.concat(", "+dataRest.get(position).getEmail().get(i));
+                }
             }
 
             if(phoneNumber.equals(Utils.BLANK)){
@@ -80,8 +89,6 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
                 holder.txtEmail.setText(email);
                 holder.txtEmail.setVisibility(View.VISIBLE);
             }
-
-
 
             String photo = Utils.BLANK;
             for(int i=0;i<data.size();i++){
@@ -101,6 +108,7 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
                     }else{
                         photo = Utils.BLANK;
                         Glide.clear(holder.imgPhoto);
+                        holder.imgPhoto.setImageResource(R.drawable.img_placeholder);
                     }
                     break;
                 }
@@ -114,7 +122,7 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
 
             InviteManager.arrBtnInvite.add(holder.btnInvite);
 
-            holder.txtCredit.setText("+"+String.valueOf(dataRest.get(position).getCredit())+" credits");
+            //holder.txtCredit.setText("+"+String.valueOf(dataRest.get(position).getCredit())+" credits");
 
         }catch (Exception e){
             Log.d(TAG, e.toString());
