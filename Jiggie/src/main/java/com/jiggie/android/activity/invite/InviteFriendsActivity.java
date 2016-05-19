@@ -269,7 +269,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
             if (contact.getPhone().size()==0) {
                 //do nothing
             } else {
-                String phoneNumber = Utils.BLANK;
+                /*String phoneNumber = Utils.BLANK;
                 for(int i=0;i<contact.getPhone().size();i++){
                     if(i!=(contact.getPhone().size()-1)){
                         phoneNumber = contact.getPhone().get(i)+";";
@@ -277,7 +277,8 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                         phoneNumber = contact.getPhone().get(i);
                     }
                 }
-                openSMS(phoneNumber);
+                openSMS(phoneNumber);*/
+                openSMS(contact.getPhone().get(0));
             }
 
         } else {

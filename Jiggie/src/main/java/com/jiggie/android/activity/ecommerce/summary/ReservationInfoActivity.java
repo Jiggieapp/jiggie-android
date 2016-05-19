@@ -299,10 +299,11 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         }
 
         if (productSummary.getDiscount().getData().size() > 0) {
+            float textSize = getResources().getDimension(R.dimen.font_body_size) / getResources().getDisplayMetrics().density;
             for (int i = 0; i < productSummary.getDiscount().getData().size(); i++) {
                 String title = productSummary.getDiscount().getData().get(i).getName();
                 String value = String.valueOf(productSummary.getDiscount().getData().get(i).getAmount_used());
-                DiscountView discountView = new DiscountView(ReservationInfoActivity.this, title, value, false, getResources().getColor(R.color.textDarkGray), getResources().getColor(R.color.purple));
+                DiscountView discountView = new DiscountView(ReservationInfoActivity.this, title, value, false, getResources().getColor(R.color.textDarkGray), getResources().getColor(R.color.purple), textSize);
                 linDiscounttab.addView(discountView);
             }
             linDiscounttab.setVisibility(View.VISIBLE);

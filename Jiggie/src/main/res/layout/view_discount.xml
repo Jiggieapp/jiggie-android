@@ -10,7 +10,6 @@
         android:layout_marginLeft="@dimen/padding_standard"
         android:layout_marginTop="@dimen/padding_standard_half"
         android:text="@string/pci_f5"
-        android:textColor="@color/textDarkGray"
         android:textSize="@dimen/font_body_size"/>
 
     <TextView
