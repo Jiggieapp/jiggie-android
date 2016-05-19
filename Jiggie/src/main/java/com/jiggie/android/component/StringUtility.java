@@ -186,8 +186,12 @@ public class StringUtility {
         int numPerThousand = (int)(Double.parseDouble(number) / 1000);
         String strNumPerThousand = String.valueOf(numPerThousand);
 
-        if (strNumPerThousand.length() == 0) {
-            displayedString = "Rp0";
+        int num = Integer.parseInt(number);
+
+        /*if (strNumPerThousand.length() == 0) {
+            displayedString = "Rp"+String.valueOf(number);*/
+        if (num < 1000) {
+            displayedString = "Rp"+String.valueOf(number);
         } else {
             if (strNumPerThousand.length() > 3) {
                 int length = strNumPerThousand.length();
