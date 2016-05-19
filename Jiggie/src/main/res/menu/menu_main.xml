@@ -35,20 +35,26 @@
         android:orderInCategory="4"/>
 
     <item
+        android:id="@+id/action_creditbalance"
+        android:title="@string/credit_balance"
+        app:showAsAction="never"
+        android:orderInCategory="5"/>
+
+    <item
         android:id="@+id/action_settings"
         android:title="@string/settings"
         app:showAsAction="never"
-        android:orderInCategory="5"/>
+        android:orderInCategory="6"/>
 
     <item
         android:id="@+id/action_support"
         android:title="@string/support"
         app:showAsAction="never"
-        android:orderInCategory="6"/>
+        android:orderInCategory="7"/>
 
     <item
         android:id="@+id/action_logout"
         android:title="@string/logout"
         app:showAsAction="never"
-        android:orderInCategory="7"/>
+        android:orderInCategory="8"/>
 </menu>

@@ -37,6 +37,7 @@ import com.jiggie.android.activity.profile.NewProfileDetailActivity;
 import com.jiggie.android.activity.profile.ProfileSettingActivity;
 import com.jiggie.android.activity.promo.PromotionsActivity;
 import com.jiggie.android.activity.setup.SetupTagsActivity;
+import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.gcm.GCMRegistrationService;
 import com.jiggie.android.component.service.FacebookImageSyncService;
@@ -44,12 +45,14 @@ import com.jiggie.android.fragment.HomeFragment;
 import com.jiggie.android.fragment.SignInFragment;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.CommerceManager;
+import com.jiggie.android.manager.CreditBalanceManager;
 import com.jiggie.android.manager.ShareManager;
 import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.manager.TooltipsManager;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.GuestInfo;
 import com.jiggie.android.model.ShareLinkModel;
+import com.jiggie.android.model.SuccessCreditBalanceModel;
 import com.jiggie.android.presenter.GuestPresenter;
 
 import java.util.Calendar;
@@ -204,7 +207,7 @@ public class MainActivity extends AppCompatActivity
 
             HomeFragment.sendLocationInfo();
         }else{
-            Utils.d(getString(R.string.tag_location),getString(R.string.error_loc_failed));
+            Utils.d(getString(R.string.tag_location), getString(R.string.error_loc_failed));
         }
 
 
@@ -588,6 +591,21 @@ public class MainActivity extends AppCompatActivity
                             }
                         }).show();
                 break;
+            case R.id.action_creditbalance:
+                progressDialog = App.showProgressDialog(MainActivity.this);
+                CreditBalanceManager.loaderCreditBalance(AccessToken.getCurrentAccessToken().getUserId(), new CreditBalanceManager.OnResponseListener() {
+                    @Override
+                    public void onSuccess(Object object) {
+                        SuccessCreditBalanceModel successCreditBalanceModel = (SuccessCreditBalanceModel)object;
+                        showCreditBalance(successCreditBalanceModel.getData().getBalance_credit().getTot_credit_active());
+                    }
+
+                    @Override
+                    public void onFailure(int responseCode, String message) {
+                        hideProgressDialog();
+                    }
+                });
+                break;
         }
         if(target != null)
         {
@@ -595,6 +613,23 @@ public class MainActivity extends AppCompatActivity
             startActivity(i);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    AlertDialog ad = null;
+    private void showCreditBalance(String creditBalance){
+        hideProgressDialog();
+        AlertDialog.Builder al =  new AlertDialog.Builder(MainActivity.this)
+                .setTitle(R.string.credit_balance)
+                .setMessage("Your credit balance is " + StringUtility.getRupiahFormat(creditBalance))
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(ad!=null&&ad.isShowing())
+                            ad.dismiss();
+                    }
+                });
+        ad = al.create();
+        ad.show();
     }
 
     private void mailSupport() {

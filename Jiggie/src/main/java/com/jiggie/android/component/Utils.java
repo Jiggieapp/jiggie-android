@@ -185,6 +185,8 @@ public class Utils {
     public final static String URL_REDEEM_CODE = BASE_URL + "app/v3/credit/redeem_code";
     //END OF REDEEM CODE URL===============
 
+    public final static String URL_CREDIT_BALANCE = BASE_URL + "app/v3/credit/balance_credit/{fb_id}";
+
     public static void d(final String tag, final String value) {
         if(BuildConfig.DEBUG)
         {
