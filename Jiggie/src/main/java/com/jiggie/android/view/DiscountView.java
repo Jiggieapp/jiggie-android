@@ -2,6 +2,7 @@ package com.jiggie.android.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -25,8 +26,9 @@ public class DiscountView extends RelativeLayout {
     String title, value;
     boolean isUpperCase;
     int titleColor, valueColor;
+    float textSize;
 
-    public DiscountView(Context context, String title, String value, boolean isUpperCase, int titleColor, int valueColor) {
+    public DiscountView(Context context, String title, String value, boolean isUpperCase, int titleColor, int valueColor, float textSize) {
         super(context);
         this.context = context;
         this.title = title;
@@ -34,6 +36,7 @@ public class DiscountView extends RelativeLayout {
         this.isUpperCase = isUpperCase;
         this.titleColor = titleColor;
         this.valueColor = valueColor;
+        this.textSize = textSize;
         initView();
     }
 
@@ -56,10 +59,16 @@ public class DiscountView extends RelativeLayout {
             txtDiscountTitle.setText(title);
         }
 
-        txtDiscountFill.setText("- "+StringUtility.getRupiahFormat(value));
+        txtDiscountFill.setText("- " + StringUtility.getRupiahFormat(value));
 
-        txtDiscountTitle.setTextColor(titleColor);
+        if(titleColor!=0){
+            txtDiscountTitle.setTextColor(titleColor);
+        }
+
         txtDiscountFill.setTextColor(valueColor);
+
+        txtDiscountTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
+        txtDiscountFill.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
     }
 
 

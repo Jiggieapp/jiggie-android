@@ -261,7 +261,8 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
         if (dataProduct.getTax_amount().equals(Utils.NOL_RUPIAH)) {
             txtTaxFill.setText(getString(R.string.free));
         } else {
-            txtTaxFill.setText(StringUtility.getRupiahFormat(dataProduct.getTax_amount()));
+            //txtTaxFill.setText(StringUtility.getRupiahFormat(dataProduct.getTax_amount()));
+            txtTaxFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_tax_amount()));
         }
 
         if (totalPrice.equals(Utils.NOL_RUPIAH)) {
@@ -277,10 +278,11 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
         }
 
         if (productSummary.getDiscount().getData().size() > 0) {
+            float textSize = getResources().getDimension(R.dimen.font_body_size) / getResources().getDisplayMetrics().density;
             for (int i = 0; i < productSummary.getDiscount().getData().size(); i++) {
                 String title = productSummary.getDiscount().getData().get(i).getName();
                 String value = String.valueOf(productSummary.getDiscount().getData().get(i).getAmount_used());
-                DiscountView discountView = new DiscountView(PurchaseInfoActivity.this, title, value, false, getResources().getColor(R.color.textDarkGray), getResources().getColor(R.color.purple));
+                DiscountView discountView = new DiscountView(PurchaseInfoActivity.this, title, value, false, getResources().getColor(R.color.textDarkGray), getResources().getColor(R.color.purple), textSize);
                 linDiscount.addView(discountView);
             }
             linDiscount.setVisibility(View.VISIBLE);

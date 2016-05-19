@@ -51,8 +51,10 @@ public final class SucScreenCCModel {
             public final String instructions;
             public final ArrayList<String> ticket_include;
             public final ArrayList<String> fine_print;
+            public final Credit credit;
+            public final Discount discount;
 
-            public Success_screen(String order_id, String order_number, String order_status, String payment_status, String type, String payment_type, Event event, Summary summary, String instructions, ArrayList<String> ticket_include, ArrayList<String> fine_print){
+            public Success_screen(String order_id, String order_number, String order_status, String payment_status, String type, String payment_type, Event event, Summary summary, String instructions, ArrayList<String> ticket_include, ArrayList<String> fine_print, Credit credit, Discount discount){
                 this.order_id = order_id;
                 this.order_number = order_number;
                 this.order_status = order_status;
@@ -64,6 +66,8 @@ public final class SucScreenCCModel {
                 this.instructions = instructions;
                 this.ticket_include = ticket_include;
                 this.fine_print = fine_print;
+                this.credit = credit;
+                this.discount = discount;
             }
 
             public String getOrder_id() {
@@ -108,6 +112,110 @@ public final class SucScreenCCModel {
 
             public ArrayList<String> getFine_print() {
                 return fine_print;
+            }
+
+            public Credit getCredit() {
+                return credit;
+            }
+
+            public Discount getDiscount() {
+                return discount;
+            }
+
+            public final class Credit {
+                public final String credit_left;
+                public final String tot_price_after_credit;
+                public final String tot_price_before_credit;
+                public final String credit_used;
+                public final String tot_credit;
+
+                public Credit(String credit_left, String tot_price_after_credit, String tot_price_before_credit, String credit_used, String tot_credit){
+                    this.credit_left = credit_left;
+                    this.tot_price_after_credit = tot_price_after_credit;
+                    this.tot_price_before_credit = tot_price_before_credit;
+                    this.credit_used = credit_used;
+                    this.tot_credit = tot_credit;
+                }
+
+                public String getCredit_left() {
+                    return credit_left;
+                }
+
+                public String getTot_price_after_credit() {
+                    return tot_price_after_credit;
+                }
+
+                public String getTot_price_before_credit() {
+                    return tot_price_before_credit;
+                }
+
+                public String getCredit_used() {
+                    return credit_used;
+                }
+
+                public String getTot_credit() {
+                    return tot_credit;
+                }
+            }
+
+            public static final class Discount {
+                public final String tot_price_after_discount;
+                public final String tot_price_before_discount;
+                public final String total_discount;
+                public final ArrayList<Data_> data;
+
+                public Discount(String tot_price_after_discount, String tot_price_before_discount, String total_discount, ArrayList<Data_> data){
+                    this.tot_price_after_discount = tot_price_after_discount;
+                    this.tot_price_before_discount = tot_price_before_discount;
+                    this.total_discount = total_discount;
+                    this.data = data;
+                }
+
+                public String getTot_price_after_discount() {
+                    return tot_price_after_discount;
+                }
+
+                public String getTot_price_before_discount() {
+                    return tot_price_before_discount;
+                }
+
+                public String getTotal_discount() {
+                    return total_discount;
+                }
+
+                public ArrayList<Data_> getData() {
+                    return data;
+                }
+
+                public static final class Data_ {
+                    public final String end_date;
+                    public final String start_date;
+                    public final String amount_used;
+                    public final String name;
+
+                    public Data_(String end_date, String start_date, String amount_used, String name){
+                        this.end_date = end_date;
+                        this.start_date = start_date;
+                        this.amount_used = amount_used;
+                        this.name = name;
+                    }
+
+                    public String getEnd_date() {
+                        return end_date;
+                    }
+
+                    public String getStart_date() {
+                        return start_date;
+                    }
+
+                    public String getAmount_used() {
+                        return amount_used;
+                    }
+
+                    public String getName() {
+                        return name;
+                    }
+                }
             }
 
             public static final class Event {
