@@ -190,9 +190,11 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         super.bindView();
 
         EventBus.getDefault().register(this);
+        eventDetail = new EventDetailModel.Data.EventDetail();
 
         Intent a = super.getIntent();
         event_id = a.getStringExtra(Common.FIELD_EVENT_ID);
+        eventDetail.set_id(event_id);
         event_name = a.getStringExtra(Common.FIELD_EVENT_NAME);
         event_venue_name = a.getStringExtra(Common.FIELD_EVENT_VENUE_NAME);
         event_tags = a.getStringArrayListExtra(Common.FIELD_EVENT_TAGS);
@@ -204,14 +206,19 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         count_like_new = count_like;
         lowest_price = a.getIntExtra(Common.FIELD_EVENT_LOWEST_PRICE, 0);
 
+
+
         this.imagePagerIndicatorAdapter = new ImagePagerIndicatorAdapter(super.getSupportFragmentManager(), this.imageViewPager);
         this.imagePagerIndicator.setAdapter(this.imagePagerIndicatorAdapter.getIndicatorAdapter());
 
         if (a != null) {
             this.txtVenue.setText("");
-
             if (event_venue_name != null)
+            {
+                eventDetail.setVenue_name(event_venue_name);
                 this.txtVenue.setText(event_venue_name);
+            }
+
 
             /*if(event_tags != null)
             {
@@ -238,6 +245,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             }
 
             if (event_pics != null)
+                eventDetail.setPhotos(event_pics);
                 fillPhotos(event_pics);
 
             /*if (event_description != null) {
@@ -1067,7 +1075,9 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             });*/
         } else {
             progressDialog = App.showProgressDialog(this);
-            ShareManager.loaderShareEvent(eventDetail.get_id(), AccessToken.getCurrentAccessToken().getUserId(), URLEncoder.encode(eventDetail.getVenue_name(), "UTF-8"));
+            ShareManager.loaderShareEvent(eventDetail.get_id()
+                    , AccessToken.getCurrentAccessToken().getUserId()
+                    , URLEncoder.encode(eventDetail.getVenue_name(), "UTF-8"));
         }
     }
 
@@ -1090,6 +1100,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         @Override
         public void onReceive(Context context, Intent intent) {
             if (!isActive()) return;
+            if(eventDetail == null) return;
             final GuestModel.Data.GuestInterests guest = intent.getParcelableExtra(GuestModel.Data.GuestInterests.class.getName());
 
             ArrayList<EventDetailModel.Data.EventDetail.GuestViewed> guestArr = eventDetail.getGuests_viewed();

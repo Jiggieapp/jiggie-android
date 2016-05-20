@@ -244,6 +244,7 @@ public class NewProfileDetailActivity extends ToolbarActivity
 
     @Override
     public void onFailure() {
+        Toast.makeText(this, )
     }
 
     @Override
