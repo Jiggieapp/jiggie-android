@@ -188,7 +188,8 @@ public class SignInFragment extends Fragment {
                         }
                     }).start();*/
 
-                    TutorialFragmentAdapter.TutorialFragment fragment = (TutorialFragmentAdapter.TutorialFragment) tutorialAdapter.getItem(position);
+                    TutorialFragmentAdapter.TutorialFragment fragment =
+                            (TutorialFragmentAdapter.TutorialFragment) tutorialAdapter.getItem(position);
 
                     if (position == 5) {
                         fragment.getContentView().setVisibility(View.GONE);
