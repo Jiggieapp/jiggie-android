@@ -430,7 +430,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                             while (emailCur.moveToNext()) {
                                 String mEmail = emailCur.getString(emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
                                 email.add(mEmail);
-                                Log.e("Email", name + " " + email);
+                               //og.e("Email", name + " " + email);
                             }
                             emailCur.close();
                             InviteManager.dataContact.add(new ContactPhoneModel(id, name, phoneNumber, email, photoThumbnail));

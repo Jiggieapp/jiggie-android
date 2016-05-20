@@ -76,11 +76,10 @@ public class CommerceManager extends BaseManager{
 
     public static void doCancel()
     {
-        if(callProductList != null)
+        /*if(callProductList != null)
         {
             callProductList.cancel();
-            //callProductList = null;
-        }
+        }*/
     }
 
     private static void postSummary(PostSummaryModel postSummaryModel, Callback callback) throws IOException {

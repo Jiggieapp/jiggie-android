@@ -326,6 +326,11 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
                 changed = true;
                 fromReplied = true;
             }
+            else if ((resultCode == ChatActivity.RESULT_REPLIED) && (conversation == null)) //kosong
+            {
+                changed = true;
+                fromReplied = true;
+            }
 
             if (changed) {
                 if(fromReplied){
