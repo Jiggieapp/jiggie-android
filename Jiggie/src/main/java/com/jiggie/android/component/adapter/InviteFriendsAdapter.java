@@ -56,47 +56,47 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
             holder.txtName.setText(dataRest.get(position).getName());
 
             String phoneNumber = Utils.BLANK;
-            for(int i=0;i<dataRest.get(position).getPhone().size();i++){
+            for (int i = 0; i < dataRest.get(position).getPhone().size(); i++) {
                 //phoneNumber = phoneNumber.concat(", "+dataRest.get(position).getPhone().get(i));
-                if(i==0){
+                if (i == 0) {
                     phoneNumber = dataRest.get(position).getPhone().get(i);
-                }else{
-                    phoneNumber = phoneNumber.concat(", "+dataRest.get(position).getPhone().get(i));
+                } else {
+                    phoneNumber = phoneNumber.concat(", " + dataRest.get(position).getPhone().get(i));
                 }
 
             }
 
             String email = Utils.BLANK;
-            for(int i=0;i<dataRest.get(position).getEmail().size();i++){
+            for (int i = 0; i < dataRest.get(position).getEmail().size(); i++) {
                 //email = email.concat(", "+dataRest.get(position).getEmail().get(i));
-                if(i==0){
+                if (i == 0) {
                     email = dataRest.get(position).getEmail().get(i);
-                }else{
-                    email = email.concat(", "+dataRest.get(position).getEmail().get(i));
+                } else {
+                    email = email.concat(", " + dataRest.get(position).getEmail().get(i));
                 }
             }
 
-            if(phoneNumber.equals(Utils.BLANK)){
+            if (phoneNumber.equals(Utils.BLANK)) {
                 holder.txtPhone.setVisibility(View.GONE);
-            }else{
+            } else {
                 holder.txtPhone.setText(phoneNumber);
                 holder.txtPhone.setVisibility(View.VISIBLE);
             }
 
-            if(email.equals(Utils.BLANK)||email==null){
+            if (email.equals(Utils.BLANK) || email == null) {
                 holder.txtEmail.setVisibility(View.GONE);
-            }else{
+            } else {
                 holder.txtEmail.setText(email);
                 holder.txtEmail.setVisibility(View.VISIBLE);
             }
 
             String photo = Utils.BLANK;
-            for(int i=0;i<data.size();i++){
+            for (int i = 0; i < data.size(); i++) {
                 String as = dataRest.get(position).getRecord_id();
                 String bs = data.get(i).getId();
-                if(as.equals(bs)){
+                if (as.equals(bs)) {
                     photo = data.get(i).getPhotoThumbnail();
-                    if(!photo.equals(Utils.BLANK)){
+                    if (!photo.equals(Utils.BLANK)) {
                         Glide.with(a).load(photo).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.imgPhoto) {
                             @Override
                             protected void setResource(Bitmap resource) {
@@ -105,18 +105,24 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
                                 super.getView().setImageDrawable(circularBitmapDrawable);
                             }
                         });
-                    }else{
+                        holder.txtInitial.setVisibility(View.GONE);
+                    } else {
                         photo = Utils.BLANK;
                         Glide.clear(holder.imgPhoto);
                         holder.imgPhoto.setImageResource(R.drawable.img_placeholder);
+                        if(dataRest.get(position).getName().length()>0){
+                            String initial = dataRest.get(position).getName().substring(0, 1);
+                            holder.txtInitial.setText(initial);
+                        }
+                        holder.txtInitial.setVisibility(View.VISIBLE);
                     }
                     break;
                 }
             }
 
-            if(dataRest.get(position).is_active()){
+            if (dataRest.get(position).is_active()) {
                 setInviteEnable(holder.btnInvite, true);
-            }else{
+            } else {
                 setInviteEnable(holder.btnInvite, false);
             }
 
@@ -124,16 +130,16 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
 
             //holder.txtCredit.setText("+"+String.valueOf(dataRest.get(position).getCredit())+" credits");
 
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.d(TAG, e.toString());
         }
     }
 
-    public void setInviteEnable(Button btnInvite, boolean enable){
+    public void setInviteEnable(Button btnInvite, boolean enable) {
         btnInvite.setEnabled(enable);
-        if(enable){
+        if (enable) {
             btnInvite.setText(a.getString(R.string.in_invite));
-        }else {
+        } else {
             btnInvite.setText(a.getString(R.string.in_sent));
         }
     }
@@ -157,6 +163,8 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
         Button btnInvite;
         @Bind(R.id.txt_credit)
         TextView txtCredit;
+        @Bind(R.id.txt_initial)
+        TextView txtInitial;
 
         private InviteSelectedListener listener;
         private Activity a;
@@ -169,7 +177,7 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
             btnInvite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (listener != null){
+                    if (listener != null) {
                         btnInvite.setEnabled(false);
                         btnInvite.setText(a.getString(R.string.in_sent));
                         listener.onInviteSelected(contact);
