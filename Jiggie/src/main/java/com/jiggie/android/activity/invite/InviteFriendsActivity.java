@@ -320,24 +320,18 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
             if (contact.getPhone().size() == 0) {
                 //do nothing
             } else {
-                /*String phoneNumber = Utils.BLANK;
-                for (int i = 0; i < contact.getPhone().size(); i++) {
-                    if (i != (contact.getPhone().size() - 1)) {
-                        phoneNumber = contact.getPhone().get(i) + ";";
-                    } else {*/
-                /*String phoneNumber = Utils.BLANK;
+                String phoneNumber = Utils.BLANK;
+                Utils.d(TAG, "contact size " + contact.getPhone().size());
                 for(int i=0;i<contact.getPhone().size();i++){
-                    if(i!=(contact.getPhone().size()-1)){
-                        phoneNumber = contact.getPhone().get(i)+";";
+                    if(i != 0){
+                        phoneNumber += ";"+contact.getPhone().get(i);
                     }else{
-                    >>>>>>> 858d6e5f1843a2d41c1d893fa7765cd8d95513dd
                         phoneNumber = contact.getPhone().get(i);
                     }
                 }
-                openSMS(phoneNumber);*/
-                openSMS(contact.getPhone().get(0));
+                openSMS(phoneNumber);
+                //openSMS(contact.getPhone().get(0));
             }
-
         } else {
             PostInviteModel postInviteModel = new PostInviteModel(AccessToken.getCurrentAccessToken().getUserId(), new PostInviteModel.Contact(contact.getName(), contact.getEmail(), contact.getUniq_id()));
             InviteManager.loaderInvite(postInviteModel, new InviteManager.OnResponseListener() {
@@ -367,6 +361,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
         }
     }
     private void openSMS(String telp) {
+        Utils.d(TAG, "telp " + telp);
         Uri uri = Uri.parse("smsto:" + telp);
         Intent it = new Intent(Intent.ACTION_SENDTO, uri);
         it.putExtra("sms_body", InviteManager.msg_share);
