@@ -102,10 +102,12 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
             }
 
             String photo = Utils.BLANK;
+            boolean isFound = false;
             for (int i = 0; i < data.size(); i++) {
                 String as = dataRest.get(position).getRecord_id();
                 String bs = data.get(i).getId();
                 if (as.equals(bs)) {
+                    isFound = true;
                     photo = data.get(i).getPhotoThumbnail();
                     if (!photo.equals(Utils.BLANK)) {
                         Glide.with(a).load(photo).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.imgPhoto) {
@@ -129,6 +131,21 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
                     }
                     break;
                 }
+            }
+
+            if(!isFound){
+                photo = Utils.BLANK;
+                Glide.clear(holder.imgPhoto);
+                holder.imgPhoto.setImageResource(R.drawable.shape_cigrey);
+                if(dataRest.get(position).getName().length()>0){
+                    String initial = dataRest.get(position).getName().substring(0, 1);
+                    holder.txtInitial.setText(initial);
+                }
+                holder.txtInitial.setVisibility(View.VISIBLE);
+            }
+
+            for (int i = 0; i < dataRest.size(); i++) {
+
             }
 
             if (dataRest.get(position).is_active()) {
