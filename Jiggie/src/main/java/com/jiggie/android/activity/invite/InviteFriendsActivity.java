@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -238,12 +239,11 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
     public void onRefresh() {
         isLoading = true;
         swipeRefresh.setRefreshing(true);
-        showProgressDialog();
         getContactPhoneInvite();
         //swipeRefresh.setEnabled(false);
     }
 
-    private void showProgressDialog() {
+    /*private void showProgressDialog() {
         progressDialog = App.showProgressDialog(InviteFriendsActivity.this);
     }
 
@@ -252,7 +252,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
             progressDialog.dismiss();
         }
     }
-
+*/
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         /*if (verticalOffset==0) {
@@ -316,30 +316,22 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                             , contact.getName(), contact.getEmail(), contact.getPhone()));
         }
 
-        if (contact.getEmail().size() == 0) {
+        if (contact.getEmail().size() == 1 && contact.getEmail().get(0).isEmpty()) {
             if (contact.getPhone().size() == 0) {
                 //do nothing
             } else {
                 String phoneNumber = Utils.BLANK;
-                for (int i = 0; i < contact.getPhone().size(); i++) {
-                    if (i != (contact.getPhone().size() - 1)) {
-                        phoneNumber = contact.getPhone().get(i) + ";";
-                    } else {
-
-                    }
-                /*String phoneNumber = Utils.BLANK;
+                Utils.d(TAG, "contact size " + contact.getPhone().size());
                 for(int i=0;i<contact.getPhone().size();i++){
-                    if(i!=(contact.getPhone().size()-1)){
-                        phoneNumber = contact.getPhone().get(i)+";";
+                    if(i != 0){
+                        phoneNumber += ";"+contact.getPhone().get(i);
                     }else{
->>>>>>> 858d6e5f1843a2d41c1d893fa7765cd8d95513dd
                         phoneNumber = contact.getPhone().get(i);
                     }
                 }
-                openSMS(phoneNumber);*/
-                openSMS(contact.getPhone().get(0));
-            }}
-
+                openSMS(phoneNumber);
+                //openSMS(contact.getPhone().get(0));
+            }
         } else {
             PostInviteModel postInviteModel = new PostInviteModel(AccessToken.getCurrentAccessToken().getUserId(), new PostInviteModel.Contact(contact.getName(), contact.getEmail(), contact.getUniq_id()));
             InviteManager.loaderInvite(postInviteModel, new InviteManager.OnResponseListener() {
@@ -356,7 +348,20 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
         }
     }
 
+    private void showProgressDialog()
+    {
+        progressDialog = ProgressDialog.show(this, "", getResources().getString(R.string.wait) );
+    }
+
+    private void dismissProgressDialog()
+    {
+        if(progressDialog != null && progressDialog.isShowing())
+        {
+            progressDialog.dismiss();
+        }
+    }
     private void openSMS(String telp) {
+        Utils.d(TAG, "telp " + telp);
         Uri uri = Uri.parse("smsto:" + telp);
         Intent it = new Intent(Intent.ACTION_SENDTO, uri);
         it.putExtra("sms_body", InviteManager.msg_share);
@@ -364,6 +369,24 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
     }
 
     private void getContactPhoneInvite() {
+        showProgressDialog();
+        new AsyncTask<Void, Void, Void>()
+        {
+            @Override
+            protected Void doInBackground(Void... params) {
+                doGetContact();
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                //dismissProgressDialog();
+            }
+        }.execute();
+    }
+
+    private void doGetContact()
+    {
         ContentResolver cr = getContentResolver(); //Activity/Application android.content.Context
         Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
         if (cursor.moveToFirst()) {
@@ -410,8 +433,6 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                                 Log.e("Email", name + " " + email);
                             }
                             emailCur.close();
-
-
                             InviteManager.dataContact.add(new ContactPhoneModel(id, name, phoneNumber, email, photoThumbnail));
 
                             break;
@@ -419,7 +440,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                         pCur.close();
                     }
                 } catch (Exception e) {
-
+                    dismissProgressDialog();
                 }
             } while (cursor.moveToNext());
         }
@@ -446,7 +467,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                 public void onSuccess(Object object) {
                     ResponseContactModel responseContactModel = (ResponseContactModel) object;
 
-                    String sd = String.valueOf(new Gson().toJson(responseContactModel));
+                    //String sd = String.valueOf(new Gson().toJson(responseContactModel));
                     if (responseContactModel != null) {
                         //==============
                         try {
@@ -455,24 +476,26 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                             txtInviteDesc.setVisibility(View.VISIBLE);*/
                         } catch (Exception e) {
                             Log.d("total credit problem", e.toString());
+                            dismissProgressDialog();
                         }
 
                         InviteManager.msg_share = responseContactModel.getData().getMsg_share();
                         //==============
 
 
-                        for (int i = 0; i < responseContactModel.getData().getContact().size(); i++) {
+                        /*for (int i = 0; i < responseContactModel.getData().getContact().size(); i++) {
                             ResponseContactModel.Data.Contact c = responseContactModel.getData().getContact().get(i);
                             if (c.getEmail().size() == 1 && c.getEmail().get(0).equals("")) //fak kosong binatang
                             {
                                 //contact.getEmail().clear();
                                 responseContactModel.getData().getContact().get(i).getEmail().clear();
                             }
-                        }
+                        }*/
                         setAdapters(responseContactModel.getData().getContact(), InviteManager.dataContact);
                     } else {
                         isLoading = false;
                         swipeRefresh.setRefreshing(false);
+                        dismissProgressDialog();
                     }
                 }
 
@@ -480,6 +503,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                 public void onFailure(int responseCode, String message) {
                     isLoading = false;
                     swipeRefresh.setRefreshing(false);
+                    dismissProgressDialog();
                 }
             });
         }
