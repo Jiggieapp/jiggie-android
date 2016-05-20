@@ -92,6 +92,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
         relInviteAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                showProgressDialog();
                 if (getInviteCodeResultModel() != null) {
                     App.getInstance().trackMixPanelReferral(Utils.REFERRAL_PHONE_ALL
                             , getReferEventMixPanelModel(
@@ -108,12 +109,12 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                 InviteManager.loaderInviteAll(postInviteAllModel, new InviteManager.OnResponseListener() {
                     @Override
                     public void onSuccess(Object object) {
-
+                        dismissProgressDialog();
                     }
 
                     @Override
                     public void onFailure(int responseCode, String message) {
-
+                        dismissProgressDialog();
                     }
                 });
                 for (int i = 0; i < InviteManager.arrBtnInvite.size(); i++) {
