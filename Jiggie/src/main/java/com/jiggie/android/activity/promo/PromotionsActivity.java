@@ -64,7 +64,7 @@ public class PromotionsActivity extends ToolbarActivity {
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(edtCode.getWindowToken(), 0);
 
-                /*progressDialog = App.showProgressDialog(PromotionsActivity.this);
+                progressDialog = App.showProgressDialog(PromotionsActivity.this);
                 RedeemCodeManager.loaderRedeemCode(new PostRedeemCodeModel(AccessToken.getCurrentAccessToken().getUserId(), edtCode.getText().toString()), new RedeemCodeManager.OnResponseListener() {
                     @Override
                     public void onSuccess(Object object) {
@@ -88,7 +88,7 @@ public class PromotionsActivity extends ToolbarActivity {
                         Log.d("Redeem Code", message);
                         hideProgressDialog();
                     }
-                });*/
+                });
             }
         });
 
