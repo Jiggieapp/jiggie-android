@@ -175,7 +175,7 @@ public class ProductListActivity extends ToolbarActivity
                 super.onScrollStateChanged(recyclerView, newState);
             }
         });*/
-        executorService = Executors.newFixedThreadPool(1);
+        //executorService = Executors.newFixedThreadPool(1);
     }
 
     public void checkTokenHeader() {

@@ -620,7 +620,7 @@ public class MainActivity extends AppCompatActivity
         hideProgressDialog();
         AlertDialog.Builder al =  new AlertDialog.Builder(MainActivity.this)
                 .setTitle(R.string.credit_balance)
-                .setMessage("Your credit balance is " + StringUtility.getRupiahFormat(creditBalance))
+                .setMessage("Your credit balance is " + StringUtility.getCreditBalanceFormat(creditBalance))
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
