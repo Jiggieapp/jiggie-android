@@ -1,13 +1,17 @@
 package com.jiggie.android.activity.promo;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -16,8 +20,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.facebook.AccessToken;
+import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.invite.InviteFriendsActivity;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.manager.RedeemCodeManager;
 import com.jiggie.android.model.PostRedeemCodeModel;
@@ -37,6 +43,7 @@ public class PromotionsActivity extends ToolbarActivity {
     EditText edtCode;
     @Bind(R.id.btn_invite)
     Button btnInvite;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,20 +58,29 @@ public class PromotionsActivity extends ToolbarActivity {
         btnApply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressDialog = App.showProgressDialog(PromotionsActivity.this);
                 RedeemCodeManager.loaderRedeemCode(new PostRedeemCodeModel(AccessToken.getCurrentAccessToken().getUserId(), edtCode.getText().toString()), new RedeemCodeManager.OnResponseListener() {
                     @Override
                     public void onSuccess(Object object) {
                         try {
                             SuccessRedeemCodeModel successRedeemCodeModel = (SuccessRedeemCodeModel) object;
-                            tesShowPromoDialog(successRedeemCodeModel.getData().getRedeem_code().getMsg());
-                        } catch (Exception e) {
+                            if(successRedeemCodeModel.getResponse()== Utils.CODE_FAILED){
+                                showFailedPromoDialog(successRedeemCodeModel.getData().getRedeem_code().getMsg());
+                            }else{
+                                tesShowPromoDialog(successRedeemCodeModel.getData().getRedeem_code().getMsg());
+                            }
 
+                            hideProgressDialog();
+                        } catch (Exception e) {
+                            Log.d("Redeem Code", e.toString());
+                            hideProgressDialog();
                         }
                     }
 
                     @Override
                     public void onFailure(int responseCode, String message) {
-
+                        Log.d("Redeem Code", message);
+                        hideProgressDialog();
                     }
                 });
             }
@@ -98,6 +114,14 @@ public class PromotionsActivity extends ToolbarActivity {
 
             }
         });
+    }
+
+    private void hideProgressDialog()
+    {
+        if(progressDialog!=null && progressDialog.isShowing())
+        {
+            progressDialog.dismiss();
+        }
     }
 
     private void tesShowPromoDialog(String text) {
@@ -136,5 +160,19 @@ public class PromotionsActivity extends ToolbarActivity {
 
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
+    }
+
+    AlertDialog alertDialog = null;
+    private void showFailedPromoDialog(String text){
+        alertDialog = new AlertDialog.Builder(PromotionsActivity.this).setMessage(text)
+                .setMessage(text)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (alertDialog != null && alertDialog.isShowing())
+                            alertDialog.dismiss();
+                    }
+                }).create();
+        alertDialog.show();
     }
 }
