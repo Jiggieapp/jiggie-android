@@ -56,6 +56,7 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
             holder.txtName.setText(dataRest.get(position).getName());
 
             String phoneNumber = Utils.BLANK;
+            String displayedPhoneNumber = Utils.BLANK;
             for(int i=0;i<dataRest.get(position).getPhone().size();i++){
                 //phoneNumber = phoneNumber.concat(", "+dataRest.get(position).getPhone().get(i));
                 if(i==0){
@@ -63,7 +64,11 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
                 }else{
                     phoneNumber = phoneNumber.concat(", "+dataRest.get(position).getPhone().get(i));
                 }
+            }
 
+            if(dataRest.size() > 0)
+            {
+                displayedPhoneNumber = dataRest.get(position).getPhone().get(0);
             }
 
             String email = Utils.BLANK;
@@ -79,7 +84,8 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
             if(phoneNumber.equals(Utils.BLANK)){
                 holder.txtPhone.setVisibility(View.GONE);
             }else{
-                holder.txtPhone.setText(phoneNumber);
+                //holder.txtPhone.setText(phoneNumber);
+                holder.txtPhone.setText(displayedPhoneNumber);
                 holder.txtPhone.setVisibility(View.VISIBLE);
             }
 
