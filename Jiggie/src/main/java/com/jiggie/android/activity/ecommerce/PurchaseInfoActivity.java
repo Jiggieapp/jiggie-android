@@ -278,7 +278,8 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
         }
 
         if (productSummary.getDiscount().getData().size() > 0) {
-            float textSize = getResources().getDimension(R.dimen.font_body_size) / getResources().getDisplayMetrics().density;
+            //float textSize = getResources().getDimension(R.dimen.font_body_size) / getResources().getDisplayMetrics().density;
+            float textSize = 14;
             for (int i = 0; i < productSummary.getDiscount().getData().size(); i++) {
                 String title = productSummary.getDiscount().getData().get(i).getName();
                 String value = String.valueOf(productSummary.getDiscount().getData().get(i).getAmount_used());
