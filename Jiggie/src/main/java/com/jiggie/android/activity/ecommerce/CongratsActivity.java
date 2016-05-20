@@ -293,7 +293,8 @@ public class CongratsActivity extends ToolbarActivity {
                     }
 
                     SucScreenCCModel.Data.Success_screen.Discount discount = sucScreenCCModel.getData().getSuccess_screen().getDiscount();
-                    float textSize = getResources().getDimension(R.dimen.normal_text_size) / getResources().getDisplayMetrics().density;
+                    //float textSize = getResources().getDimension(R.dimen.normal_text_size) / getResources().getDisplayMetrics().density;
+                    float textSize = 12;
                     if (discount.getData().size() > 0) {
                         for (int i = 0; i < discount.getData().size(); i++) {
                             String title = discount.getData().get(i).getName();
