@@ -321,7 +321,6 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                 //do nothing
             } else {
                 String phoneNumber = Utils.BLANK;
-                Utils.d(TAG, "contact size " + contact.getPhone().size());
                 for(int i=0;i<contact.getPhone().size();i++){
                     if(i != 0){
                         phoneNumber += ";"+contact.getPhone().get(i);
@@ -479,9 +478,9 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                             dismissProgressDialog();
                         }
 
+                        Utils.d(TAG, "msg share " + responseContactModel.getData().getMsg_share());
                         InviteManager.msg_share = responseContactModel.getData().getMsg_share();
                         //==============
-
 
                         /*for (int i = 0; i < responseContactModel.getData().getContact().size(); i++) {
                             ResponseContactModel.Data.Contact c = responseContactModel.getData().getContact().get(i);
