@@ -81,6 +81,11 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
                 }
             }
 
+            if(dataRest.get(position).getEmail().size() > 0)
+            {
+                email = dataRest.get(position).getEmail().get(0);
+            }
+
             if (phoneNumber.equals(Utils.BLANK)) {
                 holder.txtPhone.setVisibility(View.GONE);
             }else{
@@ -115,7 +120,7 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
                     } else {
                         photo = Utils.BLANK;
                         Glide.clear(holder.imgPhoto);
-                        holder.imgPhoto.setImageResource(R.drawable.img_placeholder);
+                        holder.imgPhoto.setImageResource(R.drawable.shape_cigrey);
                         if(dataRest.get(position).getName().length()>0){
                             String initial = dataRest.get(position).getName().substring(0, 1);
                             holder.txtInitial.setText(initial);
