@@ -2,6 +2,7 @@ package com.jiggie.android.activity.promo;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -58,7 +60,11 @@ public class PromotionsActivity extends ToolbarActivity {
         btnApply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog = App.showProgressDialog(PromotionsActivity.this);
+
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(edtCode.getWindowToken(), 0);
+
+                /*progressDialog = App.showProgressDialog(PromotionsActivity.this);
                 RedeemCodeManager.loaderRedeemCode(new PostRedeemCodeModel(AccessToken.getCurrentAccessToken().getUserId(), edtCode.getText().toString()), new RedeemCodeManager.OnResponseListener() {
                     @Override
                     public void onSuccess(Object object) {
@@ -82,7 +88,7 @@ public class PromotionsActivity extends ToolbarActivity {
                         Log.d("Redeem Code", message);
                         hideProgressDialog();
                     }
-                });
+                });*/
             }
         });
 
@@ -112,8 +118,11 @@ public class PromotionsActivity extends ToolbarActivity {
                     s.replace(0, a.length(), b);
                 }
 
+                checkEnability();
             }
         });
+
+        checkEnability();
     }
 
     private void hideProgressDialog()
@@ -174,5 +183,20 @@ public class PromotionsActivity extends ToolbarActivity {
                     }
                 }).create();
         alertDialog.show();
+    }
+
+    private void checkEnability() {
+        String code = edtCode.getText().toString();
+        boolean isItEnable = true;
+
+        if (code.equals(Utils.BLANK)) {
+            isItEnable = false;
+        }
+
+        if (isItEnable) {
+            btnApply.setEnabled(true);
+        } else {
+            btnApply.setEnabled(false);
+        }
     }
 }
