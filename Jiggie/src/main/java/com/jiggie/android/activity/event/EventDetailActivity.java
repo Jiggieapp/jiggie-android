@@ -63,6 +63,8 @@ import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.GuestModel;
 import com.jiggie.android.model.ShareLinkModel;
 import com.jiggie.android.model.likeModel;
+import com.viewpagerindicator.CirclePageIndicator;
+import com.viewpagerindicator.TitlePageIndicator;
 
 import org.json.JSONObject;
 
@@ -103,8 +105,10 @@ import rx.schedulers.Schedulers;
 public class EventDetailActivity extends ToolbarActivity implements SwipeRefreshLayout.OnRefreshListener, AppBarLayout.OnOffsetChangedListener, OnMapReadyCallback {
     @Bind(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbarLayout;
-    @Bind(R.id.imagePagerIndicator)
-    HListView imagePagerIndicator;
+    /*@Bind(R.id.imagePagerIndicator)
+    HListView imagePagerIndicator;*/
+    @Bind(R.id.titles)
+    CirclePageIndicator titlePageIndicator;
     @Bind(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefresh;
     @Bind(R.id.txtExternalSite)
@@ -185,33 +189,32 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        super.setContentView(R.layout.activity_event_detail);
-        super.bindView();
+            super.onCreate(savedInstanceState);
+            super.setContentView(R.layout.activity_event_detail);
+            super.bindView();
 
-        EventBus.getDefault().register(this);
-        eventDetail = new EventDetailModel.Data.EventDetail();
+            EventBus.getDefault().register(this);
+            eventDetail = new EventDetailModel.Data.EventDetail();
 
-        Intent a = super.getIntent();
-        event_id = a.getStringExtra(Common.FIELD_EVENT_ID);
-        eventDetail.set_id(event_id);
-        event_name = a.getStringExtra(Common.FIELD_EVENT_NAME);
-        event_venue_name = a.getStringExtra(Common.FIELD_EVENT_VENUE_NAME);
-        event_tags = a.getStringArrayListExtra(Common.FIELD_EVENT_TAGS);
-        event_day = a.getStringExtra(Common.FIELD_EVENT_DAY);
-        event_end = a.getStringExtra(Common.FIELD_EVENT_DAY_END);
-        event_pics = a.getStringArrayListExtra(Common.FIELD_EVENT_PICS);
-        event_description = a.getStringExtra(Common.FIELD_EVENT_DESCRIPTION);
-        count_like = a.getIntExtra(Common.FIELD_EVENT_LIKE, 0);
-        count_like_new = count_like;
-        lowest_price = a.getIntExtra(Common.FIELD_EVENT_LOWEST_PRICE, 0);
+            Intent a = super.getIntent();
+            event_id = a.getStringExtra(Common.FIELD_EVENT_ID);
+            eventDetail.set_id(event_id);
+            event_name = a.getStringExtra(Common.FIELD_EVENT_NAME);
+            event_venue_name = a.getStringExtra(Common.FIELD_EVENT_VENUE_NAME);
+            event_tags = a.getStringArrayListExtra(Common.FIELD_EVENT_TAGS);
+            event_day = a.getStringExtra(Common.FIELD_EVENT_DAY);
+            event_end = a.getStringExtra(Common.FIELD_EVENT_DAY_END);
+            event_pics = a.getStringArrayListExtra(Common.FIELD_EVENT_PICS);
+            event_description = a.getStringExtra(Common.FIELD_EVENT_DESCRIPTION);
+            count_like = a.getIntExtra(Common.FIELD_EVENT_LIKE, 0);
+            count_like_new = count_like;
+            lowest_price = a.getIntExtra(Common.FIELD_EVENT_LOWEST_PRICE, 0);
 
+            this.imagePagerIndicatorAdapter = new ImagePagerIndicatorAdapter(super.getSupportFragmentManager(), this.imageViewPager);
+            //this.imagePagerIndicator.setAdapter(this.imagePagerIndicatorAdapter.getIndicatorAdapter());
+            titlePageIndicator.setViewPager(this.imageViewPager);
 
-
-        this.imagePagerIndicatorAdapter = new ImagePagerIndicatorAdapter(super.getSupportFragmentManager(), this.imageViewPager);
-        this.imagePagerIndicator.setAdapter(this.imagePagerIndicatorAdapter.getIndicatorAdapter());
-
-        if (a != null) {
+            if (a != null) {
             this.txtVenue.setText("");
             if (event_venue_name != null)
             {

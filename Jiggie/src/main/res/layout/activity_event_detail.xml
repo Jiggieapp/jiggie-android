@@ -36,13 +36,22 @@
                         android:layout_height="match_parent"
                         app:borderWidth="0dp" />
 
-                    <it.sephiroth.android.library.widget.HListView
+                    <!--<it.sephiroth.android.library.widget.HListView
                         android:id="@+id/imagePagerIndicator"
                         android:layout_width="wrap_content"
                         android:layout_height="5dp"
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginBottom="@dimen/padding_standard_half" />
+                        android:layout_marginBottom="@dimen/padding_standard_half"
+                        android:visibility="gone"/>
+-->
+                    <com.viewpagerindicator.CirclePageIndicator
+                        android:id="@+id/titles"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:padding="@dimen/padding_standard_half"/>
 
                     <TextView
                         android:id="@+id/txtPriceTitle"
@@ -57,7 +66,7 @@
                         android:id="@+id/txtPriceFill"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_above="@id/imagePagerIndicator"
+                        android:layout_above="@id/titles"
                         android:layout_marginBottom="4dp"
                         android:layout_marginLeft="@dimen/padding_standard"
                         android:text="Rp1.400.000"

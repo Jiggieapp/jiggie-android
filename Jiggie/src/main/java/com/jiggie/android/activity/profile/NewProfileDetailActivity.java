@@ -244,7 +244,8 @@ public class NewProfileDetailActivity extends ToolbarActivity
 
     @Override
     public void onFailure() {
-        Toast.makeText(this, )
+        Toast.makeText(this, getResources().getString(R.string.socket_timeout_exception), Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     @Override
