@@ -276,9 +276,18 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
     }*/
 
 
+    private String getMsgShare()
+    {
+        return AccountManager.getMsgShareFromPreference();
+    }
+
+    private void setMsgShare(String token) {
+        AccountManager.setMsgShareFromPreference(token);
+    }
+
     private InviteCodeResultModel getInviteCodeResultModel() {
         final String inv = AccountManager.getInviteCodeFromPreference();
-        if (inv.isEmpty())
+        if (inv.isEmpty() || inv == null)
             return null;
         else {
             inviteCodeResultModel
@@ -363,9 +372,12 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
         Utils.d(TAG, "telp " + telp);
         Uri uri = Uri.parse("smsto:" + telp);
         Intent it = new Intent(Intent.ACTION_SENDTO, uri);
-        it.putExtra("sms_body", InviteManager.msg_share);
+        it.putExtra("sms_body", /*InviteManager.msg_share*/
+                getMsgShare());
         startActivity(it);
     }
+
+
 
     private void getContactPhoneInvite() {
         showProgressDialog();
@@ -478,8 +490,9 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                             dismissProgressDialog();
                         }
 
-                        Utils.d(TAG, "msg share " + responseContactModel.getData().getMsg_share());
-                        InviteManager.msg_share = responseContactModel.getData().getMsg_share();
+                        //InviteManager.msg_share = responseContactModel.getData().getMsg_share();
+                        Utils.d(TAG, responseContactModel.getData().getMsg_share());
+                        setMsgShare(responseContactModel.getData().getMsg_share());
                         //==============
 
                         /*for (int i = 0; i < responseContactModel.getData().getContact().size(); i++) {

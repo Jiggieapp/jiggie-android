@@ -813,6 +813,21 @@ public class AccountManager extends BaseManager {
         return accessToken;
     }
 
+    public static void setMsgShareFromPreference(String token) {
+        App.getInstance()
+                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                .edit()
+                .putString(Utils.INVITE_CODE_MSG_SHARE, token)
+                .apply();
+    }
+
+    public static String getMsgShareFromPreference() {
+        final String accessToken = App.getInstance()
+                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                .getString(Utils.INVITE_CODE_MSG_SHARE, "");
+        return accessToken;
+    }
+
     public static void setInviteCodeToPreferences(String token) {
         App.getInstance()
                 .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
