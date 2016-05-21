@@ -156,7 +156,7 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
 
             InviteManager.arrBtnInvite.add(holder.btnInvite);
 
-            //holder.txtCredit.setText("+"+String.valueOf(dataRest.get(position).getCredit())+" credits");
+            holder.txtCredit.setText("+"+String.valueOf(dataRest.get(position).getCredit())+" credits");
 
         } catch (Exception e) {
             Utils.d(TAG, e.toString());

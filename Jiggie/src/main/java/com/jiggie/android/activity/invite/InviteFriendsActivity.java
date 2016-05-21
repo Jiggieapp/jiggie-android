@@ -200,8 +200,8 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
             onRefresh();
         } else {
             try {
-                /*txtInviteDesc.setText(InviteManager.total_credit);
-                txtInviteDesc.setVisibility(View.VISIBLE);*/
+                txtInviteDesc.setText(InviteManager.total_credit);
+                txtInviteDesc.setVisibility(View.VISIBLE);
             } catch (Exception e) {
                 Log.d("total credit problem", e.toString());
             }
@@ -413,22 +413,41 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                 String photoThumbnail = Utils.BLANK;
 
                 try {
+                    String[] projection = new String[]
+                            { ContactsContract.Data.CONTACT_ID
+                                    , ContactsContract.Data.RAW_CONTACT_ID
+                                    , ContactsContract.Data.DISPLAY_NAME_PRIMARY
+                                    , ContactsContract.Data.PHOTO_THUMBNAIL_URI
+                                    //, ContactsContract.Data.LOOKUP_KEY
+                                    , ContactsContract.Data.MIMETYPE
+                                    , ContactsContract.Data.DATA1
+                                    , ContactsContract.Data.DATA2
+                                    , ContactsContract.Data.DATA3 };
                     if (Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-                        Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id},
+                        Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI
+                                , projection, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id},
                                 ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
                         /*Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id},
                                 null);*/
+
+                        String[] tempGila = new String[]
+                                {
+                                    ContactsContract.Data.DATA1
+                                    , ContactsContract.Data.DATA2
+                                    , ContactsContract.Data.DATA3 };
                         while (pCur.moveToNext()) {
                             //String contactNumber = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                             //alContacts.add(contactNumber);
                             name = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                             //email = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.MIMETYPE));
                             if (Integer.parseInt(cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-
-                                Cursor Cur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id}, null);
+                                Cursor Cur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, tempGila, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[]{id}, null);
                                 while (Cur.moveToNext()) {
                                     String mPhone = Cur.getString(Cur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                                     phoneNumber.add(mPhone);
+                                    String emailll = Cur.getString(Cur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+                                    if(!emailll.isEmpty())
+                                        email.add(emailll);
                                 }
                                 Cur.close();
                             }
@@ -438,13 +457,16 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                                 photoThumbnail = Utils.BLANK;
                             }
 
-                            Cursor emailCur = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?", new String[]{id}, null);
+                            /*Cursor emailCur = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI
+                                    , tempGila
+                                    , ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?"
+                                    , new String[]{id}
+                                    , null);
                             while (emailCur.moveToNext()) {
                                 String mEmail = emailCur.getString(emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
                                 email.add(mEmail);
-                               //og.e("Email", name + " " + email);
                             }
-                            emailCur.close();
+                            emailCur.close();*/
                             InviteManager.dataContact.add(new ContactPhoneModel(id, name, phoneNumber, email, photoThumbnail));
 
                             break;
@@ -457,7 +479,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
             } while (cursor.moveToNext());
         }
 
-        String responses = new Gson().toJson(InviteManager.dataContact);
+        //String responses = new Gson().toJson(InviteManager.dataContact);
 
         for (int i = 0; i < InviteManager.dataContact.size(); i++) {
             /*ArrayList<String> arrEmail = new ArrayList<>();
@@ -469,7 +491,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                     InviteManager.dataContact.get(i).getPhoneNumber()));
         }
 
-        String ds = new Gson().toJson(contactToPost);
+        //String ds = new Gson().toJson(contactToPost);
 
         if (contactToPost.size() > 0) {
             final PostContactModel postContactModel = new PostContactModel(AccessToken.getCurrentAccessToken().getUserId()
@@ -484,8 +506,8 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                         //==============
                         try {
                             InviteManager.total_credit = "For " + String.valueOf(responseContactModel.getData().getTot_credit()) + " Credits";
-                            /*txtInviteDesc.setText(InviteManager.total_credit);
-                            txtInviteDesc.setVisibility(View.VISIBLE);*/
+                            txtInviteDesc.setText(InviteManager.total_credit);
+                            txtInviteDesc.setVisibility(View.VISIBLE);
                         } catch (Exception e) {
                             Log.d("total credit problem", e.toString());
                             dismissProgressDialog();

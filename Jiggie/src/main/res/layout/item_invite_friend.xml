@@ -95,7 +95,7 @@
             android:layout_marginTop="@dimen/padding_standard_half"
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
-            android:visibility="gone"
+            android:visibility="visible"
             />
 
     </LinearLayout>

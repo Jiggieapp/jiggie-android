@@ -58,7 +58,7 @@
                     android:layout_marginTop="@dimen/padding_standard_half"
                     android:layout_marginBottom="@dimen/padding_standard_half"
                     android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
+                    android:layout_alignParentTop="true"
                     android:textStyle="bold"/>
                 <TextView
                     android:id="@+id/txt_invite_desc"
