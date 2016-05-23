@@ -519,6 +519,68 @@ public class App extends Application {
     }
     //END OF TRACK MIXPANEL REFERRAL============
 
+    //Track MIXPANEL PICTURE UPLOAD======================
+    public void trackMixPanelPictureUp(String eventName, String urlImage) {
+
+        //USER PART-----------
+        LoginModel login = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin();
+        SettingModel settingModel = AccountManager.loadSetting() == null ? null : AccountManager.loadSetting();
+        setPeopleMixpanelPictureUp(login, settingModel);
+        //END OF USER PART---------
+
+        //EVENT PART--------------
+        setEventMixpanelPictureUp(eventName, urlImage);
+        //END OF EVENT PART-------
+
+    }
+
+    private void setEventMixpanelPictureUp(String eventName, String urlImage) {
+        SimpleJSONObject json = new SimpleJSONObject();
+
+        json.putString("Image URL", urlImage);
+        getInstanceMixpanel().track(eventName, json);
+    }
+
+    public void setPeopleMixpanelPictureUp(LoginModel login, SettingModel settingModel) {
+        getInstanceMixpanel().getPeople().identify(mixpanelAPI.getDistinctId());
+
+        SimpleJSONObject json = new SimpleJSONObject();
+        if (login != null) {
+            json.putString("FB ID", login.getFb_id());
+            json.putString("First Name", login.getUser_first_name());
+            json.putString("Last Name", login.getUser_last_name());
+            json.putString("Device", Build.DEVICE);
+            json.putString("Birthday", login.getBirthday());
+            json.putString("City Country", login.getBirthday());
+
+            final String location = login == null ? null : login.getLocation();
+            String[] locations = null;
+            try {
+                locations = TextUtils.isEmpty(location) ? new String[]{"", ""} : location.split(",");
+            } catch (Exception e) {
+
+            }
+            try {
+                json.putString("City Country", locations[0].trim() + " " + locations[1].trim());
+            } catch (Exception e) {
+                json.putString("City Country", locations[0].trim());
+            }
+            json.putString("Email", login.getEmail());
+
+            if (settingModel != null) {
+                json.putString("Gender", settingModel.getData().getGender());
+                json.putString("Gender Interest", settingModel.getData().getGender_interest());
+            }
+
+            json.putString("Name and FB ID", login.getUser_first_name() + "_" + login.getUser_last_name() + "_" + login.getFb_id());
+        }
+        json.putString("App Version", getVersionCode(this));
+        json.putString("OS", "Android");
+        json.putString("OS Version", this.getDeviceOSName());
+        getInstanceMixpanel().getPeople().set(json);
+    }
+    //END OF MIXPANEL PICTURE UPLOAD======================
+
     public void setSuperPropertiesMixpanel(LoginModel login, SettingModel settingModel) {
         SimpleJSONObject json = new SimpleJSONObject();
         if (login != null) {

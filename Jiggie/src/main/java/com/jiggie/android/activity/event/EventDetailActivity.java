@@ -56,6 +56,7 @@ import com.jiggie.android.fragment.SocialTabFragment;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.manager.GuestManager;
+import com.jiggie.android.manager.InviteManager;
 import com.jiggie.android.manager.ShareManager;
 import com.jiggie.android.manager.TooltipsManager;
 import com.jiggie.android.model.Common;
@@ -80,6 +81,7 @@ import java.net.URLEncoder;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
@@ -183,8 +185,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     private File file;
     private int count_like, count_like_new;
     boolean canClickLike = false;
-    Timer timerLike;
-    TimerTask timerTask;
+    Timer timerLike, timerInvite;
+    TimerTask timerTask, timerTaskInvite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -365,6 +367,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         }
 
         cekLike();
+        runInvite();
     }
 
     @Override
@@ -376,6 +379,9 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             @Override
             public void run() {
                 cekCounter();
+                /*if(InviteManager.validateTimeInvite(Calendar.getInstance().getTimeInMillis())){
+                    startActivity(new Intent(EventDetailActivity.this, InviteFriendsActivity.class));
+                }*/
             }
         }, 1000);
 
@@ -384,13 +390,13 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     private void cekCounter()
     {
         final int counter = AccountManager.getCounterEvent();
-        if(counter+1 < 2)
+        if(counter+1 < 4)
         {
             AccountManager.setCounterEvent(counter+1);
         }
-        else if(counter+1 == 2)
+        else if(counter+1 == 4)
         {
-            AccountManager.setCounterEvent(3);
+            AccountManager.setCounterEvent(5);
             startActivity(new Intent(this, InviteFriendsActivity.class));
         }
     }
@@ -840,8 +846,21 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             }
         };
         timerLike.schedule(timerTask, 3000);
+    }
 
-
+    private void runInvite(){
+        if (timerInvite == null) {
+            timerInvite = new Timer();
+            timerTaskInvite = new TimerTask() {
+                @Override
+                public void run() {
+                    startActivity(new Intent(EventDetailActivity.this, InviteFriendsActivity.class));
+                }
+            };
+            timerInvite.schedule(timerTaskInvite, 1*60*60*1000);
+        }else{
+            Log.d("timer already", "yes");
+        }
     }
 
     @OnClick(R.id.btnBook)

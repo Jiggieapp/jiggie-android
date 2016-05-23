@@ -141,6 +141,7 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
                     //memberInfo.getPhotos().remove(position);
                     Utils.d(TAG, "url " + ((SuccessUploadModel) object).getUrl());
                     memberInfo.getPhotos().add(position, ((SuccessUploadModel) object).getUrl());
+                    App.getInstance().trackMixPanelPictureUp(Utils.PICTURE_UPLOAD, ((SuccessUploadModel) object).getUrl());
                     profileDetailView.onFinishUpload(position);
                 }
 
@@ -161,6 +162,7 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
             final String url = memberInfo.getPhotos().get(position - 1);
             Utils.d(TAG, "url " + url);
             doDelete(url, position - 1);
+            App.getInstance().trackMixPanelPictureUp(Utils.PICTURE_DELETE, url);
         }
         else
         {

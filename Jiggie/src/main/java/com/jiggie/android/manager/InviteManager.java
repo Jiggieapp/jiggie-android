@@ -2,6 +2,7 @@ package com.jiggie.android.manager;
 
 import android.widget.Button;
 
+import com.jiggie.android.App;
 import com.jiggie.android.api.InviteInterface;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.callback.CustomCallback;
@@ -14,6 +15,7 @@ import com.jiggie.android.model.ResponseContactModel;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -29,6 +31,11 @@ public class InviteManager extends BaseManager {
     public static ArrayList<ResponseContactModel.Data.Contact> dataRest = new ArrayList<ResponseContactModel.Data.Contact>();
     public static String msg_share = Utils.BLANK;
     public static String total_credit = Utils.BLANK;
+    public static final String latestTimeInvite = "time_invite";
+    public static final String repeatInvite = "repeat_invite";
+    public static final String INVITE_DAY = "day";
+    public static final String INVITE_WEEK = "week";
+    public static final String INVITE_MONTH = "month";
 
     private static ReferEventMixpanelModel referEventMixpanelModel;
 
@@ -183,4 +190,86 @@ public class InviteManager extends BaseManager {
         public void onSuccess(Object object);
         public void onFailure(int responseCode, String message);
     }
+
+    public static boolean validateTimeInvite(long longTimeInMilis){
+        boolean gotoInviteFriends = false;
+        long longTimeInMilisSaved = App.getSharedPreferences().getLong(latestTimeInvite, 0);
+        if(longTimeInMilisSaved==0){
+            App.getSharedPreferences().edit().putLong(latestTimeInvite, longTimeInMilis).putString(repeatInvite, INVITE_DAY).commit();
+            gotoInviteFriends = false;
+        }else{
+            Calendar calSaved = Calendar.getInstance();
+            calSaved.setTimeInMillis(longTimeInMilisSaved);
+
+            Calendar calNow = Calendar.getInstance();
+            calNow.setTimeInMillis(longTimeInMilis);
+
+            int daySaved = calSaved.get(Calendar.DAY_OF_MONTH);
+            int dayNow = calNow.get(Calendar.DAY_OF_MONTH);
+            int dayGap = dayNow - daySaved;
+
+            int monthSaved = calSaved.get(Calendar.MONTH);
+            int monthNow = calNow.get(Calendar.MONTH);
+            int monthGap = monthNow - monthSaved;
+
+            if(monthGap>0){
+
+                if(monthGap==1){
+                    int dayMonthGap = (calSaved.getActualMaximum(Calendar.DAY_OF_MONTH) - daySaved) + dayNow;
+                    if(dayMonthGap>=calNow.getActualMaximum(Calendar.DAY_OF_MONTH)){
+                        App.getSharedPreferences().edit().putLong(latestTimeInvite, longTimeInMilis).putString(repeatInvite, INVITE_MONTH).commit();
+                        gotoInviteFriends = true;
+                    }else{
+                        gotoInviteFriends = false;
+                    }
+                }else{
+                    App.getSharedPreferences().edit().putLong(latestTimeInvite, longTimeInMilis).putString(repeatInvite, INVITE_MONTH).commit();
+                    gotoInviteFriends = true;
+                }
+
+
+
+            }else{
+                if(dayGap>=7){
+                    if(App.getSharedPreferences().getString(repeatInvite, Utils.BLANK).equals(INVITE_WEEK)){
+                        App.getSharedPreferences().edit().putLong(latestTimeInvite, longTimeInMilis).putString(repeatInvite, INVITE_MONTH).commit();
+                        gotoInviteFriends = true;
+                    }else{
+                        //do nothing
+                        gotoInviteFriends = false;
+                    }
+
+                }else{
+
+                    int addedHour = 0;
+                    if(dayGap!=0){
+                        addedHour = dayGap*24;
+                    }
+
+                    int hourSaved = addedHour + calSaved.get(Calendar.HOUR);
+                    int hourNow = calNow.get(Calendar.HOUR);
+                    int hourGap = hourSaved - hourNow;
+
+                    if(hourGap>=24){
+                        if(App.getSharedPreferences().getString(repeatInvite, Utils.BLANK).equals(INVITE_DAY)){
+                            App.getSharedPreferences().edit().putLong(latestTimeInvite, longTimeInMilis).putString(repeatInvite, INVITE_WEEK).commit();
+                            gotoInviteFriends = true;
+                        }
+                    }else{
+                        //do nothing
+                        gotoInviteFriends = false;
+                    }
+
+                }
+            }
+
+        }
+
+        return gotoInviteFriends;
+    }
+
+    public static void clearTimeInvite(){
+        App.getSharedPreferences().edit().putLong(latestTimeInvite, 0).commit();
+    }
+
 }
