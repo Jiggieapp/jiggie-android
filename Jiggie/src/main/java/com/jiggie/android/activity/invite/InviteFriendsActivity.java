@@ -120,7 +120,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
 
 
                 ArrayList<PostInviteAllModel.Contact> contacts = new ArrayList<PostInviteAllModel.Contact>();
-                for (int i = 0; i < /*InviteManager.dataContact.size()*/ 2; i++) {
+                for (int i = 0; i < InviteManager.dataContact.size() /*2*/; i++) {
                     PostInviteAllModel.Contact postContactModel;
                     if(InviteManager.dataContact.get(i).getPhone().get(0).contains("@")
                             && InviteManager.dataContact.get(i).getPhone().get(0).contains("."))
@@ -251,8 +251,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
     DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
 
     private void startingData() {
-        if (InviteManager.dataContact.size() == 0 || getInviteCodeResultModel() == null || getInviteCodeResultModel().getData().getInvite_code().getRewards_inviter() == null
-                || getInviteCodeResultModel().getData().getInvite_code().getRewards_inviter().isEmpty()) {
+        if (InviteManager.dataContact.size() == 0) {
             //swipeRefresh.setEnabled(true);
             onRefresh();
         } else {
@@ -300,7 +299,8 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
     @Override
     public void onRefresh() {
         isLoading = true;
-        if(getInviteCodeResultModel() == null || getInviteCodeResultModel().getData().getInvite_code().getRewards_inviter() == null
+        if(getInviteCodeResultModel() == null
+                || getInviteCodeResultModel().getData().getInvite_code().getRewards_inviter() == null
                 || getInviteCodeResultModel().getData().getInvite_code().getRewards_inviter().isEmpty())
         {
             showProgressDialog();
@@ -328,11 +328,11 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
         } else {
             swipeRefresh.setEnabled(false);
         }*/
-        if (InviteManager.dataRest.size() == 0) {
-            //swipeRefresh.setEnabled(true);
+        /*if (InviteManager.dataRest.size() == 0) {
+            swipeRefresh.setEnabled(true);
         } else {
-            //swipeRefresh.setEnabled(false);
-        }
+            swipeRefresh.setEnabled(false);
+        }*/
 
     }
 
@@ -509,17 +509,6 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
             int phoneContactID = cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID));
            // int contactID = cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts._ID));
             String photoThumbnail = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI));
-            //String emailll = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-            /*if (!isAlreadyExist(contactNumber)) {
-                phoneNumber.add(contactNumber);
-                InviteManager.dataContact.add(new ContactPhoneModel
-                                (phoneContactID + ""
-                                , contactName
-                                , phoneNumber
-                                , new ArrayList<String>()
-                                , photoThumbnail));
-            }
-*/
             if (emlRecsHS.add(contactNumber.toLowerCase())) {
                 //ArrayList<String> email = new ArrayList<>();
                 phoneNumber.add(contactNumber);
@@ -535,12 +524,6 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
         }
 
         ArrayList<ContactPhoneModel> email = getNameEmailDetails();
-        /*for(int i=0;i<email.size();i++)
-        {
-            phoneNumber = new ArrayList<String>();
-            phoneNumber.add(email.get(i));
-            InviteManager.dataContact.add(new ContactPhoneModel(phoneContactID + "", "", phoneNumber, email, ""));
-        }*/
 
         InviteManager.dataContact.addAll(email);
         Collections.sort(InviteManager.dataContact);
@@ -604,11 +587,11 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
 
     }
 
-    private boolean isAlreadyExist(final String number) {
+    /*private boolean isAlreadyExist(final String number) {
         if (number.isEmpty())
             return true;
         final int size = InviteManager.dataContact.size();
-        if (size > 0 /*&& InviteManager.dataContact.get(size - 1).getPhone().size() > 0*/) {
+        if (size > 0 *//*&& InviteManager.dataContact.get(size - 1).getPhone().size() > 0*//*) {
             if (InviteManager.dataContact.get(size - 1).getPhone().get(0).equals(number)) {
                 return true;
             }
@@ -628,7 +611,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
             return false;
         }
         return false;
-    }
+    }*/
 
 
     /*ContentResolver cr = context.getContentResolver();
@@ -826,24 +809,6 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
 
     @Override
     public void onInviteSelected(ContactPhoneModel contact, final int  position) {
-        //openSMS(contact.getPhone().get(0));
-
-        /*if (contact.getPhone().size() == 1 && contact.getEmail().get(0).isEmpty()) {
-            if (contact.getPhone().size() == 0) {
-                //do nothing
-            } else {
-                String phoneNumber = Utils.BLANK;
-                for(int i=0;i<contact.getPhone().size();i++){
-                    if(i != 0){
-                        phoneNumber += ";"+contact.getPhone().get(i);
-                    }else{
-                        phoneNumber = contact.getPhone().get(i);
-                    }
-                }
-                openSMS(phoneNumber);
-                //openSMS(contact.getPhone().get(0));
-            }
-        } else {*/
         PostInviteModel.Contact contactToSend;
         if(contact.getPhone().get(0).contains("@") && contact.getPhone().get(0).contains(".")) //email
         {
@@ -899,6 +864,6 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
     private void setInviteCodeResultModel(InviteCodeResultModel inviteCodeResultModel) {
         AccountManager.setInviteCodeToPreferences(new Gson().toJson(inviteCodeResultModel).toString());
         //inviteCodeResultModel = getInviteCodeResultModel();
-        startingData();
+        //startingData();
     }
 }

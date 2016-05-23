@@ -65,7 +65,7 @@ public class InviteFriendsNewAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemCount() {
-        return data.size() + 1;
+        return data.size();
     }
 
     @Override
