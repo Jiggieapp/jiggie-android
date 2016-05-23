@@ -58,37 +58,37 @@ public class InviteCodeResultModel {
 
         public class Invite_code {
             private String msg_share;
-
             private String msg_invite;
-
             private String invite_url;
-
             private String code;
+            private String rewards_inviter;
+
+            public String getRewards_inviter() {
+                return rewards_inviter;
+            }
+
+            public void setRewards_inviter(String rewards_inviter) {
+                this.rewards_inviter = rewards_inviter;
+            }
 
             public String getMsg_share() {
                 return msg_share;
             }
-
             public void setMsg_share(String msg_share) {
                 this.msg_share = msg_share;
             }
-
             public String getMsg_invite() {
                 return msg_invite;
             }
-
             public void setMsg_invite(String msg_invite) {
                 this.msg_invite = msg_invite;
             }
-
             public String getInvite_url() {
                 return invite_url;
             }
-
             public void setInvite_url(String invite_url) {
                 this.invite_url = invite_url;
             }
-
             public String getCode() {
                 return code;
             }

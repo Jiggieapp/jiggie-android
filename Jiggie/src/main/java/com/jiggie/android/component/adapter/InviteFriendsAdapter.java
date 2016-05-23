@@ -37,7 +37,10 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
     private Activity a;
     private static final String TAG = InviteFriendsAdapter.class.getSimpleName();
 
-    public InviteFriendsAdapter(Activity a, ArrayList<ContactPhoneModel> data, ArrayList<ResponseContactModel.Data.Contact> dataRest, InviteSelectedListener listener) {
+    public InviteFriendsAdapter(Activity a
+            , ArrayList<ContactPhoneModel> data
+            , ArrayList<ResponseContactModel.Data.Contact> dataRest
+            , InviteSelectedListener listener) {
         this.listener = listener;
         this.data = data;
         this.a = a;
@@ -144,10 +147,6 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
                 holder.txtInitial.setVisibility(View.VISIBLE);
             }
 
-            /*for (int i = 0; i < dataRest.size(); i++) {
-
-            }*/
-
             if (dataRest.get(position).is_active()) {
                 setInviteEnable(holder.btnInvite, true);
             } else {
@@ -155,9 +154,7 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
             }
 
             InviteManager.arrBtnInvite.add(holder.btnInvite);
-
             holder.txtCredit.setText("+"+String.valueOf(dataRest.get(position).getCredit())+" credits");
-
         } catch (Exception e) {
             Utils.d(TAG, e.toString());
         }

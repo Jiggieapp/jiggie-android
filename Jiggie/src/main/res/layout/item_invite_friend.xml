@@ -77,13 +77,13 @@
         <Button
             android:id="@+id/btn_invite"
             android:layout_width="88dp"
-            android:layout_height="32dp"
+            android:layout_height="28dp"
             android:background="@drawable/selector_invite_fr"
             android:enabled="true"
             android:text="@string/in_invite"
             android:textColor="@android:color/white"
             android:textAllCaps="true"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:layout_marginLeft="@dimen/padding_standard"
             android:layout_marginRight="@dimen/padding_standard"/>
 
@@ -92,10 +92,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/in_credit"
-            android:layout_marginTop="@dimen/padding_standard_half"
+            android:layout_marginTop="@dimen/padding_standard_small"
             android:layout_gravity="center_horizontal"
             android:gravity="center_horizontal"
             android:visibility="visible"
+            android:textSize="14sp"
             />
 
     </LinearLayout>

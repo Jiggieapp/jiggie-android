@@ -164,9 +164,6 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
     private void setInviteCodeResultModel(InviteCodeResultModel inviteCodeResultModel) {
         AccountManager.setInviteCodeToPreferences(new Gson().toJson(inviteCodeResultModel).toString());
         inviteCodeResultModel = getInviteCodeResultModel();
-        /*InviteManager.referEventMixpanelModel = getReferEventMixPanelModel(
-                inviteCodeResultModel.getData().getInvite_code().getCode()
-                , inviteCodeResultModel.getData().getInvite_code().getInvite_url());*/
         initView();
     }
 

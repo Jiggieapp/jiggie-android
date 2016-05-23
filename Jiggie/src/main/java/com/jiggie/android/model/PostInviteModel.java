@@ -17,12 +17,14 @@ public final class PostInviteModel {
     public static final class Contact {
         public final String name;
         public final ArrayList<String> email;
+        public final ArrayList<String> phone;
         public final String uniq_id;
 
-        public Contact(String name, ArrayList<String> email, String uniq_id){
+        public Contact(String name, ArrayList<String> email, String uniq_id, ArrayList<String> phone){
             this.name = name;
             this.email = email;
             this.uniq_id = uniq_id;
+            this.phone = phone;
         }
     }
 }

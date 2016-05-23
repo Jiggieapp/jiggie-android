@@ -37,6 +37,8 @@ public class InviteManager extends BaseManager {
     }
 
     private static InviteInterface getInstance(){
+        if(AccountManager.getAccessTokenFromPreferences().isEmpty())
+            inviteInterface = null;
         if(inviteInterface == null)
             initInviteService();
 

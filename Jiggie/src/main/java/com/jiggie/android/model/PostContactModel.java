@@ -8,9 +8,9 @@ import java.util.ArrayList;
 public final class PostContactModel {
     public final String fb_id;
     public final String device_type;
-    public final ArrayList<Contact> contact;
+    public final ArrayList<ContactPhoneModel> contact;
 
-    public PostContactModel(String fb_id, String device_type, ArrayList<Contact> contact){
+    public PostContactModel(String fb_id, String device_type, ArrayList<ContactPhoneModel> contact){
         this.fb_id = fb_id;
         this.device_type = device_type;
         this.contact = contact;

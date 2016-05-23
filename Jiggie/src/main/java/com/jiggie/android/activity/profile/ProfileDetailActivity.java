@@ -100,7 +100,7 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
 
         if (fb_id == null) {
             fb_id = AccessToken.getCurrentAccessToken().getUserId();
-            //fb_id = "10204456507851351"; //richard
+            //fb_id = "10153452897043547"; //richard
             //fb_id = "10153418311072858"; //wandy
             isMe = true;
         }

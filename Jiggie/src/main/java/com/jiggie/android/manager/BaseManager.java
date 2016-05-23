@@ -12,6 +12,7 @@ import com.jiggie.android.model.SuccessTokenModel;
 
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Callback;
 import okhttp3.Interceptor;
@@ -61,7 +62,10 @@ public abstract class BaseManager implements Interceptor {
                                 .build();
                         return chain.proceed(request);
                     }
-                }).build();
+                })
+                .readTimeout(30, TimeUnit.SECONDS)
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .build();
         return httpClient;
     }
 
@@ -108,6 +112,7 @@ public abstract class BaseManager implements Interceptor {
             retrofit = null;
         if (retrofit == null) {
             OkHttpClient okHttpClient = getHttpClient();
+
             retrofit = new Retrofit.Builder()
                     .baseUrl(Utils.BASE_URL)
                     //.addCallAdapterFactory(RxJavaCallAdapterFactory.create())
