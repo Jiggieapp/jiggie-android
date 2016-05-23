@@ -11,6 +11,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -33,6 +34,7 @@ import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.PurchaseHistoryActivity;
 import com.jiggie.android.activity.invite.InviteCodeActivity;
+import com.jiggie.android.activity.invite.InviteFriendsActivity;
 import com.jiggie.android.activity.profile.NewProfileDetailActivity;
 import com.jiggie.android.activity.profile.ProfileSettingActivity;
 import com.jiggie.android.activity.promo.PromotionsActivity;
@@ -46,6 +48,7 @@ import com.jiggie.android.fragment.SignInFragment;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.manager.CreditBalanceManager;
+import com.jiggie.android.manager.InviteManager;
 import com.jiggie.android.manager.ShareManager;
 import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.manager.TooltipsManager;
@@ -106,7 +109,6 @@ public class MainActivity extends AppCompatActivity
             //TOOLTIP PART===============
             //TooltipsManager.clearTimeTooltip();
             TooltipsManager.validateTime(Calendar.getInstance().getTimeInMillis());
-
             //END OF TOOLTIP PART===============
         }
 
@@ -130,6 +132,7 @@ public class MainActivity extends AppCompatActivity
             Toast.makeText(this, str, Toast.LENGTH_LONG).show();
         }
 
+
     }
 
     @Override
@@ -141,6 +144,8 @@ public class MainActivity extends AppCompatActivity
         if(isRefresh){
             EventBus.getDefault().post(EventsFragment.TAG);
         }*/
+
+
     }
 
     @Override
@@ -381,6 +386,21 @@ public class MainActivity extends AppCompatActivity
                         showRateDialog();
                     }
                 }
+
+                //INVITE FRIENDS PART===========================
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //cekCounter();
+                        if(AccountManager.getCounterEvent()==5){
+                            if (InviteManager.validateTimeInvite(Calendar.getInstance().getTimeInMillis())) {
+                                startActivity(new Intent(MainActivity.this, InviteFriendsActivity.class));
+                            }
+                        }
+                    }
+                }, 1000);
+                //END OF INVITE FRIENDS PART===========================
             }
         } else if (requestCode == REQUEST_GOOGLE_PLAY_SERVICES)
             super.onBackPressed();
