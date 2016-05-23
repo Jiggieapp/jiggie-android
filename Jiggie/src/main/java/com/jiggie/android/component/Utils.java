@@ -218,6 +218,9 @@ public class Utils {
     public static final String REFERRAL_MESSAGE = "Share Referral Message";
     public static final String REFERRAL_COPY = "Share Referral Copy";
 
+    public static final String PICTURE_UPLOAD = "Picture Upload";
+    public static final String PICTURE_DELETE = "Picture Delete";
+
     public static final String TAG = Utils.class.getSimpleName();
     //AppsFlyer properties----
     public static String AFinstall_type = "";
