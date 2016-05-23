@@ -842,6 +842,8 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
             @Override
             public void onFailure(int responseCode, String message) {
                 //failed invite
+                InviteManager.arrBtnInvite2.set(position, true);
+                adapterNew.notifyDataSetChanged();
                 dismissProgressDialog();
             }
         });
