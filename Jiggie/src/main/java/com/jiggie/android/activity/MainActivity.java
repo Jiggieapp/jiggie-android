@@ -145,6 +145,20 @@ public class MainActivity extends AppCompatActivity
             EventBus.getDefault().post(EventsFragment.TAG);
         }*/
 
+        /*if (App.getInstance().isUserLoggedIn()) {
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //cekCounter();
+                    if (AccountManager.getCounterEvent() == 5) {
+                        if (InviteManager.validateTimeInvite(Calendar.getInstance().getTimeInMillis())) {
+                            startActivity(new Intent(MainActivity.this, InviteFriendsActivity.class));
+                        }
+                    }
+                }
+            }, 1000);
+        }*/
 
     }
 
@@ -388,7 +402,7 @@ public class MainActivity extends AppCompatActivity
                 }
 
                 //INVITE FRIENDS PART===========================
-                Handler handler = new Handler();
+                /*Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -399,7 +413,7 @@ public class MainActivity extends AppCompatActivity
                             }
                         }
                     }
-                }, 1000);
+                }, 1000);*/
                 //END OF INVITE FRIENDS PART===========================
             }
         } else if (requestCode == REQUEST_GOOGLE_PLAY_SERVICES)

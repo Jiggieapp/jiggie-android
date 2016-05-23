@@ -223,14 +223,20 @@ public class InviteManager extends BaseManager {
                         App.getSharedPreferences().edit().putLong(latestTimeInvite, longTimeInMilis).putString(repeatInvite, INVITE_MONTH).commit();
                         gotoInviteFriends = true;
                     }else{
-                        gotoInviteFriends = false;
+
+                        if(App.getSharedPreferences().getString(repeatInvite, Utils.BLANK).equals(INVITE_WEEK)){
+                            App.getSharedPreferences().edit().putLong(latestTimeInvite, longTimeInMilis).putString(repeatInvite, INVITE_MONTH).commit();
+                            gotoInviteFriends = true;
+                        }else{
+                            //do nothing
+                            gotoInviteFriends = false;
+                        }
                     }
+
                 }else{
                     App.getSharedPreferences().edit().putLong(latestTimeInvite, longTimeInMilis).putString(repeatInvite, INVITE_MONTH).commit();
                     gotoInviteFriends = true;
                 }
-
-
 
             }else{
                 if(dayGap>=7){
