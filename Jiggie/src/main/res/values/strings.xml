@@ -434,8 +434,8 @@
     <string name="promo_share">SHARE YOUR PROMO CODE</string>
     <string name="promo_code_desc">Send friends 100 points towards a free ticket and you get 100 points when they book a ticket.</string>
     <string name="promo_fb">Share referral link on Facebook</string>
-    <string name="promo_cp">Share referral link on Contact Phone</string>
-    <string name="promo_msg">Message friend for free credits</string>
+    <string name="promo_cp">Share Link with Phone Contacts</string>
+    <string name="promo_msg">Message friends for free credits</string>
     <string name="promo_copy">Copy your referral link</string>
     <string name="promo_menu">Promotions</string>
     <!--END OF PROMO PART-->
