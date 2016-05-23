@@ -120,12 +120,26 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
 
 
                 ArrayList<PostInviteAllModel.Contact> contacts = new ArrayList<PostInviteAllModel.Contact>();
-                for (int i = 0; i < InviteManager.dataContact.size(); i++) {
-                    contacts.add(new PostInviteAllModel.Contact
-                            (InviteManager.dataContact.get(i).getName()
-                                    , InviteManager.dataContact.get(i).getPhone()
-                                    , InviteManager.dataContact.get(i).getEmail()
-                                    , InviteManager.dataContact.get(i).getId()));
+                for (int i = 0; i < /*InviteManager.dataContact.size()*/ 2; i++) {
+                    PostInviteAllModel.Contact postContactModel;
+                    if(InviteManager.dataContact.get(i).getPhone().get(0).contains("@")
+                            && InviteManager.dataContact.get(i).getPhone().get(0).contains("."))
+                    {
+                        postContactModel = new PostInviteAllModel.Contact
+                                (InviteManager.dataContact.get(i).getName()
+                                        , new ArrayList<String>()
+                                        , InviteManager.dataContact.get(i).getPhone()
+                                        , InviteManager.dataContact.get(i).getId());
+                    }
+                    else
+                    {
+                        postContactModel = new PostInviteAllModel.Contact
+                                (InviteManager.dataContact.get(i).getName()
+                                        , InviteManager.dataContact.get(i).getPhone()
+                                        , new ArrayList<String>()
+                                        , InviteManager.dataContact.get(i).getId());
+                    }
+                    contacts.add(postContactModel);
                 }
                 PostInviteAllModel postInviteAllModel
                         = new PostInviteAllModel(AccessToken.getCurrentAccessToken().getUserId(), contacts);
@@ -141,8 +155,9 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                     }
                 });
                 for (int i = 0; i < InviteManager.arrBtnInvite.size(); i++) {
-                    adapter.setInviteEnable(InviteManager.arrBtnInvite.get(i), false);
+                    adapterNew.setInviteEnable(InviteManager.arrBtnInvite.get(i), false);
                 }
+
             }
         });
         appBar.addOnOffsetChangedListener(this);
@@ -449,8 +464,10 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                             * Integer.parseInt(getInviteCodeResultModel().getData().getInvite_code().getRewards_inviter());
                     txtInviteDesc.setText("+Rp. " + formatter.format(totalCredit));
                     txtInviteDesc.setVisibility(View.VISIBLE);
+                    InviteManager.arrBtnInvite2 = new ArrayList<Boolean>(Collections.nCopies(InviteManager.dataContact.size(), true));
+                    Collections.fill(InviteManager.arrBtnInvite2, Boolean.TRUE);
                 }
-                    isLoading = false;
+                isLoading = false;
                 //swipeRefresh.setRefreshing(false);
                 //swipeRefresh.setEnabled(false);
                 dismissProgressDialog();
@@ -808,7 +825,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
 
 
     @Override
-    public void onInviteSelected(ContactPhoneModel contact) {
+    public void onInviteSelected(ContactPhoneModel contact, final int  position) {
         //openSMS(contact.getPhone().get(0));
 
         /*if (contact.getPhone().size() == 1 && contact.getEmail().get(0).isEmpty()) {
@@ -851,6 +868,8 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
             public void onSuccess(Object object) {
                 //success invite
                 //Utils.d(TAG, "success ");
+                InviteManager.arrBtnInvite2.set(position, false);
+                adapterNew.notifyDataSetChanged();
                 Toast.makeText(InviteFriendsActivity.this, "Your invitation has been succesfully sent", Toast.LENGTH_SHORT).show();
                 dismissProgressDialog();
             }

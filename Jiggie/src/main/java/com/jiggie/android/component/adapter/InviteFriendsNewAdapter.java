@@ -53,6 +53,7 @@ public class InviteFriendsNewAdapter extends RecyclerView.Adapter<RecyclerView.V
 
 
     public InviteFriendsNewAdapter(Activity a, ArrayList<ContactPhoneModel> data, InviteSelectedListener listener) {
+        this.a = a;
         this.data = data;
         this.listener = listener;
 
@@ -64,17 +65,20 @@ public class InviteFriendsNewAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return data.size() + 1;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holderr, int position) {
         if(holderr instanceof InviteFriendsNewAdapter.ViewHolderBody)
         {
+            position = position - 1;
             InviteFriendsNewAdapter.ViewHolderBody holder = (InviteFriendsNewAdapter.ViewHolderBody) holderr;
             try {
+                holder.position = position;
                 holder.contact = data.get(position);
                 holder.txtName.setText(data.get(position).getName());
+
 
                 String phoneNumber = Utils.BLANK;
                 String displayedPhoneNumber = Utils.BLANK;
@@ -163,22 +167,19 @@ public class InviteFriendsNewAdapter extends RecyclerView.Adapter<RecyclerView.V
                     holder.txtInitial.setVisibility(View.VISIBLE);
                 }
 
-                for (int i = 0; i < data.size(); i++) {
+                /*for (int i = 0; i < data.size(); i++) {
 
+                }*/
+
+                if (InviteManager.arrBtnInvite2.get(position)) {
+                    setInviteEnable(holder.btnInvite, true);
+                } else {
+                    setInviteEnable(holder.btnInvite, false);
                 }
-
-            /*if (data.get(position).is_active()) {
-                setInviteEnable(holder.btnInvite, true);
-            } else {
-                setInviteEnable(holder.btnInvite, false);
-            }*/
                 holder.btnInvite.setVisibility(View.VISIBLE);
-
-                InviteManager.arrBtnInvite.add(holder.btnInvite);
-
+                //InviteManager.arrBtnInvite.get(position).setEnabled(holder.btnInvite.isEnabled());
 
                 //= new Gson().fromJson(inv, InviteCodeResultModel.class);
-
 
                 holder.txtCredit.setText("+Rp. " + formatter.format(Double.parseDouble
                         (inviteCodeResultModel.getData().getInvite_code().getRewards_inviter())));
@@ -191,7 +192,7 @@ public class InviteFriendsNewAdapter extends RecyclerView.Adapter<RecyclerView.V
         else
         {
             ViewHolderHeader holderHeader = (ViewHolderHeader) holderr;
-            final String textHeader = String.format("You have %d contacts not yet on Jiggie%nEarn up to Rp. %s in free credits"
+            final String textHeader = String.format("You have %d contacts not yet on Jiggie.%nEarn up to Rp. %s in free credit!"
                     , getItemCount(), formatter.format( Double.parseDouble(inviteCodeResultModel.getData().getInvite_code().getRewards_inviter()) * getItemCount()));
             /*final String textHeader = "You have  "+ getItemCount() + " contacts not yet on Jiggie \n"
                     + "Earn up to Rp. " + formatter.format(Double.parseDouble(inviteCodeResultModel.getData().getInvite_code().getRewards_inviter()) * getItemCount())
@@ -232,7 +233,6 @@ public class InviteFriendsNewAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     static class ViewHolderBody extends RecyclerView.ViewHolder {
-
         @Bind(R.id.img_photo)
         ImageView imgPhoto;
         @Bind(R.id.txt_name)
@@ -248,6 +248,8 @@ public class InviteFriendsNewAdapter extends RecyclerView.Adapter<RecyclerView.V
         @Bind(R.id.txt_initial)
         TextView txtInitial;
 
+        int position;
+
         private InviteSelectedListener listener;
         private Activity a;
         private ContactPhoneModel contact;
@@ -260,9 +262,9 @@ public class InviteFriendsNewAdapter extends RecyclerView.Adapter<RecyclerView.V
                 @Override
                 public void onClick(View v) {
                     if (listener != null) {
-                        //btnInvite.setEnabled(false);
+                        btnInvite.setEnabled(false);
                         //btnInvite.setText(a.getString(R.string.in_sent));
-                        listener.onInviteSelected(contact);
+                        listener.onInviteSelected(contact, position);
                     }
                 }
             });
@@ -270,7 +272,7 @@ public class InviteFriendsNewAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     public interface InviteSelectedListener {
-        void onInviteSelected(ContactPhoneModel contact);
+        void onInviteSelected(ContactPhoneModel contact,int position);
     }
 
     @Override

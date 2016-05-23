@@ -64,7 +64,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         final Chat item = this.items.get(position);
         if(holderr instanceof ChatAdapter.ViewHolderBody)
         {
-            ChatAdapter.ViewHolderBody holder = (ChatAdapter.ViewHolderBody) holderr;
+            ChatAdapter .ViewHolderBody holder = (ChatAdapter.ViewHolderBody) holderr;
             try {
 
                 holder.txtMessage.setText(item.getMessage().trim());
@@ -91,7 +91,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         urlImage = App.getFacebookImage(toId, width);
                     }
                     //---------
-                    Utils.d(TAG, "profileImage " + urlImage);
 
                     Glide.with(this.activity).load(urlImage).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.imageView) {
                         @Override
