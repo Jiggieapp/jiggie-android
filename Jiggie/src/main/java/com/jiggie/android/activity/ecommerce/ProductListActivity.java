@@ -38,6 +38,11 @@ import com.jiggie.android.view.HeaderView;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -90,6 +95,8 @@ public class ProductListActivity extends ToolbarActivity
     ImageButton backButton;
 
     private boolean isHideToolbarView = false;
+    //private Future<?> futureTask;
+    //private ExecutorService executorService;
 
     /*@Override
     protected int getThemeResource() {
@@ -168,7 +175,7 @@ public class ProductListActivity extends ToolbarActivity
                 super.onScrollStateChanged(recyclerView, newState);
             }
         });*/
-
+        //executorService = Executors.newFixedThreadPool(1);
     }
 
     public void checkTokenHeader() {
@@ -235,8 +242,9 @@ public class ProductListActivity extends ToolbarActivity
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
-        Utils.d(TAG, "iscancelled destroy");
-        CommerceManager.doCancel();
+        //CommerceManager.doCancel();
+        //executorService.shutdownNow();
+        //futureTask.cancel(true);
     }
 
     @Override
@@ -255,7 +263,9 @@ public class ProductListActivity extends ToolbarActivity
         loadData(eventId);
     }
 
-    private void loadData(String eventId) {
+
+    private void loadData(final String eventId)
+    {
         swipeRefresh.setRefreshing(true);
         CommerceManager.loaderProductList(eventId, new CommerceManager.OnResponseListener() {
             @Override

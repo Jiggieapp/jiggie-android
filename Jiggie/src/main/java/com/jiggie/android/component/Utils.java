@@ -97,6 +97,7 @@ public class Utils {
     public static final String ACCESS_TOKEN = "access_token";
     public static final String COUNTER_EVENT = "counter_event";
     public static final String INVITE_CODE = "invite_code";
+    public static final String INVITE_CODE_MSG_SHARE = "msg_share";
     public static final String PREFERENCE_TAGLIST = "taglist";
     public static final String TAGLIST_MODEL = "taglist_model";
     public static final String IS_FIRST_RUN = "is_first_run";

@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,61 +28,60 @@ import butterknife.ButterKnife;
 /**
  * Created by LTE on 5/12/2016.
  */
-public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdapter.ViewHolder> {
+public class InviteFriendsNewAdapter extends RecyclerView.Adapter<InviteFriendsNewAdapter.ViewHolder> {
 
     private ArrayList<ContactPhoneModel> data = new ArrayList<>();
-    private ArrayList<ResponseContactModel.Data.Contact> dataRest = new ArrayList<>();
     private InviteSelectedListener listener;
     private Activity a;
-    private static final String TAG = InviteFriendsAdapter.class.getSimpleName();
+    private static final String TAG = InviteFriendsNewAdapter.class.getSimpleName();
 
-    public InviteFriendsAdapter(Activity a, ArrayList<ContactPhoneModel> data, ArrayList<ResponseContactModel.Data.Contact> dataRest, InviteSelectedListener listener) {
-        this.listener = listener;
+    
+    public InviteFriendsNewAdapter(Activity a, ArrayList<ContactPhoneModel> data, InviteSelectedListener listener)
+    {
         this.data = data;
-        this.a = a;
-        this.dataRest = dataRest;
+        this.listener = listener;
     }
 
     @Override
     public int getItemCount() {
-        return dataRest.size();
+        return data.size();
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         try {
-            holder.contact = dataRest.get(position);
-            holder.txtName.setText(dataRest.get(position).getName());
+            holder.contact = data.get(position);
+            holder.txtName.setText(data.get(position).getName());
 
             String phoneNumber = Utils.BLANK;
             String displayedPhoneNumber = Utils.BLANK;
-            for(int i=0;i<dataRest.get(position).getPhone().size();i++){
-                //phoneNumber = phoneNumber.concat(", "+dataRest.get(position).getPhone().get(i));
+            for(int i=0;i<data.get(position).getPhoneNumber().size();i++){
+                //phoneNumber = phoneNumber.concat(", "+data.get(position).getPhoneNumber().get(i));
                 if (i == 0) {
-                    phoneNumber = dataRest.get(position).getPhone().get(i);
+                    phoneNumber = data.get(position).getPhoneNumber().get(i);
                 } else {
-                    phoneNumber = phoneNumber.concat(", " + dataRest.get(position).getPhone().get(i));
+                    phoneNumber = phoneNumber.concat(", " + data.get(position).getPhoneNumber().get(i));
                 }
             }
 
-            if(dataRest.get(position).getPhone().size() > 0)
+            if(data.get(position).getPhoneNumber().size() > 0)
             {
-                displayedPhoneNumber = dataRest.get(position).getPhone().get(0);
+                displayedPhoneNumber = data.get(position).getPhoneNumber().get(0);
             }
 
             String email = Utils.BLANK;
-            for (int i = 0; i < dataRest.get(position).getEmail().size(); i++) {
-                //email = email.concat(", "+dataRest.get(position).getEmail().get(i));
+            for (int i = 0; i < data.get(position).getEmail().size(); i++) {
+                //email = email.concat(", "+data.get(position).getEmail().get(i));
                 if (i == 0) {
-                    email = dataRest.get(position).getEmail().get(i);
+                    email = data.get(position).getEmail().get(i);
                 } else {
-                    email = email.concat(", " + dataRest.get(position).getEmail().get(i));
+                    email = email.concat(", " + data.get(position).getEmail().get(i));
                 }
             }
 
-            if(dataRest.get(position).getEmail().size() > 0)
+            if(data.get(position).getEmail().size() > 0)
             {
-                email = dataRest.get(position).getEmail().get(0);
+                email = data.get(position).getEmail().get(0);
             }
 
             if (phoneNumber.equals(Utils.BLANK)) {
@@ -94,7 +92,7 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
                 holder.txtPhone.setVisibility(View.VISIBLE);
             }
 
-            if (email.equals(Utils.BLANK) || email == null) {
+            if (email == null || email.equals(Utils.BLANK)) {
                 holder.txtEmail.setVisibility(View.GONE);
             } else {
                 holder.txtEmail.setText(email);
@@ -104,7 +102,7 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
             String photo = Utils.BLANK;
             boolean isFound = false;
             for (int i = 0; i < data.size(); i++) {
-                String as = dataRest.get(position).getRecord_id();
+                String as = data.get(position).getId();
                 String bs = data.get(i).getId();
                 if (as.equals(bs)) {
                     isFound = true;
@@ -123,8 +121,8 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
                         photo = Utils.BLANK;
                         Glide.clear(holder.imgPhoto);
                         holder.imgPhoto.setImageResource(R.drawable.shape_cigrey);
-                        if(dataRest.get(position).getName().length()>0){
-                            String initial = dataRest.get(position).getName().substring(0, 1);
+                        if(data.get(position).getName().length()>0){
+                            String initial = data.get(position).getName().substring(0, 1);
                             holder.txtInitial.setText(initial);
                         }
                         holder.txtInitial.setVisibility(View.VISIBLE);
@@ -137,26 +135,28 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
                 photo = Utils.BLANK;
                 Glide.clear(holder.imgPhoto);
                 holder.imgPhoto.setImageResource(R.drawable.shape_cigrey);
-                if(dataRest.get(position).getName().length()>0){
-                    String initial = dataRest.get(position).getName().substring(0, 1);
+                if(data.get(position).getName().length()>0){
+                    String initial = data.get(position).getName().substring(0, 1);
                     holder.txtInitial.setText(initial);
                 }
                 holder.txtInitial.setVisibility(View.VISIBLE);
             }
 
-            /*for (int i = 0; i < dataRest.size(); i++) {
+            for (int i = 0; i < data.size(); i++) {
 
-            }*/
+            }
 
-            if (dataRest.get(position).is_active()) {
+            /*if (data.get(position).is_active()) {
                 setInviteEnable(holder.btnInvite, true);
             } else {
                 setInviteEnable(holder.btnInvite, false);
-            }
+            }*/
+            holder.btnInvite.setVisibility(View.VISIBLE);
 
             InviteManager.arrBtnInvite.add(holder.btnInvite);
 
-            holder.txtCredit.setText("+"+String.valueOf(dataRest.get(position).getCredit())+" credits");
+            //holder.txtCredit.setText("+"+String.valueOf(data.get(position).getCredit())+" credits");
+            holder.txtCredit.setVisibility(View.GONE);
 
         } catch (Exception e) {
             Utils.d(TAG, e.toString());
@@ -196,7 +196,7 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
 
         private InviteSelectedListener listener;
         private Activity a;
-        private ResponseContactModel.Data.Contact contact;
+        private ContactPhoneModel contact;
 
         public ViewHolder(View itemView, final InviteSelectedListener listener, final Activity a) {
             super(itemView);
@@ -206,8 +206,8 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
                 @Override
                 public void onClick(View v) {
                     if (listener != null) {
-                        btnInvite.setEnabled(false);
-                        btnInvite.setText(a.getString(R.string.in_sent));
+                        //btnInvite.setEnabled(false);
+                        //btnInvite.setText(a.getString(R.string.in_sent));
                         listener.onInviteSelected(contact);
                     }
                 }
@@ -216,7 +216,7 @@ public class InviteFriendsAdapter extends RecyclerView.Adapter<InviteFriendsAdap
     }
 
     public interface InviteSelectedListener {
-        void onInviteSelected(ResponseContactModel.Data.Contact contact);
+        void onInviteSelected(ContactPhoneModel contact);
     }
 
 }

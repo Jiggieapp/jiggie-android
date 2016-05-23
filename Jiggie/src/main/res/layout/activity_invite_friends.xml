@@ -18,6 +18,12 @@
             app:titleTextColor="@android:color/white"
             android:id="@+id/toolbar"
             android:elevation="4dp">
+
+        <ProgressBar
+            android:id="@+id/contact_progress"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:visibility="gone"/>
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
@@ -58,7 +64,7 @@
                     android:layout_marginTop="@dimen/padding_standard_half"
                     android:layout_marginBottom="@dimen/padding_standard_half"
                     android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
+                    android:layout_alignParentTop="true"
                     android:textStyle="bold"/>
                 <TextView
                     android:id="@+id/txt_invite_desc"

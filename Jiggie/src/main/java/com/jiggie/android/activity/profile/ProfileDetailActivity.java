@@ -28,6 +28,7 @@ import com.jiggie.android.model.GuestModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.MemberInfoModel;
 import com.jiggie.android.model.SettingModel;
+import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -43,12 +44,14 @@ import it.sephiroth.android.library.widget.HListView;
 public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeObserver.OnGlobalLayoutListener, SwipeRefreshLayout.OnRefreshListener, AppBarLayout.OnOffsetChangedListener {
     @Bind(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbarLayout;
-    @Bind(R.id.imagePagerIndicator)
-    HListView imagePagerIndicator;
+    /*@Bind(R.id.imagePagerIndicator)
+    HListView imagePagerIndicator;*/
     @Bind(R.id.swipe_refresh)
     SwipeRefreshLayout refreshLayout;
     @Bind(R.id.imageViewPager)
     ViewPager imageViewPager;
+    @Bind(R.id.titles)
+    CirclePageIndicator titlePageIndicator;
     @Bind(R.id.txtDescription)
     TextView txtDescription;
     @Bind(R.id.txtLocation)
@@ -82,7 +85,8 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
         EventBus.getDefault().register(this);
 
         this.pagerIndicatorAdapter = new ImagePagerIndicatorAdapter(super.getSupportFragmentManager(), this.imageViewPager);
-        this.imagePagerIndicator.setAdapter(this.pagerIndicatorAdapter.getIndicatorAdapter());
+        //this.imagePagerIndicator.setAdapter(this.pagerIndicatorAdapter.getIndicatorAdapter());
+        titlePageIndicator.setViewPager(this.imageViewPager);
         this.collapsingToolbarLayout.setTitleEnabled(false);
         this.refreshLayout.getViewTreeObserver().addOnGlobalLayoutListener(this);
         this.refreshLayout.setOnRefreshListener(this);

@@ -155,7 +155,7 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
 
     @Override
     public void onImageClick(int position) {
-        if (memberInfo.getPhotos().size() >= position) //ada isinya
+        if (memberInfo != null && memberInfo.getPhotos() != null && memberInfo.getPhotos().size() >= position) //ada isinya
         {
             profileDetailView.makeTransparent(position - 1);
             final String url = memberInfo.getPhotos().get(position - 1);

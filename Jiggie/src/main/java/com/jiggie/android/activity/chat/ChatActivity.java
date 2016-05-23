@@ -430,6 +430,7 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
 
     private void fetchData()
     {
+        Utils.d(TAG, "fetch data");
         ChatManager.loaderChatConversations(AccessToken.getCurrentAccessToken().getUserId(), toId, ChatManager.FROM_LOAD);
     }
 

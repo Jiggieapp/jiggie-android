@@ -609,21 +609,30 @@ public class HomeFragment extends Fragment
 
     public static void sendLocationInfo() {
         //PART of postLocation
-        PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), SocialManager.lat, SocialManager.lng);
         //PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), "-6.2216706", "106.8401574");
+        final String userId = AccessToken.getCurrentAccessToken().getUserId();
+        if(userId != null && SocialManager.lat != null && SocialManager.lng != null)
+        {
+            //PART of postLocation
+            PostLocationModel postLocationModel = new PostLocationModel(userId, SocialManager.lat, SocialManager.lng);
+            //PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), "-6.2216706", "106.8401574");
+            /*String responses = new Gson().toJson(postLocationModel);
+            Utils.d("res", responses);*/
 
-        SocialManager.loaderLocation(postLocationModel, new SocialManager.OnResponseListener() {
-            @Override
-            public void onSuccess(Object object) {
-                Utils.d("location", "post location success");
-            }
+            SocialManager.loaderLocation(postLocationModel, new SocialManager.OnResponseListener() {
+                @Override
+                public void onSuccess(Object object) {
+                    Utils.d("location", "post location success");
+                }
 
-            @Override
-            public void onFailure(int responseCode, String message) {
+                @Override
+                public void onFailure(int responseCode, String message) {
 
-            }
-        });
-        //end here
+                }
+            });
+            //end here
+        }
+
     }
 
     @Override
@@ -871,7 +880,13 @@ public class HomeFragment extends Fragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getActivity().unregisterReceiver(fetchChatReceiver);
+        try {
+            getActivity().unregisterReceiver(fetchChatReceiver);
+        }
+        catch(IllegalArgumentException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private BroadcastReceiver fetchChatReceiver = new BroadcastReceiver() {

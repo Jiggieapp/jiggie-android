@@ -193,7 +193,7 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
             final String textInvite = inviteCodeResultModel.getData().getInvite_code().getMsg_share()
-                    + "\n" + inviteCodeResultModel.getData().getInvite_code().getMsg_invite();
+                    /*+ "\n" + inviteCodeResultModel.getData().getInvite_code().getMsg_invite()*/;
             sendIntent.putExtra(Intent.EXTRA_TEXT, textInvite);
             sendIntent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.lets_go_out));
             sendIntent.setType("text/plain");
