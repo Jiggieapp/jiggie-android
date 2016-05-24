@@ -1135,10 +1135,13 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 }
             });*/
         } else {
-            progressDialog = App.showProgressDialog(this);
-            ShareManager.loaderShareEvent(eventDetail.get_id()
-                    , AccessToken.getCurrentAccessToken().getUserId()
-                    , URLEncoder.encode(eventDetail.getVenue_name(), "UTF-8"));
+            if(eventDetail.getVenue_name() != null)
+            {
+                progressDialog = App.showProgressDialog(this);
+                ShareManager.loaderShareEvent(eventDetail.get_id()
+                        , AccessToken.getCurrentAccessToken().getUserId()
+                        , URLEncoder.encode(eventDetail.getVenue_name(), "UTF-8"));
+            }
         }
     }
 
