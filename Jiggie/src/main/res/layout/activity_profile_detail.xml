@@ -46,6 +46,8 @@
                     android:layout_width="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="@dimen/padding_standard"
+                    android:layout_marginRight="@dimen/padding_standard"
                     android:paddingLeft="@dimen/padding_standard"
                     android:paddingRight="@dimen/padding_standard"
                     android:paddingTop="@dimen/padding_standard_half"
