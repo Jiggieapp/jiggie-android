@@ -141,7 +141,8 @@ public class TutorialFragmentAdapter extends FragmentPagerAdapter {
             if (!this.txtTitle.getText().toString().contains("Jiggie")) {
                 this.txtTitle.setVisibility(View.VISIBLE);
                 //Glide.with(getActivity()).load(arg.getInt(ARG_IMAGE)).into(imageView);
-                this.imageView.setImageResource(arg.getInt(ARG_IMAGE));
+                Glide.with(getActivity()).load(arg.getInt(ARG_IMAGE)).into(this.imageView);
+                //this.imageView.setImageResource(arg.getInt(ARG_IMAGE));
                 this.contentView.setVisibility(View.VISIBLE);
 
                 this.btnSignIn.setVisibility(View.GONE);

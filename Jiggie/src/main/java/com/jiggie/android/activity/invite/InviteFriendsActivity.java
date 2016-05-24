@@ -102,7 +102,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Invite Friend by Phone");
+        getSupportActionBar().setTitle("Invite Friends");
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         this.recyclerView.setLayoutManager(layoutManager);

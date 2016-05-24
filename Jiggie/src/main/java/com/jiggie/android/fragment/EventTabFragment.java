@@ -285,7 +285,6 @@ public class EventTabFragment extends Fragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -350,6 +349,7 @@ public class EventTabFragment extends Fragment
         i.putExtra(Common.FIELD_EVENT_DESCRIPTION, event.getDescription());
         i.putExtra(Common.FIELD_EVENT_LIKE, event.getLikes());
         i.putExtra(Common.FIELD_EVENT_LOWEST_PRICE, event.getLowest_price());
+        i.putExtra(Common.FIELD_FULLFILMENT_TYPE, event.getFullfillment_type());
         super.startActivity(i);
     }
 
