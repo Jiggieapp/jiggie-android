@@ -20,6 +20,7 @@ import com.jiggie.android.R;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.volley.VolleyHandler;
+import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.manager.TooltipsManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventModel;
@@ -131,15 +132,28 @@ public class EventTabListAdapter
                 holder.relLike.setVisibility(View.GONE);
             }
 
-            if(item.getLowest_price() == 0)
+            /*if (StringUtility.isEquals(EventManager.FullfillmentTypes.RESERVATION, fullfillmentType, true)) {
+                txtExternalSite.setVisibility(View.GONE);
+                txtBookNow.setText(R.string.book_now);
+            } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.PURCHASE, fullfillmentType, true)) {
+                txtExternalSite.setVisibility(View.GONE);
+                txtBookNow.setText(R.string.book_now);
+            } else if (StringUtility.isEquals(EventManager.FullfillmentTypes.TICKET, fullfillmentType, true)) {
+                txtExternalSite.setVisibility(View.GONE);
+                txtBookNow.setText(getResources().getString(R.string.book_now));
+            }*/
+            final String fullfillmentType = item.getFullfillment_type();
+            final boolean isBookable = (StringUtility.isEquals(EventManager.FullfillmentTypes.RESERVATION, fullfillmentType, true)
+                    || StringUtility.isEquals(EventManager.FullfillmentTypes.PURCHASE, fullfillmentType, true)
+                    || (StringUtility.isEquals(EventManager.FullfillmentTypes.TICKET, fullfillmentType, true))); //free (tickets, tables, purchase)
+            if(item.getLowest_price() == 0 && isBookable)
             {
                 holder.txtPriceTitle.setVisibility(View.VISIBLE);
                 holder.txtPriceFill.setVisibility(View.VISIBLE);
                 holder.txtPriceFill.setText(context.getResources().getString(R.string.free));
             }
-            else
+            else if(item.getLowest_price() > 0 && isBookable)
             {
-
                 holder.txtPriceTitle.setShadowLayer(1.6f, 1.5f, 1.3f, context.getResources().getColor(android.R.color.black));
                 holder.txtPriceFill.setShadowLayer(1.6f, 1.5f, 1.3f, context.getResources().getColor(android.R.color.black));
                 holder.txtPriceTitle.setVisibility(View.VISIBLE);
@@ -153,6 +167,11 @@ public class EventTabListAdapter
                 {
                     Utils.d(TAG, "exception " + e.toString());
                 }
+            }
+            else
+            {
+                holder.txtPriceTitle.setVisibility(View.GONE);
+                holder.txtPriceFill.setVisibility(View.GONE);
             }
 
             /*if(position==0){

@@ -45,6 +45,7 @@ public class EventModel {
             String description;
             ArrayList<String> photos;
             Integer lowest_price;
+            String fullfillment_type;
 
             public Integer getLowest_price() {
                 return lowest_price;
@@ -77,11 +78,20 @@ public class EventModel {
                 this.photos = in.readArrayList(null);
                 this.description = in.readString();
                 this.lowest_price = in.readInt();
+                this.fullfillment_type = in.readString();
             }
 
             @Override
             public int describeContents() {
                 return 0;
+            }
+
+            public String getFullfillment_type() {
+                return fullfillment_type;
+            }
+
+            public void setFullfillment_type(String fullfillment_type) {
+                this.fullfillment_type = fullfillment_type;
             }
 
             @Override
@@ -100,6 +110,7 @@ public class EventModel {
                 dest.writeList(this.photos);
                 dest.writeString(this.description);
                 dest.writeInt(this.lowest_price);
+                dest.writeString(this.fullfillment_type);
             }
 
             public static final Creator<Events> CREATOR = new Creator<Events>() {
