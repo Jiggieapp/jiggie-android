@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rel_discount"
+    android:layout_width="match_parent" android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/txt_discount_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="@dimen/padding_standard"
+        android:layout_marginTop="@dimen/padding_standard_half"
+        android:text="@string/pci_f5"
+        android:textSize="@dimen/font_body_size"/>
+
+    <TextView
+        android:id="@+id/txt_discount_fill"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/padding_standard"
+        android:layout_marginTop="@dimen/padding_standard_half"
+        android:text="@string/pci_f5_fill"
+        android:textColor="@color/purple"
+        android:textSize="@dimen/font_body_size"/>
+</RelativeLayout>

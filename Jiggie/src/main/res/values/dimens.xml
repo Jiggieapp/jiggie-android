@@ -6,6 +6,7 @@
     <dimen name="padding_fars">36dp</dimen>
     <dimen name="padding_standard">16dp</dimen>
     <dimen name="padding_standard_half">8dp</dimen>
+    <dimen name="padding_standard_small">4dp</dimen>
     <dimen name="chat_user_text_size">16sp</dimen>
     <dimen name="tag_spacing">3dp</dimen>
 

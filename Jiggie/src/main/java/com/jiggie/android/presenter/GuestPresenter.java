@@ -40,7 +40,6 @@ public class GuestPresenter {
 
         PostSummaryModel.Guest_detail guest_detail
                 = new Gson().fromJson(gDetail, PostSummaryModel.Guest_detail.class);
-        //Utils.d(TAG, "guest_detail" + guest_detail.dial_code + " " + guest_detail.phone);
         return guest_detail;
     }
 

@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.facebook.AccessToken;
+import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
@@ -244,6 +245,8 @@ public class NewProfileDetailActivity extends ToolbarActivity
 
     @Override
     public void onFailure() {
+        Toast.makeText(this, getResources().getString(R.string.socket_timeout_exception), Toast.LENGTH_SHORT).show();
+        finish();
     }
 
     @Override

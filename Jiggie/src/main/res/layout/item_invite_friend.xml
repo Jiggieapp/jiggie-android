@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="82dp">
+
+    <RelativeLayout
+        android:id="@+id/rel_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="@dimen/padding_standard">
+
+        <ImageView
+            android:layout_height="48dp"
+            android:layout_width="48dp"
+            android:id="@+id/img_photo"
+            android:layout_centerInParent="true"
+            android:src="@drawable/shape_cigrey"
+            />
+
+        <TextView
+            android:id="@+id/txt_initial"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="true"
+            android:textColor="@color/background"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/lin_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_toRightOf="@id/rel_photo"
+        android:layout_marginLeft="@dimen/padding_standard_half"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/lin_btn_in">
+
+        <TextView
+            android:id="@+id/txt_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/txt_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/in_dummy_phone"
+            android:layout_marginTop="@dimen/padding_standard_half"
+            />
+        <TextView
+            android:id="@+id/txt_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/in_dummy_email"
+            android:layout_marginTop="@dimen/padding_standard_half"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lin_btn_in"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true">
+
+        <Button
+            android:id="@+id/btn_invite"
+            android:layout_width="88dp"
+            android:layout_height="28dp"
+            android:background="@drawable/selector_invite_fr"
+            android:enabled="true"
+            android:text="@string/in_invite"
+            android:textColor="@android:color/white"
+            android:textAllCaps="true"
+            android:textSize="12sp"
+            android:layout_marginLeft="@dimen/padding_standard"
+            android:layout_marginRight="@dimen/padding_standard"/>
+
+        <TextView
+            android:id="@+id/txt_credit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/in_credit"
+            android:layout_marginTop="@dimen/padding_standard_small"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:visibility="visible"
+            android:textSize="14sp"
+            />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/divider_pantone"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/padding_standard_half"
+        android:layout_marginLeft="@dimen/padding_standard"
+        android:layout_marginRight="@dimen/padding_standard"/>
+
+</RelativeLayout>

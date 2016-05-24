@@ -7,10 +7,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.FragmentManager;
@@ -45,6 +45,7 @@ import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.activity.ecommerce.ProductListActivity;
+import com.jiggie.android.activity.invite.InviteFriendsActivity;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
@@ -55,6 +56,7 @@ import com.jiggie.android.fragment.SocialTabFragment;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.manager.GuestManager;
+import com.jiggie.android.manager.InviteManager;
 import com.jiggie.android.manager.ShareManager;
 import com.jiggie.android.manager.TooltipsManager;
 import com.jiggie.android.model.Common;
@@ -63,6 +65,8 @@ import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.GuestModel;
 import com.jiggie.android.model.ShareLinkModel;
 import com.jiggie.android.model.likeModel;
+import com.viewpagerindicator.CirclePageIndicator;
+import com.viewpagerindicator.TitlePageIndicator;
 
 import org.json.JSONObject;
 
@@ -77,14 +81,13 @@ import java.net.URLEncoder;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -103,8 +106,10 @@ import rx.schedulers.Schedulers;
 public class EventDetailActivity extends ToolbarActivity implements SwipeRefreshLayout.OnRefreshListener, AppBarLayout.OnOffsetChangedListener, OnMapReadyCallback {
     @Bind(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbarLayout;
-    @Bind(R.id.imagePagerIndicator)
-    HListView imagePagerIndicator;
+    /*@Bind(R.id.imagePagerIndicator)
+    HListView imagePagerIndicator;*/
+    @Bind(R.id.titles)
+    CirclePageIndicator titlePageIndicator;
     @Bind(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefresh;
     @Bind(R.id.txtExternalSite)
@@ -180,38 +185,44 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     private File file;
     private int count_like, count_like_new;
     boolean canClickLike = false;
-    Timer timerLike;
-    TimerTask timerTask;
+    Timer timerLike, timerInvite;
+    TimerTask timerTask, timerTaskInvite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        super.setContentView(R.layout.activity_event_detail);
-        super.bindView();
+            super.onCreate(savedInstanceState);
+            super.setContentView(R.layout.activity_event_detail);
+            super.bindView();
 
-        EventBus.getDefault().register(this);
+            EventBus.getDefault().register(this);
+            eventDetail = new EventDetailModel.Data.EventDetail();
 
-        Intent a = super.getIntent();
-        event_id = a.getStringExtra(Common.FIELD_EVENT_ID);
-        event_name = a.getStringExtra(Common.FIELD_EVENT_NAME);
-        event_venue_name = a.getStringExtra(Common.FIELD_EVENT_VENUE_NAME);
-        event_tags = a.getStringArrayListExtra(Common.FIELD_EVENT_TAGS);
-        event_day = a.getStringExtra(Common.FIELD_EVENT_DAY);
-        event_end = a.getStringExtra(Common.FIELD_EVENT_DAY_END);
-        event_pics = a.getStringArrayListExtra(Common.FIELD_EVENT_PICS);
-        event_description = a.getStringExtra(Common.FIELD_EVENT_DESCRIPTION);
-        count_like = a.getIntExtra(Common.FIELD_EVENT_LIKE, 0);
-        count_like_new = count_like;
-        lowest_price = a.getIntExtra(Common.FIELD_EVENT_LOWEST_PRICE, 0);
+            Intent a = super.getIntent();
+            event_id = a.getStringExtra(Common.FIELD_EVENT_ID);
+            eventDetail.set_id(event_id);
+            event_name = a.getStringExtra(Common.FIELD_EVENT_NAME);
+            event_venue_name = a.getStringExtra(Common.FIELD_EVENT_VENUE_NAME);
+            event_tags = a.getStringArrayListExtra(Common.FIELD_EVENT_TAGS);
+            event_day = a.getStringExtra(Common.FIELD_EVENT_DAY);
+            event_end = a.getStringExtra(Common.FIELD_EVENT_DAY_END);
+            event_pics = a.getStringArrayListExtra(Common.FIELD_EVENT_PICS);
+            event_description = a.getStringExtra(Common.FIELD_EVENT_DESCRIPTION);
+            count_like = a.getIntExtra(Common.FIELD_EVENT_LIKE, 0);
+            count_like_new = count_like;
+            lowest_price = a.getIntExtra(Common.FIELD_EVENT_LOWEST_PRICE, 0);
 
-        this.imagePagerIndicatorAdapter = new ImagePagerIndicatorAdapter(super.getSupportFragmentManager(), this.imageViewPager);
-        this.imagePagerIndicator.setAdapter(this.imagePagerIndicatorAdapter.getIndicatorAdapter());
+            this.imagePagerIndicatorAdapter = new ImagePagerIndicatorAdapter(super.getSupportFragmentManager(), this.imageViewPager);
+            //this.imagePagerIndicator.setAdapter(this.imagePagerIndicatorAdapter.getIndicatorAdapter());
+            titlePageIndicator.setViewPager(this.imageViewPager);
 
-        if (a != null) {
+            if (a != null) {
             this.txtVenue.setText("");
-
             if (event_venue_name != null)
+            {
+                eventDetail.setVenue_name(event_venue_name);
                 this.txtVenue.setText(event_venue_name);
+            }
+
 
             /*if(event_tags != null)
             {
@@ -238,18 +249,9 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             }
 
             if (event_pics != null)
+                eventDetail.setPhotos(event_pics);
                 fillPhotos(event_pics);
 
-            /*if (event_description != null) {
-                String subDes = "";
-                if (event_description.length() > 300) {
-                    subDes = event_description.substring(0, 300);
-                } else {
-                    subDes = event_description;
-                }
-
-                txtDescription.setText(Html.fromHtml(subDes));
-            }*/
 
             if (event_description != null) {
                 event_description = event_description.replace("\n", "<br />");
@@ -311,13 +313,16 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             }
 
             if (lowest_price == 0) {
-                txtPriceFill.setVisibility(View.GONE);
-                txtPriceTitle.setVisibility(View.GONE);
+                txtPriceTitle.setVisibility(View.VISIBLE);
+                txtPriceFill.setVisibility(View.VISIBLE);
+                txtPriceFill.setText(getResources().getString(R.string.free));
+
             } else {
                 txtPriceTitle.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
                 txtPriceFill.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
                 try {
-                    String str = String.format(Locale.US, "Rp %,d", lowest_price);
+                    //String str = String.format(Locale.US, "Rp %,d", lowest_price);
+                    String str = StringUtility.getRupiahFormat(lowest_price + "");
                     txtPriceFill.setText(str);
                 } catch (Exception e) {
                     Utils.d(TAG, "exception " + e.toString());
@@ -362,6 +367,53 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         }
 
         cekLike();
+        runInvite();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Execute some code after 2 seconds have passed
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                cekCounter();
+                /*if(InviteManager.validateTimeInvite(Calendar.getInstance().getTimeInMillis())){
+                    startActivity(new Intent(EventDetailActivity.this, InviteFriendsActivity.class));
+                }*/
+            }
+        }, 1000);
+
+    }
+
+    private void cekCounter()
+    {
+        final int counter = AccountManager.getCounterEvent();
+        if(counter+1 < 4)
+        {
+            AccountManager.setCounterEvent(counter+1);
+        }
+        else if(counter+1 == 4)
+        {
+            AccountManager.setCounterEvent(5);
+            if (InviteManager.validateTimeInvite(Calendar.getInstance().getTimeInMillis())) {
+                startActivity(new Intent(EventDetailActivity.this, InviteFriendsActivity.class));
+            }
+
+            startActivity(new Intent(this, InviteFriendsActivity.class));
+        }else if(counter>4){
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //cekCounter();
+                    if (InviteManager.validateTimeInvite(Calendar.getInstance().getTimeInMillis())) {
+                        startActivity(new Intent(EventDetailActivity.this, InviteFriendsActivity.class));
+                    }
+                }
+            }, 1000);
+        }
     }
 
     private void cekLike() {
@@ -679,15 +731,16 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
         lowest_price = eventDetail.getLowest_price();
         if (lowest_price == 0) {
-            txtPriceFill.setVisibility(View.GONE);
-            txtPriceTitle.setVisibility(View.GONE);
+            txtPriceTitle.setVisibility(View.VISIBLE);
+            txtPriceFill.setVisibility(View.VISIBLE);
+            txtPriceFill.setText(getResources().getString(R.string.free));
+
         } else {
             txtPriceTitle.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
             txtPriceFill.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
-            txtPriceFill.setVisibility(View.VISIBLE);
-            txtPriceTitle.setVisibility(View.VISIBLE);
             try {
-                String str = String.format(Locale.US, "Rp %,d", lowest_price);
+                //String str = String.format(Locale.US, "Rp %,d", lowest_price);
+                String str = StringUtility.getRupiahFormat(lowest_price + "");
                 txtPriceFill.setText(str);
             } catch (Exception e) {
                 Utils.d(TAG, "exception " + e.toString());
@@ -772,12 +825,14 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             if (count_like_new > 0) {
                 count_like_new = count_like_new - 1;
             }
-
+            App.getInstance().trackMixPanelViewEventDetail("Like Event Detail", eventDetail);
             //actionLike(Utils.ACTION_LIKE_NO);
         } else {
             imgLove.setSelected(true);
             count_like_new = count_like_new + 1;
             //actionLike(Utils.ACTION_LIKE_YES);
+
+            App.getInstance().trackMixPanelViewEventDetail("Unlike Event Detail", eventDetail);
         }
         txtCountLike.setText(String.valueOf(count_like_new));
         canClickLike = false;
@@ -806,8 +861,21 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             }
         };
         timerLike.schedule(timerTask, 3000);
+    }
 
-
+    private void runInvite(){
+        if (timerInvite == null) {
+            timerInvite = new Timer();
+            timerTaskInvite = new TimerTask() {
+                @Override
+                public void run() {
+                    startActivity(new Intent(EventDetailActivity.this, InviteFriendsActivity.class));
+                }
+            };
+            timerInvite.schedule(timerTaskInvite, 1*60*60*1000);
+        }else{
+            Log.d("timer already", "yes");
+        }
     }
 
     @OnClick(R.id.btnBook)
@@ -1067,7 +1135,9 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             });*/
         } else {
             progressDialog = App.showProgressDialog(this);
-            ShareManager.loaderShareEvent(eventDetail.get_id(), AccessToken.getCurrentAccessToken().getUserId(), URLEncoder.encode(eventDetail.getVenue_name(), "UTF-8"));
+            ShareManager.loaderShareEvent(eventDetail.get_id()
+                    , AccessToken.getCurrentAccessToken().getUserId()
+                    , URLEncoder.encode(eventDetail.getVenue_name(), "UTF-8"));
         }
     }
 
@@ -1090,6 +1160,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         @Override
         public void onReceive(Context context, Intent intent) {
             if (!isActive()) return;
+            if(eventDetail == null) return;
             final GuestModel.Data.GuestInterests guest = intent.getParcelableExtra(GuestModel.Data.GuestInterests.class.getName());
 
             ArrayList<EventDetailModel.Data.EventDetail.GuestViewed> guestArr = eventDetail.getGuests_viewed();

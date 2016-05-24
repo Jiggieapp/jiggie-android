@@ -95,6 +95,9 @@ public class Utils {
     public static final String PREFERENCE_LOGIN = "login";
     public static final String LOGIN_MODEL = "login_model";
     public static final String ACCESS_TOKEN = "access_token";
+    public static final String COUNTER_EVENT = "counter_event";
+    public static final String INVITE_CODE = "invite_code";
+    public static final String INVITE_CODE_MSG_SHARE = "msg_share";
     public static final String PREFERENCE_TAGLIST = "taglist";
     public static final String TAGLIST_MODEL = "taglist_model";
     public static final String IS_FIRST_RUN = "is_first_run";
@@ -170,6 +173,22 @@ public class Utils {
     public final static String URL_CITY = BASE_URL + "app/v3/user/citylist";
 
     public final static String URL_DELETE_PHOTO = BASE_URL + "app/v3/remove_profileimage";
+    public final static String URL_POST_FRIEND_LIST = BASE_URL + "app/v3/credit/social_friends";
+    public final static String URL_LIST_SOCIAL_FRIENDS = BASE_URL + "app/v3/credit/list_social_friends";
+
+    //INVITE URL=============
+    public final static String URL_POST_CONTACT = BASE_URL + "app/v3/credit/contact";
+    public final static String URL_INVITE = BASE_URL + "app/v3/credit/invite";
+    public final static String URL_INVITE_ALL = BASE_URL + "app/v3/credit/invite_all";
+    public final static String URL_GET_INVITE_CODE = BASE_URL + "app/v3/credit/invite_code/{fb_id}";
+    //END OF INVITE URL============
+
+    //REDEEM CODE URL===============
+    public final static String URL_REDEEM_CODE = BASE_URL + "app/v3/credit/redeem_code";
+    //END OF REDEEM CODE URL===============
+
+    public final static String URL_CREDIT_BALANCE = BASE_URL + "app/v3/credit/balance_credit/{fb_id}";
+
     public static void d(final String tag, final String value) {
         if(BuildConfig.DEBUG)
         {
@@ -192,6 +211,16 @@ public class Utils {
     public static final String COMM_FINISH = "Commerce Finish";
     public static final String COMM_ORDER_LIST = "Order List";
 
+    public static final String REFERRAL_FACEBOOK = "Share Referral Facebook";
+    public static final String REFERRAL_PHONE = "Share Referral Phone";
+    public static final String REFERRAL_PHONE_SINGULAR = "Share Referral Phone Singular";
+    public static final String REFERRAL_PHONE_ALL = "Share Referral Phone All";
+    public static final String REFERRAL_MESSAGE = "Share Referral Message";
+    public static final String REFERRAL_COPY = "Share Referral Copy";
+
+    public static final String PICTURE_UPLOAD = "Picture Upload";
+    public static final String PICTURE_DELETE = "Picture Delete";
+
     public static final String TAG = Utils.class.getSimpleName();
     //AppsFlyer properties----
     public static String AFinstall_type = "";
@@ -211,6 +240,8 @@ public class Utils {
     public static boolean isRefreshDetail = false;
     public static String event_id_refresh = Utils.BLANK;
     public static int count_like_new = 0;
+
+    public static final String TYPE_ANDROID = "2";
 
     public static String calculateTime(String date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");

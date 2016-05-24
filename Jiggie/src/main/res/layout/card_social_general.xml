@@ -40,37 +40,38 @@
         android:src="@drawable/ic_chat"
         android:scaleType="centerCrop"/>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/lbl_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:orientation="vertical">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/txtUserGeneral"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/padding_standard"
-            android:gravity="left"
-            android:text="@string/user_viewing" />
+            android:layout_centerHorizontal="true"
+            android:text="@string/user_viewing"
+            android:layout_alignParentTop="true"/>
 
         <TextView
             android:id="@+id/txtEventGeneral"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="left"
+            android:layout_below="@id/txtUserGeneral"
+            android:layout_centerHorizontal="true"
             android:text="@string/location_viewing"
             android:textColor="@color/colorPrimary" />
 
         <TextView
             android:id="@+id/txtConnectGeneral"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/padding_standard"
-            android:gravity="left"
+            android:layout_below="@id/txtEventGeneral"
+            android:layout_centerHorizontal="true"
             android:text="@string/connect_with" />
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

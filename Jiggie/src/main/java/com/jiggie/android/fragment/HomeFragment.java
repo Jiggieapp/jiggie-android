@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -43,6 +44,8 @@ import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.event.EventDetailActivity;
+import com.jiggie.android.activity.invite.InviteFriendsActivity;
+import com.jiggie.android.activity.promo.PromotionsActivity;
 import com.jiggie.android.activity.setup.CityActivity;
 import com.jiggie.android.component.FlowLayout;
 import com.jiggie.android.component.HomeMain;
@@ -65,13 +68,15 @@ import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 import it.sephiroth.android.library.tooltip.Tooltip;
 
 /**
  * Created by rangg on 21/10/2015.
  */
-public class HomeFragment extends Fragment implements ViewPager.OnPageChangeListener, ViewTreeObserver.OnGlobalLayoutListener, HomeMain {
+public class HomeFragment extends Fragment
+        implements ViewPager.OnPageChangeListener, ViewTreeObserver.OnGlobalLayoutListener, HomeMain {
     @Nullable @Bind(R.id.appBar)
     AppBarLayout appBarLayout;
     @Bind(R.id.viewpagerw)
@@ -82,6 +87,8 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     TabLayout tab;
     @Bind(R.id.fab)
     FloatingActionButton fab;
+    @Bind(R.id.fab_invite)
+    FloatingActionButton fabInvite;
     @Bind(R.id.flowLayout)
     FlowLayout flowLayout;
     @Bind(R.id.txt_place)
@@ -95,7 +102,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     private PageAdapter adapter;
     private View rootView;
     public final String TAG = HomeFragment.class.getSimpleName();
-    Animation makeInAnimation, makeOutAnimation;
+    Animation makeInAnimation, makeOutAnimation, makeInAnimationInvite, makeOutAnimationInvite;
 
     final int EVENT_TAB = 0;
     final int SOCIAL_TAB = 1;
@@ -166,19 +173,46 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
         this.viewPager.getViewTreeObserver().addOnGlobalLayoutListener(this);
 
         //Load animation
-        /*makeOutAnimation = AnimationUtils.loadAnimation(this.getActivity(),
+        makeOutAnimation = makeOutAnimationInvite = AnimationUtils.loadAnimation(this.getActivity(),
                 R.anim.slide_down);
 
-        makeInAnimation = AnimationUtils.loadAnimation(this.getActivity(),
-                R.anim.slide_up);*/
+        makeInAnimation = makeInAnimationInvite = AnimationUtils.loadAnimation(this.getActivity(),
+                R.anim.slide_up);
+
 
 
         /*makeInAnimation = AnimationUtils.makeInAnimation(this.getActivity(), false);
-        makeOutAnimation = AnimationUtils.makeOutAnimation(this.getActivity(), true);
+        makeOutAnimation = AnimationUtils.makeOutAnimation(this.getActivity(), true);*/
+
+        makeOutAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+                //if(fabInvite.getVisibility() == View.VISIBLE)
+                //{
+                    //fabInvite.setVisibility(View.GONE);
+                    fabInvite.startAnimation(makeOutAnimationInvite);
+                //}
+                fab.setVisibility(View.VISIBLE);
+            }
+        });
 
         makeInAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationEnd(Animation animation) {
+                fab.setVisibility(View.GONE);
+                /*if(fabInvite.getVisibility() == View.GONE)
+                {*/
+                    fabInvite.startAnimation(makeInAnimationInvite);
+                /*}*/
+
             }
 
             @Override
@@ -187,13 +221,29 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
 
             @Override
             public void onAnimationStart(Animation animation) {
-                fab.setVisibility(View.VISIBLE);
+
             }
         });
-        makeOutAnimation.setAnimationListener(new Animation.AnimationListener() {
+
+        makeInAnimationInvite.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationEnd(Animation animation) {
-                fab.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+                fabInvite.setVisibility(View.VISIBLE);
+            }
+        });
+
+        makeOutAnimationInvite.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                fabInvite.setVisibility(View.GONE);
             }
 
             @Override
@@ -203,7 +253,7 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
             @Override
             public void onAnimationStart(Animation animation) {
             }
-        });*/
+        });
 
         if (isNeedToBeRedirected()) {
             Intent i = new Intent(super.getActivity(), EventDetailActivity.class);
@@ -260,6 +310,14 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
                 }
 
 
+            }
+        });
+
+        fabInvite.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v) {
+                getActivity().startActivity(new Intent(getActivity(), InviteFriendsActivity.class));
             }
         });
 
@@ -551,23 +609,30 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
 
     public static void sendLocationInfo() {
         //PART of postLocation
-        PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), SocialManager.lat, SocialManager.lng);
         //PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), "-6.2216706", "106.8401574");
-        String responses = new Gson().toJson(postLocationModel);
-        Utils.d("res", responses);
+        final String userId = AccessToken.getCurrentAccessToken().getUserId();
+        if(userId != null && SocialManager.lat != null && SocialManager.lng != null)
+        {
+            //PART of postLocation
+            PostLocationModel postLocationModel = new PostLocationModel(userId, SocialManager.lat, SocialManager.lng);
+            //PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), "-6.2216706", "106.8401574");
+            /*String responses = new Gson().toJson(postLocationModel);
+            Utils.d("res", responses);*/
 
-        SocialManager.loaderLocation(postLocationModel, new SocialManager.OnResponseListener() {
-            @Override
-            public void onSuccess(Object object) {
-                Utils.d("location", "post location success");
-            }
+            SocialManager.loaderLocation(postLocationModel, new SocialManager.OnResponseListener() {
+                @Override
+                public void onSuccess(Object object) {
+                    Utils.d("location", "post location success");
+                }
 
-            @Override
-            public void onFailure(int responseCode, String message) {
+                @Override
+                public void onFailure(int responseCode, String message) {
 
-            }
-        });
-        //end here
+                }
+            });
+            //end here
+        }
+
     }
 
     @Override
@@ -612,12 +677,35 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
 
         if (position == CHAT_TAB) {
             showToolbar();
+            //fab.startAnimation(makeOutAnimation);
             fab.setVisibility(View.GONE);
+            //fabInvite.startAnimation(makeInAnimation);
+            fabInvite.setVisibility(View.VISIBLE);
+
+
             bottomSheet.setVisibility(View.GONE);
             SocialManager.isInSocial = false;
         } else if (position == SOCIAL_TAB) {
             showToolbar();
+
+            /*if(fab.getVisibility() == View.VISIBLE)
+            {
+                fab.startAnimation(makeOutAnimation);
+                fab.setVisibility(View.GONE);
+
+            }
+
+
+            if(fabInvite.getVisibility() == View.VISIBLE)
+            {
+                fabInvite.startAnimation(makeOutAnimation);
+                fabInvite.setVisibility(View.GONE);
+            }*/
+
             fab.setVisibility(View.GONE);
+            fabInvite.setVisibility(View.GONE);
+
+
             TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_SOCIAL_TAB, false);
             SocialManager.isInSocial = true;
             SocialTabFragment sc = (SocialTabFragment)this.adapter.fragments[position];
@@ -627,7 +715,11 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
             //Log.d("", "");
             bottomSheet.setVisibility(View.GONE);
         } else {
+            //fab.startAnimation(makeInAnimation);
             fab.setVisibility(View.VISIBLE);
+            //fabInvite.startAnimation( makeOutAnimation);
+            fabInvite.setVisibility(View.GONE);
+
             SocialManager.isInSocial = false;
             bottomSheet.setVisibility(View.VISIBLE);
         }
@@ -649,12 +741,13 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     }
 
     private void startFetchChat() {
-        if (AccountManager.loadMemberSetting().getChat() == 0)
-            ((ChatTabFragment) this.adapter.getItem(CHAT_TAB)).startRepeatingTask();
+        if (AccountManager.loadMemberSetting() != null
+                && AccountManager.loadMemberSetting().getChat() == 0)
+            ((FriendsFragment) this.adapter.getItem(CHAT_TAB)).startRepeatingTask();
     }
 
     private void stopFetchChat() {
-        ((ChatTabFragment) this.adapter.getItem(CHAT_TAB)).stopRepeatingTask();
+        ((FriendsFragment) this.adapter.getItem(CHAT_TAB)).stopRepeatingTask();
     }
 
     @Override
@@ -700,14 +793,12 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
                     //new EventTabFragment()
                     new EventsFragment()
                     , new SocialTabFragment()
-                    , new ChatTabFragment()
-
-                    //,new MoreTabFragment()
+                    //, new ChatTabFragment()
+                    , new FriendsFragment()
             };
             ((TabFragment) this.fragments[0]).setHomeMain(homeMain);
             ((TabFragment) this.fragments[1]).setHomeMain(homeMain);
             ((TabFragment) this.fragments[2]).setHomeMain(homeMain);
-            //((TabFragment)this.fragments[3]).setHomeMain(homeMain);
         }
 
         @Override
@@ -789,7 +880,13 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getActivity().unregisterReceiver(fetchChatReceiver);
+        try {
+            getActivity().unregisterReceiver(fetchChatReceiver);
+        }
+        catch(IllegalArgumentException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private BroadcastReceiver fetchChatReceiver = new BroadcastReceiver() {
@@ -812,4 +909,10 @@ public class HomeFragment extends Fragment implements ViewPager.OnPageChangeList
             }
         }
     }
+
+    /*@OnClick(R.id.fab_invite)
+    void onFabInviteClick()
+    {
+        getActivity().startActivity(new Intent(getActivity(), InviteFriendsActivity.class));
+    }*/
 }

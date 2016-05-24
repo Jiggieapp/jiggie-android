@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.manager.TooltipsManager;
@@ -111,7 +112,6 @@ public class EventTabListAdapter
             holder.tagListView.setAdapter(eventTagAdapter);
             //holder.eventTagAdapter.notifyDataSetChanged();
             holder.txtVenueName.setText(item.getVenue_name());
-            Utils.d(TAG, "imageUrl " + imageUrl);
             Glide
                     .with(this.fragment)
                     .load(imageUrl)
@@ -131,11 +131,11 @@ public class EventTabListAdapter
                 holder.relLike.setVisibility(View.GONE);
             }
 
-            Utils.d(TAG, "lowestPrice " + item.getLowest_price() + " " + item.getTitle());
             if(item.getLowest_price() == 0)
             {
-                holder.txtPriceFill.setVisibility(View.GONE);
-                holder.txtPriceTitle.setVisibility(View.GONE);
+                holder.txtPriceTitle.setVisibility(View.VISIBLE);
+                holder.txtPriceFill.setVisibility(View.VISIBLE);
+                holder.txtPriceFill.setText(context.getResources().getString(R.string.free));
             }
             else
             {
@@ -145,7 +145,8 @@ public class EventTabListAdapter
                 holder.txtPriceTitle.setVisibility(View.VISIBLE);
                 holder.txtPriceFill.setVisibility(View.VISIBLE);
                 try {
-                    String str = String.format(Locale.US, "Rp %,d", item.getLowest_price());
+                    //String str = String.format(Locale.US, "Rp %,d", item.getLowest_price());
+                    String str = StringUtility.getRupiahFormat(item.getLowest_price().toString());
                     holder.txtPriceFill.setText(str);
                 }
                 catch (Exception e)

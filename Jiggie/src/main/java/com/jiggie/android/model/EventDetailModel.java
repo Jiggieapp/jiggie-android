@@ -62,6 +62,77 @@ public class EventDetailModel {
         }
 
         public static class EventDetail implements Parcelable {
+            public void set_id(String _id) {
+                this._id = _id;
+            }
+
+            public void setLikes(int likes) {
+                this.likes = likes;
+            }
+
+            public void setEvent_id(String event_id) {
+                this.event_id = event_id;
+            }
+
+            public void setStart_datetime(String start_datetime) {
+                this.start_datetime = start_datetime;
+            }
+
+            public void setEnd_datetime(String end_datetime) {
+                this.end_datetime = end_datetime;
+            }
+
+            public void setVenue_id(String venue_id) {
+                this.venue_id = venue_id;
+            }
+
+            public void setVenue_name(String venue_name) {
+                this.venue_name = venue_name;
+            }
+
+            public void setStart_datetime_str(String start_datetime_str) {
+                this.start_datetime_str = start_datetime_str;
+            }
+
+            public void setEnd_datetime_str(String end_datetime_str) {
+                this.end_datetime_str = end_datetime_str;
+            }
+
+            public void setFullfillment_type(String fullfillment_type) {
+                this.fullfillment_type = fullfillment_type;
+            }
+
+            public void setFullfillment_value(String fullfillment_value) {
+                this.fullfillment_value = fullfillment_value;
+            }
+
+            public void setPhotos(ArrayList<String> photos) {
+                this.photos = photos;
+            }
+
+            public void setDescription(String description) {
+                this.description = description;
+            }
+
+            public void setTitle(String title) {
+                this.title = title;
+            }
+
+            public void setTags(ArrayList<String> tags) {
+                this.tags = tags;
+            }
+
+            public void setGuests_viewed(ArrayList<GuestViewed> guests_viewed) {
+                this.guests_viewed = guests_viewed;
+            }
+
+            public void setVenue(Venue venue) {
+                this.venue = venue;
+            }
+
+            public void setIs_liked(boolean is_liked) {
+                this.is_liked = is_liked;
+            }
 
             String _id;
             String event_id;
@@ -117,6 +188,9 @@ public class EventDetailModel {
                 this.likes = likes;
                 this.lowest_price = lowest_price;
             }
+
+            public EventDetail()
+            {}
 
             public String get_id() {
                 return _id;
