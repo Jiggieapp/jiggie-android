@@ -249,9 +249,10 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             }
 
             if (event_pics != null)
+            {
                 eventDetail.setPhotos(event_pics);
                 fillPhotos(event_pics);
-
+            }
 
             if (event_description != null) {
                 event_description = event_description.replace("\n", "<br />");
