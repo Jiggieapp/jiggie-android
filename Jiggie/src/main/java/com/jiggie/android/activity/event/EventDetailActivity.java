@@ -395,16 +395,18 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     protected void onResume() {
         super.onResume();
         // Execute some code after 2 seconds have passed
-        Handler handler = new Handler();
+        /*Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 cekCounter();
-                /*if(InviteManager.validateTimeInvite(Calendar.getInstance().getTimeInMillis())){
+                *//*if(InviteManager.validateTimeInvite(Calendar.getInstance().getTimeInMillis())){
                     startActivity(new Intent(EventDetailActivity.this, InviteFriendsActivity.class));
-                }*/
+                }*//*
             }
-        }, 1000);
+        }, 1000);*/
+
+        cekCounter();
 
     }
 
@@ -420,7 +422,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
             startActivity(new Intent(this, InviteFriendsActivity.class));
         } else if (counter > 4) {
-            Handler handler = new Handler();
+            /*Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -429,7 +431,11 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                         startActivity(new Intent(EventDetailActivity.this, InviteFriendsActivity.class));
                     }
                 }
-            }, 1000);
+            }, 1000);*/
+
+            if (InviteManager.validateTimeInvite(Calendar.getInstance().getTimeInMillis())) {
+                startActivity(new Intent(EventDetailActivity.this, InviteFriendsActivity.class));
+            }
         }
     }
 
