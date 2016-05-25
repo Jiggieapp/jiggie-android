@@ -179,6 +179,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     String event_end = "";
     String event_description = "";
     int lowest_price;
+    String fullfilmentType = "";
 
     ProgressDialog progressDialog;
     public static final String TAG = EventDetailActivity.class.getSimpleName();
@@ -190,35 +191,35 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            super.setContentView(R.layout.activity_event_detail);
-            super.bindView();
+        super.onCreate(savedInstanceState);
+        super.setContentView(R.layout.activity_event_detail);
+        super.bindView();
 
-            EventBus.getDefault().register(this);
-            eventDetail = new EventDetailModel.Data.EventDetail();
+        EventBus.getDefault().register(this);
+        eventDetail = new EventDetailModel.Data.EventDetail();
 
-            Intent a = super.getIntent();
-            event_id = a.getStringExtra(Common.FIELD_EVENT_ID);
-            eventDetail.set_id(event_id);
-            event_name = a.getStringExtra(Common.FIELD_EVENT_NAME);
-            event_venue_name = a.getStringExtra(Common.FIELD_EVENT_VENUE_NAME);
-            event_tags = a.getStringArrayListExtra(Common.FIELD_EVENT_TAGS);
-            event_day = a.getStringExtra(Common.FIELD_EVENT_DAY);
-            event_end = a.getStringExtra(Common.FIELD_EVENT_DAY_END);
-            event_pics = a.getStringArrayListExtra(Common.FIELD_EVENT_PICS);
-            event_description = a.getStringExtra(Common.FIELD_EVENT_DESCRIPTION);
-            count_like = a.getIntExtra(Common.FIELD_EVENT_LIKE, 0);
-            count_like_new = count_like;
-            lowest_price = a.getIntExtra(Common.FIELD_EVENT_LOWEST_PRICE, 0);
+        Intent a = super.getIntent();
+        event_id = a.getStringExtra(Common.FIELD_EVENT_ID);
+        eventDetail.set_id(event_id);
+        event_name = a.getStringExtra(Common.FIELD_EVENT_NAME);
+        event_venue_name = a.getStringExtra(Common.FIELD_EVENT_VENUE_NAME);
+        event_tags = a.getStringArrayListExtra(Common.FIELD_EVENT_TAGS);
+        event_day = a.getStringExtra(Common.FIELD_EVENT_DAY);
+        event_end = a.getStringExtra(Common.FIELD_EVENT_DAY_END);
+        event_pics = a.getStringArrayListExtra(Common.FIELD_EVENT_PICS);
+        event_description = a.getStringExtra(Common.FIELD_EVENT_DESCRIPTION);
+        count_like = a.getIntExtra(Common.FIELD_EVENT_LIKE, 0);
+        count_like_new = count_like;
+        lowest_price = a.getIntExtra(Common.FIELD_EVENT_LOWEST_PRICE, 0);
+        fullfilmentType = a.getStringExtra(Common.FIELD_FULLFILMENT_TYPE);
 
-            this.imagePagerIndicatorAdapter = new ImagePagerIndicatorAdapter(super.getSupportFragmentManager(), this.imageViewPager);
-            //this.imagePagerIndicator.setAdapter(this.imagePagerIndicatorAdapter.getIndicatorAdapter());
-            titlePageIndicator.setViewPager(this.imageViewPager);
+        this.imagePagerIndicatorAdapter = new ImagePagerIndicatorAdapter(super.getSupportFragmentManager(), this.imageViewPager);
+        //this.imagePagerIndicator.setAdapter(this.imagePagerIndicatorAdapter.getIndicatorAdapter());
+        titlePageIndicator.setViewPager(this.imageViewPager);
 
-            if (a != null) {
+        if (a != null) {
             this.txtVenue.setText("");
-            if (event_venue_name != null)
-            {
+            if (event_venue_name != null) {
                 eventDetail.setVenue_name(event_venue_name);
                 this.txtVenue.setText(event_venue_name);
             }
@@ -248,10 +249,10 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 }
             }
 
-            if (event_pics != null)
+            if (event_pics != null) {
                 eventDetail.setPhotos(event_pics);
                 fillPhotos(event_pics);
-
+            }
 
             if (event_description != null) {
                 event_description = event_description.replace("\n", "<br />");
@@ -312,22 +313,42 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 //end of wandy 17-03-2016
             }
 
-            if (lowest_price == 0) {
-                txtPriceTitle.setVisibility(View.VISIBLE);
-                txtPriceFill.setVisibility(View.VISIBLE);
-                txtPriceFill.setText(getResources().getString(R.string.free));
+            if(fullfilmentType != null && !fullfilmentType.isEmpty())
+            {
+                final boolean isBookable = (StringUtility.isEquals(EventManager.FullfillmentTypes.RESERVATION, fullfilmentType, true)
+                        || StringUtility.isEquals(EventManager.FullfillmentTypes.PURCHASE, fullfilmentType, true)
+                        || (StringUtility.isEquals(EventManager.FullfillmentTypes.TICKET, fullfilmentType, true))); //free (tickets, tables, purchase)
 
-            } else {
-                txtPriceTitle.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
-                txtPriceFill.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
-                try {
-                    //String str = String.format(Locale.US, "Rp %,d", lowest_price);
-                    String str = StringUtility.getRupiahFormat(lowest_price + "");
-                    txtPriceFill.setText(str);
-                } catch (Exception e) {
-                    Utils.d(TAG, "exception " + e.toString());
+                if (lowest_price == 0 && isBookable) {
+                    txtPriceTitle.setVisibility(View.VISIBLE);
+                    txtPriceFill.setVisibility(View.VISIBLE);
+                    txtPriceFill.setText(getResources().getString(R.string.free));
+
+                } else if(lowest_price > 0 && isBookable){
+                    txtPriceTitle.setVisibility(View.VISIBLE);
+                    txtPriceFill.setVisibility(View.VISIBLE);
+                    txtPriceTitle.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
+                    txtPriceFill.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
+                    try {
+                        //String str = String.format(Locale.US, "Rp %,d", lowest_price);
+                        String str = StringUtility.getRupiahFormat(lowest_price + "");
+                        txtPriceFill.setText(str);
+                    } catch (Exception e) {
+                        Utils.d(TAG, "exception " + e.toString());
+                    }
+                }
+                else
+                {
+                    txtPriceTitle.setVisibility(View.GONE);
+                    txtPriceFill.setVisibility(View.GONE);
                 }
             }
+            else
+            {
+                txtPriceTitle.setVisibility(View.GONE);
+                txtPriceFill.setVisibility(View.GONE);
+            }
+
         }
 
         if (event_name != null) {
@@ -387,22 +408,18 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
     }
 
-    private void cekCounter()
-    {
+    private void cekCounter() {
         final int counter = AccountManager.getCounterEvent();
-        if(counter+1 < 4)
-        {
-            AccountManager.setCounterEvent(counter+1);
-        }
-        else if(counter+1 == 4)
-        {
+        if (counter + 1 < 4) {
+            AccountManager.setCounterEvent(counter + 1);
+        } else if (counter + 1 == 4) {
             AccountManager.setCounterEvent(5);
             if (InviteManager.validateTimeInvite(Calendar.getInstance().getTimeInMillis())) {
                 startActivity(new Intent(EventDetailActivity.this, InviteFriendsActivity.class));
             }
 
             startActivity(new Intent(this, InviteFriendsActivity.class));
-        }else if(counter>4){
+        } else if (counter > 4) {
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override
@@ -730,12 +747,18 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         }
 
         lowest_price = eventDetail.getLowest_price();
-        if (lowest_price == 0) {
+        final String fullfillmentType = eventDetail.getFullfillment_type();
+        final boolean isBookable = (StringUtility.isEquals(EventManager.FullfillmentTypes.RESERVATION, fullfillmentType, true)
+                || StringUtility.isEquals(EventManager.FullfillmentTypes.PURCHASE, fullfillmentType, true)
+                || (StringUtility.isEquals(EventManager.FullfillmentTypes.TICKET, fullfillmentType, true))); //free (tickets, tables, purchase)
+        if (lowest_price == 0 && isBookable) {
             txtPriceTitle.setVisibility(View.VISIBLE);
             txtPriceFill.setVisibility(View.VISIBLE);
             txtPriceFill.setText(getResources().getString(R.string.free));
 
-        } else {
+        } else if (lowest_price > 0 && isBookable) {
+            txtPriceTitle.setVisibility(View.VISIBLE);
+            txtPriceFill.setVisibility(View.VISIBLE);
             txtPriceTitle.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
             txtPriceFill.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
             try {
@@ -745,6 +768,9 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             } catch (Exception e) {
                 Utils.d(TAG, "exception " + e.toString());
             }
+        } else {
+            txtPriceTitle.setVisibility(View.GONE);
+            txtPriceFill.setVisibility(View.GONE);
         }
     }
 
@@ -863,7 +889,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         timerLike.schedule(timerTask, 3000);
     }
 
-    private void runInvite(){
+    private void runInvite() {
         if (timerInvite == null) {
             timerInvite = new Timer();
             timerTaskInvite = new TimerTask() {
@@ -872,8 +898,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                     startActivity(new Intent(EventDetailActivity.this, InviteFriendsActivity.class));
                 }
             };
-            timerInvite.schedule(timerTaskInvite, 1*60*60*1000);
-        }else{
+            timerInvite.schedule(timerTaskInvite, 1 * 60 * 60 * 1000);
+        } else {
             Log.d("timer already", "yes");
         }
     }
@@ -1134,10 +1160,12 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 }
             });*/
         } else {
-            progressDialog = App.showProgressDialog(this);
-            ShareManager.loaderShareEvent(eventDetail.get_id()
-                    , AccessToken.getCurrentAccessToken().getUserId()
-                    , URLEncoder.encode(eventDetail.getVenue_name(), "UTF-8"));
+            if (eventDetail.getVenue_name() != null) {
+                progressDialog = App.showProgressDialog(this);
+                ShareManager.loaderShareEvent(eventDetail.get_id()
+                        , AccessToken.getCurrentAccessToken().getUserId()
+                        , URLEncoder.encode(eventDetail.getVenue_name(), "UTF-8"));
+            }
         }
     }
 
@@ -1160,7 +1188,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         @Override
         public void onReceive(Context context, Intent intent) {
             if (!isActive()) return;
-            if(eventDetail == null) return;
+            if (eventDetail == null) return;
             final GuestModel.Data.GuestInterests guest = intent.getParcelableExtra(GuestModel.Data.GuestInterests.class.getName());
 
             ArrayList<EventDetailModel.Data.EventDetail.GuestViewed> guestArr = eventDetail.getGuests_viewed();

@@ -102,7 +102,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Invite Friend by Phone");
+        getSupportActionBar().setTitle("Invite Friends");
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         this.recyclerView.setLayoutManager(layoutManager);
@@ -146,6 +146,8 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                 InviteManager.loaderInviteAll(postInviteAllModel, new InviteManager.OnResponseListener() {
                     @Override
                     public void onSuccess(Object object) {
+                        InviteManager.arrBtnInvite2 = new ArrayList<Boolean>(Collections.nCopies(InviteManager.dataContact.size(), false));
+                        adapterNew.notifyDataSetChanged();
                         dismissProgressDialog();
                     }
 
@@ -154,9 +156,14 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                         dismissProgressDialog();
                     }
                 });
-                for (int i = 0; i < InviteManager.arrBtnInvite.size(); i++) {
-                    adapterNew.setInviteEnable(InviteManager.arrBtnInvite.get(i), false);
-                }
+
+                //dismissProgressDialog();
+                /*for (int i = 0; i < InviteManager.arrBtnInvite.size(); i++) {
+                    //adapterNew.setInviteEnable(InviteManager.arrBtnInvite.get(i), false);
+
+                }*/
+
+
 
             }
         });
@@ -465,7 +472,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                     txtInviteDesc.setText("+Rp. " + formatter.format(totalCredit));
                     txtInviteDesc.setVisibility(View.VISIBLE);
                     InviteManager.arrBtnInvite2 = new ArrayList<Boolean>(Collections.nCopies(InviteManager.dataContact.size(), true));
-                    Collections.fill(InviteManager.arrBtnInvite2, Boolean.TRUE);
+                    //Collections.fill(InviteManager.arrBtnInvite2, Boolean.TRUE);
                 }
                 isLoading = false;
                 //swipeRefresh.setRefreshing(false);
