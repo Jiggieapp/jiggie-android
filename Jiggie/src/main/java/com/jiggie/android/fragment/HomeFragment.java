@@ -107,6 +107,7 @@ public class HomeFragment extends Fragment
     final int EVENT_TAB = 0;
     final int SOCIAL_TAB = 1;
     final int CHAT_TAB = 2;
+    final int MORE_TAB = 3;
 
     private int currentPosition;
     boolean isAlreadyExpand = false;
@@ -714,7 +715,13 @@ public class HomeFragment extends Fragment
             //sc.refreshCard();
             //Log.d("", "");
             bottomSheet.setVisibility(View.GONE);
-        } else {
+        } else if(position == MORE_TAB){
+            fab.setVisibility(View.GONE);
+            fabInvite.setVisibility(View.GONE);
+            bottomSheet.setVisibility(View.GONE);
+        }
+
+        else {
             //fab.startAnimation(makeInAnimation);
             fab.setVisibility(View.VISIBLE);
             //fabInvite.startAnimation( makeOutAnimation);
@@ -794,11 +801,12 @@ public class HomeFragment extends Fragment
                     new EventsFragment()
                     , new SocialTabFragment()
                     //, new ChatTabFragment()
-                    , new FriendsFragment()
+                    , new FriendsFragment(), new MoreFragment()
             };
             ((TabFragment) this.fragments[0]).setHomeMain(homeMain);
             ((TabFragment) this.fragments[1]).setHomeMain(homeMain);
             ((TabFragment) this.fragments[2]).setHomeMain(homeMain);
+            ((TabFragment) this.fragments[3]).setHomeMain(homeMain);
         }
 
         @Override
@@ -855,6 +863,11 @@ public class HomeFragment extends Fragment
         tabThreeBadge.setText("99");
 
         tab.getTabAt(CHAT_TAB).setCustomView(tabThree);
+
+        TextView tabFour = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.tab_custom, null);
+        tabFour.setText(adapter.getPageTitle(3));
+        tabFour.setCompoundDrawablesWithIntrinsicBounds(0, adapter.getIcon(3), 0, 0);
+        tab.getTabAt(MORE_TAB).setCustomView(tabFour);
     }
 
     /*@OnClick(R.id.fab)
