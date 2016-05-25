@@ -25,7 +25,7 @@ import retrofit2.Response;
  */
 public class InviteManager extends BaseManager {
 
-    private static InviteInterface inviteInterface;
+    public static InviteInterface inviteInterface;
     public static ArrayList<Button> arrBtnInvite = new ArrayList<>();
     public static ArrayList<Boolean> arrBtnInvite2 = new ArrayList<>();
     public static ArrayList<ContactPhoneModel> dataContact = new ArrayList<ContactPhoneModel>();
