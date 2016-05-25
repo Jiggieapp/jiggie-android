@@ -39,6 +39,7 @@ import com.jiggie.android.component.adapter.InviteFriendsNewAdapter;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.InviteManager;
 import com.jiggie.android.model.ContactPhoneModel;
+import com.jiggie.android.model.InviteCodeModel;
 import com.jiggie.android.model.InviteCodeResultModel;
 import com.jiggie.android.model.PostContactModel;
 import com.jiggie.android.model.PostInviteAllModel;
@@ -258,7 +259,10 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
     DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
 
     private void startingData() {
-        if (InviteManager.dataContact.size() == 0) {
+        if (InviteManager.dataContact.size() == 0
+                || getInviteCodeResultModel() == null
+                || getInviteCodeResultModel().getData().getInvite_code().getRewards_inviter() == null
+                || getInviteCodeResultModel().getData().getInvite_code().getRewards_inviter().isEmpty()) {
             //swipeRefresh.setEnabled(true);
             onRefresh();
         } else {
@@ -313,8 +317,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
             showProgressDialog();
             inviteCodePresenterImplementation.getInviteCode();
         }
-        else
-            getContactPhoneInvite();
+        else getContactPhoneInvite();
     }
 
 
@@ -860,8 +863,27 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
     @Override
     public void onFinishGetInviteCode(InviteCodeResultModel inviteCodeResultModel) {
         dismissProgressDialog();
-        setInviteCodeResultModel(inviteCodeResultModel);
-        getContactPhoneInvite();
+        if(inviteCodeResultModel != null)
+        {
+            setInviteCodeResultModel(inviteCodeResultModel);
+            getContactPhoneInvite();
+            /*if(inviteCodeResultModel.getData() != null)
+            {
+                setInviteCodeResultModel(inviteCodeResultModel);
+                getContactPhoneInvite();
+            }
+            else
+            {
+                InviteManager.dataContact = new ArrayList<>();
+                inviteCodePresenterImplementation.getInviteCode();
+            }*/
+        }
+        else
+        {
+            InviteManager.dataContact = new ArrayList<>();
+            inviteCodePresenterImplementation.getInviteCode();
+        }
+
     }
 
     @Override

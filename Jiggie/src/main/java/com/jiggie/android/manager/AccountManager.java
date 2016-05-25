@@ -25,6 +25,7 @@ import com.jiggie.android.model.SuccessTokenModel;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -842,6 +843,10 @@ public class AccountManager extends BaseManager {
                 .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
                 .edit().clear().apply();
         App.getInstance().getSharedPreferences().edit().clear().apply();
+        //AccountManager.accountInterface = null;
+        //InviteManager.inviteInterface = null;
+        InviteManager.arrBtnInvite2 = new ArrayList<>();
+        InviteManager.dataContact = new ArrayList<>();
     }
 
     public OnFinishGetAccessToken onFinishGetAccessToken;

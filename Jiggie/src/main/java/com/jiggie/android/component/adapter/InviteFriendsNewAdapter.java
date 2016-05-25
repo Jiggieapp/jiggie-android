@@ -191,13 +191,16 @@ public class InviteFriendsNewAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
         else
         {
-            ViewHolderHeader holderHeader = (ViewHolderHeader) holderr;
-            final String textHeader = String.format("You have %d contacts not yet on Jiggie.%nEarn up to Rp. %s in free credit!"
-                    , getItemCount(), formatter.format( Double.parseDouble(inviteCodeResultModel.getData().getInvite_code().getRewards_inviter()) * getItemCount()));
-            /*final String textHeader = "You have  "+ getItemCount() + " contacts not yet on Jiggie \n"
+            if(inviteCodeResultModel != null)
+            {
+                ViewHolderHeader holderHeader = (ViewHolderHeader) holderr;
+                final String textHeader = String.format("You have %d contacts not yet on Jiggie.%nEarn up to Rp. %s in free credit!"
+                        , getItemCount(), formatter.format(Double.parseDouble(inviteCodeResultModel.getData().getInvite_code().getRewards_inviter()) * getItemCount()));
+                /*final String textHeader = "You have  "+ getItemCount() + " contacts not yet on Jiggie \n"
                     + "Earn up to Rp. " + formatter.format(Double.parseDouble(inviteCodeResultModel.getData().getInvite_code().getRewards_inviter()) * getItemCount())
                     + " in free credits";*/
-            holderHeader.lblInviteHeader.setText(textHeader);
+                holderHeader.lblInviteHeader.setText(textHeader);
+            }
         }
     }
 
