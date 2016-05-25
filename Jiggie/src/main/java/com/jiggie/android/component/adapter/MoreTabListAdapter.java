@@ -1,12 +1,14 @@
 package com.jiggie.android.component.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,7 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.facebook.AccessToken;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.profile.NewProfileDetailActivity;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.SettingModel;
@@ -36,28 +39,35 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private int[] resources;
     private String[] items;
     public static final String TAG = MoreTabListAdapter.class.getSimpleName();
+    private String strCredit;
 
-    public MoreTabListAdapter(Fragment fragment, ItemSelectedListener listener) {
+    public MoreTabListAdapter(Fragment fragment, ItemSelectedListener listener, String strCredit) {
         this.pref = App.getSharedPreferences();
         this.listener = listener;
         this.fragment = fragment;
+        this.strCredit = strCredit;
     }
 
     public void initItems() {
         final Context context = this.fragment.getContext();
         this.items = new String[]{
-                context.getString(R.string.profile),
-                context.getString(R.string.invite),
+
+                context.getString(R.string.his_title),
+                strCredit,
+                context.getString(R.string.get_free_credit),
+                context.getString(R.string.promo_menu),
                 context.getString(R.string.settings),
                 context.getString(R.string.support),
                 context.getString(R.string.logout)
         };
         this.resources = new int[]{
-                R.mipmap.ic_profile,
-                R.mipmap.ic_invite,
-                R.mipmap.ic_settings,
-                R.mipmap.ic_support,
-                R.mipmap.ic_logout,
+                R.drawable.icbookings,
+                R.drawable.iccredit,
+                R.drawable.icinvitefriends,
+                R.drawable.icpromotions,
+                R.drawable.icsettings,
+                R.drawable.icsupport,
+                0
         };
     }
 
@@ -77,9 +87,22 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (position > 0) {
             final AccountViewHolder viewHolder = (AccountViewHolder) holder;
-            viewHolder.imageView.setImageResource(this.resources[position - 1]);
+
+            if (this.resources[position - 1] == 0) {
+                viewHolder.imageView.setVisibility(View.GONE);
+                viewHolder.text.setGravity(Gravity.CENTER_HORIZONTAL);
+            } else {
+                viewHolder.imageView.setImageResource(this.resources[position - 1]);
+            }
+
             viewHolder.text.setText(this.items[position - 1]);
             viewHolder.setPosition(position - 1);
+
+            if (position - 1 == 0) {
+                viewHolder.divTop.setVisibility(View.VISIBLE);
+            } else {
+                viewHolder.divTop.setVisibility(View.GONE);
+            }
         } else {
             final AccountHeaderViewHolder viewHolder = (AccountHeaderViewHolder) holder;
             final String userImage = this.pref.getString(Common.PREF_IMAGE, null);
@@ -105,6 +128,21 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     super.getView().setImageDrawable(circularBitmapDrawable);
                 }
             });
+
+            viewHolder.image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //open new Profile detail
+                    //fragment.getActivity().startActivity(new Intent(fragment.getActivity(), NewProfileDetailActivity.class));
+                }
+            });
+
+            viewHolder.imgEditProfile.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    fragment.getActivity().startActivity(new Intent(fragment.getActivity(), NewProfileDetailActivity.class));
+                }
+            });
         }
     }
 
@@ -118,6 +156,8 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         ImageView imageView;
         @Bind(R.id.text)
         TextView text;
+        @Bind(R.id.div_top)
+        View divTop;
 
         private ItemSelectedListener listener;
         private int position;
@@ -148,18 +188,19 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         TextView txtVerifyPhoneNumber;
         @Bind(R.id.lblPhoneNumber)
         TextView lblPhoneNumber;
+        @Bind(R.id.imgEditProfile)
+        ImageView imgEditProfile;
 
         @OnClick(R.id.txtVerifyPhoneNumber)
         @SuppressWarnings("unused")
         public void onVerifyPhoneNumberClick() {
-            if(listener!= null)
+            if (listener != null)
                 this.listener.onVerifyPhoneNumberSelected();
         }
 
         @OnClick(R.id.lblPhoneNumber)
         @SuppressWarnings("unused")
-        public void onLblPhoneNumberClick()
-        {
+        public void onLblPhoneNumberClick() {
             onVerifyPhoneNumberClick();
         }
 
@@ -172,7 +213,7 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             SettingModel settingModel = AccountManager.loadSetting();
             final String phoneNo = settingModel.getData().getPhone();
-            if (phoneNo == null || phoneNo.isEmpty())
+            /*if (phoneNo == null || phoneNo.isEmpty())
             {
                 txtVerifyPhoneNumber.setVisibility(View.VISIBLE);
                 lblPhoneNumber.setVisibility(View.GONE);
@@ -182,18 +223,19 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 txtVerifyPhoneNumber.setVisibility(View.GONE);
                 lblPhoneNumber.setVisibility(View.VISIBLE);
                 lblPhoneNumber.setText(phoneNo);
-            }
+            }*/
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            if (this.listener != null) this.listener.onItemSelected(0);
+            //if (this.listener != null) this.listener.onItemSelected(0);
         }
     }
 
     public interface ItemSelectedListener {
         void onItemSelected(int position);
+
         void onVerifyPhoneNumberSelected();
     }
 }
