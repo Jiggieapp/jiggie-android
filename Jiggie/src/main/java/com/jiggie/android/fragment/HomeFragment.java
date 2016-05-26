@@ -77,8 +77,7 @@ import it.sephiroth.android.library.tooltip.Tooltip;
  */
 public class HomeFragment extends Fragment
         implements ViewPager.OnPageChangeListener, ViewTreeObserver.OnGlobalLayoutListener, HomeMain {
-    @Nullable
-    @Bind(R.id.appBar)
+    @Nullable @Bind(R.id.appBar)
     AppBarLayout appBarLayout;
     @Bind(R.id.viewpagerw)
     ViewPager viewPager;
@@ -116,7 +115,7 @@ public class HomeFragment extends Fragment
     ProgressDialog progressDialog;
     boolean isFirstClick = true;
     View bottomSheet;
-    AppCompatActivity activity;
+     AppCompatActivity activity;
 
     @Nullable
     @Override
@@ -198,8 +197,8 @@ public class HomeFragment extends Fragment
             public void onAnimationStart(Animation animation) {
                 //if(fabInvite.getVisibility() == View.VISIBLE)
                 //{
-                //fabInvite.setVisibility(View.GONE);
-                fabInvite.startAnimation(makeOutAnimationInvite);
+                    //fabInvite.setVisibility(View.GONE);
+                    fabInvite.startAnimation(makeOutAnimationInvite);
                 //}
                 fab.setVisibility(View.VISIBLE);
             }
@@ -211,7 +210,7 @@ public class HomeFragment extends Fragment
                 fab.setVisibility(View.GONE);
                 /*if(fabInvite.getVisibility() == View.GONE)
                 {*/
-                fabInvite.startAnimation(makeInAnimationInvite);
+                    fabInvite.startAnimation(makeInAnimationInvite);
                 /*}*/
 
             }
@@ -314,7 +313,8 @@ public class HomeFragment extends Fragment
             }
         });
 
-        fabInvite.setOnClickListener(new View.OnClickListener() {
+        fabInvite.setOnClickListener(new View.OnClickListener()
+        {
             @Override
             public void onClick(View v) {
                 getActivity().startActivity(new Intent(getActivity(), InviteFriendsActivity.class));
@@ -354,14 +354,14 @@ public class HomeFragment extends Fragment
         });
 
         //TOOLTIP PART===============
-        if (tab.getSelectedTabPosition() == EVENT_TAB) {
+        if(tab.getSelectedTabPosition()==EVENT_TAB){
             if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_EVENT_LIST)) {
                 TooltipsManager.initTooltipWithPoint(getActivity(), new Point(TooltipsManager.getCenterPoint(getActivity())[0],
                         TooltipsManager.getCenterPoint(getActivity())[1]), getActivity().getString(R.string.tooltip_event_list), Utils.myPixel(getActivity(), 380), Tooltip.Gravity.BOTTOM);
                 TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_EVENT_LIST, true);
             }
 
-            if (SocialManager.countData > 0) {
+            if(SocialManager.countData>0){
                 if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_SOCIAL_TAB)) {
                     TooltipsManager.initTooltipWithPoint(getActivity(), new Point(TooltipsManager.getCenterPoint(getActivity())[0],
                             TooltipsManager.getCenterPoint(getActivity())[1] / 3), getActivity().getString(R.string.tooltip_social_tab), Utils.myPixel(getActivity(), 380), Tooltip.Gravity.BOTTOM);
@@ -413,7 +413,7 @@ public class HomeFragment extends Fragment
                 .equalsIgnoreCase(Utils.MSG_EMPTY_DATA)) {
             showToast(getResources().getString(R.string.preferred_experience));
         } else {
-            if (!exceptionModel.getMessage().contains("no card"))
+            if(!exceptionModel.getMessage().contains("no card"))
                 showToast(exceptionModel.getMessage());
         }
         //this.progressDialog.setVisibility(View.GONE);
@@ -456,35 +456,33 @@ public class HomeFragment extends Fragment
                 ArrayList<String> result = memberSettingResultModel.getData().getMembersettings().getExperiences();
 
                 for (String res : getTags()) {
-                    if(getActivity() != null)
-                    {
-                        final View view = getActivity().getLayoutInflater().inflate(R.layout.item_setup_tag, flowLayout, false);
-                        final ViewHolder holder = new ViewHolder(getActivity(), view, res);
+                    final View view = getActivity().getLayoutInflater().inflate(R.layout.item_setup_tag, flowLayout, false);
+                    final ViewHolder holder = new ViewHolder(getActivity(), view, res);
 
-                        holder.textView.setText(holder.text);
+                    holder.textView.setText(holder.text);
 
-                        flowLayout.addView(view);
 
-                        if (result.contains(res)) {
-                            selectedItems.add(res);
-                            //holder.checkView.setVisibility(View.GONE);
-                            holder.checkView.setVisibility(View.INVISIBLE);
-                        } else {
-                            //setSelected(holder.container, holder.textView, false);
-                            holder.checkView.setVisibility(View.VISIBLE);
-                        }
-                        //onTagClick(holder);
-                        setSelected(holder, holder.checkView.getVisibility() != View.VISIBLE, res);
-                        hasChanged = false;
+                    flowLayout.addView(view);
 
-                        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                            @Override
-                            public void onGlobalLayout() {
-                                view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                                holder.container.setMinimumWidth(holder.container.getMeasuredWidth());
-                            }
-                        });
+                    if (result.contains(res)) {
+                        selectedItems.add(res);
+                        //holder.checkView.setVisibility(View.GONE);
+                        holder.checkView.setVisibility(View.INVISIBLE);
+                    } else {
+                        //setSelected(holder.container, holder.textView, false);
+                        holder.checkView.setVisibility(View.VISIBLE);
                     }
+                    //onTagClick(holder);
+                    setSelected(holder, holder.checkView.getVisibility() != View.VISIBLE, res);
+                    hasChanged = false;
+
+                    view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                        @Override
+                        public void onGlobalLayout() {
+                            view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                            holder.container.setMinimumWidth(holder.container.getMeasuredWidth());
+                        }
+                    });
                 }
             }
 
@@ -612,30 +610,29 @@ public class HomeFragment extends Fragment
     public static void sendLocationInfo() {
         //PART of postLocation
         //PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), "-6.2216706", "106.8401574");
-        if (AccessToken.getCurrentAccessToken() != null && AccessToken.getCurrentAccessToken() != null) {
-            final String userId = AccessToken.getCurrentAccessToken().getUserId();
+        final String userId = AccessToken.getCurrentAccessToken().getUserId();
+        if(userId != null && SocialManager.lat != null && SocialManager.lng != null)
+        {
+            //PART of postLocation
+            PostLocationModel postLocationModel = new PostLocationModel(userId, SocialManager.lat, SocialManager.lng);
+            //PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), "-6.2216706", "106.8401574");
+            /*String responses = new Gson().toJson(postLocationModel);
+            Utils.d("res", responses);*/
 
-            if (userId != null && SocialManager.lat != null && SocialManager.lng != null) {
-                //PART of postLocation
-                PostLocationModel postLocationModel = new PostLocationModel(userId, SocialManager.lat, SocialManager.lng);
-                //PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), "-6.2216706", "106.8401574");
-                /*String responses = new Gson().toJson(postLocationModel);
-                Utils.d("res", responses);*/
+            SocialManager.loaderLocation(postLocationModel, new SocialManager.OnResponseListener() {
+                @Override
+                public void onSuccess(Object object) {
+                    Utils.d("location", "post location success");
+                }
 
-                SocialManager.loaderLocation(postLocationModel, new SocialManager.OnResponseListener() {
-                    @Override
-                    public void onSuccess(Object object) {
-                        Utils.d("location", "post location success");
-                    }
+                @Override
+                public void onFailure(int responseCode, String message) {
 
-                    @Override
-                    public void onFailure(int responseCode, String message) {
-
-                    }
-                });
-                //end here
-            }
+                }
+            });
+            //end here
         }
+
     }
 
     @Override
@@ -711,7 +708,7 @@ public class HomeFragment extends Fragment
 
             TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_SOCIAL_TAB, false);
             SocialManager.isInSocial = true;
-            SocialTabFragment sc = (SocialTabFragment) this.adapter.fragments[position];
+            SocialTabFragment sc = (SocialTabFragment)this.adapter.fragments[position];
             sc.checkTooltipsInSug();
 
             //sc.refreshCard();
@@ -731,7 +728,8 @@ public class HomeFragment extends Fragment
         this.lastSelectedFragment.onTabSelected();
     }
 
-    private void showToolbar() {
+    private void showToolbar()
+    {
         CoordinatorLayout coordinator = (CoordinatorLayout) getActivity().findViewById(R.id.cl_main);
         AppBarLayout appbar = (AppBarLayout) getActivity().findViewById(R.id.appBar);
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appbar.getLayoutParams();
@@ -884,7 +882,9 @@ public class HomeFragment extends Fragment
         super.onDestroy();
         try {
             getActivity().unregisterReceiver(fetchChatReceiver);
-        } catch (IllegalArgumentException e) {
+        }
+        catch(IllegalArgumentException e)
+        {
             e.printStackTrace();
         }
     }
