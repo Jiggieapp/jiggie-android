@@ -21,7 +21,6 @@ import com.facebook.AccessToken;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.profile.NewProfileDetailActivity;
-import com.jiggie.android.activity.profile.ProfileDetailActivity;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.SettingModel;
@@ -40,21 +39,21 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private int[] resources;
     private String[] items;
     public static final String TAG = MoreTabListAdapter.class.getSimpleName();
-    //private String strCredit;
+    private String strCredit;
 
-    public MoreTabListAdapter(Fragment fragment, ItemSelectedListener listener) {
+    public MoreTabListAdapter(Fragment fragment, ItemSelectedListener listener, String strCredit) {
         this.pref = App.getSharedPreferences();
         this.listener = listener;
         this.fragment = fragment;
-        //this.strCredit = strCredit;
+        this.strCredit = strCredit;
     }
 
     public void initItems() {
         final Context context = this.fragment.getContext();
         this.items = new String[]{
 
-                //strCredit,
                 context.getString(R.string.his_title),
+                strCredit,
                 context.getString(R.string.get_free_credit),
                 context.getString(R.string.promo_menu),
                 context.getString(R.string.settings),
@@ -62,8 +61,8 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 context.getString(R.string.logout)
         };
         this.resources = new int[]{
-                //R.drawable.iccredit,
                 R.drawable.icbookings,
+                R.drawable.iccredit,
                 R.drawable.icinvitefriends,
                 R.drawable.icpromotions,
                 R.drawable.icsettings,
@@ -74,38 +73,37 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        /*if (viewType == 0)
-            return new AccountHeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_more_header, parent, false), this.listener);*/
+        if (viewType == 0)
+            return new AccountHeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_more_header, parent, false), this.listener);
         return new AccountViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_more, parent, false), this.listener);
     }
 
     @Override
     public int getItemViewType(int position) {
-        //return position == 0 ? 0 : 1;
-        return position;
+        return position == 0 ? 0 : 1;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        //if (position > 0) {
+        if (position > 0) {
             final AccountViewHolder viewHolder = (AccountViewHolder) holder;
 
-            if (this.resources[position] == 0) {
+            if (this.resources[position - 1] == 0) {
                 viewHolder.imageView.setVisibility(View.GONE);
                 viewHolder.text.setGravity(Gravity.CENTER_HORIZONTAL);
             } else {
-                viewHolder.imageView.setImageResource(this.resources[position]);
+                viewHolder.imageView.setImageResource(this.resources[position - 1]);
             }
 
-            viewHolder.text.setText(this.items[position]);
-            viewHolder.setPosition(position);
+            viewHolder.text.setText(this.items[position - 1]);
+            viewHolder.setPosition(position - 1);
 
-            /*if (position - 1 == 0) {
+            if (position - 1 == 0) {
                 viewHolder.divTop.setVisibility(View.VISIBLE);
             } else {
                 viewHolder.divTop.setVisibility(View.GONE);
-            }*/
-        /*} else {
+            }
+        } else {
             final AccountHeaderViewHolder viewHolder = (AccountHeaderViewHolder) holder;
             final String userImage = this.pref.getString(Common.PREF_IMAGE, null);
             final String dataPath = App.getInstance().getDataPath(Common.PREF_IMAGES);
@@ -131,13 +129,11 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 }
             });
 
-            *//*viewHolder.image.setOnClickListener(new View.OnClickListener() {
+            viewHolder.image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //open new Profile detail
-                    Intent intent = new Intent(fragment.getActivity(), ProfileDetailActivity.class);
-                    intent.putExtra(Common.FIELD_FACEBOOK_ID, AccessToken.getCurrentAccessToken().getUserId());
-                    fragment.getActivity().startActivity(intent);
+                    //fragment.getActivity().startActivity(new Intent(fragment.getActivity(), NewProfileDetailActivity.class));
                 }
             });
 
@@ -146,13 +142,13 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 public void onClick(View v) {
                     fragment.getActivity().startActivity(new Intent(fragment.getActivity(), NewProfileDetailActivity.class));
                 }
-            });*//*
-        }*/
+            });
+        }
     }
 
     @Override
     public int getItemCount() {
-        return this.items == null ? 0 : this.items.length;
+        return this.items == null ? 0 : this.items.length + 1;
     }
 
     static class AccountViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -160,8 +156,8 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         ImageView imageView;
         @Bind(R.id.text)
         TextView text;
-        /*@Bind(R.id.div_top)
-        View divTop;*/
+        @Bind(R.id.div_top)
+        View divTop;
 
         private ItemSelectedListener listener;
         private int position;
@@ -183,7 +179,7 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    /*public static class AccountHeaderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class AccountHeaderViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @Bind(R.id.imageView)
         ImageView image;
         @Bind(R.id.txtUser)
@@ -217,7 +213,7 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             SettingModel settingModel = AccountManager.loadSetting();
             final String phoneNo = settingModel.getData().getPhone();
-            *//*if (phoneNo == null || phoneNo.isEmpty())
+            /*if (phoneNo == null || phoneNo.isEmpty())
             {
                 txtVerifyPhoneNumber.setVisibility(View.VISIBLE);
                 lblPhoneNumber.setVisibility(View.GONE);
@@ -227,7 +223,7 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 txtVerifyPhoneNumber.setVisibility(View.GONE);
                 lblPhoneNumber.setVisibility(View.VISIBLE);
                 lblPhoneNumber.setText(phoneNo);
-            }*//*
+            }*/
             itemView.setOnClickListener(this);
         }
 
@@ -235,7 +231,7 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         public void onClick(View v) {
             //if (this.listener != null) this.listener.onItemSelected(0);
         }
-    }*/
+    }
 
     public interface ItemSelectedListener {
         void onItemSelected(int position);

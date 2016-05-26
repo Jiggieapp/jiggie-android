@@ -333,6 +333,7 @@ public class HomeFragment extends Fragment
             @Override
             public void onSuccess(Object object) {
                 TagsListModel dataTemp = (TagsListModel) object;
+
                 setTags(dataTemp);
             }
 
@@ -456,34 +457,33 @@ public class HomeFragment extends Fragment
                 ArrayList<String> result = memberSettingResultModel.getData().getMembersettings().getExperiences();
 
                 for (String res : getTags()) {
-                    if(getActivity() != null)
-                    {
-                        final View view = getActivity().getLayoutInflater().inflate(R.layout.item_setup_tag, flowLayout, false);
-                        final ViewHolder holder = new ViewHolder(getActivity(), view, res);
+                    final View view = getActivity().getLayoutInflater().inflate(R.layout.item_setup_tag, flowLayout, false);
+                    final ViewHolder holder = new ViewHolder(getActivity(), view, res);
 
-                        holder.textView.setText(holder.text);
-                        flowLayout.addView(view);
+                    holder.textView.setText(holder.text);
 
-                        if (result.contains(res)) {
-                            selectedItems.add(res);
-                            //holder.checkView.setVisibility(View.GONE);
-                            holder.checkView.setVisibility(View.INVISIBLE);
-                        } else {
-                            //setSelected(holder.container, holder.textView, false);
-                            holder.checkView.setVisibility(View.VISIBLE);
-                        }
-                        //onTagClick(holder);
-                        setSelected(holder, holder.checkView.getVisibility() != View.VISIBLE, res);
-                        hasChanged = false;
 
-                        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                            @Override
-                            public void onGlobalLayout() {
-                                view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                                holder.container.setMinimumWidth(holder.container.getMeasuredWidth());
-                            }
-                        });
+                    flowLayout.addView(view);
+
+                    if (result.contains(res)) {
+                        selectedItems.add(res);
+                        //holder.checkView.setVisibility(View.GONE);
+                        holder.checkView.setVisibility(View.INVISIBLE);
+                    } else {
+                        //setSelected(holder.container, holder.textView, false);
+                        holder.checkView.setVisibility(View.VISIBLE);
                     }
+                    //onTagClick(holder);
+                    setSelected(holder, holder.checkView.getVisibility() != View.VISIBLE, res);
+                    hasChanged = false;
+
+                    view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                        @Override
+                        public void onGlobalLayout() {
+                            view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                            holder.container.setMinimumWidth(holder.container.getMeasuredWidth());
+                        }
+                    });
                 }
             }
 
@@ -611,31 +611,29 @@ public class HomeFragment extends Fragment
     public static void sendLocationInfo() {
         //PART of postLocation
         //PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), "-6.2216706", "106.8401574");
-        if(AccessToken.getCurrentAccessToken()!= null && AccessToken.getCurrentAccessToken().getUserId() != null)
+        final String userId = AccessToken.getCurrentAccessToken().getUserId();
+        if(userId != null && SocialManager.lat != null && SocialManager.lng != null)
         {
-            final String userId = AccessToken.getCurrentAccessToken().getUserId();
-            if(userId != null && SocialManager.lat != null && SocialManager.lng != null)
-            {
-                //PART of postLocation
-                PostLocationModel postLocationModel = new PostLocationModel(userId, SocialManager.lat, SocialManager.lng);
-                //PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), "-6.2216706", "106.8401574");
+            //PART of postLocation
+            PostLocationModel postLocationModel = new PostLocationModel(userId, SocialManager.lat, SocialManager.lng);
+            //PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), "-6.2216706", "106.8401574");
             /*String responses = new Gson().toJson(postLocationModel);
             Utils.d("res", responses);*/
 
-                SocialManager.loaderLocation(postLocationModel, new SocialManager.OnResponseListener() {
-                    @Override
-                    public void onSuccess(Object object) {
-                        Utils.d("location", "post location success");
-                    }
+            SocialManager.loaderLocation(postLocationModel, new SocialManager.OnResponseListener() {
+                @Override
+                public void onSuccess(Object object) {
+                    Utils.d("location", "post location success");
+                }
 
-                    @Override
-                    public void onFailure(int responseCode, String message) {
+                @Override
+                public void onFailure(int responseCode, String message) {
 
-                    }
-                });
-                //end here
-            }
+                }
+            });
+            //end here
         }
+
     }
 
     @Override
@@ -869,7 +867,6 @@ public class HomeFragment extends Fragment
         TextView tabFour = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.tab_custom, null);
         tabFour.setText(adapter.getPageTitle(3));
         tabFour.setCompoundDrawablesWithIntrinsicBounds(0, adapter.getIcon(3), 0, 0);
-        tabFour.setPadding(0,Utils.myPixel(getActivity(), 3),0,0);
         tab.getTabAt(MORE_TAB).setCustomView(tabFour);
     }
 
