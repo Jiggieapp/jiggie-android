@@ -457,4 +457,5 @@
 
     <string name="confirm_contact">Please allow the application to access your contacts</string>
 
+    <string name="edit_profile">Edit Profile</string>
 </resources>

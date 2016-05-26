@@ -76,40 +76,10 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     @Bind(R.id.cardEmpty)
     View cardEmpty;
 
-    /*@Bind(R.id.cardGeneral)
-    View cardGeneral;
-    @Bind(R.id.cardInbound)
-    View cardInbound;
-
-    @Bind(R.id.card)
-    View card;
-
-    @Bind(R.id.txtConnectGeneral)
-    TextView generalTxtConnect;
-    @Bind(R.id.txtEventGeneral)
-    TextView generalTxtEvent;
-    @Bind(R.id.imageUserGeneral)
-    ImageView generalImage;
-    @Bind(R.id.txtUserGeneral)
-    TextView generalTxtUser;
-    @Bind(R.id.btnYesGeneral)
-    Button generalBtnYes;
-    @Bind(R.id.btnNoGeneral)
-    Button generalBtnNo;
-
-    @Bind(R.id.txtEventInbound)
-    TextView inboundTxtEvent;
-    @Bind(R.id.imageUserInbound)
-    ImageView inboundImage;
-    @Bind(R.id.txtUserInbound)
-    TextView inboundTxtUser;
-    @Bind(R.id.btnYesInbound)
-    Button inboundBtnYes;
-    @Bind(R.id.btnNoInbound)
-    Button inboundBtnNo;*/
-
     @Bind(R.id.fling_adapter)
     CustomSwipeFlingAdapterView flingAdapterView;
+
+
 
     /*@Bind(R.id.tempListView)
     ListView tempListView;*/
@@ -204,28 +174,11 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
 
         EventBus.getDefault().register(this);
 
-        //this.layoutSocialize.setVisibility(View.GONE);
         this.progressBar.setVisibility(View.GONE);
-        /*this.cardGeneral.setVisibility(View.GONE);
-        this.cardInbound.setVisibility(View.GONE);
-        this.cardEmpty.setVisibility(View.GONE);
-        this.card.setVisibility(View.GONE);*/
-
-        //wandy 22-02-2016
-        //currentSetting = null;
-
-        /*if (currentSetting != null) {
-            this.switchSocialize.setChecked(currentSetting.isMatchme());
-        } else {
-            this.switchSocialize.setChecked(true);
-        }
-        this.switchSocialize.setOnCheckedChangeListener(this.socializeChanged);
-        */
-        /*App.getInstance().registerReceiver(this.socialReceiver
-                , new IntentFilter(super.getString(R.string.broadcast_social)));*/
         App.getInstance().registerReceiver(this.refreshSocialReceiver
                 , new IntentFilter(SocialTabFragment.TAG));
         super.setHasOptionsMenu(true);
+
     }
 
     private boolean isRefreshing = false;
@@ -393,8 +346,10 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             }
 
             @Override
-            public void onScroll(float v) {
-
+            public void onScroll(float scrollProgressPercent) {
+                View view = flingAdapterView.getSelectedView();
+                view.findViewById(R.id.image_skip).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
+                view.findViewById(R.id.image_connect).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
             }
         });
     }
