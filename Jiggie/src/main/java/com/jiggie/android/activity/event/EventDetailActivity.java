@@ -407,6 +407,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         }, 1000);*/
 
         cekCounter();
+        
 
     }
 
