@@ -312,6 +312,14 @@ public class App extends Application {
             if (settingModel != null) {
                 json.putString("gender", settingModel.getData().getGender());
                 json.putString("gender_interest", settingModel.getData().getGender_interest());
+
+                if (eventName.equals("Sign Up")) {
+                    json.putString("invite_code", settingModel.getInvite_code());
+                }else if (eventName.equals("Log In")) {
+                    json.putString("invite_code", settingModel.getInvite_code());
+                }
+
+
             }
         }
 
@@ -1161,6 +1169,7 @@ public class App extends Application {
         if (settingModel != null) {
             postMixpanelModel.setGender(settingModel.getData().getGender());
             postMixpanelModel.setGender_interest(settingModel.getData().getGender_interest());
+            postMixpanelModel.setInvite_code(settingModel.getInvite_code());
         }
 
         if (login != null) {
