@@ -9,6 +9,8 @@ import com.google.gson.Gson;
 import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
+import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.PostSummaryModel;
 import com.jiggie.android.presenter.GuestPresenter;
 
@@ -87,12 +89,20 @@ public abstract class AbstractTicketDetailActivity extends /*ToolbarWithDotActiv
             guestPhone = guestDetail.phone;
             dialCode = guestDetail.dial_code;
         } else {
-            lblFillYourContactInfo.setVisibility(View.VISIBLE);
-            relGuestDetail.setVisibility(View.GONE);
-            guestName = "";
+            /*lblFillYourContactInfo.setVisibility(View.VISIBLE);
+            relGuestDetail.setVisibility(View.GONE);*/
+
+            LoginModel loginModel = AccountManager.loadLogin();
+            guestName = loginModel.getUser_first_name() + " " + loginModel.getUser_last_name();
+            guestEmail = loginModel.getEmail();
+            guestPhone = AccountManager.loadSetting().getData().getPhone();
+
+            lblFillYourContactInfo.setVisibility(View.GONE);
+            relGuestDetail.setVisibility(View.VISIBLE);
+            /*guestName = "";
             guestEmail = "";
             guestPhone = Utils.BLANK;
-            dialCode = "";
+            dialCode = "";*/
         }
 
         if (guestPhone.equals(Utils.BLANK)) {
@@ -109,6 +119,5 @@ public abstract class AbstractTicketDetailActivity extends /*ToolbarWithDotActiv
             txtGuestPhone.setText("+" + dialCode + guestPhone);
         }
     }
-
 }
 
