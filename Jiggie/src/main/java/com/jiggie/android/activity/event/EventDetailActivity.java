@@ -388,7 +388,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         }
 
         cekLike();
-        runInvite();
+        //runInvite();
     }
 
     @Override
