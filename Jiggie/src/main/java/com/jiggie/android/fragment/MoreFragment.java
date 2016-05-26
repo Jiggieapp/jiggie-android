@@ -111,8 +111,13 @@ public class MoreFragment extends Fragment implements TabFragment, MoreTabListAd
         ButterKnife.bind(this, this.rootView);
 
         preDefine();
-        loadCredit();
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadCredit();
     }
 
     private void preDefine(){
@@ -141,12 +146,12 @@ public class MoreFragment extends Fragment implements TabFragment, MoreTabListAd
         });
 
         imageView.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            //open new Profile detail
-            Intent intent = new Intent(getActivity(), ProfileDetailActivity.class);
-            intent.putExtra(Common.FIELD_FACEBOOK_ID, AccessToken.getCurrentAccessToken().getUserId());
-            getActivity().startActivity(intent);
+            @Override
+            public void onClick(View v) {
+                //open new Profile detail
+                Intent intent = new Intent(getActivity(), ProfileDetailActivity.class);
+                intent.putExtra(Common.FIELD_FACEBOOK_ID, AccessToken.getCurrentAccessToken().getUserId());
+                getActivity().startActivity(intent);
             }
         });
 
