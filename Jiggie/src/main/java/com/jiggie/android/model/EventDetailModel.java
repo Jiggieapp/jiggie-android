@@ -6,7 +6,6 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by LTE on 2/3/2016.
@@ -63,6 +62,77 @@ public class EventDetailModel {
         }
 
         public static class EventDetail implements Parcelable {
+            public void set_id(String _id) {
+                this._id = _id;
+            }
+
+            public void setLikes(int likes) {
+                this.likes = likes;
+            }
+
+            public void setEvent_id(String event_id) {
+                this.event_id = event_id;
+            }
+
+            public void setStart_datetime(String start_datetime) {
+                this.start_datetime = start_datetime;
+            }
+
+            public void setEnd_datetime(String end_datetime) {
+                this.end_datetime = end_datetime;
+            }
+
+            public void setVenue_id(String venue_id) {
+                this.venue_id = venue_id;
+            }
+
+            public void setVenue_name(String venue_name) {
+                this.venue_name = venue_name;
+            }
+
+            public void setStart_datetime_str(String start_datetime_str) {
+                this.start_datetime_str = start_datetime_str;
+            }
+
+            public void setEnd_datetime_str(String end_datetime_str) {
+                this.end_datetime_str = end_datetime_str;
+            }
+
+            public void setFullfillment_type(String fullfillment_type) {
+                this.fullfillment_type = fullfillment_type;
+            }
+
+            public void setFullfillment_value(String fullfillment_value) {
+                this.fullfillment_value = fullfillment_value;
+            }
+
+            public void setPhotos(ArrayList<String> photos) {
+                this.photos = photos;
+            }
+
+            public void setDescription(String description) {
+                this.description = description;
+            }
+
+            public void setTitle(String title) {
+                this.title = title;
+            }
+
+            public void setTags(ArrayList<String> tags) {
+                this.tags = tags;
+            }
+
+            public void setGuests_viewed(ArrayList<GuestViewed> guests_viewed) {
+                this.guests_viewed = guests_viewed;
+            }
+
+            public void setVenue(Venue venue) {
+                this.venue = venue;
+            }
+
+            public void setIs_liked(boolean is_liked) {
+                this.is_liked = is_liked;
+            }
 
             String _id;
             String event_id;
@@ -83,9 +153,21 @@ public class EventDetailModel {
             ArrayList<GuestViewed> guests_viewed;
             Venue venue;
 
+            boolean is_liked;
+            int likes;
+            int lowest_price;
+
+            public int getLowest_price() {
+                return lowest_price;
+            }
+
+            public void setLowest_price(int lowest_price) {
+                this.lowest_price = lowest_price;
+            }
+
             public EventDetail(String _id, String event_id, String start_datetime, String end_datetime, String venue_id, String venue_name, String start_datetime_str, String end_datetime_str,
                                String fullfillment_type, String fullfillment_value, ArrayList<String> photos, String description, String title, ArrayList<String> tags,
-                               ArrayList<GuestViewed> guests_viewed, Venue venue){
+                               ArrayList<GuestViewed> guests_viewed, Venue venue, boolean is_liked, int likes, int lowest_price){
                 this._id = _id;
                 this.event_id = event_id;
                 this.start_datetime = start_datetime;
@@ -102,7 +184,13 @@ public class EventDetailModel {
                 this.tags = tags;
                 this.guests_viewed = guests_viewed;
                 this.venue = venue;
+                this.is_liked = is_liked;
+                this.likes = likes;
+                this.lowest_price = lowest_price;
             }
+
+            public EventDetail()
+            {}
 
             public String get_id() {
                 return _id;
@@ -168,6 +256,14 @@ public class EventDetailModel {
                 return venue;
             }
 
+            public boolean is_liked() {
+                return is_liked;
+            }
+
+            public int getLikes() {
+                return likes;
+            }
+
             protected EventDetail(Parcel in) {
                 _id = in.readString();
                 event_id = in.readString();
@@ -200,6 +296,8 @@ public class EventDetailModel {
                     guests_viewed = null;
                 }
                 venue = (Venue) in.readValue(Venue.class.getClassLoader());
+                is_liked = in.readByte() != 0x00;
+                likes = in.readInt();
             }
 
             @Override
@@ -240,6 +338,8 @@ public class EventDetailModel {
                     dest.writeList(guests_viewed);
                 }
                 dest.writeValue(venue);
+                dest.writeByte((byte) (is_liked ? 0x01 : 0x00));
+                dest.writeInt(likes);
             }
 
             @SuppressWarnings("unused")

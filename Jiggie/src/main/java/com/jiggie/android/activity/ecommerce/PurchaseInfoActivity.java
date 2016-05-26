@@ -13,19 +13,20 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.jiggie.android.App;
+import com.jiggie.android.BuildConfig;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.summary.AbstractPurchaseSumaryActivity;
 import com.jiggie.android.component.StringUtility;
@@ -39,6 +40,7 @@ import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.PostFreePaymentModel;
 import com.jiggie.android.model.PostPaymentModel;
 import com.jiggie.android.model.SummaryModel;
+import com.jiggie.android.view.DiscountView;
 import com.jiggie.android.view.TermsItemView;
 
 import java.text.ParseException;
@@ -102,9 +104,8 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
 
     AlertDialog dialog3ds;
     ProgressDialog progressDialog;
-    public final static String PAYMENT_API = "https://api.veritrans.co.id/v2/token";
+    public final static String PAYMENT_API = BuildConfig.PAYMENT_API;
     //public final static String PAYMENT_API_SANDBOX = "https://api.sandbox.veritrans.co.id/v2/token";
-    public final static String PAYMENT_API_SANDBOX = "https://api.veritrans.co.id/v2/token";
     CCScreenModel.CardDetails cardDetails;
     @Bind(R.id.rel_disable)
     RelativeLayout relDisable;
@@ -113,7 +114,12 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     boolean isPaying = false;
     @Bind(R.id.lblSelectPayment)
     TextView lblSelectPayment;
-
+    @Bind(R.id.txt_credit_fill)
+    TextView txtCreditFill;
+    @Bind(R.id.txt_credit_title)
+    TextView txtCreditTitle;
+    @Bind(R.id.lin_discount)
+    LinearLayout linDiscount;
 
     private SlideAdapter slideAdapter;
     public final static String TAG = PurchaseInfoActivity.class.getSimpleName();
@@ -255,7 +261,8 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
         if (dataProduct.getTax_amount().equals(Utils.NOL_RUPIAH)) {
             txtTaxFill.setText(getString(R.string.free));
         } else {
-            txtTaxFill.setText(StringUtility.getRupiahFormat(dataProduct.getTax_amount()));
+            //txtTaxFill.setText(StringUtility.getRupiahFormat(dataProduct.getTax_amount()));
+            txtTaxFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_tax_amount()));
         }
 
         if (totalPrice.equals(Utils.NOL_RUPIAH)) {
@@ -264,6 +271,23 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
             txtTotalTicketFill.setText(StringUtility.getRupiahFormat(totalPrice));
         }
 
+        if (productSummary.getCredit().getCredit_used() != 0) {
+            txtCreditTitle.setVisibility(View.VISIBLE);
+            txtCreditFill.setVisibility(View.VISIBLE);
+            txtCreditFill.setText("- " + StringUtility.getRupiahFormat(String.valueOf(productSummary.getCredit().getCredit_used())));
+        }
+
+        if (productSummary.getDiscount().getData().size() > 0) {
+            //float textSize = getResources().getDimension(R.dimen.font_body_size) / getResources().getDisplayMetrics().density;
+            float textSize = 14;
+            for (int i = 0; i < productSummary.getDiscount().getData().size(); i++) {
+                String title = productSummary.getDiscount().getData().get(i).getName();
+                String value = String.valueOf(productSummary.getDiscount().getData().get(i).getAmount_used());
+                DiscountView discountView = new DiscountView(PurchaseInfoActivity.this, title, value, false, getResources().getColor(R.color.textDarkGray), getResources().getColor(R.color.purple), textSize);
+                linDiscount.addView(discountView);
+            }
+            linDiscount.setVisibility(View.VISIBLE);
+        }
 
         txtTotalFill.setVisibility(View.GONE);
         //initTermView(dataProduct);
@@ -313,11 +337,11 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                     //action
                     if (position == 0) {
                         if (canPay()) {
-                            if(isPaying==false){
+                            if (isPaying == false) {
                                 slidePay();
                             }
                         } else {
-                            Log.d("Pay status", "cannot pay");
+                            Utils.d("Pay status", "cannot pay");
                         }
                     }
 
@@ -422,7 +446,8 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
         //using 3d secure
         VTConfig.VT_IsProduction = true;
         //VTConfig.CLIENT_KEY = "VT-client-gJRBbRZC0t_-JXUD";
-        VTConfig.CLIENT_KEY = "VT-client-tHEKcD0xJGsm6uwH";
+        //VTConfig.CLIENT_KEY = "VT-client-tHEKcD0xJGsm6uwH";
+        VTConfig.CLIENT_KEY = BuildConfig.CLIENT_KEY;
 
         VTDirect vtDirect = new VTDirect();
 

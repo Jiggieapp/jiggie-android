@@ -8,11 +8,27 @@
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="android:windowBackground">@color/background</item>
         <item name="android:windowActionModeOverlay">true</item>
+        <item name="SwipeFlingStyle">@style/SwipeFling</item>
 
         <!-- To change the background of options menu-->
         <!--<item name="android:itemBackground">@color/skyBlue</item>-->
         <!--<item name="android:popupMenuStyle">@style/PopupMenu</item>-->
     </style>
+
+    <style name="AppCustomTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionModeOverlay">true</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <!--<item name="SwipeFlingStyle">@style/SwipeFling</item>-->
+
+        <!-- To change the background of options menu-->
+        <!--<item name="android:itemBackground">@color/skyBlue</item>-->
+        <!--<item name="android:popupMenuStyle">@style/PopupMenu</item>-->
+    </style>
+
 
     <style name="AppThemeToolbar" parent="Theme.AppCompat.Light">
         <item name="windowActionModeOverlay">true</item>
@@ -28,18 +44,6 @@
         <!--<item name="android:popupMenuStyle">@style/PopupMenu</item>-->
     </style>
 
-    <style name="AppCustomTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="windowActionModeOverlay">true</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
-        <item name="android:windowActionModeOverlay">true</item>
-
-        <!-- To change the background of options menu-->
-        <!--<item name="android:itemBackground">@color/skyBlue</item>-->
-        <!--<item name="android:popupMenuStyle">@style/PopupMenu</item>-->
-    </style>
 
     <style name="AppTheme.Setup" parent="AppTheme">
         <item name="colorPrimaryDark">@color/setup_blue</item>
@@ -82,6 +86,8 @@
 
     <style name="CustomFlatButtonStyle" parent="@style/Widget.AppCompat.Button.Borderless">
         <item name="android:textColor">@color/blue_selector</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:layout_margin">0dp</item>
     </style>
 
     <style name="fullHeightDialog" parent="android:style/Theme.Material.Light.Dialog.Alert">
@@ -91,5 +97,28 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="TooltipText" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/background</item>
+    </style>
+
+    <style name="ToolTipStyle">
+        <item name="ttlm_padding">@dimen/padding_standard</item>
+        <item name="ttlm_strokeColor">#00BAFF</item>
+        <item name="ttlm_backgroundColor">#00BAFF</item>
+        <item name="ttlm_strokeWeight">2dip</item>
+        <item name="ttlm_cornerRadius">8dip</item>
+        <item name="ttlm_overlayStyle">@style/ToolTipOverlayCustomStyle</item>
+        <!--<item name="android:textAppearance">?android:attr/textAppearanceInverse</item>-->
+        <item name="android:textAppearance">@style/TooltipText</item>
+        <item name="android:gravity">center</item>
+        <item name="ttlm_elevation">4dip</item>
+    </style>
+
+    <style name="ToolTipOverlayCustomStyle">
+        <item name="android:color">@android:color/transparent</item>
+        <item name="ttlm_repeatCount">0</item>
+        <item name="ttlm_duration">0</item>
+    </style>
 
 </resources>

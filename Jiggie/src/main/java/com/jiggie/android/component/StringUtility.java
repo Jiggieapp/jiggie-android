@@ -14,7 +14,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by rangg on 17/11/2015.
@@ -187,8 +186,12 @@ public class StringUtility {
         int numPerThousand = (int)(Double.parseDouble(number) / 1000);
         String strNumPerThousand = String.valueOf(numPerThousand);
 
-        if (strNumPerThousand.length() == 0) {
-            displayedString = "Rp0";
+        int num = Integer.parseInt(number);
+
+        /*if (strNumPerThousand.length() == 0) {
+            displayedString = "Rp"+String.valueOf(number);*/
+        if (num < 1000) {
+            displayedString = "Rp"+String.valueOf(number);
         } else {
             if (strNumPerThousand.length() > 3) {
                 int length = strNumPerThousand.length();
@@ -217,6 +220,37 @@ public class StringUtility {
             displayedString = displayedString + "K";
         }
 
+        return displayedString;
+    }
+
+    public static String getCreditBalanceFormat(String number) {
+        String displayedString = "";
+
+        if (number.length() == 0) {
+            displayedString = "Rp. 0";
+        } else {
+            if (number.length() > 3) {
+                int length = number.length();
+
+                for (int i = length; i > 0; i -= 3) {
+                    if (i > 3) {
+                        String myStringPrt1 = number.substring(0, i - 3);
+                        String myStringPrt2 = number.substring(i - 3);
+
+                        String combinedString;
+
+                        combinedString = myStringPrt1 + ".";
+
+                        combinedString += myStringPrt2;
+                        number = combinedString;
+
+                        displayedString = "Rp. " + combinedString;
+                    }
+                }
+            } else {
+                displayedString = "Rp. " + number;
+            }
+        }
         return displayedString;
     }
 

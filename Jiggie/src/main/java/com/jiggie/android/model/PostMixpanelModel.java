@@ -18,6 +18,7 @@ public class PostMixpanelModel {
     String gender;
     String app_version;
     String first_name;
+    String invite_code;
 
     public String getGender_interest() {
         return gender_interest;
@@ -121,5 +122,13 @@ public class PostMixpanelModel {
 
     public void setFirst_name(String first_name) {
         this.first_name = first_name;
+    }
+
+    public String getInvite_code() {
+        return invite_code;
+    }
+
+    public void setInvite_code(String invite_code) {
+        this.invite_code = invite_code;
     }
 }

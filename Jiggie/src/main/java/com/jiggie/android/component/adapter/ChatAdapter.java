@@ -15,12 +15,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.Chat;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         final Chat item = this.items.get(position);
         if(holderr instanceof ChatAdapter.ViewHolderBody)
         {
-            ChatAdapter.ViewHolderBody holder = (ChatAdapter.ViewHolderBody) holderr;
+            ChatAdapter .ViewHolderBody holder = (ChatAdapter.ViewHolderBody) holderr;
             try {
 
                 holder.txtMessage.setText(item.getMessage().trim());
@@ -111,7 +111,14 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         else if(holderr instanceof ViewHolderHeader)
         {
             ViewHolderHeader holderHeader = (ViewHolderHeader) holderr;
-            holderHeader.lblChatHeader.setText(item.getTitle());
+            if(item.getTitle().equalsIgnoreCase("generic")){
+                holderHeader.lblChatHeader.setVisibility(View.GONE);
+            }else{
+                holderHeader.lblChatHeader.setVisibility(View.VISIBLE);
+                holderHeader.lblChatHeader.setText(item.getTitle());
+            }
+
+
         }
 
     }
@@ -136,7 +143,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemCount() {
-        Utils.d(TAG, "itemCount " + items.size());
         return this.items.size();
     }
 

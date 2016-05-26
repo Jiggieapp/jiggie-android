@@ -3,6 +3,7 @@ package com.jiggie.android.fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,24 +11,35 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.MainActivity;
-import com.jiggie.android.activity.setup.SetupNotificationActivity;
 import com.jiggie.android.activity.setup.SetupTagsActivity;
 import com.jiggie.android.api.OnResponseListener;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
-import com.jiggie.android.component.adapter.ImagePagerIndicatorAdapter;
 import com.jiggie.android.component.adapter.TutorialFragmentAdapter;
 import com.jiggie.android.component.gcm.GCMRegistration;
 import com.jiggie.android.component.service.FacebookImageSyncService;
@@ -37,23 +49,15 @@ import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.LoginModel;
-import com.bumptech.glide.Glide;
-import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
 import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.TagsListModel;
+import com.jiggie.android.view.CircleIndicatorView;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Set;
@@ -62,7 +66,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
-import it.sephiroth.android.library.widget.HListView;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -74,19 +77,26 @@ import rx.schedulers.Schedulers;
  */
 public class SignInFragment extends Fragment {
     private static final String[] FACEBOOK_PERMISSIONS = new String[]{
-            "public_profile", "email", "user_about_me", "user_birthday", "user_photos", "user_location"
+            "public_profile", "email", "user_about_me", "user_birthday", "user_photos", "user_location",
+            "user_friends"
     };
 
-    @Bind(R.id.imagePagerIndicator)
-    HListView imagepagerIndicator;
-    @Bind(R.id.imageViewPager)
-    ViewPager imageViewPager;
+    /*@Bind(R.id.imagePagerIndicator)
+    HListView imagepagerIndicator;*/
     @Bind(R.id.placeHolder)
     ImageView placeHolder;
     @Bind(R.id.imageView)
     ImageView imageView;
-    @Bind(R.id.btnSignIn)
-    Button btnSignIn;
+    /*@Bind(R.id.btnSignIn)
+    Button btnSignIn;*/
+    @Bind(R.id.imagePagerIndicator)
+    LinearLayout imagePagerIndicator;
+    @Bind(R.id.imageViewPager)
+    ViewPager imageViewPager;
+    @Bind(R.id.txt_skip)
+    TextView txtSkip;
+    /*@Bind(R.id.txt_we_dont)
+    TextView txtWeDont;*/
 
     private CallbackManager callbackManager;
     private ProgressDialog progressDialog;
@@ -96,10 +106,13 @@ public class SignInFragment extends Fragment {
     private String gcmId;
     private static final String TAG = SignInFragment.class.getSimpleName();
 
+    Button btnSignIn;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return this.rootView = inflater.inflate(R.layout.fragment_signin, container, false);
+        View view = this.rootView = inflater.inflate(R.layout.fragment_signin, container, false);
+        return view;
     }
 
     @Override
@@ -111,29 +124,124 @@ public class SignInFragment extends Fragment {
 
         LoginManager.getInstance().registerCallback(this.callbackManager = CallbackManager.Factory.create(), this.facebookCallback);
 
-        final ImagePagerIndicatorAdapter imagePagerIndicatorAdapter = new ImagePagerIndicatorAdapter(super.getActivity().getSupportFragmentManager(), this.imageViewPager);
-        this.imagepagerIndicator.setAdapter(imagePagerIndicatorAdapter.getIndicatorAdapter());
+        /*final ImagePagerIndicatorAdapter imagePagerIndicatorAdapter = new ImagePagerIndicatorAdapter(super.getActivity().getSupportFragmentManager(), this.imageViewPager);
+        this.imagepagerIndicator.setAdapter(imagePagerIndicatorAdapter.getIndicatorAdapter());*/
 
         final TutorialFragmentAdapter tutorialAdapter = new TutorialFragmentAdapter(super.getFragmentManager(), this.imageViewPager);
         this.fadeHandler = new Handler();
-        this.imagepagerIndicator.setAdapter(tutorialAdapter.getIndicatorAdapter());
+
+        //CUSTOM CIRCLE INDICATOR PART===============
+        for (int i = 0; i < tutorialAdapter.getIndicatorLength(); i++) {
+            CircleIndicatorView circleIndicatorView = new CircleIndicatorView(getActivity(), false);
+            imagePagerIndicator.addView(circleIndicatorView);
+            ImageView imgIndicator = (ImageView) circleIndicatorView.getImgIndicator();
+            if (i == 0) {
+                imgIndicator.setSelected(true);
+            }
+        }
+        //END HERE
+
+        //this.imagepagerIndicator.setAdapter(tutorialAdapter.getIndicatorAdapter());
         this.imageViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            /*@Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+                if ((position == 4) && (previousPage == 3)){
+                    imagePagerIndicator.setVisibility(View.GONE);
+                    txtSkip.setVisibility(View.GONE);
+                }else if((position == 5) && (previousPage == 4)){
+                    imagePagerIndicator.setVisibility(View.VISIBLE);
+                    txtSkip.setVisibility(View.VISIBLE);
+                }
+            }*/
+
+            /*@Override
+            public void onPageScrollStateChanged(int state) {
+                super.onPageScrollStateChanged(state);
+            }*/
+
             @Override
             public void onPageSelected(int position) {
                 if (getContext() != null) {
-                    if (position == 0) {
+                    /*if ((position == 4) && (previousPage == 5)) {
                         fadeHandler.removeCallbacks(fadeInRunnable);
                         fadeHandler.removeCallbacks(fadeOutRunnable);
                         fadeHandler.postDelayed(fadeOutRunnable, 200);
-                    } else if ((position == 1) && (previousPage == 0)) {
+
+                    } else if ((position == 5) && (previousPage == 4)) {
                         fadeHandler.removeCallbacks(fadeInRunnable);
                         fadeHandler.removeCallbacks(fadeOutRunnable);
                         fadeHandler.postDelayed(fadeInRunnable, 200);
+                    }*/
+
+                    /*placeHolder.animate().alpha(1).setDuration(1000).setInterpolator(new DecelerateInterpolator()).withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            placeHolder.animate().alpha(0).setDuration(1000).setInterpolator(new AccelerateInterpolator()).start();
+                        }
+                    }).start();
+
+                    imageView.animate().alpha(1).setDuration(1000).setInterpolator(new DecelerateInterpolator()).withEndAction(new Runnable() {
+                        @Override
+                        public void run() {
+                            imageView.animate().alpha(0).setDuration(1000).setInterpolator(new AccelerateInterpolator()).start();
+                        }
+                    }).start();*/
+
+                    TutorialFragmentAdapter.TutorialFragment fragment =
+                            (TutorialFragmentAdapter.TutorialFragment) tutorialAdapter.getItem(position);
+
+                    if (position == 5) {
+                        fragment.getContentView().setVisibility(View.GONE);
+                        fragment.getImageViews().setVisibility(View.GONE);
+                        fragment.getImageHelps().setVisibility(View.VISIBLE);
+
+                        imagePagerIndicator.setVisibility(View.GONE);
+                        txtSkip.setVisibility(View.GONE);
+                    } else {
+                        fragment.getImageHelps().setVisibility(View.GONE);
+
+                        imagePagerIndicator.setVisibility(View.VISIBLE);
+                        txtSkip.setVisibility(View.VISIBLE);
+
+                        if (position == 4) {
+                            txtSkip.setText("NEXT");
+                        } else {
+                            txtSkip.setText("SKIP");
+                        }
+                    }
+
+                    btnSignIn = fragment.getBtnSignIn();
+                    btnSignIn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            onClickSignIn();
+                        }
+                    });
+
+                    fragment.getImageHelps().setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            imageViewPager.setCurrentItem(0);
+                        }
+                    });
+
+                }
+
+                for (int i = 0; i < tutorialAdapter.getIndicatorLength(); i++) {
+                    CircleIndicatorView circleIndicatorView = (CircleIndicatorView) imagePagerIndicator.getChildAt(i);
+                    ImageView imgIndicator = (ImageView) circleIndicatorView.getImgIndicator();
+                    if (i == position) {
+                        imgIndicator.setSelected(true);
+                    } else {
+                        imgIndicator.setSelected(false);
                     }
                 }
+
                 previousPage = position;
             }
         });
+
     }
 
     private Runnable fadeInRunnable = new Runnable() {
@@ -142,6 +250,10 @@ public class SignInFragment extends Fragment {
             if (getContext() != null) {
                 placeHolder.setImageResource(R.mipmap.signup1);
                 Glide.with(getContext()).load(R.mipmap.signup2).skipMemoryCache(true).crossFade(1000).centerCrop().into(imageView);
+
+                //placeHolder.setImageResource(R.mipmap.signup1);
+                /*placeHolder.setBackgroundColor(Color.BLACK);
+                Glide.with(getContext()).load(R.mipmap.signup1).skipMemoryCache(true).crossFade(1000).into(imageView);*/
             }
         }
     };
@@ -152,13 +264,20 @@ public class SignInFragment extends Fragment {
             if (getContext() != null) {
                 placeHolder.setImageResource(R.mipmap.signup2);
                 Glide.with(getContext()).load(R.mipmap.signup1).skipMemoryCache(true).crossFade(1000).into(imageView);
+
+                /*placeHolder.setBackgroundColor(Color.BLACK);
+                Glide.with(getContext()).load(R.mipmap.signup1).skipMemoryCache(true).crossFade(1000).into(imageView);*/
             }
         }
     };
 
-    @OnClick(R.id.btnSignIn)
+    /*@OnClick(R.id.btnSignIn)
     @SuppressWarnings("unused")
     void btnSignInOnClick() {
+
+    }*/
+
+    private void onClickSignIn() {
         this.btnSignIn.setEnabled(false);
         this.progressDialog = App.showProgressDialog(getContext());
 
@@ -178,9 +297,16 @@ public class SignInFragment extends Fragment {
             @Override
             public void onGCMCompleted(String regId) {
                 gcmId = regId;
-                LoginManager.getInstance().logInWithReadPermissions(SignInFragment.this, Arrays.asList(FACEBOOK_PERMISSIONS));
+                LoginManager.getInstance().logInWithReadPermissions(SignInFragment.this
+                        , Arrays.asList(FACEBOOK_PERMISSIONS));
             }
         }).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    @OnClick(R.id.txt_skip)
+    @SuppressWarnings("unused")
+    void skipOnClick() {
+        imageViewPager.setCurrentItem(5);
     }
 
     @Override
@@ -224,7 +350,8 @@ public class SignInFragment extends Fragment {
                 final Bundle parameters = new Bundle();
 
                 final GraphRequest request = GraphRequest.newMeRequest(token, profileCallback);
-                parameters.putString("fields", "id, email, gender, birthday, bio, first_name, last_name, location");
+                parameters.putString("fields", "id, email, gender, birthday, bio, first_name" +
+                        ", last_name, location, friends");
                 request.setParameters(parameters);
                 request.executeAsync();
             }
@@ -250,7 +377,7 @@ public class SignInFragment extends Fragment {
                 final JSONObject location = object.optJSONObject("location");
 
                 //Added by Aga 2-2-2016
-                LoginModel loginModel = new LoginModel();
+                final LoginModel loginModel = new LoginModel();
                 //loginModel.setVersion("1.1.0");
                 String v = App.getVersionName(getActivity());
                 loginModel.setVersion(v);
@@ -266,35 +393,54 @@ public class SignInFragment extends Fragment {
                 loginModel.setUser_last_name(object.optString("last_name"));
                 loginModel.setEmail(object.optString("email"));
                 loginModel.setGender(object.optString("gender"));
-
+                loginModel.setAge(StringUtility.getAge2(loginModel.getBirthday()));
                 //Added by Aga 11-2-2016
                 loginModel.setDevice_type("2");
                 //------------
 
                 loginModel.setDevice_id(Utils.DEVICE_ID);
 
-                //String sd = String.valueOf(new Gson().toJson(loginModel));
+                /*try {
+                    AccountManager.getFriendList(new JSONObject(object.optString("friends")), new com.jiggie.android.listener.OnResponseListener() {
+                        @Override
+                        public void onSuccess(Object object) {
+                            String name = loginModel.getUser_first_name() + " " + loginModel.getUser_last_name();
 
-                AccountManager.loaderLogin(loginModel);
+                            AccountManager.loaderLogin(loginModel);
+                            App.getInstance().setUserLoggedIn();
+                            App.getSharedPreferences().edit()
+                                    .putString(Common.PREF_FACEBOOK_NAME, name)
+                                    .putString(Common.PREF_FACEBOOK_ID, loginModel.getFb_id())
+                                    .apply();
+                            AccountManager.saveLogin(loginModel);
+                        }
+
+                        @Override
+                        public void onFailure(int responseCode, String message) {
+
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }*/
 
                 String name = loginModel.getUser_first_name() + " " + loginModel.getUser_last_name();
-
+                AccountManager.loaderLogin(loginModel);
                 App.getInstance().setUserLoggedIn();
                 App.getSharedPreferences().edit()
                         .putString(Common.PREF_FACEBOOK_NAME, name)
                         .putString(Common.PREF_FACEBOOK_ID, loginModel.getFb_id())
                         .apply();
                 AccountManager.saveLogin(loginModel);
+
+
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
         }
     };
 
-    public void onEvent(SettingModel message){
-        String responses = new Gson().toJson(message);
-        Utils.d("res", responses);
-
+    public void onEvent(SettingModel message) {
         final MainActivity activity = (MainActivity) getActivity();
         final App app = App.getInstance();
         progressDialog.dismiss();
@@ -302,10 +448,10 @@ public class SignInFragment extends Fragment {
         AccountManager.saveSetting(message);
 
         //refresh Credit card list----
-        if(CommerceManager.arrCCScreen!=null&&CommerceManager.arrCCScreen.size()>0){
+        if (CommerceManager.arrCCScreen != null && CommerceManager.arrCCScreen.size() > 0) {
             CommerceManager.arrCCScreen.clear();
         }
-        if(CommerceManager.arrCCLocal!=null&&CommerceManager.arrCCLocal.size()>0){
+        if (CommerceManager.arrCCLocal != null && CommerceManager.arrCCLocal.size() > 0) {
             CommerceManager.arrCCLocal.clear();
         }
         //--------------------
@@ -318,7 +464,7 @@ public class SignInFragment extends Fragment {
             if (activity != null)
                 activity.navigateToHome();
             else
-                app.startActivity(new Intent (App.getInstance(), MainActivity.class)
+                app.startActivity(new Intent(App.getInstance(), MainActivity.class)
                         //.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
         } else {
@@ -345,7 +491,6 @@ public class SignInFragment extends Fragment {
                     @Override
                     public void onSuccess(Object object) {
                         subscriber.onNext((TagsListModel) object);
-
                     }
 
                     @Override
@@ -355,32 +500,32 @@ public class SignInFragment extends Fragment {
                 });
             }
         })
-        .doOnNext(new Action1<TagsListModel>() {
-            @Override
-            public void call(TagsListModel tagsListModel) {
-                //Utils.d(TAG, "doOnNext");
-                //EventManager.saveTagsList(tagsListModel);
-                EventManager.saveTags(tagsListModel.getData().getTagslist());
-            }
-        })
-        .doOnError(new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
-                Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_LONG).show();
-                btnSignIn.setEnabled(true);
-                progressDialog.dismiss();
-            }
-        });
+                .doOnNext(new Action1<TagsListModel>() {
+                    @Override
+                    public void call(TagsListModel tagsListModel) {
+                        //Utils.d(TAG, "doOnNext");
+                        //EventManager.saveTagsList(tagsListModel);
+                        EventManager.saveTags(tagsListModel.getData().getTagslist());
+                    }
+                })
+                .doOnError(new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_LONG).show();
+                        btnSignIn.setEnabled(true);
+                        progressDialog.dismiss();
+                    }
+                });
 
         observableTagList
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new Action1<TagsListModel>() {
-                @Override
-                public void call(TagsListModel tagsListModel) {
-                    actionDone();
-                }
-            });
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<TagsListModel>() {
+                    @Override
+                    public void call(TagsListModel tagsListModel) {
+                        actionDone();
+                    }
+                });
     }
 
     private void actionDone() {
@@ -412,10 +557,17 @@ public class SignInFragment extends Fragment {
 
         AccountManager.saveSetting(currentSettingModel);
         App.getSharedPreferences().edit().putBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, true).apply();
+        /*getActivity().finish();
         App.getInstance().startActivity(new Intent(App.getInstance()
                 , MainActivity.class)
-                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        | Intent.FLAG_ACTIVITY_NEW_TASK));
+                *//*.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        | Intent.FLAG_ACTIVITY_NEW_TASK));*//*
+                *//*.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)*//*
+                *//*intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)*//*);*/
+        Intent i = new Intent(App.getInstance(), MainActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        App.getInstance().startActivity(i);
+
     }
 
     private Set<String> getTags() {
@@ -426,7 +578,7 @@ public class SignInFragment extends Fragment {
         //return null;
     }
 
-    public void onEvent(ExceptionModel message){
+    public void onEvent(ExceptionModel message) {
         Toast.makeText(getContext(), message.getMessage(), Toast.LENGTH_LONG).show();
         btnSignIn.setEnabled(true);
         progressDialog.dismiss();
@@ -463,5 +615,11 @@ public class SignInFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 }

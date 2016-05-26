@@ -3,6 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto" >
 
+    <item
+        android:id="@+id/action_creditbalance"
+        android:title="@string/credit_balance"
+        app:showAsAction="never"
+        android:orderInCategory="1"/>
 
     <item
         android:id="@+id/action_profile"
@@ -11,32 +16,44 @@
         android:orderInCategory="2"/>
 
     <item
-        android:id="@+id/action_invite"
-        android:title="@string/invite"
-        app:showAsAction="never"
-        android:orderInCategory="3"/>
-
-    <item
         android:id="@+id/action_orderlist"
         android:title="@string/his_title"
         app:showAsAction="never"
         android:orderInCategory="3"/>
 
     <item
+        android:id="@+id/action_promo"
+        android:title="@string/promo_menu"
+        app:showAsAction="never"
+        android:orderInCategory="4"/>
+
+    <!--<item
+        android:id="@+id/action_social_filter"
+        android:title="@string/filter_title"
+        app:showAsAction="never"
+        android:orderInCategory="2"/>-->
+
+    <item
         android:id="@+id/action_settings"
         android:title="@string/settings"
         app:showAsAction="never"
-        android:orderInCategory="4"/>
+        android:orderInCategory="5"/>
+
+    <item
+        android:id="@+id/action_invite"
+        android:title="@string/get_free_credit"
+        app:showAsAction="never"
+        android:orderInCategory="6"/>
 
     <item
         android:id="@+id/action_support"
         android:title="@string/support"
         app:showAsAction="never"
-        android:orderInCategory="5"/>
+        android:orderInCategory="7"/>
 
     <item
         android:id="@+id/action_logout"
         android:title="@string/logout"
         app:showAsAction="never"
-        android:orderInCategory="6"/>
+        android:orderInCategory="8"/>
 </menu>

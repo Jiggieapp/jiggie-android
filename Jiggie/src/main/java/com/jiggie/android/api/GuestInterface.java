@@ -4,9 +4,9 @@ import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.GuestModel;
 import com.jiggie.android.model.Success2Model;
 
-import retrofit.Call;
-import retrofit.http.GET;
-import retrofit.http.Path;
+import retrofit2.Call;
+import retrofit2.http.GET;
+import retrofit2.http.Path;
 
 /**
  * Created by LTE on 2/4/2016.

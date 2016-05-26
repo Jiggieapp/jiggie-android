@@ -32,13 +32,26 @@
                     android:id="@+id/imageViewPager"
                     app:borderWidth="0dp" />
 
-                <it.sephiroth.android.library.widget.HListView
+                <!--<it.sephiroth.android.library.widget.HListView
                     android:layout_margin="@dimen/padding_standard_half"
                     android:layout_height="5dp"
                     android:layout_width="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true"
-                    android:id="@+id/imagePagerIndicator"/>
+                    android:id="@+id/imagePagerIndicator"/>-->
+
+                <com.viewpagerindicator.CirclePageIndicator
+                    android:id="@+id/titles"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="@dimen/padding_standard"
+                    android:layout_marginRight="@dimen/padding_standard"
+                    android:paddingLeft="@dimen/padding_standard"
+                    android:paddingRight="@dimen/padding_standard"
+                    android:paddingTop="@dimen/padding_standard_half"
+                    android:paddingBottom="@dimen/padding_standard_half"/>
             </RelativeLayout>
 
             <android.support.v7.widget.Toolbar

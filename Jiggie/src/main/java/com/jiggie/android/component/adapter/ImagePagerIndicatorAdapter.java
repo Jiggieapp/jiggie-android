@@ -1,6 +1,5 @@
 package com.jiggie.android.component.adapter;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,18 +12,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
-import com.bumptech.glide.request.target.Target;
-import com.jiggie.android.R;
-import com.jiggie.android.component.Utils;
-import com.jiggie.android.model.Common;
 import com.bumptech.glide.Glide;
-
-import java.io.File;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.jiggie.android.R;
+import com.jiggie.android.model.Common;
 
 /**
  * Created by rangga on 17/08/2014.

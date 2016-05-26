@@ -6,6 +6,14 @@
     android:orientation="vertical"
     android:clickable="true">
 
+    <View
+        android:id="@+id/div_top"
+        android:layout_marginLeft="64dp"
+        android:background="@android:color/darker_gray"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:visibility="gone"/>
+
     <LinearLayout
         android:layout_margin="@dimen/padding_standard"
         android:layout_height="wrap_content"
@@ -14,8 +22,8 @@
 
         <ImageView
             android:contentDescription="@null"
-            android:layout_height="24dp"
-            android:layout_width="24dp"
+            android:layout_height="32dp"
+            android:layout_width="32dp"
             android:id="@+id/imageView"/>
 
         <TextView
@@ -27,11 +35,16 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:id="@+id/text"/>
+
+        <ImageView
+            android:layout_width="12dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical|right"
+            android:src="@drawable/r_arr"/>
     </LinearLayout>
 
     <View
-        android:layout_marginStart="@dimen/padding_standard"
-        android:layout_marginLeft="@dimen/padding_standard"
+        android:layout_marginLeft="64dp"
         android:background="@android:color/darker_gray"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"/>

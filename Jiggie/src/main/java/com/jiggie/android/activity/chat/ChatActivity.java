@@ -16,17 +16,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.WindowManager;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.facebook.AccessToken;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.MainActivity;
@@ -37,8 +34,6 @@ import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.ChatAdapter;
 import com.jiggie.android.component.database.ChatTable;
 import com.jiggie.android.component.service.ChatSendService;
-import com.jiggie.android.component.volley.VolleyHandler;
-import com.jiggie.android.component.volley.VolleyRequestListener;
 import com.jiggie.android.fragment.ChatTabFragment;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.ChatManager;
@@ -49,11 +44,7 @@ import com.jiggie.android.model.ChatResponseModel;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.Conversation;
 import com.jiggie.android.model.ExceptionModel;
-import com.android.volley.VolleyError;
-import com.facebook.AccessToken;
 import com.jiggie.android.model.LoginModel;
-
-import org.json.JSONObject;
 
 import java.util.Date;
 import java.util.List;
@@ -260,7 +251,6 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
         final Intent resultIntent = new Intent();
         resultIntent.putExtra(Conversation.FIELD_FACEBOOK_ID, toId);
         resultIntent.putExtra(Conversation.FIELD_LAST_UPDATED, chat.getCreatedAt());
-
         super.setResult(RESULT_REPLIED, resultIntent);
 
         //Added by Aga-----
@@ -440,6 +430,7 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
 
     private void fetchData()
     {
+        Utils.d(TAG, "fetch data");
         ChatManager.loaderChatConversations(AccessToken.getCurrentAccessToken().getUserId(), toId, ChatManager.FROM_LOAD);
     }
 
@@ -459,7 +450,6 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
             final List<Chat> failedItems = ChatTable.getUnProcessedItems(App.getInstance().getDatabase(), toId);
             final int length = message.getData().getMessages() == null ? 0 : message.getData().getMessages().size();
             final int failedLength = failedItems.size();
-            Utils.d(TAG,"isi " +  new Gson().toJson(message));
             adapter.clear();
 
             final Chat chatHeader = new Chat(null

@@ -1,6 +1,5 @@
 package com.jiggie.android.activity.ecommerce;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
@@ -8,7 +7,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,16 +16,11 @@ import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
-import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.model.CommEventMixpanelModel;
 import com.jiggie.android.model.Common;
-import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.SucScreenCCModel;
-import com.jiggie.android.model.SummaryModel;
-import com.jiggie.android.view.InstructionItemView;
-
-import org.w3c.dom.Text;
+import com.jiggie.android.view.DiscountView;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -37,9 +30,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-
 /**
  * Created by LTE on 3/1/2016.
  */
@@ -47,9 +37,10 @@ public class CongratsActivity extends ToolbarActivity {
     TextView txtCongrats, txtEventTitle, txtEventDate, txtTypeNumberFill, txtGuestNameFill, txtStatusFill, txtPaymentFill, txtSummaryDate, txtRegTicketTitle,
             txtRegTicketFill, txtAdFeeFill, txtTaxFill, txtTotalFill, txtInstrucFill, txtEventTitle2,
             txtEventDate2, txtVenueTitle, txtVenueDate, lblGuestCount, lblSummaryTitle
-            , lblEstimatedBalance, lblPaidDeposit, lblEstimatedTotal, lblTotalTitle, txt_type_number_title, txtInstruc, txtPaymentTitle, txtStatusTitle;
-    LinearLayout linSummaryFooter;
-    RelativeLayout relViewTicket, containerTableGuest;
+            , lblEstimatedBalance, lblPaidDeposit, lblEstimatedTotal, lblTotalTitle, txt_type_number_title, txtInstruc, txtPaymentTitle, txtStatusTitle,
+    txtCreditFill;
+    LinearLayout linSummaryFooter, linDiscount;
+    RelativeLayout relViewTicket, containerTableGuest, relCredit;
     RelativeLayout scrollView;
     ProgressBar progressBar;
     View divider, divider8, divider4;
@@ -109,6 +100,10 @@ public class CongratsActivity extends ToolbarActivity {
         linSummaryFooter = (LinearLayout)findViewById(R.id.lin_summary_footer);
         txt_type_number_title = (TextView)findViewById(R.id.txt_type_number_title);
         txtInstruc = (TextView)findViewById(R.id.txt_instruc);
+
+        txtCreditFill = (TextView)findViewById(R.id.txt_credit_fill);
+        relCredit = (RelativeLayout) findViewById(R.id.rel_credit);
+        linDiscount = (LinearLayout)findViewById(R.id.lin_discount);
 
         scrollView.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
@@ -212,7 +207,8 @@ public class CongratsActivity extends ToolbarActivity {
                     if(product_list.getTax_amount().equals(Utils.NOL_RUPIAH)){
                         txtTaxFill.setText(getString(R.string.free));
                     }else{
-                        txtTaxFill.setText(StringUtility.getRupiahFormat(product_list.getTax_amount()));
+                        //txtTaxFill.setText(StringUtility.getRupiahFormat(product_list.getTax_amount()));
+                        txtTaxFill.setText(StringUtility.getRupiahFormat(summary.getTotal_tax_amount()));
                     }
 
                     if(summary.getTotal_price().equals(Utils.NOL_RUPIAH)){
@@ -281,6 +277,34 @@ public class CongratsActivity extends ToolbarActivity {
                         txtInstrucFill.setVisibility(View.GONE);
                         divider4.setVisibility(View.GONE);
                     }
+
+                    //CREDIT AND DISCOUNT PART===========================
+                    /*for(int i=0;i<4;i++){
+                        DiscountView discountView = new DiscountView(CongratsActivity.this, "Discount test", "10000", true, 0,
+                                getResources().getColor(R.color.purple));
+                        linDiscount.addView(discountView);
+                    }
+                    linDiscount.setVisibility(View.VISIBLE);*/
+
+                    SucScreenCCModel.Data.Success_screen.Credit credit= sucScreenCCModel.getData().getSuccess_screen().getCredit();
+                    if (Integer.parseInt(credit.getCredit_used()) != 0) {
+                        relCredit.setVisibility(View.VISIBLE);
+                        txtCreditFill.setText("- " + StringUtility.getRupiahFormat(credit.getCredit_used()));
+                    }
+
+                    SucScreenCCModel.Data.Success_screen.Discount discount = sucScreenCCModel.getData().getSuccess_screen().getDiscount();
+                    //float textSize = getResources().getDimension(R.dimen.normal_text_size) / getResources().getDisplayMetrics().density;
+                    float textSize = 12;
+                    if (discount.getData().size() > 0) {
+                        for (int i = 0; i < discount.getData().size(); i++) {
+                            String title = discount.getData().get(i).getName();
+                            String value = String.valueOf(discount.getData().get(i).getAmount_used());
+                            DiscountView discountView = new DiscountView(CongratsActivity.this, title, value, true, 0, getResources().getColor(R.color.purple), textSize);
+                            linDiscount.addView(discountView);
+                        }
+                        linDiscount.setVisibility(View.VISIBLE);
+                    }
+                    //END OF CREDIT AND DISCOUNT PART===========================
 
                 }else{
                     Toast.makeText(CongratsActivity.this, getString(R.string.msg_wrong), Toast.LENGTH_LONG).show();

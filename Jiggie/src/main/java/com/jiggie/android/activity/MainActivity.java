@@ -1,20 +1,17 @@
 package com.jiggie.android.activity;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.LayerDrawable;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,40 +19,46 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.appsflyer.AppsFlyerConversionListener;
+import com.appsflyer.AppsFlyerLib;
 import com.facebook.AccessToken;
 import com.facebook.login.LoginManager;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 import com.jiggie.android.App;
-import com.jiggie.android.BuildConfig;
 import com.jiggie.android.R;
-import com.jiggie.android.activity.ecommerce.ProductListActivity;
 import com.jiggie.android.activity.ecommerce.PurchaseHistoryActivity;
-import com.jiggie.android.activity.profile.FilterActivity;
-import com.jiggie.android.activity.profile.ProfileDetailActivity;
+import com.jiggie.android.activity.invite.InviteCodeActivity;
+import com.jiggie.android.activity.invite.InviteFriendsActivity;
+import com.jiggie.android.activity.profile.NewProfileDetailActivity;
 import com.jiggie.android.activity.profile.ProfileSettingActivity;
+import com.jiggie.android.activity.promo.PromotionsActivity;
 import com.jiggie.android.activity.setup.SetupTagsActivity;
+import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.gcm.GCMRegistrationService;
 import com.jiggie.android.component.service.FacebookImageSyncService;
 import com.jiggie.android.fragment.HomeFragment;
 import com.jiggie.android.fragment.SignInFragment;
-import com.appsflyer.AppsFlyerLib;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
+import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.CommerceManager;
+import com.jiggie.android.manager.CreditBalanceManager;
+import com.jiggie.android.manager.InviteManager;
 import com.jiggie.android.manager.ShareManager;
 import com.jiggie.android.manager.SocialManager;
+import com.jiggie.android.manager.TooltipsManager;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.GuestInfo;
 import com.jiggie.android.model.ShareLinkModel;
+import com.jiggie.android.model.SuccessCreditBalanceModel;
 import com.jiggie.android.presenter.GuestPresenter;
 
+import java.util.Calendar;
 import java.util.Map;
 
 import de.greenrobot.event.EventBus;
@@ -91,7 +94,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     @SuppressWarnings("StatementWithEmptyBody")
     protected void onCreate(Bundle savedInstanceState) {
-        super.setTheme(R.style.AppCustomTheme);
+        super.setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_main);
         this.active = true;
@@ -102,7 +105,18 @@ public class MainActivity extends AppCompatActivity
             final SharedPreferences pref = App.getSharedPreferences();
             pref.edit().putBoolean(Utils.IS_FIRST_RUN, false).commit();
             App.getInstance().trackMixPanelEvent("Install");
+
+            //TOOLTIP PART===============
+            //TooltipsManager.clearTimeTooltip();
+            TooltipsManager.validateTime(Calendar.getInstance().getTimeInMillis());
+            //END OF TOOLTIP PART===============
         }
+
+        //TOOLTIP PART===============
+        /*TooltipsManager.clearTimeTooltip();
+        TooltipsManager.validateTime(Calendar.getInstance().getTimeInMillis());*/
+
+        //END OF TOOLTIP PART===============
 
         // validate GCM Version and update if necessary
         final GoogleApiAvailability api = GoogleApiAvailability.getInstance();
@@ -117,12 +131,35 @@ public class MainActivity extends AppCompatActivity
             final String str = GoogleApiAvailability.getInstance().getErrorString(code);
             Toast.makeText(this, str, Toast.LENGTH_LONG).show();
         }
+
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         EventBus.getDefault().register(this);
+        /*Intent a = getIntent();
+        boolean isRefresh = a.getBooleanExtra(Utils.TAG_ISREFRESH, false);
+        if(isRefresh){
+            EventBus.getDefault().post(EventsFragment.TAG);
+        }*/
+
+        /*if (App.getInstance().isUserLoggedIn()) {
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //cekCounter();
+                    if (AccountManager.getCounterEvent() == 5) {
+                        if (InviteManager.validateTimeInvite(Calendar.getInstance().getTimeInMillis())) {
+                            startActivity(new Intent(MainActivity.this, InviteFriendsActivity.class));
+                        }
+                    }
+                }
+            }, 1000);
+        }*/
+
     }
 
     @Override
@@ -186,11 +223,10 @@ public class MainActivity extends AppCompatActivity
         if (mLastLocation != null) {
             SocialManager.lat = String.valueOf(mLastLocation.getLatitude());
             SocialManager.lng = String.valueOf(mLastLocation.getLongitude());
-            Log.d(getString(R.string.tag_location),"lat: "+String.valueOf(mLastLocation.getLatitude())+" lon: "+String.valueOf(mLastLocation.getLongitude()));
 
             HomeFragment.sendLocationInfo();
         }else{
-            Utils.d(getString(R.string.tag_location),getString(R.string.error_loc_failed));
+            Utils.d(getString(R.string.tag_location), getString(R.string.error_loc_failed));
         }
 
 
@@ -280,6 +316,7 @@ public class MainActivity extends AppCompatActivity
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        App.getSharedPreferences().edit().putBoolean(Utils.PREFERENCE_GPS, true).commit();
                         dialog.dismiss();
                         final Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                         startActivity(intent);
@@ -288,6 +325,7 @@ public class MainActivity extends AppCompatActivity
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        App.getSharedPreferences().edit().putBoolean(Utils.PREFERENCE_GPS, true).commit();
                         dialog.dismiss();
                     }
                 }).create();
@@ -338,7 +376,6 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     //wandy 20-04-2016
                     //sblm navigate to home, pastikan sudah ambil guest info sekali aja
-                    final int versionCode = BuildConfig.VERSION_CODE;
                     if(!App.getInstance().getSharedPreferences().getBoolean(Utils.HAS_LOAD_GROUP_INFO, false))
                     {
                         App.getSharedPreferences().edit().putBoolean
@@ -347,7 +384,6 @@ public class MainActivity extends AppCompatActivity
                         guestPresenter.loadGuestInfo(new GuestPresenter.OnFinishGetGuestInfo() {
                             @Override
                             public void onFinish(GuestInfo guestInfo) {
-                                Utils.d(TAG, "on finish " + guestInfo.data.guest_detail.name);
                                 guestPresenter.saveGuest(guestInfo);
                                 navigateToHome();
                             }
@@ -364,6 +400,21 @@ public class MainActivity extends AppCompatActivity
                         showRateDialog();
                     }
                 }
+
+                //INVITE FRIENDS PART===========================
+                /*Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //cekCounter();
+                        if(AccountManager.getCounterEvent()==5){
+                            if (InviteManager.validateTimeInvite(Calendar.getInstance().getTimeInMillis())) {
+                                startActivity(new Intent(MainActivity.this, InviteFriendsActivity.class));
+                            }
+                        }
+                    }
+                }, 1000);*/
+                //END OF INVITE FRIENDS PART===========================
             }
         } else if (requestCode == REQUEST_GOOGLE_PLAY_SERVICES)
             super.onBackPressed();
@@ -500,12 +551,12 @@ public class MainActivity extends AppCompatActivity
         super.onDestroy();
     }
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
-    }
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -516,17 +567,24 @@ public class MainActivity extends AppCompatActivity
             case R.id.action_settings:
                 target = ProfileSettingActivity.class;
                 break;
+            /*case R.id.action_social_filter:
+                target = SocialFilterActivity.class;
+                break;*/
             case R.id.action_profile:
-                target = ProfileDetailActivity.class;
+                target = NewProfileDetailActivity.class;
                 break;
             case R.id.action_support:
                 mailSupport();
                 break;
-            case R.id.action_filter:
+            /*case R.id.action_filter:
                 target = FilterActivity.class;
-                break;
+                break;*/
             case R.id.action_invite:
-                inviteFriends();
+                //inviteFriends();
+                startActivity(new Intent(MainActivity.this, InviteCodeActivity.class));
+                break;
+            case R.id.action_promo:
+                startActivity(new Intent(MainActivity.this, PromotionsActivity.class));
                 break;
             case R.id.action_orderlist:
                 startActivity(new Intent(this, PurchaseHistoryActivity.class));
@@ -542,6 +600,8 @@ public class MainActivity extends AppCompatActivity
                                 App.getSharedPreferences().edit().clear().putBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, true).apply();
                                 App.getSharedPreferences().edit().clear().apply();
                                 LoginManager.getInstance().logOut();
+
+                                AccountManager.onLogout();
 
                                 //getActivity().finish();
 
@@ -565,6 +625,21 @@ public class MainActivity extends AppCompatActivity
                             }
                         }).show();
                 break;
+            case R.id.action_creditbalance:
+                progressDialog = App.showProgressDialog(MainActivity.this);
+                CreditBalanceManager.loaderCreditBalance(AccessToken.getCurrentAccessToken().getUserId(), new CreditBalanceManager.OnResponseListener() {
+                    @Override
+                    public void onSuccess(Object object) {
+                        SuccessCreditBalanceModel successCreditBalanceModel = (SuccessCreditBalanceModel)object;
+                        showCreditBalance(successCreditBalanceModel.getData().getBalance_credit().getTot_credit_active());
+                    }
+
+                    @Override
+                    public void onFailure(int responseCode, String message) {
+                        hideProgressDialog();
+                    }
+                });
+                break;
         }
         if(target != null)
         {
@@ -572,6 +647,23 @@ public class MainActivity extends AppCompatActivity
             startActivity(i);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    AlertDialog ad = null;
+    private void showCreditBalance(String creditBalance){
+        hideProgressDialog();
+        AlertDialog.Builder al =  new AlertDialog.Builder(MainActivity.this)
+                .setTitle(R.string.credit_balance)
+                .setMessage("Your credit balance is " + StringUtility.getCreditBalanceFormat(creditBalance))
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(ad!=null&&ad.isShowing())
+                            ad.dismiss();
+                    }
+                });
+        ad = al.create();
+        ad.show();
     }
 
     private void mailSupport() {
@@ -624,6 +716,4 @@ public class MainActivity extends AppCompatActivity
             hideProgressDialog();
         }
     }
-
-
 }

@@ -8,7 +8,6 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -21,12 +20,14 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.jiggie.android.App;
+import com.jiggie.android.BuildConfig;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.CongratsActivity;
 import com.jiggie.android.activity.ecommerce.HowToPayActivity;
@@ -43,6 +44,7 @@ import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.PostFreePaymentModel;
 import com.jiggie.android.model.PostPaymentModel;
 import com.jiggie.android.model.SummaryModel;
+import com.jiggie.android.view.DiscountView;
 import com.jiggie.android.view.TermsItemView;
 
 import java.text.ParseException;
@@ -121,8 +123,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
 
     AlertDialog dialog3ds;
     ProgressDialog progressDialog;
-    public final static String PAYMENT_API = "https://api.veritrans.co.id/v2/token";
-    public final static String PAYMENT_API_SANDBOX = "https://api.sandbox.veritrans.co.id/v2/token";
+    public final static String PAYMENT_API = BuildConfig.PAYMENT_API;
     CCScreenModel.CardDetails cardDetails;
     @Bind(R.id.minus_button)
     RelativeLayout minusButton;
@@ -132,6 +133,14 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     CardView cardView;
     @Bind(R.id.lblSelectPayment)
     TextView lblSelectPayment;
+    @Bind(R.id.txt_credittab_title)
+    TextView txtCredittabTitle;
+    @Bind(R.id.txt_credittab_fill)
+    TextView txtCredittabFill;
+    @Bind(R.id.rel_credittab)
+    RelativeLayout relCredittab;
+    @Bind(R.id.lin_discounttab)
+    LinearLayout linDiscounttab;
     private SlideAdapter slideAdapter;
     int payDeposit = 0, maxDeposit = 0, latestDeposit = 0;
     private final int INCREMENT_VALUE = 500000;
@@ -270,7 +279,8 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
 
         txtDftTitle.setText(dataProduct.getName());
         txtDftFill.setText(StringUtility.getRupiahFormat(dataProduct.getTotal_price()));
-        txtTaxxFill.setText(StringUtility.getRupiahFormat(dataProduct.getTax_amount()));
+        //txtTaxxFill.setText(StringUtility.getRupiahFormat(dataProduct.getTax_amount()));
+        txtTaxxFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_tax_amount()));
         txtSerFill.setText(StringUtility.getRupiahFormat(dataProduct.getAdmin_fee()));
         maxDeposit = Integer.parseInt(productSummary.getTotal_price());
         txtEstTotFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_price()));
@@ -283,6 +293,22 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         //txtTotalFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_price()));
         txtTotalFill.setText(StringUtility.getRupiahFormat(minDeposit));
         txtTotalTicketFill.setVisibility(View.GONE);
+
+        if (productSummary.getCredit().getCredit_used() != 0) {
+            relCredittab.setVisibility(View.VISIBLE);
+            txtCredittabFill.setText("- " + StringUtility.getRupiahFormat(String.valueOf(productSummary.getCredit().getCredit_used())));
+        }
+
+        if (productSummary.getDiscount().getData().size() > 0) {
+            float textSize = getResources().getDimension(R.dimen.font_body_size) / getResources().getDisplayMetrics().density;
+            for (int i = 0; i < productSummary.getDiscount().getData().size(); i++) {
+                String title = productSummary.getDiscount().getData().get(i).getName();
+                String value = String.valueOf(productSummary.getDiscount().getData().get(i).getAmount_used());
+                DiscountView discountView = new DiscountView(ReservationInfoActivity.this, title, value, false, getResources().getColor(R.color.textDarkGray), getResources().getColor(R.color.purple), textSize);
+                linDiscounttab.addView(discountView);
+            }
+            linDiscounttab.setVisibility(View.VISIBLE);
+        }
 
         //initTermView(dataProduct);
         checkEnability(txtPayment.getText().toString());
@@ -322,10 +348,10 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
             }
         }
 
-        if(payDeposit==0){
+        if (payDeposit == 0) {
             lblSelectPayment.setVisibility(View.INVISIBLE);
             cardView.setVisibility(View.INVISIBLE);
-        }else{
+        } else {
             lblSelectPayment.setVisibility(View.VISIBLE);
             cardView.setVisibility(View.VISIBLE);
         }
@@ -384,7 +410,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                     //action
                     if (position == 0) {
                         if (canPay()) {
-                            if(isPaying==false){
+                            if (isPaying == false) {
                                 slidePay();
                             }
 
@@ -416,9 +442,9 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                 if (position == 0) {
                     arg.putString(SlideFragment.ARG_TITLE, "");
                 } else if (position == 1) {
-                    if(payDeposit==0){
+                    if (payDeposit == 0) {
                         arg.putString(SlideFragment.ARG_TITLE, app.getString(R.string.pci_slide_continue));
-                    }else{
+                    } else {
                         arg.putString(SlideFragment.ARG_TITLE, app.getString(R.string.pci_slide));
                     }
 
@@ -435,7 +461,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     private boolean canPay() {
         boolean can = true;
 
-        if(payDeposit!=0){
+        if (payDeposit != 0) {
             for (int i = 0; i < arrTermItemView.size(); i++) {
                 ImageView img = arrTermItemView.get(i).getImgCheck();
                 if (!img.isSelected()) {
@@ -562,8 +588,8 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         //using 3d secure
         VTConfig.VT_IsProduction = true;
         //VTConfig.CLIENT_KEY = "VT-client-gJRBbRZC0t_-JXUD";
-        VTConfig.CLIENT_KEY = "VT-client-tHEKcD0xJGsm6uwH";
-
+        //VTConfig.CLIENT_KEY = "VT-client-tHEKcD0xJGsm6uwH";
+        VTConfig.CLIENT_KEY = BuildConfig.CLIENT_KEY;
         VTDirect vtDirect = new VTDirect();
 
         final VTCardDetails vtCardDetails = new VTCardDetails();
@@ -913,13 +939,13 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
 
     private void checkEnability(String namePayment) {
 
-        if(payDeposit==0){
+        if (payDeposit == 0) {
             pagerSlide.setVisibility(View.VISIBLE);
             relDisable.setVisibility(View.GONE);
 
             lblSelectPayment.setVisibility(View.INVISIBLE);
             cardView.setVisibility(View.INVISIBLE);
-        }else{
+        } else {
             boolean isItEnable = true;
             if (namePayment.equals(Utils.BLANK) || namePayment.equals(getString(R.string.pci_payment))) {
                 isItEnable = false;

@@ -1,6 +1,5 @@
 package com.jiggie.android.activity.ecommerce.ticket;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -8,13 +7,11 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.jiggie.android.R;
-import com.jiggie.android.activity.ecommerce.AddGuestActivity;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
-import com.jiggie.android.model.Common;
-import com.jiggie.android.model.EventDetailModel;
+import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.PostSummaryModel;
-import com.jiggie.android.model.ProductListModel;
 import com.jiggie.android.presenter.GuestPresenter;
 
 import butterknife.Bind;
@@ -92,12 +89,20 @@ public abstract class AbstractTicketDetailActivity extends /*ToolbarWithDotActiv
             guestPhone = guestDetail.phone;
             dialCode = guestDetail.dial_code;
         } else {
-            lblFillYourContactInfo.setVisibility(View.VISIBLE);
-            relGuestDetail.setVisibility(View.GONE);
-            guestName = "";
+            /*lblFillYourContactInfo.setVisibility(View.VISIBLE);
+            relGuestDetail.setVisibility(View.GONE);*/
+
+            LoginModel loginModel = AccountManager.loadLogin();
+            guestName = loginModel.getUser_first_name() + " " + loginModel.getUser_last_name();
+            guestEmail = loginModel.getEmail();
+            guestPhone = AccountManager.loadSetting().getData().getPhone();
+
+            lblFillYourContactInfo.setVisibility(View.GONE);
+            relGuestDetail.setVisibility(View.VISIBLE);
+            /*guestName = "";
             guestEmail = "";
             guestPhone = Utils.BLANK;
-            dialCode = "";
+            dialCode = "";*/
         }
 
         if (guestPhone.equals(Utils.BLANK)) {
@@ -114,6 +119,5 @@ public abstract class AbstractTicketDetailActivity extends /*ToolbarWithDotActiv
             txtGuestPhone.setText("+" + dialCode + guestPhone);
         }
     }
-
 }
 

@@ -2,8 +2,8 @@ package com.jiggie.android.component.gcm;
 
 import android.content.Intent;
 
-import com.jiggie.android.App;
 import com.google.android.gms.iid.InstanceIDListenerService;
+import com.jiggie.android.App;
 
 /**
  * Created by rangga on 08/08/2015.

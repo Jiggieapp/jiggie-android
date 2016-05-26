@@ -12,10 +12,8 @@ import com.jiggie.android.model.ShareLinkModel;
 import java.io.IOException;
 
 import de.greenrobot.event.EventBus;
-import retrofit.Callback;
-import retrofit.GsonConverterFactory;
-import retrofit.Response;
-import retrofit.Retrofit;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by LTE on 2/5/2016.
@@ -47,7 +45,7 @@ public class ShareManager extends BaseManager{
         try {
             getShareApps(fb_id, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
 
                     //String header = String.valueOf(response.code());
                     /*String responses = new Gson().toJson(response.body());
@@ -82,7 +80,7 @@ public class ShareManager extends BaseManager{
         try {
             getShareEvent(event_id, fb_id, venue_name, new CustomCallback() {
                 @Override
-                public void onCustomCallbackResponse(Response response, Retrofit retrofit) {
+                public void onCustomCallbackResponse(Response response) {
 
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());

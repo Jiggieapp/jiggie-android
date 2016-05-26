@@ -54,6 +54,7 @@
     <string name="later">Later</string>
     <string name="events">Events</string>
     <string name="chat">Chat</string>
+    <string name="active">Active</string>
     <string name="social">Social</string>
     <string name="more">More</string>
     <string name="open_drawer">Open drawer</string>
@@ -65,10 +66,12 @@
     <string name="verify_your_phone_number">Verify your phone number</string>
     <string name="profile">Profile</string>
     <string name="invite">Invite Friends</string>
+    <string name="get_free_credit">Get Free Credits</string>
     <string name="order_list">Order list</string>
     <string name="settings">Settings</string>
     <string name="support">Support</string>
     <string name="logout">Logout</string>
+    <string name="credit_balance">Credit Balance</string>
     <string name="user_viewing">%1$s is also interested in</string>
     <string name="location_viewing">%1$s at %2$s</string>
     <string name="connect_with">Connect with %1$s?</string>
@@ -113,6 +116,9 @@
     <string name="socialize">Socialize</string>
     <string name="socialize_description">Turn off if you do not wish to be seen by others</string>
     <string name="socialize_description_off">Turn on if you wish to be seen by others</string>
+    <string name="socialize_description_new_off">If you wish not to be seen by others, turn this off</string>
+    <string name="socialize_description_new_on">If you wish to be seen by others, turn this on</string>
+
     <string name="wants_to_go_with">%1$s wants to go with you to</string>
     <string name="interested_question">Interested?</string>
     <string name="something_went_wrong">Something went wrong</string>
@@ -336,10 +342,14 @@
     <string name="pci_f1">Regular Ticket (3x)</string>
     <string name="pci_f2">Administrative Fee</string>
     <string name="pci_f3">Tax</string>
+    <string name="pci_f4">Credit</string>
+    <string name="pci_f5">Discount</string>
 
     <string name="pci_f1_fill">Rp3.000K</string>
     <string name="pci_f2_fill">Rp500K</string>
     <string name="pci_f3_fill">Rp150K</string>
+    <string name="pci_f4_fill">- Rp50K</string>
+    <string name="pci_f5_fill">Rp100K</string>
 
     <string name="pci_total">Total Price</string>
     <string name="pci_total_fill">Rp3.650K</string>
@@ -364,10 +374,18 @@
     <!--END HERE-->
 
     <string name="msg_carr_1">Discover upcoming food bazaars, music, art \u0026 culture and nightlife events</string>
-    <string name="msg_carr_2">Get detailed information on events and book your tickets</string>
+    <string name="msg_carr_2">Get detailed information on events and book your ticket or table</string>
     <string name="msg_carr_3">Check out other guests who like the same events you do</string>
-    <string name="msg_carr_4">Connect with other fun-loving people and make new friends</string>
-    <string name="msg_carr_5"> Chat with your new friends and make plans to meet up</string>
+    <string name="msg_carr_4">Connect to people who want to chat with you</string>
+    <string name="msg_carr_5">Chat with your new friends and make plans to meet up</string>
+
+    <string name="title_carr_1_new">Browse Event</string>
+    <string name="title_carr_2_new">Book Tickets \u0026 Tables</string>
+    <string name="title_carr_3_new">Find New Friends</string>
+    <string name="title_carr_4_new">Social</string>
+    <string name="title_carr_5_new">Chat</string>
+
+    <string name="desc_logo">new experience with new friends</string>
 
     <string name="estimate">(ESTIMATE)</string>
     <string name="estimated_total">ESTIMATED TOTAL</string>
@@ -383,5 +401,60 @@
     <string name="table_info">Table Info</string>
     <string name="select_payment_short">Select Payment</string>
     <string name="title_activity_country">Country Activity</string>
+    <string name="title_activity_city">City</string>
     <string name="fill_your_contact_info">Fill Your Contact Info</string>
+
+    <string name="maximum_distance">Maximum distance</string>
+    <string name="sort_by_distance">Sort users by distance</string>
+    <string name="sort_by_age">Sort users by age</string>
+    <string name="reset_filter">Reset filters</string>
+
+    <string name="tooltip_event_list">\“Explore more! Tap an event to see more info and booking options.\”</string>
+    <string name="tooltip_like">\“Go ahead and tap here to let others know you like an event. This will also help teach Jiggie what events you like.\”</string>
+    <string name="tooltip_social_tab">\“Lucky you, we found other guests who also like this event. Connect now!\”</string>
+    <string name="tooltip_share">\“Share this event with your friends and see who wants to go\”</string>
+    <string name="tooltip_yes_suggested">\“Don\'t be shy! Tap \“Yes\” (or swipe card right) to let this person know you want to connect. If they also tap \“Yes\” then a chat conversation begins.</string>
+    <string name="tooltip_yes_inbound">\“Congrats! Someone wants to connect with you. \“Tap here to begin chatting.\”</string>
+
+
+    <string name="interested_ask">Interested?</string>
+    <string name="skip">Skip</string>
+
+    <string name="empty_social">You currently have no cards available</string>
+    <string name="start_from">Starts From</string>
+
+    <!--PROMO PART-->
+    <string name="promo_success">PROMO SUCCESS</string>
+    <string name="promo_desc">You just got 10.000 Credits for Tame Impala live in Jakarta</string>
+    <string name="promo_use_now">USE NOW</string>
+    <string name="promo_remind_later">REMIND ME LATER</string>
+    <string name="promo_apply_code">APPLY CODE</string>
+    <string name="promo_want">Want a free ticket?</string>
+    <string name="promo_invite">INVITE YOUR FRIENDS</string>
+    <string name="promo_share">SHARE YOUR PROMO CODE</string>
+    <string name="promo_code_desc">Send friends 100 points towards a free ticket and you get 100 points when they book a ticket.</string>
+    <string name="promo_fb">Share referral link on Facebook</string>
+    <string name="promo_cp">Share Link with Phone Contacts</string>
+    <string name="promo_msg">Message friends for free credits</string>
+    <string name="promo_copy">Copy your referral link</string>
+    <string name="promo_menu">Promotions</string>
+    <!--END OF PROMO PART-->
+
+    <!--INVITE FRIENDS PART-->
+    <string name="in_dummy_name">Wandy Effendi</string>
+    <string name="in_dummy_phone">+62 77867588</string>
+    <string name="in_dummy_email">wandy@jiggieapp.com</string>
+    <string name="in_invite">INVITE</string>
+    <string name="in_sent">SENT</string>
+    <string name="in_credit">+100 credits</string>
+    <string name="in_invite_all">INVITE ALL</string>
+    <string name="in_invite_desc">For 350.000 Credits</string>
+    <!--END OF INVITE FRIENDS PART-->
+
+    <string name="friends_title">Friends</string>
+    <string name="lets_go_out">Lets go out with Jiggie</string>
+    <string name="invite_code_has_been_copied">Your invite code has been copied</string>
+
+    <string name="confirm_contact">Please allow the application to access your contacts</string>
+
 </resources>

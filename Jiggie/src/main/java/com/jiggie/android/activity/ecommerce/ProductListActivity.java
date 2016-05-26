@@ -1,9 +1,11 @@
 package com.jiggie.android.activity.ecommerce;
 
-import android.accounts.Account;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +14,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -21,7 +22,6 @@ import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.ticket.ReservationActivity;
 import com.jiggie.android.activity.ecommerce.ticket.TicketDetailActivity;
-import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.ProductListAdapter;
@@ -38,6 +38,11 @@ import com.jiggie.android.view.HeaderView;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -60,6 +65,10 @@ public class ProductListActivity extends ToolbarActivity
     boolean isTwoType = false;
     int section2Start = 0;
     String eventName, venueName, startTime;
+    @Bind(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbar;
+    @Bind(R.id.main_content)
+    CoordinatorLayout mainContent;
 
     private boolean isLoading;
     EventDetailModel.Data.EventDetail eventDetail;
@@ -86,6 +95,8 @@ public class ProductListActivity extends ToolbarActivity
     ImageButton backButton;
 
     private boolean isHideToolbarView = false;
+    //private Future<?> futureTask;
+    //private ExecutorService executorService;
 
     /*@Override
     protected int getThemeResource() {
@@ -145,19 +156,31 @@ public class ProductListActivity extends ToolbarActivity
                     , eventDetail.getVenue_name() + ", " + simpleDate);
             floatHeaderView.bindTo(eventDetail.getTitle()
                     , eventDetail.getVenue_name() + "\n"
-                            + simpleDate);
+                    + simpleDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
+        /*recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int topRowVerticalPosition =
+                        (recyclerView == null || recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
+                swipeRefresh.setEnabled(topRowVerticalPosition >= 0);
+
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });*/
+        //executorService = Executors.newFixedThreadPool(1);
     }
 
-    public void checkTokenHeader()
-    {
-        if(AccountManager.getAccessTokenFromPreferences().isEmpty())
-        {
-            AccountManager.getAccessToken(new CommerceManager.OnResponseListener()
-            {
+    public void checkTokenHeader() {
+        if (AccountManager.getAccessTokenFromPreferences().isEmpty()) {
+            AccountManager.getAccessToken(new CommerceManager.OnResponseListener() {
                 @Override
                 public void onSuccess(Object object) {
                     //do restart here
@@ -175,12 +198,11 @@ public class ProductListActivity extends ToolbarActivity
                     //onCustomCallbackFailure(message);
                 }
             });
-        }
-        else loadData(eventId);
+        } else loadData(eventId);
     }
 
 
-    private void sendMixpanel(EventDetailModel.Data.EventDetail eventDetail){
+    private void sendMixpanel(EventDetailModel.Data.EventDetail eventDetail) {
         CommEventMixpanelModel commEventMixpanelModel = new CommEventMixpanelModel(eventDetail.getTitle(), eventDetail.getVenue_name(), eventDetail.getVenue().getCity(), eventDetail.getStart_datetime_str(),
                 eventDetail.getEnd_datetime_str(), eventDetail.getTags(), eventDetail.getDescription());
         App.getInstance().trackMixPanelCommerce(Utils.COMM_PRODUCT_LIST, commEventMixpanelModel);
@@ -189,22 +211,22 @@ public class ProductListActivity extends ToolbarActivity
     @Override
     public void onViewSelected(int position, Object object) {
         Intent i = null;
-        if(isTwoType){
-            if(position<section2Start){
+        if (isTwoType) {
+            if (position < section2Start) {
                 i = new Intent(ProductListActivity.this, TicketDetailActivity.class);
-                ProductListModel.Data.ProductList.Purchase itemData = (ProductListModel.Data.ProductList.Purchase)object;
+                ProductListModel.Data.ProductList.Purchase itemData = (ProductListModel.Data.ProductList.Purchase) object;
                 i.putExtra(Common.FIELD_TRANS_TYPE, itemData.getTicket_type());
                 //Utils.d(TAG, "detailPurchase  brother " + itemData.getSummary());
                 i.putExtra(itemData.getClass().getName(), itemData);
-            }else{
+            } else {
                 i = new Intent(ProductListActivity.this, ReservationActivity.class);
-                ProductListModel.Data.ProductList.Reservation itemData = (ProductListModel.Data.ProductList.Reservation)object;
+                ProductListModel.Data.ProductList.Reservation itemData = (ProductListModel.Data.ProductList.Reservation) object;
                 i.putExtra(Common.FIELD_TRANS_TYPE, itemData.getTicket_type());
                 i.putExtra(itemData.getClass().getName(), itemData);
             }
-        }else{
+        } else {
             i = new Intent(ProductListActivity.this, TicketDetailActivity.class);
-            ProductListModel.Data.ProductList.Purchase itemData = (ProductListModel.Data.ProductList.Purchase)object;
+            ProductListModel.Data.ProductList.Purchase itemData = (ProductListModel.Data.ProductList.Purchase) object;
             i.putExtra(Common.FIELD_TRANS_TYPE, itemData.getTicket_type());
             i.putExtra(itemData.getClass().getName(), itemData);
         }
@@ -220,6 +242,9 @@ public class ProductListActivity extends ToolbarActivity
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
+        //CommerceManager.doCancel();
+        //executorService.shutdownNow();
+        //futureTask.cancel(true);
     }
 
     @Override
@@ -238,11 +263,14 @@ public class ProductListActivity extends ToolbarActivity
         loadData(eventId);
     }
 
-    private void loadData(String eventId){
+
+    private void loadData(final String eventId)
+    {
         swipeRefresh.setRefreshing(true);
         CommerceManager.loaderProductList(eventId, new CommerceManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
+                if(swipeRefresh.getContext() == null) return;
                 ProductListModel data = (ProductListModel) object;
 
                 if (data != null) {
@@ -268,7 +296,6 @@ public class ProductListActivity extends ToolbarActivity
 
             @Override
             public void onFailure(int responseCode, String message) {
-                Utils.d(String.valueOf(responseCode), message);
                 //Toast.makeText(ProductListActivity.this, message, Toast.LENGTH_LONG);
                 swipeRefresh.setRefreshing(false);
                 isLoading = false;
@@ -276,7 +303,7 @@ public class ProductListActivity extends ToolbarActivity
         });
     }
 
-    private void setsAdapter(String eventName, String venueName, String startTime, boolean isTwoType, int section2Start, ArrayList<ProductListModel.Data.ProductList.Purchase> dataPurchase, ArrayList<ProductListModel.Data.ProductList.Reservation> dataReservation){
+    private void setsAdapter(String eventName, String venueName, String startTime, boolean isTwoType, int section2Start, ArrayList<ProductListModel.Data.ProductList.Purchase> dataPurchase, ArrayList<ProductListModel.Data.ProductList.Reservation> dataReservation) {
         adapter = new ProductListAdapter(eventName, venueName, startTime, isTwoType, section2Start, dataPurchase, dataReservation, this);
         recyclerView.setAdapter(adapter);
     }
@@ -285,7 +312,6 @@ public class ProductListActivity extends ToolbarActivity
     public void onOffsetChanged(AppBarLayout appBarLayout, int offset) {
         int maxScroll = appBarLayout.getTotalScrollRange();
         float percentage = (float) Math.abs(offset) / (float) maxScroll;
-
         if (percentage == 1f && isHideToolbarView) {
             toolbarHeaderView.setVisibility(View.VISIBLE);
             isHideToolbarView = !isHideToolbarView;
@@ -294,11 +320,16 @@ public class ProductListActivity extends ToolbarActivity
             toolbarHeaderView.setVisibility(View.GONE);
             isHideToolbarView = !isHideToolbarView;
         }
+
+        if (offset==0) {
+            swipeRefresh.setEnabled(true);
+        } else {
+            swipeRefresh.setEnabled(false);
+        }
     }
 
     @OnClick(R.id.back_button)
-    public void onBackButtonClick()
-    {
+    public void onBackButtonClick() {
         super.onBackPressed();
     }
 }

@@ -1,12 +1,10 @@
 package com.jiggie.android.activity.setup;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -21,17 +19,10 @@ import com.jiggie.android.component.BitmapUtility;
 import com.jiggie.android.component.FlowLayout;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.BaseActivity;
-import com.jiggie.android.component.volley.VolleyHandler;
-import com.jiggie.android.component.volley.VolleyRequestListener;
-import com.android.volley.VolleyError;
 import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.TagsListModel;
 
-import org.json.JSONArray;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 

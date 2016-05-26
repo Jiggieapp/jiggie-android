@@ -1,16 +1,18 @@
 package com.jiggie.android.api;
 
 import com.jiggie.android.component.Utils;
+import com.jiggie.android.model.FriendListModel;
+import com.jiggie.android.model.PostFriendModel;
 import com.jiggie.android.model.PostLocationModel;
 import com.jiggie.android.model.SocialModel;
 import com.jiggie.android.model.Success2Model;
 
-import retrofit.Call;
-import retrofit.http.Body;
-import retrofit.http.GET;
-import retrofit.http.POST;
-import retrofit.http.Path;
-import retrofit.http.Url;
+import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
+import retrofit2.http.Url;
 
 /**
  * Created by LTE on 2/5/2016.
@@ -25,5 +27,11 @@ public interface SocialInterface {
 
     @POST
     Call<Success2Model> postLocation(@Url String url, @Body PostLocationModel postLocationModel);
+
+    @POST(Utils.URL_POST_FRIEND_LIST)
+    Call<Success2Model> postFriendList(@Body PostFriendModel postFriend);
+
+    @POST(Utils.URL_LIST_SOCIAL_FRIENDS)
+    Call<FriendListModel> getFriendList(@Body PostFriendModel postFriend);
 
 }

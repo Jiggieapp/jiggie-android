@@ -12,13 +12,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.jiggie.android.App;
-import com.jiggie.android.R;
-import com.jiggie.android.model.ChatListModel;
-import com.jiggie.android.model.Common;
-import com.jiggie.android.model.Conversation;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.jiggie.android.App;
+import com.jiggie.android.R;
+import com.jiggie.android.component.Utils;
+import com.jiggie.android.model.ChatListModel;
+import com.jiggie.android.model.Common;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -35,6 +35,7 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
     private ConversationSelectedListener listener;
     private ConversationLongClickListener longClickListener;
     private Fragment fragment;
+    private static final String TAG = ChatTabListAdapter.class.getSimpleName();
 
     private ArrayList<ChatListModel.Data.ChatLists> items;
 
@@ -54,7 +55,9 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
     }*/
 
     public void add(ChatListModel.Data.ChatLists item) { this.items.add(item); }
-    public void remove(ChatListModel.Data.ChatLists item) { this.items.remove(item); }
+    public void remove(
+            ChatListModel.Data.ChatLists item) { this.items.remove(item);
+    }
     public void move(ChatListModel.Data.ChatLists item, int position) {
         this.items.remove(item);
         this.items.add(position, item);
@@ -64,31 +67,6 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_conversation, parent, false), this.listener, this.longClickListener);
     }
-
-    /*@Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        try {
-            final Conversation item = this.items.get(position);
-            holder.conversation = item;
-            holder.txtUser.setText(item.getFromName());
-            holder.txtMessage.setText(item.getLastMessage());
-            holder.txtTime.setText(item.getSimpleDate());
-            holder.txtUnread.setText(String.valueOf(item.getUnread()));
-            holder.txtUnread.setVisibility(item.getUnread() == 0 ? View.INVISIBLE : View.VISIBLE);
-            holder.txtTime.setTextColor(ContextCompat.getColor(this.fragment.getContext(), item.getUnread() == 0 ? android.R.color.darker_gray : R.color.colorAccent));
-
-            Glide.with(this.fragment).load(item.getProfileImage()).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.imageView) {
-                @Override
-                protected void setResource(Bitmap resource) {
-                    final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(fragment.getResources(), resource);
-                    circularBitmapDrawable.setCircular(true);
-                    super.getView().setImageDrawable(circularBitmapDrawable);
-                }
-            });
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-    }*/
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
@@ -115,7 +93,6 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
                 urlImage = App.getFacebookImage(item.getFb_id(), width);
             }
             //---------
-
             Glide.with(this.fragment).load(urlImage).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.imageView) {
                 @Override
                 protected void setResource(Bitmap resource) {
@@ -196,6 +173,5 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
         return unreadCount;
     }
 
-    //public List<Conversation> getItems() { return this.items; }
     public List<ChatListModel.Data.ChatLists> getItems() { return this.items; }
 }
