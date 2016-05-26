@@ -29,6 +29,7 @@ import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.manager.RedeemCodeManager;
 import com.jiggie.android.model.PostRedeemCodeModel;
+import com.jiggie.android.model.PromoMixpanelModel;
 import com.jiggie.android.model.SuccessRedeemCodeModel;
 
 import butterknife.Bind;
@@ -75,6 +76,14 @@ public class PromotionsActivity extends ToolbarActivity {
                             }else{
                                 tesShowPromoDialog(successRedeemCodeModel.getData().getRedeem_code().getMsg());
                             }
+
+                            String status = Utils.BLANK;
+                            if(successRedeemCodeModel.getData().getRedeem_code().is_check()){
+                                status = "success";
+                            }else{
+                                status = "fail";
+                            }
+                            App.getInstance().trackMixPanelPromo(Utils.PROMO_CODE, new PromoMixpanelModel(edtCode.getText().toString(), status, successRedeemCodeModel.getData().getRedeem_code().getMsg()));
 
                             hideProgressDialog();
                         } catch (Exception e) {

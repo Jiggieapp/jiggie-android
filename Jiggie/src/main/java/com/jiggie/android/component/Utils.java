@@ -221,6 +221,8 @@ public class Utils {
     public static final String PICTURE_UPLOAD = "Picture Upload";
     public static final String PICTURE_DELETE = "Picture Delete";
 
+    public static final String PROMO_CODE = "Use Promo Code";
+
     public static final String TAG = Utils.class.getSimpleName();
     //AppsFlyer properties----
     public static String AFinstall_type = "";
