@@ -192,6 +192,7 @@ public class SettingModel {
     boolean matchme;
     int device_type;
     boolean show_walkthrough;
+    String invite_code;
 
     public boolean is_new_user() {
         return is_new_user;
@@ -231,5 +232,13 @@ public class SettingModel {
 
     public void setShow_walkthrough(boolean show_walkthrough) {
         this.show_walkthrough = show_walkthrough;
+    }
+
+    public String getInvite_code() {
+        return invite_code;
+    }
+
+    public void setInvite_code(String invite_code) {
+        this.invite_code = invite_code;
     }
 }
