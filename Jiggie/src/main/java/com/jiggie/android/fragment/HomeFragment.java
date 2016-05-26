@@ -333,7 +333,6 @@ public class HomeFragment extends Fragment
             @Override
             public void onSuccess(Object object) {
                 TagsListModel dataTemp = (TagsListModel) object;
-
                 setTags(dataTemp);
             }
 
@@ -463,8 +462,6 @@ public class HomeFragment extends Fragment
                         final ViewHolder holder = new ViewHolder(getActivity(), view, res);
 
                         holder.textView.setText(holder.text);
-
-
                         flowLayout.addView(view);
 
                         if (result.contains(res)) {
@@ -614,8 +611,7 @@ public class HomeFragment extends Fragment
     public static void sendLocationInfo() {
         //PART of postLocation
         //PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), "-6.2216706", "106.8401574");
-
-        if(AccessToken.getCurrentAccessToken() != null && AccessToken.getCurrentAccessToken().getUserId() != null)
+        if(AccessToken.getCurrentAccessToken()!= null && AccessToken.getCurrentAccessToken().getUserId() != null)
         {
             final String userId = AccessToken.getCurrentAccessToken().getUserId();
             if(userId != null && SocialManager.lat != null && SocialManager.lng != null)
