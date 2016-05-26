@@ -109,6 +109,5 @@ public abstract class AbstractTicketDetailActivity extends /*ToolbarWithDotActiv
             txtGuestPhone.setText("+" + dialCode + guestPhone);
         }
     }
-
 }
 
