@@ -43,6 +43,7 @@ import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.PostAppsFlyerModel;
 import com.jiggie.android.model.PostMixpanelModel;
+import com.jiggie.android.model.PromoMixpanelModel;
 import com.jiggie.android.model.ReferEventMixpanelModel;
 import com.jiggie.android.model.SettingModel;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
@@ -311,6 +312,14 @@ public class App extends Application {
             if (settingModel != null) {
                 json.putString("gender", settingModel.getData().getGender());
                 json.putString("gender_interest", settingModel.getData().getGender_interest());
+
+                if (eventName.equals("Sign Up")) {
+                    json.putString("invite_code", settingModel.getInvite_code());
+                }else if (eventName.equals("Log In")) {
+                    json.putString("invite_code", settingModel.getInvite_code());
+                }
+
+
             }
         }
 
@@ -580,6 +589,69 @@ public class App extends Application {
         getInstanceMixpanel().getPeople().set(json);
     }
     //END OF MIXPANEL PICTURE UPLOAD======================
+
+    //MIXPANEL PROMO CODE=================================
+    public void trackMixPanelPromo(String eventName, PromoMixpanelModel promoMixpanelModel) {
+
+        //USER PART-----------
+        LoginModel login = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin();
+        SettingModel settingModel = AccountManager.loadSetting() == null ? null : AccountManager.loadSetting();
+        setPeopleMixpanelPromo(login, settingModel);
+        //END OF USER PART---------
+
+        //EVENT PART--------------
+        setEventMixpanelPromo(eventName, promoMixpanelModel);
+        //END OF EVENT PART-------
+    }
+
+    private void setEventMixpanelPromo(String eventName, PromoMixpanelModel promoMixpanelModel) {
+        SimpleJSONObject json = new SimpleJSONObject();
+
+        json.putString("Code", promoMixpanelModel.getCode());
+        json.putString("Status", promoMixpanelModel.getStatus());
+        json.putString("Response Message", promoMixpanelModel.getMessage());
+        getInstanceMixpanel().track(eventName, json);
+    }
+
+    public void setPeopleMixpanelPromo(LoginModel login, SettingModel settingModel) {
+        getInstanceMixpanel().getPeople().identify(mixpanelAPI.getDistinctId());
+
+        SimpleJSONObject json = new SimpleJSONObject();
+        if (login != null) {
+            json.putString("FB ID", login.getFb_id());
+            json.putString("First Name", login.getUser_first_name());
+            json.putString("Last Name", login.getUser_last_name());
+            json.putString("Device", Build.DEVICE);
+            json.putString("Birthday", login.getBirthday());
+            json.putString("City Country", login.getBirthday());
+
+            final String location = login == null ? null : login.getLocation();
+            String[] locations = null;
+            try {
+                locations = TextUtils.isEmpty(location) ? new String[]{"", ""} : location.split(",");
+            } catch (Exception e) {
+
+            }
+            try {
+                json.putString("City Country", locations[0].trim() + " " + locations[1].trim());
+            } catch (Exception e) {
+                json.putString("City Country", locations[0].trim());
+            }
+            json.putString("Email", login.getEmail());
+
+            if (settingModel != null) {
+                json.putString("Gender", settingModel.getData().getGender());
+                json.putString("Gender Interest", settingModel.getData().getGender_interest());
+            }
+
+            json.putString("Name and FB ID", login.getUser_first_name() + "_" + login.getUser_last_name() + "_" + login.getFb_id());
+        }
+        json.putString("App Version", getVersionCode(this));
+        json.putString("OS", "Android");
+        json.putString("OS Version", this.getDeviceOSName());
+        getInstanceMixpanel().getPeople().set(json);
+    }
+    //END OF MIXPANEL PROMO CODE=================================
 
     public void setSuperPropertiesMixpanel(LoginModel login, SettingModel settingModel) {
         SimpleJSONObject json = new SimpleJSONObject();
@@ -1097,6 +1169,7 @@ public class App extends Application {
         if (settingModel != null) {
             postMixpanelModel.setGender(settingModel.getData().getGender());
             postMixpanelModel.setGender_interest(settingModel.getData().getGender_interest());
+            postMixpanelModel.setInvite_code(settingModel.getInvite_code());
         }
 
         if (login != null) {
