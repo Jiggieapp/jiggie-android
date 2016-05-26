@@ -867,6 +867,7 @@ public class HomeFragment extends Fragment
         TextView tabFour = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.tab_custom, null);
         tabFour.setText(adapter.getPageTitle(3));
         tabFour.setCompoundDrawablesWithIntrinsicBounds(0, adapter.getIcon(3), 0, 0);
+        tabFour.setPadding(0,Utils.myPixel(getActivity(), 3),0,0);
         tab.getTabAt(MORE_TAB).setCustomView(tabFour);
     }
 

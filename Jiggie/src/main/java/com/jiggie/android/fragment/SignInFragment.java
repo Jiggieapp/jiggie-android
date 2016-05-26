@@ -525,8 +525,7 @@ public class SignInFragment extends Fragment {
                     public void call(TagsListModel tagsListModel) {
                         actionDone();
                     }
-                })
-        ;
+                });
     }
 
     private void actionDone() {
