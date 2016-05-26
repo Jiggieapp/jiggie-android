@@ -388,7 +388,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         }
 
         cekLike();
-        runInvite();
+        //runInvite();
     }
 
     @Override
@@ -417,9 +417,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         } else if (counter + 1 == 4) {
             AccountManager.setCounterEvent(5);
             if (InviteManager.validateTimeInvite(Calendar.getInstance().getTimeInMillis())) {
-                startActivity(new Intent(EventDetailActivity.this, InviteFriendsActivity.class));
+                //startActivity(new Intent(EventDetailActivity.this, InviteFriendsActivity.class));
             }
-
             startActivity(new Intent(this, InviteFriendsActivity.class));
         } else if (counter > 4) {
             /*Handler handler = new Handler();
