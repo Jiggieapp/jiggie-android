@@ -74,6 +74,10 @@ public class ProfileDetailActivity extends ToolbarActivity
     TextView lblPhoneNumber;
     @Bind(R.id.appBar)
     AppBarLayout appBar;
+    @Bind(R.id.img_has_table)
+    ImageView imgHasTable;
+    @Bind(R.id.img_has_ticket)
+    ImageView imgHasTicket;
 
     private ImagePagerIndicatorAdapter pagerIndicatorAdapter;
     private MemberInfoModel memberInfoModel;
@@ -111,8 +115,10 @@ public class ProfileDetailActivity extends ToolbarActivity
             fb_id = AccessToken.getCurrentAccessToken().getUserId();
             //fb_id = "10153452897043547"; //richard
             //fb_id = "10153418311072858"; //wandy
+            //fb_id = "10205703989179267"; /fazlur
             isMe = true;
         }
+        fb_id = "10205703989179267";
 
         if (!isMe) {
             App.getInstance().trackMixPanelEvent("View Member Profile");
@@ -270,8 +276,6 @@ public class ProfileDetailActivity extends ToolbarActivity
     public void loadImages(ArrayList<String> photos) {
         /*photos = memberInfo.getPhotos().toArray(new String[memberInfo.getPhotos().size()]);
         txtLocation.setText(memberInfo.getLocation());*/
-        for(String photo : photos)
-            Utils.d(TAG, "photo " + photo);
         this.pagerIndicatorAdapter.setImages(photos.toArray(new String[photos.size()]));
     }
 
@@ -286,9 +290,10 @@ public class ProfileDetailActivity extends ToolbarActivity
         super.setToolbarTitle(memberInfo.getFirst_name(), true);
 
         final String age = StringUtility.getAge2(memberInfo.getBirthday());
+        Boolean hasTicket = false;
+        Boolean hasTable = false;
 
         //Added by Aga 22-2-2016--------
-
         if (isMe) {
             /*final String dataPath = App.getInstance().getDataPath(Common.PREF_IMAGES);
             final HashSet<String> profileImages = (HashSet<String>) App.getSharedPreferences().getStringSet(Common.PREF_IMAGES, new HashSet<String>());
@@ -325,6 +330,9 @@ public class ProfileDetailActivity extends ToolbarActivity
             } else {
                 txtDescription.setText(memberInfo.getAbout());
             }
+
+            hasTicket = false;
+            hasTable = false;
         } else {
             txtDescription.setText(memberInfo.getAbout());
             if (TextUtils.isEmpty(memberInfo.getLocation()))
@@ -333,10 +341,12 @@ public class ProfileDetailActivity extends ToolbarActivity
                 txtLocation.setVisibility(View.GONE);
             if (TextUtils.isEmpty(memberInfo.getAbout()))
                 txtDescription.setVisibility(View.GONE);
+
+            hasTicket = memberInfo.getBadge_ticket();
+            hasTable = memberInfo.getBadge_booking();
         }
         //-----------------------
         //this.pagerIndicatorAdapter.setImages(photos);
-
         String name = memberInfo.getFirst_name() + " "
                 + memberInfo.getLast_name();
 
@@ -355,6 +365,17 @@ public class ProfileDetailActivity extends ToolbarActivity
         } else //guest
         {
             btnEdit.setVisibility(View.GONE);
+            if(hasTicket)
+            {
+                imgHasTicket.setVisibility(View.VISIBLE);
+                imgHasTicket.bringToFront();
+            }
+
+            if(hasTable)
+            {
+                imgHasTable.setVisibility(View.VISIBLE);
+                imgHasTable.bringToFront();
+            }
         }
         setToolbarTitle(name, true);
         refreshLayout.setRefreshing(false);

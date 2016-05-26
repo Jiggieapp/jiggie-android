@@ -1,5 +1,6 @@
 package com.jiggie.android.model;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -35,7 +36,7 @@ public class MemberInfoModel {
         this.data = data;
     }
 
-    public class Data{
+    public class Data {
         MemberInfo memberinfo;
 
         public MemberInfo getMemberinfo() {
@@ -46,7 +47,7 @@ public class MemberInfoModel {
             this.memberinfo = memberinfo;
         }
 
-        public class MemberInfo{
+        public class MemberInfo {
             String _id;
             boolean active;
             boolean visible;
@@ -72,6 +73,170 @@ public class MemberInfoModel {
             String user_ref_fb_id;
             int ref_count;
             int chat_count;
+            String area_event;
+            //String country_code;
+            String phone;
+            Boolean badge_ticket;
+            ArrayList<ListTickets> list_tickets;
+            Boolean badge_booking;
+            ArrayList<ListBookings> list_bookings;
+            ArrayList<LikesEvent> likes_event;
+
+            private class ListTickets {
+                String event_id;
+                String title;
+                ArrayList<String> photos;
+
+                public String getEvent_id() {
+                    return event_id;
+                }
+
+                public void setEvent_id(String event_id) {
+                    this.event_id = event_id;
+                }
+
+                public String getTitle() {
+                    return title;
+                }
+
+                public void setTitle(String title) {
+                    this.title = title;
+                }
+
+                public ArrayList<String> getPhotos() {
+                    return photos;
+                }
+
+                public void setPhotos(ArrayList<String> photos) {
+                    this.photos = photos;
+                }
+            }
+
+            private class ListBookings {
+                String event_id;
+                String title;
+                ArrayList<String> photos;
+
+                public String getEvent_id() {
+                    return event_id;
+                }
+
+                public void setEvent_id(String event_id) {
+                    this.event_id = event_id;
+                }
+
+                public String getTitle() {
+                    return title;
+                }
+
+                public void setTitle(String title) {
+                    this.title = title;
+                }
+
+                public ArrayList<String> getPhotos() {
+                    return photos;
+                }
+
+                public void setPhotos(ArrayList<String> photos) {
+                    this.photos = photos;
+                }
+            }
+
+            private class LikesEvent
+            {
+                String event_id;
+                String title;
+                ArrayList<String> photos;
+
+                public String getEvent_id() {
+                    return event_id;
+                }
+
+                public void setEvent_id(String event_id) {
+                    this.event_id = event_id;
+                }
+
+                public String getTitle() {
+                    return title;
+                }
+
+                public void setTitle(String title) {
+                    this.title = title;
+                }
+
+                public ArrayList<String> getPhotos() {
+                    return photos;
+                }
+
+                public void setPhotos(ArrayList<String> photos) {
+                    this.photos = photos;
+                }
+            }
+
+            public String getArea_event() {
+                return area_event;
+            }
+
+            public ArrayList<ListTickets> getList_tickets() {
+                return list_tickets;
+            }
+
+            public void setList_tickets(ArrayList<ListTickets> list_tickets) {
+                this.list_tickets = list_tickets;
+            }
+
+            public ArrayList<ListBookings> getList_bookings() {
+                return list_bookings;
+            }
+
+            public void setList_bookings(ArrayList<ListBookings> list_bookings) {
+                this.list_bookings = list_bookings;
+            }
+
+            public ArrayList<LikesEvent> getLikes_event() {
+                return likes_event;
+            }
+
+            public void setLikes_event(ArrayList<LikesEvent> likes_event) {
+                this.likes_event = likes_event;
+            }
+
+            public Boolean getBadge_ticket() {
+                return badge_ticket;
+            }
+
+            public void setBadge_ticket(Boolean badge_ticket) {
+                this.badge_ticket = badge_ticket;
+            }
+
+            public Boolean getBadge_booking() {
+                return badge_booking;
+            }
+
+            public void setBadge_booking(Boolean badge_booking) {
+                this.badge_booking = badge_booking;
+            }
+
+            public void setArea_event(String area_event) {
+                this.area_event = area_event;
+            }
+
+            /*public String getCountry_code() {
+                return country_code;
+            }
+
+            public void setCountry_code(String country_code) {
+                this.country_code = country_code;
+            }*/
+
+            public String getPhone() {
+                return phone;
+            }
+
+            public void setPhone(String phone) {
+                this.phone = phone;
+            }
+
 
             public String get_id() {
                 return _id;

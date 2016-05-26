@@ -216,14 +216,12 @@ public class InviteManager extends BaseManager {
             int monthGap = monthNow - monthSaved;
 
             if(monthGap>0){
-
                 if(monthGap==1){
                     int dayMonthGap = (calSaved.getActualMaximum(Calendar.DAY_OF_MONTH) - daySaved) + dayNow;
                     if(dayMonthGap>=calNow.getActualMaximum(Calendar.DAY_OF_MONTH)){
                         App.getSharedPreferences().edit().putLong(latestTimeInvite, longTimeInMilis).putString(repeatInvite, INVITE_MONTH).commit();
                         gotoInviteFriends = true;
                     }else{
-
                         if(App.getSharedPreferences().getString(repeatInvite, Utils.BLANK).equals(INVITE_WEEK)){
                             App.getSharedPreferences().edit().putLong(latestTimeInvite, longTimeInMilis).putString(repeatInvite, INVITE_MONTH).commit();
                             gotoInviteFriends = true;
@@ -232,12 +230,10 @@ public class InviteManager extends BaseManager {
                             gotoInviteFriends = false;
                         }
                     }
-
                 }else{
                     App.getSharedPreferences().edit().putLong(latestTimeInvite, longTimeInMilis).putString(repeatInvite, INVITE_MONTH).commit();
                     gotoInviteFriends = true;
                 }
-
             }else{
                 if(dayGap>=7){
                     if(App.getSharedPreferences().getString(repeatInvite, Utils.BLANK).equals(INVITE_WEEK)){
@@ -249,7 +245,6 @@ public class InviteManager extends BaseManager {
                     }
 
                 }else{
-
                     int addedHour = 0;
                     if(dayGap!=0){
                         addedHour = dayGap*24;
@@ -264,6 +259,10 @@ public class InviteManager extends BaseManager {
                             App.getSharedPreferences().edit().putLong(latestTimeInvite, longTimeInMilis).putString(repeatInvite, INVITE_WEEK).commit();
                             gotoInviteFriends = true;
                         }
+                        else
+                        {
+                            gotoInviteFriends = false;
+                        }
                     }else{
                         //do nothing
                         gotoInviteFriends = false;
@@ -271,9 +270,7 @@ public class InviteManager extends BaseManager {
 
                 }
             }
-
         }
-
         return gotoInviteFriends;
     }
 

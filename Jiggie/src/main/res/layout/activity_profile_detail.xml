@@ -1,5 +1,4 @@
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -16,20 +15,21 @@
             app:collapsedTitleTextAppearance="@style/ExpandableToolbarTitleStyle"
             app:contentScrim="@color/colorPrimary"
             app:expandedTitleTextAppearance="@style/ExpandableToolbarTitleStyle"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:expandedTitleMarginBottom="70dp">
 
             <RelativeLayout
-                android:layout_marginTop="?attr/actionBarSize"
-                android:layout_height="match_parent"
                 android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="?attr/actionBarSize"
                 android:fitsSystemWindows="true"
                 android:orientation="vertical"
                 app:layout_collapseMode="parallax">
 
                 <android.support.v4.view.ViewPager
-                    android:layout_height="match_parent"
-                    android:layout_width="match_parent"
                     android:id="@+id/imageViewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     app:borderWidth="0dp" />
 
                 <!--<it.sephiroth.android.library.widget.HListView
@@ -42,16 +42,16 @@
 
                 <com.viewpagerindicator.CirclePageIndicator
                     android:id="@+id/titles"
-                    android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true"
                     android:layout_marginLeft="@dimen/padding_standard"
                     android:layout_marginRight="@dimen/padding_standard"
+                    android:paddingBottom="@dimen/padding_standard_half"
                     android:paddingLeft="@dimen/padding_standard"
                     android:paddingRight="@dimen/padding_standard"
-                    android:paddingTop="@dimen/padding_standard_half"
-                    android:paddingBottom="@dimen/padding_standard_half"/>
+                    android:paddingTop="@dimen/padding_standard_half" />
             </RelativeLayout>
 
             <android.support.v7.widget.Toolbar
@@ -63,9 +63,17 @@
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                app:titleTextColor="@android:color/white"/>
+                app:titleTextColor="@android:color/white" />
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
+
+    <!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/relative_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+-->
+
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
@@ -76,83 +84,117 @@
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            app:behavior_overlapTop="64dp">
 
-            <LinearLayout
-                android:layout_margin="@dimen/padding_standard"
-                android:layout_height="wrap_content"
+            <RelativeLayout
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/txtUser"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:textColor="@android:color/black"
-                    android:textSize="22sp"/>
-
-                <TextView
-                    android:id="@+id/lblPhoneNumber"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                <ImageView
+                    android:id="@+id/img_has_table"
+                    android:layout_width="@dimen/img_has_ticket_width"
+                    android:layout_height="@dimen/img_has_ticket_height"
+                    android:layout_toLeftOf="@+id/img_has_ticket"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_hastable_profile"
                     android:visibility="gone"
-                    android:text=""
-                    android:textColor="@android:color/holo_blue_dark"
-                    android:textStyle=""
+                    android:layout_marginTop="-24dp"
                     />
 
-                <TextView
-                    android:id="@+id/txtLocation"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                <ImageView
+                    android:id="@+id/img_has_ticket"
+                    android:layout_width="@dimen/img_has_ticket_width"
+                    android:layout_height="@dimen/img_has_ticket_height"
+                    android:layout_alignParentRight="true"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_hasticket_profile"
+                    android:visibility="gone"
+                    android:layout_marginRight="@dimen/padding_standard"/>
 
-                <View
-                    android:layout_height="0.5dp"
-                    android:layout_width="match_parent"
-                    android:background="@android:color/darker_gray"
-                    android:layout_marginTop="@dimen/padding_standard"
-                    android:layout_marginBottom="@dimen/padding_standard"/>
 
-                <LinearLayout
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:orientation="horizontal">
+                    android:layout_margin="@dimen/padding_standard"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txtUser"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/lblPhoneNumber"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/txtUser"
+                        android:text=""
+                        android:textColor="@android:color/holo_blue_dark"
+                        android:textStyle=""
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/txtLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/lblPhoneNumber" />
+
+                    <!--<View
+                        android:id="@+id/view_divider"
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:layout_below="@+id/txtLocation"
+                        android:layout_marginBottom="@dimen/padding_standard"
+                        android:layout_marginTop="@dimen/padding_standard"
+                        android:background="@android:color/darker_gray" />-->
 
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginRight="@dimen/padding_standard_half"
-                        android:layout_marginEnd="@dimen/padding_standard_half"
-                        android:orientation="vertical">
+                        android:layout_below="@+id/txtLocation"
+                        android:orientation="horizontal">
 
-                        <TextView
-                            android:layout_width="match_parent"
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:id="@+id/txtTitleDescription"
-                            android:text="@string/about"
-                            android:layout_marginBottom="@dimen/padding_standard_half"/>
+                            android:layout_marginEnd="@dimen/padding_standard_half"
+                            android:layout_marginRight="@dimen/padding_standard_half"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/txtDescription"
-                            android:textSize="16sp"/>
+                            <TextView
+                                android:id="@+id/txtTitleDescription"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/padding_standard_half"
+                                android:text="@string/about" />
 
+                            <TextView
+                                android:id="@+id/txtDescription"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textSize="16sp" />
+
+                        </LinearLayout>
+
+                        <ImageButton
+                            android:id="@+id/btnEdit"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:background="?attr/selectableItemBackground"
+                            android:contentDescription="@null"
+                            android:padding="5dp"
+                            android:scaleType="fitCenter"
+                            android:src="@mipmap/ic_pencil" />
                     </LinearLayout>
-
-                    <ImageButton
-                        android:background="?attr/selectableItemBackground"
-                        android:contentDescription="@null"
-                        android:src="@mipmap/ic_pencil"
-                        android:scaleType="fitCenter"
-                        android:layout_height="32dp"
-                        android:layout_width="32dp"
-                        android:id="@+id/btnEdit"
-                        android:padding="5dp"/>
-                </LinearLayout>
-            </LinearLayout>
+                </RelativeLayout>
+            </RelativeLayout>
         </android.support.v4.widget.NestedScrollView>
     </android.support.v4.widget.SwipeRefreshLayout>
+    <!--</RelativeLayout>-->
 </android.support.design.widget.CoordinatorLayout>

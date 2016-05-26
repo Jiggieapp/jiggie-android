@@ -388,7 +388,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         }
 
         cekLike();
-        runInvite();
+        //runInvite();
     }
 
     @Override
@@ -906,7 +906,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             };
             timerInvite.schedule(timerTaskInvite, 1 * 60 * 60 * 1000);
         } else {
-            Log.d("timer already", "yes");
         }
     }
 
