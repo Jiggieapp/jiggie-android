@@ -82,7 +82,7 @@ public class MemberInfoModel {
             ArrayList<ListBookings> list_bookings;
             ArrayList<LikesEvent> likes_event;
 
-            private class ListTickets {
+            public class ListTickets {
                 String event_id;
                 String title;
                 ArrayList<String> photos;
@@ -112,7 +112,7 @@ public class MemberInfoModel {
                 }
             }
 
-            private class ListBookings {
+            public class ListBookings {
                 String event_id;
                 String title;
                 ArrayList<String> photos;
@@ -142,7 +142,7 @@ public class MemberInfoModel {
                 }
             }
 
-            private class LikesEvent
+            public class LikesEvent
             {
                 String event_id;
                 String title;
@@ -299,6 +299,7 @@ public class MemberInfoModel {
             }
 
             public void setFirst_name(String first_name) {
+                first_name = first_name.substring(0, 1).toUpperCase() + first_name.substring(1);
                 this.first_name = first_name;
             }
 

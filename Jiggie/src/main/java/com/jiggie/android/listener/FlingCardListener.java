@@ -261,11 +261,11 @@ public class FlingCardListener implements View.OnTouchListener {
                         if (isLeft) {
                             mFlingListener.onCardExited();
                             mFlingListener.leftExit(dataObject);
-                            mFlingListener.onScroll(exitX);
+                            //mFlingListener.onScroll(exitX);
                         } else {
                             mFlingListener.onCardExited();
                             mFlingListener.rightExit(dataObject);
-                            mFlingListener.onScroll(exitX);
+                            //mFlingListener.onScroll(exitX);
                         }
                         isAnimationRunning = false;
                     }
