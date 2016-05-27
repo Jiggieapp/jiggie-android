@@ -263,6 +263,9 @@ public class InviteManager extends BaseManager {
                             App.getSharedPreferences().edit().putLong(latestTimeInvite, longTimeInMilis).putString(repeatInvite, INVITE_WEEK).commit();
                             gotoInviteFriends = true;
                         }
+                        /*else{
+                            gotoInviteFriends = false;
+                        }*/
                     }else{
                         //do nothing
                         gotoInviteFriends = false;

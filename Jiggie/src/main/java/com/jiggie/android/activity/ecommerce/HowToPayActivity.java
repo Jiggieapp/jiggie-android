@@ -285,11 +285,17 @@ public class HowToPayActivity extends ToolbarActivity {
     @Override
     protected void onStop() {
         super.onStop();
+
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         if (!isWalkthrough) {
             if (countDownTimer != null)
                 countDownTimer.cancel();
         }
-
     }
 
     @Override
