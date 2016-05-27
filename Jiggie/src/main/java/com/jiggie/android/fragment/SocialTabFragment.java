@@ -397,6 +397,30 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
 
             }
         });
+
+        if (SocialManager.isInSocial) {
+            if (socialCardNewAdapter != null) {
+                if (socialCardNewAdapter.getCount() > 0) {
+                    if (SocialManager.Type.isInbound(socialCardNewAdapter.getItem(0))) {
+                        if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_INBOUND)) {
+                            //TooltipsManager.initTooltipWithAnchor(getActivity(), socialCardNewAdapter.getBtnYesGeneral(), getString(R.string.tooltip_yes_inbound), Utils.myPixel(getActivity(), 380));
+                            int addedX = TooltipsManager.getCenterPoint(getActivity())[0] + (TooltipsManager.getCenterPoint(getActivity())[0] / 3);
+                            int addedY = TooltipsManager.getCenterPoint(getActivity())[1] + (Utils.myPixel(getActivity(), 238));
+                            TooltipsManager.initTooltipWithPoint(getActivity(), new Point(addedX, addedY), getActivity().getString(R.string.tooltip_yes_inbound), Utils.myPixel(getActivity(), 380), Tooltip.Gravity.TOP);
+                            TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_INBOUND, true);
+                        }
+                    } else {
+                        if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_YES_SUGGESTED)) {
+                            //TooltipsManager.initTooltipWithAnchor(getActivity(), socialCardNewAdapter.getBtnYesGeneral(), getString(R.string.tooltip_yes_suggested), Utils.myPixel(getActivity(), 380), Tooltip.Gravity.TOP);
+                            int addedX = TooltipsManager.getCenterPoint(getActivity())[0] + (TooltipsManager.getCenterPoint(getActivity())[0] / 3);
+                            int addedY = TooltipsManager.getCenterPoint(getActivity())[1] + (Utils.myPixel(getActivity(), 238));
+                            TooltipsManager.initTooltipWithPoint(getActivity(), new Point(addedX, addedY), getActivity().getString(R.string.tooltip_yes_suggested), Utils.myPixel(getActivity(), 380), Tooltip.Gravity.TOP);
+                            TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_YES_SUGGESTED, true);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Override
