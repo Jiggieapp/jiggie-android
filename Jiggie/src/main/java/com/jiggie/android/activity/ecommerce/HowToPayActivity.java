@@ -102,7 +102,6 @@ public class HowToPayActivity extends ToolbarActivity {
             eventDetail = a.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
         }
 
-        Utils.d(TAG, "orderId " + order_id + " fromorderlist " + fromOrderList);
         initView();
     }
 
@@ -130,8 +129,6 @@ public class HowToPayActivity extends ToolbarActivity {
             sendMixpanel(productSummary, eventDetail);
 
             relViewOrders.setVisibility(View.GONE);
-
-
             CommerceManager.loaderSucScreenWalkthrough(new CommerceManager.OnResponseListener() {
 
                 @Override
@@ -203,7 +200,6 @@ public class HowToPayActivity extends ToolbarActivity {
                         }
 
                         countDownTimer = new CountDownTimer(StringUtility.getCountdownTime(sucScreenVABPModel.getData().getSuccess_screen().getTimelimit()), 1000) {
-
                             @Override
                             public void onTick(long millisUntilFinished) {
                                 txtTLimitFill.setText(StringUtility.getTimeFormat(millisUntilFinished));

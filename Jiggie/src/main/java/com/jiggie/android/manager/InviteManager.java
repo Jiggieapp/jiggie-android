@@ -222,7 +222,6 @@ public class InviteManager extends BaseManager {
                         App.getSharedPreferences().edit().putLong(latestTimeInvite, longTimeInMilis).putString(repeatInvite, INVITE_MONTH).commit();
                         gotoInviteFriends = true;
                     }else{
-
                         if(App.getSharedPreferences().getString(repeatInvite, Utils.BLANK).equals(INVITE_WEEK)){
                             App.getSharedPreferences().edit().putLong(latestTimeInvite, longTimeInMilis).putString(repeatInvite, INVITE_MONTH).commit();
                             gotoInviteFriends = true;
@@ -231,12 +230,10 @@ public class InviteManager extends BaseManager {
                             gotoInviteFriends = false;
                         }
                     }
-
                 }else{
                     App.getSharedPreferences().edit().putLong(latestTimeInvite, longTimeInMilis).putString(repeatInvite, INVITE_MONTH).commit();
                     gotoInviteFriends = true;
                 }
-
             }else{
                 if(dayGap>=7){
                     if(App.getSharedPreferences().getString(repeatInvite, Utils.BLANK).equals(INVITE_WEEK)){
@@ -248,7 +245,6 @@ public class InviteManager extends BaseManager {
                     }
 
                 }else{
-
                     int addedHour = 0;
                     if(dayGap!=0){
                         addedHour = dayGap*24;
@@ -263,9 +259,10 @@ public class InviteManager extends BaseManager {
                             App.getSharedPreferences().edit().putLong(latestTimeInvite, longTimeInMilis).putString(repeatInvite, INVITE_WEEK).commit();
                             gotoInviteFriends = true;
                         }
-                        /*else{
+                        else
+                        {
                             gotoInviteFriends = false;
-                        }*/
+                        }
                     }else{
                         //do nothing
                         gotoInviteFriends = false;
@@ -273,9 +270,7 @@ public class InviteManager extends BaseManager {
 
                 }
             }
-
         }
-
         return gotoInviteFriends;
     }
 

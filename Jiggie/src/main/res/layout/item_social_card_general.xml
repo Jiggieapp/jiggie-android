@@ -8,28 +8,34 @@
         android:id="@+id/card_general"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_marginBottom="?attr/actionBarSize"
         android:layout_marginLeft="@dimen/padding_standard"
         android:layout_marginRight="@dimen/padding_standard"
-        android:layout_marginBottom="?attr/actionBarSize">
+        android:layout_weight="1">
 
-        <RelativeLayout
+        <!--<RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/cardGeneral">
+            android:id="@+id/cardGeneral">-->
 
-            <!--<FrameLayout
-                android:id="@+id/cardGeneral"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="?attr/selectableItemBackground">
+        <ImageView
+            android:id="@+id/image_connect"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0"
+            android:src="@drawable/connect_overlay"
+            android:scaleType="fitXY"/>
 
+        <ImageView
+            android:id="@+id/image_skip"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0"
+            android:src="@drawable/skip_overlay"
+            android:scaleType="fitXY"/>
 
-            </FrameLayout>-->
+        <include layout="@layout/card_social_general" />
 
-            <include layout="@layout/card_social_general" />
-
-        </RelativeLayout>
+        <!--</RelativeLayout>-->
     </android.support.v7.widget.CardView>
-
 </LinearLayout>

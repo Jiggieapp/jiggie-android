@@ -906,7 +906,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             };
             timerInvite.schedule(timerTaskInvite, 1 * 60 * 60 * 1000);
         } else {
-            Log.d("timer already", "yes");
         }
     }
 
@@ -1216,18 +1215,20 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent i = new Intent(this, MainActivity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        if (count_like != count_like_new) {
-            //i.putExtra(Utils.TAG_ISREFRESH, true);
-            Utils.isRefreshDetail = true;
-            Utils.event_id_refresh = event_id;
-            Utils.count_like_new = count_like_new;
-            for (int j = 0; j < EventManager.events.size(); j++) {
-                if (EventManager.events.get(j).get_id().equals(event_id)) {
-                    EventManager.events.get(j).setLikes(count_like_new);
+        if(getIntent().getStringExtra("from") == null)
+        {
+            Intent i = new Intent(this, MainActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            if (count_like != count_like_new) {
+                //i.putExtra(Utils.TAG_ISREFRESH, true);
+                Utils.isRefreshDetail = true;
+                Utils.event_id_refresh = event_id;
+                Utils.count_like_new = count_like_new;
+                for (int j = 0; j < EventManager.events.size(); j++) {
+                    if (EventManager.events.get(j).get_id().equals(event_id)) {
+                        EventManager.events.get(j).setLikes(count_like_new);
+                    }
                 }
-            }
 
             /*for(int j=0;j<EventManager.todayEvents.size();j++){
                 if(EventManager.todayEvents.get(j).get_id().equals(event_id)){
@@ -1246,9 +1247,14 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                     EventManager.upcomingEvents.get(j).setLikes(count_like_new);
                 }
             }*/
-        }
+            }
 
-        startActivity(i);
-        finish();
+            startActivity(i);
+            finish();
+        }
+        else
+        {
+            finish();
+        }
     }
 }

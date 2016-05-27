@@ -121,18 +121,12 @@ public class NewProfileDetailActivity extends ToolbarActivity
 
     @Override
     public void loadImages(ArrayList<String> photos) {
-        /*mainProfilePicture.setImageBitmap(null);
-        secondaryProfilePicture.setImageBitmap(null);
-        thirdProfilePicture.setImageBitmap(null);
-        fourthProfilePicture.setImageBitmap(null);
-        fifthProfilePicture.setImageBitmap(null);*/
         int photoSize = photos.size();
         if (photoSize > 5)
             photoSize = 5;
         for (int i = 0; i < photoSize; i++) {
             final String url = photos.get(i);
             ImageView view = removeTransparent(i);
-            //view.setScaleType(ImageView.ScaleType.FIT_XY);
             loadIntoView(url, view, i);
         }
 
