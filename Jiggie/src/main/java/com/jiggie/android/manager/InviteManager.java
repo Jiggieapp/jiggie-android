@@ -216,7 +216,6 @@ public class InviteManager extends BaseManager {
             int monthGap = monthNow - monthSaved;
 
             if(monthGap>0){
-
                 if(monthGap==1){
                     int dayMonthGap = (calSaved.getActualMaximum(Calendar.DAY_OF_MONTH) - daySaved) + dayNow;
                     if(dayMonthGap>=calNow.getActualMaximum(Calendar.DAY_OF_MONTH)){
