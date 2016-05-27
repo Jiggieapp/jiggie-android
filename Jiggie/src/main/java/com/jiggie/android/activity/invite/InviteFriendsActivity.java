@@ -188,6 +188,12 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                 super.onScrollStateChanged(recyclerView, newState);
             }
         });
+
+        if (getInviteCodeResultModel() != null) {
+            App.getInstance().trackMixPanelReferral(Utils.INVITE_FRIENDS_SCREEN
+                    , getReferEventMixPanelModel(
+                    inviteCodeResultModel.getData().getInvite_code().getCode()));
+        }
     }
 
     public void askForContactPermission() {
@@ -386,6 +392,15 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
             (final String code, final String url) {
         if (reverEventMixpanelModel == null) {
             reverEventMixpanelModel = new ReferEventMixpanelModel(code, url);
+            return reverEventMixpanelModel;
+        }
+        return reverEventMixpanelModel;
+    }
+
+    private ReferEventMixpanelModel getReferEventMixPanelModel
+            (final String code) {
+        if (reverEventMixpanelModel == null) {
+            reverEventMixpanelModel = new ReferEventMixpanelModel(code);
             return reverEventMixpanelModel;
         }
         return reverEventMixpanelModel;

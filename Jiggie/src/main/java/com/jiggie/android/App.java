@@ -474,7 +474,9 @@ public class App extends Application {
     private void setEventMixpanelRefer(String eventName, ReferEventMixpanelModel referEventMixpanelModel) {
         SimpleJSONObject json = new SimpleJSONObject();
 
-        if (eventName.equals(Utils.REFERRAL_FACEBOOK)||eventName.equals(Utils.REFERRAL_PHONE)||eventName.equals(Utils.REFERRAL_PHONE_ALL)||eventName.equals(Utils.REFERRAL_MESSAGE)||
+        if(eventName.equals(Utils.INVITE_FRIENDS_SCREEN)){
+            json.putString("Promo Code", referEventMixpanelModel.getPromo_code());
+        }else if (eventName.equals(Utils.REFERRAL_FACEBOOK)||eventName.equals(Utils.REFERRAL_PHONE)||eventName.equals(Utils.REFERRAL_PHONE_ALL)||eventName.equals(Utils.REFERRAL_MESSAGE)||
                 eventName.equals(Utils.REFERRAL_COPY)) {
             json.putString("Promo Code", referEventMixpanelModel.getPromo_code());
             json.putString("Promo URL", referEventMixpanelModel.getPromo_url());
