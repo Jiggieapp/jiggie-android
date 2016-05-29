@@ -246,7 +246,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             temp = new ArrayList<>();
             isRefreshing = true;
             SettingModel currentSetting = AccountManager.loadSetting();
-            SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId()
+            SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId() /*"10205703989179267"*/
                     , currentSetting.getData().getGender_interest());
         }
     }
