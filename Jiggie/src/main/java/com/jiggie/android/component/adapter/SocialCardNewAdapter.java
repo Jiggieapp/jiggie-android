@@ -107,14 +107,14 @@ public class SocialCardNewAdapter extends BaseAdapter {
         }
         setBtnYesGeneral(holder.generalBtnYes);
 
-        if (!getItem(position).getBadge_booking())
+        if (getItem(position).getBadge_booking())
         {
             holder.imgHasTable.setVisibility(View.VISIBLE);
             holder.imgHasTable.bringToFront();
         }
         else holder.imgHasTable.setVisibility(View.GONE);
 
-        if (!getItem(position).getBadge_ticket())
+        if (getItem(position).getBadge_ticket())
         {
             holder.imgHasTicket.setVisibility(View.VISIBLE);
             holder.imgHasTicket.bringToFront();
