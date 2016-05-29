@@ -39,6 +39,7 @@ import com.jiggie.android.component.adapter.InviteFriendsNewAdapter;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.InviteManager;
 import com.jiggie.android.model.ContactPhoneModel;
+import com.jiggie.android.model.InviteCodeModel;
 import com.jiggie.android.model.InviteCodeResultModel;
 import com.jiggie.android.model.PostContactModel;
 import com.jiggie.android.model.PostInviteAllModel;
@@ -102,7 +103,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("Invite Friend by Phone");
+        getSupportActionBar().setTitle("Invite Friends");
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         this.recyclerView.setLayoutManager(layoutManager);
@@ -146,6 +147,8 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                 InviteManager.loaderInviteAll(postInviteAllModel, new InviteManager.OnResponseListener() {
                     @Override
                     public void onSuccess(Object object) {
+                        InviteManager.arrBtnInvite2 = new ArrayList<Boolean>(Collections.nCopies(InviteManager.dataContact.size(), false));
+                        adapterNew.notifyDataSetChanged();
                         dismissProgressDialog();
                     }
 
@@ -154,9 +157,14 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                         dismissProgressDialog();
                     }
                 });
-                for (int i = 0; i < InviteManager.arrBtnInvite.size(); i++) {
-                    adapterNew.setInviteEnable(InviteManager.arrBtnInvite.get(i), false);
-                }
+
+                //dismissProgressDialog();
+                /*for (int i = 0; i < InviteManager.arrBtnInvite.size(); i++) {
+                    //adapterNew.setInviteEnable(InviteManager.arrBtnInvite.get(i), false);
+
+                }*/
+
+
 
             }
         });
@@ -180,6 +188,12 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                 super.onScrollStateChanged(recyclerView, newState);
             }
         });
+
+        if (getInviteCodeResultModel() != null) {
+            App.getInstance().trackMixPanelReferral(Utils.INVITE_FRIENDS_SCREEN
+                    , getReferEventMixPanelModel(
+                    inviteCodeResultModel.getData().getInvite_code().getCode()));
+        }
     }
 
     public void askForContactPermission() {
@@ -251,7 +265,10 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
     DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
 
     private void startingData() {
-        if (InviteManager.dataContact.size() == 0) {
+        if (InviteManager.dataContact.size() == 0
+                || getInviteCodeResultModel() == null
+                || getInviteCodeResultModel().getData().getInvite_code().getRewards_inviter() == null
+                || getInviteCodeResultModel().getData().getInvite_code().getRewards_inviter().isEmpty()) {
             //swipeRefresh.setEnabled(true);
             onRefresh();
         } else {
@@ -306,8 +323,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
             showProgressDialog();
             inviteCodePresenterImplementation.getInviteCode();
         }
-        else
-            getContactPhoneInvite();
+        else getContactPhoneInvite();
     }
 
 
@@ -376,6 +392,15 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
             (final String code, final String url) {
         if (reverEventMixpanelModel == null) {
             reverEventMixpanelModel = new ReferEventMixpanelModel(code, url);
+            return reverEventMixpanelModel;
+        }
+        return reverEventMixpanelModel;
+    }
+
+    private ReferEventMixpanelModel getReferEventMixPanelModel
+            (final String code) {
+        if (reverEventMixpanelModel == null) {
+            reverEventMixpanelModel = new ReferEventMixpanelModel(code);
             return reverEventMixpanelModel;
         }
         return reverEventMixpanelModel;
@@ -465,7 +490,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                     txtInviteDesc.setText("+Rp. " + formatter.format(totalCredit));
                     txtInviteDesc.setVisibility(View.VISIBLE);
                     InviteManager.arrBtnInvite2 = new ArrayList<Boolean>(Collections.nCopies(InviteManager.dataContact.size(), true));
-                    Collections.fill(InviteManager.arrBtnInvite2, Boolean.TRUE);
+                    //Collections.fill(InviteManager.arrBtnInvite2, Boolean.TRUE);
                 }
                 isLoading = false;
                 //swipeRefresh.setRefreshing(false);
@@ -853,8 +878,27 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
     @Override
     public void onFinishGetInviteCode(InviteCodeResultModel inviteCodeResultModel) {
         dismissProgressDialog();
-        setInviteCodeResultModel(inviteCodeResultModel);
-        getContactPhoneInvite();
+        if(inviteCodeResultModel != null)
+        {
+            setInviteCodeResultModel(inviteCodeResultModel);
+            getContactPhoneInvite();
+            /*if(inviteCodeResultModel.getData() != null)
+            {
+                setInviteCodeResultModel(inviteCodeResultModel);
+                getContactPhoneInvite();
+            }
+            else
+            {
+                InviteManager.dataContact = new ArrayList<>();
+                inviteCodePresenterImplementation.getInviteCode();
+            }*/
+        }
+        else
+        {
+            InviteManager.dataContact = new ArrayList<>();
+            inviteCodePresenterImplementation.getInviteCode();
+        }
+
     }
 
     @Override

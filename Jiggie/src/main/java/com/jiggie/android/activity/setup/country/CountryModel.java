@@ -11,6 +11,8 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 /**
@@ -36,8 +38,17 @@ public class CountryModel {
     public CountryCodeAdapter getCountryCodeAdapter(CountryCodeAdapter.ViewSelectedListener listener) {
         //String rawCodes = load("country_code.txt");
         //Country countryCodes = new Gson().fromJson(rawCodes, Country.class);
+
+        ArrayList<HashMap<String, String>> dataCountry = load("country_code.txt");
+        Collections.sort(dataCountry, new Comparator<HashMap<String, String>>() {
+            @Override
+            public int compare(HashMap<String, String> lhs, HashMap<String, String> rhs) {
+                return lhs.get("name").compareTo(rhs.get("name"));
+            }
+        });
+
         codeAdapter = new CountryCodeAdapter
-                (context, load("country_code.txt"), listener);
+                (context, dataCountry, listener);
         return codeAdapter;
     }
 

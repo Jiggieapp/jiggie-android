@@ -13,6 +13,10 @@ public class ReferEventMixpanelModel {
     ArrayList<String> contact_email = new ArrayList<>();
     ArrayList<String> contact_phone = new ArrayList<>();
 
+    public ReferEventMixpanelModel(String promo_code){
+        this.promo_code = promo_code;
+    }
+
     public ReferEventMixpanelModel(String promo_code, String promo_url){
         this.promo_code = promo_code;
         this.promo_url = promo_url;

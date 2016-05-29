@@ -217,9 +217,12 @@ public class Utils {
     public static final String REFERRAL_PHONE_ALL = "Share Referral Phone All";
     public static final String REFERRAL_MESSAGE = "Share Referral Message";
     public static final String REFERRAL_COPY = "Share Referral Copy";
+    public static final String INVITE_FRIENDS_SCREEN = "Invite Friends Screen";
 
     public static final String PICTURE_UPLOAD = "Picture Upload";
     public static final String PICTURE_DELETE = "Picture Delete";
+
+    public static final String PROMO_CODE = "Use Promo Code";
 
     public static final String TAG = Utils.class.getSimpleName();
     //AppsFlyer properties----

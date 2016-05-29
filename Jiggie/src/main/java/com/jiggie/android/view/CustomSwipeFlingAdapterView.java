@@ -221,7 +221,6 @@ public class CustomSwipeFlingAdapterView extends SwipeFlingAdapterView {
      */
     private void setTopView() {
         if (getChildCount() > 0) {
-
             mActiveCard = getChildAt(LAST_OBJECT_IN_STACK);
             if (mActiveCard != null) {
 
@@ -271,8 +270,6 @@ public class CustomSwipeFlingAdapterView extends SwipeFlingAdapterView {
         for (int i = 0; i < vg.getChildCount(); ++i) {
             View nextChild = vg.getChildAt(i);
             if (nextChild.getId() == R.id.btnNoGeneral) {
-                //Utils.d("sulalalala", "no no no");
-                //nextChild.setOnTouchListener(flingCardListener);
                 nextChild.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -298,8 +295,13 @@ public class CustomSwipeFlingAdapterView extends SwipeFlingAdapterView {
                     }
                 });
             }
+            else if(nextChild.getId() == R.id.image_connect || nextChild.getId() == R.id.image_skip)
+            {
+                //do nothing, wtf??
+            }
             else if (nextChild instanceof ViewGroup)
                 addOnTouchListenersRecursive((ViewGroup) nextChild);
+
             else nextChild.setOnTouchListener(flingCardListener);
         }
     }

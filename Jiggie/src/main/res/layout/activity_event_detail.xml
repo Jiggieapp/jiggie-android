@@ -49,10 +49,15 @@
                     <com.viewpagerindicator.CirclePageIndicator
                         android:id="@+id/titles"
                         android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_alignParentBottom="true"
                         android:layout_centerHorizontal="true"
-                        android:padding="@dimen/padding_standard_half"/>
+                        android:layout_marginLeft="@dimen/padding_standard"
+                        android:layout_marginRight="@dimen/padding_standard"
+                        android:paddingLeft="@dimen/padding_standard"
+                        android:paddingRight="@dimen/padding_standard"
+                        android:paddingTop="@dimen/padding_standard_half"
+                        android:paddingBottom="@dimen/padding_standard_half"/>
 
                     <TextView
                         android:id="@+id/txtPriceTitle"

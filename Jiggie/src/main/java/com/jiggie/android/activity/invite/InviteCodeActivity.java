@@ -115,7 +115,8 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
             @Override
             public void onClick(View v) {
                 //App.getInstance().trackMixPanelReferral(Utils.REFERRAL_PHONE, new ReferEventMixpanelModel(InviteManager.referEventMixpanelModel.getPromo_code(), InviteManager.referEventMixpanelModel.getPromo_url()));
-                startActivity(new Intent(InviteCodeActivity.this, InviteFriendsActivity.class));
+                startActivity(new Intent(InviteCodeActivity.this
+                        , InviteFriendsActivity.class));
             }
         });
     }
@@ -146,7 +147,6 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
                 shareDialog.show(linkContent);
             }
         }
-
     }
 
     private InviteCodeResultModel getInviteCodeResultModel() {

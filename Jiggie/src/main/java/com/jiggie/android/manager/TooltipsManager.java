@@ -158,15 +158,15 @@ public class TooltipsManager {
                 }
             }
         }else if(tootipAt.equals(TOOLTIP_YES_SUGGESTED)){
-            if(CAN_SHOW_TOOLTIP_EVENT_LIST){
+            /*if(CAN_SHOW_TOOLTIP_EVENT_LIST){
                 can = false;
             }else if(CAN_SHOW_TOOLTIP_LIKE){
                 can = false;
             }else if(CAN_SHOW_TOOLTIP_SOCIAL_TAB){
                 can = false;
-            }/*else if(CAN_SHOW_TOOLTIP_SHARE){
+            }*//*else if(CAN_SHOW_TOOLTIP_SHARE){
                 can = false;
-            }*/else{
+            }*//*else{
                 if(CAN_SHOW_YES_SUGGESTED){
                     if (ALREADY_SHOW_YES_SUGGESTED_TODAY){
                         can = false;
@@ -176,19 +176,29 @@ public class TooltipsManager {
                 }else{
                     can = false;
                 }
+            }*/
+
+            if(CAN_SHOW_YES_SUGGESTED){
+                if (ALREADY_SHOW_YES_SUGGESTED_TODAY){
+                    can = false;
+                }else{
+                    can = true;
+                }
+            }else{
+                can = false;
             }
         }else if(tootipAt.equals(TOOLTIP_YES_INBOUND)){
-            if(CAN_SHOW_TOOLTIP_EVENT_LIST){
+            /*if(CAN_SHOW_TOOLTIP_EVENT_LIST){
                 can = false;
             }else if(CAN_SHOW_TOOLTIP_LIKE){
                 can = false;
             }else if(CAN_SHOW_TOOLTIP_SOCIAL_TAB){
                 can = false;
-            }/*else if(CAN_SHOW_TOOLTIP_SHARE){
+            }*//*else if(CAN_SHOW_TOOLTIP_SHARE){
                 can = false;
             }else if(CAN_SHOW_YES_SUGGESTED){
                 can = false;
-            }*/else{
+            }*//*else{
                 if(CAN_SHOW_YES_INBOUND){
                     if (ALREADY_SHOW_YES_INBOUND_TODAY){
                         can = false;
@@ -198,6 +208,16 @@ public class TooltipsManager {
                 }else{
                     can = false;
                 }
+            }*/
+
+            if(CAN_SHOW_YES_INBOUND){
+                if (ALREADY_SHOW_YES_INBOUND_TODAY){
+                    can = false;
+                }else{
+                    can = true;
+                }
+            }else{
+                can = false;
             }
         }
 
