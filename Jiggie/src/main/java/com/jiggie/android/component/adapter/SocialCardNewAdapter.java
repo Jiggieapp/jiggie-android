@@ -75,6 +75,10 @@ public class SocialCardNewAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
+
+        holder.imgConnect.bringToFront();
+        holder.imgSkip.bringToFront();
+
         Glide
                 .with(context)
                 .load(model.getImage()).asBitmap()
@@ -141,6 +145,12 @@ public class SocialCardNewAdapter extends BaseAdapter {
 
         @Bind(R.id.chat_small_icon)
         ImageView chat_icon;
+
+        @Bind(R.id.image_connect)
+        ImageView imgConnect;
+
+        @Bind(R.id.image_skip)
+        ImageView imgSkip;
 
 
         OnSocialCardClickListener onSocialCardClickListener;

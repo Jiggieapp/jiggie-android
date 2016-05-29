@@ -29,6 +29,7 @@
             android:id="@+id/text"/>
 
         <ImageView
+            android:id="@+id/img_arrow"
             android:layout_width="12dp"
             android:layout_height="24dp"
             android:layout_gravity="center_vertical|right"
