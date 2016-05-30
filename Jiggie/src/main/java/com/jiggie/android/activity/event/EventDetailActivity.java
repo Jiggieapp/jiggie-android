@@ -10,7 +10,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.FragmentManager;
@@ -66,7 +65,6 @@ import com.jiggie.android.model.GuestModel;
 import com.jiggie.android.model.ShareLinkModel;
 import com.jiggie.android.model.likeModel;
 import com.viewpagerindicator.CirclePageIndicator;
-import com.viewpagerindicator.TitlePageIndicator;
 
 import org.json.JSONObject;
 
@@ -83,7 +81,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -93,7 +90,6 @@ import butterknife.Bind;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 import it.sephiroth.android.library.tooltip.Tooltip;
-import it.sephiroth.android.library.widget.HListView;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -165,6 +161,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     RelativeLayout relDescMore;
     @Bind(R.id.lin_see_all_guest)
     LinearLayout linSeeAllGuest;
+    @Bind(R.id.lin_price)
+    LinearLayout linPrice;
 
     private ImagePagerIndicatorAdapter imagePagerIndicatorAdapter;
     private ImageView[] imageGuests;
@@ -313,8 +311,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 //end of wandy 17-03-2016
             }
 
-            if(fullfilmentType != null && !fullfilmentType.isEmpty())
-            {
+            if (fullfilmentType != null && !fullfilmentType.isEmpty()) {
                 final boolean isBookable = (StringUtility.isEquals(EventManager.FullfillmentTypes.RESERVATION, fullfilmentType, true)
                         || StringUtility.isEquals(EventManager.FullfillmentTypes.PURCHASE, fullfilmentType, true)
                         || (StringUtility.isEquals(EventManager.FullfillmentTypes.TICKET, fullfilmentType, true))); //free (tickets, tables, purchase)
@@ -324,7 +321,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                     txtPriceFill.setVisibility(View.VISIBLE);
                     txtPriceFill.setText(getResources().getString(R.string.free));
 
-                } else if(lowest_price > 0 && isBookable){
+                } else if (lowest_price > 0 && isBookable) {
                     txtPriceTitle.setVisibility(View.VISIBLE);
                     txtPriceFill.setVisibility(View.VISIBLE);
                     txtPriceTitle.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
@@ -336,17 +333,15 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                     } catch (Exception e) {
                         Utils.d(TAG, "exception " + e.toString());
                     }
-                }
-                else
-                {
+                } else {
                     txtPriceTitle.setVisibility(View.GONE);
                     txtPriceFill.setVisibility(View.GONE);
+                    linPrice.setBackgroundColor(getResources().getColor(android.R.color.transparent));
                 }
-            }
-            else
-            {
+            } else {
                 txtPriceTitle.setVisibility(View.GONE);
                 txtPriceFill.setVisibility(View.GONE);
+                linPrice.setBackgroundColor(getResources().getColor(android.R.color.transparent));
             }
 
         }
@@ -407,7 +402,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         }, 1000);*/
 
         cekCounter();
-        
+
 
     }
 
@@ -1215,8 +1210,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if(getIntent().getStringExtra("from") == null)
-        {
+        if (getIntent().getStringExtra("from") == null) {
             Intent i = new Intent(this, MainActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             if (count_like != count_like_new) {
@@ -1251,9 +1245,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
             startActivity(i);
             finish();
-        }
-        else
-        {
+        } else {
             finish();
         }
     }
