@@ -46,38 +46,44 @@
                         android:visibility="gone"/>
                     -->
 
-                    <com.viewpagerindicator.CirclePageIndicator
-                        android:id="@+id/titles"
-                        android:layout_height="wrap_content"
+
+
+                    <LinearLayout
+                        android:id="@+id/lin_price"
                         android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#59000000"
                         android:layout_alignParentBottom="true"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginLeft="@dimen/padding_standard"
-                        android:layout_marginRight="@dimen/padding_standard"
-                        android:paddingLeft="@dimen/padding_standard"
-                        android:paddingRight="@dimen/padding_standard"
-                        android:paddingTop="@dimen/padding_standard_half"
-                        android:paddingBottom="@dimen/padding_standard_half"/>
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/txtPriceTitle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_above="@+id/txtPriceFill"
-                        android:layout_marginLeft="@dimen/padding_standard"
-                        android:text="@string/start_from"
-                        android:textColor="@android:color/white" />
+                        <TextView
+                            android:id="@+id/txtPriceTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_above="@+id/txtPriceFill"
+                            android:layout_marginTop="@dimen/padding_standard_half"
+                            android:layout_marginLeft="@dimen/padding_standard_half"
+                            android:text="@string/start_from"
+                            android:textColor="@android:color/white" />
 
-                    <TextView
-                        android:id="@+id/txtPriceFill"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_above="@id/titles"
-                        android:layout_marginBottom="4dp"
-                        android:layout_marginLeft="@dimen/padding_standard"
-                        android:text="Rp1.400.000"
-                        android:textColor="@android:color/white"
-                        android:textSize="20sp" />
+                        <TextView
+                            android:id="@+id/txtPriceFill"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/padding_standard_half"
+                            android:layout_marginLeft="@dimen/padding_standard_half"
+                            android:text="Rp1.400.000"
+                            android:textColor="@android:color/white"
+                            android:textSize="20sp"
+                            />
+
+                        <com.viewpagerindicator.CirclePageIndicator
+                            android:id="@+id/titles"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_gravity="center_horizontal"
+                            android:paddingBottom="@dimen/padding_standard_half"/>
+                    </LinearLayout>
                 </RelativeLayout>
 
                 <android.support.v7.widget.Toolbar

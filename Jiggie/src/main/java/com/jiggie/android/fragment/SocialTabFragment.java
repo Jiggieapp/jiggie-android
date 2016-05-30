@@ -296,6 +296,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         this.cardEmpty.setVisibility(View.GONE);
         flingAdapterView.setVisibility(View.VISIBLE);
 
+
         flingAdapterView.setOnItemClickListener(new CustomSwipeFlingAdapterView.OnItemClickListener() {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
@@ -304,11 +305,26 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                 getActivity().startActivity(i);
             }
         });
-
+        /*ImageView testtt = (ImageView) flingAdapterView.findViewById(R.id.imageUserGeneral);
+        testtt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), ProfileDetailActivity.class);
+                i.putExtra(Common.FIELD_FACEBOOK_ID, socialCardNewAdapter.getItem(0).getFrom_fb_id());
+                getActivity().startActivity(i);
+            }
+        });*/
         flingAdapterView.setOnEventClickListener(new CustomSwipeFlingAdapterView.OnEventClickListener() {
             @Override
             public void onEventClicked() {
                 onGeneralClick();
+            }
+
+            @Override
+            public void onImageClicked() {
+                Intent i = new Intent(getActivity(), ProfileDetailActivity.class);
+                i.putExtra(Common.FIELD_FACEBOOK_ID, socialCardNewAdapter.getItem(0).getFrom_fb_id());
+                getActivity().startActivity(i);
             }
         });
 
@@ -320,11 +336,13 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
 
             @Override
             public void onLeftCardExit(Object o) {
+                //onScroll((float)1.0);
                 matchAsync(socialCardNewAdapter.getItem(0).getFrom_fb_id(), false);
             }
 
             @Override
             public void onRightCardExit(Object o) {
+                //onScroll((float)1.0);
                 if (SocialManager.Type.isInbound(socialCardNewAdapter.getItem(0))) {
                     match(socialCardNewAdapter.getItem(0).getFrom_fb_id()
                             , socialCardNewAdapter.getItem(0).getFrom_first_name());
@@ -384,6 +402,8 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         } else if (SocialManager.LAST_STATE_CARD.equals(SocialManager.STATE_INBOUND)) {
             TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_YES_SUGGESTED, false);
         }
+
+
     }
 
     @Override
@@ -396,6 +416,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         Intent i = new Intent(super.getContext(), EventDetailActivity.class);
         i.putExtra(Common.FIELD_EVENT_ID, socialCardNewAdapter.getItem(0).getEvent_id());
         i.putExtra(Common.FIELD_EVENT_NAME, socialCardNewAdapter.getItem(0).getEvent_name());
+        i.putExtra(Common.FIELD_FROM, TAG);
         super.startActivity(i);
     }
 

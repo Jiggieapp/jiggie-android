@@ -295,9 +295,16 @@ public class CustomSwipeFlingAdapterView extends SwipeFlingAdapterView {
             }
             /*else if(nextChild.getId() == R.id.imageUserGeneral)
             {
-                //nextChild.setOnTouchListener(flingCardListener);
-                //addOnTouchListenersRecursive((ViewGroup) nextChild);
-                //onitemC
+                nextChild.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onEventClickListener.onImageClicked();
+                    }
+                });
+            }
+            else if(nextChild.getId() == R.id.relative_parent)
+            {
+                nextChild.setOnTouchListener(flingCardListener);
             }*/
             else if( nextChild.getId() == R.id.image_connect
                     || nextChild.getId() == R.id.image_skip)
@@ -383,6 +390,7 @@ public class CustomSwipeFlingAdapterView extends SwipeFlingAdapterView {
     public interface OnEventClickListener
     {
         void onEventClicked();
+        void onImageClicked();
     }
 
     public interface OnItemClickListener {

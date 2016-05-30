@@ -81,6 +81,7 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             viewHolder.imageView.setVisibility(View.GONE);
             viewHolder.text.setGravity(Gravity.CENTER_HORIZONTAL);
             viewHolder.imgArrow.setVisibility(View.GONE);
+            viewHolder.divBottom.setVisibility(View.GONE);
         } else {
             viewHolder.imageView.setImageResource(this.resources[position]);
         }
@@ -152,6 +153,8 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         View divTop;*/
         @Bind(R.id.img_arrow)
         ImageView imgArrow;
+        @Bind(R.id.divBottom)
+        View divBottom;
 
         private ItemSelectedListener listener;
         private int position;
