@@ -199,7 +199,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             temp = new ArrayList<>();
             isRefreshing = true;
             SettingModel currentSetting = AccountManager.loadSetting();
-            SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId()
+            SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId() /*"10205703989179267"*/
                     , currentSetting.getData().getGender_interest());
         }
     }
@@ -299,11 +299,9 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         flingAdapterView.setOnItemClickListener(new CustomSwipeFlingAdapterView.OnItemClickListener() {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
-
                 Intent i = new Intent(getActivity(), ProfileDetailActivity.class);
                 i.putExtra(Common.FIELD_FACEBOOK_ID, socialCardNewAdapter.getItem(0).getFrom_fb_id());
                 getActivity().startActivity(i);
-
             }
         });
 

@@ -246,9 +246,8 @@ public class CustomSwipeFlingAdapterView extends SwipeFlingAdapterView {
                     @Override
                     public void onClick(Object dataObject) {
                         if (mOnItemClickListener != null) {
-                            Utils.d("sulalala", "on click");
                             mOnItemClickListener.onItemClicked(0, dataObject);
-                        } else Utils.d("sulalala", "on click nulls");
+                        }
                     }
 
                     @Override
@@ -278,13 +277,12 @@ public class CustomSwipeFlingAdapterView extends SwipeFlingAdapterView {
                 });
 
             } else if (nextChild.getId() == R.id.btnYesGeneral) {
-                nextChild.setOnClickListener(new OnClickListener() {
+                    nextChild.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         getTopCardListener2().selectRight();
                     }
                 });
-
             }
             else if(nextChild.getId() == R.id.lbl_container)
             {
@@ -295,13 +293,20 @@ public class CustomSwipeFlingAdapterView extends SwipeFlingAdapterView {
                     }
                 });
             }
-            else if(nextChild.getId() == R.id.image_connect || nextChild.getId() == R.id.image_skip)
+            /*else if(nextChild.getId() == R.id.imageUserGeneral)
+            {
+                //nextChild.setOnTouchListener(flingCardListener);
+                //addOnTouchListenersRecursive((ViewGroup) nextChild);
+                //onitemC
+            }*/
+            else if( nextChild.getId() == R.id.image_connect
+                    || nextChild.getId() == R.id.image_skip)
             {
                 //do nothing, wtf??
+                //addOnTouchListenersRecursive((ViewGroup) nextChild);
             }
             else if (nextChild instanceof ViewGroup)
                 addOnTouchListenersRecursive((ViewGroup) nextChild);
-
             else nextChild.setOnTouchListener(flingCardListener);
         }
     }

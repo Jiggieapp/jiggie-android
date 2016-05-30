@@ -130,6 +130,11 @@ public class ProfileDetailActivity extends ToolbarActivity
             //fb_id = "10205703989179267"; /fazlur
             isMe = true;
         }
+        else
+        {
+            if(fb_id.equalsIgnoreCase(AccessToken.getCurrentAccessToken().getUserId()))
+                isMe = true;
+        }
         //fb_id = "10205703989179267";
 
         if (!isMe) {
@@ -409,7 +414,9 @@ public class ProfileDetailActivity extends ToolbarActivity
 
     @Override
     public void onFailure() {
-
+        //Toast.makeText(ProfileDetailActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getResources().getString(R.string.socket_timeout_exception), Toast.LENGTH_SHORT).show();
+        refreshLayout.setRefreshing(false);
     }
 
     @Override

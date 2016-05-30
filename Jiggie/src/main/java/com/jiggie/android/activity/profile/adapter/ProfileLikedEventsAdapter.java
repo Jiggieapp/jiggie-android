@@ -105,7 +105,6 @@ public class ProfileLikedEventsAdapter extends RecyclerView.Adapter<RecyclerView
         }
 
         public String getEvent_id() {
-
             return event_id;
         }
 
@@ -127,29 +126,33 @@ public class ProfileLikedEventsAdapter extends RecyclerView.Adapter<RecyclerView
         if (typeHolder instanceof ViewHolderHeader) {
             ViewHolderHeader holderHeader = (ViewHolderHeader) typeHolder;
             holderHeader.position = position;
-            if (memberInfo.getBadge_booking()) {
-                holderHeader.imgHasTable.setVisibility(View.VISIBLE);
-                holderHeader.imgHasTable.bringToFront();
-            } else {
-                holderHeader.imgHasTicket.setVisibility(View.GONE);
-                holderHeader.imgHasTicket.bringToFront();
-            }
 
-            if (memberInfo.getBadge_ticket())
-                holderHeader.imgHasTicket.setVisibility(View.VISIBLE);
-            else holderHeader.imgHasTable.setVisibility(View.GONE);
+            if(!isMe)
+            {
+                if (memberInfo.getBadge_booking()) {
+                    holderHeader.imgHasTable.setVisibility(View.VISIBLE);
+                    holderHeader.imgHasTable.bringToFront();
+                } else {
+                    holderHeader.imgHasTicket.setVisibility(View.GONE);
+                    holderHeader.imgHasTicket.bringToFront();
+                }
+
+                if (memberInfo.getBadge_ticket())
+                    holderHeader.imgHasTicket.setVisibility(View.VISIBLE);
+                else holderHeader.imgHasTable.setVisibility(View.GONE);
+            }
 
             final String age = StringUtility.getAge2(memberInfo.getBirthday());
             holderHeader.lblDescription.setText(memberInfo.getAbout());
             String name = memberInfo.getFirst_name() + " " + memberInfo.getLast_name();
             holderHeader.txtUser.setText(((TextUtils.isEmpty(age)) || (age.equals("0"))) ? name : String.format("%s, %s", name, age));
 
-            if (isMe) {
+
+/*if (isMe) {
                 holderHeader.btnEdit.setVisibility(View.VISIBLE);
             } else {
                 holderHeader.btnEdit.setVisibility(View.GONE);
-            }
-
+            }*/
             if(getItemCount() > 1)
             {
                 holderHeader.lblUserEvent.setText(
@@ -272,8 +275,8 @@ public class ProfileLikedEventsAdapter extends RecyclerView.Adapter<RecyclerView
         TextView lblLocation;
         @Bind(R.id.txtDescription)
         TextView lblDescription;
-        @Bind(R.id.btnEdit)
-        ImageButton btnEdit;
+        /*@Bind(R.id.btnEdit)
+        ImageButton btnEdit;*/
         @Bind(R.id.lbl_user_event)
         TextView lblUserEvent;
 

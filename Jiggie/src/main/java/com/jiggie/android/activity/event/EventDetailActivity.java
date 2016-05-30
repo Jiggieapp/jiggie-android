@@ -348,7 +348,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 txtPriceTitle.setVisibility(View.GONE);
                 txtPriceFill.setVisibility(View.GONE);
             }
-
         }
 
         if (event_name != null) {
