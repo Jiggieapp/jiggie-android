@@ -117,8 +117,9 @@ public class EventGuestAdapter extends RecyclerView.Adapter<EventGuestAdapter.Vi
         @SuppressWarnings("unused")
         @OnClick(R.id.layoutConnect)
         void btnConnectOnClick() {
-            if (this.listener != null)
+            if (this.listener != null&&txtConnect.getText().toString().equalsIgnoreCase("connect")){
                 this.listener.onGuestConnect(this);
+            }
         }
 
         public GuestModel.Data.GuestInterests getGuest() { return this.guest; }
