@@ -280,7 +280,6 @@ public class HomeFragment extends Fragment
                     behavior.setState(BottomSheetBehavior.STATE_EXPANDED);*/
                     behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 }
-                Log.d("state", String.valueOf(newState));
             }
 
             @Override
@@ -716,6 +715,7 @@ public class HomeFragment extends Fragment
             //Log.d("", "");
             bottomSheet.setVisibility(View.GONE);
         } else if(position == MORE_TAB){
+            showToolbar();
             fab.setVisibility(View.GONE);
             fabInvite.setVisibility(View.GONE);
             bottomSheet.setVisibility(View.GONE);

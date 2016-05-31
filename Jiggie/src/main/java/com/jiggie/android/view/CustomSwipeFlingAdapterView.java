@@ -272,6 +272,7 @@ public class CustomSwipeFlingAdapterView extends SwipeFlingAdapterView {
                 nextChild.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        onEventClickListener.onSkipClicked();
                         getTopCardListener2().selectLeft();
                     }
                 });
@@ -280,6 +281,7 @@ public class CustomSwipeFlingAdapterView extends SwipeFlingAdapterView {
                     nextChild.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        onEventClickListener.onConnectClicked();
                         getTopCardListener2().selectRight();
                     }
                 });
@@ -390,7 +392,8 @@ public class CustomSwipeFlingAdapterView extends SwipeFlingAdapterView {
     public interface OnEventClickListener
     {
         void onEventClicked();
-        void onImageClicked();
+        void onSkipClicked();
+        void onConnectClicked();
     }
 
     public interface OnItemClickListener {

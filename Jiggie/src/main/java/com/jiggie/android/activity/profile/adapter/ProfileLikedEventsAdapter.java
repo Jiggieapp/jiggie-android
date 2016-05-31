@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.jiggie.android.R;
 import com.jiggie.android.component.StringUtility;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.MemberInfoModel;
 
 import java.lang.reflect.Array;
@@ -35,6 +36,7 @@ public class ProfileLikedEventsAdapter extends RecyclerView.Adapter<RecyclerView
     private final int BODY = 1;
     private boolean isMe = false;
     private OnEventContainerClick onEventContainerClick;
+    private final static String TAG = ProfileLikedEventsAdapter.class.getSimpleName();
 
     public ProfileLikedEventsAdapter(Context context, MemberInfoModel.Data.MemberInfo memberInfo
             , boolean isMe, OnEventContainerClick listener) {
@@ -155,8 +157,17 @@ public class ProfileLikedEventsAdapter extends RecyclerView.Adapter<RecyclerView
             }*/
             if(getItemCount() > 1)
             {
-                holderHeader.lblUserEvent.setText(
-                        context.getResources().getString(R.string.user_event, memberInfo.getFirst_name()));
+                Utils.d(TAG, "isMe " + isMe);
+                if(isMe)
+                {
+                    holderHeader.lblUserEvent.setText(context.getResources().getString(R.string.your_event));
+                }
+                else
+                {
+                    holderHeader.lblUserEvent.setText(
+                            context.getResources().getString(R.string.user_event, memberInfo.getFirst_name()));
+                }
+
             }
 
             final String location = memberInfo.getLocation();

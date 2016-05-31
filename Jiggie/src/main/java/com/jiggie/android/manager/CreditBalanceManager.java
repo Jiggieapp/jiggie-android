@@ -51,7 +51,6 @@ public class CreditBalanceManager extends BaseManager {
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Utils.d("Failure", t.toString());
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
                 }
 

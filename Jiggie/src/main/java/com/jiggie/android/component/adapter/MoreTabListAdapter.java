@@ -133,7 +133,7 @@ public class MoreTabListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             viewHolder.imgEditProfile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    fragment.getActivity().startActivity(new Intent(fragment.getActivity(), NewProfileDetailActivity.class));
+                    fragment.getActivity().startActivity(new Intent(fragment.getActivity(), EditProfileActivity.class));
                 }
             });*//*
         }*/

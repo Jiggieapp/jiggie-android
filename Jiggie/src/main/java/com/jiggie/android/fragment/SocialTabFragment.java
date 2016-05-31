@@ -79,8 +79,6 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     @Bind(R.id.fling_adapter)
     CustomSwipeFlingAdapterView flingAdapterView;
 
-
-
     /*@Bind(R.id.tempListView)
     ListView tempListView;*/
 
@@ -255,7 +253,11 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         isRefreshing = false;
         if (message.getData().getSocial_feeds() != null) {
             fillSocialCard(message);
-        } else {
+        }
+        else if(message.getData().getSocial_feeds().size() == 0)
+        {
+            this.cardEmpty.setVisibility(View.VISIBLE);
+        }else {
             progressBar.setVisibility(View.GONE);
             temp.clear();
             socialCardNewAdapter.clear();
@@ -321,11 +323,15 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             }
 
             @Override
-            public void onImageClicked() {
-                Intent i = new Intent(getActivity(), ProfileDetailActivity.class);
-                i.putExtra(Common.FIELD_FACEBOOK_ID, socialCardNewAdapter.getItem(0).getFrom_fb_id());
-                getActivity().startActivity(i);
+            public void onSkipClicked() {
+                flingAdapterView.getSelectedView().findViewById(R.id.image_skip).setAlpha((float) 1.0);
             }
+
+            @Override
+            public void onConnectClicked() {
+                flingAdapterView.getSelectedView().findViewById(R.id.image_connect).setAlpha((float) 1.0);
+            }
+
         });
 
         flingAdapterView.setFlingListener(new CustomSwipeFlingAdapterView.onFlingListener() {
@@ -336,13 +342,11 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
 
             @Override
             public void onLeftCardExit(Object o) {
-                //onScroll((float)1.0);
                 matchAsync(socialCardNewAdapter.getItem(0).getFrom_fb_id(), false);
             }
 
             @Override
             public void onRightCardExit(Object o) {
-                //onScroll((float)1.0);
                 if (SocialManager.Type.isInbound(socialCardNewAdapter.getItem(0))) {
                     match(socialCardNewAdapter.getItem(0).getFrom_fb_id()
                             , socialCardNewAdapter.getItem(0).getFrom_first_name());
@@ -402,8 +406,6 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         } else if (SocialManager.LAST_STATE_CARD.equals(SocialManager.STATE_INBOUND)) {
             TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_YES_SUGGESTED, false);
         }
-
-
     }
 
     @Override

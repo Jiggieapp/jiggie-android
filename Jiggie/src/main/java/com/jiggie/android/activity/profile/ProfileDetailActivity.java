@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,11 +15,8 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -28,7 +24,6 @@ import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.event.EventDetailActivity;
 import com.jiggie.android.activity.profile.adapter.ProfileLikedEventsAdapter;
-import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.ImagePagerIndicatorAdapter;
@@ -36,18 +31,14 @@ import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.GuestModel;
-import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.MemberInfoModel;
-import com.jiggie.android.model.SettingModel;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 import butterknife.Bind;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
-import it.sephiroth.android.library.widget.HListView;
 
 /**
  * Created by rangg on 14/11/2015.
@@ -312,7 +303,6 @@ public class ProfileDetailActivity extends ToolbarActivity
         adapter = new ProfileLikedEventsAdapter(this, memberInfo, isMe, this);
         recyclerLikedEvents.setLayoutManager(linearLayoutManager);
         recyclerLikedEvents.setAdapter(adapter);
-
     }
 
     /*@Override
@@ -474,7 +464,7 @@ public class ProfileDetailActivity extends ToolbarActivity
         switch (item.getItemId())
         {
             case R.id.edit_profile:
-                Intent i = new Intent(this, NewProfileDetailActivity.class);
+                Intent i = new Intent(this, EditProfileActivity.class);
                 startActivity(i);
                 break;
         }

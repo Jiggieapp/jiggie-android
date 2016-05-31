@@ -65,7 +65,7 @@ public class SocialCardNewAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
+        final ViewHolder holder;
         final SocialModel.Data.SocialFeeds model = getItem(position);
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(context);
@@ -77,11 +77,12 @@ public class SocialCardNewAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-
-        holder.imgConnect.bringToFront();
-        holder.imgSkip.bringToFront();
         holder.chat_icon.bringToFront();
-        holder.lblContainer.bringToFront();
+        holder.imgConnect.bringToFront();
+        //holder.imgConnect.setAlpha((float) 0);
+        holder.imgSkip.bringToFront();
+        //holder.imgSkip.setAlpha((float) 0);
+        //holder.lblContainer.bringToFront();
 
         Glide
                 .with(context)
@@ -108,8 +109,8 @@ public class SocialCardNewAdapter extends BaseAdapter {
             holder.generalBtnYes.setText(context.getResources().getString(R.string.connect));
             holder.generalBtnNo.setText(context.getResources().getString(R.string.skip));
             holder.chat_icon.setVisibility(View.GONE);
-
         }
+        holder.chat_icon.setVisibility(View.VISIBLE);
         setBtnYesGeneral(holder.generalBtnYes);
 
         if (getItem(position).getBadge_booking())
@@ -136,6 +137,24 @@ public class SocialCardNewAdapter extends BaseAdapter {
                 context.startActivity(i);
             }
         });*/
+
+        holder.generalBtnYes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.imgConnect.setAlpha((float) 1.0);
+                //onSocialCardClickListener.onYesClick();
+            }
+        });
+
+        holder.generalBtnNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.imgSkip.setAlpha((float) 1.0);
+                //onSocialCardClickListener.onYesClick();
+            }
+        });
+
+
         return convertView;
     }
 
@@ -201,20 +220,22 @@ public class SocialCardNewAdapter extends BaseAdapter {
             this.onSocialCardClickListener = onSocialCardClickListener;
         }
 
-        @OnClick(R.id.btnNoGeneral)
+        /*@OnClick(R.id.btnNoGeneral)
         public void btnNoOnClick() {
-            onSocialCardClickListener.onNoClick();
+            imgSkip.setAlpha((float) 1.0);
+            //onSocialCardClickListener.onNoClick();
         }
 
         @OnClick(R.id.btnYesGeneral)
         public void btnYesOnClick() {
-            onSocialCardClickListener.onYesClick();
+            imgConnect.setAlpha((float) 1.0);
+            //onSocialCardClickListener.onYesClick();
         }
 
         @OnClick(R.id.imageUserGeneral)
         public void cardGeneralOnClick() {
             // onSocialCardClickListener.onGeneralClick();
-        }
+        }*/
     }
 
     OnSocialCardClickListener onSocialCardClickListener;

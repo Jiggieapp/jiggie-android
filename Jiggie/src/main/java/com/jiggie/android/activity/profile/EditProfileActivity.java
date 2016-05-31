@@ -22,7 +22,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.facebook.AccessToken;
-import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
@@ -31,7 +30,6 @@ import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.MemberInfoModel;
-import com.jiggie.android.model.SuccessUploadModel;
 import com.jiggie.android.view.RoundedImageView;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -44,7 +42,7 @@ import butterknife.OnClick;
 /**
  * Created by Wandy on 5/2/2016.
  */
-public class NewProfileDetailActivity extends ToolbarActivity
+public class EditProfileActivity extends ToolbarActivity
         implements ProfileDetailView {
 
     @Bind(R.id.txtUser)
@@ -82,7 +80,7 @@ public class NewProfileDetailActivity extends ToolbarActivity
 
     private float smallerRadius = 3.0f;
 
-    private final String TAG = NewProfileDetailActivity.class.getSimpleName();
+    private final String TAG = EditProfileActivity.class.getSimpleName();
     private final int PICK_IMAGE_REQUEST = 1;
     private final int PICK_IMAGE_KITKAT_REQUEST = 2;
     private final int EDIT_PROFILE = 9;
@@ -306,7 +304,7 @@ public class NewProfileDetailActivity extends ToolbarActivity
 
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
-                    Toast.makeText(NewProfileDetailActivity.this
+                    Toast.makeText(EditProfileActivity.this
                             , "You must enable the permission before you can upload photos", Toast.LENGTH_SHORT).show();
                 }
                 return;

@@ -63,7 +63,7 @@
         android:layout_gravity="center_horizontal"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_chat"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="-48dp"
         android:layout_below="@+id/imageUserGeneral"/>
 
