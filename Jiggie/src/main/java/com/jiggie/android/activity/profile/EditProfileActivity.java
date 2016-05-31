@@ -252,9 +252,6 @@ public class EditProfileActivity extends ToolbarActivity
         else if(Build.VERSION.SDK_INT >= 23)
         {
             // Here, thisActivity is the current activity
-            Utils.d(TAG, "permission " + ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE)
-                    + " " + PackageManager.PERMISSION_GRANTED);
             if (ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED
                     || ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -425,12 +422,11 @@ public class EditProfileActivity extends ToolbarActivity
     @OnClick(R.id.btnEdit)
     void btnEditOnClick() {
         super.startActivityForResult(new Intent(this, ProfileEditActivity.class)
-                .putExtra(Common.FIELD_ABOUT, AccountManager.loadLogin().getAbout()), EDIT_PROFILE);
+                .putExtra(Common.FIELD_ABOUT, txtDescription.getText()), EDIT_PROFILE);
     }
 
     @Override
     public void doCrop(String imagePath) {
-        Utils.d(TAG, "doCrop");
         CropImage.activity(Uri.parse(imagePath))
                 .setGuidelines(CropImageView.Guidelines.ON)
                 .start(this);

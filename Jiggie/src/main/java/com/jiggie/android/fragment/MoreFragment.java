@@ -36,6 +36,7 @@ import com.jiggie.android.activity.profile.ProfileSettingActivity;
 import com.jiggie.android.activity.promo.PromotionsActivity;
 import com.jiggie.android.activity.setup.SetupTagsActivity;
 import com.jiggie.android.component.HomeMain;
+import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.MoreTabListAdapter;
@@ -43,6 +44,7 @@ import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.CreditBalanceManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.MemberInfoModel;
+import com.jiggie.android.model.SuccessCreditBalanceModel;
 
 import java.util.ArrayList;
 
@@ -176,9 +178,9 @@ public class MoreFragment extends Fragment implements TabFragment, MoreTabListAd
         CreditBalanceManager.loaderCreditBalance(AccessToken.getCurrentAccessToken().getUserId(), new CreditBalanceManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
-                /*SuccessCreditBalanceModel successCreditBalanceModel = (SuccessCreditBalanceModel) object;
+                SuccessCreditBalanceModel successCreditBalanceModel = (SuccessCreditBalanceModel) object;
                 strCredit = "Credit: " + StringUtility.getCreditBalanceFormat(successCreditBalanceModel.getData().getBalance_credit().getTot_credit_active());
-                textCredit.setText(strCredit);*/
+                textCredit.setText(strCredit);
             }
 
             @Override
