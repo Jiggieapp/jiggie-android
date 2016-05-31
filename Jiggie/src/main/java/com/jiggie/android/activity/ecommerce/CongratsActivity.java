@@ -240,8 +240,8 @@ public class CongratsActivity extends ToolbarActivity {
                         divider.setVisibility(View.GONE);
 
                         if(summary.getPay_deposit().equals(Utils.NOL_RUPIAH)){
-                            txtStatusTitle.setVisibility(View.GONE);
-                            txtStatusFill.setVisibility(View.GONE);
+                            /*txtStatusTitle.setVisibility(View.GONE);
+                            txtStatusFill.setVisibility(View.GONE);*/
                             txtPaymentTitle.setVisibility(View.GONE);
                             txtPaymentFill.setVisibility(View.GONE);
                         }
