@@ -19,22 +19,6 @@
             android:id="@+id/cardGeneral">-->
 
 
-        <ImageView
-            android:id="@+id/image_connect"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alpha="0"
-            android:src="@drawable/connect_overlay"
-            android:scaleType="fitXY"/>
-
-        <ImageView
-            android:id="@+id/image_skip"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alpha="0"
-            android:src="@drawable/skip_overlay"
-            android:scaleType="fitXY"/>
-
         <include layout="@layout/card_social_general" />
 
         <!--</RelativeLayout>-->

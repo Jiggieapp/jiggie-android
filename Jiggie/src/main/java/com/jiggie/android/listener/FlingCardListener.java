@@ -344,6 +344,9 @@ public class FlingCardListener implements View.OnTouchListener {
         return new PointF(this.aPosX, this.aPosY);
     }
 
+    public void onEventClicked() {
+    }
+
     public interface FlingListener {
         void onCardExited();
 
@@ -354,6 +357,8 @@ public class FlingCardListener implements View.OnTouchListener {
         void onClick(Object dataObject);
 
         void onScroll(float scrollProgressPercent);
+
+        //void onEventClicked(Object dataObject);
     }
 
 }

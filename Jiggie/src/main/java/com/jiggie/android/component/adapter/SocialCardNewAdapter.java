@@ -10,11 +10,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.event.EventDetailActivity;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.manager.SocialManager;
@@ -64,7 +66,7 @@ public class SocialCardNewAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
-        SocialModel.Data.SocialFeeds model = getItem(position);
+        final SocialModel.Data.SocialFeeds model = getItem(position);
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(context);
             convertView = inflater.inflate(R.layout.item_social_card_general, parent, false);
@@ -78,6 +80,8 @@ public class SocialCardNewAdapter extends BaseAdapter {
 
         holder.imgConnect.bringToFront();
         holder.imgSkip.bringToFront();
+        holder.chat_icon.bringToFront();
+        holder.lblContainer.bringToFront();
 
         Glide
                 .with(context)
@@ -94,6 +98,7 @@ public class SocialCardNewAdapter extends BaseAdapter {
             holder.generalTxtConnect.setText(
                     context.getResources().getString(R.string.interested_ask));
             holder.chat_icon.setVisibility(View.VISIBLE);
+
         } else {
             holder.generalTxtEvent.setText(model.getEvent_name());
             holder.generalTxtUser.setText(context.getString(R.string.user_viewing
@@ -121,6 +126,16 @@ public class SocialCardNewAdapter extends BaseAdapter {
         }
 
         else holder.imgHasTicket.setVisibility(View.GONE);
+
+        /*holder.lblContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(context, EventDetailActivity.class);
+                i.putExtra(Common.FIELD_EVENT_ID, model.getEvent_id());
+                i.putExtra(Common.FIELD_EVENT_NAME, model.getEvent_name());
+                context.startActivity(i);
+            }
+        });*/
         return convertView;
     }
 
@@ -156,6 +171,7 @@ public class SocialCardNewAdapter extends BaseAdapter {
 
         @Bind(R.id.btnYesGeneral)
         Button generalBtnYes;
+
         @Bind(R.id.btnNoGeneral)
         Button generalBtnNo;
 
@@ -173,6 +189,9 @@ public class SocialCardNewAdapter extends BaseAdapter {
 
         @Bind(R.id.img_has_table)
         ImageView imgHasTable;
+
+        @Bind(R.id.lbl_container)
+        RelativeLayout lblContainer;
 
         OnSocialCardClickListener onSocialCardClickListener;
 

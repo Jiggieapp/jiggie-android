@@ -343,7 +343,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 txtPriceFill.setVisibility(View.GONE);
                 linPrice.setBackgroundColor(getResources().getColor(android.R.color.transparent));
             }
-
         }
 
         if (event_name != null) {
@@ -581,10 +580,14 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 //txtGuestCount.setText(getResources().getQuantityString(R.plurals.guest_count, guestCount, guestCount));
 
                 if (guestCount > 0) {
-                    Intent intent = new Intent(SocialTabFragment.TAG);
-                    intent.putExtra(Utils.IS_ON
-                            , AccountManager.loadSetting().getData().getNotifications().isFeed());
-                    sendBroadcast(intent);
+                    if (getIntent().getStringExtra(Common.FIELD_FROM) == null
+                            || !getIntent().getStringExtra(Common.FIELD_FROM).equals(SocialTabFragment.TAG))
+                    {
+                        Intent intent = new Intent(SocialTabFragment.TAG);
+                        intent.putExtra(Utils.IS_ON
+                                , AccountManager.loadSetting().getData().getNotifications().isFeed());
+                        sendBroadcast(intent);
+                    }
 
                     final int width = imageGuest1.getWidth() * 2;
                     guestCount = guestCount > imageGuests.length ? imageGuests.length : guestCount;
