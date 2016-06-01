@@ -234,6 +234,7 @@ public class AccountManager extends BaseManager {
                 public void onCustomCallbackResponse(Response response) {
                     /*String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);*/
+                    Utils.d(TAG, "responsecode " + response.code());
                     if (response.code() == Utils.CODE_SUCCESS) {
                         //Utils.d(TAG, "response " +  Utils.print(response));
                         MemberInfoModel dataTemp = (MemberInfoModel) response.body();

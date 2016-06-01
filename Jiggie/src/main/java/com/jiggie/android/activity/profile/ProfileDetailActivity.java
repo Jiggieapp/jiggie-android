@@ -96,8 +96,8 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
     @Override
     public void onGlobalLayout() {
         this.refreshLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-        fb_id = super.getIntent().getStringExtra(Common.FIELD_FACEBOOK_ID);
-
+        //fb_id = super.getIntent().getStringExtra(Common.FIELD_FACEBOOK_ID);
+        //fb_id = "1206589092693600";
         if (fb_id == null) {
             fb_id = AccessToken.getCurrentAccessToken().getUserId();
             //fb_id = "10153452897043547"; //richard
@@ -174,8 +174,6 @@ public class ProfileDetailActivity extends ToolbarActivity implements ViewTreeOb
             } else {
                 txtDescription.setText(message.getData().getMemberinfo().getAbout());
             }
-
-
         } else {
             photos = message.getData().getMemberinfo().getPhotos().toArray(new String[message.getData().getMemberinfo().getPhotos().size()]);
             txtLocation.setText(message.getData().getMemberinfo().getLocation());
