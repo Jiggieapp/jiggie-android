@@ -362,6 +362,7 @@
     <string name="paid">Paid</string>
     <string name="is_void">Void</string>
     <string name="refund">Refund</string>
+    <string name="reserved">Reserved</string>
 
     <string name="pci_f1b">Dance Floor Table (Estimate)</string>
     <string name="pci_f3b">Service Charge</string>
