@@ -272,17 +272,17 @@ public class MoreFragment extends Fragment implements TabFragment, MoreTabListAd
     }
 
     @Override
-    public void doCrop(String imagePath) {
-
-    }
-
-    @Override
     public void loadImages(ArrayList<String> photos) {
 
     }
 
     @Override
     public void onFailUpload(int position) {
+
+    }
+
+    @Override
+    public void doCrop(Uri filepath, Uri destination) {
 
     }
 

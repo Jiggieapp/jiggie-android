@@ -430,6 +430,11 @@ public class ProfileDetailActivity extends ToolbarActivity
     }
 
     @Override
+    public void doCrop(Uri filepath, Uri destination) {
+
+    }
+
+    @Override
     public ImageView makeTransparent(int position) {
         return null;
     }
@@ -442,11 +447,6 @@ public class ProfileDetailActivity extends ToolbarActivity
     @Override
     public Bitmap onFinishTakePhoto(int requestCode, Uri uri) {
         return null;
-    }
-
-    @Override
-    public void doCrop(String imagePath) {
-
     }
 
     @Override
