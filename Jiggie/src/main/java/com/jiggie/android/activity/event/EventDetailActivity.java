@@ -573,6 +573,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                     super.setToolbarTitle(Utils.BLANK, false);
                     eventName.setText(eventDetail.getTitle().toUpperCase());
                 }
+                else super.setToolbarTitle(message.getData().getEvents_detail().getTitle(), false);
 
                 this.txtVenue.setText(eventDetail.getVenue_name());
 
@@ -772,12 +773,13 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             txtPriceTitle.setVisibility(View.VISIBLE);
             txtPriceFill.setVisibility(View.VISIBLE);
             txtPriceFill.setText(getResources().getString(R.string.free));
-
+            linPrice.setBackgroundColor(getResources().getColor(R.color.black_transparent));
         } else if (lowest_price > 0 && isBookable) {
             txtPriceTitle.setVisibility(View.VISIBLE);
             txtPriceFill.setVisibility(View.VISIBLE);
             txtPriceTitle.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
             txtPriceFill.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
+            linPrice.setBackgroundColor(getResources().getColor(R.color.black_transparent));
             try {
                 //String str = String.format(Locale.US, "Rp %,d", lowest_price);
                 String str = StringUtility.getRupiahFormat(lowest_price + "");
@@ -788,6 +790,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         } else {
             txtPriceTitle.setVisibility(View.GONE);
             txtPriceFill.setVisibility(View.GONE);
+            linPrice.setBackgroundColor(getResources().getColor(android.R.color.transparent));
         }
     }
 

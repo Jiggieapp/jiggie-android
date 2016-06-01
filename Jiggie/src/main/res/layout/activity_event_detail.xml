@@ -52,7 +52,7 @@
                         android:id="@+id/lin_price"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="#59000000"
+                        android:background="@color/black_transparent"
                         android:layout_alignParentBottom="true"
                         android:orientation="vertical">
 

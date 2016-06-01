@@ -110,7 +110,7 @@ public class SocialCardNewAdapter extends BaseAdapter {
             holder.generalBtnNo.setText(context.getResources().getString(R.string.skip));
             holder.chat_icon.setVisibility(View.GONE);
         }
-        holder.chat_icon.setVisibility(View.VISIBLE);
+        //holder.chat_icon.setVisibility(View.VISIBLE);
         setBtnYesGeneral(holder.generalBtnYes);
 
         if (getItem(position).getBadge_booking())

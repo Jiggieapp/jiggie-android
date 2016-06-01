@@ -49,4 +49,6 @@
     <color name="share_cp">#BD10E0</color>
     <color name="share_msg">#00CE0A</color>
     <color name="share_copy">#00BCFB</color>
+
+    <color name="black_transparent">#59000000</color>
 </resources>
