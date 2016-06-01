@@ -2,6 +2,7 @@ package com.jiggie.android.activity.profile;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.signature.StringSignature;
 import com.facebook.AccessToken;
 import com.jiggie.android.R;
 import com.jiggie.android.component.StringUtility;
@@ -31,8 +33,7 @@ import com.jiggie.android.model.Common;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.MemberInfoModel;
 import com.jiggie.android.view.RoundedImageView;
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
+import com.soundcloud.android.crop.Crop;
 
 import java.util.ArrayList;
 
@@ -148,26 +149,49 @@ public class EditProfileActivity extends ToolbarActivity
         view.setImageBitmap(null);
         ImageView plus = getPlusImageView(position);
         plus.setImageDrawable(getResources().getDrawable(R.drawable.plus_button_image_view));
+    }
 
+    @Override
+    public void doCrop(Uri filepath, Uri destination) {
+        Crop.of(filepath, destination)
+                .asSquare()
+                .start(this);
     }
 
     private void loadIntoView(final String url, final ImageView view
             , final int position) {
+        //Glide.clear(view);
+
         Glide
                 .with(this)
                 .load(url)
                 .asBitmap()
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                //.signature(new StringSignature(System.currentTimeMillis() + ""))
+                .diskCacheStrategy( DiskCacheStrategy.RESULT)
+                //.skipMemoryCache( true )
                 .into(view);
+
         ImageView plus = getPlusImageView(position);
         plus.setImageDrawable(getResources().getDrawable(R.drawable.cross_button_image_view));
     }
 
     @Override
     public void loadImageToCertainView(final String tempUrl, final int position) {
-
         ImageView view = makeTransparent(position);
-        loadIntoView(tempUrl, view, position);
+        Glide
+                .with(this)
+                .load(tempUrl)
+                .asBitmap()
+                .signature(new StringSignature(System.currentTimeMillis() + ""))
+                .diskCacheStrategy( DiskCacheStrategy.RESULT)
+                //.skipMemoryCache( true )
+                .into(view);
+
+        ImageView plus = getPlusImageView(position);
+        plus.setImageDrawable(getResources().getDrawable(R.drawable.cross_button_image_view));
+
+        //jgn dihapus, wandy 01-06-2016
+        //loadIntoView(tempUrl, view, position);
     }
 
     @Override
@@ -221,11 +245,13 @@ public class EditProfileActivity extends ToolbarActivity
 
     @Override
     public void fetchDetail() {
+        showProgressDialog();
         profilePresenter.fetchMemberInfo(AccessToken.getCurrentAccessToken().getUserId());
     }
 
     @Override
     public void onSuccess(MemberInfoModel memberInfoModel) {
+        dismissProgressDialog();
         MemberInfoModel.Data.MemberInfo memberInfo = memberInfoModel.getData().getMemberinfo();
         super.setToolbarTitle(memberInfo.getFirst_name(), true);
         final String age = StringUtility.getAge2(memberInfo.getBirthday());
@@ -237,6 +263,7 @@ public class EditProfileActivity extends ToolbarActivity
 
     @Override
     public void onFailure() {
+        dismissProgressDialog();
         Toast.makeText(this, getResources().getString(R.string.socket_timeout_exception), Toast.LENGTH_SHORT).show();
         finish();
     }
@@ -248,27 +275,21 @@ public class EditProfileActivity extends ToolbarActivity
             intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
-        }
-        else if(Build.VERSION.SDK_INT >= 23)
-        {
+        } else if (Build.VERSION.SDK_INT >= 23) {
             // Here, thisActivity is the current activity
-            if (ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE)
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED
-                    || ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE)
+                    || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_DENIED) {
 
                 // Should we show an explanation?
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                         Manifest.permission.READ_EXTERNAL_STORAGE)) {
-
                     // Show an expanation to the user *asynchronously* -- don't block
                     // this thread waiting for the user's response! After the user
                     // sees the explanation, try again to request the permission.
-
                 } else {
-
                     // No explanation needed, we can request the permission.
-
                     ActivityCompat.requestPermissions(this,
                             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                             MY_PERMISSIONS_REQUEST_READ_CONTACTS);
@@ -278,8 +299,7 @@ public class EditProfileActivity extends ToolbarActivity
                     // result of the request.
                 }
             }
-        }
-        else {
+        } else {
             startGalleryIntent();
         }
     }
@@ -312,8 +332,7 @@ public class EditProfileActivity extends ToolbarActivity
         }
     }
 
-    private void startGalleryIntent()
-    {
+    private void startGalleryIntent() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("image/*");
@@ -351,8 +370,6 @@ public class EditProfileActivity extends ToolbarActivity
                         Utils.d(TAG, "out of bound exception");
                     }
                 }
-
-
             }
         } else if (resultCode == RESULT_OK && requestCode == EDIT_PROFILE) {
             if (TextUtils.isEmpty(AccountManager.loadLogin().getAbout())) {
@@ -362,7 +379,7 @@ public class EditProfileActivity extends ToolbarActivity
                 this.txtDescription.setText(AccountManager.loadLogin().getAbout());
             }
         }
-        else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+        /*else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 Uri resultUri = result.getUri();
@@ -370,8 +387,12 @@ public class EditProfileActivity extends ToolbarActivity
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }
+        }*/
+        else if (requestCode == Crop.REQUEST_CROP && resultCode == RESULT_OK) {
+            //doSomethingWithCroppedImage(outputUri);
+            final String uri = Crop.getOutput(data).toString().replace("file:///", "");
+            profilePresenter.doLoadImage(uri);
         }
-
     }
 
     // By using this method get the Uri of Internal/External Storage for Media
@@ -425,10 +446,18 @@ public class EditProfileActivity extends ToolbarActivity
                 .putExtra(Common.FIELD_ABOUT, txtDescription.getText()), EDIT_PROFILE);
     }
 
-    @Override
-    public void doCrop(String imagePath) {
-        CropImage.activity(Uri.parse(imagePath))
-                .setGuidelines(CropImageView.Guidelines.ON)
-                .start(this);
+    private ProgressDialog progressDialog;
+    private void showProgressDialog()
+    {
+        progressDialog = ProgressDialog.show(this, "", getResources().getString(R.string.wait), true);
+    }
+
+    private void dismissProgressDialog()
+    {
+        if(progressDialog != null && progressDialog.isShowing())
+        {
+            progressDialog.dismiss();
+        }
     }
 }
+
