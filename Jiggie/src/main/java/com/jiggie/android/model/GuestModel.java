@@ -55,6 +55,7 @@ public class GuestModel {
             String gender;
             boolean is_invited;
             boolean is_connected;
+            String profile_image;
 
             public String getFb_id() {
                 return fb_id;
@@ -96,6 +97,14 @@ public class GuestModel {
                 this.is_connected = is_connected;
             }
 
+            public String getProfile_image() {
+                return profile_image;
+            }
+
+            public void setProfile_image(String profile_image) {
+                this.profile_image = profile_image;
+            }
+
             @Override
             public int describeContents() {
                 return 0;
@@ -108,6 +117,7 @@ public class GuestModel {
                 dest.writeString(this.gender);
                 dest.writeByte(is_invited ? (byte) 1 : (byte) 0);
                 dest.writeByte(is_connected ? (byte) 1 : (byte) 0);
+                dest.writeString(this.profile_image);
             }
 
             public GuestInterests() {
@@ -119,6 +129,7 @@ public class GuestModel {
                 this.gender = in.readString();
                 this.is_invited = in.readByte() != 0;
                 this.is_connected = in.readByte() != 0;
+                this.profile_image = in.readString();
             }
 
             public static final Parcelable.Creator<GuestInterests> CREATOR = new Parcelable.Creator<GuestInterests>() {

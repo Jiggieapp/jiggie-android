@@ -607,7 +607,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                     guestCount = guestCount > imageGuests.length ? imageGuests.length : guestCount;
 
                     for (int i = 0; i < guestCount; i++) {
-                        final String url = App.getFacebookImage(guestArr.get(i).getFb_id(), width);
+                        //final String url = App.getFacebookImage(guestArr.get(i).getFb_id(), width);
+                        final String url = guestArr.get(i).getProfile_image();
                         Glide.with(EventDetailActivity.this)
                                 .load(url)
                                 .asBitmap()
