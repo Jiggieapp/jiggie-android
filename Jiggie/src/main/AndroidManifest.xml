@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.jiggie.android"
-    android:versionCode="1197"
+    android:versionCode="1198"
     android:versionName="1.5.03">
 
     <uses-permission android:name="android.permission.INTERNET" />
