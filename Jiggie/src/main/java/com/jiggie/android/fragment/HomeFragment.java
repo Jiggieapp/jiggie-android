@@ -396,49 +396,6 @@ public class HomeFragment extends Fragment
         if(currentSizeSelected!=latestSizeSelected){
             shouldCheckTags = true;
         }else{
-            /*if(currentSizeSelected<=latestSizeSelected){
-
-                for(int i=0;i<currentSizeSelected;i++){
-                    String tagA = selectedItems.get(i);
-                    boolean isFounded = false;
-
-                    for(int j=0;j<latestSizeSelected;j++){
-                        String tagB = latestSelectedItems.get(j);
-
-                        if(tagA.equals(tagB)){
-                            isFounded = true;
-                            break;
-                        }
-                    }
-
-                    if(!isFounded){
-                        shouldCheckTags = true;
-                        break;
-                    }
-                }
-
-            }else{
-
-                for(int i=0;i<latestSizeSelected;i++){
-                    String tagA = latestSelectedItems.get(i);
-                    boolean isFounded = false;
-
-                    for(int j=0;j<currentSizeSelected;j++){
-                        String tagB = selectedItems.get(j);
-
-                        if(tagA.equals(tagB)){
-                            isFounded = true;
-                            break;
-                        }
-                    }
-
-                    if(!isFounded){
-                        shouldCheckTags = true;
-                        break;
-                    }
-                }
-
-            }*/
 
             for(int i=0;i<currentSizeSelected;i++){
                 String tagA = selectedItems.get(i);

@@ -24,6 +24,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -163,6 +164,10 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     LinearLayout linSeeAllGuest;
     @Bind(R.id.lin_price)
     LinearLayout linPrice;
+    @Bind(R.id.back_button)
+    ImageButton backButton;
+    @Bind(R.id.event_name)
+    TextView eventName;
 
     private ImagePagerIndicatorAdapter imagePagerIndicatorAdapter;
     private ImageView[] imageGuests;
@@ -230,9 +235,13 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
             if (event_name != null) {
                 //super.setToolbarTitle(event_name, true);
-                super.setToolbarTitle(Utils.BLANK, true);
+                super.setToolbarTitle(Utils.BLANK, false);
+                eventName.setText(event_name);
                 txtEventName.setText(event_name);
-            } else super.setToolbarTitle("", true);
+            } else {
+                super.setToolbarTitle("", false);
+                eventName.setText(Utils.BLANK);
+            }
 
             if (event_day != null && event_name != null) {
                 try {
@@ -346,7 +355,9 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         }
 
         if (event_name != null) {
-            super.setToolbarTitle(event_name.toUpperCase(), true);
+            super.setToolbarTitle(Utils.BLANK, false);
+            eventName.setText(event_name.toUpperCase());
+            //super.setBackIcon(R.drawable.ic_back_button_shadow);
         }
 
         this.appBarLayout.addOnOffsetChangedListener(this);
@@ -511,9 +522,11 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         this.swipeRefresh.setEnabled(verticalOffset == 0);
 
         if (collapsingToolbarLayout.getHeight() + verticalOffset < 2 * ViewCompat.getMinimumHeight(collapsingToolbarLayout)) {
-            setToolbarTitles(event_name, true);
+            setToolbarTitles(Utils.BLANK, false);
+            eventName.setText(event_name);
         } else {
-            setToolbarTitles(Utils.BLANK, true);
+            setToolbarTitles(Utils.BLANK, false);
+            eventName.setText(Utils.BLANK);
         }
     }
 
@@ -557,7 +570,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 elementContainers2.setVisibility(View.VISIBLE);
 
                 if (event_name == null) {
-                    super.setToolbarTitle(eventDetail.getTitle().toUpperCase(), true);
+                    super.setToolbarTitle(Utils.BLANK, false);
+                    eventName.setText(eventDetail.getTitle().toUpperCase());
                 }
 
                 this.txtVenue.setText(eventDetail.getVenue_name());
@@ -581,8 +595,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
                 if (guestCount > 0) {
                     if (getIntent().getStringExtra(Common.FIELD_FROM) == null
-                            || !getIntent().getStringExtra(Common.FIELD_FROM).equals(SocialTabFragment.TAG))
-                    {
+                            || !getIntent().getStringExtra(Common.FIELD_FROM).equals(SocialTabFragment.TAG)) {
                         Intent intent = new Intent(SocialTabFragment.TAG);
                         intent.putExtra(Utils.IS_ON
                                 , AccountManager.loadSetting().getData().getNotifications().isFeed());
@@ -831,6 +844,12 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     void guestViewOnClick() {
         if ((!this.swipeRefresh.isRefreshing()) && (this.eventDetail != null))
             super.startActivityForResult(new Intent(this, EventGuestActivity.class).putExtra(EventDetailModel.Data.EventDetail.class.getName(), this.eventDetail), 0);
+    }
+
+    @SuppressWarnings("unused")
+    @OnClick(R.id.back_button)
+    void backOnClick() {
+        finish();
     }
 
     /*@SuppressWarnings("unused")
