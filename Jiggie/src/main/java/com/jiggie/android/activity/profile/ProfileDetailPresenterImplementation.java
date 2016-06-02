@@ -182,6 +182,7 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
     public void onImageClick(int position) {
         if (memberInfo != null && memberInfo.getPhotos() != null && memberInfo.getPhotos().size() >= position) //ada isinya
         {
+            //int ss = memberInfo.getPhotos().size();
             if(memberInfo.getPhotos().size()==1){
                 Log.d("photo min","not allow");
             }else{
