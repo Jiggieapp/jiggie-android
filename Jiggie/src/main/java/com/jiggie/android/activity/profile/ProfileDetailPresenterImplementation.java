@@ -179,13 +179,17 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
 
     @Override
     public void onImageClick(int position) {
-        if (memberInfo != null && memberInfo.getPhotos() != null && memberInfo.getPhotos().size() >= position) //ada isinya
+
+        if (memberInfo != null && memberInfo.getPhotos() != null) //ada isinya
         {
-            profileDetailView.makeTransparent(position - 1);
-            final String url = memberInfo.getPhotos().get(position - 1);
-            Utils.d(TAG, "doDelete " + position);
-            doDelete(url, position - 1);
-            App.getInstance().trackMixPanelPictureUp(Utils.PICTURE_DELETE, url);
+            if(memberInfo.getPhotos().size() > 1
+                    && memberInfo.getPhotos().size() >= position)
+            {
+                profileDetailView.makeTransparent(position - 1);
+                final String url = memberInfo.getPhotos().get(position - 1);
+                doDelete(url, position - 1);
+                App.getInstance().trackMixPanelPictureUp(Utils.PICTURE_DELETE, url);
+            }
         }
         else
         {

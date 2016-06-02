@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.jiggie.android"
-    android:versionCode="1199"
+    android:versionCode="1200"
     android:versionName="1.5.03">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -407,11 +407,11 @@
             </intent-filter>-->
         </activity>
 
-        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity" />
-
         <provider
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="com.facebook.app.FacebookContentProvider840535009393707"
             android:exported="true" />
+
+        <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
     </application>
 </manifest>
