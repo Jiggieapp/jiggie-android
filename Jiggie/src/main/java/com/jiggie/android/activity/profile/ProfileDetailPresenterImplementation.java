@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import com.jiggie.android.App;
 import com.jiggie.android.component.ImageCompressionAsyncTask;
@@ -179,14 +180,15 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
 
     @Override
     public void onImageClick(int position) {
-
-        if (memberInfo != null && memberInfo.getPhotos() != null) //ada isinya
+        if (memberInfo != null && memberInfo.getPhotos() != null && memberInfo.getPhotos().size() >= position) //ada isinya
         {
-            if(memberInfo.getPhotos().size() > 1
-                    && memberInfo.getPhotos().size() >= position)
-            {
+            //int ss = memberInfo.getPhotos().size();
+            if(memberInfo.getPhotos().size() == 1){
+                //Log.d("photo min","not allow");
+            }else{
                 profileDetailView.makeTransparent(position - 1);
                 final String url = memberInfo.getPhotos().get(position - 1);
+                Utils.d(TAG, "doDelete " + position);
                 doDelete(url, position - 1);
                 App.getInstance().trackMixPanelPictureUp(Utils.PICTURE_DELETE, url);
             }
