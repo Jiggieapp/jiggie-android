@@ -189,11 +189,7 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
             }
         });
 
-        if (getInviteCodeResultModel() != null) {
-            App.getInstance().trackMixPanelReferral(Utils.INVITE_FRIENDS_SCREEN
-                    , getReferEventMixPanelModel(
-                    inviteCodeResultModel.getData().getInvite_code().getCode()));
-        }
+
     }
 
     public void askForContactPermission() {
