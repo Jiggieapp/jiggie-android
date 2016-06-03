@@ -1,5 +1,6 @@
 package com.jiggie.android.activity.invite;
 
+import com.jiggie.android.App;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.listener.OnResponseListener;
 import com.jiggie.android.manager.AccountManager;

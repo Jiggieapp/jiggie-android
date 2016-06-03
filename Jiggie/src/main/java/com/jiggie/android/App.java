@@ -331,6 +331,8 @@ public class App extends Application {
             setAppsFlyer(login);
         } else if (eventName.equals("Log In")) {
             getInstanceMixpanel().identify(mixpanelAPI.getDistinctId());
+            //getInstanceMixpanel().identify(login.getFb_id());
+            //getInstanceMixpanel().alias(login.getFb_id(), null);
             setPeopleMixpanel(login, settingModel);
             setSuperPropertiesMixpanel(login, settingModel);
             setSyncMixpanel(login, settingModel);
@@ -344,7 +346,7 @@ public class App extends Application {
         //USER PART-----------
         LoginModel login = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin();
         SettingModel settingModel = AccountManager.loadSetting() == null ? null : AccountManager.loadSetting();
-        setPeopleMixpanelComm(login, settingModel);
+        //setPeopleMixpanelComm(login, settingModel);
         //END OF USER PART---------
 
         //EVENT PART--------------
@@ -462,7 +464,7 @@ public class App extends Application {
         //USER PART-----------
         LoginModel login = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin();
         SettingModel settingModel = AccountManager.loadSetting() == null ? null : AccountManager.loadSetting();
-        setPeopleMixpanelRefer(login, settingModel);
+        //setPeopleMixpanelRefer(login, settingModel);
         //END OF USER PART---------
 
         //EVENT PART--------------
@@ -536,7 +538,7 @@ public class App extends Application {
         //USER PART-----------
         LoginModel login = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin();
         SettingModel settingModel = AccountManager.loadSetting() == null ? null : AccountManager.loadSetting();
-        setPeopleMixpanelPictureUp(login, settingModel);
+        //setPeopleMixpanelPictureUp(login, settingModel);
         //END OF USER PART---------
 
         //EVENT PART--------------
@@ -598,7 +600,7 @@ public class App extends Application {
         //USER PART-----------
         LoginModel login = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin();
         SettingModel settingModel = AccountManager.loadSetting() == null ? null : AccountManager.loadSetting();
-        setPeopleMixpanelPromo(login, settingModel);
+        //setPeopleMixpanelPromo(login, settingModel);
         //END OF USER PART---------
 
         //EVENT PART--------------

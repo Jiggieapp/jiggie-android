@@ -450,31 +450,37 @@ public class ChatActivity extends ToolbarActivity implements ViewTreeObserver.On
             final List<Chat> failedItems = ChatTable.getUnProcessedItems(App.getInstance().getDatabase(), toId);
             final int length = message.getData().getMessages() == null ? 0 : message.getData().getMessages().size();
             final int failedLength = failedItems.size();
+
             adapter.clear();
 
             final Chat chatHeader = new Chat(null
                     , message.getData().getFromId(), message.getData().getEvent_name());
             adapter.add(chatHeader);
-            for (int i = 0; i < length; i++) {
-                final Chat chat = new Chat(message.getData().getMessages().get(i), message.getData().getFromId());
-                if ((!chat.isFromYou()) && (lastMessageDate.compareTo(chat.getCreatedAt()) < 0))
-                    lastMessageDate = chat.getCreatedAt();
-                adapter.add(chat);
+
+            if(length>0){
+                for (int i = 0; i < length; i++) {
+                    final Chat chat = new Chat(message.getData().getMessages().get(i), message.getData().getFromId());
+                    if ((!chat.isFromYou()) && (lastMessageDate.compareTo(chat.getCreatedAt()) < 0))
+                        lastMessageDate = chat.getCreatedAt();
+                    adapter.add(chat);
+                }
             }
 
-            for (int i = 0; i < failedLength; i++) {
-                final Chat failedItem = failedItems.get(i);
-                failedItem.setCreatedAt(Common.ISO8601_DATE_FORMAT.format(new Date()));
-                failedItem.setFromYou(true);
-                adapter.add(failedItem);
+            if(failedLength>0){
+                for (int i = 0; i < failedLength; i++) {
+                    final Chat failedItem = failedItems.get(i);
+                    failedItem.setCreatedAt(Common.ISO8601_DATE_FORMAT.format(new Date()));
+                    failedItem.setFromYou(true);
+                    adapter.add(failedItem);
+                }
             }
 
             if (isActive()) {
                 loaded = true;
-                invalidateOptionsMenu();
-                adapter.notifyDataSetChanged();
                 viewChat.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
+                invalidateOptionsMenu();
+                adapter.notifyDataSetChanged();
                 recyclerView.scrollToPosition(adapter.getItemCount() - 1);
                 setResult(RESULT_OK, new Intent().putExtra(Conversation.FIELD_FACEBOOK_ID, toId));
             }
