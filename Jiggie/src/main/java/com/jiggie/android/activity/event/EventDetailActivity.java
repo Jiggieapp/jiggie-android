@@ -227,7 +227,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 this.txtVenue.setText(event_venue_name);
             }
 
-
             /*if(event_tags != null)
             {
                 populateTags(event_tags);
@@ -521,7 +520,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         this.swipeRefresh.setEnabled(verticalOffset == 0);
 
-        if (collapsingToolbarLayout.getHeight() + verticalOffset < 2 * ViewCompat.getMinimumHeight(collapsingToolbarLayout)) {
+        if (collapsingToolbarLayout.getHeight() + verticalOffset
+                < 2 * ViewCompat.getMinimumHeight(collapsingToolbarLayout)) {
             setToolbarTitles(Utils.BLANK, false);
             eventName.setText(event_name);
         } else {
@@ -571,10 +571,18 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
                 if (event_name == null) {
                     super.setToolbarTitle(Utils.BLANK, false);
+                    event_name = eventDetail.getTitle().toUpperCase();
                     eventName.setText(eventDetail.getTitle().toUpperCase());
+                    txtEventName.setText(event_name);
                 }
-                else super.setToolbarTitle(message.getData().getEvents_detail().getTitle(), false);
+                else
+                {
+                    super.setToolbarTitle(message.getData().getEvents_detail().getTitle(), false);
+                }
 
+                /*setToolbarTitles(Utils.BLANK, false);
+                eventName.setText("suallalala");
+                txtEventName.setText(eventDetail.getTitle().toUpperCase());*/
                 this.txtVenue.setText(eventDetail.getVenue_name());
 
                 if (!isActive())

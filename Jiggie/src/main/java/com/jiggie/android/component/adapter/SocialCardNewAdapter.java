@@ -77,12 +77,7 @@ public class SocialCardNewAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.chat_icon.bringToFront();
-        holder.imgConnect.bringToFront();
-        //holder.imgConnect.setAlpha((float) 0);
-        holder.imgSkip.bringToFront();
-        //holder.imgSkip.setAlpha((float) 0);
-        //holder.lblContainer.bringToFront();
+
 
         Glide
                 .with(context)
@@ -127,6 +122,13 @@ public class SocialCardNewAdapter extends BaseAdapter {
         }
 
         else holder.imgHasTicket.setVisibility(View.GONE);
+
+        holder.chat_icon.bringToFront();
+        holder.imgConnect.bringToFront();
+        //holder.imgConnect.setAlpha((float) 0);
+        holder.imgSkip.bringToFront();
+        //holder.imgSkip.setAlpha((float) 0);
+        //holder.lblContainer.bringToFront();
 
         /*holder.lblContainer.setOnClickListener(new View.OnClickListener() {
             @Override
