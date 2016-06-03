@@ -31,7 +31,7 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
     ProfileDetailView profileDetailView;
     private final String TAG = ProfileDetailPresenterImplementation.class.getSimpleName();
     private MemberInfoModel memberInfoModel;
-    private MemberInfoModel.Data.MemberInfo memberInfo;
+    public MemberInfoModel.Data.MemberInfo memberInfo;
 
     @Override
     public void onResume() {
@@ -144,7 +144,7 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
                     final String url = file.getAbsolutePath();
                     profileDetailView.loadImageToCertainView(/*url*/ file.getAbsolutePath()
                             , memberInfo.getPhotos().size());
-                    memberInfo.getPhotos().add(url);
+                    memberInfo.getPhotos().add(file.getAbsolutePath());
                     doUpload(url, position);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -182,13 +182,11 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
     public void onImageClick(int position) {
         if (memberInfo != null && memberInfo.getPhotos() != null && memberInfo.getPhotos().size() >= position) //ada isinya
         {
-            //int ss = memberInfo.getPhotos().size();
             if(memberInfo.getPhotos().size() == 1){
                 //Log.d("photo min","not allow");
             }else{
                 profileDetailView.makeTransparent(position - 1);
                 final String url = memberInfo.getPhotos().get(position - 1);
-                Utils.d(TAG, "doDelete " + position);
                 doDelete(url, position - 1);
                 App.getInstance().trackMixPanelPictureUp(Utils.PICTURE_DELETE, url);
             }
@@ -210,7 +208,7 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
 
                     @Override
                     public void onFailure(int responseCode, String message) {
-
+                        profileDetailView.removeTransparent(position);
                     }
                 }
         );

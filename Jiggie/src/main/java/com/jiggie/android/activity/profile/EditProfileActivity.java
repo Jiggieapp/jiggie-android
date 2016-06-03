@@ -127,6 +127,7 @@ public class EditProfileActivity extends ToolbarActivity
             final String url = photos.get(i);
             ImageView view = removeTransparent(i);
             loadIntoView(url, view, i);
+            //loadImageToCertainView(url, i);
         }
 
         for (int i = photos.size(); i < 5; i++) {
@@ -141,6 +142,8 @@ public class EditProfileActivity extends ToolbarActivity
     @Override
     public void onFinishUpload(int position) {
         ImageView view = removeTransparent(position);
+        /*loadIntoView(profilePresenter.memberInfo.getPhotos().get(position)
+                , view, position);*/
     }
 
     @Override
@@ -161,13 +164,13 @@ public class EditProfileActivity extends ToolbarActivity
     private void loadIntoView(final String url, final ImageView view
             , final int position) {
         //Glide.clear(view);
-
+        Utils.d(TAG, "url " + position + " "+ url);
         Glide
                 .with(this)
                 .load(url)
                 .asBitmap()
                 //.signature(new StringSignature(System.currentTimeMillis() + ""))
-                .diskCacheStrategy( DiskCacheStrategy.RESULT)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 //.skipMemoryCache( true )
                 .into(view);
 
@@ -178,13 +181,14 @@ public class EditProfileActivity extends ToolbarActivity
     @Override
     public void loadImageToCertainView(final String tempUrl, final int position) {
         ImageView view = makeTransparent(position);
+        //Glide.clear(view);
         Glide
                 .with(this)
                 .load(tempUrl)
                 .asBitmap()
                 .signature(new StringSignature(System.currentTimeMillis() + ""))
-                .diskCacheStrategy( DiskCacheStrategy.RESULT)
-                //.skipMemoryCache( true )
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache( true )
                 .into(view);
 
         ImageView plus = getPlusImageView(position);

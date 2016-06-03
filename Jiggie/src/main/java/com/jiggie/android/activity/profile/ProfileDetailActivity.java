@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -32,6 +33,8 @@ import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.GuestModel;
 import com.jiggie.android.model.MemberInfoModel;
+import com.jiggie.android.view.HeaderProfileView;
+import com.jiggie.android.view.HeaderView;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.ArrayList;
@@ -81,6 +84,18 @@ public class ProfileDetailActivity extends ToolbarActivity
     @Bind(R.id.recycler_profile_liked_events)
     RecyclerView recyclerLikedEvents;
 
+    @Bind(R.id.toolbar_header_view)
+    protected HeaderProfileView toolbarHeaderView;
+
+    @Bind(R.id.float_header_view)
+    protected HeaderProfileView floatHeaderView;
+
+    @Bind(R.id.img_edit_top)
+    ImageView imgEditTop;
+
+    @Bind(R.id.img_edit)
+    ImageView imgEdit;
+
     private ImagePagerIndicatorAdapter pagerIndicatorAdapter;
     private MemberInfoModel memberInfoModel;
     private GuestModel.Data.GuestInterests guest;
@@ -90,6 +105,7 @@ public class ProfileDetailActivity extends ToolbarActivity
     private boolean isMe = false;
     ProfileDetailPresenter profilePresenter;
     ProfileLikedEventsAdapter adapter;
+    private boolean isHideToolbarView = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +123,9 @@ public class ProfileDetailActivity extends ToolbarActivity
         this.refreshLayout.getViewTreeObserver().addOnGlobalLayoutListener(this);
         this.refreshLayout.setOnRefreshListener(this);
         this.appBar.addOnOffsetChangedListener(this);
+
+        super.setToolbarTitle("", true);
+
     }
 
     @Override
@@ -120,13 +139,20 @@ public class ProfileDetailActivity extends ToolbarActivity
             //fb_id = "10153418311072858"; //wandy
             //fb_id = "10205703989179267"; /fazlur
             isMe = true;
-        }
-        else
-        {
-            if(fb_id.equalsIgnoreCase(AccessToken.getCurrentAccessToken().getUserId()))
+        } else {
+            if (fb_id.equalsIgnoreCase(AccessToken.getCurrentAccessToken().getUserId()))
                 isMe = true;
         }
         //fb_id = "10205703989179267";
+
+        if (isMe) {
+            imgEdit.setVisibility(View.VISIBLE);
+            imgEditTop.setVisibility(View.VISIBLE);
+        } else {
+            imgEdit.setVisibility(View.GONE);
+            imgEditTop.setVisibility(View.GONE);
+        }
+
 
         if (!isMe) {
             App.getInstance().trackMixPanelEvent("View Member Profile");
@@ -146,6 +172,17 @@ public class ProfileDetailActivity extends ToolbarActivity
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        int maxScroll = appBarLayout.getTotalScrollRange();
+        float percentage = (float) Math.abs(verticalOffset) / (float) maxScroll;
+        if (percentage == 1f && isHideToolbarView) {
+            toolbarHeaderView.setVisibility(View.VISIBLE);
+            isHideToolbarView = !isHideToolbarView;
+
+        } else if (percentage < 1f && !isHideToolbarView) {
+            toolbarHeaderView.setVisibility(View.GONE);
+            isHideToolbarView = !isHideToolbarView;
+        }
+
         if (verticalOffset == 0) {
             refreshLayout.setEnabled(true);
         } else {
@@ -296,13 +333,18 @@ public class ProfileDetailActivity extends ToolbarActivity
     @Override
     public void onSuccess(MemberInfoModel memberInfoModel) {
         MemberInfoModel.Data.MemberInfo memberInfo = memberInfoModel.getData().getMemberinfo();
-        setToolbarTitle(memberInfo.getFirst_name(), true);
+        //setToolbarTitle(memberInfo.getFirst_name(), true);
         refreshLayout.setRefreshing(false);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         adapter = new ProfileLikedEventsAdapter(this, memberInfo, isMe, this);
         recyclerLikedEvents.setLayoutManager(linearLayoutManager);
         recyclerLikedEvents.setAdapter(adapter);
+
+        toolbarHeaderView.bindTo(memberInfo.getFirst_name() + " "
+                + memberInfo.getLast_name());
+        floatHeaderView.bindTo(memberInfo.getFirst_name() + " "
+                + memberInfo.getLast_name());
     }
 
     /*@Override
@@ -449,7 +491,7 @@ public class ProfileDetailActivity extends ToolbarActivity
         return null;
     }
 
-    @Override
+   /* @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if(isMe)
         {
@@ -469,7 +511,7 @@ public class ProfileDetailActivity extends ToolbarActivity
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     @Override
     public void onEventContainerClick(final String eventId) {
@@ -477,5 +519,20 @@ public class ProfileDetailActivity extends ToolbarActivity
         i.putExtra(Common.FIELD_EVENT_ID, eventId);
         i.putExtra("from", "profile");
         super.startActivity(i);
+    }
+
+    @OnClick(R.id.img_edit)
+    void onImgEditClick() {
+        redirectToEditProfile();
+    }
+
+    @OnClick(R.id.img_edit_top)
+    void onImgEditTopClick() {
+        redirectToEditProfile();
+    }
+
+    void redirectToEditProfile() {
+        Intent i = new Intent(this, EditProfileActivity.class);
+        startActivity(i);
     }
 }

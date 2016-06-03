@@ -92,7 +92,7 @@ public class App extends Application {
 
         FacebookSdk.sdkInitialize(this);
         AppsFlyerLib.setAppsFlyerKey(super.getString(R.string.appsflyer_devkey));
-        Fabric.with(this, new Crashlytics());
+        //Fabric.with(this, new Crashlytics());
         //endregion
         this.database = new DatabaseConnection(this);
 
