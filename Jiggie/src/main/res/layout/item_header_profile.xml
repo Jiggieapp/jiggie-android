@@ -88,7 +88,7 @@
 
             </LinearLayout>
 
-            <ImageButton
+            <!--<ImageButton
                 android:id="@+id/btnEdit"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
@@ -96,7 +96,7 @@
                 android:contentDescription="@null"
                 android:padding="5dp"
                 android:scaleType="fitCenter"
-                android:src="@mipmap/ic_pencil" />
+                android:src="@mipmap/ic_pencil" />-->
         </LinearLayout>
 
     </RelativeLayout>

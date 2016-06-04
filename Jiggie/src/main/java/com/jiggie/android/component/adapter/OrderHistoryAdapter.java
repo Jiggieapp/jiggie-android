@@ -101,6 +101,16 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
             );
         }
         else if(item.getOrder().getPayment_status()
+                .equalsIgnoreCase(Utils.PAYMENT_STATUS_RESERVE))
+        {
+            holder.isPaid = true;
+            holder.container.setBackground(
+                    App.getInstance().getResources().getDrawable(R.drawable.btn_tag_blue));
+            holder.lblStatus.setText(
+                    App.getInstance().getResources().getString(R.string.reserved)
+            );
+        }
+        else if(item.getOrder().getPayment_status()
                 .equalsIgnoreCase(Utils.PAYMENT_STATUS_REFUND))
         {
             holder.isPaid = false;
@@ -110,7 +120,6 @@ public class OrderHistoryAdapter extends RecyclerView.Adapter<OrderHistoryAdapte
                     App.getInstance().getResources().getString(R.string.refund)
             );
         }
-
     }
 
     @Override

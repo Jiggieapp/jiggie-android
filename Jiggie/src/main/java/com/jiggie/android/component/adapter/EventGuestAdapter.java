@@ -49,7 +49,8 @@ public class EventGuestAdapter extends RecyclerView.Adapter<EventGuestAdapter.Vi
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final GuestModel.Data.GuestInterests item = this.guests.get(position);
-        final String url = App.getFacebookImage(item.getFb_id(), holder.image.getWidth() * 2);
+        //final String url = App.getFacebookImage(item.getFb_id(), holder.image.getWidth() * 2);
+        final String url = item.getProfile_image();
 
         holder.guest = item;
         holder.text.setText(String.format("%s %s", item.getFirst_name().toUpperCase(), ""));
@@ -117,8 +118,9 @@ public class EventGuestAdapter extends RecyclerView.Adapter<EventGuestAdapter.Vi
         @SuppressWarnings("unused")
         @OnClick(R.id.layoutConnect)
         void btnConnectOnClick() {
-            if (this.listener != null)
+            if (this.listener != null&&txtConnect.getText().toString().equalsIgnoreCase("connect")){
                 this.listener.onGuestConnect(this);
+            }
         }
 
         public GuestModel.Data.GuestInterests getGuest() { return this.guest; }

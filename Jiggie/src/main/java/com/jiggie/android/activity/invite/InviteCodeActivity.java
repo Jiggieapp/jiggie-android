@@ -106,6 +106,13 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
             initView();
         }
         //initView();
+
+        if(getInviteCodeResultModel()!=null){
+            App.getInstance().trackMixPanelReferral(Utils.INVITE_FRIENDS_SCREEN
+                    , getReferEventMixPanelModel(
+                    inviteCodeResultModel.getData().getInvite_code().getCode(), inviteCodeResultModel.getData().getInvite_code().getInvite_url()));
+        }
+
     }
 
     private void initView() {
@@ -171,6 +178,10 @@ public class InviteCodeActivity extends ToolbarActivity implements InviteCodeVie
     public void onFinishGetInviteCode(InviteCodeResultModel inviteCodeResultModel) {
         dismissProgressDialog();
         setInviteCodeResultModel(inviteCodeResultModel);
+
+        App.getInstance().trackMixPanelReferral(Utils.INVITE_FRIENDS_SCREEN
+                , getReferEventMixPanelModel(
+                inviteCodeResultModel.getData().getInvite_code().getCode(), inviteCodeResultModel.getData().getInvite_code().getInvite_url()));
     }
 
     @Override

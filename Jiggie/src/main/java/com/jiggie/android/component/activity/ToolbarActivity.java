@@ -48,6 +48,13 @@ public abstract class ToolbarActivity extends BaseActivity {
         }
     }
 
+    protected void setBackIcon(int res){
+        final ActionBar actionBar = super.getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setIcon(res);
+        }
+    }
+
     protected void setBackEnabled(boolean backEnabled) {
         final ActionBar actionBar = super.getSupportActionBar();
         if (actionBar != null)

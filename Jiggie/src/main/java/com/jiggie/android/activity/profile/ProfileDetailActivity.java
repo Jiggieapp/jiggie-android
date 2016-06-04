@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,9 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -28,7 +25,6 @@ import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.event.EventDetailActivity;
 import com.jiggie.android.activity.profile.adapter.ProfileLikedEventsAdapter;
-import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.ImagePagerIndicatorAdapter;
@@ -36,18 +32,16 @@ import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.GuestModel;
-import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.MemberInfoModel;
-import com.jiggie.android.model.SettingModel;
+import com.jiggie.android.view.HeaderProfileView;
+import com.jiggie.android.view.HeaderView;
 import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 import butterknife.Bind;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
-import it.sephiroth.android.library.widget.HListView;
 
 /**
  * Created by rangg on 14/11/2015.
@@ -90,6 +84,18 @@ public class ProfileDetailActivity extends ToolbarActivity
     @Bind(R.id.recycler_profile_liked_events)
     RecyclerView recyclerLikedEvents;
 
+    @Bind(R.id.toolbar_header_view)
+    protected HeaderProfileView toolbarHeaderView;
+
+    @Bind(R.id.float_header_view)
+    protected HeaderProfileView floatHeaderView;
+
+    @Bind(R.id.img_edit_top)
+    ImageView imgEditTop;
+
+    @Bind(R.id.img_edit)
+    ImageView imgEdit;
+
     private ImagePagerIndicatorAdapter pagerIndicatorAdapter;
     private MemberInfoModel memberInfoModel;
     private GuestModel.Data.GuestInterests guest;
@@ -99,6 +105,7 @@ public class ProfileDetailActivity extends ToolbarActivity
     private boolean isMe = false;
     ProfileDetailPresenter profilePresenter;
     ProfileLikedEventsAdapter adapter;
+    private boolean isHideToolbarView = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +123,9 @@ public class ProfileDetailActivity extends ToolbarActivity
         this.refreshLayout.getViewTreeObserver().addOnGlobalLayoutListener(this);
         this.refreshLayout.setOnRefreshListener(this);
         this.appBar.addOnOffsetChangedListener(this);
+
+        super.setToolbarTitle("", true);
+
     }
 
     @Override
@@ -129,8 +139,20 @@ public class ProfileDetailActivity extends ToolbarActivity
             //fb_id = "10153418311072858"; //wandy
             //fb_id = "10205703989179267"; /fazlur
             isMe = true;
+        } else {
+            if (fb_id.equalsIgnoreCase(AccessToken.getCurrentAccessToken().getUserId()))
+                isMe = true;
         }
         //fb_id = "10205703989179267";
+
+        if (isMe) {
+            imgEdit.setVisibility(View.VISIBLE);
+            imgEditTop.setVisibility(View.VISIBLE);
+        } else {
+            imgEdit.setVisibility(View.GONE);
+            imgEditTop.setVisibility(View.GONE);
+        }
+
 
         if (!isMe) {
             App.getInstance().trackMixPanelEvent("View Member Profile");
@@ -150,6 +172,17 @@ public class ProfileDetailActivity extends ToolbarActivity
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        int maxScroll = appBarLayout.getTotalScrollRange();
+        float percentage = (float) Math.abs(verticalOffset) / (float) maxScroll;
+        if (percentage == 1f && isHideToolbarView) {
+            toolbarHeaderView.setVisibility(View.VISIBLE);
+            isHideToolbarView = !isHideToolbarView;
+
+        } else if (percentage < 1f && !isHideToolbarView) {
+            toolbarHeaderView.setVisibility(View.GONE);
+            isHideToolbarView = !isHideToolbarView;
+        }
+
         if (verticalOffset == 0) {
             refreshLayout.setEnabled(true);
         } else {
@@ -300,7 +333,7 @@ public class ProfileDetailActivity extends ToolbarActivity
     @Override
     public void onSuccess(MemberInfoModel memberInfoModel) {
         MemberInfoModel.Data.MemberInfo memberInfo = memberInfoModel.getData().getMemberinfo();
-        setToolbarTitle(memberInfo.getFirst_name(), true);
+        //setToolbarTitle(memberInfo.getFirst_name(), true);
         refreshLayout.setRefreshing(false);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -308,6 +341,10 @@ public class ProfileDetailActivity extends ToolbarActivity
         recyclerLikedEvents.setLayoutManager(linearLayoutManager);
         recyclerLikedEvents.setAdapter(adapter);
 
+        toolbarHeaderView.bindTo(memberInfo.getFirst_name() + " "
+                + memberInfo.getLast_name());
+        floatHeaderView.bindTo(memberInfo.getFirst_name() + " "
+                + memberInfo.getLast_name());
     }
 
     /*@Override
@@ -409,7 +446,9 @@ public class ProfileDetailActivity extends ToolbarActivity
 
     @Override
     public void onFailure() {
-
+        //Toast.makeText(ProfileDetailActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getResources().getString(R.string.socket_timeout_exception), Toast.LENGTH_SHORT).show();
+        refreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -433,6 +472,11 @@ public class ProfileDetailActivity extends ToolbarActivity
     }
 
     @Override
+    public void doCrop(Uri filepath, Uri destination) {
+
+    }
+
+    @Override
     public ImageView makeTransparent(int position) {
         return null;
     }
@@ -447,12 +491,7 @@ public class ProfileDetailActivity extends ToolbarActivity
         return null;
     }
 
-    @Override
-    public void doCrop(String imagePath) {
-
-    }
-
-    @Override
+   /* @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if(isMe)
         {
@@ -467,12 +506,12 @@ public class ProfileDetailActivity extends ToolbarActivity
         switch (item.getItemId())
         {
             case R.id.edit_profile:
-                Intent i = new Intent(this, NewProfileDetailActivity.class);
+                Intent i = new Intent(this, EditProfileActivity.class);
                 startActivity(i);
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     @Override
     public void onEventContainerClick(final String eventId) {
@@ -480,5 +519,20 @@ public class ProfileDetailActivity extends ToolbarActivity
         i.putExtra(Common.FIELD_EVENT_ID, eventId);
         i.putExtra("from", "profile");
         super.startActivity(i);
+    }
+
+    @OnClick(R.id.img_edit)
+    void onImgEditClick() {
+        redirectToEditProfile();
+    }
+
+    @OnClick(R.id.img_edit_top)
+    void onImgEditTopClick() {
+        redirectToEditProfile();
+    }
+
+    void redirectToEditProfile() {
+        Intent i = new Intent(this, EditProfileActivity.class);
+        startActivity(i);
     }
 }

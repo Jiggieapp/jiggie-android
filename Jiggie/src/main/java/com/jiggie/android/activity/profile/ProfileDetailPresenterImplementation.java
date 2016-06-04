@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import com.jiggie.android.App;
 import com.jiggie.android.component.ImageCompressionAsyncTask;
@@ -16,6 +17,7 @@ import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.MemberInfoModel;
 import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SuccessUploadModel;
+import com.soundcloud.android.crop.Crop;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,7 +31,7 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
     ProfileDetailView profileDetailView;
     private final String TAG = ProfileDetailPresenterImplementation.class.getSimpleName();
     private MemberInfoModel memberInfoModel;
-    private MemberInfoModel.Data.MemberInfo memberInfo;
+    public MemberInfoModel.Data.MemberInfo memberInfo;
 
     @Override
     public void onResume() {
@@ -78,7 +80,8 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
         int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
         String filePath = cursor.getString(columnIndex);
         cursor.close();
-        doLoadImage(filePath);
+        doCropImage(filePath);
+        //doLoadImage(filePath);
         //profileDetailView.doCrop(filePath);
     }
 
@@ -93,13 +96,30 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
         if (imageCursor.moveToFirst()) {
             selectedImagePath = imageCursor.getString(imageCursor.getColumnIndex(MediaStore.Images.Media.DATA));
         }
-        doLoadImage(selectedImagePath);
+        doCropImage(selectedImagePath);
+        //doLoadImage(selectedImagePath);
         //profileDetailView.doCrop(selectedImagePath);
     }
 
 
     public ProfileDetailPresenterImplementation(ProfileDetailView profileDetailView) {
         this.profileDetailView = profileDetailView;
+    }
+
+    private void doCropImage(final String filepath)
+    {
+        profileDetailView.doCrop(Uri.parse("file:///" + filepath), Uri.parse("file://" + getProfilePicFile().getPath()));
+    }
+
+    private File getProfilePicFile()
+    {
+        if(memberInfo != null && memberInfo.getPhotos() != null)
+        {
+            final int position = memberInfo.getPhotos().size();
+            File file = new File(App.getInstance().getFilesDir().getPath(), "profile"+position+".jpg");
+            return file;
+        }
+        return null;
     }
 
     protected void doLoadImage(final String url)
@@ -112,15 +132,19 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
                 //FileUtils.writeByteArrayToFile(new File("pathname"), myByteArray);
                 FileOutputStream fos = null;
                 try {
+                    //File file = new File(App.getInstance().getFilesDir().getPath(), "profile"+position+".jpg");
+                    //Utils.d(TAG, "urlDoInBG " + url);
+                    //File file = getProfilePicFile();
+                    //File file = new File("/" + url);
                     File file = new File(App.getInstance().getFilesDir().getPath(), "profile"+position+".jpg");
                     fos = new FileOutputStream(file.getAbsolutePath());
                     fos.write(imageBytes);
                     fos.close();
 
                     final String url = file.getAbsolutePath();
-                    profileDetailView.loadImageToCertainView(url
+                    profileDetailView.loadImageToCertainView(/*url*/ file.getAbsolutePath()
                             , memberInfo.getPhotos().size());
-                    memberInfo.getPhotos().add(url);
+                    memberInfo.getPhotos().add(file.getAbsolutePath());
                     doUpload(url, position);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -138,9 +162,9 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
             AccountManager.doUpload(file, new OnResponseListener() {
                 @Override
                 public void onSuccess(Object object) {
-                    //memberInfo.getPhotos().remove(position);
-                    Utils.d(TAG, "url " + ((SuccessUploadModel) object).getUrl());
-                    memberInfo.getPhotos().add(position, ((SuccessUploadModel) object).getUrl());
+                    memberInfo.getPhotos().remove(position);
+                    memberInfo.getPhotos().add(position, ((SuccessUploadModel) object).getUrl()
+                            + "?" + System.currentTimeMillis());
                     App.getInstance().trackMixPanelPictureUp(Utils.PICTURE_UPLOAD, ((SuccessUploadModel) object).getUrl());
                     profileDetailView.onFinishUpload(position);
                 }
@@ -158,11 +182,14 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
     public void onImageClick(int position) {
         if (memberInfo != null && memberInfo.getPhotos() != null && memberInfo.getPhotos().size() >= position) //ada isinya
         {
-            profileDetailView.makeTransparent(position - 1);
-            final String url = memberInfo.getPhotos().get(position - 1);
-            Utils.d(TAG, "url " + url);
-            doDelete(url, position - 1);
-            App.getInstance().trackMixPanelPictureUp(Utils.PICTURE_DELETE, url);
+            if(memberInfo.getPhotos().size() == 1){
+                //Log.d("photo min","not allow");
+            }else{
+                profileDetailView.makeTransparent(position - 1);
+                final String url = memberInfo.getPhotos().get(position - 1);
+                doDelete(url, position - 1);
+                App.getInstance().trackMixPanelPictureUp(Utils.PICTURE_DELETE, url);
+            }
         }
         else
         {
@@ -181,7 +208,7 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
 
                     @Override
                     public void onFailure(int responseCode, String message) {
-
+                        profileDetailView.removeTransparent(position);
                     }
                 }
         );

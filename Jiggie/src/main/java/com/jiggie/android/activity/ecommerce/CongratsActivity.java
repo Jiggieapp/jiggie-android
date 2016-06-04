@@ -240,8 +240,8 @@ public class CongratsActivity extends ToolbarActivity {
                         divider.setVisibility(View.GONE);
 
                         if(summary.getPay_deposit().equals(Utils.NOL_RUPIAH)){
-                            txtStatusTitle.setVisibility(View.GONE);
-                            txtStatusFill.setVisibility(View.GONE);
+                            /*txtStatusTitle.setVisibility(View.GONE);
+                            txtStatusFill.setVisibility(View.GONE);*/
                             txtPaymentTitle.setVisibility(View.GONE);
                             txtPaymentFill.setVisibility(View.GONE);
                         }
@@ -290,6 +290,8 @@ public class CongratsActivity extends ToolbarActivity {
                     if (Integer.parseInt(credit.getCredit_used()) != 0) {
                         relCredit.setVisibility(View.VISIBLE);
                         txtCreditFill.setText("- " + StringUtility.getRupiahFormat(credit.getCredit_used()));
+                    }else{
+                        relCredit.setVisibility(View.GONE);
                     }
 
                     SucScreenCCModel.Data.Success_screen.Discount discount = sucScreenCCModel.getData().getSuccess_screen().getDiscount();

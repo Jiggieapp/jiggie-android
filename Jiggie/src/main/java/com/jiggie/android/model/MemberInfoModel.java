@@ -1,5 +1,7 @@
 package com.jiggie.android.model;
 
+import com.jiggie.android.component.Utils;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -279,37 +281,24 @@ public class MemberInfoModel {
             }
 
             public String getUser_first_name() {
-                return user_first_name;
+                return user_first_name.substring(0, 1).toUpperCase() + user_first_name.substring(1);
             }
 
-            public void setUser_first_name(String user_first_name) {
-                this.user_first_name = user_first_name;
-            }
 
             public String getUser_last_name() {
-                return user_last_name;
+                return user_last_name.substring(0, 1).toUpperCase() + user_last_name.substring(1);
             }
 
-            public void setUser_last_name(String user_last_name) {
-                this.user_last_name = user_last_name;
-            }
 
             public String getFirst_name() {
-                return first_name;
+                return first_name.substring(0, 1).toUpperCase() + first_name.substring(1);
             }
 
-            public void setFirst_name(String first_name) {
-                first_name = first_name.substring(0, 1).toUpperCase() + first_name.substring(1);
-                this.first_name = first_name;
-            }
 
             public String getLast_name() {
-                return last_name;
+                return last_name.substring(0, 1).toUpperCase() + last_name.substring(1);
             }
 
-            public void setLast_name(String last_name) {
-                this.last_name = last_name;
-            }
 
             public String getProfile_image_url() {
                 return profile_image_url;

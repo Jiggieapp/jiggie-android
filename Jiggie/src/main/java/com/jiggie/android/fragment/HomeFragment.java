@@ -112,6 +112,7 @@ public class HomeFragment extends Fragment
     private int currentPosition;
     boolean isAlreadyExpand = false;
     private ArrayList<String> selectedItems = new ArrayList<>();
+    private ArrayList<String> latestSelectedItems = new ArrayList<>();
     private boolean hasChanged;
     ProgressDialog progressDialog;
     boolean isFirstClick = true;
@@ -280,7 +281,6 @@ public class HomeFragment extends Fragment
                     behavior.setState(BottomSheetBehavior.STATE_EXPANDED);*/
                     behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 }
-                Log.d("state", String.valueOf(newState));
             }
 
             @Override
@@ -302,7 +302,13 @@ public class HomeFragment extends Fragment
                     behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                     isAlreadyExpand = false;
                     viewShadow.setVisibility(View.GONE);
-                    changeTags();
+                    if(shouldCheckTags()){
+                        latestSelectedItems.clear();
+                        for(int i=0;i<selectedItems.size();i++){
+                            latestSelectedItems.add(selectedItems.get(i));
+                        }
+                        changeTags();
+                    }
                 } else {
                     fab.setImageResource(R.drawable.ic_action_cancel);
                     behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -379,6 +385,39 @@ public class HomeFragment extends Fragment
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+    private boolean shouldCheckTags(){
+        boolean shouldCheckTags = false;
+
+        int currentSizeSelected = selectedItems.size();
+        int latestSizeSelected = latestSelectedItems.size();
+
+        if(currentSizeSelected!=latestSizeSelected){
+            shouldCheckTags = true;
+        }else{
+
+            for(int i=0;i<currentSizeSelected;i++){
+                String tagA = selectedItems.get(i);
+                boolean isFounded = false;
+
+                for(int j=0;j<latestSizeSelected;j++){
+                    String tagB = latestSelectedItems.get(j);
+
+                    if(tagA.equals(tagB)){
+                        isFounded = true;
+                        break;
+                    }
+                }
+
+                if(!isFounded){
+                    shouldCheckTags = true;
+                    break;
+                }
+            }
+        }
+
+        return shouldCheckTags;
     }
 
     private void changeTags() {
@@ -467,6 +506,7 @@ public class HomeFragment extends Fragment
 
                     if (result.contains(res)) {
                         selectedItems.add(res);
+                        latestSelectedItems.add(res);
                         //holder.checkView.setVisibility(View.GONE);
                         holder.checkView.setVisibility(View.INVISIBLE);
                     } else {
@@ -536,6 +576,9 @@ public class HomeFragment extends Fragment
                 this.selectedItems.remove(holder.text);
             }
         }
+
+        int cur = selectedItems.size();
+        int las = latestSelectedItems.size();
 
         if (!doNothing) {
             //holder.checkView.setVisibility(selected ? View.VISIBLE : View.GONE);
@@ -716,6 +759,7 @@ public class HomeFragment extends Fragment
             //Log.d("", "");
             bottomSheet.setVisibility(View.GONE);
         } else if(position == MORE_TAB){
+            showToolbar();
             fab.setVisibility(View.GONE);
             fabInvite.setVisibility(View.GONE);
             bottomSheet.setVisibility(View.GONE);

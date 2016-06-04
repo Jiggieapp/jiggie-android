@@ -86,5 +86,5 @@
         android:layout_height="0.5dp"
         android:layout_marginLeft="74dp"
         android:layout_marginStart="74dp"
-        android:background="@android:color/darker_gray" />
+        android:background="@color/divider_pantone" />
 </LinearLayout>

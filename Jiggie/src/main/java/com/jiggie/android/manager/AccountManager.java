@@ -855,13 +855,11 @@ public class AccountManager extends BaseManager {
         doDelete(url, new CustomCallback() {
             @Override
             public void onCustomCallbackResponse(Response response) {
-                Utils.d(TAG, "success delete");
                 onResponseListener.onSuccess(response);
             }
 
             @Override
             public void onCustomCallbackFailure(String t) {
-                Utils.d(TAG, "fail delete");
                 onResponseListener.onFailure(Utils.CODE_FAILED, t);
             }
 

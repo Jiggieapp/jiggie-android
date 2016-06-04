@@ -2,6 +2,7 @@ package com.jiggie.android.activity.profile;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -21,8 +22,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.signature.StringSignature;
 import com.facebook.AccessToken;
-import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
@@ -31,10 +32,8 @@ import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.MemberInfoModel;
-import com.jiggie.android.model.SuccessUploadModel;
 import com.jiggie.android.view.RoundedImageView;
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
+import com.soundcloud.android.crop.Crop;
 
 import java.util.ArrayList;
 
@@ -44,7 +43,7 @@ import butterknife.OnClick;
 /**
  * Created by Wandy on 5/2/2016.
  */
-public class NewProfileDetailActivity extends ToolbarActivity
+public class EditProfileActivity extends ToolbarActivity
         implements ProfileDetailView {
 
     @Bind(R.id.txtUser)
@@ -82,7 +81,7 @@ public class NewProfileDetailActivity extends ToolbarActivity
 
     private float smallerRadius = 3.0f;
 
-    private final String TAG = NewProfileDetailActivity.class.getSimpleName();
+    private final String TAG = EditProfileActivity.class.getSimpleName();
     private final int PICK_IMAGE_REQUEST = 1;
     private final int PICK_IMAGE_KITKAT_REQUEST = 2;
     private final int EDIT_PROFILE = 9;
@@ -128,6 +127,7 @@ public class NewProfileDetailActivity extends ToolbarActivity
             final String url = photos.get(i);
             ImageView view = removeTransparent(i);
             loadIntoView(url, view, i);
+            //loadImageToCertainView(url, i);
         }
 
         for (int i = photos.size(); i < 5; i++) {
@@ -142,6 +142,8 @@ public class NewProfileDetailActivity extends ToolbarActivity
     @Override
     public void onFinishUpload(int position) {
         ImageView view = removeTransparent(position);
+        /*loadIntoView(profilePresenter.memberInfo.getPhotos().get(position)
+                , view, position);*/
     }
 
     @Override
@@ -150,26 +152,50 @@ public class NewProfileDetailActivity extends ToolbarActivity
         view.setImageBitmap(null);
         ImageView plus = getPlusImageView(position);
         plus.setImageDrawable(getResources().getDrawable(R.drawable.plus_button_image_view));
+    }
 
+    @Override
+    public void doCrop(Uri filepath, Uri destination) {
+        Crop.of(filepath, destination)
+                .asSquare()
+                .start(this);
     }
 
     private void loadIntoView(final String url, final ImageView view
             , final int position) {
+        //Glide.clear(view);
+        Utils.d(TAG, "url " + position + " "+ url);
         Glide
                 .with(this)
                 .load(url)
                 .asBitmap()
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                //.signature(new StringSignature(System.currentTimeMillis() + ""))
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                //.skipMemoryCache( true )
                 .into(view);
+
         ImageView plus = getPlusImageView(position);
         plus.setImageDrawable(getResources().getDrawable(R.drawable.cross_button_image_view));
     }
 
     @Override
     public void loadImageToCertainView(final String tempUrl, final int position) {
-
         ImageView view = makeTransparent(position);
-        loadIntoView(tempUrl, view, position);
+        //Glide.clear(view);
+        Glide
+                .with(this)
+                .load(tempUrl)
+                .asBitmap()
+                .signature(new StringSignature(System.currentTimeMillis() + ""))
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache( true )
+                .into(view);
+
+        ImageView plus = getPlusImageView(position);
+        plus.setImageDrawable(getResources().getDrawable(R.drawable.cross_button_image_view));
+
+        //jgn dihapus, wandy 01-06-2016
+        //loadIntoView(tempUrl, view, position);
     }
 
     @Override
@@ -223,11 +249,13 @@ public class NewProfileDetailActivity extends ToolbarActivity
 
     @Override
     public void fetchDetail() {
+        showProgressDialog();
         profilePresenter.fetchMemberInfo(AccessToken.getCurrentAccessToken().getUserId());
     }
 
     @Override
     public void onSuccess(MemberInfoModel memberInfoModel) {
+        dismissProgressDialog();
         MemberInfoModel.Data.MemberInfo memberInfo = memberInfoModel.getData().getMemberinfo();
         super.setToolbarTitle(memberInfo.getFirst_name(), true);
         final String age = StringUtility.getAge2(memberInfo.getBirthday());
@@ -239,6 +267,7 @@ public class NewProfileDetailActivity extends ToolbarActivity
 
     @Override
     public void onFailure() {
+        dismissProgressDialog();
         Toast.makeText(this, getResources().getString(R.string.socket_timeout_exception), Toast.LENGTH_SHORT).show();
         finish();
     }
@@ -250,30 +279,21 @@ public class NewProfileDetailActivity extends ToolbarActivity
             intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
-        }
-        else if(Build.VERSION.SDK_INT >= 23)
-        {
+        } else if (Build.VERSION.SDK_INT >= 23) {
             // Here, thisActivity is the current activity
-            Utils.d(TAG, "permission " + ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE)
-                    + " " + PackageManager.PERMISSION_GRANTED);
-            if (ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE)
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED
-                    || ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE)
+                    || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_DENIED) {
 
                 // Should we show an explanation?
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                         Manifest.permission.READ_EXTERNAL_STORAGE)) {
-
                     // Show an expanation to the user *asynchronously* -- don't block
                     // this thread waiting for the user's response! After the user
                     // sees the explanation, try again to request the permission.
-
                 } else {
-
                     // No explanation needed, we can request the permission.
-
                     ActivityCompat.requestPermissions(this,
                             new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                             MY_PERMISSIONS_REQUEST_READ_CONTACTS);
@@ -283,8 +303,7 @@ public class NewProfileDetailActivity extends ToolbarActivity
                     // result of the request.
                 }
             }
-        }
-        else {
+        } else {
             startGalleryIntent();
         }
     }
@@ -306,7 +325,7 @@ public class NewProfileDetailActivity extends ToolbarActivity
 
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
-                    Toast.makeText(NewProfileDetailActivity.this
+                    Toast.makeText(EditProfileActivity.this
                             , "You must enable the permission before you can upload photos", Toast.LENGTH_SHORT).show();
                 }
                 return;
@@ -317,8 +336,7 @@ public class NewProfileDetailActivity extends ToolbarActivity
         }
     }
 
-    private void startGalleryIntent()
-    {
+    private void startGalleryIntent() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("image/*");
@@ -356,8 +374,6 @@ public class NewProfileDetailActivity extends ToolbarActivity
                         Utils.d(TAG, "out of bound exception");
                     }
                 }
-
-
             }
         } else if (resultCode == RESULT_OK && requestCode == EDIT_PROFILE) {
             if (TextUtils.isEmpty(AccountManager.loadLogin().getAbout())) {
@@ -367,7 +383,7 @@ public class NewProfileDetailActivity extends ToolbarActivity
                 this.txtDescription.setText(AccountManager.loadLogin().getAbout());
             }
         }
-        else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+        /*else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
                 Uri resultUri = result.getUri();
@@ -375,8 +391,12 @@ public class NewProfileDetailActivity extends ToolbarActivity
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }
+        }*/
+        else if (requestCode == Crop.REQUEST_CROP && resultCode == RESULT_OK) {
+            //doSomethingWithCroppedImage(outputUri);
+            final String uri = Crop.getOutput(data).toString().replace("file:///", "");
+            profilePresenter.doLoadImage(uri);
         }
-
     }
 
     // By using this method get the Uri of Internal/External Storage for Media
@@ -427,14 +447,21 @@ public class NewProfileDetailActivity extends ToolbarActivity
     @OnClick(R.id.btnEdit)
     void btnEditOnClick() {
         super.startActivityForResult(new Intent(this, ProfileEditActivity.class)
-                .putExtra(Common.FIELD_ABOUT, AccountManager.loadLogin().getAbout()), EDIT_PROFILE);
+                .putExtra(Common.FIELD_ABOUT, txtDescription.getText()), EDIT_PROFILE);
     }
 
-    @Override
-    public void doCrop(String imagePath) {
-        Utils.d(TAG, "doCrop");
-        CropImage.activity(Uri.parse(imagePath))
-                .setGuidelines(CropImageView.Guidelines.ON)
-                .start(this);
+    private ProgressDialog progressDialog;
+    private void showProgressDialog()
+    {
+        progressDialog = ProgressDialog.show(this, "", getResources().getString(R.string.wait), true);
+    }
+
+    private void dismissProgressDialog()
+    {
+        if(progressDialog != null && progressDialog.isShowing())
+        {
+            progressDialog.dismiss();
+        }
     }
 }
+

@@ -271,9 +271,7 @@ public class FlingCardListener implements View.OnTouchListener {
                     }
                 })
                 .rotation(getExitRotation(isLeft));
-
     }
-
 
     /**
      * Starts a default left exit animation.
@@ -344,6 +342,13 @@ public class FlingCardListener implements View.OnTouchListener {
         return new PointF(this.aPosX, this.aPosY);
     }
 
+    public void onEventClicked() {
+    }
+
+    public void setSkipAlpha() {
+    }
+
+
     public interface FlingListener {
         void onCardExited();
 
@@ -354,6 +359,8 @@ public class FlingCardListener implements View.OnTouchListener {
         void onClick(Object dataObject);
 
         void onScroll(float scrollProgressPercent);
+
+        //void onEventClicked(Object dataObject);
     }
 
 }
