@@ -42,7 +42,7 @@
             android:layout_marginTop="@dimen/padding_standard">
 
             <com.jiggie.android.component.FlowLayout
-                android:id="@+id/flowLayout"
+                android:id="@+id/flowLayoutSetupTags"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 

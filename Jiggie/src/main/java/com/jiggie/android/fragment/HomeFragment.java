@@ -90,7 +90,7 @@ public class HomeFragment extends Fragment
     FloatingActionButton fab;
     @Bind(R.id.fab_invite)
     FloatingActionButton fabInvite;
-    @Bind(R.id.flowLayout)
+    @Bind(R.id.flowLayoutHome)
     FlowLayout flowLayout;
     @Bind(R.id.txt_place)
     TextView txtPlace;
