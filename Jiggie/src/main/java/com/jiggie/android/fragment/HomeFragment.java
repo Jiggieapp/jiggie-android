@@ -77,7 +77,8 @@ import it.sephiroth.android.library.tooltip.Tooltip;
  */
 public class HomeFragment extends Fragment
         implements ViewPager.OnPageChangeListener, ViewTreeObserver.OnGlobalLayoutListener, HomeMain {
-    @Nullable @Bind(R.id.appBar)
+    @Nullable
+    @Bind(R.id.appBar)
     AppBarLayout appBarLayout;
     @Bind(R.id.viewpagerw)
     ViewPager viewPager;
@@ -107,17 +108,15 @@ public class HomeFragment extends Fragment
     final int EVENT_TAB = 0;
     final int SOCIAL_TAB = 1;
     final int CHAT_TAB = 2;
-    final int MORE_TAB = 3;
 
     private int currentPosition;
     boolean isAlreadyExpand = false;
     private ArrayList<String> selectedItems = new ArrayList<>();
-    private ArrayList<String> latestSelectedItems = new ArrayList<>();
     private boolean hasChanged;
     ProgressDialog progressDialog;
     boolean isFirstClick = true;
     View bottomSheet;
-     AppCompatActivity activity;
+    AppCompatActivity activity;
 
     @Nullable
     @Override
@@ -199,8 +198,8 @@ public class HomeFragment extends Fragment
             public void onAnimationStart(Animation animation) {
                 //if(fabInvite.getVisibility() == View.VISIBLE)
                 //{
-                    //fabInvite.setVisibility(View.GONE);
-                    fabInvite.startAnimation(makeOutAnimationInvite);
+                //fabInvite.setVisibility(View.GONE);
+                fabInvite.startAnimation(makeOutAnimationInvite);
                 //}
                 fab.setVisibility(View.VISIBLE);
             }
@@ -212,7 +211,7 @@ public class HomeFragment extends Fragment
                 fab.setVisibility(View.GONE);
                 /*if(fabInvite.getVisibility() == View.GONE)
                 {*/
-                    fabInvite.startAnimation(makeInAnimationInvite);
+                fabInvite.startAnimation(makeInAnimationInvite);
                 /*}*/
 
             }
@@ -281,6 +280,7 @@ public class HomeFragment extends Fragment
                     behavior.setState(BottomSheetBehavior.STATE_EXPANDED);*/
                     behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 }
+                Log.d("state", String.valueOf(newState));
             }
 
             @Override
@@ -302,13 +302,7 @@ public class HomeFragment extends Fragment
                     behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                     isAlreadyExpand = false;
                     viewShadow.setVisibility(View.GONE);
-                    if(shouldCheckTags()){
-                        latestSelectedItems.clear();
-                        for(int i=0;i<selectedItems.size();i++){
-                            latestSelectedItems.add(selectedItems.get(i));
-                        }
-                        changeTags();
-                    }
+                    changeTags();
                 } else {
                     fab.setImageResource(R.drawable.ic_action_cancel);
                     behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -320,8 +314,7 @@ public class HomeFragment extends Fragment
             }
         });
 
-        fabInvite.setOnClickListener(new View.OnClickListener()
-        {
+        fabInvite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getActivity().startActivity(new Intent(getActivity(), InviteFriendsActivity.class));
@@ -361,16 +354,16 @@ public class HomeFragment extends Fragment
         });
 
         //TOOLTIP PART===============
-        if(tab.getSelectedTabPosition()==EVENT_TAB){
+        if (tab.getSelectedTabPosition() == EVENT_TAB) {
             if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_EVENT_LIST)) {
                 TooltipsManager.initTooltipWithPoint(getActivity(), new Point(TooltipsManager.getCenterPoint(getActivity())[0],
                         TooltipsManager.getCenterPoint(getActivity())[1]), getActivity().getString(R.string.tooltip_event_list), Utils.myPixel(getActivity(), 380), Tooltip.Gravity.BOTTOM);
                 TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_EVENT_LIST, true);
             }
 
-            if(SocialManager.countData>0){
+            if (SocialManager.countData > 0) {
                 if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_SOCIAL_TAB)) {
-                    TooltipsManager.initTooltipWithPoint(getActivity(), new Point(TooltipsManager.getCenterPoint(getActivity())[0]-Utils.myPixel(getActivity(), 48),
+                    TooltipsManager.initTooltipWithPoint(getActivity(), new Point(TooltipsManager.getCenterPoint(getActivity())[0],
                             TooltipsManager.getCenterPoint(getActivity())[1] / 3), getActivity().getString(R.string.tooltip_social_tab), Utils.myPixel(getActivity(), 380), Tooltip.Gravity.BOTTOM);
                     TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_SOCIAL_TAB, true);
                 }
@@ -385,39 +378,6 @@ public class HomeFragment extends Fragment
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
-    }
-
-    private boolean shouldCheckTags(){
-        boolean shouldCheckTags = false;
-
-        int currentSizeSelected = selectedItems.size();
-        int latestSizeSelected = latestSelectedItems.size();
-
-        if(currentSizeSelected!=latestSizeSelected){
-            shouldCheckTags = true;
-        }else{
-
-            for(int i=0;i<currentSizeSelected;i++){
-                String tagA = selectedItems.get(i);
-                boolean isFounded = false;
-
-                for(int j=0;j<latestSizeSelected;j++){
-                    String tagB = latestSelectedItems.get(j);
-
-                    if(tagA.equals(tagB)){
-                        isFounded = true;
-                        break;
-                    }
-                }
-
-                if(!isFounded){
-                    shouldCheckTags = true;
-                    break;
-                }
-            }
-        }
-
-        return shouldCheckTags;
     }
 
     private void changeTags() {
@@ -453,7 +413,7 @@ public class HomeFragment extends Fragment
                 .equalsIgnoreCase(Utils.MSG_EMPTY_DATA)) {
             showToast(getResources().getString(R.string.preferred_experience));
         } else {
-            if(!exceptionModel.getMessage().contains("no card"))
+            if (!exceptionModel.getMessage().contains("no card"))
                 showToast(exceptionModel.getMessage());
         }
         //this.progressDialog.setVisibility(View.GONE);
@@ -496,34 +456,35 @@ public class HomeFragment extends Fragment
                 ArrayList<String> result = memberSettingResultModel.getData().getMembersettings().getExperiences();
 
                 for (String res : getTags()) {
-                    final View view = getActivity().getLayoutInflater().inflate(R.layout.item_setup_tag, flowLayout, false);
-                    final ViewHolder holder = new ViewHolder(getActivity(), view, res);
+                    if(getActivity() != null)
+                    {
+                        final View view = getActivity().getLayoutInflater().inflate(R.layout.item_setup_tag, flowLayout, false);
+                        final ViewHolder holder = new ViewHolder(getActivity(), view, res);
 
-                    holder.textView.setText(holder.text);
+                        holder.textView.setText(holder.text);
 
+                        flowLayout.addView(view);
 
-                    flowLayout.addView(view);
-
-                    if (result.contains(res)) {
-                        selectedItems.add(res);
-                        latestSelectedItems.add(res);
-                        //holder.checkView.setVisibility(View.GONE);
-                        holder.checkView.setVisibility(View.INVISIBLE);
-                    } else {
-                        //setSelected(holder.container, holder.textView, false);
-                        holder.checkView.setVisibility(View.VISIBLE);
-                    }
-                    //onTagClick(holder);
-                    setSelected(holder, holder.checkView.getVisibility() != View.VISIBLE, res);
-                    hasChanged = false;
-
-                    view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                        @Override
-                        public void onGlobalLayout() {
-                            view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                            holder.container.setMinimumWidth(holder.container.getMeasuredWidth());
+                        if (result.contains(res)) {
+                            selectedItems.add(res);
+                            //holder.checkView.setVisibility(View.GONE);
+                            holder.checkView.setVisibility(View.INVISIBLE);
+                        } else {
+                            //setSelected(holder.container, holder.textView, false);
+                            holder.checkView.setVisibility(View.VISIBLE);
                         }
-                    });
+                        //onTagClick(holder);
+                        setSelected(holder, holder.checkView.getVisibility() != View.VISIBLE, res);
+                        hasChanged = false;
+
+                        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                            @Override
+                            public void onGlobalLayout() {
+                                view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                                holder.container.setMinimumWidth(holder.container.getMeasuredWidth());
+                            }
+                        });
+                    }
                 }
             }
 
@@ -576,9 +537,6 @@ public class HomeFragment extends Fragment
                 this.selectedItems.remove(holder.text);
             }
         }
-
-        int cur = selectedItems.size();
-        int las = latestSelectedItems.size();
 
         if (!doNothing) {
             //holder.checkView.setVisibility(selected ? View.VISIBLE : View.GONE);
@@ -654,29 +612,30 @@ public class HomeFragment extends Fragment
     public static void sendLocationInfo() {
         //PART of postLocation
         //PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), "-6.2216706", "106.8401574");
-        final String userId = AccessToken.getCurrentAccessToken().getUserId();
-        if(userId != null && SocialManager.lat != null && SocialManager.lng != null)
-        {
-            //PART of postLocation
-            PostLocationModel postLocationModel = new PostLocationModel(userId, SocialManager.lat, SocialManager.lng);
-            //PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), "-6.2216706", "106.8401574");
-            /*String responses = new Gson().toJson(postLocationModel);
-            Utils.d("res", responses);*/
+        if (AccessToken.getCurrentAccessToken() != null && AccessToken.getCurrentAccessToken() != null) {
+            final String userId = AccessToken.getCurrentAccessToken().getUserId();
 
-            SocialManager.loaderLocation(postLocationModel, new SocialManager.OnResponseListener() {
-                @Override
-                public void onSuccess(Object object) {
-                    Utils.d("location", "post location success");
-                }
+            if (userId != null && SocialManager.lat != null && SocialManager.lng != null) {
+                //PART of postLocation
+                PostLocationModel postLocationModel = new PostLocationModel(userId, SocialManager.lat, SocialManager.lng);
+                //PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), "-6.2216706", "106.8401574");
+                /*String responses = new Gson().toJson(postLocationModel);
+                Utils.d("res", responses);*/
 
-                @Override
-                public void onFailure(int responseCode, String message) {
+                SocialManager.loaderLocation(postLocationModel, new SocialManager.OnResponseListener() {
+                    @Override
+                    public void onSuccess(Object object) {
+                        Utils.d("location", "post location success");
+                    }
 
-                }
-            });
-            //end here
+                    @Override
+                    public void onFailure(int responseCode, String message) {
+
+                    }
+                });
+                //end here
+            }
         }
-
     }
 
     @Override
@@ -752,20 +711,13 @@ public class HomeFragment extends Fragment
 
             TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_SOCIAL_TAB, false);
             SocialManager.isInSocial = true;
-            SocialTabFragment sc = (SocialTabFragment)this.adapter.fragments[position];
+            SocialTabFragment sc = (SocialTabFragment) this.adapter.fragments[position];
             sc.checkTooltipsInSug();
 
             //sc.refreshCard();
             //Log.d("", "");
             bottomSheet.setVisibility(View.GONE);
-        } else if(position == MORE_TAB){
-            showToolbar();
-            fab.setVisibility(View.GONE);
-            fabInvite.setVisibility(View.GONE);
-            bottomSheet.setVisibility(View.GONE);
-        }
-
-        else {
+        } else {
             //fab.startAnimation(makeInAnimation);
             fab.setVisibility(View.VISIBLE);
             //fabInvite.startAnimation( makeOutAnimation);
@@ -779,8 +731,7 @@ public class HomeFragment extends Fragment
         this.lastSelectedFragment.onTabSelected();
     }
 
-    private void showToolbar()
-    {
+    private void showToolbar() {
         CoordinatorLayout coordinator = (CoordinatorLayout) getActivity().findViewById(R.id.cl_main);
         AppBarLayout appbar = (AppBarLayout) getActivity().findViewById(R.id.appBar);
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appbar.getLayoutParams();
@@ -845,12 +796,11 @@ public class HomeFragment extends Fragment
                     new EventsFragment()
                     , new SocialTabFragment()
                     //, new ChatTabFragment()
-                    , new FriendsFragment(), new MoreFragment()
+                    , new FriendsFragment()
             };
             ((TabFragment) this.fragments[0]).setHomeMain(homeMain);
             ((TabFragment) this.fragments[1]).setHomeMain(homeMain);
             ((TabFragment) this.fragments[2]).setHomeMain(homeMain);
-            ((TabFragment) this.fragments[3]).setHomeMain(homeMain);
         }
 
         @Override
@@ -883,15 +833,14 @@ public class HomeFragment extends Fragment
     }
 
     private void setupTabIcons() {
-        TextView tabOne = (TextView) LayoutInflater.from(getActivity())
-                .inflate(R.layout.tab_custom, null);
+        TextView tabOne = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.tab_custom, null);
         tabOne.setText(adapter.getPageTitle(0));
         tabOne.setCompoundDrawablesWithIntrinsicBounds(0, adapter.getIcon(0), 0, 0);
         tab.getTabAt(EVENT_TAB).setCustomView(tabOne);
 
         View tabTwo = LayoutInflater.from(getActivity())
                 .inflate(R.layout.tab_custom_with_badge, null);
-        TextView tabTwoTitle = (TextView) tabTwo.findViewById(R.id.tab_title);
+        TextView tabTwoTitle = (TextView) tabTwo.findViewById(R.id.tab);
         tabTwoTitle.setText(adapter.getPageTitle(1));
         //tabTwoTitle.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_chat_white_24dp, 0, 0);
         tabTwoTitle.setCompoundDrawablesWithIntrinsicBounds(0, adapter.getIcon(1), 0, 0);
@@ -901,19 +850,13 @@ public class HomeFragment extends Fragment
 
         View tabThree = LayoutInflater.from(getActivity())
                 .inflate(R.layout.tab_custom_with_badge, null);
-        TextView tabThreeTitle = (TextView) tabThree.findViewById(R.id.tab_title);
+        TextView tabThreeTitle = (TextView) tabThree.findViewById(R.id.tab);
         tabThreeTitle.setText(adapter.getPageTitle(2));
         tabThreeTitle.setCompoundDrawablesWithIntrinsicBounds(0, adapter.getIcon(2), 0, 0);
         TextView tabThreeBadge = (TextView) tabThree.findViewById(R.id.tab_badge);
         tabThreeBadge.setText("99");
 
         tab.getTabAt(CHAT_TAB).setCustomView(tabThree);
-
-        TextView tabFour = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.tab_custom, null);
-        tabFour.setText(adapter.getPageTitle(3));
-        tabFour.setCompoundDrawablesWithIntrinsicBounds(0, adapter.getIcon(3), 0, 0);
-        tabFour.setPadding(0,Utils.myPixel(getActivity(), 3),0,0);
-        tab.getTabAt(MORE_TAB).setCustomView(tabFour);
     }
 
     /*@OnClick(R.id.fab)
@@ -930,7 +873,7 @@ public class HomeFragment extends Fragment
                 , new IntentFilter(Utils.FETCH_CHAT_RECEIVER));
 
         if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_SOCIAL_TAB)) {
-            TooltipsManager.initTooltipWithPoint(getActivity(), new Point(TooltipsManager.getCenterPoint(getActivity())[0]-Utils.myPixel(getActivity(), 48),
+            TooltipsManager.initTooltipWithPoint(getActivity(), new Point(TooltipsManager.getCenterPoint(getActivity())[0],
                     TooltipsManager.getCenterPoint(getActivity())[1] / 3), getActivity().getString(R.string.tooltip_social_tab), Utils.myPixel(getActivity(), 380), Tooltip.Gravity.BOTTOM);
             TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_SOCIAL_TAB, true);
         }
@@ -941,9 +884,7 @@ public class HomeFragment extends Fragment
         super.onDestroy();
         try {
             getActivity().unregisterReceiver(fetchChatReceiver);
-        }
-        catch(IllegalArgumentException e)
-        {
+        } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
     }
