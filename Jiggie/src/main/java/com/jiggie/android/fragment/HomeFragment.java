@@ -883,14 +883,15 @@ public class HomeFragment extends Fragment
     }
 
     private void setupTabIcons() {
-        TextView tabOne = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.tab_custom, null);
+        TextView tabOne = (TextView) LayoutInflater.from(getActivity())
+                .inflate(R.layout.tab_custom, null);
         tabOne.setText(adapter.getPageTitle(0));
         tabOne.setCompoundDrawablesWithIntrinsicBounds(0, adapter.getIcon(0), 0, 0);
         tab.getTabAt(EVENT_TAB).setCustomView(tabOne);
 
         View tabTwo = LayoutInflater.from(getActivity())
                 .inflate(R.layout.tab_custom_with_badge, null);
-        TextView tabTwoTitle = (TextView) tabTwo.findViewById(R.id.tab);
+        TextView tabTwoTitle = (TextView) tabTwo.findViewById(R.id.tab_title);
         tabTwoTitle.setText(adapter.getPageTitle(1));
         //tabTwoTitle.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_chat_white_24dp, 0, 0);
         tabTwoTitle.setCompoundDrawablesWithIntrinsicBounds(0, adapter.getIcon(1), 0, 0);
@@ -900,7 +901,7 @@ public class HomeFragment extends Fragment
 
         View tabThree = LayoutInflater.from(getActivity())
                 .inflate(R.layout.tab_custom_with_badge, null);
-        TextView tabThreeTitle = (TextView) tabThree.findViewById(R.id.tab);
+        TextView tabThreeTitle = (TextView) tabThree.findViewById(R.id.tab_title);
         tabThreeTitle.setText(adapter.getPageTitle(2));
         tabThreeTitle.setCompoundDrawablesWithIntrinsicBounds(0, adapter.getIcon(2), 0, 0);
         TextView tabThreeBadge = (TextView) tabThree.findViewById(R.id.tab_badge);

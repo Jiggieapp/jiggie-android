@@ -368,8 +368,11 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             @Override
             public void onScroll(float scrollProgressPercent) {
                 View view = flingAdapterView.getSelectedView();
-                view.findViewById(R.id.image_skip).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
-                view.findViewById(R.id.image_connect).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+                if(view != null)
+                {
+                    view.findViewById(R.id.image_skip).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
+                    view.findViewById(R.id.image_connect).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+                }
             }
         });
 
