@@ -257,8 +257,9 @@ public class ProductListModel {
                 String min_deposit_percent;
                 String min_deposit_amount;
                 String status;
+                boolean exact_price;
 
-                public Reservation(String ticket_id, String name, String ticket_type, int quantity, String admin_fee, String tax_percent, String tax_amount, String tip_percent, String tip_amount, String price, String total_price, String description, String max_guests, int payment_timelimit, String summary, String min_deposit_percent, String min_deposit_amount, String status){
+                public Reservation(String ticket_id, String name, String ticket_type, int quantity, String admin_fee, String tax_percent, String tax_amount, String tip_percent, String tip_amount, String price, String total_price, String description, String max_guests, int payment_timelimit, String summary, String min_deposit_percent, String min_deposit_amount, String status, boolean exact_price){
                     this.ticket_id = ticket_id;
                     this.name = name;
                     this.ticket_type = ticket_type;
@@ -277,6 +278,7 @@ public class ProductListModel {
                     this.min_deposit_percent = min_deposit_percent;
                     this.min_deposit_amount = min_deposit_amount;
                     this.status = status;
+                    this.exact_price = exact_price;
                 }
 
                 protected Reservation(Parcel in) {
@@ -298,6 +300,7 @@ public class ProductListModel {
                     this.min_deposit_percent = in.readString();
                     this.min_deposit_amount = in.readString();
                     this.status = in.readString();
+                    exact_price = in.readByte() != 0x00;
                 }
 
                 @Override
@@ -325,6 +328,7 @@ public class ProductListModel {
                     dest.writeString(this.min_deposit_percent);
                     dest.writeString(this.min_deposit_amount);
                     dest.writeString(this.status);
+                    dest.writeByte((byte) (exact_price ? 0x01 : 0x00));
                 }
 
                 public static final Creator<Reservation> CREATOR = new Creator<Reservation>() {
@@ -404,6 +408,10 @@ public class ProductListModel {
 
                 public String getStatus() {
                     return status;
+                }
+
+                public boolean isExact_price() {
+                    return exact_price;
                 }
             }
 

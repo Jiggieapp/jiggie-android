@@ -102,6 +102,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
     TextView lblInfo;
 
     private Dialog dialogTerms;
+    boolean isExactPrice = false;
 
     @Override
     protected void onCreate() {
@@ -315,6 +316,8 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
 
         initGuest();
         checkEnability(guestName, guestEmail, guestPhone);
+
+        isExactPrice = detailReservation.isExact_price();
     }
 
     private void sendMixpanel(EventDetailModel.Data.EventDetail eventDetail) {
@@ -386,7 +389,13 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
 
     @Override
     public String getEstimatedCostCaption() {
-        return "Minimum spend";
+        String str = Utils.BLANK;
+        if(isExactPrice){
+            str = "Price";
+        }else{
+            str = "Minimum spend";
+        }
+        return str;
     }
 
     @Override
@@ -463,6 +472,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
                     i.putExtra(eventDetail.getClass().getName(), eventDetail);
                     //i.putExtra(Common.FIELD_MIN_DEPOSIT, detailReservation.getMin_deposit_amount());
                     i.putExtra(Common.FIELD_MIN_DEPOSIT, String.valueOf(productSummary.getMin_deposit_amount()));
+                    i.putExtra(Common.FIELD_EXACT_PRICE, isExactPrice);
                     startActivity(i);
                 }
             }

@@ -38,7 +38,7 @@ public class CongratsActivity extends ToolbarActivity {
             txtRegTicketFill, txtAdFeeFill, txtTaxFill, txtTotalFill, txtInstrucFill, txtEventTitle2,
             txtEventDate2, txtVenueTitle, txtVenueDate, lblGuestCount, lblSummaryTitle
             , lblEstimatedBalance, lblPaidDeposit, lblEstimatedTotal, lblTotalTitle, txt_type_number_title, txtInstruc, txtPaymentTitle, txtStatusTitle,
-    txtCreditFill;
+    txtCreditFill, lblEstimateTotTitle, lblReqDepositTitle, lblEstimateBalanceTitle;
     LinearLayout linSummaryFooter, linDiscount;
     RelativeLayout relViewTicket, containerTableGuest, relCredit;
     RelativeLayout scrollView;
@@ -48,6 +48,7 @@ public class CongratsActivity extends ToolbarActivity {
     long orderId;
     boolean fromOrderList;
     private final static String TAG = CongratsActivity.class.getSimpleName();
+    boolean isExactPrice = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +105,10 @@ public class CongratsActivity extends ToolbarActivity {
         txtCreditFill = (TextView)findViewById(R.id.txt_credit_fill);
         relCredit = (RelativeLayout) findViewById(R.id.rel_credit);
         linDiscount = (LinearLayout)findViewById(R.id.lin_discount);
+
+        lblEstimateBalanceTitle = (TextView) this.findViewById(R.id.lbl_estimated_balance_title);
+        lblReqDepositTitle = (TextView) this.findViewById(R.id.lbl_required_deposit_title);
+        lblEstimateTotTitle = (TextView) this.findViewById(R.id.lbl_estimate_total_title);
 
         scrollView.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
@@ -219,6 +224,8 @@ public class CongratsActivity extends ToolbarActivity {
 
                     txtEventTitle2.setText(event.getTitle());
 
+                    isExactPrice = product_list.isExact_price();
+
                     if (product_list.getTicket_type().equalsIgnoreCase(Common.TYPE_RESERVATION))
                     {
                         containerTableGuest.setVisibility(View.VISIBLE);
@@ -226,8 +233,13 @@ public class CongratsActivity extends ToolbarActivity {
                         lblSummaryTitle.setText(
                                 getResources().getString(R.string.vor_reservation_summary));
                         lblGuestCount.setText(product_list.getNum_buy());
-                        txtRegTicketTitle.setText(product_list.getName().toUpperCase() + " "
-                                + getResources().getString(R.string.estimate));
+
+                        if(isExactPrice){
+                            txtRegTicketTitle.setText(product_list.getName().toUpperCase());
+                        }else{
+                            txtRegTicketTitle.setText(product_list.getName().toUpperCase() + " "
+                                    + getResources().getString(R.string.estimate));
+                        }
 
                         lblEstimatedTotal.setText(StringUtility.getRupiahFormat(summary.getTotal_price()));
                         lblPaidDeposit.setText(StringUtility.getRupiahFormat(summary.getPay_deposit()));
@@ -245,6 +257,13 @@ public class CongratsActivity extends ToolbarActivity {
                             txtPaymentTitle.setVisibility(View.GONE);
                             txtPaymentFill.setVisibility(View.GONE);
                         }
+
+                        if(isExactPrice){
+                            lblEstimateBalanceTitle.setText(getResources().getString(R.string.pci_f6c));
+                            lblReqDepositTitle.setText(getResources().getString(R.string.pci_f5c));
+                            lblEstimateTotTitle.setText(getResources().getString(R.string.pci_f4c));
+                        }
+
                     }else{
                         txt_type_number_title.setText(getString(R.string.vor_order_number));
                         lblSummaryTitle.setText(

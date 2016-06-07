@@ -146,6 +146,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     private final int INCREMENT_VALUE = 500000;
     boolean isPaying = false;
     private static final String TAG = ReservationInfoActivity.class.getSimpleName();
+    boolean isExactPrice = false;
 
     public static String getPaymentApiUrl() {
         /*if (VTConfig.VT_IsProduction) {
@@ -210,6 +211,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         eventDetail = a.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
         order_id = productSummary.getOrder_id();
         SummaryModel.Data.Product_summary.Product_list dataProduct = productSummary.getProduct_list().get(0);
+        isExactPrice = a.getBooleanExtra(Common.FIELD_EXACT_PRICE, false);
 
         sendMixpanel(productSummary, eventDetail);
 
@@ -312,6 +314,12 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
 
         //initTermView(dataProduct);
         checkEnability(txtPayment.getText().toString());
+
+        if(isExactPrice){
+            txtEstTotTitle.setText(getResources().getString(R.string.pci_f4c));
+            txtRequireTitle.setText(getResources().getString(R.string.pci_f5c));
+            txtEstBalTitle.setText(getResources().getString(R.string.pci_f6c));
+        }
     }
 
     private void arrangeEstimateDeposit(boolean isIncrement) {
