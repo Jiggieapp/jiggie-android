@@ -692,33 +692,40 @@ public class HomeFragment extends Fragment
         } else if (position == SOCIAL_TAB) {
             showToolbar();
 
-            /*if(fab.getVisibility() == View.VISIBLE)
-            {
-                fab.startAnimation(makeOutAnimation);
-                fab.setVisibility(View.GONE);
+        /*if(fab.getVisibility() == View.VISIBLE)
+        {
+            fab.startAnimation(makeOutAnimation);
+            fab.setVisibility(View.GONE);
 
-            }
+        }
 
 
-            if(fabInvite.getVisibility() == View.VISIBLE)
-            {
-                fabInvite.startAnimation(makeOutAnimation);
-                fabInvite.setVisibility(View.GONE);
-            }*/
+        if(fabInvite.getVisibility() == View.VISIBLE)
+        {
+            fabInvite.startAnimation(makeOutAnimation);
+            fabInvite.setVisibility(View.GONE);
+        }*/
 
             fab.setVisibility(View.GONE);
             fabInvite.setVisibility(View.GONE);
 
+
             TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_SOCIAL_TAB, false);
             SocialManager.isInSocial = true;
-            SocialTabFragment sc = (SocialTabFragment) this.adapter.fragments[position];
+            SocialTabFragment sc = (SocialTabFragment)this.adapter.fragments[position];
             sc.checkTooltipsInSug();
 
             //sc.refreshCard();
             //Log.d("", "");
             bottomSheet.setVisibility(View.GONE);
-        } else {
+        } else if(position == MORE_TAB){
             showToolbar();
+            fab.setVisibility(View.GONE);
+            fabInvite.setVisibility(View.GONE);
+            bottomSheet.setVisibility(View.GONE);
+        }
+
+        else {
             //fab.startAnimation(makeInAnimation);
             fab.setVisibility(View.VISIBLE);
             //fabInvite.startAnimation( makeOutAnimation);
