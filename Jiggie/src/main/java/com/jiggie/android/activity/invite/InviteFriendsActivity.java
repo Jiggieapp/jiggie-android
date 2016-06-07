@@ -830,6 +830,15 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
 
     @Override
     public void onInviteSelected(ContactPhoneModel contact, final int  position) {
+
+        if (getInviteCodeResultModel() != null) {
+            App.getInstance().trackMixPanelReferral(Utils.REFERRAL_PHONE_SINGULAR
+                    , getReferEventMixPanelModel(
+                    inviteCodeResultModel.getData().getInvite_code().getCode(),
+                    inviteCodeResultModel.getData().getInvite_code().getInvite_url()
+                    , contact.getName(), contact.getEmail(), contact.getPhone()));
+        }
+
         PostInviteModel.Contact contactToSend;
         if(contact.getPhone().get(0).contains("@") && contact.getPhone().get(0).contains(".")) //email
         {
