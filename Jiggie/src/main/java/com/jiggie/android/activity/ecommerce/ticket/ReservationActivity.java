@@ -102,6 +102,8 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
     TextView lblInfo;
 
     private Dialog dialogTerms;
+    boolean isExactPrice = false;
+    int extra_charge = 0;
 
     @Override
     protected void onCreate() {
@@ -208,6 +210,13 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
                 if (num_guest > 1) {
                     num_guest--;
                     lblQuantity.setText(String.valueOf(num_guest));
+
+                    if(num_guest>max){
+                        String prc = String.valueOf(price+((num_guest-max)*extra_charge));
+                        lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(prc)));
+                    }else{
+                        lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(price)));
+                    }
                 }
             }
         });
@@ -215,9 +224,22 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
         relPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (num_guest > 0 && num_guest < max) {
-                    num_guest++;
-                    lblQuantity.setText(String.valueOf(num_guest));
+                if(extra_charge>0){
+                    if (num_guest > 0 && num_guest < 100) {
+                        num_guest++;
+                        lblQuantity.setText(String.valueOf(num_guest));
+
+                        if(num_guest>max){
+                            String prc = String.valueOf(price+((num_guest-max)*extra_charge));
+                            lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(prc)));
+                        }
+                    }
+                }else{
+                    if (num_guest > 0 && num_guest < max) {
+                        num_guest++;
+                        lblQuantity.setText(String.valueOf(num_guest));
+                        lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(price)));
+                    }
                 }
             }
         });
@@ -315,6 +337,19 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
 
         initGuest();
         checkEnability(guestName, guestEmail, guestPhone);
+
+        try{
+            isExactPrice = detailReservation.isExact_price();
+        }catch (Exception e){
+
+        }
+
+
+        try{
+            extra_charge = Integer.parseInt(detailReservation.getExtra_charge());
+        }catch (Exception e){
+
+        }
     }
 
     private void sendMixpanel(EventDetailModel.Data.EventDetail eventDetail) {
@@ -386,7 +421,13 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
 
     @Override
     public String getEstimatedCostCaption() {
-        return "Minimum spend";
+        String str = Utils.BLANK;
+        if(isExactPrice){
+            str = "Price";
+        }else{
+            str = "Minimum spend";
+        }
+        return str;
     }
 
     @Override
@@ -463,6 +504,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
                     i.putExtra(eventDetail.getClass().getName(), eventDetail);
                     //i.putExtra(Common.FIELD_MIN_DEPOSIT, detailReservation.getMin_deposit_amount());
                     i.putExtra(Common.FIELD_MIN_DEPOSIT, String.valueOf(productSummary.getMin_deposit_amount()));
+                    i.putExtra(Common.FIELD_EXACT_PRICE, isExactPrice);
                     startActivity(i);
                 }
             }
