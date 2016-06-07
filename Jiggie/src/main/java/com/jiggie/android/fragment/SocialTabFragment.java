@@ -11,6 +11,7 @@ import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Debug;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -94,6 +95,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     public static final String TAG = SocialTabFragment.class.getSimpleName();
     private Dialog dialogWalkthrough;
     private SocialCardNewAdapter socialCardNewAdapter;
+    private final int MIN_TRESHOLD = 10;
 
     @Override
     public String getTitle() {
@@ -197,6 +199,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             temp = new ArrayList<>();
             isRefreshing = true;
             SettingModel currentSetting = AccountManager.loadSetting();
+            Debug.startMethodTracing("loaderSocialFeedddd");
             SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId() /*"10205703989179267"*/
                     , currentSetting.getData().getGender_interest());
         }
@@ -204,52 +207,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
 
 
     public void onEvent(SocialModel message) {
-        /*current = null;
-        socialSize = 0;
-
-        if(switchSocialize.isChecked())
-        {
-            for(SocialModel.Data.SocialFeeds item : message.getData().getSocial_feeds())
-            {
-                if(SocialManager.Type.isInbound(item))
-                {
-                    socialSize++;
-                }
-            }
-
-            for (int i = 0; i < message.getData().getSocial_feeds().size(); i++) {
-                final SocialModel.Data.SocialFeeds item = message.getData().getSocial_feeds().get(i);
-                //if(item..equalsIgnoreCase(Common.SOCIAL_FEED_TYPE_APPROVED))
-                if (SocialManager.Type.isInbound(item)) {
-                    current = item;
-                    break;
-                } else if (current == null)
-                    current = item;
-            }
-            setHomeTitle();
-            openDetail(current);
-        }
-        else
-        {
-            //wandy 03-03-2016
-            //this.progressBar.setVisibility(View.VISIBLE);
-            if(this.progressBar.getVisibility() == View.VISIBLE)
-                this.progressBar.setVisibility(View.GONE);
-            dismissProgressDialog();
-        }*/
-        /*for (int i = 0; i < message.getData().getSocial_feeds().size(); i++) {
-            final SocialModel.Data.SocialFeeds item = message.getData().getSocial_feeds().get(i);
-            //if(item..equalsIgnoreCase(Common.SOCIAL_FEED_TYPE_APPROVED))
-            if (SocialManager.Type.isInbound(item)) {
-                current = item;
-                break;
-            } else if (current == null)
-                current = item;
-        }*/
-        //setHomeTitle();
-        //openDetail(current);
-        //setHomeTitle();
-
+        Debug.stopMethodTracing();
         isRefreshing = false;
         if (message.getData().getSocial_feeds() != null) {
             fillSocialCard(message);
@@ -355,7 +313,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
 
             @Override
             public void onAdapterAboutToEmpty(int i) {
-                if (socialCardNewAdapter.getCount() == 3 /*|| socialCardNewAdapter.getCount() == 0*/
+                if (socialCardNewAdapter.getCount() == MIN_TRESHOLD /*|| socialCardNewAdapter.getCount() == 0*/
                         && !isRefreshing) {
                     isRefreshing = true;
                     SettingModel currentSetting = AccountManager.loadSetting();

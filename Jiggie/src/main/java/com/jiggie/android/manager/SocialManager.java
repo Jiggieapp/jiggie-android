@@ -1,6 +1,7 @@
 package com.jiggie.android.manager;
 
 import android.os.Build;
+import android.os.Debug;
 import android.util.Log;
 
 import com.facebook.AccessToken;
@@ -74,32 +75,6 @@ public class SocialManager extends BaseManager {
 
 
     public static void loaderSocialFeed(String fb_id, String gender_interest) {
-        /*try {
-            getSocialFeed(fb_id, gender_interest, new CustomCallback() {
-                @Override
-                public void onCustomCallbackReponse(Response response) {
-                    //String header = String.valueOf(response.code());
-                    String responses = new Gson().toJson(response.body());
-                    Log.d("res", responses);
-
-                    SocialModel dataTemp = (SocialModel) response.body();
-                    *//*if(dataTemp!=null&&dataTemp.getData().getSocial_feeds().size()>0){
-                        EventBus.getDefault().post(dataTemp);
-                    }*//*
-                    EventBus.getDefault().post(dataTemp);
-                }
-
-                @Override
-                public void onCustomCallbackFailure(String t) {
-                    Log.d("Failure", t.toString());
-                    EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_FEED, Utils.MSG_EXCEPTION + t.toString()));
-                }
-            });
-        }catch (IOException e){
-            Log.d("Exception", e.toString());
-            EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_FEED, Utils.MSG_EXCEPTION + e.toString()));
-        }*/
-
         try {
             getSocialFeed(fb_id, gender_interest, new CustomCallback() {
                 @Override
@@ -107,19 +82,21 @@ public class SocialManager extends BaseManager {
                     //String header = String.valueOf(response.code());
                     //String responses = new Gson().toJson(response.body());
                     //Utils.d(TAG, responses);
-
+                    //Debug.startMethodTracing("parse loaderSocialFeed");
                     if (response.code() == Utils.CODE_SUCCESS) {
                         SocialModel dataTemp = (SocialModel) response.body();
+                        //Debug.stopMethodTracing();
                         EventBus.getDefault().post(dataTemp);
                     } else {
+                        Debug.stopMethodTracing();
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_FEED
                                 , App.getInstance().getResources().getString(R.string.empty_social)));
                     }
-
                 }
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
+                    Debug.stopMethodTracing();
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_FEED, t));
                 }
 
