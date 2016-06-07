@@ -1,5 +1,6 @@
 package com.jiggie.android.component.adapter;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -16,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.profile.ProfileDetailActivity;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.ChatListModel;
 import com.jiggie.android.model.Common;
@@ -101,6 +103,14 @@ public class ChatTabListAdapter extends RecyclerView.Adapter<ChatTabListAdapter.
                     super.getView().setImageDrawable(circularBitmapDrawable);
                 }
             });
+
+            holder.imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    fragment.getActivity().startActivity(new Intent(fragment.getActivity(), ProfileDetailActivity.class).putExtra(Common.FIELD_FACEBOOK_ID, item.getFb_id()));
+                }
+            });
+
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
