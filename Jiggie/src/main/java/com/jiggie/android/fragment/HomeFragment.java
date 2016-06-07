@@ -108,6 +108,7 @@ public class HomeFragment extends Fragment
     final int EVENT_TAB = 0;
     final int SOCIAL_TAB = 1;
     final int CHAT_TAB = 2;
+    final int MORE_TAB = 3;
 
     private int currentPosition;
     boolean isAlreadyExpand = false;
@@ -691,19 +692,19 @@ public class HomeFragment extends Fragment
         } else if (position == SOCIAL_TAB) {
             showToolbar();
 
-            /*if(fab.getVisibility() == View.VISIBLE)
-            {
-                fab.startAnimation(makeOutAnimation);
-                fab.setVisibility(View.GONE);
+        /*if(fab.getVisibility() == View.VISIBLE)
+        {
+            fab.startAnimation(makeOutAnimation);
+            fab.setVisibility(View.GONE);
 
-            }
+        }
 
 
-            if(fabInvite.getVisibility() == View.VISIBLE)
-            {
-                fabInvite.startAnimation(makeOutAnimation);
-                fabInvite.setVisibility(View.GONE);
-            }*/
+        if(fabInvite.getVisibility() == View.VISIBLE)
+        {
+            fabInvite.startAnimation(makeOutAnimation);
+            fabInvite.setVisibility(View.GONE);
+        }*/
 
             fab.setVisibility(View.GONE);
             fabInvite.setVisibility(View.GONE);
@@ -711,13 +712,20 @@ public class HomeFragment extends Fragment
 
             TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_SOCIAL_TAB, false);
             SocialManager.isInSocial = true;
-            SocialTabFragment sc = (SocialTabFragment) this.adapter.fragments[position];
+            SocialTabFragment sc = (SocialTabFragment)this.adapter.fragments[position];
             sc.checkTooltipsInSug();
 
             //sc.refreshCard();
             //Log.d("", "");
             bottomSheet.setVisibility(View.GONE);
-        } else {
+        } else if(position == MORE_TAB){
+            showToolbar();
+            fab.setVisibility(View.GONE);
+            fabInvite.setVisibility(View.GONE);
+            bottomSheet.setVisibility(View.GONE);
+        }
+
+        else {
             //fab.startAnimation(makeInAnimation);
             fab.setVisibility(View.VISIBLE);
             //fabInvite.startAnimation( makeOutAnimation);
@@ -797,10 +805,12 @@ public class HomeFragment extends Fragment
                     , new SocialTabFragment()
                     //, new ChatTabFragment()
                     , new FriendsFragment()
+                    , new MoreFragment()
             };
             ((TabFragment) this.fragments[0]).setHomeMain(homeMain);
             ((TabFragment) this.fragments[1]).setHomeMain(homeMain);
             ((TabFragment) this.fragments[2]).setHomeMain(homeMain);
+            ((TabFragment) this.fragments[3]).setHomeMain(homeMain);
         }
 
         @Override
@@ -840,7 +850,7 @@ public class HomeFragment extends Fragment
 
         View tabTwo = LayoutInflater.from(getActivity())
                 .inflate(R.layout.tab_custom_with_badge, null);
-        TextView tabTwoTitle = (TextView) tabTwo.findViewById(R.id.tab);
+        TextView tabTwoTitle = (TextView) tabTwo.findViewById(R.id.tab_title);
         tabTwoTitle.setText(adapter.getPageTitle(1));
         //tabTwoTitle.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_chat_white_24dp, 0, 0);
         tabTwoTitle.setCompoundDrawablesWithIntrinsicBounds(0, adapter.getIcon(1), 0, 0);
@@ -850,13 +860,18 @@ public class HomeFragment extends Fragment
 
         View tabThree = LayoutInflater.from(getActivity())
                 .inflate(R.layout.tab_custom_with_badge, null);
-        TextView tabThreeTitle = (TextView) tabThree.findViewById(R.id.tab);
+        TextView tabThreeTitle = (TextView) tabThree.findViewById(R.id.tab_title);
         tabThreeTitle.setText(adapter.getPageTitle(2));
         tabThreeTitle.setCompoundDrawablesWithIntrinsicBounds(0, adapter.getIcon(2), 0, 0);
         TextView tabThreeBadge = (TextView) tabThree.findViewById(R.id.tab_badge);
         tabThreeBadge.setText("99");
-
         tab.getTabAt(CHAT_TAB).setCustomView(tabThree);
+
+        TextView tabFour = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.tab_custom, null);
+        tabFour.setText(adapter.getPageTitle(3));
+        tabFour.setCompoundDrawablesWithIntrinsicBounds(0, adapter.getIcon(3), 0, 0);
+        tabFour.setPadding(0,Utils.myPixel(getActivity(), 3),0,0);
+        tab.getTabAt(MORE_TAB).setCustomView(tabFour);
     }
 
     /*@OnClick(R.id.fab)
