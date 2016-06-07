@@ -645,9 +645,10 @@ public final class SucScreenCCModel {
                     public final String payment_timelimit;
                     public final String _id;
                     public final ArrayList<Term> terms;
+                    public final String extra_charge;
                     public final boolean exact_price;
 
-                    public Product_list(String ticket_id, String name, String ticket_type, String max_buy, String quantity, String admin_fee, String tax_percent, String tax_amount, String tip_percent, String tip_amount, String price, String currency, String total_price, String total_price_aftertax, String num_buy, String total_price_all, String payment_timelimit, String _id, ArrayList<Term> terms, boolean exact_price){
+                    public Product_list(String ticket_id, String name, String ticket_type, String max_buy, String quantity, String admin_fee, String tax_percent, String tax_amount, String tip_percent, String tip_amount, String price, String currency, String total_price, String total_price_aftertax, String num_buy, String total_price_all, String payment_timelimit, String _id, ArrayList<Term> terms, String extra_charge, boolean exact_price){
                         this.ticket_id = ticket_id;
                         this.name = name;
                         this.ticket_type = ticket_type;
@@ -668,6 +669,7 @@ public final class SucScreenCCModel {
                         this._id = _id;
                         this.terms = terms;
                         this.exact_price = exact_price;
+                        this.extra_charge = extra_charge;
                     }
 
                     public String getTicket_id() {
@@ -748,6 +750,10 @@ public final class SucScreenCCModel {
 
                     public boolean isExact_price() {
                         return exact_price;
+                    }
+
+                    public String getExtra_charge() {
+                        return extra_charge;
                     }
 
                     public static final class Term {

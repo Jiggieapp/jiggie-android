@@ -141,12 +141,17 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     RelativeLayout relCredittab;
     @Bind(R.id.lin_discounttab)
     LinearLayout linDiscounttab;
+    @Bind(R.id.txt_extracharge_title)
+    TextView txtExtrachargeTitle;
+    @Bind(R.id.txt_extracharge_fill)
+    TextView txtExtrachargeFill;
     private SlideAdapter slideAdapter;
     int payDeposit = 0, maxDeposit = 0, latestDeposit = 0;
     private final int INCREMENT_VALUE = 500000;
     boolean isPaying = false;
     private static final String TAG = ReservationInfoActivity.class.getSimpleName();
     boolean isExactPrice = false;
+    int extra_charge = 0;
 
     public static String getPaymentApiUrl() {
         /*if (VTConfig.VT_IsProduction) {
@@ -315,10 +320,22 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         //initTermView(dataProduct);
         checkEnability(txtPayment.getText().toString());
 
-        if(isExactPrice){
+        if (isExactPrice) {
             txtEstTotTitle.setText(getResources().getString(R.string.pci_f4c));
             txtRequireTitle.setText(getResources().getString(R.string.pci_f5c));
             txtEstBalTitle.setText(getResources().getString(R.string.pci_f6c));
+        }
+
+        try {
+            extra_charge = Integer.parseInt(dataProduct.getExtra_charge());
+        }catch (Exception e){
+
+        }
+
+        if(extra_charge>0){
+            txtExtrachargeTitle.setVisibility(View.VISIBLE);
+            txtExtrachargeFill.setVisibility(View.VISIBLE);
+            txtExtrachargeFill.setText(StringUtility.getRupiahFormat(dataProduct.getExtra_charge()));
         }
     }
 

@@ -38,9 +38,9 @@ public class CongratsActivity extends ToolbarActivity {
             txtRegTicketFill, txtAdFeeFill, txtTaxFill, txtTotalFill, txtInstrucFill, txtEventTitle2,
             txtEventDate2, txtVenueTitle, txtVenueDate, lblGuestCount, lblSummaryTitle
             , lblEstimatedBalance, lblPaidDeposit, lblEstimatedTotal, lblTotalTitle, txt_type_number_title, txtInstruc, txtPaymentTitle, txtStatusTitle,
-    txtCreditFill, lblEstimateTotTitle, lblReqDepositTitle, lblEstimateBalanceTitle;
+    txtCreditFill, lblEstimateTotTitle, lblReqDepositTitle, lblEstimateBalanceTitle, lblExtraChargeFill;
     LinearLayout linSummaryFooter, linDiscount;
-    RelativeLayout relViewTicket, containerTableGuest, relCredit;
+    RelativeLayout relViewTicket, containerTableGuest, relCredit, relExtraCharge;
     RelativeLayout scrollView;
     ProgressBar progressBar;
     View divider, divider8, divider4;
@@ -109,6 +109,9 @@ public class CongratsActivity extends ToolbarActivity {
         lblEstimateBalanceTitle = (TextView) this.findViewById(R.id.lbl_estimated_balance_title);
         lblReqDepositTitle = (TextView) this.findViewById(R.id.lbl_required_deposit_title);
         lblEstimateTotTitle = (TextView) this.findViewById(R.id.lbl_estimate_total_title);
+
+        lblExtraChargeFill = (TextView) this.findViewById(R.id.lbl_extracharge_fill);
+        relExtraCharge = (RelativeLayout) findViewById(R.id.rel_extracharge);
 
         scrollView.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
@@ -224,8 +227,6 @@ public class CongratsActivity extends ToolbarActivity {
 
                     txtEventTitle2.setText(event.getTitle());
 
-                    isExactPrice = product_list.isExact_price();
-
                     if (product_list.getTicket_type().equalsIgnoreCase(Common.TYPE_RESERVATION))
                     {
                         containerTableGuest.setVisibility(View.VISIBLE);
@@ -258,10 +259,17 @@ public class CongratsActivity extends ToolbarActivity {
                             txtPaymentFill.setVisibility(View.GONE);
                         }
 
+                        isExactPrice = product_list.isExact_price();
                         if(isExactPrice){
                             lblEstimateBalanceTitle.setText(getResources().getString(R.string.pci_f6c));
-                            lblReqDepositTitle.setText(getResources().getString(R.string.pci_f5c));
+                            //lblReqDepositTitle.setText(getResources().getString(R.string.pci_f5c));
                             lblEstimateTotTitle.setText(getResources().getString(R.string.pci_f4c));
+                        }
+
+                        int extra_charge = Integer.parseInt(product_list.getExtra_charge());
+                        if(extra_charge>0){
+                            relExtraCharge.setVisibility(View.VISIBLE);
+                            lblExtraChargeFill.setText(StringUtility.getRupiahFormat(product_list.getExtra_charge()));
                         }
 
                     }else{
