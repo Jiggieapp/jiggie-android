@@ -360,11 +360,13 @@ public class EventDetailModel {
                 String fb_id;
                 String first_name;
                 String gender;
+                String profile_image;
 
-                public GuestViewed(String fb_id, String first_name, String gender){
+                public GuestViewed(String fb_id, String first_name, String gender, String profile_image){
                     this.fb_id = fb_id;
                     this.first_name = first_name;
                     this.gender = gender;
+                    this.profile_image = profile_image;
                 }
 
                 public String getFb_id() {
@@ -379,10 +381,15 @@ public class EventDetailModel {
                     return gender;
                 }
 
+                public String getProfile_image() {
+                    return profile_image;
+                }
+
                 protected GuestViewed(Parcel in) {
                     fb_id = in.readString();
                     first_name = in.readString();
                     gender = in.readString();
+                    profile_image = in.readString();
                 }
 
                 @Override
@@ -395,6 +402,7 @@ public class EventDetailModel {
                     dest.writeString(fb_id);
                     dest.writeString(first_name);
                     dest.writeString(gender);
+                    dest.writeString(profile_image);
                 }
 
                 @SuppressWarnings("unused")

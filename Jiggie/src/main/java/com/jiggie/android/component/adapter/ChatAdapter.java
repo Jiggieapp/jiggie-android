@@ -111,12 +111,17 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         else if(holderr instanceof ViewHolderHeader)
         {
             ViewHolderHeader holderHeader = (ViewHolderHeader) holderr;
-            if(item.getTitle().equalsIgnoreCase("generic")){
+            if(item.getTitle()==null){
                 holderHeader.lblChatHeader.setVisibility(View.GONE);
             }else{
-                holderHeader.lblChatHeader.setVisibility(View.VISIBLE);
-                holderHeader.lblChatHeader.setText(item.getTitle());
+                if(item.getTitle().equalsIgnoreCase("generic")){
+                    holderHeader.lblChatHeader.setVisibility(View.GONE);
+                }else{
+                    holderHeader.lblChatHeader.setVisibility(View.VISIBLE);
+                    holderHeader.lblChatHeader.setText(item.getTitle());
+                }
             }
+
 
 
         }

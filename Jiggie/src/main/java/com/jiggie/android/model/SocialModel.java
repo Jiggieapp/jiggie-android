@@ -57,6 +57,8 @@ public class SocialModel {
             int type_rank;
             String last_updated;
             String image;
+            boolean badge_booking;
+            boolean badge_ticket;
 
             public String getImage() {
                 return image;
@@ -92,6 +94,22 @@ public class SocialModel {
 
             public String getEvent_id() {
                 return event_id;
+            }
+
+            public boolean getBadge_booking() {
+                return badge_booking;
+            }
+
+            public void setBadge_booking(boolean badge_booking) {
+                this.badge_booking = badge_booking;
+            }
+
+            public boolean getBadge_ticket() {
+                return badge_ticket;
+            }
+
+            public void setBadge_ticket(boolean badge_ticket) {
+                this.badge_ticket = badge_ticket;
             }
 
             public void setEvent_id(String event_id) {

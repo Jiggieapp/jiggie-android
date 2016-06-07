@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/img_has_table"
+        android:layout_width="@dimen/img_has_ticket_width"
+        android:layout_height="@dimen/img_has_ticket_height"
+        android:layout_toLeftOf="@+id/img_has_ticket"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_hastable_profile"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/img_has_ticket"
+        android:layout_width="@dimen/img_has_ticket_width"
+        android:layout_height="@dimen/img_has_ticket_height"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/padding_standard"
+        android:layout_marginLeft="@dimen/padding_standard_small"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_hasticket_profile"
+        android:visibility="gone" />
+
+
+    <RelativeLayout
+        android:id="@+id/relative_profile_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/padding_standard"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txtUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/lblPhoneNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtUser"
+            android:text=""
+            android:textColor="@android:color/holo_blue_dark"
+            android:textStyle=""
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/txtLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lblPhoneNumber" />
+
+        <LinearLayout
+            android:id="@+id/linear_about_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txtLocation"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/padding_standard_half"
+                android:layout_marginRight="@dimen/padding_standard_half"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <!--<TextView
+                    android:id="@+id/txtTitleDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/padding_standard_half"
+                    android:text="@string/about" />-->
+
+                <TextView
+                    android:id="@+id/txtDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_standard_half"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <!--<ImageButton
+                android:id="@+id/btnEdit"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="?attr/selectableItemBackground"
+                android:contentDescription="@null"
+                android:padding="5dp"
+                android:scaleType="fitCenter"
+                android:src="@mipmap/ic_pencil" />-->
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@android:color/darker_gray"
+        android:layout_below="@+id/relative_profile_container"/>
+
+    <TextView
+        android:id="@+id/lbl_user_event"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/divider"
+        android:textColor="@android:color/black"
+        android:layout_margin="@dimen/padding_standard"
+        android:textSize="16sp"/>
+</RelativeLayout>

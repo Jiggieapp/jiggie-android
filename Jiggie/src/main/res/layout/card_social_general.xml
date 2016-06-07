@@ -1,58 +1,86 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relative_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/image_connect"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0"
+        android:src="@drawable/connect_overlay"
+        android:scaleType="fitXY"/>
+
+    <ImageView
+        android:id="@+id/image_skip"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0"
+        android:src="@drawable/skip_overlay"
+        android:scaleType="fitXY"/>
+
+    <ImageView
+        android:id="@+id/img_has_table"
+        android:layout_width="@dimen/img_has_ticket_width"
+        android:layout_height="@dimen/img_has_ticket_height"
+        android:layout_marginRight="@dimen/padding_standard_half"
+        android:layout_marginBottom="@dimen/padding_standard_small"
+        android:layout_marginTop="@dimen/padding_standard_half"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_hastable_profile"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/img_has_ticket"
+        android:layout_width="@dimen/img_has_ticket_width"
+        android:layout_height="@dimen/img_has_ticket_height"
+        android:layout_below="@id/img_has_table"
+        android:layout_marginRight="@dimen/padding_standard_half"
+        android:layout_alignParentRight="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_hasticket_profile"
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/imageUserGeneral"
         android:layout_width="match_parent"
-        android:layout_height="220dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:adjustViewBounds="true"
         android:background="?attr/selectableItemBackground"
         android:contentDescription="@null"
-        android:scaleType="fitXY" />
-
-    <!--<FrameLayout
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="-32dp"
-        android:background="@drawable/bg_circle_accent"
-        android:id="@+id/chat_icon">
-
-        <ImageView
-            android:id="@+id/chat_small_icon"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/padding_standard"
-            android:src="@drawable/ic_chat"
-            android:scaleType="centerCrop"/>
-    </FrameLayout>-->
+        android:scaleType="fitXY"
+        android:layout_above="@+id/lbl_container"/>
 
     <ImageView
         android:id="@+id/chat_small_icon"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="-32dp"
+        android:scaleType="centerCrop"
         android:src="@drawable/ic_chat"
-        android:scaleType="centerCrop"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-48dp"
+        android:layout_below="@+id/imageUserGeneral"/>
 
     <RelativeLayout
         android:id="@+id/lbl_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/linear_btn_container">
 
         <TextView
             android:id="@+id/txtUserGeneral"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_standard"
+            android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:text="@string/user_viewing"
-            android:layout_alignParentTop="true"/>
+            android:layout_marginTop="@dimen/padding_standard"
+            android:text="@string/user_viewing" />
 
         <TextView
             android:id="@+id/txtEventGeneral"
@@ -67,15 +95,17 @@
             android:id="@+id/txtConnectGeneral"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/padding_standard"
             android:layout_below="@id/txtEventGeneral"
             android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/padding_standard"
             android:text="@string/connect_with" />
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/linear_btn_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:background="@color/colorAccent"
         android:orientation="horizontal">
 
@@ -88,13 +118,6 @@
             android:text="@string/no"
             android:textColor="@android:color/white" />
 
-        <!--<View
-            android:layout_width="0.5dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="10dp"
-            android:background="@android:color/white" />-->
-
         <Button
             android:id="@+id/btnYesGeneral"
             android:layout_width="0dp"
@@ -103,5 +126,6 @@
             android:background="?attr/selectableItemBackground"
             android:text="@string/yes"
             android:textColor="@android:color/white" />
+
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

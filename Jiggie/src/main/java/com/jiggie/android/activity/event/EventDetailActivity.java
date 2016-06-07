@@ -10,7 +10,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.FragmentManager;
@@ -25,6 +24,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -66,7 +66,6 @@ import com.jiggie.android.model.GuestModel;
 import com.jiggie.android.model.ShareLinkModel;
 import com.jiggie.android.model.likeModel;
 import com.viewpagerindicator.CirclePageIndicator;
-import com.viewpagerindicator.TitlePageIndicator;
 
 import org.json.JSONObject;
 
@@ -83,7 +82,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -93,7 +91,6 @@ import butterknife.Bind;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 import it.sephiroth.android.library.tooltip.Tooltip;
-import it.sephiroth.android.library.widget.HListView;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -165,6 +162,12 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     RelativeLayout relDescMore;
     @Bind(R.id.lin_see_all_guest)
     LinearLayout linSeeAllGuest;
+    @Bind(R.id.lin_price)
+    LinearLayout linPrice;
+    @Bind(R.id.back_button)
+    ImageButton backButton;
+    @Bind(R.id.event_name)
+    TextView eventName;
 
     private ImagePagerIndicatorAdapter imagePagerIndicatorAdapter;
     private ImageView[] imageGuests;
@@ -224,7 +227,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 this.txtVenue.setText(event_venue_name);
             }
 
-
             /*if(event_tags != null)
             {
                 populateTags(event_tags);
@@ -232,9 +234,13 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
             if (event_name != null) {
                 //super.setToolbarTitle(event_name, true);
-                super.setToolbarTitle(Utils.BLANK, true);
+                super.setToolbarTitle(Utils.BLANK, false);
+                eventName.setText(event_name);
                 txtEventName.setText(event_name);
-            } else super.setToolbarTitle("", true);
+            } else {
+                super.setToolbarTitle("", false);
+                eventName.setText(Utils.BLANK);
+            }
 
             if (event_day != null && event_name != null) {
                 try {
@@ -313,8 +319,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 //end of wandy 17-03-2016
             }
 
-            if(fullfilmentType != null && !fullfilmentType.isEmpty())
-            {
+            if (fullfilmentType != null && !fullfilmentType.isEmpty()) {
                 final boolean isBookable = (StringUtility.isEquals(EventManager.FullfillmentTypes.RESERVATION, fullfilmentType, true)
                         || StringUtility.isEquals(EventManager.FullfillmentTypes.PURCHASE, fullfilmentType, true)
                         || (StringUtility.isEquals(EventManager.FullfillmentTypes.TICKET, fullfilmentType, true))); //free (tickets, tables, purchase)
@@ -324,7 +329,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                     txtPriceFill.setVisibility(View.VISIBLE);
                     txtPriceFill.setText(getResources().getString(R.string.free));
 
-                } else if(lowest_price > 0 && isBookable){
+                } else if (lowest_price > 0 && isBookable) {
                     txtPriceTitle.setVisibility(View.VISIBLE);
                     txtPriceFill.setVisibility(View.VISIBLE);
                     txtPriceTitle.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
@@ -336,23 +341,22 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                     } catch (Exception e) {
                         Utils.d(TAG, "exception " + e.toString());
                     }
-                }
-                else
-                {
+                } else {
                     txtPriceTitle.setVisibility(View.GONE);
                     txtPriceFill.setVisibility(View.GONE);
+                    linPrice.setBackgroundColor(getResources().getColor(android.R.color.transparent));
                 }
-            }
-            else
-            {
+            } else {
                 txtPriceTitle.setVisibility(View.GONE);
                 txtPriceFill.setVisibility(View.GONE);
+                linPrice.setBackgroundColor(getResources().getColor(android.R.color.transparent));
             }
-
         }
 
         if (event_name != null) {
-            super.setToolbarTitle(event_name.toUpperCase(), true);
+            super.setToolbarTitle(Utils.BLANK, false);
+            eventName.setText(event_name.toUpperCase());
+            //super.setBackIcon(R.drawable.ic_back_button_shadow);
         }
 
         this.appBarLayout.addOnOffsetChangedListener(this);
@@ -407,6 +411,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         }, 1000);*/
 
         cekCounter();
+
 
     }
 
@@ -515,10 +520,13 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         this.swipeRefresh.setEnabled(verticalOffset == 0);
 
-        if (collapsingToolbarLayout.getHeight() + verticalOffset < 2 * ViewCompat.getMinimumHeight(collapsingToolbarLayout)) {
-            setToolbarTitles(event_name, true);
+        if (collapsingToolbarLayout.getHeight() + verticalOffset
+                < 2 * ViewCompat.getMinimumHeight(collapsingToolbarLayout)) {
+            setToolbarTitles(Utils.BLANK, false);
+            eventName.setText(event_name);
         } else {
-            setToolbarTitles(Utils.BLANK, true);
+            setToolbarTitles(Utils.BLANK, false);
+            eventName.setText(Utils.BLANK);
         }
     }
 
@@ -562,9 +570,19 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 elementContainers2.setVisibility(View.VISIBLE);
 
                 if (event_name == null) {
-                    super.setToolbarTitle(eventDetail.getTitle().toUpperCase(), true);
+                    super.setToolbarTitle(Utils.BLANK, false);
+                    event_name = eventDetail.getTitle().toUpperCase();
+                    eventName.setText(eventDetail.getTitle().toUpperCase());
+                    txtEventName.setText(event_name);
+                }
+                else
+                {
+                    super.setToolbarTitle(message.getData().getEvents_detail().getTitle(), false);
                 }
 
+                /*setToolbarTitles(Utils.BLANK, false);
+                eventName.setText("suallalala");
+                txtEventName.setText(eventDetail.getTitle().toUpperCase());*/
                 this.txtVenue.setText(eventDetail.getVenue_name());
 
                 if (!isActive())
@@ -585,16 +603,20 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 //txtGuestCount.setText(getResources().getQuantityString(R.plurals.guest_count, guestCount, guestCount));
 
                 if (guestCount > 0) {
-                    Intent intent = new Intent(SocialTabFragment.TAG);
-                    intent.putExtra(Utils.IS_ON
-                            , AccountManager.loadSetting().getData().getNotifications().isFeed());
-                    sendBroadcast(intent);
+                    if (getIntent().getStringExtra(Common.FIELD_FROM) == null
+                            || !getIntent().getStringExtra(Common.FIELD_FROM).equals(SocialTabFragment.TAG)) {
+                        Intent intent = new Intent(SocialTabFragment.TAG);
+                        intent.putExtra(Utils.IS_ON
+                                , AccountManager.loadSetting().getData().getNotifications().isFeed());
+                        sendBroadcast(intent);
+                    }
 
                     final int width = imageGuest1.getWidth() * 2;
                     guestCount = guestCount > imageGuests.length ? imageGuests.length : guestCount;
 
                     for (int i = 0; i < guestCount; i++) {
-                        final String url = App.getFacebookImage(guestArr.get(i).getFb_id(), width);
+                        //final String url = App.getFacebookImage(guestArr.get(i).getFb_id(), width);
+                        final String url = guestArr.get(i).getProfile_image();
                         Glide.with(EventDetailActivity.this)
                                 .load(url)
                                 .asBitmap()
@@ -760,12 +782,13 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             txtPriceTitle.setVisibility(View.VISIBLE);
             txtPriceFill.setVisibility(View.VISIBLE);
             txtPriceFill.setText(getResources().getString(R.string.free));
-
+            linPrice.setBackgroundColor(getResources().getColor(R.color.black_transparent));
         } else if (lowest_price > 0 && isBookable) {
             txtPriceTitle.setVisibility(View.VISIBLE);
             txtPriceFill.setVisibility(View.VISIBLE);
             txtPriceTitle.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
             txtPriceFill.setShadowLayer(1.6f, 1.5f, 1.3f, getResources().getColor(android.R.color.black));
+            linPrice.setBackgroundColor(getResources().getColor(R.color.black_transparent));
             try {
                 //String str = String.format(Locale.US, "Rp %,d", lowest_price);
                 String str = StringUtility.getRupiahFormat(lowest_price + "");
@@ -776,6 +799,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         } else {
             txtPriceTitle.setVisibility(View.GONE);
             txtPriceFill.setVisibility(View.GONE);
+            linPrice.setBackgroundColor(getResources().getColor(android.R.color.transparent));
         }
     }
 
@@ -834,6 +858,12 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             super.startActivityForResult(new Intent(this, EventGuestActivity.class).putExtra(EventDetailModel.Data.EventDetail.class.getName(), this.eventDetail), 0);
     }
 
+    @SuppressWarnings("unused")
+    @OnClick(R.id.back_button)
+    void backOnClick() {
+        finish();
+    }
+
     /*@SuppressWarnings("unused")
     @OnClick(R.id.layoutSeeGuests)
     void layoutSeeGuestsOnClick() { this.guestViewOnClick(); }*/
@@ -856,14 +886,14 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             if (count_like_new > 0) {
                 count_like_new = count_like_new - 1;
             }
-            App.getInstance().trackMixPanelViewEventDetail("Like Event Detail", eventDetail);
+            App.getInstance().trackMixPanelViewEventDetail("Unlike Event Detail", eventDetail);
             //actionLike(Utils.ACTION_LIKE_NO);
         } else {
             imgLove.setSelected(true);
             count_like_new = count_like_new + 1;
             //actionLike(Utils.ACTION_LIKE_YES);
 
-            App.getInstance().trackMixPanelViewEventDetail("Unlike Event Detail", eventDetail);
+            App.getInstance().trackMixPanelViewEventDetail("Like Event Detail", eventDetail);
         }
         txtCountLike.setText(String.valueOf(count_like_new));
         canClickLike = false;
@@ -905,7 +935,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             };
             timerInvite.schedule(timerTaskInvite, 1 * 60 * 60 * 1000);
         } else {
-            Log.d("timer already", "yes");
         }
     }
 
@@ -1215,18 +1244,19 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent i = new Intent(this, MainActivity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        if (count_like != count_like_new) {
-            //i.putExtra(Utils.TAG_ISREFRESH, true);
-            Utils.isRefreshDetail = true;
-            Utils.event_id_refresh = event_id;
-            Utils.count_like_new = count_like_new;
-            for (int j = 0; j < EventManager.events.size(); j++) {
-                if (EventManager.events.get(j).get_id().equals(event_id)) {
-                    EventManager.events.get(j).setLikes(count_like_new);
+        if (getIntent().getStringExtra("from") == null) {
+            Intent i = new Intent(this, MainActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            if (count_like != count_like_new) {
+                //i.putExtra(Utils.TAG_ISREFRESH, true);
+                Utils.isRefreshDetail = true;
+                Utils.event_id_refresh = event_id;
+                Utils.count_like_new = count_like_new;
+                for (int j = 0; j < EventManager.events.size(); j++) {
+                    if (EventManager.events.get(j).get_id().equals(event_id)) {
+                        EventManager.events.get(j).setLikes(count_like_new);
+                    }
                 }
-            }
 
             /*for(int j=0;j<EventManager.todayEvents.size();j++){
                 if(EventManager.todayEvents.get(j).get_id().equals(event_id)){
@@ -1245,9 +1275,12 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                     EventManager.upcomingEvents.get(j).setLikes(count_like_new);
                 }
             }*/
-        }
+            }
 
-        startActivity(i);
-        finish();
+            startActivity(i);
+            finish();
+        } else {
+            finish();
+        }
     }
 }

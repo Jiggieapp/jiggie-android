@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.jiggie.android.view.HeaderProfileView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="16dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:shadowColor="@color/text_shadow"
+            android:shadowDx="1"
+            android:shadowDy="5"
+            android:shadowRadius="5"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/header_view_end_text_size"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/img_edit_top"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/ic_create_white_18dp"
+            android:layout_alignParentRight="true"
+            android:scaleType="fitXY"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
+    </RelativeLayout>
+</com.jiggie.android.view.HeaderProfileView>

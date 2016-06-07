@@ -221,7 +221,6 @@ public class CustomSwipeFlingAdapterView extends SwipeFlingAdapterView {
      */
     private void setTopView() {
         if (getChildCount() > 0) {
-
             mActiveCard = getChildAt(LAST_OBJECT_IN_STACK);
             if (mActiveCard != null) {
 
@@ -247,9 +246,8 @@ public class CustomSwipeFlingAdapterView extends SwipeFlingAdapterView {
                     @Override
                     public void onClick(Object dataObject) {
                         if (mOnItemClickListener != null) {
-                            Utils.d("sulalala", "on click");
                             mOnItemClickListener.onItemClicked(0, dataObject);
-                        } else Utils.d("sulalala", "on click nulls");
+                        }
                     }
 
                     @Override
@@ -271,23 +269,22 @@ public class CustomSwipeFlingAdapterView extends SwipeFlingAdapterView {
         for (int i = 0; i < vg.getChildCount(); ++i) {
             View nextChild = vg.getChildAt(i);
             if (nextChild.getId() == R.id.btnNoGeneral) {
-                //Utils.d("sulalalala", "no no no");
-                //nextChild.setOnTouchListener(flingCardListener);
                 nextChild.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        onEventClickListener.onSkipClicked();
                         getTopCardListener2().selectLeft();
                     }
                 });
 
             } else if (nextChild.getId() == R.id.btnYesGeneral) {
-                nextChild.setOnClickListener(new OnClickListener() {
+                    nextChild.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        onEventClickListener.onConnectClicked();
                         getTopCardListener2().selectRight();
                     }
                 });
-
             }
             else if(nextChild.getId() == R.id.lbl_container)
             {
@@ -297,6 +294,25 @@ public class CustomSwipeFlingAdapterView extends SwipeFlingAdapterView {
                         onEventClickListener.onEventClicked();
                     }
                 });
+            }
+            /*else if(nextChild.getId() == R.id.imageUserGeneral)
+            {
+                nextChild.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onEventClickListener.onImageClicked();
+                    }
+                });
+            }
+            else if(nextChild.getId() == R.id.relative_parent)
+            {
+                nextChild.setOnTouchListener(flingCardListener);
+            }*/
+            else if( nextChild.getId() == R.id.image_connect
+                    || nextChild.getId() == R.id.image_skip)
+            {
+                //do nothing, wtf??
+                //addOnTouchListenersRecursive((ViewGroup) nextChild);
             }
             else if (nextChild instanceof ViewGroup)
                 addOnTouchListenersRecursive((ViewGroup) nextChild);
@@ -376,6 +392,8 @@ public class CustomSwipeFlingAdapterView extends SwipeFlingAdapterView {
     public interface OnEventClickListener
     {
         void onEventClicked();
+        void onSkipClicked();
+        void onConnectClicked();
     }
 
     public interface OnItemClickListener {

@@ -70,7 +70,7 @@
     <string name="order_list">Order list</string>
     <string name="settings">Settings</string>
     <string name="support">Support</string>
-    <string name="logout">Logout</string>
+    <string name="logout">Log out</string>
     <string name="credit_balance">Credit Balance</string>
     <string name="user_viewing">%1$s is also interested in</string>
     <string name="location_viewing">%1$s at %2$s</string>
@@ -362,6 +362,7 @@
     <string name="paid">Paid</string>
     <string name="is_void">Void</string>
     <string name="refund">Refund</string>
+    <string name="reserved">Reserved</string>
 
     <string name="pci_f1b">Dance Floor Table (Estimate)</string>
     <string name="pci_f3b">Service Charge</string>
@@ -457,4 +458,8 @@
 
     <string name="confirm_contact">Please allow the application to access your contacts</string>
 
+    <string name="edit_profile">Edit Profile</string>
+    <string name="user_event">%1$s\'s Events</string>
+
+    <string name="your_event">Events you are interested in</string>
 </resources>

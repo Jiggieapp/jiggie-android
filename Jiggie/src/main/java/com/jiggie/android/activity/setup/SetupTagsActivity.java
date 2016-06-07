@@ -39,7 +39,7 @@ public class SetupTagsActivity extends BaseActivity implements ViewTreeObserver.
     public static final String PARAM_EXPERIENCES = "param-experiences";
 
     @Bind(R.id.progressBar) ProgressBar progressBar;
-    @Bind(R.id.flowLayout) FlowLayout flowLayout;
+    @Bind(R.id.flowLayoutSetupTags) FlowLayout flowLayout;
     @Bind(R.id.textFailed) TextView textFailed;
     @Bind(R.id.viewFailed) View failedView;
     @Bind(R.id.btnNext) Button btnNext;

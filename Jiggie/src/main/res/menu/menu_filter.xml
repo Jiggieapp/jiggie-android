@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto" >
-    <item
+    <!--<item
         android:id="@+id/action_social_filter"
         android:title="@string/filter_title"
         app:showAsAction="never"
         android:orderInCategory="1"
-        />
+        />-->
+    <item
+        android:id="@+id/action_social_filter"
+        android:icon="@drawable/ic_filter_list_white_24dp"
+        android:orderInCategory="100"
+        android:title="@string/edit_profile"
+        app:showAsAction="ifRoom" />
 </menu>

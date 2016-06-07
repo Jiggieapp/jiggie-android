@@ -6,6 +6,7 @@ package com.jiggie.android.view;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.widget.LinearLayout;
@@ -22,13 +23,13 @@ import butterknife.ButterKnife;
 
 public class HeaderView extends LinearLayout {
 
+    @Nullable
     @Bind(R.id.event_name)
     TextView name;
 
+    @Nullable
     @Bind(R.id.lblEventLocation)
     TextView lblEventLocation;
-
-
 
     public HeaderView(Context context) {
         super(context);
@@ -50,6 +51,11 @@ public class HeaderView extends LinearLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        bindView();
+    }
+
+    public void bindView()
+    {
         ButterKnife.bind(this);
     }
 

@@ -20,7 +20,7 @@ public class SplashActivity extends Activity
         App.runningActivity = this;
 
         Intent i = new Intent(this, MainActivity.class);
-        //Intent i = new Intent(this, NewProfileDetailActivity.class);
+        //Intent i = new Intent(this, EditProfileActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
         finish();

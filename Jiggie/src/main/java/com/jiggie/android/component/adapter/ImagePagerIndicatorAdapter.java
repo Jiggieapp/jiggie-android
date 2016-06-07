@@ -151,6 +151,7 @@ public class ImagePagerIndicatorAdapter extends FragmentPagerAdapter {
                             //e.printStackTrace();
                         }
                     });*/
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
         }
     }
 

@@ -1,0 +1,113 @@
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe_refresh"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/grayLight"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_marginBottom="@dimen/padding_standard_half"
+            android:layout_marginTop="@dimen/padding_standard"
+            android:layout_height="64dp"
+            android:layout_width="64dp"
+            android:id="@+id/imageView"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"/>
+
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_alignRight="@id/imageView"
+            android:layout_alignBottom="@id/imageView"
+            android:src="@drawable/iceditprofile"
+            android:id="@+id/imgEditProfile"
+            />
+
+        <TextView
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/txtUser"
+            android:text=""
+            android:textColor="@android:color/black"
+            android:textSize="16dp"
+            android:layout_marginBottom="@dimen/padding_far"
+            android:layout_below="@id/imageView"/>
+
+        <TextView
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/lblPhoneNumber"
+            android:paddingTop="@dimen/padding_standard"
+            android:paddingBottom="@dimen/padding_standard"
+            android:text=""
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="16dp"
+            android:visibility="gone"
+            android:layout_below="@id/txtUser"/>
+
+        <TextView
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/txtVerifyPhoneNumber"
+            android:paddingTop="@dimen/padding_standard"
+            android:paddingBottom="@dimen/padding_standard"
+            android:text="@string/verify_your_phone_number"
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="16dp"
+            android:visibility="gone"
+            android:layout_below="@id/lblPhoneNumber"/>
+
+        <LinearLayout
+            android:id="@+id/lin_credit"
+            android:layout_margin="@dimen/padding_standard"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_below="@id/txtVerifyPhoneNumber">
+
+            <ImageView
+                android:contentDescription="@null"
+                android:layout_height="32dp"
+                android:layout_width="32dp"
+                android:id="@+id/imageCredit"
+                android:src="@drawable/iccredit"/>
+
+            <TextView
+                android:layout_marginRight="@dimen/padding_standard"
+                android:layout_marginLeft="@dimen/padding_standard"
+                android:textColor="@android:color/black"
+                android:layout_gravity="center_vertical"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:id="@+id/textCredit"
+                android:textSize="15sp"/>
+        </LinearLayout>
+
+        <View
+            android:layout_marginLeft="64dp"
+            android:background="@android:color/darker_gray"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_below="@id/lin_credit"
+            android:id="@+id/divCredit"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/divCredit"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:scrollbars="vertical">
+
+        </android.support.v7.widget.RecyclerView>
+    </RelativeLayout>
+
+</android.support.v4.widget.SwipeRefreshLayout>
