@@ -199,7 +199,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             temp = new ArrayList<>();
             isRefreshing = true;
             SettingModel currentSetting = AccountManager.loadSetting();
-            Debug.startMethodTracing("loaderSocialFeedddd");
+            //Debug.startMethodTracing("loaderSocialFeedddd");
             SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId() /*"10205703989179267"*/
                     , currentSetting.getData().getGender_interest());
         }
@@ -207,7 +207,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
 
 
     public void onEvent(SocialModel message) {
-        Debug.stopMethodTracing();
+        //Debug.stopMethodTracing();
         isRefreshing = false;
         if (message.getData().getSocial_feeds() != null) {
             fillSocialCard(message);

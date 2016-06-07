@@ -398,11 +398,37 @@
                             android:background="@color/divider_pantone" />
 
                         <TextView
-                            android:id="@+id/txt_est_tot_title"
+                            android:id="@+id/txt_extracharge_title"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentLeft="true"
                             android:layout_below="@id/divider4"
+                            android:layout_marginLeft="@dimen/padding_standard"
+                            android:layout_marginTop="@dimen/padding_standard_half"
+                            android:text="@string/extra_charge"
+                            android:textColor="@color/textDarkGray"
+                            android:textSize="@dimen/font_body_size"
+                            android:visibility="gone"/>
+
+                        <TextView
+                            android:id="@+id/txt_extracharge_fill"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_below="@id/divider4"
+                            android:layout_marginRight="@dimen/padding_standard"
+                            android:layout_marginTop="@dimen/padding_standard_half"
+                            android:text=""
+                            android:textColor="@color/purple"
+                            android:textSize="@dimen/font_body_size"
+                            android:visibility="gone"/>
+
+                        <TextView
+                            android:id="@+id/txt_est_tot_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_below="@id/txt_extracharge_title"
                             android:layout_marginLeft="@dimen/padding_standard"
                             android:layout_marginTop="@dimen/padding_standard_half"
                             android:text="@string/pci_f4b"
@@ -414,10 +440,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
-                            android:layout_below="@id/divider4"
+                            android:layout_below="@id/txt_extracharge_fill"
                             android:layout_marginRight="@dimen/padding_standard"
                             android:layout_marginTop="@dimen/padding_standard_half"
-                            android:text="@string/pci_f2_fill"
+                            android:text=""
                             android:textColor="@color/purple"
                             android:textSize="@dimen/font_body_size" />
 
