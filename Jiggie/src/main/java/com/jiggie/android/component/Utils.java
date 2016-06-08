@@ -115,6 +115,13 @@ public class Utils {
     public static final String TYPE_BCA = "bca";
     //------------------------
 
+    //SALE TYPE var-----------
+    public static final String SALE_TYPE = "sale_type";
+    public static final String TYPE_MINIMUM_DEPOSIT = "minimum";
+    public static final String TYPE_EXACT_PRICE = "exact";
+    public static final String TYPE_RESERVE = "reserve";
+    //------------------------
+
     public static int myPixel(Activity a, int dip) {
         float scale = a.getResources().getDisplayMetrics().density;
         int pixel = (int) ((dip - 0.5f) * scale);

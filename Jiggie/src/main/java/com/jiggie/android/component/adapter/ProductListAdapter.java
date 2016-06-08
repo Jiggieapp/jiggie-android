@@ -126,10 +126,14 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
                     holder.txtTicketName.setText(itemReservations.getName());
                 }
                 //holder.txtTicketInfo.setText(itemReservations.getSummary());
-                if(itemReservations.getPrice().equals(Utils.NOL_RUPIAH)){
-                    holder.txtPrice.setText(context.getString(R.string.free));
+                if(itemReservations.getSale_type().equals(Utils.TYPE_RESERVE)){
+                    holder.txtPrice.setText(context.getString(R.string.reservation));
                 }else{
-                    holder.txtPrice.setText(StringUtility.getRupiahFormat(itemReservations.getPrice()));
+                    if(itemReservations.getPrice().equals(Utils.NOL_RUPIAH)){
+                        holder.txtPrice.setText(context.getString(R.string.free));
+                    }else{
+                        holder.txtPrice.setText(StringUtility.getRupiahFormat(itemReservations.getPrice()));
+                    }
                 }
 
                 //holder.txtPriceInfo.setText(context.getString(R.string.pr_max_guest) + " " + itemReservations.getMax_guests());

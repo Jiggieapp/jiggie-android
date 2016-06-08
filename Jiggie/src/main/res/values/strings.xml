@@ -377,6 +377,7 @@
     <string name="pci_f5c">Deposit</string>
     <string name="pci_f6c">Balance (pay at venue)</string>
     <string name="extra_charge">Extra Charge</string>
+    <string name="reservation">Reservation</string>
     <!--END HERE-->
 
     <string name="msg_carr_1">Discover upcoming food bazaars, music, art \u0026 culture and nightlife events</string>

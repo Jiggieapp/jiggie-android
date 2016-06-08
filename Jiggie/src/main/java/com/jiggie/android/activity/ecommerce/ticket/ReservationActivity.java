@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.AddGuestActivity;
+import com.jiggie.android.activity.ecommerce.CongratsActivity;
 import com.jiggie.android.activity.ecommerce.ProductListActivity;
 import com.jiggie.android.activity.ecommerce.summary.ReservationInfoActivity;
 import com.jiggie.android.component.StringUtility;
@@ -30,6 +31,7 @@ import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.model.CommEventMixpanelModel;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventDetailModel;
+import com.jiggie.android.model.PostFreePaymentModel;
 import com.jiggie.android.model.PostSummaryModel;
 import com.jiggie.android.model.ProductListModel;
 import com.jiggie.android.model.SummaryModel;
@@ -100,10 +102,13 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
     CardView cardViewGuest;*/
     @Bind(R.id.lbl_info_top)
     TextView lblInfo;
+    @Bind(R.id.rel_estimatecost)
+    RelativeLayout relEstimatecost;
 
     private Dialog dialogTerms;
-    boolean isExactPrice = false;
     int extra_charge = 0;
+    String sale_type = Utils.BLANK;
+    boolean isPaying = false;
 
     @Override
     protected void onCreate() {
@@ -211,10 +216,10 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
                     num_guest--;
                     lblQuantity.setText(String.valueOf(num_guest));
 
-                    if(num_guest>max){
-                        String prc = String.valueOf(price+((num_guest-max)*extra_charge));
+                    if (num_guest > max) {
+                        String prc = String.valueOf(price + ((num_guest - max) * extra_charge));
                         lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(prc)));
-                    }else{
+                    } else {
                         lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(price)));
                     }
                 }
@@ -224,17 +229,17 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
         relPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(extra_charge>0){
+                if (extra_charge > 0) {
                     if (num_guest > 0 && num_guest < 100) {
                         num_guest++;
                         lblQuantity.setText(String.valueOf(num_guest));
 
-                        if(num_guest>max){
-                            String prc = String.valueOf(price+((num_guest-max)*extra_charge));
+                        if (num_guest > max) {
+                            String prc = String.valueOf(price + ((num_guest - max) * extra_charge));
                             lblEstimatedCost.setText(StringUtility.getRupiahFormat(String.valueOf(prc)));
                         }
                     }
-                }else{
+                } else {
                     if (num_guest > 0 && num_guest < max) {
                         num_guest++;
                         lblQuantity.setText(String.valueOf(num_guest));
@@ -286,10 +291,14 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
 
         /*lblType.setText(detailReservation.getName());
         lblTypeCaption.setText(detailReservation.getSummary());*/
-        if (detailReservation.getPrice().equals(Utils.NOL_RUPIAH)) {
-            lblTypePrice.setText(getString(R.string.free));
-        } else {
-            lblTypePrice.setText(StringUtility.getRupiahFormat(detailReservation.getPrice()));
+        if(detailReservation.getSale_type().equals(Utils.TYPE_RESERVE)){
+            relEstimatecost.setVisibility(View.GONE);
+        }else{
+            if (detailReservation.getPrice().equals(Utils.NOL_RUPIAH)) {
+                lblTypePrice.setText(getString(R.string.free));
+            } else {
+                lblTypePrice.setText(StringUtility.getRupiahFormat(detailReservation.getPrice()));
+            }
         }
 
         //lblTypePriceCaption.setText(getString(R.string.pr_max_guest) + " " + max);
@@ -338,16 +347,16 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
         initGuest();
         checkEnability(guestName, guestEmail, guestPhone);
 
-        try{
-            isExactPrice = detailReservation.isExact_price();
-        }catch (Exception e){
+        try {
+            sale_type = detailReservation.getSale_type();
+        } catch (Exception e) {
 
         }
 
 
-        try{
+        try {
             extra_charge = Integer.parseInt(detailReservation.getExtra_charge());
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
@@ -422,9 +431,9 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
     @Override
     public String getEstimatedCostCaption() {
         String str = Utils.BLANK;
-        if(isExactPrice){
+        if (sale_type.equals(Utils.TYPE_EXACT_PRICE)) {
             str = "Price";
-        }else{
+        } else {
             str = "Minimum spend";
         }
         return str;
@@ -495,17 +504,25 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
                 if (rel_continue.isEnabled()) {
                     dialogTerms.dismiss();
 
-                    Intent i = new Intent(ReservationActivity.this, ReservationInfoActivity.class);
-                    i.putExtra(Common.FIELD_EVENT_ID, eventId);
-                    i.putExtra(Common.FIELD_EVENT_NAME, eventName);
-                    i.putExtra(Common.FIELD_VENUE_NAME, venueName);
-                    i.putExtra(Common.FIELD_STARTTIME, startTime);
-                    i.putExtra(productSummary.getClass().getName(), productSummary);
-                    i.putExtra(eventDetail.getClass().getName(), eventDetail);
-                    //i.putExtra(Common.FIELD_MIN_DEPOSIT, detailReservation.getMin_deposit_amount());
-                    i.putExtra(Common.FIELD_MIN_DEPOSIT, String.valueOf(productSummary.getMin_deposit_amount()));
-                    i.putExtra(Common.FIELD_EXACT_PRICE, isExactPrice);
-                    startActivity(i);
+
+                    if (sale_type.equals(Utils.TYPE_RESERVE)) {
+                        isPaying = true;
+                        PostFreePaymentModel postFreePaymentModel = new PostFreePaymentModel(String.valueOf(productSummary.getOrder_id()), "0");
+                        doFreePayment(postFreePaymentModel);
+                    } else {
+                        Intent i = new Intent(ReservationActivity.this, ReservationInfoActivity.class);
+                        i.putExtra(Common.FIELD_EVENT_ID, eventId);
+                        i.putExtra(Common.FIELD_EVENT_NAME, eventName);
+                        i.putExtra(Common.FIELD_VENUE_NAME, venueName);
+                        i.putExtra(Common.FIELD_STARTTIME, startTime);
+                        i.putExtra(productSummary.getClass().getName(), productSummary);
+                        i.putExtra(eventDetail.getClass().getName(), eventDetail);
+                        //i.putExtra(Common.FIELD_MIN_DEPOSIT, detailReservation.getMin_deposit_amount());
+                        i.putExtra(Common.FIELD_MIN_DEPOSIT, String.valueOf(productSummary.getMin_deposit_amount()));
+                        i.putExtra(Utils.SALE_TYPE, sale_type);
+                        startActivity(i);
+                    }
+
                 }
             }
         });
@@ -513,5 +530,80 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
         dialogTerms.setCanceledOnTouchOutside(true);
         dialogTerms.setCancelable(true);
         dialogTerms.show();
+    }
+
+    private void doFreePayment(PostFreePaymentModel postFreePaymentModel) {
+        CommerceManager.loaderFreePayment(postFreePaymentModel, new CommerceManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object) {
+
+                dismissLoadingDialog();
+                Intent i = new Intent(ReservationActivity.this, CongratsActivity.class);
+
+                i.putExtra(Common.FIELD_ORDER_ID, productSummary.getOrder_id());
+                i.putExtra(Common.FIELD_FROM_ORDER_LIST, false);
+                startActivity(i);
+
+                isPaying = false;
+            }
+
+            @Override
+            public void onFailure(int responseCode, String message) {
+                isPaying = false;
+                dismissLoadingDialog();
+
+                if (message != null && (message.contains("left") || message.contains("unavailable"))) {
+                    final AlertDialog dialog = new AlertDialog.Builder(ReservationActivity.this)
+                            .setMessage(message)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    Intent i = new Intent(ReservationActivity.this, ProductListActivity.class);
+                                    i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    i.putExtra(Common.FIELD_EVENT_ID, eventDetail.get_id());
+                                    i.putExtra(EventDetailModel.Data.EventDetail.class.getName(), eventDetail);
+                                    startActivity(i);
+                                    finish();
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            }).create();
+                    dialog.show();
+                } else if (message != null && (message.contains("Paid"))) {
+                    final AlertDialog dialog = new AlertDialog.Builder(ReservationActivity.this)
+                            .setMessage(message)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+
+                                    Intent i = new Intent(ReservationActivity.this, CongratsActivity.class);
+
+                                    i.putExtra(Common.FIELD_ORDER_ID, productSummary.getOrder_id());
+                                    i.putExtra(Common.FIELD_FROM_ORDER_LIST, false);
+                                    startActivity(i);
+                                    startActivity(i);
+
+                                }
+                            }).create();
+                    dialog.show();
+                } else {
+                    /*if(responseCode==Utils.CODE_FAILED){
+
+                    }else{
+
+                    }*/
+                    if (message != null) {
+                        Toast.makeText(ReservationActivity.this, message, Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+        });
+        initLoadingDialog();
     }
 }
