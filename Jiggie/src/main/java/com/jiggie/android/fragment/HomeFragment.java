@@ -24,37 +24,41 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
-import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.event.EventDetailActivity;
+import com.jiggie.android.activity.event.EventPresenterImplementation;
+import com.jiggie.android.activity.event.EventView;
 import com.jiggie.android.activity.invite.InviteFriendsActivity;
-import com.jiggie.android.activity.promo.PromotionsActivity;
-import com.jiggie.android.activity.setup.CityActivity;
 import com.jiggie.android.component.FlowLayout;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
+import com.jiggie.android.listener.OnResponseListener;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.manager.TooltipsManager;
+import com.jiggie.android.model.CityModel;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.MemberSettingModel;
@@ -62,8 +66,8 @@ import com.jiggie.android.model.MemberSettingResultModel;
 import com.jiggie.android.model.PostLocationModel;
 import com.jiggie.android.model.TagsListModel;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Set;
 
 import butterknife.Bind;
@@ -76,7 +80,7 @@ import it.sephiroth.android.library.tooltip.Tooltip;
  * Created by rangg on 21/10/2015.
  */
 public class HomeFragment extends Fragment
-        implements ViewPager.OnPageChangeListener, ViewTreeObserver.OnGlobalLayoutListener, HomeMain {
+        implements ViewPager.OnPageChangeListener, ViewTreeObserver.OnGlobalLayoutListener, HomeMain, EventView {
     @Nullable
     @Bind(R.id.appBar)
     AppBarLayout appBarLayout;
@@ -98,6 +102,10 @@ public class HomeFragment extends Fragment
     RelativeLayout relPlace;
     @Bind(R.id.view_shadow)
     View viewShadow;
+    @Bind(R.id.img_drop)
+    ImageView imgDrop;
+    @Bind(R.id.city_container)
+    LinearLayout cityContainer;
 
     private TabFragment lastSelectedFragment;
     private PageAdapter adapter;
@@ -118,6 +126,7 @@ public class HomeFragment extends Fragment
     boolean isFirstClick = true;
     View bottomSheet;
     AppCompatActivity activity;
+    EventPresenterImplementation eventPresenterImplementation;
 
     @Nullable
     @Override
@@ -175,16 +184,11 @@ public class HomeFragment extends Fragment
         this.viewPager.getViewTreeObserver().addOnGlobalLayoutListener(this);
 
         //Load animation
-        makeOutAnimation = makeOutAnimationInvite = AnimationUtils.loadAnimation(this.getActivity(),
+        /*makeOutAnimation = makeOutAnimationInvite = AnimationUtils.loadAnimation(this.getActivity(),
                 R.anim.slide_down);
 
         makeInAnimation = makeInAnimationInvite = AnimationUtils.loadAnimation(this.getActivity(),
                 R.anim.slide_up);
-
-
-
-        /*makeInAnimation = AnimationUtils.makeInAnimation(this.getActivity(), false);
-        makeOutAnimation = AnimationUtils.makeOutAnimation(this.getActivity(), true);*/
 
         makeOutAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
@@ -197,11 +201,7 @@ public class HomeFragment extends Fragment
 
             @Override
             public void onAnimationStart(Animation animation) {
-                //if(fabInvite.getVisibility() == View.VISIBLE)
-                //{
-                //fabInvite.setVisibility(View.GONE);
                 fabInvite.startAnimation(makeOutAnimationInvite);
-                //}
                 fab.setVisibility(View.VISIBLE);
             }
         });
@@ -210,10 +210,7 @@ public class HomeFragment extends Fragment
             @Override
             public void onAnimationEnd(Animation animation) {
                 fab.setVisibility(View.GONE);
-                /*if(fabInvite.getVisibility() == View.GONE)
-                {*/
                 fabInvite.startAnimation(makeInAnimationInvite);
-                /*}*/
 
             }
 
@@ -255,7 +252,7 @@ public class HomeFragment extends Fragment
             @Override
             public void onAnimationStart(Animation animation) {
             }
-        });
+        });*/
 
         if (isNeedToBeRedirected()) {
             Intent i = new Intent(super.getActivity(), EventDetailActivity.class);
@@ -370,9 +367,10 @@ public class HomeFragment extends Fragment
                 }
             }
         }
-
         //END OF TOOLTIP PART===============
 
+        eventPresenterImplementation = new EventPresenterImplementation(this);
+        eventPresenterImplementation.getCities();
     }
 
     @Override
@@ -457,8 +455,7 @@ public class HomeFragment extends Fragment
                 ArrayList<String> result = memberSettingResultModel.getData().getMembersettings().getExperiences();
 
                 for (String res : getTags()) {
-                    if(getActivity() != null)
-                    {
+                    if (getActivity() != null) {
                         final View view = getActivity().getLayoutInflater().inflate(R.layout.item_setup_tag, flowLayout, false);
                         final ViewHolder holder = new ViewHolder(getActivity(), view, res);
 
@@ -712,20 +709,18 @@ public class HomeFragment extends Fragment
 
             TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_SOCIAL_TAB, false);
             SocialManager.isInSocial = true;
-            SocialTabFragment sc = (SocialTabFragment)this.adapter.fragments[position];
+            SocialTabFragment sc = (SocialTabFragment) this.adapter.fragments[position];
             sc.checkTooltipsInSug();
 
             //sc.refreshCard();
             //Log.d("", "");
             bottomSheet.setVisibility(View.GONE);
-        } else if(position == MORE_TAB){
+        } else if (position == MORE_TAB) {
             showToolbar();
             fab.setVisibility(View.GONE);
             fabInvite.setVisibility(View.GONE);
             bottomSheet.setVisibility(View.GONE);
-        }
-
-        else {
+        } else {
             //fab.startAnimation(makeInAnimation);
             fab.setVisibility(View.VISIBLE);
             //fabInvite.startAnimation( makeOutAnimation);
@@ -745,7 +740,7 @@ public class HomeFragment extends Fragment
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appbar.getLayoutParams();
         AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
 
-        int[] consumed = new int[2];
+        //int[] consumed = new int[2];
         //behavior.onNestedPreScroll(coordinator, appbar, null, 0, -1000, consumed);
         behavior.onNestedFling(coordinator, appbar, null, 0, -1000, true);
     }
@@ -794,6 +789,7 @@ public class HomeFragment extends Fragment
         ButterKnife.unbind(this);
     }
 
+    private static EventsFragment eventsFragment;
     private static class PageAdapter extends FragmentPagerAdapter {
         private final Fragment[] fragments;
 
@@ -801,7 +797,7 @@ public class HomeFragment extends Fragment
             super(fm);
             this.fragments = new Fragment[]{
                     //new EventTabFragment()
-                    new EventsFragment()
+                    eventsFragment = new EventsFragment()
                     , new SocialTabFragment()
                     //, new ChatTabFragment()
                     , new FriendsFragment()
@@ -870,7 +866,7 @@ public class HomeFragment extends Fragment
         TextView tabFour = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.tab_custom, null);
         tabFour.setText(adapter.getPageTitle(3));
         tabFour.setCompoundDrawablesWithIntrinsicBounds(0, adapter.getIcon(3), 0, 0);
-        tabFour.setPadding(0,Utils.myPixel(getActivity(), 3),0,0);
+        tabFour.setPadding(0, Utils.myPixel(getActivity(), 3), 0, 0);
         tab.getTabAt(MORE_TAB).setCustomView(tabFour);
     }
 
@@ -925,9 +921,52 @@ public class HomeFragment extends Fragment
         }
     }
 
-    /*@OnClick(R.id.fab_invite)
-    void onFabInviteClick()
+    PopupMenu popup;
+    @OnClick(R.id.city_container)
+    public void openContextualMenu() {
+        //registerForContextMenu(imgDrop);
+
+        if(popup != null)
+            popup.show();
+    }
+
+
+    @Override
+    public void onFinishGetCities(final CityModel cityModel) {
+        final ArrayList<CityModel.Data.Citylist> cityLists = cityModel.data.citylist;
+        for(int i=0; i < cityLists.size(); i++)
+        {
+            getPopupMenu().getMenu().add(0, i, i, cityLists.get(i).getCity());
+        }
+
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                final int position = item.getOrder();
+                txtPlace.setText(cityLists.get(position).getInitial());
+                MemberSettingModel memberSettingModel = new MemberSettingModel();
+                memberSettingModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
+                memberSettingModel.setArea_event(cityLists.get(position).getCity());
+                AccountManager.loaderMemberSetting(memberSettingModel, new OnResponseListener() {
+                    @Override
+                    public void onSuccess(Object object) {
+                        eventsFragment.onRefresh();
+                    }
+
+                    @Override
+                    public void onFailure(int responseCode, String message) {
+
+                    }
+                });
+                return false;
+            }
+        });
+    }
+
+    private PopupMenu getPopupMenu()
     {
-        getActivity().startActivity(new Intent(getActivity(), InviteFriendsActivity.class));
-    }*/
+        if(popup == null)
+            popup = new PopupMenu(this.getActivity(), cityContainer);
+        return popup;
+    }
 }

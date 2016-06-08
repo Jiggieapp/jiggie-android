@@ -42,7 +42,7 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.citylist = arrCityList.get(position);
+       /* holder.citylist = arrCityList.get(position);
         holder.city = holder.citylist.getCity();
 
         if(holder.city.equalsIgnoreCase("jakarta")){
@@ -52,7 +52,7 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
         }
 
         holder.txtCityName.setText(holder.city);
-        holder.position = position;
+        holder.position = position;*/
     }
 
     @Override
@@ -95,14 +95,14 @@ public class CityAdapter extends RecyclerView.Adapter<CityAdapter.ViewHolder> {
     }
 
     public void filter(String query) {
-        ArrayList<CityModel.Data.Citylist> temp = new ArrayList<>();
+        /*ArrayList<CityModel.Data.Citylist> temp = new ArrayList<>();
         for (CityModel.Data.Citylist citylist : arrCityListFiltered) {
             if (citylist.getCity().toLowerCase().contains(query)) {
                 temp.add(citylist);
             }
         }
         arrCityList = temp;
-        notifyDataSetChanged();
+        notifyDataSetChanged();*/
     }
 
 }

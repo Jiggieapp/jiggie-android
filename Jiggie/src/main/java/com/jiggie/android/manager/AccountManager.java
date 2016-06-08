@@ -177,7 +177,6 @@ public class AccountManager extends BaseManager {
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Utils.d(TAG, "failure");
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.MSG_EXCEPTION + t.toString()));
                 }
 
@@ -583,7 +582,7 @@ public class AccountManager extends BaseManager {
         }
     }
 
-    public static void loaderCityList(final OnResponseListener onResponseListener) {
+    public static void loaderCityList(final com.jiggie.android.listener.OnResponseListener onResponseListener) {
         try {
             getCityList(new CustomCallback() {
                 @Override

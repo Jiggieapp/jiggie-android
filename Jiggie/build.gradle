@@ -51,7 +51,7 @@ android {
             versionNameSuffix '-Dev'
             resValue "string", "app_name", "Jiggie Dev"
             signingConfig signingConfigs.configDebug
-            buildConfigField("String", "BASE_URL", "\"https://api.jiggieapp.com/\"")
+            buildConfigField("String", "BASE_URL", "\"https://api-dev.jiggieapp.com/\"")
             buildConfigField("String", "PAYMENT_API", "\"https://api.sandbox.veritrans.co.id/v2/token\"");
             buildConfigField("String", "CLIENT_KEY", "\"VT-client-gJRBbRZC0t_-JXUD\"" );
         }

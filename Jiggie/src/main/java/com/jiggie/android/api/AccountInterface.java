@@ -79,4 +79,5 @@ public interface AccountInterface{
 
     @GET(Utils.URL_GET_INVITE_CODE)
     Call<InviteCodeResultModel> getInviteCode(@Path("fb_id") String fbId);
+
 }

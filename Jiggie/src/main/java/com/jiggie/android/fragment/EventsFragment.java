@@ -5,15 +5,10 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -33,8 +28,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -64,7 +57,8 @@ import de.greenrobot.event.EventBus;
  */
 public class EventsFragment extends Fragment
         implements ViewPager.OnPageChangeListener, HomeMain
-        , ViewTreeObserver.OnGlobalLayoutListener, TabFragment, SwipeRefreshLayout.OnRefreshListener {
+        , ViewTreeObserver.OnGlobalLayoutListener, TabFragment, SwipeRefreshLayout.OnRefreshListener
+        {
     @Bind(R.id.time_tab)
     TabLayout timeTab;
     @Bind(R.id.viewpagerevents)
@@ -156,7 +150,6 @@ public class EventsFragment extends Fragment
         this.refreshLayout.setRefreshing(true);
         final AccessToken token = AccessToken.getCurrentAccessToken();
 
-
         EventManager.loaderEvent(token.getUserId());
     }
 
@@ -242,7 +235,6 @@ public class EventsFragment extends Fragment
     public void onResume() {
         super.onResume();
         if(Utils.isRefreshDetail){
-            //onRefresh();
             filter("", false);
             Utils.isRefreshDetail = false;
         }
@@ -271,10 +263,11 @@ public class EventsFragment extends Fragment
 
         super.setHasOptionsMenu(true);
 
-
         todayFragment.handleSwipeIssue(refreshLayout);
         tomorrowFragment.handleSwipeIssue(refreshLayout);
         upcomingFragment.handleSwipeIssue(refreshLayout);
+
+
     }
 
     @Override
