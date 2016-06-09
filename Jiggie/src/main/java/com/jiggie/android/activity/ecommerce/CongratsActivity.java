@@ -40,7 +40,7 @@ public class CongratsActivity extends ToolbarActivity {
             , lblEstimatedBalance, lblPaidDeposit, lblEstimatedTotal, lblTotalTitle, txt_type_number_title, txtInstruc, txtPaymentTitle, txtStatusTitle,
     txtCreditFill, lblEstimateTotTitle, lblReqDepositTitle, lblEstimateBalanceTitle, lblExtraChargeFill;
     LinearLayout linSummaryFooter, linDiscount;
-    RelativeLayout relViewTicket, containerTableGuest, relCredit, relExtraCharge;
+    RelativeLayout relViewTicket, containerTableGuest, relCredit, relExtraCharge, relSummary;
     RelativeLayout scrollView;
     ProgressBar progressBar;
     View divider, divider8, divider4;
@@ -48,7 +48,7 @@ public class CongratsActivity extends ToolbarActivity {
     long orderId;
     boolean fromOrderList;
     private final static String TAG = CongratsActivity.class.getSimpleName();
-    boolean isExactPrice = false;
+    String sale_type = Utils.BLANK;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +112,7 @@ public class CongratsActivity extends ToolbarActivity {
 
         lblExtraChargeFill = (TextView) this.findViewById(R.id.lbl_extracharge_fill);
         relExtraCharge = (RelativeLayout) findViewById(R.id.rel_extracharge);
+        relSummary = (RelativeLayout) findViewById(R.id.rel_summary);
 
         scrollView.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
@@ -235,7 +236,8 @@ public class CongratsActivity extends ToolbarActivity {
                                 getResources().getString(R.string.vor_reservation_summary));
                         lblGuestCount.setText(product_list.getNum_buy());
 
-                        if(isExactPrice){
+                        sale_type = product_list.getSale_type();
+                        if(sale_type.equals(Utils.TYPE_EXACT_PRICE)){
                             txtRegTicketTitle.setText(product_list.getName().toUpperCase());
                         }else{
                             txtRegTicketTitle.setText(product_list.getName().toUpperCase() + " "
@@ -259,8 +261,7 @@ public class CongratsActivity extends ToolbarActivity {
                             txtPaymentFill.setVisibility(View.GONE);
                         }
 
-                        isExactPrice = product_list.isExact_price();
-                        if(isExactPrice){
+                        if(sale_type.equals(Utils.TYPE_EXACT_PRICE)){
                             lblEstimateBalanceTitle.setText(getResources().getString(R.string.pci_f6c));
                             //lblReqDepositTitle.setText(getResources().getString(R.string.pci_f5c));
                             lblEstimateTotTitle.setText(getResources().getString(R.string.pci_f4c));
@@ -270,6 +271,10 @@ public class CongratsActivity extends ToolbarActivity {
                         if(extra_charge>0){
                             relExtraCharge.setVisibility(View.VISIBLE);
                             lblExtraChargeFill.setText(StringUtility.getRupiahFormat(product_list.getExtra_charge()));
+                        }
+
+                        if(sale_type.equals(Utils.TYPE_RESERVE)){
+                            relSummary.setVisibility(View.GONE);
                         }
 
                     }else{

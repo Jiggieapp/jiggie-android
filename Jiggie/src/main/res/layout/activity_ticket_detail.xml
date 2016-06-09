@@ -372,6 +372,7 @@
                     android:background="@color/dividercomm" />
 
                 <RelativeLayout
+                    android:id="@+id/rel_estimatecost"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/padding_standard"

@@ -100,6 +100,7 @@ public class Utils {
     public static final String INVITE_CODE = "invite_code";
     public static final String INVITE_CODE_MSG_SHARE = "msg_share";
     public static final String PREFERENCE_TAGLIST = "taglist";
+    public static final String PREFERENCE_TAGLIST_NEW = "taglist_new";
     public static final String TAGLIST_MODEL = "taglist_model";
     public static final String IS_FIRST_RUN = "is_first_run";
     public static final String IS_NEED_TO_BE_REDIRECTED_TO_EVENT_DETAIL
@@ -114,6 +115,13 @@ public class Utils {
     public static final String TYPE_VA = "va";
     public static final String TYPE_BP = "bp";
     public static final String TYPE_BCA = "bca";
+    //------------------------
+
+    //SALE TYPE var-----------
+    public static final String SALE_TYPE = "sale_type";
+    public static final String TYPE_MINIMUM_DEPOSIT = "minimum";
+    public static final String TYPE_EXACT_PRICE = "exact";
+    public static final String TYPE_RESERVE = "reserve";
     //------------------------
 
     public static int myPixel(Activity a, int dip) {
@@ -144,6 +152,7 @@ public class Utils {
     public static final String URL_EDIT_ABOUT = BASE_URL + "app/v3/updateuserabout";
     public static final String URL_GET_ACCESS_TOKEN = BASE_URL + "app/v3/userlogin";
     public static final String URL_TAGSLIST = BASE_URL + "app/v3/user/tagslist";
+    public static final String URL_TAGSLIST_NEW = BASE_URL + "app/v3/user/tagslist2";
     public static final String URL_BLOCK_CHAT = BASE_URL + "app/v3/blockuserwithfbid";
     public static final String URL_DELETE_CHAT = BASE_URL + "app/v3/deletemessageswithfbid";
     public static final String URL_ADD_CHAT = BASE_URL + "app/v3/messages/add";
