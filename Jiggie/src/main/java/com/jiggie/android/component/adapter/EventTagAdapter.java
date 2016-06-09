@@ -1,6 +1,9 @@
 package com.jiggie.android.component.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +11,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.jiggie.android.R;
+import com.jiggie.android.component.Utils;
+import com.jiggie.android.manager.EventManager;
+import com.jiggie.android.model.TagNewModel;
 
 /**
  * Created by rangg on 11/11/2015.
@@ -17,11 +23,11 @@ public class EventTagAdapter
     private final int tagResourceId;
     private String[] tags;
     private final static String TAG = EventTagAdapter.class.getSimpleName();
-    private Context context;
+    private Activity activity;
 
-    public EventTagAdapter(Context context, int tagResourceId)
+    public EventTagAdapter(Activity activity, int tagResourceId)
     {
-        this.context = context;
+        this.activity = activity;
         this.tagResourceId = tagResourceId;
     }
 
@@ -56,7 +62,7 @@ public class EventTagAdapter
 
         String text = this.tags[position];
 
-        if (text.equalsIgnoreCase("Art & Culture")) {
+        /*if (text.equalsIgnoreCase("Art & Culture")) {
             holder.txtTag.setBackground(context.getResources().getDrawable(R.drawable.btn_tag_red_f));
             holder.txtTag.setTextColor(context.getResources().getColor(R.color.pink));
         } else if (text.equalsIgnoreCase("Fashion")) {
@@ -72,9 +78,34 @@ public class EventTagAdapter
             holder.txtTag.setBackground(context.getResources().getDrawable(R.drawable.btn_yellow_tag_f));
             holder.txtTag.setTextColor(context.getResources().getColor(R.color.yellow_warning));
         } else if (text.equalsIgnoreCase("Featured")) {
-                /*holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_blue));
-                holder.textView.setTextColor(getResources().getColor(R.color.bluedark_tag));*/
+                *//*holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_blue));
+                holder.textView.setTextColor(getResources().getColor(R.color.bluedark_tag));*//*
+        }*/
+
+
+        TagNewModel tagNewModel = EventManager.loadTagsListNew();
+        int sizeTag = tagNewModel.getData().getTagslist().size();
+
+        for(int i=0;i<sizeTag;i++){
+            String nameTag = tagNewModel.getData().getTagslist().get(i).getName();
+            if(text.equalsIgnoreCase(nameTag)){
+                holder.txtTag.setBackground(setDrawableTag(activity, activity.getResources().getColor(R.color.background), Color.parseColor(tagNewModel.getData().getTagslist().get(position).getColor())));
+                holder.txtTag.setTextColor(Color.parseColor(tagNewModel.getData().getTagslist().get(position).getColor()));
+                break;
+            }
         }
+
+    }
+
+    public static GradientDrawable setDrawableTag(Activity a, int backgroundColor, int borderColor)
+    {
+        GradientDrawable shape = new GradientDrawable();
+        shape.setShape(GradientDrawable.RECTANGLE);
+        //shape.setCornerRadii(new float[]{Utils.myPixel(a, 100), Utils.myPixel(a, 100), Utils.myPixel(a, 100), Utils.myPixel(a, 100), 0, 0, 0, 0});
+        shape.setCornerRadius(Utils.myPixel(a, 100));
+        //shape.setColor(backgroundColor);
+        shape.setStroke(Utils.myPixel(a, 1), borderColor);
+        return  shape;
     }
 
     @Override

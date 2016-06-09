@@ -9,7 +9,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -60,6 +62,7 @@ import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.MemberSettingResultModel;
 import com.jiggie.android.model.PostLocationModel;
+import com.jiggie.android.model.TagNewModel;
 import com.jiggie.android.model.TagsListModel;
 
 import java.util.ArrayList;
@@ -113,6 +116,7 @@ public class HomeFragment extends Fragment
     private int currentPosition;
     boolean isAlreadyExpand = false;
     private ArrayList<String> selectedItems = new ArrayList<>();
+    private ArrayList<String> latestSelectedItems = new ArrayList<>();
     private boolean hasChanged;
     ProgressDialog progressDialog;
     boolean isFirstClick = true;
@@ -303,7 +307,14 @@ public class HomeFragment extends Fragment
                     behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                     isAlreadyExpand = false;
                     viewShadow.setVisibility(View.GONE);
-                    changeTags();
+                    //changeTags();
+                    if(shouldCheckTags()){
+                        latestSelectedItems.clear();
+                        for(int i=0;i<selectedItems.size();i++){
+                            latestSelectedItems.add(selectedItems.get(i));
+                            }
+                        changeTags();
+                    }
                 } else {
                     fab.setImageResource(R.drawable.ic_action_cancel);
                     behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -329,7 +340,7 @@ public class HomeFragment extends Fragment
             }
         });
 
-        EventManager.loaderTags(new EventManager.OnResponseEventListener() {
+        /*EventManager.loaderTags(new EventManager.OnResponseEventListener() {
             @Override
             public void onSuccess(Object object) {
                 TagsListModel dataTemp = (TagsListModel) object;
@@ -341,7 +352,22 @@ public class HomeFragment extends Fragment
             public void onFailure(int responseCode, String message) {
                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG);
             }
+        });*/
+
+        EventManager.loaderTagsNew(new EventManager.OnResponseEventListener() {
+            @Override
+            public void onSuccess(Object object) {
+                TagNewModel dataTemp = (TagNewModel) object;
+
+                setTagsNew(dataTemp);
+            }
+
+            @Override
+            public void onFailure(int responseCode, String message) {
+                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG);
+            }
         });
+
         //END OF PART OF BOTTOM SHEET FILTER=================
 
         EventBus.getDefault().register(this);
@@ -380,6 +406,39 @@ public class HomeFragment extends Fragment
         super.onStop();
         EventBus.getDefault().unregister(this);
     }
+
+    private boolean shouldCheckTags(){
+        boolean shouldCheckTags = false;
+        
+        int currentSizeSelected = selectedItems.size();
+        int latestSizeSelected = latestSelectedItems.size();
+        
+        if(currentSizeSelected!=latestSizeSelected){
+            shouldCheckTags = true;
+        }else{
+            for(int i=0;i<currentSizeSelected;i++){
+                String tagA = selectedItems.get(i);
+                boolean isFounded = false;
+                
+                for(int j=0;j<latestSizeSelected;j++){
+                    String tagB = latestSelectedItems.get(j);
+                    
+                    if(tagA.equals(tagB)){
+                        isFounded = true;
+                        break;
+                    }
+                }
+                
+                if(!isFounded){
+                    shouldCheckTags = true;
+                    break;
+                }
+            }
+        }
+        
+        return shouldCheckTags;
+    }
+    
 
     private void changeTags() {
         if (selectedItems.size() > 0) {
@@ -448,7 +507,7 @@ public class HomeFragment extends Fragment
         //return null;
     }
 
-    private void setTags(TagsListModel tagsListModel) {
+    /*private void setTags(TagsListModel tagsListModel) {
         EventManager.saveTags(tagsListModel.getData().getTagslist());
         AccountManager.getUserTags(new AccountManager.OnResponseListener() {
             @Override
@@ -494,6 +553,87 @@ public class HomeFragment extends Fragment
                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG);
             }
         });
+    }*/
+
+    private void setTagsNew(final TagNewModel tagNewModel) {
+        //EventManager.saveTags(tagsListModel.getData().getTagslist());
+        EventManager.saveTagsListNew(tagNewModel);
+        AccountManager.getUserTags(new AccountManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object) {
+                MemberSettingResultModel memberSettingResultModel = (MemberSettingResultModel) object;
+                ArrayList<String> result = memberSettingResultModel.getData().getMembersettings().getExperiences();
+
+                /*for (String res : getTags()) {
+                    if(getActivity() != null)
+                    {
+                        final View view = getActivity().getLayoutInflater().inflate(R.layout.item_setup_tag, flowLayout, false);
+                        final ViewHolder holder = new ViewHolder(getActivity(), view, res);
+
+                        holder.textView.setText(holder.text);
+
+                        flowLayout.addView(view);
+
+                        if (result.contains(res)) {
+                            selectedItems.add(res);
+                            //holder.checkView.setVisibility(View.GONE);
+                            holder.checkView.setVisibility(View.INVISIBLE);
+                        } else {
+                            //setSelected(holder.container, holder.textView, false);
+                            holder.checkView.setVisibility(View.VISIBLE);
+                        }
+                        //onTagClick(holder);
+                        setSelected(holder, holder.checkView.getVisibility() != View.VISIBLE, res);
+                        hasChanged = false;
+
+                        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                            @Override
+                            public void onGlobalLayout() {
+                                view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                                holder.container.setMinimumWidth(holder.container.getMeasuredWidth());
+                            }
+                        });
+                    }
+                }*/
+
+                int sizeTag = tagNewModel.getData().getTagslist().size();
+                for(int i=0;i<sizeTag;i++){
+                    if(getActivity() != null)
+                    {
+                        String res = tagNewModel.getData().getTagslist().get(i).getName();
+                        String res2 = "\u2713\u0009"+tagNewModel.getData().getTagslist().get(i).getName();
+                        final View view = getActivity().getLayoutInflater().inflate(R.layout.item_setup_tag, flowLayout, false);
+                        final ViewHolder holder = new ViewHolder(getActivity(), view, res2, i);
+
+                        holder.textView.setText(holder.text);
+
+                        flowLayout.addView(view);
+
+                        if (result.contains(res)) {
+                            selectedItems.add(res);
+                            latestSelectedItems.add(res);
+                        }
+                        holder.checkView.setVisibility(View.GONE);
+                        //onTagClick(holder);
+                        setSelected(holder, holder.checkView.getVisibility() != View.VISIBLE, res, i);
+                        hasChanged = false;
+
+                        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                            @Override
+                            public void onGlobalLayout() {
+                                view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                                holder.container.setMinimumWidth(holder.container.getMeasuredWidth());
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(int responseCode, String message) {
+                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG);
+            }
+        });
     }
 
     class ViewHolder {
@@ -506,75 +646,102 @@ public class HomeFragment extends Fragment
 
         View parent;
         String text;
+        int position;
 
-        public ViewHolder(final FragmentActivity activity, View parent, String text) {
+        public ViewHolder(final FragmentActivity activity, View parent, String text, final int position) {
             ButterKnife.bind(this, parent);
             this.textView.setText(text);
             this.parent = parent;
             this.text = text;
+            this.position = position;
 
             this.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (activity != null)
-                        onTagClick(ViewHolder.this);
+                        onTagClick(ViewHolder.this, position);
                 }
             });
         }
     }
 
-    private void onTagClick(ViewHolder holder) {
+    private void onTagClick(ViewHolder holder, int position) {
 
-        boolean selected = holder.checkView.getVisibility() != View.VISIBLE;
+        //boolean selected = holder.checkView.getVisibility() != View.VISIBLE;
+        TagNewModel tagNewModel = EventManager.loadTagsListNew();
+        boolean selected = false;
+        if(holder.textView.getCurrentTextColor()==getResources().getColor(R.color.divider_pantone)){
+            selected = true;
+        }else{
+            selected = false;
+        }
+
         boolean doNothing = false;
 
-        if (selected)
-            this.selectedItems.add(holder.text);
+        if (selected){
+            //this.selectedItems.add(holder.text);
+            this.selectedItems.add(tagNewModel.getData().getTagslist().get(position).getName());
+        }
         else {
             if (this.selectedItems.size() == 1) {
                 doNothing = true;
                 selected = false;
             } else {
-                this.selectedItems.remove(holder.text);
+                this.selectedItems.remove(tagNewModel.getData().getTagslist().get(position).getName());
             }
         }
 
         if (!doNothing) {
             //holder.checkView.setVisibility(selected ? View.VISIBLE : View.GONE);
-            setSelected(holder, selected, holder.text);
+            setSelected(holder, selected, holder.text, position);
         }
     }
 
-    private void setSelected(ViewHolder holder, boolean selected, String text) {
-        if (selected) {
+    private void setSelected(ViewHolder holder, boolean selected, String text, int position) {
+        TagNewModel dataTag = EventManager.loadTagsListNew();
+        /*if (selected) {
             if (text.equalsIgnoreCase("Art & Culture")) {
                 holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_red_f));
-                holder.textView.setTextColor(getResources().getColor(R.color.pink));
+                //holder.textView.setTextColor(getResources().getColor(R.color.pink));
                 holder.checkView.setImageResource(R.drawable.ic_tick_pink);
                 //holder.checkView.setImageResource(R.mipmap.ic_check);
+
+                *//*for(int i=0;i<sizeTag;i++){
+                    String nameTag = dataTag.getData().getTagslist().get(i).getName();
+                    if(nameTag.equalsIgnoreCase("Art & Culture")){
+                        holder.textView.setTextColor(Color.parseColor(dataTag.getData().getTagslist().get(i).getColor()));
+                        break;
+                    }
+                }*//*
+
             } else if (text.equalsIgnoreCase("Fashion")) {
                 holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_green));
                 holder.textView.setTextColor(getResources().getColor(R.color.green_tag));
                 holder.checkView.setImageResource(R.drawable.ic_tick_green);
                 //holder.checkView.setImageResource(R.mipmap.ic_check);
+
             } else if (text.equalsIgnoreCase("Nightlife")) {
                 holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_greydark));
                 holder.textView.setTextColor(getResources().getColor(R.color.greydark_tag));
                 holder.checkView.setImageResource(R.drawable.ic_tick_greydark);
                 //holder.checkView.setImageResource(R.mipmap.ic_check);
+
             } else if (text.equalsIgnoreCase("Music")) {
                 holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_blues));
                 holder.textView.setTextColor(getResources().getColor(R.color.bluedark_tag));
                 holder.checkView.setImageResource(R.drawable.ic_tick_blue);
                 //holder.checkView.setImageResource(R.mipmap.ic_check);
+
+
             } else if (text.equalsIgnoreCase("Food & Drink")) {
                 holder.container.setBackground(getResources().getDrawable(R.drawable.btn_yellow_tag_f));
                 holder.textView.setTextColor(getResources().getColor(R.color.yellow_warning));
                 holder.checkView.setImageResource(R.drawable.ic_tick_yellow);
                 //holder.checkView.setImageResource(R.mipmap.ic_check);
+
             } else if (text.equalsIgnoreCase("Featured")) {
-                /*holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_blue));
-                holder.textView.setTextColor(getResources().getColor(R.color.bluedark_tag));*/
+                *//*holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_blue));
+                holder.textView.setTextColor(getResources().getColor(R.color.bluedark_tag));*//*
             }
 
         } else {
@@ -582,11 +749,33 @@ public class HomeFragment extends Fragment
             holder.textView.setTextColor(getResources().getColor(R.color.divider_pantone));
             //holder.checkView.setImageResource(R.drawable.ic_tick_grey);
             //holder.checkView.setImageResource(R.drawable.ic_tick_yellow);
+        }*/
+
+        if (selected) {
+            holder.container.setBackground(setDrawableTag(getActivity(), getResources().getColor(R.color.background), Color.parseColor(dataTag.getData().getTagslist().get(position).getColor())));
+            holder.textView.setTextColor(Color.parseColor(dataTag.getData().getTagslist().get(position).getColor()));
+            //holder.checkView.setImageResource(R.drawable.ic_tick_grey);
+            //holder.checkView.setImageResource(R.mipmap.ic_check);
+        }else{
+            holder.container.setBackground(setDrawableTag(getActivity(), getResources().getColor(R.color.background), getResources().getColor(R.color.divider_pantone)));
+            holder.textView.setTextColor(getResources().getColor(R.color.divider_pantone));
         }
 
 
-        holder.checkView.setVisibility(selected ? View.VISIBLE : View.INVISIBLE);
+        //holder.checkView.setVisibility(selected ? View.VISIBLE : View.INVISIBLE);
+        holder.checkView.setVisibility(View.GONE);
         hasChanged = true;
+    }
+
+    public static GradientDrawable setDrawableTag(Activity a, int backgroundColor, int borderColor)
+    {
+        GradientDrawable shape = new GradientDrawable();
+        shape.setShape(GradientDrawable.RECTANGLE);
+        //shape.setCornerRadii(new float[]{Utils.myPixel(a, 100), Utils.myPixel(a, 100), Utils.myPixel(a, 100), Utils.myPixel(a, 100), 0, 0, 0, 0});
+        shape.setCornerRadius(Utils.myPixel(a, 100));
+        //shape.setColor(backgroundColor);
+        shape.setStroke(Utils.myPixel(a, 1), borderColor);
+        return  shape;
     }
 
     private void showConfirmationDialog() {
