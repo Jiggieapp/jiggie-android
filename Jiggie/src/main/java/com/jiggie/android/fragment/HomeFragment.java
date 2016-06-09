@@ -1,5 +1,6 @@
 package com.jiggie.android.fragment;
 
+import android.accounts.Account;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -64,6 +65,7 @@ import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.MemberSettingResultModel;
 import com.jiggie.android.model.PostLocationModel;
+import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.TagsListModel;
 
 import java.lang.reflect.Array;
@@ -307,8 +309,6 @@ public class HomeFragment extends Fragment
                     isAlreadyExpand = true;
                     viewShadow.setVisibility(View.VISIBLE);
                 }
-
-
             }
         });
 
@@ -370,7 +370,19 @@ public class HomeFragment extends Fragment
         //END OF TOOLTIP PART===============
 
         eventPresenterImplementation = new EventPresenterImplementation(this);
-        eventPresenterImplementation.getCities();
+
+        SettingModel.Data data = AccountManager.loadSetting().getData();
+        //wandy 08-06-2016
+        if(data.getCityList() == null
+                || data.getCityList().size() == 0)
+        {
+            showProgressDialog();
+            eventPresenterImplementation.getCities();
+        }
+        else
+        {
+            onFinishGetCities(AccountManager.loadSetting().getData().getCityList());
+        }
     }
 
     @Override
@@ -790,6 +802,13 @@ public class HomeFragment extends Fragment
     }
 
     private static EventsFragment eventsFragment;
+
+    private static EventsFragment getEventsFragment()
+    {
+        if(eventsFragment == null)
+            eventsFragment = new EventsFragment();
+        return eventsFragment;
+    }
     private static class PageAdapter extends FragmentPagerAdapter {
         private final Fragment[] fragments;
 
@@ -797,7 +816,7 @@ public class HomeFragment extends Fragment
             super(fm);
             this.fragments = new Fragment[]{
                     //new EventTabFragment()
-                    eventsFragment = new EventsFragment()
+                    getEventsFragment()
                     , new SocialTabFragment()
                     //, new ChatTabFragment()
                     , new FriendsFragment()
@@ -925,42 +944,59 @@ public class HomeFragment extends Fragment
     @OnClick(R.id.city_container)
     public void openContextualMenu() {
         //registerForContextMenu(imgDrop);
-
         if(popup != null)
             popup.show();
     }
 
 
     @Override
-    public void onFinishGetCities(final CityModel cityModel) {
-        final ArrayList<CityModel.Data.Citylist> cityLists = cityModel.data.citylist;
-        for(int i=0; i < cityLists.size(); i++)
+    public void onFinishGetCities(final ArrayList<CityModel.Data.Citylist> cityLists) {
+        //final ArrayList<CityModel.Data.Citylist> cityLists = cityModel.data.citylist;
+        hideProgressDialog();
+        final String currentAreaEvent = AccountManager.loadMemberSetting().getArea_event();
+        int citySize = cityLists.size();
+        for(int i=0; i < citySize; i++)
         {
             getPopupMenu().getMenu().add(0, i, i, cityLists.get(i).getCity());
+            if(currentAreaEvent != null && currentAreaEvent.equalsIgnoreCase(cityLists.get(i).getCity()))
+            {
+                txtPlace.setText(cityLists.get(i).getInitial());
+            }
         }
 
-        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                final int position = item.getOrder();
-                txtPlace.setText(cityLists.get(position).getInitial());
-                MemberSettingModel memberSettingModel = new MemberSettingModel();
-                memberSettingModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
-                memberSettingModel.setArea_event(cityLists.get(position).getCity());
-                AccountManager.loaderMemberSetting(memberSettingModel, new OnResponseListener() {
-                    @Override
-                    public void onSuccess(Object object) {
-                        eventsFragment.onRefresh();
-                    }
+        if(citySize > 1)
+        {
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    final int position = item.getOrder();
+                    txtPlace.setText(cityLists.get(position).getInitial());
+                    showProgressDialog();
+                    MemberSettingModel memberSettingModel = new MemberSettingModel();
+                    memberSettingModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
+                    memberSettingModel.setArea_event(cityLists.get(position).getCity());
+                    AccountManager.loaderMemberSetting(memberSettingModel, new OnResponseListener() {
+                        @Override
+                        public void onSuccess(Object object) {
+                            hideProgressDialog();
+                            eventsFragment.onRefresh();
+                        }
 
-                    @Override
-                    public void onFailure(int responseCode, String message) {
+                        @Override
+                        public void onFailure(int responseCode, String message) {
 
-                    }
-                });
-                return false;
-            }
-        });
+                        }
+                    });
+                    return false;
+                }
+            });
+        }
+        else
+        {
+            imgDrop.setVisibility(View.INVISIBLE);
+        }
+
+
     }
 
     private PopupMenu getPopupMenu()

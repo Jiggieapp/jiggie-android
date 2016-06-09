@@ -88,7 +88,7 @@ public class SocialManager extends BaseManager {
                         //Debug.stopMethodTracing();
                         EventBus.getDefault().post(dataTemp);
                     } else {
-                        Debug.stopMethodTracing();
+                        //Debug.stopMethodTracing();
                         EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_FEED
                                 , App.getInstance().getResources().getString(R.string.empty_social)));
                     }

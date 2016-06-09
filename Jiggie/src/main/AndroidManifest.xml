@@ -413,5 +413,8 @@
             android:exported="true" />
 
         <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
+
+        <receiver
+            android:name=".listener.AlarmReceiver"></receiver>
     </application>
 </manifest>

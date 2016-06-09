@@ -4,6 +4,7 @@ import com.jiggie.android.component.Utils;
 import com.jiggie.android.listener.OnResponseListener;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.CityModel;
+import com.jiggie.android.model.SettingModel;
 
 /**
  * Created by Wandy on 6/8/2016.
@@ -23,7 +24,12 @@ public class EventPresenterImplementation implements EventPresenter {
         AccountManager.loaderCityList(new OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
-                eventView.onFinishGetCities((CityModel) object);
+                SettingModel settingModel = AccountManager.loadSetting();
+                CityModel cityModel = (CityModel) object;
+                settingModel.getData().setCityList(cityModel.data.citylist);
+                AccountManager.saveSetting(settingModel);
+                //eventView.onFinishGetCities((CityModel) object);
+                eventView.onFinishGetCities(cityModel.data.citylist);
             }
 
             @Override
