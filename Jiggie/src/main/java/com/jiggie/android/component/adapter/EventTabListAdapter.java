@@ -104,6 +104,14 @@ public class EventTabListAdapter
             String[] tags = new String[item.getTags().size()];
             item.getTags().toArray(tags);
 
+            //---------
+            StringBuilder builder = new StringBuilder();
+            for(String s : tags) {
+                builder.append(s);
+            }
+            String d = builder.toString();
+            //-----------
+
             this.eventTagAdapter = new EventTagAdapter(fragment.getActivity(), R.layout.item_event_tag);
 
             eventTagAdapter.setTags(tags);

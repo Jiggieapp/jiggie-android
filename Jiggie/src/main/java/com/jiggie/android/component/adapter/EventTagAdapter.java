@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.manager.EventManager;
@@ -86,12 +87,20 @@ public class EventTagAdapter
         TagNewModel tagNewModel = EventManager.loadTagsListNew();
         int sizeTag = tagNewModel.getData().getTagslist().size();
 
+        String rr = new Gson().toJson(tagNewModel);
+
         for(int i=0;i<sizeTag;i++){
             String nameTag = tagNewModel.getData().getTagslist().get(i).getName();
             if(text.equalsIgnoreCase(nameTag)){
-                holder.txtTag.setBackground(setDrawableTag(activity, activity.getResources().getColor(R.color.background), Color.parseColor(tagNewModel.getData().getTagslist().get(position).getColor())));
-                holder.txtTag.setTextColor(Color.parseColor(tagNewModel.getData().getTagslist().get(position).getColor()));
+                String colorr = tagNewModel.getData().getTagslist().get(i).getColor();
+                holder.txtTag.setBackground(setDrawableTag(activity, activity.getResources().getColor(R.color.background), Color.parseColor(tagNewModel.getData().getTagslist().get(i).getColor())));
+                holder.txtTag.setTextColor(Color.parseColor(tagNewModel.getData().getTagslist().get(i).getColor()));
                 break;
+                /*holder.txtTag.setBackground(setDrawableTag(activity, activity.getResources().getColor(R.color.background),
+                        activity.getResources().getColor(R.color.red_void)));
+                holder.txtTag.setTextColor(activity.getResources().getColor(R.color.red_void));*/
+            }else{
+                //do nothing
             }
         }
 
