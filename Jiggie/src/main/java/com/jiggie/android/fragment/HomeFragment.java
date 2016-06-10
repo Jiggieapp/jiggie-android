@@ -133,6 +133,7 @@ public class HomeFragment extends Fragment
     View bottomSheet;
     AppCompatActivity activity;
     EventPresenterImplementation eventPresenterImplementation;
+    ImageView imgView;
 
     @Nullable
     @Override
@@ -162,9 +163,9 @@ public class HomeFragment extends Fragment
         //this.toolbar.setNavigationIcon(R.drawable.logo);
         //this.toolbar.getLogo().set;
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-        final ImageView imgView = (ImageView) toolbar.findViewById(R.id.logo_image);
-        //imgView.setImageDrawable(getResources().getDrawable(R.drawable.logo2));
+        imgView = (ImageView) toolbar.findViewById(R.id.logo_image);
         imgView.setImageDrawable(getResources().getDrawable(R.drawable.logo));
+        //addLogoImage();
 
         this.toolbar.setTitle("");
         activity.setSupportActionBar(toolbar);
@@ -405,6 +406,21 @@ public class HomeFragment extends Fragment
         } else {
             onFinishGetCities(AccountManager.loadSetting().getData().getCityList());
         }
+    }
+
+    private void addLogoImage(){
+        int[] center = TooltipsManager.getCenterPoint(getActivity());
+        //imgView.setX(center[0]);
+        ImageView imgLogo = new ImageView(getActivity());
+        imgLogo.setImageDrawable(getResources().getDrawable(R.drawable.logo));
+        RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(Utils.myPixel(getActivity(), 63), Utils.myPixel(getActivity(), 24));
+        param.leftMargin = center[0]-Utils.myPixel(getActivity(), 32);
+        //param.setMargins(center[0], 0, 0, 0);
+        param.addRule(RelativeLayout.CENTER_VERTICAL);
+        //imgLogo.setLeft(center[0]);
+        //imgLogo.setLayoutParams(param);
+        relPlace.addView(imgLogo, param);
+
     }
 
     @Override
@@ -1200,4 +1216,5 @@ public class HomeFragment extends Fragment
             popup = new PopupMenu(this.getActivity(), cityContainer);
         return popup;
     }
+
 }
