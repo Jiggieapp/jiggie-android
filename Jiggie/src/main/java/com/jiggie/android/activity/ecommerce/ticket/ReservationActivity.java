@@ -441,7 +441,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
 
     @Override
     public String getTicketCaption() {
-        return "Number of guests";
+        return "Number of guest(s)";
     }
 
     /*@Override
