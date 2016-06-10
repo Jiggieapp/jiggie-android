@@ -1177,6 +1177,8 @@ public class HomeFragment extends Fragment
                             popup.getMenu().add(0, position, position, "\u2713\u0009 " + cityLists.get(position).getCity());
                             hideProgressDialog();
                             eventsFragment.onRefresh();
+
+                            App.getInstance().trackMixPanelChangeCity(Utils.CHANGE_CITY, cityLists.get(position).getCity(), cityLists.get(position).getInitial());
                         }
 
                         @Override
@@ -1190,7 +1192,6 @@ public class HomeFragment extends Fragment
         } else {
             imgDrop.setVisibility(View.INVISIBLE);
         }
-
 
     }
 

@@ -237,6 +237,8 @@ public class Utils {
 
     public static final String PROMO_CODE = "Use Promo Code";
 
+    public static final String CHANGE_CITY = "Change City";
+
     public static final String TAG = Utils.class.getSimpleName();
     //AppsFlyer properties----
     public static String AFinstall_type = "";
