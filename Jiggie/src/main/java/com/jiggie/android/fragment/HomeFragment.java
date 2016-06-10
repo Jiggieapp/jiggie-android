@@ -284,7 +284,6 @@ public class HomeFragment extends Fragment
                     behavior.setState(BottomSheetBehavior.STATE_EXPANDED);*/
                     behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 }
-                Log.d("state", String.valueOf(newState));
             }
 
             @Override
@@ -307,11 +306,11 @@ public class HomeFragment extends Fragment
                     isAlreadyExpand = false;
                     viewShadow.setVisibility(View.GONE);
                     //changeTags();
-                    if(shouldCheckTags()){
+                    if (shouldCheckTags()) {
                         latestSelectedItems.clear();
-                        for(int i=0;i<selectedItems.size();i++){
+                        for (int i = 0; i < selectedItems.size(); i++) {
                             latestSelectedItems.add(selectedItems.get(i));
-                            }
+                        }
                         changeTags();
                     }
                 } else {
@@ -387,7 +386,7 @@ public class HomeFragment extends Fragment
 
             if (SocialManager.countData > 0) {
                 if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_SOCIAL_TAB)) {
-                    TooltipsManager.initTooltipWithPoint(getActivity(), new Point(TooltipsManager.getCenterPoint(getActivity())[0]-Utils.myPixel(getActivity(), 48),
+                    TooltipsManager.initTooltipWithPoint(getActivity(), new Point(TooltipsManager.getCenterPoint(getActivity())[0] - Utils.myPixel(getActivity(), 48),
                             TooltipsManager.getCenterPoint(getActivity())[1] / 3), getActivity().getString(R.string.tooltip_social_tab), Utils.myPixel(getActivity(), 380), Tooltip.Gravity.BOTTOM);
                     TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_SOCIAL_TAB, true);
                 }
@@ -399,14 +398,11 @@ public class HomeFragment extends Fragment
 
         SettingModel.Data data = AccountManager.loadSetting().getData();
         //wandy 08-06-2016
-        if(data.getCityList() == null
-                || data.getCityList().size() == 0)
-        {
+        if (data.getCityList() == null
+                || data.getCityList().size() == 0) {
             showProgressDialog();
             eventPresenterImplementation.getCities();
-        }
-        else
-        {
+        } else {
             onFinishGetCities(AccountManager.loadSetting().getData().getCityList());
         }
     }
@@ -417,38 +413,38 @@ public class HomeFragment extends Fragment
         EventBus.getDefault().unregister(this);
     }
 
-    private boolean shouldCheckTags(){
+    private boolean shouldCheckTags() {
         boolean shouldCheckTags = false;
-        
+
         int currentSizeSelected = selectedItems.size();
         int latestSizeSelected = latestSelectedItems.size();
-        
-        if(currentSizeSelected!=latestSizeSelected){
+
+        if (currentSizeSelected != latestSizeSelected) {
             shouldCheckTags = true;
-        }else{
-            for(int i=0;i<currentSizeSelected;i++){
+        } else {
+            for (int i = 0; i < currentSizeSelected; i++) {
                 String tagA = selectedItems.get(i);
                 boolean isFounded = false;
-                
-                for(int j=0;j<latestSizeSelected;j++){
+
+                for (int j = 0; j < latestSizeSelected; j++) {
                     String tagB = latestSelectedItems.get(j);
-                    
-                    if(tagA.equals(tagB)){
+
+                    if (tagA.equals(tagB)) {
                         isFounded = true;
                         break;
                     }
                 }
-                
-                if(!isFounded){
+
+                if (!isFounded) {
                     shouldCheckTags = true;
                     break;
                 }
             }
         }
-        
+
         return shouldCheckTags;
     }
-    
+
 
     private void changeTags() {
         if (selectedItems.size() > 0) {
@@ -606,11 +602,10 @@ public class HomeFragment extends Fragment
                 }*/
 
                 int sizeTag = tagNewModel.getData().getTagslist().size();
-                for(int i=0;i<sizeTag;i++){
-                    if(getActivity() != null)
-                    {
+                for (int i = 0; i < sizeTag; i++) {
+                    if (getActivity() != null) {
                         String res = tagNewModel.getData().getTagslist().get(i).getName();
-                        String res2 = "\u2713\u0009"+tagNewModel.getData().getTagslist().get(i).getName();
+                        String res2 = "\u2713\u0009" + tagNewModel.getData().getTagslist().get(i).getName();
                         final View view = getActivity().getLayoutInflater().inflate(R.layout.item_setup_tag, flowLayout, false);
                         final ViewHolder holder = new ViewHolder(getActivity(), view, res2, i);
 
@@ -679,19 +674,18 @@ public class HomeFragment extends Fragment
         //boolean selected = holder.checkView.getVisibility() != View.VISIBLE;
         TagNewModel tagNewModel = EventManager.loadTagsListNew();
         boolean selected = false;
-        if(holder.textView.getCurrentTextColor()==getResources().getColor(R.color.divider_pantone)){
+        if (holder.textView.getCurrentTextColor() == getResources().getColor(R.color.divider_pantone)) {
             selected = true;
-        }else{
+        } else {
             selected = false;
         }
 
         boolean doNothing = false;
 
-        if (selected){
+        if (selected) {
             //this.selectedItems.add(holder.text);
             this.selectedItems.add(tagNewModel.getData().getTagslist().get(position).getName());
-        }
-        else {
+        } else {
             if (this.selectedItems.size() == 1) {
                 doNothing = true;
                 selected = false;
@@ -765,7 +759,7 @@ public class HomeFragment extends Fragment
             holder.textView.setTextColor(Color.parseColor(dataTag.getData().getTagslist().get(position).getColor()));
             //holder.checkView.setImageResource(R.drawable.ic_tick_grey);
             //holder.checkView.setImageResource(R.mipmap.ic_check);
-        }else{
+        } else {
             holder.container.setBackground(setDrawableTag(getActivity(), getResources().getColor(R.color.background), getResources().getColor(R.color.divider_pantone)));
             holder.textView.setTextColor(getResources().getColor(R.color.divider_pantone));
         }
@@ -776,15 +770,14 @@ public class HomeFragment extends Fragment
         hasChanged = true;
     }
 
-    public static GradientDrawable setDrawableTag(Activity a, int backgroundColor, int borderColor)
-    {
+    public static GradientDrawable setDrawableTag(Activity a, int backgroundColor, int borderColor) {
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         //shape.setCornerRadii(new float[]{Utils.myPixel(a, 100), Utils.myPixel(a, 100), Utils.myPixel(a, 100), Utils.myPixel(a, 100), 0, 0, 0, 0});
         shape.setCornerRadius(Utils.myPixel(a, 100));
         //shape.setColor(backgroundColor);
         shape.setStroke(Utils.myPixel(a, 1), borderColor);
-        return  shape;
+        return shape;
     }
 
     private void showConfirmationDialog() {
@@ -992,12 +985,12 @@ public class HomeFragment extends Fragment
 
     private static EventsFragment eventsFragment;
 
-    private static EventsFragment getEventsFragment()
-    {
-        if(eventsFragment == null)
+    private static EventsFragment getEventsFragment() {
+        if (eventsFragment == null)
             eventsFragment = new EventsFragment();
         return eventsFragment;
     }
+
     private static class PageAdapter extends FragmentPagerAdapter {
         private final Fragment[] fragments;
 
@@ -1092,7 +1085,7 @@ public class HomeFragment extends Fragment
                 , new IntentFilter(Utils.FETCH_CHAT_RECEIVER));
 
         if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_SOCIAL_TAB)) {
-            TooltipsManager.initTooltipWithPoint(getActivity(), new Point(TooltipsManager.getCenterPoint(getActivity())[0]-Utils.myPixel(getActivity(), 48),
+            TooltipsManager.initTooltipWithPoint(getActivity(), new Point(TooltipsManager.getCenterPoint(getActivity())[0] - Utils.myPixel(getActivity(), 48),
                     TooltipsManager.getCenterPoint(getActivity())[1] / 3), getActivity().getString(R.string.tooltip_social_tab), Utils.myPixel(getActivity(), 380), Tooltip.Gravity.BOTTOM);
             TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_SOCIAL_TAB, true);
         }
@@ -1130,13 +1123,15 @@ public class HomeFragment extends Fragment
     }
 
     PopupMenu popup;
+
     @OnClick(R.id.city_container)
     public void openContextualMenu() {
         //registerForContextMenu(imgDrop);
-        if(popup != null)
+        if (popup != null)
             popup.show();
     }
 
+    int lastSelected = 0;
 
     @Override
     public void onFinishGetCities(final ArrayList<CityModel.Data.Citylist> cityLists) {
@@ -1144,53 +1139,63 @@ public class HomeFragment extends Fragment
         hideProgressDialog();
         final String currentAreaEvent = AccountManager.loadMemberSetting().getArea_event();
         int citySize = cityLists.size();
-        for(int i=0; i < citySize; i++)
-        {
-            getPopupMenu().getMenu().add(0, i, i, cityLists.get(i).getCity());
-            if(currentAreaEvent != null && currentAreaEvent.equalsIgnoreCase(cityLists.get(i).getCity()))
-            {
+        for (int i = 0; i < citySize; i++) {
+
+            if (currentAreaEvent != null && currentAreaEvent.equalsIgnoreCase(cityLists.get(i).getCity())) {
                 txtPlace.setText(cityLists.get(i).getInitial());
+                getPopupMenu().getMenu().add(0, i, i, "\u2713\u0009 " + cityLists.get(i).getCity());
+                lastSelected = i;
+            }
+            else
+            {
+                getPopupMenu().getMenu().add(0, i, i, "  " + cityLists.get(i).getCity());
             }
         }
 
-        if(citySize > 1)
-        {
+
+        if (citySize > 1) {
+
             popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     final int position = item.getOrder();
-                    txtPlace.setText(cityLists.get(position).getInitial());
+
                     showProgressDialog();
-                    MemberSettingModel memberSettingModel = new MemberSettingModel();
-                    memberSettingModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
+                    MemberSettingModel memberSettingModel = AccountManager.loadMemberSetting();
                     memberSettingModel.setArea_event(cityLists.get(position).getCity());
                     AccountManager.loaderMemberSetting(memberSettingModel, new OnResponseListener() {
                         @Override
                         public void onSuccess(Object object) {
+                            txtPlace.setText(cityLists.get(position).getInitial());
+
+                            if (lastSelected > -1) {
+                                popup.getMenu().removeItem(lastSelected);
+                                popup.getMenu().add(0, lastSelected, lastSelected, " " + cityLists.get(lastSelected).getCity());
+                            }
+                            lastSelected = position;
+                            popup.getMenu().removeItem(position);
+                            popup.getMenu().add(0, position, position, "\u2713\u0009 " + cityLists.get(position).getCity());
                             hideProgressDialog();
                             eventsFragment.onRefresh();
                         }
 
                         @Override
                         public void onFailure(int responseCode, String message) {
-
+                            hideProgressDialog();
                         }
                     });
                     return false;
                 }
             });
-        }
-        else
-        {
+        } else {
             imgDrop.setVisibility(View.INVISIBLE);
         }
 
 
     }
 
-    private PopupMenu getPopupMenu()
-    {
-        if(popup == null)
+    private PopupMenu getPopupMenu() {
+        if (popup == null)
             popup = new PopupMenu(this.getActivity(), cityContainer);
         return popup;
     }

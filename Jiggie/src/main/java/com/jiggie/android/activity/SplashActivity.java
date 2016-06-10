@@ -32,7 +32,8 @@ public class SplashActivity extends Activity
         //App.getSharedPreferences().edit().putBoolean(Utils.PREFERENCE_GPS, false).commit();
         App.runningActivity = this;
 
-        if(AccessToken.getCurrentAccessToken().getUserId() != null
+        if(AccessToken.getCurrentAccessToken() != null
+                && AccessToken.getCurrentAccessToken().getUserId() != null
                 && !AccessToken.getCurrentAccessToken().getUserId().isEmpty())
         {
             if(!AccountManager.getHasSetAlarm())
