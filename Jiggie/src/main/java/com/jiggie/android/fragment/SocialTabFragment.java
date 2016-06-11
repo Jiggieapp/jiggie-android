@@ -79,8 +79,6 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     @Bind(R.id.fling_adapter)
     CustomSwipeFlingAdapterView flingAdapterView;
 
-
-
     /*@Bind(R.id.tempListView)
     ListView tempListView;*/
 
@@ -199,7 +197,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             temp = new ArrayList<>();
             isRefreshing = true;
             SettingModel currentSetting = AccountManager.loadSetting();
-            SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId()
+            SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId() /*"10205703989179267"*/
                     , currentSetting.getData().getGender_interest());
         }
     }
@@ -255,7 +253,11 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         isRefreshing = false;
         if (message.getData().getSocial_feeds() != null) {
             fillSocialCard(message);
-        } else {
+        }
+        else if(message.getData().getSocial_feeds().size() == 0)
+        {
+            this.cardEmpty.setVisibility(View.VISIBLE);
+        }else {
             progressBar.setVisibility(View.GONE);
             temp.clear();
             socialCardNewAdapter.clear();
@@ -296,22 +298,40 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         this.cardEmpty.setVisibility(View.GONE);
         flingAdapterView.setVisibility(View.VISIBLE);
 
+
         flingAdapterView.setOnItemClickListener(new CustomSwipeFlingAdapterView.OnItemClickListener() {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
-
                 Intent i = new Intent(getActivity(), ProfileDetailActivity.class);
                 i.putExtra(Common.FIELD_FACEBOOK_ID, socialCardNewAdapter.getItem(0).getFrom_fb_id());
                 getActivity().startActivity(i);
-
             }
         });
-
+        /*ImageView testtt = (ImageView) flingAdapterView.findViewById(R.id.imageUserGeneral);
+        testtt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), ProfileDetailActivity.class);
+                i.putExtra(Common.FIELD_FACEBOOK_ID, socialCardNewAdapter.getItem(0).getFrom_fb_id());
+                getActivity().startActivity(i);
+            }
+        });*/
         flingAdapterView.setOnEventClickListener(new CustomSwipeFlingAdapterView.OnEventClickListener() {
             @Override
             public void onEventClicked() {
                 onGeneralClick();
             }
+
+            @Override
+            public void onSkipClicked() {
+                flingAdapterView.getSelectedView().findViewById(R.id.image_skip).setAlpha((float) 1.0);
+            }
+
+            @Override
+            public void onConnectClicked() {
+                flingAdapterView.getSelectedView().findViewById(R.id.image_connect).setAlpha((float) 1.0);
+            }
+
         });
 
         flingAdapterView.setFlingListener(new CustomSwipeFlingAdapterView.onFlingListener() {
@@ -348,8 +368,11 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             @Override
             public void onScroll(float scrollProgressPercent) {
                 View view = flingAdapterView.getSelectedView();
-                view.findViewById(R.id.image_skip).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
-                view.findViewById(R.id.image_connect).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+                if(view != null)
+                {
+                    view.findViewById(R.id.image_skip).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
+                    view.findViewById(R.id.image_connect).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
+                }
             }
         });
 
@@ -398,6 +421,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         Intent i = new Intent(super.getContext(), EventDetailActivity.class);
         i.putExtra(Common.FIELD_EVENT_ID, socialCardNewAdapter.getItem(0).getEvent_id());
         i.putExtra(Common.FIELD_EVENT_NAME, socialCardNewAdapter.getItem(0).getEvent_name());
+        i.putExtra(Common.FIELD_FROM, TAG);
         super.startActivity(i);
     }
 

@@ -6,7 +6,6 @@ package com.jiggie.android.view;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.widget.LinearLayout;
@@ -21,52 +20,40 @@ import butterknife.ButterKnife;
  * Created by anton on 11/12/15.
  */
 
-public class HeaderView extends LinearLayout {
+public class HeaderProfileView extends HeaderView {
 
-    @Nullable
-    @Bind(R.id.event_name)
+    @Bind(R.id.user_name)
     TextView name;
 
-    @Nullable
-    @Bind(R.id.lblEventLocation)
-    TextView lblEventLocation;
-
-    public HeaderView(Context context) {
+    public HeaderProfileView(Context context) {
         super(context);
     }
 
-    public HeaderView(Context context, AttributeSet attrs) {
+    public HeaderProfileView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public HeaderView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public HeaderProfileView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public HeaderView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public HeaderProfileView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        bindView();
     }
 
-    public void bindView()
-    {
-        ButterKnife.bind(this);
+    @Override
+    public void bindView() {
+        ButterKnife.bind(HeaderProfileView.this);
     }
 
-    public void bindTo(String eventName) {
-        this.name.setText(eventName);
-    }
-
-    public void bindTo(String eventName, String location) {
-        this.name.setText(eventName);
-        this.lblEventLocation.setText(location);
-        this.lblEventLocation.setSelected(true);
+    public void bindTo(String userName) {
+        this.name.setText(userName);
     }
 
     public void setTextSize(float size) {

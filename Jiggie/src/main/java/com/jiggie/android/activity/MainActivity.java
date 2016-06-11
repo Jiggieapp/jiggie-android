@@ -16,8 +16,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -33,7 +31,6 @@ import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.ecommerce.PurchaseHistoryActivity;
 import com.jiggie.android.activity.invite.InviteCodeActivity;
-import com.jiggie.android.activity.profile.NewProfileDetailActivity;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
 import com.jiggie.android.activity.profile.ProfileSettingActivity;
 import com.jiggie.android.activity.promo.PromotionsActivity;
@@ -569,7 +566,7 @@ public class MainActivity extends AppCompatActivity
                 target = SocialFilterActivity.class;
                 break;*/
             case R.id.action_profile:
-                //target = NewProfileDetailActivity.class;
+                //target = EditProfileActivity.class;
                 target = ProfileDetailActivity.class;
                 break;
             case R.id.action_support:

@@ -28,8 +28,10 @@ import com.jiggie.android.R;
 import com.jiggie.android.activity.SplashActivity;
 import com.jiggie.android.activity.ecommerce.PurchaseHistoryActivity;
 import com.jiggie.android.activity.invite.InviteCodeActivity;
-import com.jiggie.android.activity.profile.NewProfileDetailActivity;
+import com.jiggie.android.activity.profile.EditProfileActivity;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
+import com.jiggie.android.activity.profile.ProfileDetailPresenterImplementation;
+import com.jiggie.android.activity.profile.ProfileDetailView;
 import com.jiggie.android.activity.profile.ProfileSettingActivity;
 import com.jiggie.android.activity.promo.PromotionsActivity;
 import com.jiggie.android.activity.setup.SetupTagsActivity;
@@ -41,7 +43,10 @@ import com.jiggie.android.component.adapter.MoreTabListAdapter;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.CreditBalanceManager;
 import com.jiggie.android.model.Common;
+import com.jiggie.android.model.MemberInfoModel;
 import com.jiggie.android.model.SuccessCreditBalanceModel;
+
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -49,7 +54,7 @@ import butterknife.ButterKnife;
 /**
  * Created by LTE on 5/25/2016.
  */
-public class MoreFragment extends Fragment implements TabFragment, MoreTabListAdapter.ItemSelectedListener {
+public class MoreFragment extends Fragment implements TabFragment, MoreTabListAdapter.ItemSelectedListener, ProfileDetailView {
 
     @Bind(R.id.swipe_refresh)
     SwipeRefreshLayout refreshLayout;
@@ -71,6 +76,8 @@ public class MoreFragment extends Fragment implements TabFragment, MoreTabListAd
     private String title;
     private View rootView;
     private String strCredit = Utils.BLANK;
+
+    private ProfileDetailPresenterImplementation profilePresenter;
 
     @Override
     public String getTitle() {
@@ -135,15 +142,17 @@ public class MoreFragment extends Fragment implements TabFragment, MoreTabListAd
             imagePath = App.getFacebookImage(AccessToken.getCurrentAccessToken().getUserId(), width);
         }
         //--------
+        profilePresenter = new ProfileDetailPresenterImplementation(this);
+        fetchDetail();
 
-        Glide.with(this).load(imagePath).asBitmap().centerCrop().into(new BitmapImageViewTarget(imageView) {
+        /*Glide.with(this).load(imagePath).asBitmap().centerCrop().into(new BitmapImageViewTarget(imageView) {
             @Override
             protected void setResource(Bitmap resource) {
                 final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
                 circularBitmapDrawable.setCircular(true);
                 super.getView().setImageDrawable(circularBitmapDrawable);
             }
-        });
+        });*/
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,7 +167,7 @@ public class MoreFragment extends Fragment implements TabFragment, MoreTabListAd
         imgEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().startActivity(new Intent(getActivity(), NewProfileDetailActivity.class));
+                getActivity().startActivity(new Intent(getActivity(), EditProfileActivity.class));
             }
         });
 
@@ -260,5 +269,73 @@ public class MoreFragment extends Fragment implements TabFragment, MoreTabListAd
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void loadImages(ArrayList<String> photos) {
+
+    }
+
+    @Override
+    public void onFailUpload(int position) {
+
+    }
+
+    @Override
+    public void doCrop(Uri filepath, Uri destination) {
+
+    }
+
+    @Override
+    public void loadImageToCertainView(String tempUrl, int position) {
+
+    }
+
+    @Override
+    public void onFailure() {
+
+    }
+
+    @Override
+    public Bitmap onFinishTakePhoto(int requestCode, Uri uri) {
+        return null;
+    }
+
+    @Override
+    public ImageView makeTransparent(int position) {
+        return null;
+    }
+
+    @Override
+    public void getPhoto() {
+
+    }
+
+    @Override
+    public void onFinishUpload(int position) {
+
+    }
+
+    @Override
+    public ImageView removeTransparent(int position) {
+        return null;
+    }
+
+    @Override
+    public void onSuccess(MemberInfoModel memberInfoModel) {
+        MemberInfoModel.Data.MemberInfo memberInfo = memberInfoModel.getData().getMemberinfo();
+        Glide.with(this).load(memberInfo.getPhotos().get(0)).asBitmap().centerCrop().into(new BitmapImageViewTarget(imageView) {
+            @Override
+            protected void setResource(Bitmap resource) {
+                final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(getActivity().getResources(), resource);
+                circularBitmapDrawable.setCircular(true);
+                super.getView().setImageDrawable(circularBitmapDrawable);
+            }
+        });
+    }
+
+    @Override
+    public void fetchDetail() {
+        profilePresenter.fetchMemberInfo(AccessToken.getCurrentAccessToken().getUserId());
     }
 }

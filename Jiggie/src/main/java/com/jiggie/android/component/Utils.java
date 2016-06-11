@@ -377,6 +377,7 @@ public class Utils {
     public static final String PAYMENT_STATUS_PAID = "paid";
     public static final String PAYMENT_STATUS_VOID = "void";
     public static final String PAYMENT_STATUS_REFUND = "refund";
+    public static final String PAYMENT_STATUS_RESERVE = "reserved";
     private static final String SCHEME = "jiggie://";
     private static final String SCHEME_HOST_EVENT_DETAIL = "event_detail";
     private static final String SCHEME_HOST_EVENT_LIST = "event_list";

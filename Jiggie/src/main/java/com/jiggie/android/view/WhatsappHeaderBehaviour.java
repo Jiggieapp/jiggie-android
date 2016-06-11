@@ -70,7 +70,8 @@ public class WhatsappHeaderBehaviour extends CoordinatorLayout.Behavior<HeaderVi
             child.setTextSize(getTranslationOffset(mTitleStartSize, mTitleStartSize, layoutPercentage));
             //child.name.setTextSize(getTranslationOffset(mTitleStartSize, mTitleStartSize, layoutPercentage));
             float textSize = getTranslationOffset(mTitleStartSize, mTitleEndSize, layoutPercentage);
-            child.lblEventLocation.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+            if(child.lblEventLocation != null)
+                child.lblEventLocation.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
         } else {
             lp.leftMargin = mStartMarginLeft;
         }

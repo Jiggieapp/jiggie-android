@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.jiggie.android.R;
 import com.jiggie.android.component.StringUtility;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.MemberInfoModel;
 
 import java.lang.reflect.Array;
@@ -35,6 +36,7 @@ public class ProfileLikedEventsAdapter extends RecyclerView.Adapter<RecyclerView
     private final int BODY = 1;
     private boolean isMe = false;
     private OnEventContainerClick onEventContainerClick;
+    private final static String TAG = ProfileLikedEventsAdapter.class.getSimpleName();
 
     public ProfileLikedEventsAdapter(Context context, MemberInfoModel.Data.MemberInfo memberInfo
             , boolean isMe, OnEventContainerClick listener) {
@@ -105,7 +107,6 @@ public class ProfileLikedEventsAdapter extends RecyclerView.Adapter<RecyclerView
         }
 
         public String getEvent_id() {
-
             return event_id;
         }
 
@@ -127,33 +128,46 @@ public class ProfileLikedEventsAdapter extends RecyclerView.Adapter<RecyclerView
         if (typeHolder instanceof ViewHolderHeader) {
             ViewHolderHeader holderHeader = (ViewHolderHeader) typeHolder;
             holderHeader.position = position;
-            if (memberInfo.getBadge_booking()) {
-                holderHeader.imgHasTable.setVisibility(View.VISIBLE);
-                holderHeader.imgHasTable.bringToFront();
-            } else {
-                holderHeader.imgHasTicket.setVisibility(View.GONE);
-                holderHeader.imgHasTicket.bringToFront();
-            }
 
-            if (memberInfo.getBadge_ticket())
-                holderHeader.imgHasTicket.setVisibility(View.VISIBLE);
-            else holderHeader.imgHasTable.setVisibility(View.GONE);
+            if(!isMe)
+            {
+                if (memberInfo.getBadge_booking()) {
+                    holderHeader.imgHasTable.setVisibility(View.VISIBLE);
+                    holderHeader.imgHasTable.bringToFront();
+                } else {
+                    holderHeader.imgHasTicket.setVisibility(View.GONE);
+                    holderHeader.imgHasTicket.bringToFront();
+                }
+
+                if (memberInfo.getBadge_ticket())
+                    holderHeader.imgHasTicket.setVisibility(View.VISIBLE);
+                else holderHeader.imgHasTable.setVisibility(View.GONE);
+            }
 
             final String age = StringUtility.getAge2(memberInfo.getBirthday());
             holderHeader.lblDescription.setText(memberInfo.getAbout());
             String name = memberInfo.getFirst_name() + " " + memberInfo.getLast_name();
             holderHeader.txtUser.setText(((TextUtils.isEmpty(age)) || (age.equals("0"))) ? name : String.format("%s, %s", name, age));
 
-            if (isMe) {
+
+/*if (isMe) {
                 holderHeader.btnEdit.setVisibility(View.VISIBLE);
             } else {
                 holderHeader.btnEdit.setVisibility(View.GONE);
-            }
-
+            }*/
             if(getItemCount() > 1)
             {
-                holderHeader.lblUserEvent.setText(
-                        context.getResources().getString(R.string.user_event, memberInfo.getFirst_name()));
+                Utils.d(TAG, "isMe " + isMe);
+                if(isMe)
+                {
+                    holderHeader.lblUserEvent.setText(context.getResources().getString(R.string.your_event));
+                }
+                else
+                {
+                    holderHeader.lblUserEvent.setText(
+                            context.getResources().getString(R.string.user_event, memberInfo.getFirst_name()));
+                }
+
             }
 
             final String location = memberInfo.getLocation();
@@ -272,8 +286,8 @@ public class ProfileLikedEventsAdapter extends RecyclerView.Adapter<RecyclerView
         TextView lblLocation;
         @Bind(R.id.txtDescription)
         TextView lblDescription;
-        @Bind(R.id.btnEdit)
-        ImageButton btnEdit;
+        /*@Bind(R.id.btnEdit)
+        ImageButton btnEdit;*/
         @Bind(R.id.lbl_user_event)
         TextView lblUserEvent;
 

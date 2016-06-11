@@ -2,7 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/swipe_refresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/grayLight"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -87,7 +87,8 @@
                 android:layout_height="wrap_content"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:id="@+id/textCredit"/>
+                android:id="@+id/textCredit"
+                android:textSize="15sp"/>
         </LinearLayout>
 
         <View

@@ -26,7 +26,8 @@
             android:layout_height="wrap_content"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:id="@+id/text"/>
+            android:id="@+id/text"
+            android:textSize="15sp"/>
 
         <ImageView
             android:id="@+id/img_arrow"
@@ -37,6 +38,7 @@
     </LinearLayout>
 
     <View
+        android:id="@+id/divBottom"
         android:layout_marginLeft="64dp"
         android:background="@android:color/darker_gray"
         android:layout_width="match_parent"

@@ -57,7 +57,7 @@
                     android:layout_width="@dimen/jiggie_logo_width"
                     android:layout_height="@dimen/jiggie_logo_height"
                     android:layout_centerInParent="true"
-                    android:layout_marginLeft="76dp"
+                    android:layout_marginLeft="90dp"
                     android:layout_toRightOf="@id/img_drop"
                     android:scaleType="fitXY" />
             </RelativeLayout>
@@ -112,7 +112,7 @@
             android:layout_height="match_parent">
 
             <com.jiggie.android.component.FlowLayout
-                android:id="@+id/flowLayout"
+                android:id="@+id/flowLayoutHome"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="@dimen/padding_standard"

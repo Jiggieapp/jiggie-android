@@ -432,8 +432,6 @@ public class SignInFragment extends Fragment {
                         .putString(Common.PREF_FACEBOOK_ID, loginModel.getFb_id())
                         .apply();
                 AccountManager.saveLogin(loginModel);
-
-
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }

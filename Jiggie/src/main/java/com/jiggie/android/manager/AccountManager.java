@@ -234,6 +234,7 @@ public class AccountManager extends BaseManager {
                 public void onCustomCallbackResponse(Response response) {
                     /*String responses = new Gson().toJson(response.body());
                     Utils.d("res", responses);*/
+                    Utils.d(TAG, "responsecode " + response.code());
                     if (response.code() == Utils.CODE_SUCCESS) {
                         //Utils.d(TAG, "response " +  Utils.print(response));
                         MemberInfoModel dataTemp = (MemberInfoModel) response.body();
@@ -855,13 +856,11 @@ public class AccountManager extends BaseManager {
         doDelete(url, new CustomCallback() {
             @Override
             public void onCustomCallbackResponse(Response response) {
-                Utils.d(TAG, "success delete");
                 onResponseListener.onSuccess(response);
             }
 
             @Override
             public void onCustomCallbackFailure(String t) {
-                Utils.d(TAG, "fail delete");
                 onResponseListener.onFailure(Utils.CODE_FAILED, t);
             }
 
