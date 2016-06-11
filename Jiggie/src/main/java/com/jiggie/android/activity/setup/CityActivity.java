@@ -18,6 +18,7 @@ import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.CityAdapter;
+import com.jiggie.android.listener.OnResponseListener;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.CityModel;
 
@@ -48,11 +49,11 @@ public class CityActivity extends ToolbarActivity implements CityAdapter.ViewSel
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getResources().getString(R.string.title_activity_city));
 
-        AccountManager.loaderCityList(new AccountManager.OnResponseListener() {
+        AccountManager.loaderCityList(new OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
                 CityModel cityModel = (CityModel)object;
-                setCityAdapter(cityModel.getData().getCitylist());
+                //setCityAdapter(cityModel.getData().getCitylist());
             }
 
             @Override
@@ -107,10 +108,10 @@ public class CityActivity extends ToolbarActivity implements CityAdapter.ViewSel
 
     @Override
     public void onViewSelected(int position, CityModel.Data.Citylist citylist) {
-        Utils.d(TAG, "object click " + citylist.getCity());
+        /*Utils.d(TAG, "object click " + citylist.getCity());
         Intent i = new Intent();
         i.putExtra("cityname", citylist.getCity());
         setResult(RESULT_OK, i);
-        finish();
+        finish();*/
     }
 }

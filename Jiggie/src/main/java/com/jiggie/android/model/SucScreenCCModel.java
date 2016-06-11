@@ -645,8 +645,10 @@ public final class SucScreenCCModel {
                     public final String payment_timelimit;
                     public final String _id;
                     public final ArrayList<Term> terms;
+                    public final String extra_charge;
+                    public final String sale_type;
 
-                    public Product_list(String ticket_id, String name, String ticket_type, String max_buy, String quantity, String admin_fee, String tax_percent, String tax_amount, String tip_percent, String tip_amount, String price, String currency, String total_price, String total_price_aftertax, String num_buy, String total_price_all, String payment_timelimit, String _id, ArrayList<Term> terms){
+                    public Product_list(String ticket_id, String name, String ticket_type, String max_buy, String quantity, String admin_fee, String tax_percent, String tax_amount, String tip_percent, String tip_amount, String price, String currency, String total_price, String total_price_aftertax, String num_buy, String total_price_all, String payment_timelimit, String _id, ArrayList<Term> terms, String extra_charge, String sale_type){
                         this.ticket_id = ticket_id;
                         this.name = name;
                         this.ticket_type = ticket_type;
@@ -666,6 +668,8 @@ public final class SucScreenCCModel {
                         this.payment_timelimit = payment_timelimit;
                         this._id = _id;
                         this.terms = terms;
+                        this.extra_charge = extra_charge;
+                        this.sale_type = sale_type;
                     }
 
                     public String getTicket_id() {
@@ -742,6 +746,14 @@ public final class SucScreenCCModel {
 
                     public ArrayList<Term> getTerms() {
                         return terms;
+                    }
+
+                    public String getExtra_charge() {
+                        return extra_charge;
+                    }
+
+                    public String getSale_type() {
+                        return sale_type;
                     }
 
                     public static final class Term {

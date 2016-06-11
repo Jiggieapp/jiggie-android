@@ -168,8 +168,9 @@ public final class SummaryModel{
                 public final String total_price_all;
                 public final ArrayList<Term> terms;
                 public final int payment_timelimit;
+                public final String extra_charge;
 
-                public Product_list(String ticket_id, String name, String ticket_type, String max_buy, String quantity, String admin_fee, String tax_percent, String tax_amount, String tip_percent, String tip_amount, String price, String currency, String total_price, String total_price_aftertax, String num_buy, String total_price_all, ArrayList<Term> terms, int payment_timelimit){
+                public Product_list(String ticket_id, String name, String ticket_type, String max_buy, String quantity, String admin_fee, String tax_percent, String tax_amount, String tip_percent, String tip_amount, String price, String currency, String total_price, String total_price_aftertax, String num_buy, String total_price_all, ArrayList<Term> terms, int payment_timelimit, String extra_charge){
                     this.ticket_id = ticket_id;
                     this.name = name;
                     this.ticket_type = ticket_type;
@@ -188,6 +189,7 @@ public final class SummaryModel{
                     this.total_price_all = total_price_all;
                     this.terms = terms;
                     this.payment_timelimit = payment_timelimit;
+                    this.extra_charge = extra_charge;
                 }
 
                 public String getTicket_id() {
@@ -262,6 +264,10 @@ public final class SummaryModel{
                     return payment_timelimit;
                 }
 
+                public String getExtra_charge() {
+                    return extra_charge;
+                }
+
                 public static final class Term implements Parcelable {
                     public final String label;
                     public final String body;
@@ -333,6 +339,7 @@ public final class SummaryModel{
                         terms = null;
                     }
                     payment_timelimit = in.readInt();
+                    extra_charge = in.readString();
                 }
 
                 @Override
@@ -365,6 +372,7 @@ public final class SummaryModel{
                         dest.writeList(terms);
                     }
                     dest.writeInt(payment_timelimit);
+                    dest.writeString(extra_charge);
                 }
 
                 @SuppressWarnings("unused")

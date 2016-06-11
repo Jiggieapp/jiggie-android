@@ -132,10 +132,6 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
                 //FileUtils.writeByteArrayToFile(new File("pathname"), myByteArray);
                 FileOutputStream fos = null;
                 try {
-                    //File file = new File(App.getInstance().getFilesDir().getPath(), "profile"+position+".jpg");
-                    //Utils.d(TAG, "urlDoInBG " + url);
-                    //File file = getProfilePicFile();
-                    //File file = new File("/" + url);
                     File file = new File(App.getInstance().getFilesDir().getPath(), "profile"+position+".jpg");
                     fos = new FileOutputStream(file.getAbsolutePath());
                     fos.write(imageBytes);

@@ -141,11 +141,19 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     RelativeLayout relCredittab;
     @Bind(R.id.lin_discounttab)
     LinearLayout linDiscounttab;
+    @Bind(R.id.txt_extracharge_title)
+    TextView txtExtrachargeTitle;
+    @Bind(R.id.txt_extracharge_fill)
+    TextView txtExtrachargeFill;
+    @Bind(R.id.rel_extracharge)
+    RelativeLayout relExtracharge;
     private SlideAdapter slideAdapter;
     int payDeposit = 0, maxDeposit = 0, latestDeposit = 0;
     private final int INCREMENT_VALUE = 500000;
     boolean isPaying = false;
     private static final String TAG = ReservationInfoActivity.class.getSimpleName();
+    int extra_charge = 0;
+    String sale_type = Utils.BLANK;
 
     public static String getPaymentApiUrl() {
         /*if (VTConfig.VT_IsProduction) {
@@ -210,6 +218,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         eventDetail = a.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
         order_id = productSummary.getOrder_id();
         SummaryModel.Data.Product_summary.Product_list dataProduct = productSummary.getProduct_list().get(0);
+        sale_type = a.getStringExtra(Utils.SALE_TYPE);
 
         sendMixpanel(productSummary, eventDetail);
 
@@ -278,7 +287,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         }
 
         txtDftTitle.setText(dataProduct.getName());
-        txtDftFill.setText(StringUtility.getRupiahFormat(dataProduct.getTotal_price()));
+        txtDftFill.setText(StringUtility.getRupiahFormat(dataProduct.getPrice()));
         //txtTaxxFill.setText(StringUtility.getRupiahFormat(dataProduct.getTax_amount()));
         txtTaxxFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_tax_amount()));
         txtSerFill.setText(StringUtility.getRupiahFormat(dataProduct.getAdmin_fee()));
@@ -312,6 +321,26 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
 
         //initTermView(dataProduct);
         checkEnability(txtPayment.getText().toString());
+
+        if (sale_type.equals(Utils.TYPE_EXACT_PRICE)) {
+            txtEstTotTitle.setText(getResources().getString(R.string.pci_f4c));
+            txtRequireTitle.setText(getResources().getString(R.string.pci_f5c));
+            txtEstBalTitle.setText(getResources().getString(R.string.pci_f6c));
+        }
+
+        try {
+            extra_charge = Integer.parseInt(dataProduct.getExtra_charge());
+        } catch (Exception e) {
+
+        }
+
+        if (extra_charge > 0) {
+            txtExtrachargeTitle.setVisibility(View.VISIBLE);
+            txtExtrachargeFill.setVisibility(View.VISIBLE);
+            txtExtrachargeFill.setText(StringUtility.getRupiahFormat(dataProduct.getExtra_charge()));
+        }else{
+            relExtracharge.setVisibility(View.GONE);
+        }
     }
 
     private void arrangeEstimateDeposit(boolean isIncrement) {

@@ -38,9 +38,9 @@ public class CongratsActivity extends ToolbarActivity {
             txtRegTicketFill, txtAdFeeFill, txtTaxFill, txtTotalFill, txtInstrucFill, txtEventTitle2,
             txtEventDate2, txtVenueTitle, txtVenueDate, lblGuestCount, lblSummaryTitle
             , lblEstimatedBalance, lblPaidDeposit, lblEstimatedTotal, lblTotalTitle, txt_type_number_title, txtInstruc, txtPaymentTitle, txtStatusTitle,
-    txtCreditFill;
+    txtCreditFill, lblEstimateTotTitle, lblReqDepositTitle, lblEstimateBalanceTitle, lblExtraChargeFill;
     LinearLayout linSummaryFooter, linDiscount;
-    RelativeLayout relViewTicket, containerTableGuest, relCredit;
+    RelativeLayout relViewTicket, containerTableGuest, relCredit, relExtraCharge, relSummary;
     RelativeLayout scrollView;
     ProgressBar progressBar;
     View divider, divider8, divider4;
@@ -48,6 +48,7 @@ public class CongratsActivity extends ToolbarActivity {
     long orderId;
     boolean fromOrderList;
     private final static String TAG = CongratsActivity.class.getSimpleName();
+    String sale_type = Utils.BLANK;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +105,14 @@ public class CongratsActivity extends ToolbarActivity {
         txtCreditFill = (TextView)findViewById(R.id.txt_credit_fill);
         relCredit = (RelativeLayout) findViewById(R.id.rel_credit);
         linDiscount = (LinearLayout)findViewById(R.id.lin_discount);
+
+        lblEstimateBalanceTitle = (TextView) this.findViewById(R.id.lbl_estimated_balance_title);
+        lblReqDepositTitle = (TextView) this.findViewById(R.id.lbl_required_deposit_title);
+        lblEstimateTotTitle = (TextView) this.findViewById(R.id.lbl_estimate_total_title);
+
+        lblExtraChargeFill = (TextView) this.findViewById(R.id.lbl_extracharge_fill);
+        relExtraCharge = (RelativeLayout) findViewById(R.id.rel_extracharge);
+        relSummary = (RelativeLayout) findViewById(R.id.rel_summary);
 
         scrollView.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
@@ -226,8 +235,14 @@ public class CongratsActivity extends ToolbarActivity {
                         lblSummaryTitle.setText(
                                 getResources().getString(R.string.vor_reservation_summary));
                         lblGuestCount.setText(product_list.getNum_buy());
-                        txtRegTicketTitle.setText(product_list.getName().toUpperCase() + " "
-                                + getResources().getString(R.string.estimate));
+
+                        sale_type = product_list.getSale_type();
+                        if(sale_type.equals(Utils.TYPE_EXACT_PRICE)){
+                            txtRegTicketTitle.setText(product_list.getName().toUpperCase());
+                        }else{
+                            txtRegTicketTitle.setText(product_list.getName().toUpperCase() + " "
+                                    + getResources().getString(R.string.estimate));
+                        }
 
                         lblEstimatedTotal.setText(StringUtility.getRupiahFormat(summary.getTotal_price()));
                         lblPaidDeposit.setText(StringUtility.getRupiahFormat(summary.getPay_deposit()));
@@ -245,6 +260,23 @@ public class CongratsActivity extends ToolbarActivity {
                             txtPaymentTitle.setVisibility(View.GONE);
                             txtPaymentFill.setVisibility(View.GONE);
                         }
+
+                        if(sale_type.equals(Utils.TYPE_EXACT_PRICE)){
+                            lblEstimateBalanceTitle.setText(getResources().getString(R.string.pci_f6c));
+                            //lblReqDepositTitle.setText(getResources().getString(R.string.pci_f5c));
+                            lblEstimateTotTitle.setText(getResources().getString(R.string.pci_f4c));
+                        }
+
+                        int extra_charge = Integer.parseInt(product_list.getExtra_charge());
+                        if(extra_charge>0){
+                            relExtraCharge.setVisibility(View.VISIBLE);
+                            lblExtraChargeFill.setText(StringUtility.getRupiahFormat(product_list.getExtra_charge()));
+                        }
+
+                        if(sale_type.equals(Utils.TYPE_RESERVE)){
+                            relSummary.setVisibility(View.GONE);
+                        }
+
                     }else{
                         txt_type_number_title.setText(getString(R.string.vor_order_number));
                         lblSummaryTitle.setText(

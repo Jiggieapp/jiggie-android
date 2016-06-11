@@ -432,8 +432,6 @@ public class SignInFragment extends Fragment {
                         .putString(Common.PREF_FACEBOOK_ID, loginModel.getFb_id())
                         .apply();
                 AccountManager.saveLogin(loginModel);
-
-
             } catch (ParseException e) {
                 throw new RuntimeException(e);
             }
@@ -539,21 +537,16 @@ public class SignInFragment extends Fragment {
         memberSettingModel.setChat(1);
         memberSettingModel.setFeed(1);
         memberSettingModel.setExperiences(TextUtils.join(",", getTags()));
-
+        //wandy 08-06-2016
+        memberSettingModel.setArea_event("jakarta");
         AccountManager.loaderMemberSetting(memberSettingModel);
+
         currentSettingModel.getData().getNotifications().setLocation(true);
         currentSettingModel.getData().getNotifications().setChat(true);
         currentSettingModel.getData().getNotifications().setFeed(true);
-
-        //ArrayList<String> arrExperiences = new ArrayList<String>(Arrays.asList(intent.getStringArrayExtra(SetupTagsActivity.PARAM_EXPERIENCES)));
-        /*final String[] tags = this.getTags().toArray(new String[this.getTags().size()]);
-        ArrayList<String> arrExperiences = new ArrayList<String>();
-        for(String tag : tags)
-        {
-            arrExperiences.add(tag);
-        }*/
-        //App.getInstance().trackMixPanelEvent("Walkthrough Tags");
-        //currentSettingModel.getData().setExperiences(arrExperiences);
+        //wandy 09-06-2016
+        currentSettingModel.getData().setAreaEvent("jakarta");
+        //end of wandy 09-06-2016
 
         AccountManager.saveSetting(currentSettingModel);
         App.getSharedPreferences().edit().putBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, true).apply();
