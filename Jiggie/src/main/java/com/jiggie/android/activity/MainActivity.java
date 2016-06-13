@@ -296,6 +296,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onRestart() {
         super.onRestart();
+        Utils.d(TAG, "onRestart");
         if(Utils.isLocationServicesAvailable(this)){
             checkLocation();
         }else{
@@ -715,4 +716,6 @@ public class MainActivity extends AppCompatActivity
             hideProgressDialog();
         }
     }
+
+
 }
