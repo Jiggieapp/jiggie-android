@@ -35,15 +35,15 @@ import java.util.TimeZone;
  */
 public class CongratsActivity extends ToolbarActivity {
     TextView txtCongrats, txtEventTitle, txtEventDate, txtTypeNumberFill, txtGuestNameFill, txtStatusFill, txtPaymentFill, txtSummaryDate, txtRegTicketTitle,
-            txtRegTicketFill, txtAdFeeFill, txtTaxFill, txtTotalFill, txtInstrucFill, txtEventTitle2,
+            txtRegTicketFill, txtAdFeeFill, txtTaxFill, txtTotalFill, txtInstrucFill, txtEventTitle2, txtTotal,
             txtEventDate2, txtVenueTitle, txtVenueDate, lblGuestCount, lblSummaryTitle
             , lblEstimatedBalance, lblPaidDeposit, lblEstimatedTotal, lblTotalTitle, txt_type_number_title, txtInstruc, txtPaymentTitle, txtStatusTitle,
     txtCreditFill, lblEstimateTotTitle, lblReqDepositTitle, lblEstimateBalanceTitle, lblExtraChargeFill;
     LinearLayout linSummaryFooter, linDiscount;
-    RelativeLayout relViewTicket, containerTableGuest, relCredit, relExtraCharge, relSummary;
+    RelativeLayout relViewTicket, containerTableGuest, relCredit, relExtraCharge, relAd, relTax;
     RelativeLayout scrollView;
     ProgressBar progressBar;
-    View divider, divider8, divider4;
+    View divider, divider8, divider4, divider3;
 
     long orderId;
     boolean fromOrderList;
@@ -79,6 +79,7 @@ public class CongratsActivity extends ToolbarActivity {
         txtRegTicketFill = (TextView)findViewById(R.id.txt_reg_ticket_fill);
         txtAdFeeFill = (TextView)findViewById(R.id.txt_ad_fee_fill);
         txtTaxFill = (TextView)findViewById(R.id.txt_tax_fill);
+        txtTotal = (TextView)findViewById(R.id.txt_total);
         txtTotalFill = (TextView)findViewById(R.id.txt_total_fill);
         txtInstrucFill = (TextView)findViewById(R.id.txt_instruc_fill);
         txtEventTitle2 = (TextView)findViewById(R.id.txt_event_title2);
@@ -97,6 +98,7 @@ public class CongratsActivity extends ToolbarActivity {
         lblTotalTitle = (TextView) this.findViewById(R.id.txt_total);
         divider = (View) this.findViewById(R.id.divider3);
         divider8 = (View) this.findViewById(R.id.divider8);
+        divider3 = (View) this.findViewById(R.id.divider3);
         divider4 = (View) this.findViewById(R.id.divider4);
         linSummaryFooter = (LinearLayout)findViewById(R.id.lin_summary_footer);
         txt_type_number_title = (TextView)findViewById(R.id.txt_type_number_title);
@@ -112,7 +114,9 @@ public class CongratsActivity extends ToolbarActivity {
 
         lblExtraChargeFill = (TextView) this.findViewById(R.id.lbl_extracharge_fill);
         relExtraCharge = (RelativeLayout) findViewById(R.id.rel_extracharge);
-        relSummary = (RelativeLayout) findViewById(R.id.rel_summary);
+
+        relAd = (RelativeLayout) findViewById(R.id.rel_ad);
+        relTax = (RelativeLayout) findViewById(R.id.rel_tax);
 
         scrollView.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
@@ -274,7 +278,7 @@ public class CongratsActivity extends ToolbarActivity {
                         }
 
                         if(sale_type.equals(Utils.TYPE_RESERVE)){
-                            relSummary.setVisibility(View.GONE);
+                            hideViewWhenReserve();
                         }
 
                     }else{
@@ -353,6 +357,21 @@ public class CongratsActivity extends ToolbarActivity {
                 finish();
             }
         });
+    }
+
+    private void hideViewWhenReserve(){
+        relAd.setVisibility(View.GONE);
+        relTax.setVisibility(View.GONE);
+        linDiscount.setVisibility(View.GONE);
+        relCredit.setVisibility(View.GONE);
+        linSummaryFooter.setVisibility(View.GONE);
+        txtTotal.setVisibility(View.GONE);
+        txtTotalFill.setVisibility(View.GONE);
+        txtInstruc.setVisibility(View.GONE);
+        txtInstrucFill.setVisibility(View.GONE);
+        divider4.setVisibility(View.GONE);
+        divider3.setVisibility(View.GONE);
+        divider8.setVisibility(View.GONE);
     }
 
     private void sendMixpanel(SucScreenCCModel sucScreenCCModel){

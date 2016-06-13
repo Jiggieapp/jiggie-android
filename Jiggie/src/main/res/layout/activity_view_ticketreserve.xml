@@ -289,6 +289,7 @@
                         android:orientation="vertical">
 
                         <RelativeLayout
+                            android:id="@+id/rel_title"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/padding_standard"
@@ -314,6 +315,7 @@
                         </RelativeLayout>
 
                         <RelativeLayout
+                            android:id="@+id/rel_ad"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/padding_standard_half"
@@ -349,6 +351,7 @@
                         </LinearLayout>
 
                         <RelativeLayout
+                            android:id="@+id/rel_tax"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/padding_standard"
