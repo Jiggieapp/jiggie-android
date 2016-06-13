@@ -234,6 +234,7 @@ public class CongratsActivity extends ToolbarActivity {
 
                     if (product_list.getTicket_type().equalsIgnoreCase(Common.TYPE_RESERVATION))
                     {
+                        int extra_charge = Integer.parseInt(product_list.getExtra_charge());
                         containerTableGuest.setVisibility(View.VISIBLE);
                         txt_type_number_title.setText(getString(R.string.vor_reservation_number));
                         lblSummaryTitle.setText(
@@ -241,7 +242,7 @@ public class CongratsActivity extends ToolbarActivity {
                         lblGuestCount.setText(product_list.getNum_buy());
 
                         sale_type = product_list.getSale_type();
-                        if(sale_type.equals(Utils.TYPE_EXACT_PRICE)){
+                        if(sale_type.equals(Utils.TYPE_EXACT_PRICE)||sale_type.equals(Utils.TYPE_RESERVE)){
                             txtRegTicketTitle.setText(product_list.getName().toUpperCase());
                         }else{
                             txtRegTicketTitle.setText(product_list.getName().toUpperCase() + " "
@@ -271,10 +272,30 @@ public class CongratsActivity extends ToolbarActivity {
                             lblEstimateTotTitle.setText(getResources().getString(R.string.pci_f4c));
                         }
 
-                        int extra_charge = Integer.parseInt(product_list.getExtra_charge());
                         if(extra_charge>0){
                             relExtraCharge.setVisibility(View.VISIBLE);
                             lblExtraChargeFill.setText(StringUtility.getRupiahFormat(product_list.getExtra_charge()));
+
+                            if(product_list.getPrice().equals(Utils.NOL_RUPIAH)){
+                                if(sale_type.equals(Utils.TYPE_RESERVE)){
+                                    txtRegTicketFill.setText(getString(R.string.reserved));
+                                }else{
+                                    txtRegTicketFill.setText(getString(R.string.free));
+                                }
+                            }else{
+                                txtRegTicketFill.setText(StringUtility.getRupiahFormat(product_list.getPrice()));
+                            }
+
+                        }else{
+                            if(product_list.getTotal_price().equals(Utils.NOL_RUPIAH)){
+                                if(sale_type.equals(Utils.TYPE_RESERVE)){
+                                    txtRegTicketFill.setText(getString(R.string.reserved).toUpperCase());
+                                }else{
+                                    txtRegTicketFill.setText(getString(R.string.free));
+                                }
+                            }else{
+                                txtRegTicketFill.setText(StringUtility.getRupiahFormat(product_list.getTotal_price()));
+                            }
                         }
 
                         if(sale_type.equals(Utils.TYPE_RESERVE)){

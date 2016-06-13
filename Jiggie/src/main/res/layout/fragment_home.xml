@@ -55,14 +55,6 @@
 
                 <include layout="@layout/action_city"/>
 
-                <ImageView
-                    android:id="@+id/logo_image"
-                    android:layout_width="@dimen/jiggie_logo_width"
-                    android:layout_height="@dimen/jiggie_logo_height"
-                    android:layout_centerInParent="true"
-                    android:layout_marginLeft="90dp"
-                    android:layout_toRightOf="@id/img_drop"
-                    android:scaleType="fitXY" />
             </RelativeLayout>
 
         </android.support.v7.widget.Toolbar>
