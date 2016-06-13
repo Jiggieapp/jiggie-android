@@ -414,7 +414,7 @@ public class HomeFragment extends Fragment
         ImageView imgLogo = new ImageView(getActivity());
         imgLogo.setImageDrawable(getResources().getDrawable(R.drawable.logo));
         RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(Utils.myPixel(getActivity(), 63), Utils.myPixel(getActivity(), 24));
-        param.leftMargin = center[0]-Utils.myPixel(getActivity(), 32);
+        param.leftMargin = center[0]-Utils.myPixel(getActivity(), 63);
         //param.setMargins(center[0], 0, 0, 0);
         param.addRule(RelativeLayout.CENTER_VERTICAL);
         //imgLogo.setLeft(center[0]);
