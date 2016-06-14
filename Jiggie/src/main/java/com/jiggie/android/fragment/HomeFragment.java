@@ -1,6 +1,5 @@
 package com.jiggie.android.fragment;
 
-import android.accounts.Account;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -30,10 +29,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,9 +65,7 @@ import com.jiggie.android.model.MemberSettingResultModel;
 import com.jiggie.android.model.PostLocationModel;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.TagNewModel;
-import com.jiggie.android.model.TagsListModel;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -1000,12 +994,15 @@ public class HomeFragment extends Fragment
     }
 
     private static EventsFragment eventsFragment;
+    private static 
 
     private static EventsFragment getEventsFragment() {
         if (eventsFragment == null)
             eventsFragment = new EventsFragment();
         return eventsFragment;
     }
+
+
 
     private static class PageAdapter extends FragmentPagerAdapter {
         private final Fragment[] fragments;
@@ -1217,4 +1214,9 @@ public class HomeFragment extends Fragment
         return popup;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        getFragmentManager().putFragment(outState , "eventsfragment");
+    }
 }

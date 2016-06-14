@@ -12,6 +12,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -96,6 +97,22 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_main);
         this.active = true;
+        if(savedInstanceState == null)
+        {
+            Utils.d(TAG, "onCreate null instancestate");
+            homeFragment = getHomeFragment();
+
+        }
+        else
+        {
+            Utils.d(TAG, "onCreate tidak null instancestate");
+            homeFragment = (HomeFragment) getSupportFragmentManager()
+                    .getFragment(savedInstanceState, "homefragment");
+
+            if(homeFragment == null)
+                Utils.d(TAG, "homeFragment null");
+            else Utils.d(TAG, "homeFragment tidak null");
+        }
 
         AppsFlyerLib.sendTracking(MainActivity.this);
 
@@ -261,6 +278,18 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    private static HomeFragment homeFragment;
+    public HomeFragment getHomeFragment()
+    {
+        if(homeFragment == null)
+        {
+            homeFragment = new HomeFragment();
+            homeFragment.setArguments(super.getIntent().getExtras());
+        }
+
+        return homeFragment;
+    }
+
     public void navigateToHome() {
         final FragmentManager fragmentManager = super.getSupportFragmentManager();
         final int fragmentCount = fragmentManager.getBackStackEntryCount();
@@ -268,7 +297,7 @@ public class MainActivity extends AppCompatActivity
             fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
         Intent a = super.getIntent();
-        final Fragment fragment = new HomeFragment();
+        final Fragment fragment = getHomeFragment();
 
         /*if(a != null)
         {
@@ -288,9 +317,13 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         }*/
-
-        fragment.setArguments(a.getExtras());
+        Utils.d(TAG, "navigatetohome");
+        //fragment.setArguments(getHomeFragment().getArguments());
+        Utils.d(TAG, "navigatetohome 2");
         fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+
+
+        Utils.d(TAG, "navigatetohome 3 " + fragment.getChildFragmentManager().getFragments().size());
     }
 
     @Override
@@ -546,7 +579,7 @@ public class MainActivity extends AppCompatActivity
         //--------------------
 
         App.getSharedPreferences().edit().putBoolean(Utils.PREFERENCE_GPS, false).commit();
-
+        homeFragment = null;
         super.onDestroy();
     }
 
@@ -717,5 +750,17 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Utils.d(TAG, "onSaveInstanceState");
+        outState.putBundle("bundle", super.getIntent().getExtras());
+        getSupportFragmentManager()
+                .putFragment(outState, "homefragment", getHomeFragment());
+    }
 
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState, PersistableBundle persistentState) {
+        super.onRestoreInstanceState(savedInstanceState, persistentState);
+    }
 }
