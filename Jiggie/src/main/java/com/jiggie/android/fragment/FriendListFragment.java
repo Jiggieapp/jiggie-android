@@ -41,15 +41,20 @@ public class FriendListFragment extends ChatTabFragment implements FriendsFragme
     private static FriendListFragment instance;
     OnFriendClickListener onFriendClickListener;
 
-    public static FriendListFragment getInstance(OnFriendClickListener onFriendClickListener)
+    public static FriendListFragment getInstance()
     {
         if(instance == null)
         {
             instance = new FriendListFragment();
-            instance.onFriendClickListener = onFriendClickListener;
         }
         return instance;
     }
+
+    public void setOnFriendClickListener(OnFriendClickListener onFriendClickListener)
+    {
+        getInstance().onFriendClickListener = onFriendClickListener;
+    }
+
 
 
     @Nullable
@@ -134,7 +139,7 @@ public class FriendListFragment extends ChatTabFragment implements FriendsFragme
             intent.putExtra(Conversation.FIELD_FROM_NAME, conversation.getFirst_name());
             super.startActivityForResult(intent, 0);*/
 
-            onFriendClickListener.doRedirect(conversation);
+            getInstance().onFriendClickListener.doRedirect(conversation);
         }
         else
         {

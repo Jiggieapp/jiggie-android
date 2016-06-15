@@ -143,7 +143,6 @@ public class PurchaseHistoryActivity extends ToolbarActivity
                     //do restart here
                     SuccessTokenModel successTokenModel = (SuccessTokenModel) object;
                     final String token = successTokenModel.data.token;
-                    Utils.d(TAG, "success token model " +  successTokenModel.data.token);
                     AccountManager.setAccessTokenToPreferences(token);
                     BaseManager.reinstantianteRetrofit();
                     CommerceManager.initCommerceService();;
