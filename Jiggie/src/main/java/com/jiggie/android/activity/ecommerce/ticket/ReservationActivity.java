@@ -81,7 +81,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
 
     int num_guest = 1;
     ProductListModel.Data.ProductList.Reservation detailReservation = null;
-    String eventId, eventName, venueName, startTime, ticketId;
+    String eventId, eventName, venueName, startTime, ticketId, timezone;
     int max = 0;
     int price;
     EventDetailModel.Data.EventDetail eventDetail;
@@ -267,6 +267,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
         eventName = a.getStringExtra(Common.FIELD_EVENT_NAME);
         venueName = a.getStringExtra(Common.FIELD_VENUE_NAME);
         startTime = a.getStringExtra(Common.FIELD_STARTTIME);
+        timezone = a.getStringExtra(Common.FIELD_EVENT_TIMEZONE);
         eventDetail = a.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
         detailReservation = a.getParcelableExtra(ProductListModel.Data.ProductList.Reservation.class.getName());
 
@@ -520,6 +521,7 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
                         //i.putExtra(Common.FIELD_MIN_DEPOSIT, detailReservation.getMin_deposit_amount());
                         i.putExtra(Common.FIELD_MIN_DEPOSIT, String.valueOf(productSummary.getMin_deposit_amount()));
                         i.putExtra(Utils.SALE_TYPE, sale_type);
+                        i.putExtra(Common.FIELD_EVENT_TIMEZONE, timezone);
                         startActivity(i);
                     }
 

@@ -93,6 +93,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
     TextView lblInfo;
 
     private Dialog dialogTerms;
+    private String timezone;
 
 
     @Override
@@ -244,6 +245,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
         eventName = a.getStringExtra(Common.FIELD_EVENT_NAME);
         venueName = a.getStringExtra(Common.FIELD_VENUE_NAME);
         startTime = a.getStringExtra(Common.FIELD_STARTTIME);
+        timezone = a.getStringExtra(Common.FIELD_EVENT_TIMEZONE);
         eventDetail = a.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
         detailPurchase = a.getParcelableExtra(ProductListModel.Data.ProductList.Purchase.class.getName());
         sendMixpanel(eventDetail);
@@ -474,7 +476,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                     i.putExtra(Common.FIELD_STARTTIME, startTime);
                     i.putExtra(productSummary.getClass().getName(), productSummary);
                     i.putExtra(eventDetail.getClass().getName(), eventDetail);
-
+                    i.putExtra(Common.FIELD_EVENT_TIMEZONE, timezone);
                     startActivity(i);
                 }
             }

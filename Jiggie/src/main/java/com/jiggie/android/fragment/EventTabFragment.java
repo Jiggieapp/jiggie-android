@@ -105,7 +105,7 @@ public class EventTabFragment extends Fragment
     private ArrayList<EventModel.Data.Events> events = new ArrayList<EventModel.Data.Events>();
 
     private static final Interpolator INTERPOLATOR = new FastOutSlowInInterpolator();
-    private static final String TAG = EventTabFragment.class.getSimpleName();
+    public static final String TAG = EventTabFragment.class.getSimpleName();
     private View failedView;
     private Dialog dialogWalkthrough;
     SwipeRefreshLayout swipeRefreshLayout;
@@ -350,6 +350,7 @@ public class EventTabFragment extends Fragment
         i.putExtra(Common.FIELD_EVENT_LIKE, event.getLikes());
         i.putExtra(Common.FIELD_EVENT_LOWEST_PRICE, event.getLowest_price());
         i.putExtra(Common.FIELD_FULLFILMENT_TYPE, event.getFullfillment_type());
+        i.putExtra(Common.FIELD_EVENT_TIMEZONE, event.getTz());
         super.startActivity(i);
     }
 

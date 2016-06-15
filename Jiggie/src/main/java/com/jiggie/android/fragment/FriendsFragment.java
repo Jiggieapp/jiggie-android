@@ -50,6 +50,7 @@ public class FriendsFragment extends Fragment implements TabFragment, HomeMain, 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        //setRetainInstance(true);
         ButterKnife.bind(this, view);
         //pageAdapter = new PageAdapter(this, getActivity().getSupportFragmentManager());
         pageAdapter = new PageAdapter(this, super.getActivity().getSupportFragmentManager());
@@ -94,11 +95,11 @@ public class FriendsFragment extends Fragment implements TabFragment, HomeMain, 
             super(fm);
             this.fragments = new Fragment[]{
                     ChatTabFragment.getInstance()
-                    //,atTabFragment.getInstance()
-                    //FriendListFragment.getInstance(FriendsFragment.this)
-                    , FriendListFragment.getInstance(FriendsFragment.this)
+                    , FriendListFragment.getInstance()
+                    //new FriendListFragment(FriendsFragment.this)
             };
 
+            FriendListFragment.getInstance().setOnFriendClickListener(FriendsFragment.this);
             ((TabFragment) this.fragments[0]).setHomeMain(homeMain);
             ((TabFragment) this.fragments[1]).setHomeMain(homeMain);
         }

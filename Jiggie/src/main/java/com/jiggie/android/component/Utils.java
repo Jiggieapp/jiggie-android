@@ -20,11 +20,13 @@ import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.BuildConfig;
 import com.jiggie.android.R;
+import com.jiggie.android.model.Common;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import retrofit2.Response;
@@ -448,5 +450,22 @@ public class Utils {
 
         //return isAvailable && (coarsePermissionCheck || finePermissionCheck);
         return  isAvailable;
+    }
+
+    public static String getTimeForEvent(Date startDate, Date endDate, String timezone)
+    {
+        /*if(timezone == null || timezone.isEmpty())
+        {
+            timezone = "7";
+        }
+
+        if(timezone == null || timezone.isEmpty())
+        {
+            format.setTimeZone(TimeZone.getDefault());
+        }*/
+        String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format
+                , Common.getStartDateTimeInTimezone(timezone).format(startDate)
+                , Common.getEndDateTimeInTimezone(timezone).format(endDate));
+        return simpleDate;
     }
 }

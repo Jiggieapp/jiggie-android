@@ -114,36 +114,66 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
 
     @Override
     public void onTabSelected() {
-        //wandy 03-03-2016
-
-        boolean a = AccountManager.anySettingChange;
+        /*boolean a = AccountManager.anySettingChange;
+        Utils.d(TAG, "onTabSelected");
         if (this.current == null) {
-            /*if (switchSocialize.isChecked()) {
-                txtSocialize.setText(R.string.socialize_description);
-                this.onRefresh();
-                if (this.cardEmpty.getVisibility() == View.GONE)
-                    this.progressBar.setVisibility(View.VISIBLE);
-            } else {
-                this.layoutSocialize.setVisibility(View.VISIBLE);
-                txtSocialize.setText(R.string.socialize_description_off);
-            }*/
 
             if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_SOCIAL, false)) {
                 //showWalkthroughDialog();
             }
         }
 
-        /*if (switchSocialize.isChecked() && AccountManager.anySettingChange) {
-            txtSocialize.setText(R.string.socialize_description);
-            this.onRefresh();
-            AccountManager.anySettingChange = false;
-        }*/
+        if (AccountManager.loadSetting().getData().getNotifications().isFeed()) {
+            if (temp.size() == 0)
+                this.onRefresh();
+            else {
+                cardEmpty.setVisibility(View.GONE);
+            }
+        } else {
+            flingAdapterView.setVisibility(View.GONE);
+            cardEmpty.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
+        }
+        App.getInstance().trackMixPanelEvent("View Social Feed");*/
+    }
 
-        /*SettingModel settingModel = AccountManager.loadSetting();
-        if(settingModel.getData().getNotifications().isFeed())
-        {
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        /*boolean a = AccountManager.anySettingChange;
+        Utils.d(TAG, "onUserVisibleHint");
+        if (this.current == null) {
 
-        }*/
+            if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_SOCIAL, false)) {
+                //showWalkthroughDialog();
+            }
+        }
+
+        if (AccountManager.loadSetting().getData().getNotifications().isFeed()) {
+            if (temp.size() == 0)
+                this.onRefresh();
+            else {
+                cardEmpty.setVisibility(View.GONE);
+            }
+        } else {
+            flingAdapterView.setVisibility(View.GONE);
+            cardEmpty.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
+        }
+        App.getInstance().trackMixPanelEvent("View Social Feed");*/
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        boolean a = AccountManager.anySettingChange;
+        Utils.d(TAG, "onUserVisibleHint");
+        if (this.current == null) {
+
+            if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_SOCIAL, false)) {
+                //showWalkthroughDialog();
+            }
+        }
 
         if (AccountManager.loadSetting().getData().getNotifications().isFeed()) {
             if (temp.size() == 0)
@@ -163,6 +193,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = this.rootView = inflater.inflate(R.layout.fragment_social, container, false);
+        Utils.d(TAG, "onCreateView");
         ButterKnife.bind(this, view);
         return view;
     }
@@ -170,6 +201,15 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        //setRetainInstance(true);
+        Utils.d(TAG, "onActivityCreated");
+
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         ButterKnife.bind(this, this.rootView);
 
         EventBus.getDefault().register(this);
@@ -178,7 +218,6 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         App.getInstance().registerReceiver(this.refreshSocialReceiver
                 , new IntentFilter(SocialTabFragment.TAG));
         super.setHasOptionsMenu(true);
-
     }
 
     private boolean isRefreshing = false;
@@ -211,11 +250,9 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         isRefreshing = false;
         if (message.getData().getSocial_feeds() != null) {
             fillSocialCard(message);
-        }
-        else if(message.getData().getSocial_feeds().size() == 0)
-        {
+        } else if (message.getData().getSocial_feeds().size() == 0) {
             this.cardEmpty.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             progressBar.setVisibility(View.GONE);
             temp.clear();
             socialCardNewAdapter.clear();
@@ -326,8 +363,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             @Override
             public void onScroll(float scrollProgressPercent) {
                 View view = flingAdapterView.getSelectedView();
-                if(view != null)
-                {
+                if (view != null) {
                     view.findViewById(R.id.image_skip).setAlpha(scrollProgressPercent < 0 ? -scrollProgressPercent : 0);
                     view.findViewById(R.id.image_connect).setAlpha(scrollProgressPercent > 0 ? scrollProgressPercent : 0);
                 }
@@ -973,8 +1009,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId())
-        {
+        switch (item.getItemId()) {
             case R.id.action_social_filter:
                 Intent i = new Intent(getActivity(), SocialFilterActivity.class);
                 startActivity(i);
@@ -982,4 +1017,31 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         }
         return super.onOptionsItemSelected(item);
     }
+
+    /*@Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        //wandy 03-03-2016
+
+        boolean a = AccountManager.anySettingChange;
+        if (this.current == null) {
+
+            if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_SOCIAL, false)) {
+                //showWalkthroughDialog();
+            }
+        }
+
+        if (AccountManager.loadSetting().getData().getNotifications().isFeed()) {
+            if (temp.size() == 0)
+                this.onRefresh();
+            else {
+                cardEmpty.setVisibility(View.GONE);
+            }
+        } else {
+            flingAdapterView.setVisibility(View.GONE);
+            cardEmpty.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
+        }
+        App.getInstance().trackMixPanelEvent("View Social Feed");
+    }*/
 }

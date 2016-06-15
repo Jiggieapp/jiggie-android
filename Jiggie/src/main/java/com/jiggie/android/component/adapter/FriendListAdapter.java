@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.jiggie.android.R;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.ChatListModel;
 import com.jiggie.android.model.FriendListModel;
 

@@ -135,6 +135,8 @@ public class CongratsActivity extends ToolbarActivity {
         });
     }
 
+    private String timezone;
+
     private void preDefined(final String orderId){
         Utils.d(TAG, "orderId " + orderId);
         CommerceManager.loaderSucScreenCC(orderId, new CommerceManager.OnResponseListener() {
@@ -149,12 +151,13 @@ public class CongratsActivity extends ToolbarActivity {
                     SucScreenCCModel.Data.Success_screen.Summary summary = sucScreenCCModel.getData().getSuccess_screen().getSummary();
                     SucScreenCCModel.Data.Success_screen.Summary.Vt_response vt_response = summary.getVt_response();
                     //txtCongrats.setText("Congratulations "+ AccountManager.loadLogin().getUser_first_name()+"!");
-
+                    timezone = sucScreenCCModel.getData().getSuccess_screen().getEvent().getTz();
                     txtCongrats.setText("Congratulations " + summary.getGuest_detail().getName() + "!");
                     txtEventTitle.setText(event.getTitle());
                     try {
                         final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(event.getStart_datetime());
-                        txtEventDate.setText(Common.SERVER_DATE_FORMAT_COMM.format(startDate));
+                        //txtEventDate.setText(Common.SERVER_DATE_FORMAT_COMM.format(startDate));
+                        txtEventDate.setText(Common.getServerDateTimeInTimezone(timezone).format(startDate));
                     }catch (ParseException e){
                         throw new RuntimeException(App.getErrorMessage(e), e);
                     }
@@ -293,14 +296,20 @@ public class CongratsActivity extends ToolbarActivity {
                     try {
                         final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(event.getStart_datetime());
                         final Date endDate = Common.ISO8601_DATE_FORMAT_UTC.parse(event.getEnd_datetime());
-                        txtEventDate2.setText(Common.SIMPLE_24_HOUR_FORMAT.format(startDate)+"-"+Common.SIMPLE_24_HOUR_FORMAT.format(endDate));
+                        String simpleDate = Utils.getTimeForEvent(startDate, endDate, timezone);
+
+                        /*txtEventDate2.setText(Common.SIMPLE_24_HOUR_FORMAT.format(startDate)
+                                +"-"+Common.SIMPLE_24_HOUR_FORMAT.format(endDate));*/
+                        txtEventDate2.setText(Common.getSimple24HourFormat(timezone).format(startDate)
+                                +"-"+Common.getSimple24HourFormat(timezone).format(endDate));
                     }catch (ParseException e){
                         throw new RuntimeException(App.getErrorMessage(e), e);
                     }
                     txtVenueTitle.setText(event.getVenue_name());
                     try {
                         final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(event.getStart_datetime());
-                        txtVenueDate.setText(Common.SERVER_DATE_FORMAT_COMM.format(startDate));
+                        //txtVenueDate.setText(Common.SERVER_DATE_FORMAT_COMM.format(startDate));
+                        txtVenueDate.setText(Common.getServerDateTimeInTimezone(timezone).format(startDate));
                     }catch (ParseException e){
                         throw new RuntimeException(App.getErrorMessage(e), e);
                     }

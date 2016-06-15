@@ -44,6 +44,7 @@ import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.gcm.GCMRegistrationService;
 import com.jiggie.android.component.service.FacebookImageSyncService;
 import com.jiggie.android.fragment.HomeFragment;
+import com.jiggie.android.fragment.MoreFragment;
 import com.jiggie.android.fragment.SignInFragment;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.CommerceManager;
@@ -90,6 +91,8 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    private Bundle savedInstanceState;
+
     @Override
     @SuppressWarnings("StatementWithEmptyBody")
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,22 +100,8 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_main);
         this.active = true;
-        if(savedInstanceState == null)
-        {
-            Utils.d(TAG, "onCreate null instancestate");
-            homeFragment = getHomeFragment();
 
-        }
-        else
-        {
-            Utils.d(TAG, "onCreate tidak null instancestate");
-            homeFragment = (HomeFragment) getSupportFragmentManager()
-                    .getFragment(savedInstanceState, "homefragment");
-
-            if(homeFragment == null)
-                Utils.d(TAG, "homeFragment null");
-            else Utils.d(TAG, "homeFragment tidak null");
-        }
+        this.savedInstanceState = savedInstanceState;
 
         AppsFlyerLib.sendTracking(MainActivity.this);
 
@@ -286,50 +275,50 @@ public class MainActivity extends AppCompatActivity
             homeFragment = new HomeFragment();
             homeFragment.setArguments(super.getIntent().getExtras());
         }
-
         return homeFragment;
     }
 
     public void navigateToHome() {
+        if(savedInstanceState == null)
+        {
+            homeFragment = null;
+            homeFragment = getHomeFragment();
+
+        }
+        else
+        {
+            homeFragment = (HomeFragment) getSupportFragmentManager()
+                    .getFragment(savedInstanceState, "homefragment");
+        }
+
+        /*mFragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+
+        FragmentOne fragment = new FragmentOne();
+
+        fragmentTransaction.add(R.id.fragment_container, fragment);
+        fragmentTransaction.commit();*/
+
         final FragmentManager fragmentManager = super.getSupportFragmentManager();
+
         final int fragmentCount = fragmentManager.getBackStackEntryCount();
         for (int i = 0; i < fragmentCount; i++)
             fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
-        Intent a = super.getIntent();
         final Fragment fragment = getHomeFragment();
-
-        /*if(a != null)
-        {
-            String event_id = a.getStringExtra(Common.FIELD_EVENT_ID);
-            final String event_name = a.getStringExtra(Common.FIELD_EVENT_NAME);
-            if(event_id == null)
-            {
-                Uri data = a.getData();
-                try {
-                    Map<String, String> tamp = StringUtility.splitQuery(new URL(data.toString()));
-                    event_id = tamp.get("af_sub2");
-                    a.putExtra(Common.FIELD_EVENT_ID, event_id);
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }*/
-        Utils.d(TAG, "navigatetohome");
-        //fragment.setArguments(getHomeFragment().getArguments());
-        Utils.d(TAG, "navigatetohome 2");
         fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
 
-
-        Utils.d(TAG, "navigatetohome 3 " + fragment.getChildFragmentManager().getFragments().size());
     }
+
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+    }
+
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        Utils.d(TAG, "onRestart");
         if(Utils.isLocationServicesAvailable(this)){
             checkLocation();
         }else{
@@ -379,6 +368,7 @@ public class MainActivity extends AppCompatActivity
             //checkLocation();
 
             if (!App.getInstance().isUserLoggedIn()) {
+                homeFragment = null;
                 final SignInFragment fragment = new SignInFragment();
                 super.getSupportFragmentManager().beginTransaction().add(R.id.container, fragment).commit();
             } else {
@@ -565,6 +555,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         this.active = false;
+
         if(App.mixpanelAPI!=null){
             App.mixpanelAPI.flush();
         }
@@ -580,6 +571,7 @@ public class MainActivity extends AppCompatActivity
 
         App.getSharedPreferences().edit().putBoolean(Utils.PREFERENCE_GPS, false).commit();
         homeFragment = null;
+        System.gc();
         super.onDestroy();
     }
 
@@ -754,13 +746,23 @@ public class MainActivity extends AppCompatActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Utils.d(TAG, "onSaveInstanceState");
-        outState.putBundle("bundle", super.getIntent().getExtras());
-        getSupportFragmentManager()
-                .putFragment(outState, "homefragment", getHomeFragment());
-    }
+        if(homeFragment != null)
+        {
+            getSupportFragmentManager()
+                    .putFragment(outState, "homefragment", getHomeFragment());
+
+        }
+     }
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState, PersistableBundle persistentState) {
+        Utils.d(TAG, "onRestoreInstanceState");
         super.onRestoreInstanceState(savedInstanceState, persistentState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Utils.d(TAG, "onRestoreInstanceState 2");
     }
 }
