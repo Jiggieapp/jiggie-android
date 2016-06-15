@@ -342,6 +342,7 @@ public class EventsFragment extends Fragment
         ButterKnife.unbind(this);
     }
 
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         //super.onCreateOptionsMenu(menu, inflater);

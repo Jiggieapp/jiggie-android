@@ -130,7 +130,6 @@ public class HomeFragment extends Fragment
     View bottomSheet;
     AppCompatActivity activity;
     EventPresenterImplementation eventPresenterImplementation;
-    ImageView imgView;
 
     @Nullable
     @Override
@@ -171,8 +170,9 @@ public class HomeFragment extends Fragment
         ButterKnife.bind(this, this.rootView);
         activity = (AppCompatActivity) super.getActivity();
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-        imgView = (ImageView) toolbar.findViewById(R.id.logo_image);
-        imgView.setImageDrawable(getResources().getDrawable(R.drawable.logo));
+        /*imgView = (ImageView) toolbar.findViewById(R.id.logo_image);
+        imgView.setImageDrawable(getResources().getDrawable(R.drawable.logo));*/
+        addLogoImage();
         this.toolbar.setTitle("");
         activity.setSupportActionBar(toolbar);
 
@@ -349,17 +349,13 @@ public class HomeFragment extends Fragment
         }
     }
 
-    private void addLogoImage() {
+    private void addLogoImage(){
         int[] center = TooltipsManager.getCenterPoint(getActivity());
-        //imgView.setX(center[0]);
         ImageView imgLogo = new ImageView(getActivity());
         imgLogo.setImageDrawable(getResources().getDrawable(R.drawable.logo));
         RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(Utils.myPixel(getActivity(), 63), Utils.myPixel(getActivity(), 24));
-        param.leftMargin = center[0] - Utils.myPixel(getActivity(), 63);
-        //param.setMargins(center[0], 0, 0, 0);
+        param.leftMargin = center[0]-Utils.myPixel(getActivity(), 32);
         param.addRule(RelativeLayout.CENTER_VERTICAL);
-        //imgLogo.setLeft(center[0]);
-        //imgLogo.setLayoutParams(param);
         relPlace.addView(imgLogo, param);
 
     }
