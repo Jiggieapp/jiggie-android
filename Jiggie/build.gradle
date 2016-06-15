@@ -148,7 +148,7 @@ dependencies {
     //swipeable cards
     //compile 'com.github.kikoso:SwipeableCards:1.1-RELEASE@aar'
 
-    compile 'com.google.firebase:firebase-core:9.0.2'
+    compile 'com.google.firebase:firebase-database:9.0.2'
 }
 
 apply plugin: 'com.google.gms.google-services'
