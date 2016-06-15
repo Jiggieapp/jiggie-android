@@ -8,7 +8,7 @@
     <string name="gcm_project_number">680009696864</string>
 
     <!--old Google key -->
-    <string name="google_api_key">AIzaSyDI11veTh3B7nPq1x_tVQcuoUf-9otkpEg</string>
+    <!--<string name="google_api_key">AIzaSyDI11veTh3B7nPq1x_tVQcuoUf-9otkpEg</string>-->
 
     <!--Google key debug-->
     <!--<string name="google_api_key">AIzaSyBpLaTKk463uthyYbVFsRb2SJA8oVRyqew</string>-->
