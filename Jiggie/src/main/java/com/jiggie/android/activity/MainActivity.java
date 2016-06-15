@@ -44,6 +44,7 @@ import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.gcm.GCMRegistrationService;
 import com.jiggie.android.component.service.FacebookImageSyncService;
 import com.jiggie.android.fragment.HomeFragment;
+import com.jiggie.android.fragment.MoreFragment;
 import com.jiggie.android.fragment.SignInFragment;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.CommerceManager;
@@ -66,7 +67,7 @@ import de.greenrobot.event.EventBus;
  * Created by rangg on 21/10/2015.
  */
 public class MainActivity extends AppCompatActivity
-        implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
+        implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     public static final int REQUEST_GOOGLE_PLAY_SERVICES = 1972;
     private boolean active;
     public static final String TAG = MainActivity.class.getSimpleName();
@@ -74,21 +75,20 @@ public class MainActivity extends AppCompatActivity
     String appsfl = "";
     GoogleApiClient mGoogleApiClient = null;
 
-    private boolean isFirstRun()
-    {
+    private boolean isFirstRun() {
         final SharedPreferences pref = App.getSharedPreferences();
-        if(Utils.getVersion(this) < 1021) //1021 is 22-02-2016 build
+        if (Utils.getVersion(this) < 1021) //1021 is 22-02-2016 build
         {
             //clear all
             App.getSharedPreferences().edit().clear().apply();
             return false;
-        }
-        else
-        {
+        } else {
             boolean isFirstRun = pref.getBoolean(Utils.IS_FIRST_RUN, true);
             return isFirstRun;
         }
     }
+
+    private Bundle savedInstanceState;
 
     @Override
     @SuppressWarnings("StatementWithEmptyBody")
@@ -97,26 +97,12 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_main);
         this.active = true;
-        if(savedInstanceState == null)
-        {
-            Utils.d(TAG, "onCreate null instancestate");
-            homeFragment = getHomeFragment();
 
-        }
-        else
-        {
-            Utils.d(TAG, "onCreate tidak null instancestate");
-            homeFragment = (HomeFragment) getSupportFragmentManager()
-                    .getFragment(savedInstanceState, "homefragment");
-
-            if(homeFragment == null)
-                Utils.d(TAG, "homeFragment null");
-            else Utils.d(TAG, "homeFragment tidak null");
-        }
+        this.savedInstanceState = savedInstanceState;
 
         AppsFlyerLib.sendTracking(MainActivity.this);
 
-        if(isFirstRun()){
+        if (isFirstRun()) {
             final SharedPreferences pref = App.getSharedPreferences();
             pref.edit().putBoolean(Utils.IS_FIRST_RUN, false).commit();
             App.getInstance().trackMixPanelEvent("Install");
@@ -192,12 +178,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onStop() {
-        if(mGoogleApiClient!=null)
+        if (mGoogleApiClient != null)
             mGoogleApiClient.disconnect();
         super.onStop();
     }
 
-    private void checkLocation(){
+    private void checkLocation() {
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
@@ -225,8 +211,8 @@ public class MainActivity extends AppCompatActivity
             try {
                 mLastLocation = locationManager
                         .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            }catch (SecurityException e){
-                Utils.d(getString(R.string.tag_location),e.toString());
+            } catch (SecurityException e) {
+                Utils.d(getString(R.string.tag_location), e.toString());
             }
 
             if (mLastLocation != null) {
@@ -240,7 +226,7 @@ public class MainActivity extends AppCompatActivity
             SocialManager.lng = String.valueOf(mLastLocation.getLongitude());
 
             HomeFragment.sendLocationInfo();
-        }else{
+        } else {
             Utils.d(getString(R.string.tag_location), getString(R.string.error_loc_failed));
         }
 
@@ -279,70 +265,73 @@ public class MainActivity extends AppCompatActivity
     }
 
     private static HomeFragment homeFragment;
-    public HomeFragment getHomeFragment()
-    {
-        if(homeFragment == null)
-        {
+    private static SignInFragment signInFragment;
+
+    public HomeFragment getHomeFragment() {
+        if (homeFragment == null) {
             homeFragment = new HomeFragment();
             homeFragment.setArguments(super.getIntent().getExtras());
         }
-
         return homeFragment;
     }
 
+    public SignInFragment getSignInFragment() {
+        if (signInFragment == null) {
+            signInFragment = new SignInFragment();
+        }
+        return signInFragment;
+    }
+
     public void navigateToHome() {
+        signInFragment = null;
+        if (savedInstanceState == null) {
+            homeFragment = null;
+            homeFragment = getHomeFragment();
+        } else {
+            homeFragment = (HomeFragment) getSupportFragmentManager()
+                    .getFragment(savedInstanceState, "homefragment");
+        }
+
+        /*mFragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+
+        FragmentOne fragment = new FragmentOne();
+
+        fragmentTransaction.add(R.id.fragment_container, fragment);
+        fragmentTransaction.commit();*/
+
         final FragmentManager fragmentManager = super.getSupportFragmentManager();
+
         final int fragmentCount = fragmentManager.getBackStackEntryCount();
         for (int i = 0; i < fragmentCount; i++)
             fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
-        Intent a = super.getIntent();
         final Fragment fragment = getHomeFragment();
-
-        /*if(a != null)
-        {
-            String event_id = a.getStringExtra(Common.FIELD_EVENT_ID);
-            final String event_name = a.getStringExtra(Common.FIELD_EVENT_NAME);
-            if(event_id == null)
-            {
-                Uri data = a.getData();
-                try {
-                    Map<String, String> tamp = StringUtility.splitQuery(new URL(data.toString()));
-                    event_id = tamp.get("af_sub2");
-                    a.putExtra(Common.FIELD_EVENT_ID, event_id);
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }*/
-        Utils.d(TAG, "navigatetohome");
-        //fragment.setArguments(getHomeFragment().getArguments());
-        Utils.d(TAG, "navigatetohome 2");
         fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
 
-
-        Utils.d(TAG, "navigatetohome 3 " + fragment.getChildFragmentManager().getFragments().size());
     }
+
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+    }
+
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        Utils.d(TAG, "onRestart");
-        if(Utils.isLocationServicesAvailable(this)){
+        if (Utils.isLocationServicesAvailable(this)) {
             checkLocation();
-        }else{
+        } else {
             boolean isAlreadyOpen = App.getSharedPreferences().getBoolean(Utils.PREFERENCE_GPS, false);
-            if(!isAlreadyOpen){
+            if (!isAlreadyOpen) {
                 App.getSharedPreferences().edit().putBoolean(Utils.PREFERENCE_GPS, true).commit();
                 showDialog();
             }
         }
     }
 
-    private void showDialog()
-    {
+    private void showDialog() {
         final AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
                 .setMessage(getString(R.string.msg_dialog_sett_location))
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -379,16 +368,26 @@ public class MainActivity extends AppCompatActivity
             //checkLocation();
 
             if (!App.getInstance().isUserLoggedIn()) {
-                final SignInFragment fragment = new SignInFragment();
-                super.getSupportFragmentManager().beginTransaction().add(R.id.container, fragment).commit();
+                homeFragment = null;
+                SignInFragment fragment;
+                if(savedInstanceState == null)
+                {
+                    signInFragment = null;
+                    fragment = getSignInFragment();
+                }
+                else
+                {
+                    fragment = (SignInFragment) getSupportFragmentManager()
+                            .getFragment(savedInstanceState, "signinfragment");
+                }
+                super.getSupportFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
             } else {
-
                 //Check availability GPS Location
-                if(Utils.isLocationServicesAvailable(this)){
+                if (Utils.isLocationServicesAvailable(this)) {
                     checkLocation();
-                }else{
+                } else {
                     boolean isAlreadyOpen = App.getSharedPreferences().getBoolean(Utils.PREFERENCE_GPS, false);
-                    if(!isAlreadyOpen){
+                    if (!isAlreadyOpen) {
                         App.getSharedPreferences().edit().putBoolean(Utils.PREFERENCE_GPS, true).commit();
                         showDialog();
                     }
@@ -408,8 +407,7 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     //wandy 20-04-2016
                     //sblm navigate to home, pastikan sudah ambil guest info sekali aja
-                    if(!App.getInstance().getSharedPreferences().getBoolean(Utils.HAS_LOAD_GROUP_INFO, false))
-                    {
+                    if (!App.getInstance().getSharedPreferences().getBoolean(Utils.HAS_LOAD_GROUP_INFO, false)) {
                         App.getSharedPreferences().edit().putBoolean
                                 (Utils.HAS_LOAD_GROUP_INFO, true).apply();
                         final GuestPresenter guestPresenter = new GuestPresenter();
@@ -425,9 +423,7 @@ public class MainActivity extends AppCompatActivity
                                 navigateToHome();
                             }
                         });
-                    }
-                    else
-                    {
+                    } else {
                         this.navigateToHome();
                         showRateDialog();
                     }
@@ -452,7 +448,7 @@ public class MainActivity extends AppCompatActivity
             super.onBackPressed();
     }
 
-    private void actionResults(){
+    private void actionResults() {
         if (!App.getInstance().isUserLoggedIn()) {
             final SignInFragment fragment = new SignInFragment();
             super.getSupportFragmentManager().beginTransaction().add(R.id.container, fragment).commit();
@@ -473,7 +469,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void registerAppsFlyerConversion(){
+    private void registerAppsFlyerConversion() {
         AppsFlyerLib.registerConversionListener(super.getApplicationContext(), new AppsFlyerConversionListener() {
             @Override
             public void onInstallConversionDataLoaded(Map<String, String> map) {
@@ -531,7 +527,7 @@ public class MainActivity extends AppCompatActivity
                 // rate app dialog never showed, wait for 1 day app usage.
                 final long nextTime = System.currentTimeMillis() + (24 * 60 * 60 * 1000);
                 pref.edit().putLong(snoozePref, nextTime).apply();
-            }else if (lastTime <= System.currentTimeMillis()) {
+            } else if (lastTime <= System.currentTimeMillis()) {
                 final long nextTime = System.currentTimeMillis() + (7 * 24 * 60 * 60 * 1000); // 7 Days
                 pref.edit().putLong(snoozePref, nextTime).apply();
 
@@ -556,8 +552,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    protected boolean isActive()
-    {
+    protected boolean isActive() {
         return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) ?
                 !super.isDestroyed() : this.active;
     }
@@ -565,21 +560,23 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         this.active = false;
-        if(App.mixpanelAPI!=null){
+
+        if (App.mixpanelAPI != null) {
             App.mixpanelAPI.flush();
         }
 
         //refresh Credit card list----
-        if(CommerceManager.arrCCScreen!=null&&CommerceManager.arrCCScreen.size()>0){
+        if (CommerceManager.arrCCScreen != null && CommerceManager.arrCCScreen.size() > 0) {
             CommerceManager.arrCCScreen.clear();
         }
-        if(CommerceManager.arrCCLocal!=null&&CommerceManager.arrCCLocal.size()>0){
+        if (CommerceManager.arrCCLocal != null && CommerceManager.arrCCLocal.size() > 0) {
             CommerceManager.arrCCLocal.clear();
         }
         //--------------------
 
         App.getSharedPreferences().edit().putBoolean(Utils.PREFERENCE_GPS, false).commit();
         homeFragment = null;
+        System.gc();
         super.onDestroy();
     }
 
@@ -594,8 +591,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent i;
         Class<? extends Activity> target = null;
-        switch (item.getItemId())
-        {
+        switch (item.getItemId()) {
             case R.id.action_settings:
                 target = ProfileSettingActivity.class;
                 break;
@@ -663,7 +659,7 @@ public class MainActivity extends AppCompatActivity
                 CreditBalanceManager.loaderCreditBalance(AccessToken.getCurrentAccessToken().getUserId(), new CreditBalanceManager.OnResponseListener() {
                     @Override
                     public void onSuccess(Object object) {
-                        SuccessCreditBalanceModel successCreditBalanceModel = (SuccessCreditBalanceModel)object;
+                        SuccessCreditBalanceModel successCreditBalanceModel = (SuccessCreditBalanceModel) object;
                         showCreditBalance(successCreditBalanceModel.getData().getBalance_credit().getTot_credit_active());
                     }
 
@@ -674,8 +670,7 @@ public class MainActivity extends AppCompatActivity
                 });
                 break;
         }
-        if(target != null)
-        {
+        if (target != null) {
             i = new Intent(this, target);
             startActivity(i);
         }
@@ -683,15 +678,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     AlertDialog ad = null;
-    private void showCreditBalance(String creditBalance){
+
+    private void showCreditBalance(String creditBalance) {
         hideProgressDialog();
-        AlertDialog.Builder al =  new AlertDialog.Builder(MainActivity.this)
+        AlertDialog.Builder al = new AlertDialog.Builder(MainActivity.this)
                 .setTitle(R.string.credit_balance)
                 .setMessage("Your credit balance is " + StringUtility.getCreditBalanceFormat(creditBalance))
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(ad!=null&&ad.isShowing())
+                        if (ad != null && ad.isShowing())
                             ad.dismiss();
                     }
                 });
@@ -701,7 +697,7 @@ public class MainActivity extends AppCompatActivity
 
     private void mailSupport() {
         final Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", super.getString(R.string.support_email), null));
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[] {super.getString(R.string.support_email)}); // hack for android 4.3
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{super.getString(R.string.support_email)}); // hack for android 4.3
         intent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.support));
         super.startActivity(Intent.createChooser(intent, super.getString(R.string.support)));
     }
@@ -724,15 +720,13 @@ public class MainActivity extends AppCompatActivity
     private ShareLinkModel shareLink;
     ProgressDialog progressDialog = null;
 
-    private void hideProgressDialog()
-    {
-        if(progressDialog!=null && progressDialog.isShowing())
-        {
+    private void hideProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
     }
 
-    public void onEvent(ShareLinkModel message){
+    public void onEvent(ShareLinkModel message) {
         App.getInstance().trackMixPanelEvent("Share App");
         if (MainActivity.this != null) {
             String link = String.format("%s\n\n%s", message.getMessage(), message.getUrl());
@@ -742,10 +736,8 @@ public class MainActivity extends AppCompatActivity
         hideProgressDialog();
     }
 
-    public void onEvent(ExceptionModel exceptionModel)
-    {
-        if(exceptionModel.getFrom().equalsIgnoreCase(Utils.FROM_SHARE_LINK))
-        {
+    public void onEvent(ExceptionModel exceptionModel) {
+        if (exceptionModel.getFrom().equalsIgnoreCase(Utils.FROM_SHARE_LINK)) {
             hideProgressDialog();
         }
     }
@@ -754,13 +746,24 @@ public class MainActivity extends AppCompatActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         Utils.d(TAG, "onSaveInstanceState");
-        outState.putBundle("bundle", super.getIntent().getExtras());
-        getSupportFragmentManager()
-                .putFragment(outState, "homefragment", getHomeFragment());
+        if (homeFragment != null && App.getInstance().isUserLoggedIn()) {
+            getSupportFragmentManager()
+                    .putFragment(outState, "homefragment", getHomeFragment());
+        } else if (signInFragment != null && !App.getInstance().isUserLoggedIn()) {
+            getSupportFragmentManager()
+                    .putFragment(outState, "signinfragment", getSignInFragment());
+        }
     }
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState, PersistableBundle persistentState) {
+        Utils.d(TAG, "onRestoreInstanceState");
         super.onRestoreInstanceState(savedInstanceState, persistentState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Utils.d(TAG, "onRestoreInstanceState 2");
     }
 }

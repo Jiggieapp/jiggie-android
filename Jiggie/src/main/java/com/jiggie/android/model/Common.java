@@ -36,6 +36,7 @@ public class Common {
     public static String FIELD_EVENT_PICS = "event_pics";
     public static String FIELD_EVENT_DESCRIPTION = "event_description";
     public static String FIELD_EVENT_LIKE = "event_like";
+    public static String FIELD_EVENT_TIMEZONE = "timezone";
 
     public static String FIELD_TRANS_TYPE = "type";
     public static String TYPE_PURCHASE = "purchase";
@@ -76,8 +77,41 @@ public class Common {
     public static final SimpleDateFormat SERVER_DATE_FORMAT_ALT = new SimpleDateFormat("EEEE, MMMM d, h:mm a", Locale.getDefault());
     public static final SimpleDateFormat SIMPLE_12_HOUR_FORMAT = new SimpleDateFormat("h:mm a", Locale.getDefault());
     public static final SimpleDateFormat SIMPLE_24_HOUR_FORMAT = new SimpleDateFormat("HH:mm a", Locale.getDefault());
+    public static SimpleDateFormat getSimple24HourFormat(String timezone)
+    {
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm a");
+        if(timezone == null || timezone.isEmpty())
+        {
+            format.setTimeZone(TimeZone.getDefault());
+        }
+        else format.setTimeZone(TimeZone.getTimeZone("GMT+" + timezone));
+        return format;
+    }
     public static final SimpleDateFormat SHORT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
     public static final SimpleDateFormat FACEBOOK_DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy", Locale.getDefault());
+    public static final SimpleDateFormat SERVER_DATE_FORMAT_ALT_ONLY_FOR_EVENT = new SimpleDateFormat("EEEE, MMMM d, h:mm a", Locale.getDefault());
+    public static final SimpleDateFormat SIMPLE_12_HOUR_FORMAT_ONLY_FOR_EVENT = new SimpleDateFormat("h:mm a", Locale.getDefault());
+    public static SimpleDateFormat getStartDateTimeInTimezone(String timezone)
+    {
+        SimpleDateFormat format = new SimpleDateFormat("EEEE, MMMM d, h:mm a");
+        if(timezone == null || timezone.isEmpty())
+        {
+            format.setTimeZone(TimeZone.getDefault());
+        }
+        else format.setTimeZone(TimeZone.getTimeZone("GMT+" + timezone));
+        return format;
+    }
+
+    public static SimpleDateFormat getEndDateTimeInTimezone(String timezone)
+    {
+        SimpleDateFormat format = new SimpleDateFormat("h:mm a");
+        if(timezone == null || timezone.isEmpty())
+        {
+            format.setTimeZone(TimeZone.getDefault());
+        }
+        else format.setTimeZone(TimeZone.getTimeZone("GMT+" + timezone));
+        return format;
+    }
 
     public static final SimpleDateFormat ISO8601_DATE_FORMAT_UTC = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault());
     public static final SimpleDateFormat SERVER_DATE_FORMAT_ALT_UTC = new SimpleDateFormat("EEEE, MMMM d, h:mm a", Locale.getDefault());
@@ -86,6 +120,20 @@ public class Common {
     public static final SimpleDateFormat SHORT_DATE_FORMAT_UTC = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
     public static final SimpleDateFormat SERVER_DATE_FORMAT_COMM = new SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault());
+    public static SimpleDateFormat getServerDateTimeInTimezone(String timezone)
+    {
+
+        SimpleDateFormat format = new SimpleDateFormat("EEE, d MMM yyyy");
+        if(timezone == null || timezone.isEmpty())
+        {
+            format.setTimeZone(TimeZone.getDefault());
+        }
+        else
+        {
+            format.setTimeZone(TimeZone.getTimeZone("GMT+" + timezone));
+        }
+        return format;
+    }
     public static final SimpleDateFormat FORMAT_COMM_TRANSACTION = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
     public static final SimpleDateFormat FORMAT_COMM_TICKET = new SimpleDateFormat("dd MMMM yyyy - HH:mm:ss", Locale.getDefault());
 

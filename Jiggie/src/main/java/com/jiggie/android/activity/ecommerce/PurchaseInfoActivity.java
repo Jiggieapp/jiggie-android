@@ -122,6 +122,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
     LinearLayout linDiscount;
 
     private SlideAdapter slideAdapter;
+    private String timezone;
     public final static String TAG = PurchaseInfoActivity.class.getSimpleName();
 
     public static String getPaymentApiUrl() {
@@ -172,6 +173,7 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
         eventName = a.getStringExtra(Common.FIELD_EVENT_NAME);
         venueName = a.getStringExtra(Common.FIELD_VENUE_NAME);
         startTime = a.getStringExtra(Common.FIELD_STARTTIME);
+        timezone = a.getStringExtra(Common.FIELD_EVENT_TIMEZONE);
         productSummary = a.getParcelableExtra(SummaryModel.Data.Product_summary.class.getName());
         eventDetail = a.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
         order_id = productSummary.getOrder_id();
@@ -236,8 +238,10 @@ public class PurchaseInfoActivity extends AbstractPurchaseSumaryActivity {
                     (eventDetail.getStart_datetime());
             final Date endDate = Common.ISO8601_DATE_FORMAT_UTC.parse
                     (eventDetail.getEnd_datetime());
-            String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format
-                    , Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));
+            /*String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format
+                    , Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));*/
+            String simpleDate = Utils.getTimeForEvent(startDate, endDate, timezone);
+
             txtEventInfo.setText(venueName);
             txtEventInfoDate.setText(simpleDate);
         } catch (ParseException e) {

@@ -103,6 +103,8 @@ public class ProductListActivity extends ToolbarActivity
         return R.style.AppTheme_StatusBarTransparent;
     }*/
 
+    private String timezone;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,6 +113,7 @@ public class ProductListActivity extends ToolbarActivity
         //super.bindView();
         final Intent intent = getIntent();
         eventId = intent.getStringExtra(Common.FIELD_EVENT_ID);
+        timezone = intent.getStringExtra(Common.FIELD_EVENT_TIMEZONE);
         eventDetail = intent.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
         sendMixpanel(eventDetail);
 
@@ -150,8 +153,9 @@ public class ProductListActivity extends ToolbarActivity
                     (eventDetail.getStart_datetime());
             final Date endDate = Common.ISO8601_DATE_FORMAT_UTC.parse
                     (eventDetail.getEnd_datetime());
-            String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format
-                    , Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));
+            /*String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format
+                    , Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));*/
+            String simpleDate = Utils.getTimeForEvent(startDate, endDate, timezone);
             toolbarHeaderView.bindTo(eventDetail.getTitle()
                     , eventDetail.getVenue_name() + ", " + simpleDate);
             floatHeaderView.bindTo(eventDetail.getTitle()
@@ -235,6 +239,7 @@ public class ProductListActivity extends ToolbarActivity
         i.putExtra(Common.FIELD_VENUE_NAME, venueName);
         i.putExtra(Common.FIELD_STARTTIME, startTime);
         i.putExtra(eventDetail.getClass().getName(), eventDetail);
+        i.putExtra(Common.FIELD_EVENT_TIMEZONE, timezone);
         startActivity(i);
     }
 

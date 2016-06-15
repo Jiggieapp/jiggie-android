@@ -36,9 +36,8 @@ import java.util.TimeZone;
 public class CongratsActivity extends ToolbarActivity {
     TextView txtCongrats, txtEventTitle, txtEventDate, txtTypeNumberFill, txtGuestNameFill, txtStatusFill, txtPaymentFill, txtSummaryDate, txtRegTicketTitle,
             txtRegTicketFill, txtAdFeeFill, txtTaxFill, txtTotalFill, txtInstrucFill, txtEventTitle2, txtTotal,
-            txtEventDate2, txtVenueTitle, txtVenueDate, lblGuestCount, lblSummaryTitle
-            , lblEstimatedBalance, lblPaidDeposit, lblEstimatedTotal, lblTotalTitle, txt_type_number_title, txtInstruc, txtPaymentTitle, txtStatusTitle,
-    txtCreditFill, lblEstimateTotTitle, lblReqDepositTitle, lblEstimateBalanceTitle, lblExtraChargeFill;
+            txtEventDate2, txtVenueTitle, txtVenueDate, lblGuestCount, lblSummaryTitle, lblEstimatedBalance, lblPaidDeposit, lblEstimatedTotal, lblTotalTitle, txt_type_number_title, txtInstruc, txtPaymentTitle, txtStatusTitle,
+            txtCreditFill, lblEstimateTotTitle, lblReqDepositTitle, lblEstimateBalanceTitle, lblExtraChargeFill;
     LinearLayout linSummaryFooter, linDiscount;
     RelativeLayout relViewTicket, containerTableGuest, relCredit, relExtraCharge, relAd, relTax;
     RelativeLayout scrollView;
@@ -64,29 +63,29 @@ public class CongratsActivity extends ToolbarActivity {
         preDefined(String.valueOf(orderId));
     }
 
-    private void initView(){
-        txtCongrats = (TextView)findViewById(R.id.txt_congrats);
-        txtEventTitle = (TextView)findViewById(R.id.txt_event_title);
-        txtEventDate = (TextView)findViewById(R.id.txt_event_date);
-        txtTypeNumberFill = (TextView)findViewById(R.id.txt_type_number_fill);
-        txtGuestNameFill = (TextView)findViewById(R.id.txt_guest_name_fill);
-        txtStatusFill = (TextView)findViewById(R.id.txt_status_fill);
-        txtStatusTitle = (TextView)findViewById(R.id.txt_status_title);
-        txtPaymentFill = (TextView)findViewById(R.id.txt_payment_fill);
-        txtPaymentTitle = (TextView)findViewById(R.id.txt_payment_title);
-        txtSummaryDate = (TextView)findViewById(R.id.txt_summary_date);
-        txtRegTicketTitle = (TextView)findViewById(R.id.txt_reg_ticket_title);
-        txtRegTicketFill = (TextView)findViewById(R.id.txt_reg_ticket_fill);
-        txtAdFeeFill = (TextView)findViewById(R.id.txt_ad_fee_fill);
-        txtTaxFill = (TextView)findViewById(R.id.txt_tax_fill);
-        txtTotal = (TextView)findViewById(R.id.txt_total);
-        txtTotalFill = (TextView)findViewById(R.id.txt_total_fill);
-        txtInstrucFill = (TextView)findViewById(R.id.txt_instruc_fill);
-        txtEventTitle2 = (TextView)findViewById(R.id.txt_event_title2);
-        txtEventDate2 = (TextView)findViewById(R.id.txt_event_date2);
-        txtVenueTitle = (TextView)findViewById(R.id.txt_venue_title);
-        txtVenueDate = (TextView)findViewById(R.id.txt_venue_date);
-        relViewTicket = (RelativeLayout)findViewById(R.id.rel_view_ticket);
+    private void initView() {
+        txtCongrats = (TextView) findViewById(R.id.txt_congrats);
+        txtEventTitle = (TextView) findViewById(R.id.txt_event_title);
+        txtEventDate = (TextView) findViewById(R.id.txt_event_date);
+        txtTypeNumberFill = (TextView) findViewById(R.id.txt_type_number_fill);
+        txtGuestNameFill = (TextView) findViewById(R.id.txt_guest_name_fill);
+        txtStatusFill = (TextView) findViewById(R.id.txt_status_fill);
+        txtStatusTitle = (TextView) findViewById(R.id.txt_status_title);
+        txtPaymentFill = (TextView) findViewById(R.id.txt_payment_fill);
+        txtPaymentTitle = (TextView) findViewById(R.id.txt_payment_title);
+        txtSummaryDate = (TextView) findViewById(R.id.txt_summary_date);
+        txtRegTicketTitle = (TextView) findViewById(R.id.txt_reg_ticket_title);
+        txtRegTicketFill = (TextView) findViewById(R.id.txt_reg_ticket_fill);
+        txtAdFeeFill = (TextView) findViewById(R.id.txt_ad_fee_fill);
+        txtTaxFill = (TextView) findViewById(R.id.txt_tax_fill);
+        txtTotal = (TextView) findViewById(R.id.txt_total);
+        txtTotalFill = (TextView) findViewById(R.id.txt_total_fill);
+        txtInstrucFill = (TextView) findViewById(R.id.txt_instruc_fill);
+        txtEventTitle2 = (TextView) findViewById(R.id.txt_event_title2);
+        txtEventDate2 = (TextView) findViewById(R.id.txt_event_date2);
+        txtVenueTitle = (TextView) findViewById(R.id.txt_venue_title);
+        txtVenueDate = (TextView) findViewById(R.id.txt_venue_date);
+        relViewTicket = (RelativeLayout) findViewById(R.id.rel_view_ticket);
         containerTableGuest = (RelativeLayout) findViewById(R.id.container_table_guest);
         lblGuestCount = (TextView) findViewById(R.id.txt_guest_count_fill);
         lblSummaryTitle = (TextView) findViewById(R.id.txt_summary_title);
@@ -100,13 +99,13 @@ public class CongratsActivity extends ToolbarActivity {
         divider8 = (View) this.findViewById(R.id.divider8);
         divider3 = (View) this.findViewById(R.id.divider3);
         divider4 = (View) this.findViewById(R.id.divider4);
-        linSummaryFooter = (LinearLayout)findViewById(R.id.lin_summary_footer);
-        txt_type_number_title = (TextView)findViewById(R.id.txt_type_number_title);
-        txtInstruc = (TextView)findViewById(R.id.txt_instruc);
+        linSummaryFooter = (LinearLayout) findViewById(R.id.lin_summary_footer);
+        txt_type_number_title = (TextView) findViewById(R.id.txt_type_number_title);
+        txtInstruc = (TextView) findViewById(R.id.txt_instruc);
 
-        txtCreditFill = (TextView)findViewById(R.id.txt_credit_fill);
+        txtCreditFill = (TextView) findViewById(R.id.txt_credit_fill);
         relCredit = (RelativeLayout) findViewById(R.id.rel_credit);
-        linDiscount = (LinearLayout)findViewById(R.id.lin_discount);
+        linDiscount = (LinearLayout) findViewById(R.id.lin_discount);
 
         lblEstimateBalanceTitle = (TextView) this.findViewById(R.id.lbl_estimated_balance_title);
         lblReqDepositTitle = (TextView) this.findViewById(R.id.lbl_required_deposit_title);
@@ -124,38 +123,41 @@ public class CongratsActivity extends ToolbarActivity {
         relViewTicket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!fromOrderList){
+                if (!fromOrderList) {
                     Intent i = new Intent(CongratsActivity.this, PurchaseHistoryActivity.class);
                     i.putExtra(Common.FIELD_FROM_HOWTOPAY, true);
                     startActivity(i);
-                }else{
+                } else {
                     finish();
                 }
             }
         });
     }
 
-    private void preDefined(final String orderId){
+    private String timezone;
+
+    private void preDefined(final String orderId) {
         Utils.d(TAG, "orderId " + orderId);
         CommerceManager.loaderSucScreenCC(orderId, new CommerceManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
                 scrollView.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
-                SucScreenCCModel sucScreenCCModel = (SucScreenCCModel)object;
-                if(sucScreenCCModel!=null){
+                SucScreenCCModel sucScreenCCModel = (SucScreenCCModel) object;
+                if (sucScreenCCModel != null) {
                     sendMixpanel(sucScreenCCModel);
                     SucScreenCCModel.Data.Success_screen.Event event = sucScreenCCModel.getData().getSuccess_screen().getEvent();
                     SucScreenCCModel.Data.Success_screen.Summary summary = sucScreenCCModel.getData().getSuccess_screen().getSummary();
                     SucScreenCCModel.Data.Success_screen.Summary.Vt_response vt_response = summary.getVt_response();
                     //txtCongrats.setText("Congratulations "+ AccountManager.loadLogin().getUser_first_name()+"!");
-
+                    timezone = sucScreenCCModel.getData().getSuccess_screen().getEvent().getTz();
                     txtCongrats.setText("Congratulations " + summary.getGuest_detail().getName() + "!");
                     txtEventTitle.setText(event.getTitle());
                     try {
                         final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(event.getStart_datetime());
-                        txtEventDate.setText(Common.SERVER_DATE_FORMAT_COMM.format(startDate));
-                    }catch (ParseException e){
+                        //txtEventDate.setText(Common.SERVER_DATE_FORMAT_COMM.format(startDate));
+                        txtEventDate.setText(Common.getServerDateTimeInTimezone(timezone).format(startDate));
+                    } catch (ParseException e) {
                         throw new RuntimeException(App.getErrorMessage(e), e);
                     }
 
@@ -163,25 +165,23 @@ public class CongratsActivity extends ToolbarActivity {
                     txtGuestNameFill.setText(summary.getGuest_detail().getName());
                     txtStatusFill.setText(sucScreenCCModel.getData().getSuccess_screen().getPayment_status());
                     String paymentType = sucScreenCCModel.getData().getSuccess_screen().getPayment_type();
-                    if(paymentType.equals(Utils.TYPE_CC)){
+                    if (paymentType.equals(Utils.TYPE_CC)) {
                         txtPaymentFill.setText(getString(R.string.section_credit_card));
-                    }else if(paymentType.equals(Utils.TYPE_BP)){
+                    } else if (paymentType.equals(Utils.TYPE_BP)) {
                         txtPaymentFill.setText(getString(R.string.va_mandiri));
-                    }else if(paymentType.equals(Utils.TYPE_VA)){
+                    } else if (paymentType.equals(Utils.TYPE_VA)) {
                         txtPaymentFill.setText(getString(R.string.bank_transfer));
-                    }else if(paymentType.equals(Utils.TYPE_BCA)){
+                    } else if (paymentType.equals(Utils.TYPE_BCA)) {
                         txtPaymentFill.setText(getString(R.string.va_bca));
                     }
-                    if(vt_response != null)
-                    {
+                    if (vt_response != null) {
                         try {
                             final Date orderDate = Common.FORMAT_COMM_TRANSACTION.parse(vt_response.getTransaction_time());
                             txtSummaryDate.setText(Common.FORMAT_COMM_TICKET.format(orderDate));
-                        }catch (ParseException e){
+                        } catch (ParseException e) {
                             throw new RuntimeException(App.getErrorMessage(e), e);
                         }
-                    }
-                    else //free payment
+                    } else //free payment
                     {
                         //txtSummaryDate.setVisibility(View.GONE);
                         /*SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -205,35 +205,35 @@ public class CongratsActivity extends ToolbarActivity {
                     }
                     SucScreenCCModel.Data.Success_screen.Summary.Product_list product_list = summary.getProduct_list().get(0);
 
-                    if(product_list.getTotal_price().equals(Utils.NOL_RUPIAH)){
+                    if (product_list.getTotal_price().equals(Utils.NOL_RUPIAH)) {
                         txtRegTicketFill.setText(getString(R.string.free));
-                    }else{
+                    } else {
                         txtRegTicketFill.setText(StringUtility.getRupiahFormat(product_list.getTotal_price()));
                     }
 
-                    if(product_list.getAdmin_fee().equals(Utils.NOL_RUPIAH)){
+                    if (product_list.getAdmin_fee().equals(Utils.NOL_RUPIAH)) {
                         txtAdFeeFill.setText(getString(R.string.free));
-                    }else{
+                    } else {
                         txtAdFeeFill.setText(StringUtility.getRupiahFormat(product_list.getAdmin_fee()));
                     }
 
-                    if(product_list.getTax_amount().equals(Utils.NOL_RUPIAH)){
+                    if (product_list.getTax_amount().equals(Utils.NOL_RUPIAH)) {
                         txtTaxFill.setText(getString(R.string.free));
-                    }else{
+                    } else {
                         //txtTaxFill.setText(StringUtility.getRupiahFormat(product_list.getTax_amount()));
                         txtTaxFill.setText(StringUtility.getRupiahFormat(summary.getTotal_tax_amount()));
                     }
 
-                    if(summary.getTotal_price().equals(Utils.NOL_RUPIAH)){
+                    if (summary.getTotal_price().equals(Utils.NOL_RUPIAH)) {
                         txtTotalFill.setText(getString(R.string.free));
-                    }else{
+                    } else {
                         txtTotalFill.setText(StringUtility.getRupiahFormat(summary.getTotal_price()));
                     }
 
                     txtEventTitle2.setText(event.getTitle());
 
-                    if (product_list.getTicket_type().equalsIgnoreCase(Common.TYPE_RESERVATION))
-                    {
+                    if (product_list.getTicket_type().equalsIgnoreCase(Common.TYPE_RESERVATION)) {
+                        int extra_charge = Integer.parseInt(product_list.getExtra_charge());
                         containerTableGuest.setVisibility(View.VISIBLE);
                         txt_type_number_title.setText(getString(R.string.vor_reservation_number));
                         lblSummaryTitle.setText(
@@ -241,9 +241,9 @@ public class CongratsActivity extends ToolbarActivity {
                         lblGuestCount.setText(product_list.getNum_buy());
 
                         sale_type = product_list.getSale_type();
-                        if(sale_type.equals(Utils.TYPE_EXACT_PRICE)){
+                        if (sale_type.equals(Utils.TYPE_EXACT_PRICE) || sale_type.equals(Utils.TYPE_RESERVE)) {
                             txtRegTicketTitle.setText(product_list.getName().toUpperCase());
-                        }else{
+                        } else {
                             txtRegTicketTitle.setText(product_list.getName().toUpperCase() + " "
                                     + getResources().getString(R.string.estimate));
                         }
@@ -258,30 +258,50 @@ public class CongratsActivity extends ToolbarActivity {
                         lblTotalTitle.setVisibility(View.GONE);
                         divider.setVisibility(View.GONE);
 
-                        if(summary.getPay_deposit().equals(Utils.NOL_RUPIAH)){
+                        if (summary.getPay_deposit().equals(Utils.NOL_RUPIAH)) {
                             /*txtStatusTitle.setVisibility(View.GONE);
                             txtStatusFill.setVisibility(View.GONE);*/
                             txtPaymentTitle.setVisibility(View.GONE);
                             txtPaymentFill.setVisibility(View.GONE);
                         }
 
-                        if(sale_type.equals(Utils.TYPE_EXACT_PRICE)){
+                        if (sale_type.equals(Utils.TYPE_EXACT_PRICE)) {
                             lblEstimateBalanceTitle.setText(getResources().getString(R.string.pci_f6c));
                             //lblReqDepositTitle.setText(getResources().getString(R.string.pci_f5c));
                             lblEstimateTotTitle.setText(getResources().getString(R.string.pci_f4c));
                         }
 
-                        int extra_charge = Integer.parseInt(product_list.getExtra_charge());
-                        if(extra_charge>0){
+                        if (extra_charge > 0) {
                             relExtraCharge.setVisibility(View.VISIBLE);
                             lblExtraChargeFill.setText(StringUtility.getRupiahFormat(product_list.getExtra_charge()));
+
+                            if (product_list.getPrice().equals(Utils.NOL_RUPIAH)) {
+                                if (sale_type.equals(Utils.TYPE_RESERVE)) {
+                                    txtRegTicketFill.setText(getString(R.string.reserved));
+                                } else {
+                                    txtRegTicketFill.setText(getString(R.string.free));
+                                }
+                            } else {
+                                txtRegTicketFill.setText(StringUtility.getRupiahFormat(product_list.getPrice()));
+                            }
+
+                        } else {
+                            if (product_list.getTotal_price().equals(Utils.NOL_RUPIAH)) {
+                                if (sale_type.equals(Utils.TYPE_RESERVE)) {
+                                    txtRegTicketFill.setText(getString(R.string.reserved).toUpperCase());
+                                } else {
+                                    txtRegTicketFill.setText(getString(R.string.free));
+                                }
+                            } else {
+                                txtRegTicketFill.setText(StringUtility.getRupiahFormat(product_list.getTotal_price()));
+                            }
                         }
 
-                        if(sale_type.equals(Utils.TYPE_RESERVE)){
+                        if (sale_type.equals(Utils.TYPE_RESERVE)) {
                             hideViewWhenReserve();
                         }
 
-                    }else{
+                    } else {
                         txt_type_number_title.setText(getString(R.string.vor_order_number));
                         lblSummaryTitle.setText(
                                 getResources().getString(R.string.vor_order_summary));
@@ -293,22 +313,28 @@ public class CongratsActivity extends ToolbarActivity {
                     try {
                         final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(event.getStart_datetime());
                         final Date endDate = Common.ISO8601_DATE_FORMAT_UTC.parse(event.getEnd_datetime());
-                        txtEventDate2.setText(Common.SIMPLE_24_HOUR_FORMAT.format(startDate)+"-"+Common.SIMPLE_24_HOUR_FORMAT.format(endDate));
-                    }catch (ParseException e){
+                        String simpleDate = Utils.getTimeForEvent(startDate, endDate, timezone);
+
+                        /*txtEventDate2.setText(Common.SIMPLE_24_HOUR_FORMAT.format(startDate)
+                                +"-"+Common.SIMPLE_24_HOUR_FORMAT.format(endDate));*/
+                        txtEventDate2.setText(Common.getSimple24HourFormat(timezone).format(startDate)
+                                + "-" + Common.getSimple24HourFormat(timezone).format(endDate));
+                    } catch (ParseException e) {
                         throw new RuntimeException(App.getErrorMessage(e), e);
                     }
                     txtVenueTitle.setText(event.getVenue_name());
                     try {
                         final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(event.getStart_datetime());
-                        txtVenueDate.setText(Common.SERVER_DATE_FORMAT_COMM.format(startDate));
-                    }catch (ParseException e){
+                        //txtVenueDate.setText(Common.SERVER_DATE_FORMAT_COMM.format(startDate));
+                        txtVenueDate.setText(Common.getServerDateTimeInTimezone(timezone).format(startDate));
+                    } catch (ParseException e) {
                         throw new RuntimeException(App.getErrorMessage(e), e);
                     }
 
                     //txtInstrucFill.setText(sucScreenCCModel.getData().getSuccess_screen().getInstructions());
-                    if(!sucScreenCCModel.getData().getSuccess_screen().getInstructions().equals(Utils.BLANK)){
+                    if (!sucScreenCCModel.getData().getSuccess_screen().getInstructions().equals(Utils.BLANK)) {
                         txtInstrucFill.setText(Html.fromHtml(sucScreenCCModel.getData().getSuccess_screen().getInstructions()));
-                    }else{
+                    } else {
                         txtInstruc.setVisibility(View.GONE);
                         txtInstrucFill.setVisibility(View.GONE);
                         divider4.setVisibility(View.GONE);
@@ -322,11 +348,11 @@ public class CongratsActivity extends ToolbarActivity {
                     }
                     linDiscount.setVisibility(View.VISIBLE);*/
 
-                    SucScreenCCModel.Data.Success_screen.Credit credit= sucScreenCCModel.getData().getSuccess_screen().getCredit();
+                    SucScreenCCModel.Data.Success_screen.Credit credit = sucScreenCCModel.getData().getSuccess_screen().getCredit();
                     if (Integer.parseInt(credit.getCredit_used()) != 0) {
                         relCredit.setVisibility(View.VISIBLE);
                         txtCreditFill.setText("- " + StringUtility.getRupiahFormat(credit.getCredit_used()));
-                    }else{
+                    } else {
                         relCredit.setVisibility(View.GONE);
                     }
 
@@ -344,7 +370,7 @@ public class CongratsActivity extends ToolbarActivity {
                     }
                     //END OF CREDIT AND DISCOUNT PART===========================
 
-                }else{
+                } else {
                     Toast.makeText(CongratsActivity.this, getString(R.string.msg_wrong), Toast.LENGTH_LONG).show();
                 }
             }
@@ -359,7 +385,7 @@ public class CongratsActivity extends ToolbarActivity {
         });
     }
 
-    private void hideViewWhenReserve(){
+    private void hideViewWhenReserve() {
         relAd.setVisibility(View.GONE);
         relTax.setVisibility(View.GONE);
         linDiscount.setVisibility(View.GONE);
@@ -374,19 +400,18 @@ public class CongratsActivity extends ToolbarActivity {
         divider8.setVisibility(View.GONE);
     }
 
-    private void sendMixpanel(SucScreenCCModel sucScreenCCModel){
+    private void sendMixpanel(SucScreenCCModel sucScreenCCModel) {
         CommEventMixpanelModel commEventMixpanelModel = null;
         SucScreenCCModel.Data.Success_screen successScreen = sucScreenCCModel.getData().getSuccess_screen();
         SucScreenCCModel.Data.Success_screen.Event event = sucScreenCCModel.getData().getSuccess_screen().getEvent();
         SucScreenCCModel.Data.Success_screen.Summary.Product_list productList = successScreen.getSummary().getProduct_list().get(0);
 
-        if (productList.getTicket_type().equalsIgnoreCase(Common.TYPE_RESERVATION))
-        {
+        if (productList.getTicket_type().equalsIgnoreCase(Common.TYPE_RESERVATION)) {
             commEventMixpanelModel = new CommEventMixpanelModel(event.getTitle(), event.getVenue_name(), event.getLocation(), event.getStart_datetime_str(),
                     event.getEnd_datetime_str(), event.getTags(), event.getDescription(), productList.getName(), productList.getTicket_type(),
                     successScreen.getSummary().getTotal_price(), productList.getMax_buy(), successScreen.getSummary().getCreated_at(), productList.getNum_buy(),
                     successScreen.getSummary().getTotal_price(), "0", successScreen.getPayment_type(), Utils.BLANK, false);
-        }else{
+        } else {
             commEventMixpanelModel = new CommEventMixpanelModel(event.getTitle(), event.getVenue_name(), event.getLocation(), event.getStart_datetime_str(),
                     event.getEnd_datetime_str(), event.getTags(), event.getDescription(), productList.getName(), productList.getTicket_type(),
                     successScreen.getSummary().getTotal_price(), productList.getMax_buy(), successScreen.getSummary().getCreated_at(), Utils.BLANK,
@@ -400,13 +425,13 @@ public class CongratsActivity extends ToolbarActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if(!fromOrderList){
+        if (!fromOrderList) {
             Intent i = new Intent(CongratsActivity.this, MainActivity.class);
             //i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);
             finish();
-        }else {
+        } else {
             finish();
         }
     }

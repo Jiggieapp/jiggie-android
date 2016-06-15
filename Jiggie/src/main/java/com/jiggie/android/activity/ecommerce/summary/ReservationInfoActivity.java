@@ -115,7 +115,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     /*@Bind(R.id.lin_terms)
     LinearLayout linTerms;*/
 
-    String eventId, eventName, venueName, startTime, totalPrice, minDeposit;
+    String eventId, eventName, venueName, startTime, totalPrice, minDeposit, timezone;
     ArrayList<TermsItemView> arrTermItemView = new ArrayList<>();
     String is_new_card, cc_token_id = Utils.BLANK, cc_card_id, paymentType = Utils.BLANK, name_cc = Utils.BLANK;
     boolean is_verified;
@@ -214,6 +214,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         venueName = a.getStringExtra(Common.FIELD_VENUE_NAME);
         startTime = a.getStringExtra(Common.FIELD_STARTTIME);
         minDeposit = a.getStringExtra(Common.FIELD_MIN_DEPOSIT);
+        timezone = a.getStringExtra(Common.FIELD_EVENT_TIMEZONE);
         productSummary = a.getParcelableExtra(SummaryModel.Data.Product_summary.class.getName());
         eventDetail = a.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
         order_id = productSummary.getOrder_id();
@@ -278,8 +279,9 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
                     (eventDetail.getStart_datetime());
             final Date endDate = Common.ISO8601_DATE_FORMAT_UTC.parse
                     (eventDetail.getEnd_datetime());
-            String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format
-                    , Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));
+            /*String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format
+                    , Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));*/
+            String simpleDate = Utils.getTimeForEvent(startDate, endDate, timezone);
             txtEventInfo.setText(venueName);
             txtEventInfoDate.setText(simpleDate);
         } catch (ParseException e) {
