@@ -121,7 +121,6 @@ public class MoreFragment extends Fragment implements TabFragment, MoreTabListAd
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = this.rootView = inflater.inflate(R.layout.fragment_more, container, false);
-        ButterKnife.bind(this, view);
         return view;
     }
 
@@ -129,7 +128,6 @@ public class MoreFragment extends Fragment implements TabFragment, MoreTabListAd
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, this.rootView);
-        Utils.d(TAG, "onViewCreated");
         preDefine();
     }
 

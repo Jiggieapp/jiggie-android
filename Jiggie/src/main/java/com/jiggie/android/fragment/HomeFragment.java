@@ -349,12 +349,12 @@ public class HomeFragment extends Fragment
         }
     }
 
-    private void addLogoImage(){
+    private void addLogoImage() {
         int[] center = TooltipsManager.getCenterPoint(getActivity());
         ImageView imgLogo = new ImageView(getActivity());
         imgLogo.setImageDrawable(getResources().getDrawable(R.drawable.logo));
         RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(Utils.myPixel(getActivity(), 63), Utils.myPixel(getActivity(), 24));
-        param.leftMargin = center[0]-Utils.myPixel(getActivity(), 32);
+        param.leftMargin = center[0] - Utils.myPixel(getActivity(), 32);
         param.addRule(RelativeLayout.CENTER_VERTICAL);
         relPlace.addView(imgLogo, param);
 
@@ -569,10 +569,15 @@ public class HomeFragment extends Fragment
                         if (result.contains(res)) {
                             selectedItems.add(res);
                             latestSelectedItems.add(res);
+                            setSelected(holder, true, res, i);
+                        }
+                        else
+                        {
+                            setSelected(holder, false, res, i);
                         }
                         holder.checkView.setVisibility(View.GONE);
                         //onTagClick(holder);
-                        setSelected(holder, holder.checkView.getVisibility() != View.VISIBLE, res, i);
+                        //setSelected(holder, holder.checkView.getVisibility() != View.VISIBLE, res, i);
                         hasChanged = false;
 
                         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -828,55 +833,61 @@ public class HomeFragment extends Fragment
         }
         else
         {*/
-            if (position == CHAT_TAB) {
-                startFetchChat();
-            } else {
-                stopFetchChat();
-            }
+        if (position == 0) {
+            cityContainer.setVisibility(View.VISIBLE);
+        } else {
+            cityContainer.setVisibility(View.GONE);
+        }
 
-            if (position == CHAT_TAB) {
-                showToolbar();
-                //fab.startAnimation(makeOutAnimation);
-                fab.setVisibility(View.GONE);
-                //fabInvite.startAnimation(makeInAnimation);
-                fabInvite.setVisibility(View.VISIBLE);
-                bottomSheet.setVisibility(View.GONE);
-                SocialManager.isInSocial = false;
-            } else if (position == SOCIAL_TAB) {
-                showToolbar();
+        if (position == CHAT_TAB) {
+            startFetchChat();
+        } else {
+            stopFetchChat();
+        }
 
-                fab.setVisibility(View.GONE);
-                fabInvite.setVisibility(View.GONE);
+        if (position == CHAT_TAB) {
+            showToolbar();
+            //fab.startAnimation(makeOutAnimation);
+            fab.setVisibility(View.GONE);
+            //fabInvite.startAnimation(makeInAnimation);
+            fabInvite.setVisibility(View.VISIBLE);
+            bottomSheet.setVisibility(View.GONE);
+            SocialManager.isInSocial = false;
+        } else if (position == SOCIAL_TAB) {
+            showToolbar();
+
+            fab.setVisibility(View.GONE);
+            fabInvite.setVisibility(View.GONE);
 
 
-                TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_SOCIAL_TAB, false);
-                SocialManager.isInSocial = true;
-                SocialTabFragment sc = (SocialTabFragment) this.adapter.fragments[position];
-                sc.checkTooltipsInSug();
+            TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_SOCIAL_TAB, false);
+            SocialManager.isInSocial = true;
+            SocialTabFragment sc = (SocialTabFragment) this.adapter.fragments[position];
+            sc.checkTooltipsInSug();
 
-                //sc.refreshCard();
-                //Log.d("", "");
-                Utils.d(TAG, "socialtabfragment");
-                bottomSheet.setVisibility(View.GONE);
-            } else if (position == MORE_TAB) {
-                showToolbar();
-                fab.setVisibility(View.GONE);
-                fabInvite.setVisibility(View.GONE);
-                bottomSheet.setVisibility(View.GONE);
+            //sc.refreshCard();
+            //Log.d("", "");
+            Utils.d(TAG, "socialtabfragment");
+            bottomSheet.setVisibility(View.GONE);
+        } else if (position == MORE_TAB) {
+            showToolbar();
+            fab.setVisibility(View.GONE);
+            fabInvite.setVisibility(View.GONE);
+            bottomSheet.setVisibility(View.GONE);
 
-                //getMoreFragment().onTabSelected();
-            } else if(position == EVENT_TAB){
-                //fab.startAnimation(makeInAnimation);
-                fab.setVisibility(View.VISIBLE);
-                //fabInvite.startAnimation( makeOutAnimation);
-                fabInvite.setVisibility(View.GONE);
+            //getMoreFragment().onTabSelected();
+        } else if (position == EVENT_TAB) {
+            //fab.startAnimation(makeInAnimation);
+            fab.setVisibility(View.VISIBLE);
+            //fabInvite.startAnimation( makeOutAnimation);
+            fabInvite.setVisibility(View.GONE);
 
-                SocialManager.isInSocial = false;
-                bottomSheet.setVisibility(View.VISIBLE);
+            SocialManager.isInSocial = false;
+            bottomSheet.setVisibility(View.VISIBLE);
 
-                //adapter.onClick(position);
-                //getMoreFragment().onTabSelected();
-            }
+            //adapter.onClick(position);
+            //getMoreFragment().onTabSelected();
+        }
         //}
         //currentPosition = position;
         this.lastSelectedFragment = (TabFragment) this.adapter.getItem(position);
@@ -1237,8 +1248,7 @@ public class HomeFragment extends Fragment
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(getEventsFragment() != null)
-        {
+        if (getEventsFragment() != null) {
             outState.putInt("position", currentPosition);
             getFragmentManager().putFragment(outState, "eventsfragment", getEventsFragment());
             getFragmentManager().putFragment(outState, "socialtabfragment", getSocialTabFragment());

@@ -411,7 +411,6 @@ public class EventTabFragment extends Fragment
 
     private View getFailedView() {
         if (this.failedView == null) {
-
             //Added by Aga
             contentView2.setVisibility(View.VISIBLE);
             //-------------
