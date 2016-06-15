@@ -21,8 +21,9 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:popupTheme="@style/Theme.AppCompat"
             app:titleTextColor="@android:color/white"
+            app:theme="@style/Theme.AppCompat.Light"
             >
 
             <RelativeLayout
@@ -53,6 +54,7 @@
                     android:visibility="visible" />-->
 
                 <include layout="@layout/action_city"/>
+
             </RelativeLayout>
 
         </android.support.v7.widget.Toolbar>
