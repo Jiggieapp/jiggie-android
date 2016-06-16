@@ -246,4 +246,16 @@ public class EventTabListAdapter
     public interface ViewSelectedListener {
         void onViewSelected(EventModel.Data.Events event);
     }
+
+    /*@Override
+    public int getItemViewType(int position) {
+        if (position == 0)
+            return HEADER;
+        else return BODY;
+    }*/
+
+    @Override
+    public long getItemId(int position) {
+        return super.getItemId(position);
+    }
 }

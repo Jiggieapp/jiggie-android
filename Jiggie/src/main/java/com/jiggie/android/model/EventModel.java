@@ -75,7 +75,8 @@ public class EventModel {
             Integer lowest_price;
             String fullfillment_type;
             String tz;
-            boolean isEvent;
+            String themes_id = "";
+            public boolean isEvent;
 
             public String getTz() {
                 return tz;
@@ -117,6 +118,45 @@ public class EventModel {
                 this.description = in.readString();
                 this.lowest_price = in.readInt();
                 this.fullfillment_type = in.readString();
+                this.themes_id = in.readString();
+            }
+
+            /*public Events(String _id, String title, String venue_name, String start_datetime, String end_datetime, String special_type, ArrayList<String> tags){
+                this._id = _id;
+                this.title = title;
+                this.venue_name = venue_name;
+                this.start_datetime = start_datetime;
+                this.end_datetime = end_datetime;
+                this.special_type = special_type;
+                this.tags = tags;
+            }*/
+
+            public Events(String _id, String title, String venue_name
+                    , String start_datetime, String end_datetime
+                    , String special_type, ArrayList<String> tags
+                    , String description, String venue_id, String fullfillment_type
+                    , int likes, String date_day
+                    , int lowest_price, String start_date, String tz, ArrayList<String> photos, String themes_id){
+                this._id = _id;
+                this.title = title;
+                this.venue_name = venue_name;
+                this.start_datetime = start_datetime;
+                this.end_datetime = end_datetime;
+                this.special_type = special_type;
+                this.tags = tags;
+                this.description = description;
+                //this.venue_id = venue_id;
+                this.fullfillment_type = fullfillment_type;
+                this.likes = likes;
+                this.date_day = date_day;
+                this.lowest_price = lowest_price;
+                this.start_datetime = start_date;
+                this.tz = tz;
+                this.photos = photos;
+                this.themes_id = themes_id;
+
+                //wandy
+                isEvent = true;
             }
 
             public Events(Theme theme)
@@ -137,6 +177,7 @@ public class EventModel {
                 photos.add(theme.image);
                 this.lowest_price = 0;
                 //this.fullfillment_type = in.readString();
+                isEvent = false;
             }
 
             @Override
@@ -169,6 +210,7 @@ public class EventModel {
                 dest.writeString(this.description);
                 dest.writeInt(this.lowest_price);
                 dest.writeString(this.fullfillment_type);
+                dest.writeString(this.themes_id);
             }
 
             public static final Creator<Events> CREATOR = new Creator<Events>() {

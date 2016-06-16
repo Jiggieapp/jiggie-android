@@ -486,6 +486,11 @@ public class EventsFragment extends Fragment
                     }
                 }
             }
+
+            /*for(EventModel.Data.Events themeEvent : todayEvents)
+            {
+                Utils.d(TAG, themeEvent.getTitle() + " " + themeEvent.isEvent);
+            }*/
             //end of wandy
 
             for (EventModel.Data.Events tempEvent : getEvents()) {
@@ -530,6 +535,11 @@ public class EventsFragment extends Fragment
             //timeTab.setVisibility(View.GONE);
             viewPagerEvents.setPagingEnabled(false);
             hideTab();
+        }
+
+        for(EventModel.Data.Events themeEvent : todayEvents)
+        {
+            Utils.d(TAG, themeEvent.getTitle() + " " + themeEvent.isEvent);
         }
 
         todayFragment.onEvent(todayEvents);
