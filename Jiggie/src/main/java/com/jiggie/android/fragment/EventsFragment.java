@@ -313,6 +313,7 @@ public class EventsFragment extends Fragment
         ArrayList<EventModel.Data.Events> message = eventModel.getData().getEvents();
         int size = message.size();
         setEvents(message);
+        setThemes(eventModel.getData().getThemes());
 
         boolean isExpanded = false;
         //if(searchText != null  /* && !searchText.isEmpty()*/)
@@ -445,6 +446,17 @@ public class EventsFragment extends Fragment
         EventManager.events = events;
     }
 
+    private ArrayList<EventModel.Data.Theme> themes;
+
+    public ArrayList<EventModel.Data.Theme> getThemes() {
+        return themes;
+    }
+
+    public void setThemes(ArrayList<EventModel.Data.Theme> themes) {
+        this.themes = themes;
+    }
+
+
     private void filter(String searchText, boolean isSearch) {
         ArrayList<EventModel.Data.Events> todayEvents = new ArrayList<>();
         ArrayList<EventModel.Data.Events> tomorrowEvents = new ArrayList<>();
@@ -455,6 +467,54 @@ public class EventsFragment extends Fragment
                 searchText = "";
             //timeTab.setVisibility(View.VISIBLE);
             searchText = searchText.toLowerCase();
+
+
+            //wandy16-06-2016
+            for(EventModel.Data.Theme themeEvent : getThemes())
+            {
+                if (themeEvent.name.toLowerCase().contains(searchText)
+                        || searchText.equals("")) {
+                    EventModel.Data.Events tempEvent = new EventModel.Data.Events(themeEvent);
+                    if (!isSearch) {
+                        if(themeEvent.status.equalsIgnoreCase(Utils.DATE_TODAY))
+                        {
+                            todayEvents.add(tempEvent);
+                        }
+                        else if(themeEvent.status.equalsIgnoreCase(Utils.DATE_TOMORROW))
+                        {
+                            tomorrowEvents.add(tempEvent);
+                        }
+                        else if(themeEvent.status.equalsIgnoreCase(Utils.DATE_UPCOMING))
+                        {
+                            upcomingEvents.add(tempEvent);
+                        }
+                    }
+                    else {
+                        hideTab();
+                        switch (currentPosition) {
+                            case 0:
+                                todayEvents.add(tempEvent);
+                                //todayFragment.onEvent(todayEvents);
+                                break;
+                            case 1:
+                                tomorrowEvents.add(tempEvent);
+                                //tomorrowFragment.onEvent(tomorrowEvents);
+                                break;
+                            case 2:
+                                upcomingEvents.add(tempEvent);
+                                //upcomingFragment.onEvent(upcomingEvents);
+                                break;
+                        }
+                    }
+                }
+            }
+
+            /*for(EventModel.Data.Events themeEvent : todayEvents)
+            {
+                Utils.d(TAG, themeEvent.getTitle() + " " + themeEvent.isEvent);
+            }*/
+            //end of wandy
+
             for (EventModel.Data.Events tempEvent : getEvents()) {
                 //new Date(event.getDate_day());
                 if (tempEvent.getTitle().toLowerCase().contains(searchText)
@@ -464,6 +524,7 @@ public class EventsFragment extends Fragment
                     if (!isSearch) {
                         showTab();
                         final String diffDays = Utils.calculateTime(tempEvent.getStart_datetime());
+                        tempEvent.isEvent = true;
                         if (diffDays.equals(Utils.DATE_TODAY)) {
                             todayEvents.add(tempEvent);
                         } else if (diffDays.equals(Utils.DATE_TOMORROW)) {
@@ -498,6 +559,7 @@ public class EventsFragment extends Fragment
             viewPagerEvents.setPagingEnabled(false);
             hideTab();
         }
+
 
         todayFragment.onEvent(todayEvents);
         tomorrowFragment.onEvent(tomorrowEvents);

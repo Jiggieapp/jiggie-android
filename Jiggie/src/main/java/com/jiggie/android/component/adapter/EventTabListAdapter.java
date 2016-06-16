@@ -40,7 +40,7 @@ import butterknife.ButterKnife;
  * Created by rangg on 03/11/2015.Re
  */
 public class EventTabListAdapter
-        extends RecyclerView.Adapter<EventTabListAdapter.ViewHolder> {
+        extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final Fragment fragment;
     private final ViewSelectedListener listener;
     private final ArrayList<EventModel.Data.Events> items;
@@ -72,75 +72,82 @@ public class EventTabListAdapter
 
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         this.context = parent.getContext();
-        return new ViewHolder(LayoutInflater.from(this.context).inflate(R.layout.item_event, parent, false), this.listener);
+        if(viewType == 1)
+            return new EventsViewHolder(LayoutInflater.from(this.context).inflate(R.layout.item_event, parent, false), this.listener);
+        else
+            return new ThemesViewHolder(LayoutInflater.from(this.context).inflate(R.layout.item_themes, parent, false), this.listener);
+
     }
 
     private EventTagAdapter eventTagAdapter;
 
     //Added by Aga
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        try {
-            final EventModel.Data.Events item = this.items.get(position);
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        final EventModel.Data.Events item = this.items.get(position);
+        if (viewHolder instanceof EventsViewHolder) {
+            EventsViewHolder holder = (EventsViewHolder) viewHolder;
+            try {
 
-            int sizePhoto = item.getPhotos().size();
-            String imageUrl = null;
-            if (sizePhoto > 0) {
-                imageUrl = item.getPhotos().get(0);
-            } else {
-                if (imageUrl == null) {
-                    imageUrl = String.format("%simages/event/%s", VolleyHandler.getInstance().getServerHost(), item.get_id());
-                    //item.setImageUrl(imageUrl);
+
+                int sizePhoto = item.getPhotos().size();
+                String imageUrl = null;
+                if (sizePhoto > 0) {
+                    imageUrl = item.getPhotos().get(0);
+                } else {
+                    if (imageUrl == null) {
+                        imageUrl = String.format("%simages/event/%s", VolleyHandler.getInstance().getServerHost(), item.get_id());
+                        //item.setImageUrl(imageUrl);
+                    }
                 }
-            }
 
-            //String imageUrl = String.format("%simages/event/%s", VolleyHandler.getInstance().getServerHost(), item.get_id());
+                //String imageUrl = String.format("%simages/event/%s", VolleyHandler.getInstance().getServerHost(), item.get_id());
 
-            holder.event = item;
-            holder.txtTitle.setText(item.getTitle());
+                holder.event = item;
+                holder.txtTitle.setText(item.getTitle());
 
-            String[] tags = new String[item.getTags().size()];
-            item.getTags().toArray(tags);
+                String[] tags = new String[item.getTags().size()];
+                item.getTags().toArray(tags);
 
-            //---------
-            StringBuilder builder = new StringBuilder();
-            for(String s : tags) {
-                builder.append(s);
-            }
-            String d = builder.toString();
-            //-----------
+                //---------
+                StringBuilder builder = new StringBuilder();
+                for (String s : tags) {
+                    builder.append(s);
+                }
+                String d = builder.toString();
+                //-----------
 
-            this.eventTagAdapter = new EventTagAdapter(fragment.getActivity(), R.layout.item_event_tag);
+                this.eventTagAdapter = new EventTagAdapter(fragment.getActivity(), R.layout.item_event_tag);
 
-            eventTagAdapter.setTags(tags);
-            LinearLayoutManager layoutManager = new LinearLayoutManager(fragment.getContext()
-                    , LinearLayoutManager.HORIZONTAL, false);
-            holder.tagListView.setLayoutManager(layoutManager);
-            holder.tagListView.setAdapter(eventTagAdapter);
-            //holder.eventTagAdapter.notifyDataSetChanged();
-            holder.txtVenueName.setText(item.getVenue_name());
-            Glide
-                    .with(this.fragment)
-                    .load(imageUrl)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(holder.image);
+                eventTagAdapter.setTags(tags);
+                LinearLayoutManager layoutManager = new LinearLayoutManager(fragment.getContext()
+                        , LinearLayoutManager.HORIZONTAL, false);
+                holder.tagListView.setLayoutManager(layoutManager);
+                holder.tagListView.setAdapter(eventTagAdapter);
+                //holder.eventTagAdapter.notifyDataSetChanged();
+                holder.txtVenueName.setText(item.getVenue_name());
+                Glide
+                        .with(this.fragment)
+                        .load(imageUrl)
+                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                        .into(holder.image);
 
-            final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(item.getStart_datetime());
-            final Date endDate = Common.ISO8601_DATE_FORMAT_UTC.parse(item.getEnd_datetime());
+                final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(item.getStart_datetime());
+                final Date endDate = Common.ISO8601_DATE_FORMAT_UTC.parse(item.getEnd_datetime());
             /*String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format
                     , Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));*/
-            String simpleDate = Utils.getTimeForEvent(startDate, endDate, item.getTz());
+                String simpleDate = Utils.getTimeForEvent(startDate, endDate, item.getTz());
 
-            holder.txtDate.setText(simpleDate);
+                holder.txtDate.setText(simpleDate);
 
-            if (item.getLikes() > 0) {
-                holder.relLike.setVisibility(View.VISIBLE);
-                holder.txtCountLike.setText(String.valueOf(item.getLikes()));
-            } else {
-                holder.relLike.setVisibility(View.GONE);
-            }
+                if (item.getLikes() > 0) {
+                    holder.relLike.setVisibility(View.VISIBLE);
+                    holder.txtCountLike.setText(String.valueOf(item.getLikes()));
+                } else {
+                    holder.relLike.setVisibility(View.GONE);
+                }
 
             /*if (StringUtility.isEquals(EventManager.FullfillmentTypes.RESERVATION, fullfillmentType, true)) {
                 txtExternalSite.setVisibility(View.GONE);
@@ -152,45 +159,59 @@ public class EventTabListAdapter
                 txtExternalSite.setVisibility(View.GONE);
                 txtBookNow.setText(getResources().getString(R.string.book_now));
             }*/
-            final String fullfillmentType = item.getFullfillment_type();
-            final boolean isBookable = (StringUtility.isEquals(EventManager.FullfillmentTypes.RESERVATION, fullfillmentType, true)
-                    || StringUtility.isEquals(EventManager.FullfillmentTypes.PURCHASE, fullfillmentType, true)
-                    || (StringUtility.isEquals(EventManager.FullfillmentTypes.TICKET, fullfillmentType, true))); //free (tickets, tables, purchase)
-            if(item.getLowest_price() == 0 && isBookable)
-            {
-                holder.txtPriceTitle.setVisibility(View.VISIBLE);
-                holder.txtPriceFill.setVisibility(View.VISIBLE);
-                holder.txtPriceFill.setText(context.getResources().getString(R.string.free));
-            }
-            else if(item.getLowest_price() > 0 && isBookable)
-            {
-                holder.txtPriceTitle.setShadowLayer(1.6f, 1.5f, 1.3f, context.getResources().getColor(android.R.color.black));
-                holder.txtPriceFill.setShadowLayer(1.6f, 1.5f, 1.3f, context.getResources().getColor(android.R.color.black));
-                holder.txtPriceTitle.setVisibility(View.VISIBLE);
-                holder.txtPriceFill.setVisibility(View.VISIBLE);
-                try {
-                    //String str = String.format(Locale.US, "Rp %,d", item.getLowest_price());
-                    String str = StringUtility.getRupiahFormat(item.getLowest_price().toString());
-                    holder.txtPriceFill.setText(str);
+                final String fullfillmentType = item.getFullfillment_type();
+                final boolean isBookable = (StringUtility.isEquals(EventManager.FullfillmentTypes.RESERVATION, fullfillmentType, true)
+                        || StringUtility.isEquals(EventManager.FullfillmentTypes.PURCHASE, fullfillmentType, true)
+                        || (StringUtility.isEquals(EventManager.FullfillmentTypes.TICKET, fullfillmentType, true))); //free (tickets, tables, purchase)
+                if (item.getLowest_price() == 0 && isBookable) {
+                    holder.txtPriceTitle.setVisibility(View.VISIBLE);
+                    holder.txtPriceFill.setVisibility(View.VISIBLE);
+                    holder.txtPriceFill.setText(context.getResources().getString(R.string.free));
+                } else if (item.getLowest_price() > 0 && isBookable) {
+                    holder.txtPriceTitle.setShadowLayer(1.6f, 1.5f, 1.3f, context.getResources().getColor(android.R.color.black));
+                    holder.txtPriceFill.setShadowLayer(1.6f, 1.5f, 1.3f, context.getResources().getColor(android.R.color.black));
+                    holder.txtPriceTitle.setVisibility(View.VISIBLE);
+                    holder.txtPriceFill.setVisibility(View.VISIBLE);
+                    try {
+                        //String str = String.format(Locale.US, "Rp %,d", item.getLowest_price());
+                        String str = StringUtility.getRupiahFormat(item.getLowest_price().toString());
+                        holder.txtPriceFill.setText(str);
+                    } catch (Exception e) {
+                        Utils.d(TAG, "exception " + e.toString());
+                    }
+                } else {
+                    holder.txtPriceTitle.setVisibility(View.GONE);
+                    holder.txtPriceFill.setVisibility(View.GONE);
                 }
-                catch (Exception e)
-                {
-                    Utils.d(TAG, "exception " + e.toString());
-                }
-            }
-            else
-            {
-                holder.txtPriceTitle.setVisibility(View.GONE);
-                holder.txtPriceFill.setVisibility(View.GONE);
-            }
 
             /*if(position==0){
                 Utils.initTooltipWithPoint(fragment.getActivity(), new Point(Utils.getCenterPoint(fragment.getActivity())[0], Utils.getCenterPoint(fragment.getActivity())[1]), fragment.getActivity().getString(R.string.tooltip_event_list), Utils.myPixel(fragment.getActivity(), 320));
             }*/
 
-        } catch (ParseException e) {
-            throw new RuntimeException(App.getErrorMessage(e), e);
+            } catch (ParseException e) {
+                throw new RuntimeException(App.getErrorMessage(e), e);
+            }
         }
+        else if(viewHolder instanceof ThemesViewHolder)
+        {
+            ThemesViewHolder holder = (ThemesViewHolder) viewHolder;
+            try
+            {
+                holder.txtTitle.setText(item.getTitle());
+                Glide
+                        .with(this.fragment)
+                        .load(items.get(position).getPhotos().get(0))
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .into(holder.image);
+                holder.txtDescription.setText(item.getDescription());
+
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+
     }
     //------------------------------
 
@@ -199,7 +220,7 @@ public class EventTabListAdapter
         return this.items.size();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    static class EventsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @Bind(R.id.hListView)
         RecyclerView tagListView;
         @Bind(R.id.txtEventName)
@@ -226,7 +247,7 @@ public class EventTabListAdapter
         private ViewSelectedListener listener;
         private EventModel.Data.Events event;
 
-        public ViewHolder(View itemView, ViewSelectedListener listener) {
+        public EventsViewHolder(View itemView, ViewSelectedListener listener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 
@@ -243,7 +264,45 @@ public class EventTabListAdapter
         }
     }
 
+    static class ThemesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        @Bind(R.id.txtEventName)
+        TextView txtTitle;
+        @Bind(R.id.txtDescription)
+        TextView txtDescription;
+        @Bind(R.id.image)
+        ImageView image;
+
+        //private EventTagArrayAdapter eventTagAdapter;
+        private ViewSelectedListener listener;
+        private EventModel.Data.Events event;
+
+        public ThemesViewHolder(View itemView, ViewSelectedListener listener) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+
+            /*if ((this.listener = listener) != null)
+                itemView.setOnClickListener(this);*/
+        }
+
+        @Override
+        public void onClick(View v) {
+            /*if (listener != null) {
+                listener.onViewSelected(this.event);
+                TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_EVENT_LIST, false);
+            }*/
+        }
+    }
+
     public interface ViewSelectedListener {
         void onViewSelected(EventModel.Data.Events event);
     }
+
+    @Override
+    public int getItemViewType(int position) {
+        Utils.d(TAG, items.get(position).getTitle() + " " + items.get(position).isEvent);
+        if (items.get(position).isEvent)
+            return 1;
+        else return 0;
+    }
+
 }

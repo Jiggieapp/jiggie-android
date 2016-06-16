@@ -31,6 +31,34 @@ public class EventModel {
             this.events = events;
         }
 
+        ArrayList<Theme> themes;
+
+        public ArrayList<Theme> getThemes() {
+            return themes;
+        }
+
+        public void setThemes(ArrayList<Theme> themes) {
+            this.themes = themes;
+        }
+
+        public static final class Theme {
+            public String _id;
+            public String name;
+            public String desc;
+            public String image;
+            public String day;
+            public String status;
+
+            public Theme(String _id, String name, String desc, String image, String day, String status){
+                this._id = _id;
+                this.name = name;
+                this.desc = desc;
+                this.image = image;
+                this.day = day;
+                this.status = status;
+            }
+        }
+
         public static class Events implements Parcelable {
             String _id;
             int rank;
@@ -47,6 +75,8 @@ public class EventModel {
             Integer lowest_price;
             String fullfillment_type;
             String tz;
+            String themes_id = "";
+            public boolean isEvent;
 
             public String getTz() {
                 return tz;
@@ -88,6 +118,66 @@ public class EventModel {
                 this.description = in.readString();
                 this.lowest_price = in.readInt();
                 this.fullfillment_type = in.readString();
+                this.themes_id = in.readString();
+            }
+
+            /*public Events(String _id, String title, String venue_name, String start_datetime, String end_datetime, String special_type, ArrayList<String> tags){
+                this._id = _id;
+                this.title = title;
+                this.venue_name = venue_name;
+                this.start_datetime = start_datetime;
+                this.end_datetime = end_datetime;
+                this.special_type = special_type;
+                this.tags = tags;
+            }*/
+
+            public Events(String _id, String title, String venue_name
+                    , String start_datetime, String end_datetime
+                    , String special_type, ArrayList<String> tags
+                    , String description, String venue_id, String fullfillment_type
+                    , int likes, String date_day
+                    , int lowest_price, String start_date, String tz, ArrayList<String> photos, String themes_id){
+                this._id = _id;
+                this.title = title;
+                this.venue_name = venue_name;
+                this.start_datetime = start_datetime;
+                this.end_datetime = end_datetime;
+                this.special_type = special_type;
+                this.tags = tags;
+                this.description = description;
+                //this.venue_id = venue_id;
+                this.fullfillment_type = fullfillment_type;
+                this.likes = likes;
+                this.date_day = date_day;
+                this.lowest_price = lowest_price;
+                this.start_datetime = start_date;
+                this.tz = tz;
+                this.photos = photos;
+                this.themes_id = themes_id;
+
+                //wandy
+                isEvent = true;
+            }
+
+            public Events(Theme theme)
+            {
+                this._id = theme._id;
+                //this.rank = in.readInt();
+                this.title = theme.name;
+                this.venue_name = "";
+                //this.start_datetime = in.readString();
+                //this.end_datetime = in.readString();
+                //this.special_type = in.readString();
+                this.tags = new ArrayList<>();
+                //this.likes = in.readInt();
+                //this.date_day = in.readString();
+                //this.photos = in.readArrayList(null);
+                this.description = theme.desc;
+                this.photos = new ArrayList<>();
+                photos.add(theme.image);
+                this.lowest_price = 0;
+                //this.fullfillment_type = in.readString();
+                isEvent = false;
             }
 
             @Override
@@ -120,6 +210,7 @@ public class EventModel {
                 dest.writeString(this.description);
                 dest.writeInt(this.lowest_price);
                 dest.writeString(this.fullfillment_type);
+                dest.writeString(this.themes_id);
             }
 
             public static final Creator<Events> CREATOR = new Creator<Events>() {
@@ -222,6 +313,7 @@ public class EventModel {
                 this.photos = photos;
             }
         }
+
 
     }
 

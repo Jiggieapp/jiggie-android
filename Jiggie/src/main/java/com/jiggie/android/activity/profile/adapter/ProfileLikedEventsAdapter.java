@@ -129,8 +129,7 @@ public class ProfileLikedEventsAdapter extends RecyclerView.Adapter<RecyclerView
             ViewHolderHeader holderHeader = (ViewHolderHeader) typeHolder;
             holderHeader.position = position;
 
-            if(!isMe)
-            {
+            if (!isMe) {
                 if (memberInfo.getBadge_booking()) {
                     holderHeader.imgHasTable.setVisibility(View.VISIBLE);
                     holderHeader.imgHasTable.bringToFront();
@@ -150,20 +149,16 @@ public class ProfileLikedEventsAdapter extends RecyclerView.Adapter<RecyclerView
             holderHeader.txtUser.setText(((TextUtils.isEmpty(age)) || (age.equals("0"))) ? name : String.format("%s, %s", name, age));
 
 
-/*if (isMe) {
+            /*if (isMe) {
                 holderHeader.btnEdit.setVisibility(View.VISIBLE);
             } else {
                 holderHeader.btnEdit.setVisibility(View.GONE);
             }*/
-            if(getItemCount() > 1)
-            {
+            if (getItemCount() > 1) {
                 Utils.d(TAG, "isMe " + isMe);
-                if(isMe)
-                {
+                if (isMe) {
                     holderHeader.lblUserEvent.setText(context.getResources().getString(R.string.your_event));
-                }
-                else
-                {
+                } else {
                     holderHeader.lblUserEvent.setText(
                             context.getResources().getString(R.string.user_event, memberInfo.getFirst_name()));
                 }
@@ -171,12 +166,9 @@ public class ProfileLikedEventsAdapter extends RecyclerView.Adapter<RecyclerView
             }
 
             final String location = memberInfo.getLocation();
-            if(location.isEmpty() || location.equalsIgnoreCase("n/a"))
-            {
+            if (location.isEmpty() || location.equalsIgnoreCase("n/a")) {
                 holderHeader.lblLocation.setVisibility(View.GONE);
-            }
-            else
-            {
+            } else {
                 holderHeader.lblLocation.setText(location);
                 holderHeader.lblLocation.setVisibility(View.VISIBLE);
             }
@@ -267,9 +259,7 @@ public class ProfileLikedEventsAdapter extends RecyclerView.Adapter<RecyclerView
         }
     }
 
-
-    public interface OnEventContainerClick
-    {
+    public interface OnEventContainerClick {
         public void onEventContainerClick(final String eventId);
     }
 
