@@ -470,18 +470,36 @@ public class EventsFragment extends Fragment
             {
                 if (themeEvent.name.toLowerCase().contains(searchText)
                         || searchText.equals("")) {
+                    EventModel.Data.Events tempEvent = new EventModel.Data.Events(themeEvent);
                     if (!isSearch) {
                         if(themeEvent.status.equalsIgnoreCase(Utils.DATE_TODAY))
                         {
-                            todayEvents.add(new EventModel.Data.Events(themeEvent));
+                            todayEvents.add(tempEvent);
                         }
                         else if(themeEvent.status.equalsIgnoreCase(Utils.DATE_TOMORROW))
                         {
-                            tomorrowEvents.add(new EventModel.Data.Events(themeEvent));
+                            tomorrowEvents.add(tempEvent);
                         }
                         else if(themeEvent.status.equalsIgnoreCase(Utils.DATE_UPCOMING))
                         {
-                            upcomingEvents.add(new EventModel.Data.Events(themeEvent));
+                            upcomingEvents.add(tempEvent);
+                        }
+                    }
+                    else {
+                        hideTab();
+                        switch (currentPosition) {
+                            case 0:
+                                todayEvents.add(tempEvent);
+                                //todayFragment.onEvent(todayEvents);
+                                break;
+                            case 1:
+                                tomorrowEvents.add(tempEvent);
+                                //tomorrowFragment.onEvent(tomorrowEvents);
+                                break;
+                            case 2:
+                                upcomingEvents.add(tempEvent);
+                                //upcomingFragment.onEvent(upcomingEvents);
+                                break;
                         }
                     }
                 }
@@ -502,6 +520,7 @@ public class EventsFragment extends Fragment
                     if (!isSearch) {
                         showTab();
                         final String diffDays = Utils.calculateTime(tempEvent.getStart_datetime());
+                        tempEvent.isEvent = true;
                         if (diffDays.equals(Utils.DATE_TODAY)) {
                             todayEvents.add(tempEvent);
                         } else if (diffDays.equals(Utils.DATE_TOMORROW)) {
@@ -537,10 +556,6 @@ public class EventsFragment extends Fragment
             hideTab();
         }
 
-        for(EventModel.Data.Events themeEvent : todayEvents)
-        {
-            Utils.d(TAG, themeEvent.getTitle() + " " + themeEvent.isEvent);
-        }
 
         todayFragment.onEvent(todayEvents);
         tomorrowFragment.onEvent(tomorrowEvents);
