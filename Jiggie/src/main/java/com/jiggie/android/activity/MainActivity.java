@@ -307,8 +307,7 @@ public class MainActivity extends AppCompatActivity
             fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
         final Fragment fragment = getHomeFragment();
-        fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
-
+        fragmentManager.beginTransaction().replace(R.id.container, fragment).commitAllowingStateLoss();
     }
 
     @Override
