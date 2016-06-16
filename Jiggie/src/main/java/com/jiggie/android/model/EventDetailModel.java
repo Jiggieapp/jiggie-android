@@ -149,7 +149,7 @@ public class EventDetailModel {
             String description;
             String title;
             ArrayList<String> tags;
-
+            String tz;
             ArrayList<GuestViewed> guests_viewed;
             Venue venue;
 
@@ -165,9 +165,17 @@ public class EventDetailModel {
                 this.lowest_price = lowest_price;
             }
 
+            public String getTz() {
+                return tz;
+            }
+
+            public void setTz(String tz) {
+                this.tz = tz;
+            }
+
             public EventDetail(String _id, String event_id, String start_datetime, String end_datetime, String venue_id, String venue_name, String start_datetime_str, String end_datetime_str,
                                String fullfillment_type, String fullfillment_value, ArrayList<String> photos, String description, String title, ArrayList<String> tags,
-                               ArrayList<GuestViewed> guests_viewed, Venue venue, boolean is_liked, int likes, int lowest_price){
+                               ArrayList<GuestViewed> guests_viewed, Venue venue, boolean is_liked, int likes, int lowest_price, String tz){
                 this._id = _id;
                 this.event_id = event_id;
                 this.start_datetime = start_datetime;
@@ -187,6 +195,7 @@ public class EventDetailModel {
                 this.is_liked = is_liked;
                 this.likes = likes;
                 this.lowest_price = lowest_price;
+                this.tz = tz;
             }
 
             public EventDetail()
