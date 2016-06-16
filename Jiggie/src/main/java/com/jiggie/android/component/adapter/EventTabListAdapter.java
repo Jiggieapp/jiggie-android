@@ -254,8 +254,4 @@ public class EventTabListAdapter
         else return BODY;
     }*/
 
-    @Override
-    public long getItemId(int position) {
-        return super.getItemId(position);
-    }
 }
