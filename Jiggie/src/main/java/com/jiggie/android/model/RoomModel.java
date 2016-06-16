@@ -6,41 +6,68 @@ import com.jiggie.android.component.Utils;
  * Created by LTE on 6/15/2016.
  */
 public class RoomModel {
-    public Room room;
+    public String key;
+    public Info info;
+    public long type;
 
-    public RoomModel(){
-
+    public RoomModel(String key, Info info, long type){
+        this.key = key;
+        this.info = info;
+        this.type = type;
     }
 
-    public RoomModel(Room room){
-        this.room = room;
+    public String getKey() {
+        return key;
     }
 
-    public Room getRoom() {
-        return room;
+    public Info getInfo() {
+        return info;
     }
 
-    public static class Room {
-        public final String id;
-        public final String type;
-        public final String name;
+    public long getType() {
+        return type;
+    }
 
-        public Room(String id, String type, String name){
-            this.id = id;
-            this.type = type;
+    public static class Info {
+        public String name;
+        public String avatar;
+        public String event;
+        //public String identifier;
+        public String last_message;
+        public long created_at;
+        public long updated_at;
+
+        public Info(String name, String avatar, String event, String last_message, long created_at, long updated_at){
             this.name = name;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public String getType() {
-            return type;
+            this.avatar = avatar;
+            this.event = event;
+            this.last_message = last_message;
+            this.created_at = created_at;
+            this.updated_at = updated_at;
         }
 
         public String getName() {
             return name;
+        }
+
+        public String getAvatar() {
+            return avatar;
+        }
+
+        public String getEvent() {
+            return event;
+        }
+
+        public String getLast_message() {
+            return last_message;
+        }
+
+        public long getCreated_at() {
+            return created_at;
+        }
+
+        public long getUpdated_at() {
+            return updated_at;
         }
     }
 }
