@@ -566,11 +566,13 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     public void onEvent(EventDetailModel message) {
         if (message.getFrom().equalsIgnoreCase(TAG)) {
             try {
+                timezone = "";
                 eventDetail = message.getData().getEvents_detail();
                 event_description = eventDetail.getDescription();
                 App.getInstance().trackMixPanelViewEventDetail("View Event Details", eventDetail);
                 elementContainers.setVisibility(View.VISIBLE);
                 elementContainers2.setVisibility(View.VISIBLE);
+                timezone = message.getData().getEvents_detail().getTz();
 
                 if (event_name == null) {
                     super.setToolbarTitle(Utils.BLANK, false);
