@@ -406,6 +406,7 @@ public class HomeFragment extends Fragment
             //MemberSettingResultModel memberSettingModel = AccountManager.loadMemberSetting();
 
             final String experiences = TextUtils.join(",", selectedItems.toArray(new String[this.selectedItems.size()]));
+            Utils.d(TAG, "experiences " + experiences);
             memberSettingModel.setExperiences(experiences);
             //memberSettingModel.getData().getMembersettings().setExperiences(selectedItems);
             showProgressDialog();
