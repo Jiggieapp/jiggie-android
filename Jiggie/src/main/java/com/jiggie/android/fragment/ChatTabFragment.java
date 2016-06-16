@@ -229,8 +229,13 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
 
     public void onEvent(ChatListModel message){
         getInstance().adapter.clear();
-        for (int i = 0; i < message.getData().getChat_lists().size(); i++)
-            getInstance().adapter.add(message.getData().getChat_lists().get(i));
+        if(message != null && message.getData() != null && message.getData().getChat_lists() != null
+                && message.getData().getChat_lists().size() > 0)
+        {
+            for (int i = 0; i < message.getData().getChat_lists().size(); i++)
+                getInstance().adapter.add(message.getData().getChat_lists().get(i));
+        }
+
         isLoading = false;
         if (getContext() != null) {
             getEmptyView().setVisibility(getInstance().adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);

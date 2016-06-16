@@ -303,12 +303,16 @@ public class EventsFragment extends Fragment
 
     //Added by Aga
     public void onEvent(EventModel eventModel) {
-        if(eventModel != null && eventModel.getData() != null && eventModel.getData().getEvents().size() > 0)
+        /*if(eventModel != null && eventModel.getData() != null && eventModel.getData().getEvents().size() > 0)
         {
             ArrayList<EventModel.Data.Events> message = eventModel.getData().getEvents();
             int size = message.size();
             setEvents(message);
-        }
+        }*/
+
+        ArrayList<EventModel.Data.Events> message = eventModel.getData().getEvents();
+        int size = message.size();
+        setEvents(message);
 
         boolean isExpanded = false;
         //if(searchText != null  /* && !searchText.isEmpty()*/)
