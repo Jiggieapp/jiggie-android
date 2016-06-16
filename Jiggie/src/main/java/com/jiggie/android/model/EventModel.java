@@ -31,6 +31,34 @@ public class EventModel {
             this.events = events;
         }
 
+        ArrayList<Theme> themes;
+
+        public ArrayList<Theme> getThemes() {
+            return themes;
+        }
+
+        public void setThemes(ArrayList<Theme> themes) {
+            this.themes = themes;
+        }
+
+        public static final class Theme {
+            public String _id;
+            public String name;
+            public String desc;
+            public String image;
+            public String day;
+            public String status;
+
+            public Theme(String _id, String name, String desc, String image, String day, String status){
+                this._id = _id;
+                this.name = name;
+                this.desc = desc;
+                this.image = image;
+                this.day = day;
+                this.status = status;
+            }
+        }
+
         public static class Events implements Parcelable {
             String _id;
             int rank;
@@ -47,6 +75,7 @@ public class EventModel {
             Integer lowest_price;
             String fullfillment_type;
             String tz;
+            boolean isEvent;
 
             public String getTz() {
                 return tz;
@@ -88,6 +117,26 @@ public class EventModel {
                 this.description = in.readString();
                 this.lowest_price = in.readInt();
                 this.fullfillment_type = in.readString();
+            }
+
+            public Events(Theme theme)
+            {
+                this._id = theme._id;
+                //this.rank = in.readInt();
+                this.title = theme.name;
+                this.venue_name = "";
+                //this.start_datetime = in.readString();
+                //this.end_datetime = in.readString();
+                //this.special_type = in.readString();
+                this.tags = new ArrayList<>();
+                //this.likes = in.readInt();
+                //this.date_day = in.readString();
+                //this.photos = in.readArrayList(null);
+                this.description = theme.desc;
+                this.photos = new ArrayList<>();
+                photos.add(theme.image);
+                this.lowest_price = 0;
+                //this.fullfillment_type = in.readString();
             }
 
             @Override
@@ -222,6 +271,7 @@ public class EventModel {
                 this.photos = photos;
             }
         }
+
 
     }
 

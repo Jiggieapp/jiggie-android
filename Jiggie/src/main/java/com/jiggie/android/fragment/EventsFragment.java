@@ -308,6 +308,7 @@ public class EventsFragment extends Fragment
             ArrayList<EventModel.Data.Events> message = eventModel.getData().getEvents();
             int size = message.size();
             setEvents(message);
+            setThemes(eventModel.getData().getThemes());
         }
 
         boolean isExpanded = false;
@@ -441,6 +442,17 @@ public class EventsFragment extends Fragment
         EventManager.events = events;
     }
 
+    private ArrayList<EventModel.Data.Theme> themes;
+
+    public ArrayList<EventModel.Data.Theme> getThemes() {
+        return themes;
+    }
+
+    public void setThemes(ArrayList<EventModel.Data.Theme> themes) {
+        this.themes = themes;
+    }
+
+
     private void filter(String searchText, boolean isSearch) {
         ArrayList<EventModel.Data.Events> todayEvents = new ArrayList<>();
         ArrayList<EventModel.Data.Events> tomorrowEvents = new ArrayList<>();
@@ -451,6 +463,31 @@ public class EventsFragment extends Fragment
                 searchText = "";
             //timeTab.setVisibility(View.VISIBLE);
             searchText = searchText.toLowerCase();
+
+
+            //wandy16-06-2016
+            for(EventModel.Data.Theme themeEvent : getThemes())
+            {
+                if (themeEvent.name.toLowerCase().contains(searchText)
+                        || searchText.equals("")) {
+                    if (!isSearch) {
+                        if(themeEvent.status.equalsIgnoreCase(Utils.DATE_TODAY))
+                        {
+                            todayEvents.add(new EventModel.Data.Events(themeEvent));
+                        }
+                        else if(themeEvent.status.equalsIgnoreCase(Utils.DATE_TOMORROW))
+                        {
+                            tomorrowEvents.add(new EventModel.Data.Events(themeEvent));
+                        }
+                        else if(themeEvent.status.equalsIgnoreCase(Utils.DATE_UPCOMING))
+                        {
+                            upcomingEvents.add(new EventModel.Data.Events(themeEvent));
+                        }
+                    }
+                }
+            }
+            //end of wandy
+
             for (EventModel.Data.Events tempEvent : getEvents()) {
                 //new Date(event.getDate_day());
                 if (tempEvent.getTitle().toLowerCase().contains(searchText)
