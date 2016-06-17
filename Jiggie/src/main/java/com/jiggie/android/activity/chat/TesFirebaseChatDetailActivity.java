@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -21,6 +22,7 @@ import com.jiggie.android.manager.FirebaseChatManager;
 import com.jiggie.android.model.MessagesModel;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -41,6 +43,7 @@ public class TesFirebaseChatDetailActivity extends ToolbarActivity {
     ArrayList<MessagesModel> arrMessages = new ArrayList<>();
     ValueEventListener messageEvent;
     FirebaseChatDetailAdapter adapter;
+    String fb_id = "444555666";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,14 +54,31 @@ public class TesFirebaseChatDetailActivity extends ToolbarActivity {
         //super.setToolbarTitle("Firebase chat deta", true);
 
         Intent a = getIntent();
-        String roomId = a.getStringExtra(Utils.ROOM_ID);
+        final String roomId = a.getStringExtra(Utils.ROOM_ID);
 
         LinearLayoutManager mManager = new LinearLayoutManager(this);
-        mManager.setReverseLayout(true);
+        //mManager.setReverseLayout(true);
         mManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(mManager);
 
         getMessages(roomId);
+
+        btnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String name = Utils.BLANK, avatar = Utils.BLANK;
+                for(int i=0;i<FirebaseChatManager.arrUser.size();i++){
+                    String fb_idMatch = FirebaseChatManager.arrUser.get(i).getFb_id();
+                    if(fb_id.equals(fb_idMatch)){
+                        name = FirebaseChatManager.arrUser.get(i).getName();
+                        avatar = FirebaseChatManager.arrUser.get(i).getAvatar();
+                    }else{
+                        //do nothing
+                    }
+                }
+                FirebaseChatManager.sendMessage(new MessagesModel("aabbcc", fb_id, name, avatar, edtMessage.getText().toString(), Calendar.getInstance().getTimeInMillis()), roomId);
+            }
+        });
     }
 
     private void getMessages(String roomId){
@@ -66,6 +86,7 @@ public class TesFirebaseChatDetailActivity extends ToolbarActivity {
         messageEvent = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                arrMessages.clear();
                 for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
                     String messageId = (String) messageSnapshot.getKey();
                     String fb_id = String.valueOf(messageSnapshot.child("fb_id").getValue());

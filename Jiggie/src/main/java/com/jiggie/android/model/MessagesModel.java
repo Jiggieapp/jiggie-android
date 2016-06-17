@@ -1,5 +1,8 @@
 package com.jiggie.android.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by LTE on 6/16/2016.
  */
@@ -19,6 +22,14 @@ public class MessagesModel {
         this.avatar = avatar;
         this.message = message;
         this.created_at = created_at;
+    }
+
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("fb_id", fb_id);
+        result.put("message", message);
+        result.put("created_at", created_at);
+        return result;
     }
 
     public String getMessageId() {

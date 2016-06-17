@@ -47,7 +47,7 @@ public class TesFirebaseChatListActivity extends ToolbarActivity implements Fire
     public static final int TYPE_GROUP = 2;
     public static final int TYPE_PRIVATE = 1;
 
-    String fb_id = "111222333";
+    String fb_id = "444555666";
 
     ValueEventListener userEvent, roomEvent;
 
@@ -60,8 +60,8 @@ public class TesFirebaseChatListActivity extends ToolbarActivity implements Fire
         super.setToolbarTitle("Firebase chat list", true);
 
         LinearLayoutManager mManager = new LinearLayoutManager(this);
-        mManager.setReverseLayout(true);
-        mManager.setStackFromEnd(true);
+        /*mManager.setReverseLayout(true);
+        mManager.setStackFromEnd(true);*/
         recyclerView.setLayoutManager(mManager);
 
         /*Query roomQuery = getQuery(mDatabase);
@@ -240,13 +240,13 @@ public class TesFirebaseChatListActivity extends ToolbarActivity implements Fire
 
                 RoomModel.Info info = null;
                 if(type==TYPE_GROUP){
-                    String name = (String) dataSnapshot.child("info").child("name").getValue();
+                    String event = (String) dataSnapshot.child("info").child("event").getValue();
                     String avatar = (String) dataSnapshot.child("info").child("avatar").getValue();
                     String last_message = (String) dataSnapshot.child("info").child("last_message").getValue();
                     long created_at = (long) dataSnapshot.child("info").child("created_at").getValue();
                     long updated_at = (long) dataSnapshot.child("info").child("updated_at").getValue();
 
-                    info = new RoomModel.Info(name, avatar, name, last_message, created_at, updated_at);
+                    info = new RoomModel.Info(event, avatar, event, last_message, created_at, updated_at);
                 }else{
                     String event = (String) dataSnapshot.child("info").child("event").getValue();
                     String identifier = (String) dataSnapshot.child("info").child("identifier").getValue();
