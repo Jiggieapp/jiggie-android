@@ -24,17 +24,21 @@ public class FirebaseChatListAdapter extends RecyclerView.Adapter<FirebaseChatLi
     ArrayList<RoomModel> data = new ArrayList<>();
     public static final int TYPE_GROUP = 2;
     public static final int TYPE_PRIVATE = 1;
+    private RoomSelectedListener listener;
+    private RoomLongClickListener longClickListener;
 
-
-    public FirebaseChatListAdapter(Activity a, ArrayList<RoomModel> data) {
+    public FirebaseChatListAdapter(Activity a, ArrayList<RoomModel> data, RoomSelectedListener listener, RoomLongClickListener longClickListener) {
         this.a = a;
         this.data = data;
+        this.listener = listener;
+        this.longClickListener = longClickListener;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         RoomModel roomModel = data.get(position);
         long type = roomModel.getType();
+        holder.roomModel = roomModel;
         if(type==TYPE_GROUP){
             holder.txtAuthor.setText(roomModel.getInfo().getName());
             holder.txtBody.setText(roomModel.getInfo().getLast_message());
@@ -47,7 +51,7 @@ public class FirebaseChatListAdapter extends RecyclerView.Adapter<FirebaseChatLi
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_firebase_chatlist, parent, false));
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_firebase_chatlist, parent, false), listener, longClickListener);
     }
 
     @Override
@@ -60,16 +64,45 @@ public class FirebaseChatListAdapter extends RecyclerView.Adapter<FirebaseChatLi
         return super.getItemId(position);
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener{
 
         @Bind(R.id.txt_author)
         TextView txtAuthor;
         @Bind(R.id.txt_body)
         TextView txtBody;
 
-        public ViewHolder(View itemView) {
+        private RoomSelectedListener listener;
+        private RoomLongClickListener longClickListener;
+        RoomModel roomModel;
+
+        public ViewHolder(View itemView, RoomSelectedListener listener, RoomLongClickListener longClickListener) {
             super(itemView);
+            this.listener = listener;
+            this.longClickListener = longClickListener;
             ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            if (this.listener != null)
+                this.listener.onRoomSelected(this.roomModel);
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            if (this.longClickListener != null)
+                this.longClickListener.onRoomLongClick(this.roomModel);
+            return true;
+        }
+    }
+
+    public interface RoomSelectedListener {
+        void onRoomSelected(RoomModel roomModel);
+    }
+
+    public interface RoomLongClickListener {
+        void onRoomLongClick(RoomModel roomModel);
     }
 }

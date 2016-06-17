@@ -7,12 +7,16 @@ public class MessagesModel {
 
     String messageId;
     String fb_id;
+    String name;
+    String avatar;
     String message;
-    String created_at;
+    long created_at;
 
-    public MessagesModel(String messageId, String fb_id, String message, String created_at){
+    public MessagesModel(String messageId, String fb_id, String name, String avatar, String message, long created_at){
         this.messageId = messageId;
         this.fb_id = fb_id;
+        this.name = name;
+        this.avatar = avatar;
         this.message = message;
         this.created_at = created_at;
     }
@@ -29,7 +33,15 @@ public class MessagesModel {
         return message;
     }
 
-    public String getCreated_at() {
+    public long getCreated_at() {
         return created_at;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getAvatar() {
+        return avatar;
     }
 }

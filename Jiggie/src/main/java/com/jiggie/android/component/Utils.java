@@ -124,6 +124,10 @@ public class Utils {
     public static final String TYPE_RESERVE = "reserve";
     //------------------------
 
+    //FIREBASE CHAT------------
+    public static final String ROOM_ID = "roomId";
+    //-------------------------
+
     public static int myPixel(Activity a, int dip) {
         float scale = a.getResources().getDisplayMetrics().density;
         int pixel = (int) ((dip - 0.5f) * scale);

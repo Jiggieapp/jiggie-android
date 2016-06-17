@@ -94,6 +94,11 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".activity.chat.TesFirebaseChatDetailActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme" />
+        <activity
             android:name=".activity.SplashActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"

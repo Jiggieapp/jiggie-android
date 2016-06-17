@@ -1,5 +1,6 @@
 package com.jiggie.android.activity.chat;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +18,7 @@ import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.FirebaseChatListAdapter;
+import com.jiggie.android.manager.FirebaseChatManager;
 import com.jiggie.android.model.RoomMembersModel;
 import com.jiggie.android.model.RoomModel;
 import com.jiggie.android.model.UserModel;
@@ -28,13 +30,12 @@ import butterknife.ButterKnife;
 /**
  * Created by LTE on 6/14/2016.
  */
-public class TesFirebaseChatListActivity extends ToolbarActivity {
+public class TesFirebaseChatListActivity extends ToolbarActivity implements FirebaseChatListAdapter.RoomSelectedListener, FirebaseChatListAdapter.RoomLongClickListener{
 
     @Bind(R.id.recycler_view)
     RecyclerView recyclerView;
 
-    private DatabaseReference mDatabase;
-    ArrayList<UserModel> arrUser = new ArrayList<>();
+
     ArrayList<RoomModel> arrAllRoom = new ArrayList<>();
     ArrayList<RoomModel> arrSelectedRoom = new ArrayList<>();
     /*ArrayList<RoomMembersModel> arrAllRoomMembers = new ArrayList<>();
@@ -63,7 +64,6 @@ public class TesFirebaseChatListActivity extends ToolbarActivity {
         mManager.setStackFromEnd(true);
         recyclerView.setLayoutManager(mManager);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
         /*Query roomQuery = getQuery(mDatabase);
         roomQuery.addValueEventListener(new ValueEventListener() {
             @Override
@@ -105,7 +105,7 @@ public class TesFirebaseChatListActivity extends ToolbarActivity {
     }
 
     private void getUsers(){
-        Query queryUsers = getQueryUsers(mDatabase);
+        Query queryUsers = FirebaseChatManager.getQueryUsers();
         userEvent = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -116,10 +116,10 @@ public class TesFirebaseChatListActivity extends ToolbarActivity {
                     String avatar = (String) messageSnapshot.child("avatar").getValue();
 
                     UserModel userModel = new UserModel(key, fb_id, name, avatar);
-                    arrUser.add(userModel);
+                    FirebaseChatManager.arrUser.add(userModel);
                 }
 
-                String sd = String.valueOf(new Gson().toJson(arrUser));
+                String sd = String.valueOf(new Gson().toJson(FirebaseChatManager.arrUser));
                 Log.d("sd","sd");
             }
 
@@ -198,7 +198,7 @@ public class TesFirebaseChatListActivity extends ToolbarActivity {
     }*/
 
     private void getRoomMembers(){
-        Query queryRoomMembers = getQueryRoomMembers(mDatabase, fb_id);
+        Query queryRoomMembers = FirebaseChatManager.getQueryRoomMembers(fb_id);
         roomEvent = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -208,7 +208,7 @@ public class TesFirebaseChatListActivity extends ToolbarActivity {
 
                     arrAllRoomMembers.add(key);
 
-                    getRoomDetail(mDatabase, key);
+                    getRoomDetail(key);
 
                 }
 
@@ -230,8 +230,8 @@ public class TesFirebaseChatListActivity extends ToolbarActivity {
 
 
     int sizeRoom = 0;
-    private void getRoomDetail(DatabaseReference databaseReference, String key){
-        Query queryRoom = getQueryRoom(databaseReference, key);
+    private void getRoomDetail(String key){
+        Query queryRoom = FirebaseChatManager.getQueryRoom(key);
         queryRoom.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -266,11 +266,11 @@ public class TesFirebaseChatListActivity extends ToolbarActivity {
                         idFriend = id2;
                     }
 
-                    for(int i=0;i<arrUser.size();i++){
-                        String idUser = arrUser.get(i).getFb_id();
+                    for(int i=0;i<FirebaseChatManager.arrUser.size();i++){
+                        String idUser = FirebaseChatManager.arrUser.get(i).getFb_id();
                         if(idFriend.equals(idUser)){
-                            name = arrUser.get(i).getName();
-                            avatar = arrUser.get(i).getAvatar();
+                            name = FirebaseChatManager.arrUser.get(i).getName();
+                            avatar = FirebaseChatManager.arrUser.get(i).getAvatar();
                             break;
                         }else{
                             //do nothing
@@ -286,14 +286,7 @@ public class TesFirebaseChatListActivity extends ToolbarActivity {
                 String sds = String.valueOf(new Gson().toJson(arrAllRoom));
                 Log.d("sd","sd");
 
-                if(arrAllRoom.size()==arrAllRoomMembers.size()){
-                    if(adapter==null){
-                        adapter = new FirebaseChatListAdapter(TesFirebaseChatListActivity.this, arrAllRoom);
-                        recyclerView.setAdapter(adapter);
-                    }else{
-                        adapter.notifyDataSetChanged();
-                    }
-                }
+                setAdapters();
 
             }
 
@@ -304,22 +297,31 @@ public class TesFirebaseChatListActivity extends ToolbarActivity {
         });
     }
 
-    private Query getQueryUsers(DatabaseReference databaseReference){
-        return databaseReference.child("users");
-    }
-
-    private Query getQueryRoomMembers(DatabaseReference databaseReference, String fb_id){
-        return databaseReference.child("room_members").orderByChild(fb_id);
-    }
-
-    private Query getQueryRoom(DatabaseReference databaseReference, String key){
-        return databaseReference.child("rooms").child(key);
+    private void setAdapters(){
+        if(arrAllRoom.size()==arrAllRoomMembers.size()){
+            if(adapter==null){
+                adapter = new FirebaseChatListAdapter(TesFirebaseChatListActivity.this, arrAllRoom, this, this);
+                recyclerView.setAdapter(adapter);
+            }else{
+                adapter.notifyDataSetChanged();
+            }
+        }
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        mDatabase.removeEventListener(userEvent);
-        mDatabase.removeEventListener(roomEvent);
+    public void onRoomSelected(RoomModel roomModel) {
+        startActivity(new Intent(TesFirebaseChatListActivity.this, TesFirebaseChatDetailActivity.class).putExtra(Utils.ROOM_ID, roomModel.getKey()));
+    }
+
+    @Override
+    public void onRoomLongClick(RoomModel roomModel) {
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        FirebaseChatManager.getFirebaseDatabase().removeEventListener(userEvent);
+        FirebaseChatManager.getFirebaseDatabase().removeEventListener(roomEvent);
     }
 }
