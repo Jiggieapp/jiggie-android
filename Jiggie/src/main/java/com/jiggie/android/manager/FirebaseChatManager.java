@@ -87,4 +87,8 @@ public class FirebaseChatManager {
         getFirebaseDatabase().child("rooms").child(key).child("info").setValue(updatedRoom);
     }
 
+    public static void blockChatList(String roomId, String fb_id){
+        getFirebaseDatabase().child("room_members").child(roomId).child(fb_id).removeValue();
+    }
+
 }

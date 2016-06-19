@@ -340,7 +340,8 @@ public class TesFirebaseChatListActivity extends ToolbarActivity implements Fire
 
     @Override
     public void onRoomLongClick(RoomModel roomModel) {
-        FirebaseChatManager.deleteChatList(roomModel.getKey(), fb_id);
+        //FirebaseChatManager.deleteChatList(roomModel.getKey(), fb_id);
+        FirebaseChatManager.blockChatList(roomModel.getKey(), fb_id);
     }
 
     @Override
