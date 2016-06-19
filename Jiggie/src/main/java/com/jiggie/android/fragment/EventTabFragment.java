@@ -36,6 +36,7 @@ import android.widget.Toast;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.event.EventDetailActivity;
+import com.jiggie.android.activity.event.ThemeDetailActivity;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
@@ -153,7 +154,8 @@ public class EventTabFragment extends Fragment
         //EventManager.initEventService();
         //EventBus.getDefault().register(this);
 
-        this.recyclerView.setAdapter(this.adapter = new EventTabListAdapter(this, this));
+        this.recyclerView.setAdapter(
+                this.adapter = new EventTabListAdapter(this.getContext(), this));
         LinearLayoutManager layoutManager = new LinearLayoutManager(super.getContext());
         this.recyclerView.setLayoutManager(layoutManager);
         //this.refreshLayout.setOnRefreshListener(this);
@@ -303,7 +305,7 @@ public class EventTabFragment extends Fragment
 
     //Added by Aga
     public void onEvent(ArrayList<EventModel.Data.Events> message) {
-        int size = message.size();
+        //int size = message.size();
         if (searchText == null) {
             events = message;
             filter(true);
@@ -315,7 +317,7 @@ public class EventTabFragment extends Fragment
         events.clear();
         events = message.getData().getEvents();
 
-        int size = message.getData().getEvents().size();
+        //int size = message.getData().getEvents().size();
         adapter.clear();
 
         if (searchText == null)
@@ -338,20 +340,33 @@ public class EventTabFragment extends Fragment
 
     @Override
     public void onViewSelected(EventModel.Data.Events event) {
-        Intent i = new Intent(super.getActivity(), EventDetailActivity.class);
-        i.putExtra(Common.FIELD_EVENT_ID, event.get_id());
-        i.putExtra(Common.FIELD_EVENT_NAME, event.getTitle());
-        i.putExtra(Common.FIELD_EVENT_VENUE_NAME, event.getVenue_name());
-        i.putExtra(Common.FIELD_EVENT_TAGS, event.getTags());
-        i.putExtra(Common.FIELD_EVENT_DAY, event.getStart_datetime());
-        i.putExtra(Common.FIELD_EVENT_DAY_END, event.getEnd_datetime());
-        i.putExtra(Common.FIELD_EVENT_PICS, event.getPhotos());
-        i.putExtra(Common.FIELD_EVENT_DESCRIPTION, event.getDescription());
-        i.putExtra(Common.FIELD_EVENT_LIKE, event.getLikes());
-        i.putExtra(Common.FIELD_EVENT_LOWEST_PRICE, event.getLowest_price());
-        i.putExtra(Common.FIELD_FULLFILMENT_TYPE, event.getFullfillment_type());
-        i.putExtra(Common.FIELD_EVENT_TIMEZONE, event.getTz());
-        super.startActivity(i);
+        if(event.isEvent)
+        {
+            Intent i = new Intent(super.getActivity(), EventDetailActivity.class);
+            i.putExtra(Common.FIELD_EVENT_ID, event.get_id());
+            i.putExtra(Common.FIELD_EVENT_NAME, event.getTitle());
+            i.putExtra(Common.FIELD_EVENT_VENUE_NAME, event.getVenue_name());
+            i.putExtra(Common.FIELD_EVENT_TAGS, event.getTags());
+            i.putExtra(Common.FIELD_EVENT_DAY, event.getStart_datetime());
+            i.putExtra(Common.FIELD_EVENT_DAY_END, event.getEnd_datetime());
+            i.putExtra(Common.FIELD_EVENT_PICS, event.getPhotos());
+            i.putExtra(Common.FIELD_EVENT_DESCRIPTION, event.getDescription());
+            i.putExtra(Common.FIELD_EVENT_LIKE, event.getLikes());
+            i.putExtra(Common.FIELD_EVENT_LOWEST_PRICE, event.getLowest_price());
+            i.putExtra(Common.FIELD_FULLFILMENT_TYPE, event.getFullfillment_type());
+            i.putExtra(Common.FIELD_EVENT_TIMEZONE, event.getTz());
+            super.startActivity(i);
+        }
+        else
+        {
+            Intent i = new Intent(super.getActivity(), ThemeDetailActivity.class);
+            i.putExtra(Common.FIELD_EVENT_ID, event.get_id());
+            i.putExtra(Common.FIELD_EVENT_PICS, event.getPhotos());
+            i.putExtra(Common.FIELD_EVENT_DESCRIPTION, event.getDescription());
+            i.putExtra(Common.FIELD_EVENT_NAME, event.getTitle());
+            startActivity(i);
+        }
+
     }
 
     private void filter(boolean notify) {

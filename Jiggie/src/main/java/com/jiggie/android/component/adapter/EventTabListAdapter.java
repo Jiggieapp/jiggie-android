@@ -41,15 +41,23 @@ import butterknife.ButterKnife;
  */
 public class EventTabListAdapter
         extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private final Fragment fragment;
-    private final ViewSelectedListener listener;
-    private final ArrayList<EventModel.Data.Events> items;
+    //private Fragment fragment;
+    private ViewSelectedListener listener;
+    private ArrayList<EventModel.Data.Events> items;
+    private Context context;
     private static final String TAG = EventTabListAdapter.class.getSimpleName();
 
-    public EventTabListAdapter(Fragment fragment, ViewSelectedListener listener) {
+    /*public EventTabListAdapter(Fragment fragment, ViewSelectedListener listener) {
         this.items = new ArrayList<>();
         this.listener = listener;
         this.fragment = fragment;
+    }*/
+
+    public EventTabListAdapter(Context context, ViewSelectedListener listener)
+    {
+        this.items = new ArrayList<>();
+        this.context = context;
+        this.listener = listener;
     }
 
     public void clear() {
@@ -67,9 +75,6 @@ public class EventTabListAdapter
     public void setItems(ArrayList<EventModel.Data.Events> items) {
         this.items.addAll(items);
     }
-
-    private Context context;
-
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -90,8 +95,6 @@ public class EventTabListAdapter
         if (viewHolder instanceof EventsViewHolder) {
             EventsViewHolder holder = (EventsViewHolder) viewHolder;
             try {
-
-
                 int sizePhoto = item.getPhotos().size();
                 String imageUrl = null;
                 if (sizePhoto > 0) {
@@ -119,17 +122,17 @@ public class EventTabListAdapter
                 String d = builder.toString();
                 //-----------
 
-                this.eventTagAdapter = new EventTagAdapter(fragment.getActivity(), R.layout.item_event_tag);
+                this.eventTagAdapter = new EventTagAdapter(context, R.layout.item_event_tag);
 
                 eventTagAdapter.setTags(tags);
-                LinearLayoutManager layoutManager = new LinearLayoutManager(fragment.getContext()
+                LinearLayoutManager layoutManager = new LinearLayoutManager(context
                         , LinearLayoutManager.HORIZONTAL, false);
                 holder.tagListView.setLayoutManager(layoutManager);
                 holder.tagListView.setAdapter(eventTagAdapter);
                 //holder.eventTagAdapter.notifyDataSetChanged();
                 holder.txtVenueName.setText(item.getVenue_name());
                 Glide
-                        .with(this.fragment)
+                        .with(context)
                         .load(imageUrl)
                         .diskCacheStrategy(DiskCacheStrategy.RESULT)
                         .into(holder.image);
@@ -197,9 +200,11 @@ public class EventTabListAdapter
             ThemesViewHolder holder = (ThemesViewHolder) viewHolder;
             try
             {
-                holder.txtTitle.setText(item.getTitle());
+                holder.event = item;
+                holder.txtTitle.setText(item.getTitle() + " bah");
+
                 Glide
-                        .with(this.fragment)
+                        .with(context)
                         .load(items.get(position).getPhotos().get(0))
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .into(holder.image);
@@ -272,6 +277,8 @@ public class EventTabListAdapter
         @Bind(R.id.image)
         ImageView image;
 
+        private int themeId;
+
         //private EventTagArrayAdapter eventTagAdapter;
         private ViewSelectedListener listener;
         private EventModel.Data.Events event;
@@ -280,16 +287,17 @@ public class EventTabListAdapter
             super(itemView);
             ButterKnife.bind(this, itemView);
 
-            /*if ((this.listener = listener) != null)
-                itemView.setOnClickListener(this);*/
+            if ((this.listener = listener) != null)
+                itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            /*if (listener != null) {
+            if (listener != null) {
+                //Utils.d(TAG, "event " + event.getTitle() + "/" + event.get_id() + "/" + event.getThemes_id());
                 listener.onViewSelected(this.event);
                 TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_EVENT_LIST, false);
-            }*/
+            }
         }
     }
 
@@ -297,9 +305,13 @@ public class EventTabListAdapter
         void onViewSelected(EventModel.Data.Events event);
     }
 
+    /*public interface ThemeSelectedListener
+    {
+        void onThemeSelected(int position);
+    }*/
+
     @Override
     public int getItemViewType(int position) {
-        Utils.d(TAG, items.get(position).getTitle() + " " + items.get(position).isEvent);
         if (items.get(position).isEvent)
             return 1;
         else return 0;

@@ -131,6 +131,12 @@ public class Utils {
         int pixel = (int) ((dip - 0.5f) * scale);
         return pixel;
     }
+
+    public static int myPixel(Context a, int dip) {
+        float scale = a.getResources().getDisplayMetrics().density;
+        int pixel = (int) ((dip - 0.5f) * scale);
+        return pixel;
+    }
     //-----
 
     //public static final String BASE_URL = "http://api-dev.jiggieapp.com/";
@@ -179,7 +185,7 @@ public class Utils {
     public static final String URL_GUEST_INFO = BASE_URL + "app/v3/product/guest_info/{fb_id}";
     public final static String URL_POST_LOCATION = BASE_URL + "app/v3/save_longlat";
     public final static String URL_FREE_PAYMENT = BASE_URL + "app/v3/product/free_payment";
-
+    public static final String URL_GET_THEME = BASE_URL + "app/v3/events/themes";
     public final static String URL_UPLOAD = BASE_URL + "app/v3/member/upload";
     public final static String URL_LIKE_EVENT = BASE_URL + "app/v3/event/likes/{event_id}/{fb_id}/{action}";
     public final static String URL_CITY = BASE_URL + "app/v3/user/citylist";

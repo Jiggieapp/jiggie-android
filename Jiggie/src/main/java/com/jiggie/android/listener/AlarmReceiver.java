@@ -18,8 +18,13 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         SettingModel settingModel = AccountManager.loadSetting();
-        settingModel.getData().getCityList().clear();
-        AccountManager.saveSetting(settingModel);
+        if(settingModel != null
+                && settingModel.getData().getCityList() != null)
+        {
+            settingModel.getData().getCityList().clear();
+            AccountManager.saveSetting(settingModel);
+        }
+
     }
 
 }

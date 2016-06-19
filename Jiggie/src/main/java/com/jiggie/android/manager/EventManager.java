@@ -13,6 +13,7 @@ import com.jiggie.android.model.EventModel;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.TagNewModel;
 import com.jiggie.android.model.TagsListModel;
+import com.jiggie.android.model.ThemePostModel;
 import com.jiggie.android.model.likeModel;
 
 import java.io.IOException;
@@ -363,6 +364,33 @@ public class EventManager extends BaseManager{
     public interface OnResponseEventListener {
         public void onSuccess(Object object);
         public void onFailure(int responseCode, String message);
+    }
+
+    public static void loadTheme(final String themeId, final com.jiggie.android.listener.OnResponseListener onResponseListener)
+    {
+        ThemePostModel themePostModel = new ThemePostModel();
+        themePostModel.themes_id.add(themeId);
+        doLoadTheme(themePostModel, new CustomCallback() {
+            @Override
+            public void onCustomCallbackResponse(Response response) {
+                onResponseListener.onSuccess(response.body());
+            }
+
+            @Override
+            public void onCustomCallbackFailure(String t) {
+
+            }
+
+            @Override
+            public void onNeedToRestart() {
+                loadTheme(themeId, onResponseListener);
+            }
+        });
+    }
+
+    private static void doLoadTheme(ThemePostModel themePostModel, Callback callback)
+    {
+        getInstance().getTheme(themePostModel).enqueue(callback);
     }
 
 }

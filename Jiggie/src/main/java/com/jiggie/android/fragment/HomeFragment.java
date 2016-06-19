@@ -298,7 +298,6 @@ public class HomeFragment extends Fragment
             @Override
             public void onSuccess(Object object) {
                 TagNewModel dataTemp = (TagNewModel) object;
-
                 setTagsNew(dataTemp);
             }
 

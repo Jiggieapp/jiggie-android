@@ -24,11 +24,18 @@ public class EventTagAdapter
     private final int tagResourceId;
     private String[] tags;
     private final static String TAG = EventTagAdapter.class.getSimpleName();
-    private Activity activity;
+    //private Activity activity;
+    private Context context;
 
-    public EventTagAdapter(Activity activity, int tagResourceId)
+    /*public EventTagAdapter(Activity activity, int tagResourceId)
     {
         this.activity = activity;
+        this.tagResourceId = tagResourceId;
+    }*/
+
+    public EventTagAdapter(Context context, int tagResourceId)
+    {
+        this.context = context;
         this.tagResourceId = tagResourceId;
     }
 
@@ -93,7 +100,7 @@ public class EventTagAdapter
             String nameTag = tagNewModel.getData().getTagslist().get(i).getName();
             if(text.equalsIgnoreCase(nameTag)){
                 String colorr = tagNewModel.getData().getTagslist().get(i).getColor();
-                holder.txtTag.setBackground(setDrawableTag(activity, activity.getResources().getColor(R.color.background), Color.parseColor(tagNewModel.getData().getTagslist().get(i).getColor())));
+                holder.txtTag.setBackground(setDrawableTag(context, context.getResources().getColor(R.color.background), Color.parseColor(tagNewModel.getData().getTagslist().get(i).getColor())));
                 holder.txtTag.setTextColor(Color.parseColor(tagNewModel.getData().getTagslist().get(i).getColor()));
                 break;
                 /*holder.txtTag.setBackground(setDrawableTag(activity, activity.getResources().getColor(R.color.background),
@@ -104,6 +111,17 @@ public class EventTagAdapter
             }
         }
 
+    }
+
+    public static GradientDrawable setDrawableTag(Context context, int backgroundColor, int borderColor)
+    {
+        GradientDrawable shape = new GradientDrawable();
+        shape.setShape(GradientDrawable.RECTANGLE);
+        //shape.setCornerRadii(new float[]{Utils.myPixel(a, 100), Utils.myPixel(a, 100), Utils.myPixel(a, 100), Utils.myPixel(a, 100), 0, 0, 0, 0});
+        shape.setCornerRadius(Utils.myPixel(context, 100));
+        //shape.setColor(backgroundColor);
+        shape.setStroke(Utils.myPixel(context, 1), borderColor);
+        return  shape;
     }
 
     public static GradientDrawable setDrawableTag(Activity a, int backgroundColor, int borderColor)

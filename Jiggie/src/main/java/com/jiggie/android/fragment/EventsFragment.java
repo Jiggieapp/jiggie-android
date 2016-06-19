@@ -472,10 +472,11 @@ public class EventsFragment extends Fragment
             //wandy16-06-2016
             for(EventModel.Data.Theme themeEvent : getThemes())
             {
-                if (themeEvent.name.toLowerCase().contains(searchText)
-                        || searchText.equals("")) {
+                if (themeEvent.status != null && (themeEvent.name.toLowerCase().contains(searchText)
+                        || searchText.equals(""))) {
                     EventModel.Data.Events tempEvent = new EventModel.Data.Events(themeEvent);
                     if (!isSearch) {
+                        Utils.d(TAG, "tempEvent " + themeEvent.status);
                         if(themeEvent.status.equalsIgnoreCase(Utils.DATE_TODAY))
                         {
                             todayEvents.add(tempEvent);
@@ -508,11 +509,6 @@ public class EventsFragment extends Fragment
                     }
                 }
             }
-
-            /*for(EventModel.Data.Events themeEvent : todayEvents)
-            {
-                Utils.d(TAG, themeEvent.getTitle() + " " + themeEvent.isEvent);
-            }*/
             //end of wandy
 
             for (EventModel.Data.Events tempEvent : getEvents()) {

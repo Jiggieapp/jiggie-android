@@ -75,8 +75,8 @@ public class EventModel {
             Integer lowest_price;
             String fullfillment_type;
             String tz;
-            String themes_id = "";
-            public boolean isEvent;
+            ArrayList<String> themes_id;
+            public boolean isEvent = true;
 
             public String getTz() {
                 return tz;
@@ -118,7 +118,8 @@ public class EventModel {
                 this.description = in.readString();
                 this.lowest_price = in.readInt();
                 this.fullfillment_type = in.readString();
-                this.themes_id = in.readString();
+                this.themes_id = in.readArrayList(null);
+                this.isEvent = true;
             }
 
             /*public Events(String _id, String title, String venue_name, String start_datetime, String end_datetime, String special_type, ArrayList<String> tags){
@@ -136,7 +137,7 @@ public class EventModel {
                     , String special_type, ArrayList<String> tags
                     , String description, String venue_id, String fullfillment_type
                     , int likes, String date_day
-                    , int lowest_price, String start_date, String tz, ArrayList<String> photos, String themes_id){
+                    , int lowest_price, String start_date, String tz, ArrayList<String> photos, ArrayList<String> themes_id){
                 this._id = _id;
                 this.title = title;
                 this.venue_name = venue_name;
@@ -176,6 +177,7 @@ public class EventModel {
                 this.photos = new ArrayList<>();
                 photos.add(theme.image);
                 this.lowest_price = 0;
+                //this.themes_id = theme._id;
                 //this.fullfillment_type = in.readString();
                 isEvent = false;
             }
@@ -210,7 +212,7 @@ public class EventModel {
                 dest.writeString(this.description);
                 dest.writeInt(this.lowest_price);
                 dest.writeString(this.fullfillment_type);
-                dest.writeString(this.themes_id);
+                //dest.writeString(this.themes_id);
             }
 
             public static final Creator<Events> CREATOR = new Creator<Events>() {
@@ -312,6 +314,14 @@ public class EventModel {
             public void setPhotos(ArrayList<String> photos) {
                 this.photos = photos;
             }
+
+            /*public String getThemes_id() {
+                return themes_id;
+            }
+
+            public void setThemes_id(String themes_id) {
+                this.themes_id = themes_id;
+            }*/
         }
 
 
