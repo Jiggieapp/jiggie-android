@@ -35,19 +35,12 @@ public class TesFirebaseChatListActivity extends ToolbarActivity implements Fire
     @Bind(R.id.recycler_view)
     RecyclerView recyclerView;
 
-
-    ArrayList<RoomModel> arrAllRoom = new ArrayList<>();
-    ArrayList<RoomModel> arrSelectedRoom = new ArrayList<>();
-    /*ArrayList<RoomMembersModel> arrAllRoomMembers = new ArrayList<>();
-    ArrayList<RoomMembersModel> arrSelectedRoomMembers = new ArrayList<>();*/
-    ArrayList<String> arrAllRoomMembers = new ArrayList<>();
-
     FirebaseChatListAdapter adapter;
 
     public static final int TYPE_GROUP = 2;
     public static final int TYPE_PRIVATE = 1;
 
-    String fb_id = "444555666";
+    String fb_id = "111222333";
 
     ValueEventListener userEvent, roomEvent;
 
@@ -102,6 +95,12 @@ public class TesFirebaseChatListActivity extends ToolbarActivity implements Fire
         getUsers();
         getRoomMembers();
         //getAllRooms();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        adapter.notifyDataSetChanged();
     }
 
     private void getUsers(){
@@ -202,20 +201,23 @@ public class TesFirebaseChatListActivity extends ToolbarActivity implements Fire
         roomEvent = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                FirebaseChatManager.arrAllRoomMembers.clear();
+                FirebaseChatManager.arrAllRoom.clear();
                 for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
 
                     String key = (String)messageSnapshot.getKey();
 
-                    arrAllRoomMembers.add(key);
+
+                    FirebaseChatManager.arrAllRoomMembers.add(key);
 
                     getRoomDetail(key);
 
                 }
 
-                sizeRoom = arrAllRoomMembers.size();
+                sizeRoom = FirebaseChatManager.arrAllRoomMembers.size();
 
                 Log.d("sd",String.valueOf(sizeRoom));
-                String sd = String.valueOf(new Gson().toJson(arrAllRoom));
+                String sd = String.valueOf(new Gson().toJson(FirebaseChatManager.arrAllRoom));
             }
 
             @Override
@@ -232,7 +234,7 @@ public class TesFirebaseChatListActivity extends ToolbarActivity implements Fire
     int sizeRoom = 0;
     private void getRoomDetail(String key){
         Query queryRoom = FirebaseChatManager.getQueryRoom(key);
-        queryRoom.addListenerForSingleValueEvent(new ValueEventListener() {
+        queryRoom.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String key = (String) dataSnapshot.getKey();
@@ -266,6 +268,7 @@ public class TesFirebaseChatListActivity extends ToolbarActivity implements Fire
                         idFriend = id2;
                     }
 
+
                     for(int i=0;i<FirebaseChatManager.arrUser.size();i++){
                         String idUser = FirebaseChatManager.arrUser.get(i).getFb_id();
                         if(idFriend.equals(idUser)){
@@ -281,9 +284,31 @@ public class TesFirebaseChatListActivity extends ToolbarActivity implements Fire
                 }
 
                 RoomModel roomModel = new RoomModel(key, info, type);
-                arrAllRoom.add(roomModel);
 
-                String sds = String.valueOf(new Gson().toJson(arrAllRoom));
+                //checker if already just update, if not then added---------------------
+                if(FirebaseChatManager.arrAllRoom.size()==0){
+                    FirebaseChatManager.arrAllRoom.add(roomModel);
+                }else{
+                    boolean isExist = false;
+                    int existPosition = 0;
+                    for(int i=0; i<FirebaseChatManager.arrAllRoom.size();i++){
+                        String keyMatch = FirebaseChatManager.arrAllRoom.get(i).getKey();
+                        if(key.equals(keyMatch)){
+                            existPosition = i;
+                            isExist = true;
+                            break;
+                        }
+                    }
+
+                    if(isExist){
+                        FirebaseChatManager.arrAllRoom.set(existPosition, roomModel);
+                    }else{
+                        FirebaseChatManager.arrAllRoom.add(roomModel);
+                    }
+                }
+                //--------------------------------------------------------------------------
+
+                String sds = String.valueOf(new Gson().toJson(FirebaseChatManager.arrAllRoom));
                 Log.d("sd","sd");
 
                 setAdapters();
@@ -298,9 +323,9 @@ public class TesFirebaseChatListActivity extends ToolbarActivity implements Fire
     }
 
     private void setAdapters(){
-        if(arrAllRoom.size()==arrAllRoomMembers.size()){
+        if(FirebaseChatManager.arrAllRoom.size()==FirebaseChatManager.arrAllRoomMembers.size()){
             if(adapter==null){
-                adapter = new FirebaseChatListAdapter(TesFirebaseChatListActivity.this, arrAllRoom, this, this);
+                adapter = new FirebaseChatListAdapter(TesFirebaseChatListActivity.this, FirebaseChatManager.arrAllRoom, this, this);
                 recyclerView.setAdapter(adapter);
             }else{
                 adapter.notifyDataSetChanged();
@@ -315,7 +340,7 @@ public class TesFirebaseChatListActivity extends ToolbarActivity implements Fire
 
     @Override
     public void onRoomLongClick(RoomModel roomModel) {
-
+        FirebaseChatManager.deleteChatList(roomModel.getKey(), fb_id);
     }
 
     @Override

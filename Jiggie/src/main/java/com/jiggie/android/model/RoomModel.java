@@ -2,6 +2,9 @@ package com.jiggie.android.model;
 
 import com.jiggie.android.component.Utils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by LTE on 6/15/2016.
  */

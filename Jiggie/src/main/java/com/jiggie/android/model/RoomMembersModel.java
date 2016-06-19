@@ -8,18 +8,24 @@ import java.util.ArrayList;
 public class RoomMembersModel {
 
     String key;
-    ArrayList<Integer> roomMembersId;
+    String roomMemberId;
+    boolean isAvailable;
 
-    public RoomMembersModel(String key, ArrayList<Integer> roomMembersId){
+    public RoomMembersModel(String key, String roomMemberId, boolean isAvailable){
         this.key = key;
-        this.roomMembersId = roomMembersId;
+        this.roomMemberId = roomMemberId;
+        this.isAvailable = isAvailable;
+    }
+
+    public String getRoomMemberId() {
+        return roomMemberId;
+    }
+
+    public boolean isAvailable() {
+        return isAvailable;
     }
 
     public String getKey() {
         return key;
-    }
-
-    public ArrayList<Integer> getRoomMembersId() {
-        return roomMembersId;
     }
 }

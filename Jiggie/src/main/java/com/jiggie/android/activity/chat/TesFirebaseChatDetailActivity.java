@@ -43,7 +43,7 @@ public class TesFirebaseChatDetailActivity extends ToolbarActivity {
     ArrayList<MessagesModel> arrMessages = new ArrayList<>();
     ValueEventListener messageEvent;
     FirebaseChatDetailAdapter adapter;
-    String fb_id = "444555666";
+    String fb_id = "111222333";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +51,7 @@ public class TesFirebaseChatDetailActivity extends ToolbarActivity {
         setContentView(R.layout.activity_firebase_chatdetail);
         ButterKnife.bind(this);
         super.bindView();
-        //super.setToolbarTitle("Firebase chat deta", true);
+        super.setToolbarTitle("Firebase chat detail", true);
 
         Intent a = getIntent();
         final String roomId = a.getStringExtra(Utils.ROOM_ID);
