@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.jiggie.android"
-    android:versionCode="1226"
+    android:versionCode="1228"
     android:versionName="1.5.4">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -34,7 +34,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:replace="icon">
+        tools:replace="icon"
+
+        >
 
         <!-- <meta-data -->
         <!-- android:name="io.fabric.ApiKey" -->
@@ -58,7 +60,8 @@
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            />
         <activity
             android:name=".activity.TestActivity"
             android:label="@string/app_name"
@@ -196,7 +199,6 @@
             <!-- Support zxing://scan/?... like iPhone app -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <!--
@@ -212,7 +214,6 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
@@ -290,7 +291,8 @@
             android:name="com.google.android.gms.gcm.GcmReceiver"
             android:exported="true"
             android:permission="com.google.android.c2dm.permission.SEND"
-            android:singleUser="false">
+            android:singleUser="false"
+            >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
@@ -381,38 +383,31 @@
             android:name=".activity.social.SocialFilterActivity"
             android:label="@string/filter_title"
             android:theme="@style/SplashTheme">
-
-            <!--
-            <intent-filter>
+            <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
+            </intent-filter>-->
         </activity>
+
         <activity
             android:name=".activity.profile.EditProfileActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
-
-            <!--
-            <intent-filter>
+            <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
+            </intent-filter>-->
         </activity>
+
         <activity
             android:name=".activity.setup.CityActivity"
             android:theme="@style/SplashTheme">
-
-            <!--
-            <intent-filter>
+            <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
+            </intent-filter>-->
         </activity>
 
         <provider
@@ -422,12 +417,7 @@
 
         <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
 
-        <receiver android:name=".listener.AlarmReceiver" />
-
-        <activity android:name=".activity.event.ThemeDetailActivity"
-            android:label=""
-            android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme"></activity>
+        <receiver
+            android:name=".listener.AlarmReceiver"></receiver>
     </application>
-
 </manifest>
