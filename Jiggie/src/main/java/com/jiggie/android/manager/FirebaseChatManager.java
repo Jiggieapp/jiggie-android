@@ -22,6 +22,8 @@ public class FirebaseChatManager {
     public static ArrayList<UserModel> arrUser = new ArrayList<>();
     public static ArrayList<RoomModel> arrAllRoom = new ArrayList<>();
     public static ArrayList<String> arrAllRoomMembers = new ArrayList<>();
+    public static final int TYPE_GROUP = 2;
+    public static final int TYPE_PRIVATE = 1;
 
     public static DatabaseReference getFirebaseDatabase(){
         if(mDatabase==null){

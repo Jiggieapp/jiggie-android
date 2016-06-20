@@ -93,7 +93,8 @@ public class FriendsFragment extends Fragment implements TabFragment, HomeMain, 
         public PageAdapter(HomeMain homeMain, FragmentManager fm) {
             super(fm);
             this.fragments = new Fragment[]{
-                    ChatTabFragment.getInstance()
+                    //ChatTabFragment.getInstance()
+                    FirebaseChatTabFragment.getInstance()
                     //,atTabFragment.getInstance()
                     //FriendListFragment.getInstance(FriendsFragment.this)
                     , FriendListFragment.getInstance(FriendsFragment.this)
@@ -140,18 +141,17 @@ public class FriendsFragment extends Fragment implements TabFragment, HomeMain, 
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        ChatTabFragment.getInstance().onActivityResult(requestCode, resultCode, data);
-        //super.onActivityResult(requestCode, resultCode, data);
+        //ChatTabFragment.getInstance().onActivityResult(requestCode, resultCode, data);
     }
 
 
     void startRepeatingTask()
     {
-        ChatTabFragment.getInstance().startRepeatingTask();
+        //ChatTabFragment.getInstance().startRepeatingTask();
     }
 
     void stopRepeatingTask()
     {
-        ChatTabFragment.getInstance().stopRepeatingTask();
+        //ChatTabFragment.getInstance().stopRepeatingTask();
     }
 }

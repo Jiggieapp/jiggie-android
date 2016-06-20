@@ -39,6 +39,7 @@ public class RoomModel {
         public String last_message;
         public long created_at;
         public long updated_at;
+        public int unread;
 
         public Info(String name, String avatar, String event, String last_message, long created_at, long updated_at){
             this.name = name;
@@ -71,6 +72,14 @@ public class RoomModel {
 
         public long getUpdated_at() {
             return updated_at;
+        }
+
+        public int getUnread() {
+            return unread;
+        }
+
+        public void setUnread(int unread) {
+            this.unread = unread;
         }
     }
 }
