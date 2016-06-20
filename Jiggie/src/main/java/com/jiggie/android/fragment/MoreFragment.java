@@ -128,6 +128,7 @@ public class MoreFragment extends Fragment implements TabFragment, MoreTabListAd
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, this.rootView);
+        loadCredit();
         preDefine();
     }
 
@@ -135,34 +136,29 @@ public class MoreFragment extends Fragment implements TabFragment, MoreTabListAd
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         //setRetainInstance(true);
-        Utils.d(TAG, "onActivityCreated");
 
     }
 
-
+/*
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Utils.d(TAG, "onCreate");
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Utils.d(TAG, "onAttach");
-    }
+    }*/
 
 
     @Override
     public void onResume() {
         super.onResume();
-        Utils.d(TAG, "onResume");
-        loadCredit();
+        //loadCredit();
     }
 
     @Override
     public void onDestroy() {
-        Utils.d(TAG, "onDestroy");
         super.onDestroy();
     }
 
@@ -379,8 +375,8 @@ public class MoreFragment extends Fragment implements TabFragment, MoreTabListAd
         profilePresenter.fetchMemberInfo(AccessToken.getCurrentAccessToken().getUserId());
     }
 
-    @Override
+    /*@Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-    }
+    }*/
 }
