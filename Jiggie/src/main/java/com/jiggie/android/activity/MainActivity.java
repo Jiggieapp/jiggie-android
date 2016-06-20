@@ -754,15 +754,15 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
+   /* @Override
     public void onRestoreInstanceState(Bundle savedInstanceState, PersistableBundle persistentState) {
         Utils.d(TAG, "onRestoreInstanceState");
         super.onRestoreInstanceState(savedInstanceState, persistentState);
-    }
+    }*/
 
-    @Override
+    /*@Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         Utils.d(TAG, "onRestoreInstanceState 2");
-    }
+    }*/
 }
