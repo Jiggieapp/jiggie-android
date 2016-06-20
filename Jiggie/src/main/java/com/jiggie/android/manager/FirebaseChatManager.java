@@ -24,6 +24,7 @@ public class FirebaseChatManager {
     public static ArrayList<String> arrAllRoomMembers = new ArrayList<>();
     public static final int TYPE_GROUP = 2;
     public static final int TYPE_PRIVATE = 1;
+    public static String fb_id = "111222333";
 
     public static DatabaseReference getFirebaseDatabase(){
         if(mDatabase==null){

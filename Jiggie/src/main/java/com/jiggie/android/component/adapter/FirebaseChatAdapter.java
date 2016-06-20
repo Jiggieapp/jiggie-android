@@ -69,11 +69,18 @@ public class FirebaseChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         if(holderr instanceof FirebaseChatAdapter.ViewHolderBody)
         {
             FirebaseChatAdapter.ViewHolderBody holder = (FirebaseChatAdapter.ViewHolderBody) holderr;
-            try {
 
                 holder.txtMessage.setText(item.getMessage().trim());
-                holder.txtLeftTime.setText(getSimpleDate(Common.ISO8601_DATE_FORMAT.format(new Date())));
-                holder.txtRightTime.setText(getSimpleDate(Common.ISO8601_DATE_FORMAT.format(new Date())));
+
+                try {
+                    String dates = getSimpleDate(Common.ISO8601_DATE_FORMAT.format(new Date(item.getCreated_at())));
+
+                    holder.txtLeftTime.setText(dates);
+                    holder.txtRightTime.setText(dates);
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+
                 holder.imageView.setVisibility(isFromYou(item.getFb_id()) ? View.GONE : View.VISIBLE);
                 holder.txtLeftTime.setVisibility(isFromYou(item.getFb_id()) ? View.VISIBLE : View.GONE);
                 holder.txtRightTime.setVisibility(isFromYou(item.getFb_id()) ? View.GONE : View.VISIBLE);
@@ -86,15 +93,7 @@ public class FirebaseChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 if (!isFromYou(item.getFb_id())) {
 
                     //Added by Aga 12-2-2016---
-                    //holder.txtMessage.setGravity(Gravity.RIGHT);
                     String urlImage = getProfileImage(data.get(position).getFb_id());
-                    /*if (getProfileImage(data.get(position).getFb_id()) != null) {
-                        //urlImage = getProfileImage(data.get(position).getFb_id());
-                        urlImage = "http://www.johndoe.pro/img/John_Doe.jpg";
-                    } else {
-                        final int width = holder.imageView.getWidth() * 2;
-                        urlImage = App.getFacebookImage(data.get(position).getFb_id(), width);
-                    }*/
                     //---------
 
                     Glide.with(this.activity).load(urlImage).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.imageView) {
@@ -119,9 +118,6 @@ public class FirebaseChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         }
                     });
                 }
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            }
         }
         else if(holderr instanceof ViewHolderHeader)
         {

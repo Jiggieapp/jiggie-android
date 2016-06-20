@@ -127,7 +127,7 @@ public class Utils {
     //FIREBASE CHAT------------
     public static final String ROOM_ID = "roomId";
     public static final String ROOM_EVENT = "roomEvent";
-    public static final String ROOM_TYPE = "roomEvent";
+    public static final String ROOM_TYPE = "roomType";
     //-------------------------
 
     public static int myPixel(Activity a, int dip) {

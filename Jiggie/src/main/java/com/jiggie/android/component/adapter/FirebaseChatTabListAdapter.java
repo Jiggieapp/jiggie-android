@@ -19,6 +19,7 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.manager.FirebaseChatManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.RoomModel;
@@ -58,8 +59,6 @@ public class FirebaseChatTabListAdapter extends RecyclerView.Adapter<FirebaseCha
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        //try {
-
             RoomModel roomModel = data.get(position);
             long type = roomModel.getType();
             holder.roomModel = roomModel;
@@ -71,23 +70,20 @@ public class FirebaseChatTabListAdapter extends RecyclerView.Adapter<FirebaseCha
                 holder.txtMessage.setText(roomModel.getInfo().getLast_message());
             }
 
-            /*final Date date = Common.ISO8601_DATE_FORMAT_UTC.parse(DateFormat.format("MM/dd/yyyy", new Date(roomModel.getInfo().getUpdated_at())).toString());
-            String simpleDate = Common.SIMPLE_12_HOUR_FORMAT.format(date).replace("AM", "").replace("PM", "").trim();*/
+            try {
+                String dates = getSimpleDate(Common.ISO8601_DATE_FORMAT.format(new Date(roomModel.getInfo().getUpdated_at())));
+                holder.txtTime.setText(dates);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
 
-            //holder.txtTime.setText(simpleDate);
             int unread = data.get(position).getInfo().getUnread();
             holder.txtUnread.setText(String.valueOf(unread));
             holder.txtUnread.setVisibility(unread == 0 ? View.INVISIBLE : View.VISIBLE);
             holder.txtTime.setTextColor(ContextCompat.getColor(this.fragment.getContext(), unread == 0 ? android.R.color.darker_gray : R.color.colorAccent));
 
             //Added by Aga 12-2-2016---
-            String urlImage = urlImage = data.get(position).getInfo().getAvatar();
-            /*if(item.getProfile_image()!=null){
-                urlImage = item.getProfile_image();
-            }else{
-                final int width = holder.imageView.getWidth() * 2;
-                urlImage = App.getFacebookImage(item.getFb_id(), width);
-            }*/
+            String urlImage = data.get(position).getInfo().getAvatar();
             //---------
             Glide.with(this.fragment).load(urlImage).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.imageView) {
                 @Override
@@ -98,16 +94,18 @@ public class FirebaseChatTabListAdapter extends RecyclerView.Adapter<FirebaseCha
                 }
             });
 
+            final long types = type;
             holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //fragment.getActivity().startActivity(new Intent(fragment.getActivity(), ProfileDetailActivity.class).putExtra(Common.FIELD_FACEBOOK_ID, item.getFb_id()));
+                    if(types== FirebaseChatManager.TYPE_GROUP){
+                        //go to event detail
+                    }else{
+                        //fragment.getActivity().startActivity(new Intent(fragment.getActivity(), ProfileDetailActivity.class).putExtra(Common.FIELD_FACEBOOK_ID, item.getFb_id()));
+                    }
                 }
             });
 
-        /*} catch (ParseException e) {
-            throw new RuntimeException(e);
-        }*/
     }
 
     @Override
@@ -167,6 +165,13 @@ public class FirebaseChatTabListAdapter extends RecyclerView.Adapter<FirebaseCha
             unreadCount += this.data.get(i).getInfo().getUnread() > 0 ? 1 : 0;
 
         return unreadCount;
+    }
+
+    public String getSimpleDate(String createdAt) throws ParseException {
+        String simpleDate = Utils.BLANK;
+        final Date date = Common.ISO8601_DATE_FORMAT_UTC.parse(createdAt);
+        simpleDate = Common.SIMPLE_12_HOUR_FORMAT.format(date);
+        return simpleDate;
     }
 
 }

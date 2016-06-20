@@ -62,8 +62,6 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
     ValueEventListener messageEvent;
     FirebaseChatAdapter adapter;
 
-    String fb_id = "111222333";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +80,7 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
         //fb_id = AccessToken.getCurrentAccessToken().getUserId();
         roomId = intent.getStringExtra(Utils.ROOM_ID);
         event = intent.getStringExtra(Utils.ROOM_EVENT);
-        type = intent.getIntExtra(Utils.ROOM_TYPE, 1);
+        type = (int)intent.getLongExtra(Utils.ROOM_TYPE, 1);
 
         super.bindView();
 
@@ -96,7 +94,7 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
             String id2 = roomId.substring(roomId.indexOf("_")+1, roomId.length());
 
             String idFriend = Utils.BLANK;
-            if(fb_id.equals(id1)){
+            if(FirebaseChatManager.fb_id.equals(id1)){
                 idFriend = id2;
             }else {
                 idFriend = id1;
@@ -150,14 +148,14 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
         String name = Utils.BLANK, avatar = Utils.BLANK;
         for(int i=0;i<FirebaseChatManager.arrUser.size();i++){
             String fb_idMatch = FirebaseChatManager.arrUser.get(i).getFb_id();
-            if(fb_id.equals(fb_idMatch)){
+            if(FirebaseChatManager.fb_id.equals(fb_idMatch)){
                 name = FirebaseChatManager.arrUser.get(i).getName();
                 avatar = FirebaseChatManager.arrUser.get(i).getAvatar();
             }else{
                 //do nothing
             }
         }
-        FirebaseChatManager.sendMessage(new MessagesModel("aabbcc", fb_id, name, avatar, txtMessage.getText().toString(), Calendar.getInstance().getTimeInMillis()), roomId);
+        FirebaseChatManager.sendMessage(new MessagesModel("aabbcc", FirebaseChatManager.fb_id, name, avatar, txtMessage.getText().toString(), Calendar.getInstance().getTimeInMillis()), roomId);
     }
 
     private void getMessages(String roomId){
@@ -211,9 +209,9 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
         if (isActive()) {
             viewChat.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
-            invalidateOptionsMenu();
+            /*invalidateOptionsMenu();
             recyclerView.scrollToPosition(adapter.getItemCount() - 1);
-            setResult(RESULT_OK, new Intent().putExtra(Conversation.FIELD_FACEBOOK_ID, toId));
+            setResult(RESULT_OK, new Intent().putExtra(Conversation.FIELD_FACEBOOK_ID, toId));*/
         }
     }
 

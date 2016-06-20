@@ -67,7 +67,6 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
     private static FirebaseChatTabFragment instance;
 
     ValueEventListener userEvent, roomEvent;
-    String fb_id = "111222333";
 
     public static FirebaseChatTabFragment getInstance()
     {
@@ -281,7 +280,7 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
     }
 
     private void getRoomMembers(){
-        Query queryRoomMembers = FirebaseChatManager.getQueryRoomMembers(fb_id);
+        Query queryRoomMembers = FirebaseChatManager.getQueryRoomMembers(FirebaseChatManager.fb_id);
         roomEvent = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -346,7 +345,7 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
                     String name = Utils.BLANK;
                     String avatar = Utils.BLANK;
                     String idFriend = Utils.BLANK;
-                    if(fb_id.equals(id1)){
+                    if(FirebaseChatManager.fb_id.equals(id1)){
                         idFriend = id2;
                     }else {
                         idFriend = id1;
@@ -429,11 +428,11 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case 0:
-                                FirebaseChatManager.blockChatList(roomModel.getKey(), fb_id);
+                                FirebaseChatManager.blockChatList(roomModel.getKey(), FirebaseChatManager.fb_id);
                                 dialogLongClick.dismiss();
                                 break;
                             case 1:
-                                FirebaseChatManager.deleteChatList(roomModel.getKey(), fb_id);
+                                FirebaseChatManager.deleteChatList(roomModel.getKey(), FirebaseChatManager.fb_id);
                                 dialogLongClick.dismiss();
                                 break;
                             default:
