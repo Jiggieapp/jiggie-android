@@ -46,18 +46,24 @@ public class EventTabListAdapter
     private ArrayList<EventModel.Data.Events> items;
     private Context context;
     private static final String TAG = EventTabListAdapter.class.getSimpleName();
-
+    private boolean isThemeDetail = false;
     /*public EventTabListAdapter(Fragment fragment, ViewSelectedListener listener) {
         this.items = new ArrayList<>();
         this.listener = listener;
         this.fragment = fragment;
     }*/
 
-    public EventTabListAdapter(Context context, ViewSelectedListener listener)
-    {
+    public EventTabListAdapter(Context context, ViewSelectedListener listener) {
         this.items = new ArrayList<>();
         this.context = context;
         this.listener = listener;
+    }
+
+    public EventTabListAdapter(Context context, ViewSelectedListener listener, boolean isThemeDetail) {
+        this.items = new ArrayList<>();
+        this.context = context;
+        this.listener = listener;
+        this.isThemeDetail = isThemeDetail;
     }
 
     public void clear() {
@@ -65,7 +71,9 @@ public class EventTabListAdapter
     }
 
     public void addAll(ArrayList<EventModel.Data.Events> items) {
-        this.items.addAll(items);
+        /*for (EventModel.Data.Events ev : items)
+            add(ev);*/
+        setItems(items);
     }
 
     public void add(EventModel.Data.Events item) {
@@ -79,11 +87,13 @@ public class EventTabListAdapter
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         this.context = parent.getContext();
-        if(viewType == 1)
+        if (viewType == 1)
             return new EventsViewHolder(LayoutInflater.from(this.context).inflate(R.layout.item_event, parent, false), this.listener);
-        else
+        else if (viewType == 0)
             return new ThemesViewHolder(LayoutInflater.from(this.context).inflate(R.layout.item_themes, parent, false), this.listener);
-
+        else if (viewType == 3)
+            return new ThemesHeaderViewHolder(LayoutInflater.from(this.context).inflate(R.layout.item_header_themes, parent, false));
+        return null;
     }
 
     private EventTagAdapter eventTagAdapter;
@@ -91,7 +101,12 @@ public class EventTabListAdapter
     //Added by Aga
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        final EventModel.Data.Events item = this.items.get(position);
+        final EventModel.Data.Events item;
+        /*if (isThemeDetail && position > 0)
+            position -= 1;*/
+        if (items.size() > 0)
+            item = this.items.get(position);
+        else return;
         if (viewHolder instanceof EventsViewHolder) {
             EventsViewHolder holder = (EventsViewHolder) viewHolder;
             try {
@@ -194,27 +209,25 @@ public class EventTabListAdapter
             } catch (ParseException e) {
                 throw new RuntimeException(App.getErrorMessage(e), e);
             }
-        }
-        else if(viewHolder instanceof ThemesViewHolder)
-        {
+        } else if (viewHolder instanceof ThemesViewHolder) {
             ThemesViewHolder holder = (ThemesViewHolder) viewHolder;
-            try
-            {
+            try {
                 holder.event = item;
-                holder.txtTitle.setText(item.getTitle() + " bah");
+                holder.txtTitle.setText(item.getTitle());
 
                 Glide
                         .with(context)
                         .load(items.get(position).getPhotos().get(0))
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .into(holder.image);
-                holder.txtDescription.setText(item.getDescription());
+                //holder.txtDescription.setText(item.getDescription());
+
+            } catch (Exception e) {
 
             }
-            catch (Exception e)
-            {
-
-            }
+        } else if (viewHolder instanceof ThemesHeaderViewHolder) {
+            ThemesHeaderViewHolder holder = (ThemesHeaderViewHolder) viewHolder;
+            holder.lblThemeDescription.setText(item.getDescription());
         }
 
     }
@@ -269,11 +282,26 @@ public class EventTabListAdapter
         }
     }
 
+    static class ThemesHeaderViewHolder extends RecyclerView.ViewHolder {
+        /*@Bind(R.id.lbl_title_name)
+        TextView lblTitleName;*/
+
+        @Bind(R.id.lbl_theme_description)
+        TextView lblThemeDescription;
+
+        private EventModel.Data.Events event;
+
+        public ThemesHeaderViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+    }
+
     static class ThemesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @Bind(R.id.txtEventName)
         TextView txtTitle;
-        @Bind(R.id.txtDescription)
-        TextView txtDescription;
+        //@Bind(R.id.txtDescription)
+        //TextView txtDescription;
         @Bind(R.id.image)
         ImageView image;
 
@@ -312,9 +340,13 @@ public class EventTabListAdapter
 
     @Override
     public int getItemViewType(int position) {
-        if (items.get(position).isEvent)
-            return 1;
-        else return 0;
+        if (position == 0 && isThemeDetail)
+            return 3;
+        else {
+            //if (isThemeDetail) position -= 1;
+            if (items.get(position).isEvent)
+                return 1;
+            else return 0;
+        }
     }
-
 }

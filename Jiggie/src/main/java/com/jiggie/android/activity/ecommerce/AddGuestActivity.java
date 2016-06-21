@@ -48,9 +48,12 @@ public class AddGuestActivity extends ToolbarActivity {
     MaterialEditText edtPhone;
     @Bind(R.id.rel_save)
     RelativeLayout relSave;
+    @Bind(R.id.edt_id)
+    MaterialEditText edtId;
 
     GuestPresenter guestPresenter;
     private static final String TAG = AddGuestActivity.class.getSimpleName();
+    private boolean isLoket = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +87,12 @@ public class AddGuestActivity extends ToolbarActivity {
                 }
                 String guestPhoneN = edtPhone.getText().toString();
                 String guestPhone = /*guest62 +*/ guestPhoneN;
+                String id = "";
+                if(isLoket)
+                    id = edtId.getText().toString();
 
-                if (!isFieldError(guestName, guestEmail, guest62, guestPhoneN)) {
+
+                if (!isFieldError(guestName, guestEmail, guest62, guestPhoneN, id)) {
                     if (!guestName.isEmpty() && !guestEmail.isEmpty() && !guest62.isEmpty() && !guestPhoneN.isEmpty()) {
                         Intent result = new Intent();
                         result.putExtra(Common.FIELD_GUEST_NAME, guestName);
@@ -189,6 +196,28 @@ public class AddGuestActivity extends ToolbarActivity {
                 checkEnability();
             }
         });
+
+        if(isLoket)
+        {
+            edtId.setVisibility(View.VISIBLE);
+            edtId.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                edtId.setTextColor(getResources().getColor(R.color.textDarkGray));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                checkEnability();
+            }
+        });
+        }
+
     }
 
     private void preDefined() {
@@ -206,15 +235,11 @@ public class AddGuestActivity extends ToolbarActivity {
             /*s62 = null;
             if(s62 == null)
                 s62 = "";*/
-            if(!s62.isEmpty())
-            {
+            if (!s62.isEmpty()) {
                 edt62.setText("+" + s62);
-            }
-            else
-            {
+            } else {
                 edt62.setText(s62);
             }
-            Utils.d(TAG, "guest62 " + s62);
             edtPhone.setText(phone);
         }
 
@@ -240,7 +265,7 @@ public class AddGuestActivity extends ToolbarActivity {
         App.getInstance().trackMixPanelCommerce(Utils.COMM_GUEST_INFO, commEventMixpanelModel);
     }
 
-    private boolean isFieldError(String name, String email, String str62, String phone) {
+    private boolean isFieldError(String name, String email, String str62, String phone, String id) {
         boolean isError = false;
         if (name.isEmpty()) {
             isError = true;
@@ -268,6 +293,13 @@ public class AddGuestActivity extends ToolbarActivity {
                 edtEmail.setTextColor(getResources().getColor(android.R.color.holo_red_light));
                 edtEmail.setError(Utils.BLANK);
             }
+        }
+        if(isLoket && id.isEmpty())
+        {
+            isError = true;
+            edtId.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+            edtId.setError(Utils.BLANK);
+            edtId.requestFocus();
         }
         return isError;
     }
@@ -304,18 +336,15 @@ public class AddGuestActivity extends ToolbarActivity {
     }
 
     @OnClick(R.id.edt_62)
-    public void onEdt62Click()
-    {
+    public void onEdt62Click() {
         Intent i = new Intent(this, CountryActivity.class);
-        startActivityForResult(i ,Utils.REQUEST_CODE_CHOOSE_COUNTRY);
+        startActivityForResult(i, Utils.REQUEST_CODE_CHOOSE_COUNTRY);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == Utils.REQUEST_CODE_CHOOSE_COUNTRY)
-        {
-            if(resultCode == RESULT_OK)
-            {
+        if (requestCode == Utils.REQUEST_CODE_CHOOSE_COUNTRY) {
+            if (resultCode == RESULT_OK) {
                 edt62.setText(
                         data.getStringExtra("dial_code").replace(" ", ""));
             }

@@ -251,6 +251,7 @@
 
     <string name="title_guest">CONTACT DETAIL</string>
     <string name="guest_name">Guest name</string>
+    <string name="guest_id">Id Number</string>
     <string name="guest_email">Email</string>
     <string name="guest_62">+62</string>
     <string name="guest_phone">Phone number</string>

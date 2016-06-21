@@ -39,11 +39,12 @@
             android:layout_marginLeft="@dimen/padding_standard_half"
             android:layout_marginRight="@dimen/padding_standard_half"
             android:layout_marginTop="@dimen/padding_standard_half"
+            android:layout_marginBottom="@dimen/padding_standard_half"
             android:textAllCaps="true"
             android:textColor="@android:color/black"
             android:textSize="20sp"/>
 
-        <TextView
+        <!--<TextView
             android:id="@+id/txtDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -52,7 +53,7 @@
             android:layout_marginLeft="@dimen/padding_standard_half"
             android:layout_marginRight="@dimen/padding_standard_half"
             android:layout_marginTop="@dimen/padding_standard_half"
-            android:layout_marginBottom="@dimen/padding_standard_half" />
+            android:layout_marginBottom="@dimen/padding_standard_half" />-->
 
         <!--<it.sephiroth.android.library.widget.HListView
             android:layout_margin="@dimen/padding_standard_half"

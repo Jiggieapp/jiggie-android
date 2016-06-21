@@ -137,7 +137,6 @@ public class CongratsActivity extends ToolbarActivity {
     private String timezone;
 
     private void preDefined(final String orderId) {
-        Utils.d(TAG, "orderId " + orderId);
         CommerceManager.loaderSucScreenCC(orderId, new CommerceManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object) {

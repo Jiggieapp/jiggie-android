@@ -132,6 +132,11 @@ public class EventModel {
                 this.tags = tags;
             }*/
 
+            public Events()
+            {
+
+            }
+
             public Events(String _id, String title, String venue_name
                     , String start_datetime, String end_datetime
                     , String special_type, ArrayList<String> tags

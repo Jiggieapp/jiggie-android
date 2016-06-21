@@ -3,6 +3,8 @@ package com.jiggie.android.activity.event;
 import android.content.Intent;
 import android.os.PersistableBundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,7 +26,8 @@ import com.jiggie.android.model.ThemeResultModel;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ThemeDetailActivity extends ToolbarActivity implements ThemeView, EventTabListAdapter.ViewSelectedListener{
+public class ThemeDetailActivity extends ToolbarActivity implements ThemeView
+        , EventTabListAdapter.ViewSelectedListener, AppBarLayout.OnOffsetChangedListener{
 
     private final static String TAG = ThemeDetailActivity.class.getSimpleName();
 
@@ -34,17 +37,27 @@ public class ThemeDetailActivity extends ToolbarActivity implements ThemeView, E
     @Bind(R.id.recycler_events)
     RecyclerView recyclerEvents;
 
-    @Bind(R.id.lbl_theme_description)
+    /*@Bind(R.id.lbl_theme_description)
     TextView lblThemeDescription;
 
     @Bind(R.id.lbl_title_name)
-    TextView lblTitleName;
+    TextView lblTitleName;*/
 
     @Bind(R.id.swipe_refresh)
     SwipeRefreshLayout swipeRefresh;
 
+    @Bind(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbarLayout;
+
+    @Bind(R.id.event_name)
+    TextView eventName;
+
+    @Bind(R.id.appBar)
+    AppBarLayout appBar;
+
     private ThemePresenterImplementation themePresenter;
     private EventTabListAdapter adapter;
+    String title;
 
 
     @Override
@@ -68,15 +81,27 @@ public class ThemeDetailActivity extends ToolbarActivity implements ThemeView, E
         final Bundle bundle = getIntent().getExtras();
         final String image = bundle.getStringArrayList(Common.FIELD_EVENT_PICS).get(0);
         final String eventId = bundle.getString(Common.FIELD_EVENT_ID);
-        final String title = bundle.getString(Common.FIELD_EVENT_NAME);
+        title = bundle.getString(Common.FIELD_EVENT_NAME);
         final String description = bundle.getString(Common.FIELD_EVENT_DESCRIPTION);
-        lblTitleName.setText(title);
-        lblThemeDescription.setText(description);
+        super.setToolbarTitle(Utils.BLANK, false);
+        appBar.addOnOffsetChangedListener(this);
 
-        super.setToolbarTitle(title, true);
         Glide.with(this).load(image).into(imgTheme);
         swipeRefresh.setRefreshing(true);
+        swipeRefresh.setEnabled(true);
         themePresenter.loadThemesEvent(eventId);
+
+        this.adapter = new EventTabListAdapter(this, this, true);
+        //for header
+        EventModel.Data.Events header = new EventModel.Data.Events();
+        header.setTitle(title);
+        header.setDescription(description);
+        adapter.add(header);
+        //end of for header
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        this.recyclerEvents.setLayoutManager(layoutManager);
+        this.recyclerEvents.setAdapter(adapter);
+
     }
 
     @Override
@@ -84,20 +109,20 @@ public class ThemeDetailActivity extends ToolbarActivity implements ThemeView, E
         /*Utils.d(TAG, "result " + result.data.themes.image + " "
                 + result.data.themes.desc + " "
                 + result.data.events.get(0).getTitle());*/
-        swipeRefresh.setEnabled(false);
-        swipeRefresh.setRefreshing(false);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        this.recyclerEvents.setLayoutManager(layoutManager);
 
-        this.adapter = new EventTabListAdapter(this, this);
+
+
         for(int i=0;i<result.data.events.size();i++)
         {
+            /*Utils.d(TAG, "size " + adapter.getItemCount() + " "
+                    + result.data.events.get(i).getTitle());*/
             result.data.events.get(i).isEvent = true;
 
         }
         this.adapter.addAll(result.data.events);
-        this.recyclerEvents.setAdapter(adapter);
-
+        this.adapter.notifyDataSetChanged();
+        swipeRefresh.setRefreshing(false);
+        swipeRefresh.setEnabled(false);
     }
 
     @Override
@@ -123,6 +148,23 @@ public class ThemeDetailActivity extends ToolbarActivity implements ThemeView, E
         i.putExtra(Common.FIELD_EVENT_TIMEZONE, event.getTz());
         i.putExtra("from", TAG);
         super.startActivity(i);
+    }
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        //this.swipeRefresh.setEnabled(verticalOffset == 0);
+
+        /*if (collapsingToolbarLayout.getHeight() + verticalOffset
+                < 2 * ViewCompat.getMinimumHeight(collapsingToolbarLayout)) {
+            super.setToolbarTitle(Utils.BLANK, true);
+            eventName.setText(title);
+        } else {
+            super.setToolbarTitle(Utils.BLANK, true);
+            eventName.setText(title);
+            //eventName.setText(Utils.BLANK);
+        }*/
+
+        eventName.setText(title);
     }
 
     /*@Override

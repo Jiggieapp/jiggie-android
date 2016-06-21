@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.jiggie.android"
-    android:versionCode="1228"
+    android:versionCode="1229"
     android:versionName="1.5.4">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -419,5 +419,15 @@
 
         <receiver
             android:name=".listener.AlarmReceiver"></receiver>
+
+        <activity
+            android:name=".activity.event.ThemeDetailActivity"
+            android:label=""
+            android:theme="@style/SplashTheme">
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
     </application>
 </manifest>

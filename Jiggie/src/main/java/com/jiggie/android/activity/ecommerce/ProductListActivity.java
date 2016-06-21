@@ -124,7 +124,6 @@ public class ProductListActivity extends ToolbarActivity
 
         appBarLayout.addOnOffsetChangedListener(this);
         final String eventPics = getIntent().getStringExtra("images");
-        Utils.d(TAG, "event pics " + eventPics);
         if (eventPics != null) {
             Glide.with(this)
                     .load(eventPics)

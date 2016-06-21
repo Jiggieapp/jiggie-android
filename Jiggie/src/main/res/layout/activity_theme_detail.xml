@@ -51,6 +51,35 @@
                     android:layout_height="wrap_content"
                     android:visibility="gone" />-->
 
+                <ImageButton
+                    android:id="@+id/back_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="?attr/actionBarSize"
+                    android:src="@drawable/ic_back_button_shadow"
+                    android:layout_gravity="left|center_vertical"
+                    android:background="@android:color/transparent"
+                    android:scaleType="centerInside"
+                    />
+
+                <TextView
+                    android:id="@+id/event_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/padding_standard"
+                    android:layout_marginLeft="@dimen/padding_fars"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    android:gravity="center_vertical"
+                    android:textAllCaps="true"
+                    android:textStyle="bold"
+                    android:shadowColor="@color/text_shadow"
+                    android:shadowDx="1"
+                    android:shadowDy="5"
+                    android:shadowRadius="5"/>
+
             </android.support.v7.widget.Toolbar>
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
@@ -71,54 +100,22 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
 
 
-    <RelativeLayout
+    <!--<RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <LinearLayout
-            android:id="@+id/linear_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/lbl_title_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/padding_standard"
-                android:layout_marginRight="@dimen/padding_standard"
-                android:gravity="left"
-                android:paddingTop="@dimen/padding_standard"
-                android:textAllCaps="true"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/font_subhead_size"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/lbl_theme_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/padding_standard"
-                android:layout_marginRight="@dimen/padding_standard"
-                android:layout_marginTop="@dimen/padding_standard_half"
-                android:gravity="left"
-                android:paddingBottom="@dimen/padding_standard" />
-        </LinearLayout>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
 
         <android.support.v4.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:layout_below="@+id/linear_container" >
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_events"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                />
+                android:layout_height="wrap_content" />
         </android.support.v4.widget.SwipeRefreshLayout>
 
-    </RelativeLayout>
+    <!--</RelativeLayout>-->
 </android.support.design.widget.CoordinatorLayout>
