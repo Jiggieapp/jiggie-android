@@ -30,8 +30,8 @@ public class FirebaseChatManager {
     public static ArrayList<CollectionRoomMemberModel> arrCollectRoomMembers = new ArrayList<>();
     public static final int TYPE_GROUP = 2;
     public static final int TYPE_PRIVATE = 1;
-    public static String fb_id = "444555666";
-    //public static String fb_id = AccessToken.getCurrentAccessToken().getUserId();
+    //public static String fb_id = "444555666";
+    public static String fb_id = AccessToken.getCurrentAccessToken().getUserId();
     public static String badgeChat = "0";
 
     public static DatabaseReference getFirebaseDatabase(){
@@ -147,15 +147,15 @@ public class FirebaseChatManager {
         for(int i=0;i<dataUnread.size();i++){
             String fb_idMatch = dataUnread.get(i).getFb_id();
             if(fb_idMatch.equals(fb_id)){
-                result.put(fb_idMatch, 0);
+                result.put(fb_idMatch, String.valueOf(0));
             }else{
-                result.put(fb_idMatch, dataUnread.get(i).getCounter()+1);
+                result.put(fb_idMatch, String.valueOf(dataUnread.get(i).getCounter()+1));
             }
         }
-        getFirebaseDatabase().child("rooms").child(roomId).child("unread").setValue(result);
+        getFirebaseDatabase().child("rooms").child(roomId).child("info").child("unread").setValue(result);
     }
 
     public static void counterRead(String roomId){
-        getFirebaseDatabase().child("rooms").child(roomId).child("unread").child(fb_id).setValue(0);
+        getFirebaseDatabase().child("rooms").child(roomId).child("info").child("unread").child(fb_id).setValue(String.valueOf(0));
     }
 }

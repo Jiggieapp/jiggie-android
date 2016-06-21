@@ -184,7 +184,7 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
 
     @Override
     public void onRefresh() {
-        /*ChatManager.loaderMigrateChatFirebase(FirebaseChatManager.fb_id, new OnResponseListener() {
+        ChatManager.loaderMigrateChatFirebase(FirebaseChatManager.fb_id, new OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
                 refreshData();
@@ -195,8 +195,8 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
                 Log.e(TAG, exceptionModel.toString());
                 refreshLayout.setRefreshing(false);
 ;            }
-        });*/
-        refreshData();
+        });
+        //refreshData();
     }
 
     private void refreshData(){
@@ -285,11 +285,11 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
                     String key = (String) messageSnapshot.getKey();
-                    String fb_id = String.valueOf(messageSnapshot.child("fb_id").getValue());
+                    //String fb_id = String.valueOf(messageSnapshot.child("fb_id").getValue());
                     String name = (String) messageSnapshot.child("name").getValue();
                     String avatar = (String) messageSnapshot.child("avatar").getValue();
 
-                    UserModel userModel = new UserModel(key, fb_id, name, avatar);
+                    UserModel userModel = new UserModel(key, key, name, avatar);
                     FirebaseChatManager.arrUser.add(userModel);
                 }
 
@@ -392,10 +392,21 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
                     info = new RoomModel.Info(name, avatar, event, last_message, created_at, updated_at);
                 }
 
-                ArrayList<RoomModel.Unread> arrUnread = new ArrayList<RoomModel.Unread>();
+                //Firebase testing project-----------------------
+                /*ArrayList<RoomModel.Unread> arrUnread = new ArrayList<RoomModel.Unread>();
                 for (DataSnapshot unreadSnapshot: dataSnapshot.child("unread").getChildren()) {
                     String fb_id = (String)unreadSnapshot.getKey();
                     long counter = (long)unreadSnapshot.getValue();
+
+                    RoomModel.Unread unread = new RoomModel.Unread(fb_id, counter);
+                    arrUnread.add(unread);
+                }*/
+                //------------------------------------------------
+
+                ArrayList<RoomModel.Unread> arrUnread = new ArrayList<RoomModel.Unread>();
+                for (DataSnapshot unreadSnapshot: dataSnapshot.child("info").child("unread").getChildren()) {
+                    String fb_id = (String)unreadSnapshot.getKey();
+                    long counter = Long.parseLong((String)unreadSnapshot.getValue());
 
                     RoomModel.Unread unread = new RoomModel.Unread(fb_id, counter);
                     arrUnread.add(unread);
