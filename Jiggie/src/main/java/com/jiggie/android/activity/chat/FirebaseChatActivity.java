@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.facebook.AccessToken;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
@@ -25,8 +26,10 @@ import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.FirebaseChatAdapter;
 import com.jiggie.android.component.adapter.FirebaseChatDetailAdapter;
 import com.jiggie.android.manager.FirebaseChatManager;
+import com.jiggie.android.model.CollectionRoomMemberModel;
 import com.jiggie.android.model.Conversation;
 import com.jiggie.android.model.MessagesModel;
+import com.jiggie.android.model.RoomModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -54,7 +57,6 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
     int type;
     private String toName;
     private String toId;
-    private Handler handler;
 
     public static final String TAG = ChatActivity.class.getSimpleName();
 
@@ -118,7 +120,6 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
 
 
         this.btnSend.setEnabled(false);
-        this.handler = new Handler();
         this.viewChat.setVisibility(View.GONE);
         this.failedView.setVisibility(View.GONE);
         this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -134,6 +135,8 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
         });
 
         onGlobalLayout();
+        FirebaseChatManager.getCollectionRoomMembers(roomId);
+        FirebaseChatManager.counterRead(roomId);
     }
 
     @Override
@@ -158,8 +161,9 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
         FirebaseChatManager.sendMessage(new MessagesModel("aabbcc", FirebaseChatManager.fb_id, name, avatar, txtMessage.getText().toString(), Calendar.getInstance().getTimeInMillis()), roomId);
     }
 
-    private void getMessages(String roomId){
+    private void getMessages(final String roomId){
         Query queryMessages = FirebaseChatManager.getQueryMessage(roomId);
+
         messageEvent = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

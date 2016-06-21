@@ -26,13 +26,18 @@ import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.chat.FirebaseChatActivity;
+import com.jiggie.android.api.OnResponseListener;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.FirebaseChatTabListAdapter;
+import com.jiggie.android.manager.ChatManager;
 import com.jiggie.android.manager.FirebaseChatManager;
+import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.RoomModel;
 import com.jiggie.android.model.UserModel;
+
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -121,13 +126,14 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
                 recyclerView.setAdapter(adapter);
             }else{
                 adapter.notifyDataSetChanged();
+                this.setHomeTitle();
             }
         }
         this.recyclerView.setLayoutManager(new LinearLayoutManager(super.getContext()));
         this.recyclerView.setAdapter(getInstance().adapter);
 
-        /*getEmptyView().setVisibility(getInstance().adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
-        recyclerView.setVisibility(getInstance().adapter.getItemCount() == 0 ? View.GONE : View.VISIBLE);*/
+        getEmptyView().setVisibility(getInstance().adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+        recyclerView.setVisibility(getInstance().adapter.getItemCount() == 0 ? View.GONE : View.VISIBLE);
         if(refreshLayout.isRefreshing())
             refreshLayout.setRefreshing(false);
     }
@@ -176,6 +182,20 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
 
     @Override
     public void onRefresh() {
+        ChatManager.loaderMigrateChatFirebase(FirebaseChatManager.fb_id, new OnResponseListener() {
+            @Override
+            public void onSuccess(Object object) {
+                refreshData();
+            }
+
+            @Override
+            public void onFailure(ExceptionModel exceptionModel) {
+                Log.e(TAG, exceptionModel.toString())
+;            }
+        });
+    }
+
+    private void refreshData(){
         if (super.getContext() == null) {
             // fragment has been destroyed.
             return;
@@ -366,7 +386,16 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
                     info = new RoomModel.Info(name, avatar, event, last_message, created_at, updated_at);
                 }
 
-                RoomModel roomModel = new RoomModel(key, info, type);
+                ArrayList<RoomModel.Unread> arrUnread = new ArrayList<RoomModel.Unread>();
+                for (DataSnapshot unreadSnapshot: dataSnapshot.child("unread").getChildren()) {
+                    String fb_id = (String)unreadSnapshot.getKey();
+                    long counter = (long)unreadSnapshot.getValue();
+
+                    RoomModel.Unread unread = new RoomModel.Unread(fb_id, counter);
+                    arrUnread.add(unread);
+                }
+
+                RoomModel roomModel = new RoomModel(key, info, type, arrUnread);
 
                 //checker if already just update, if not then added---------------------
                 if(FirebaseChatManager.arrAllRoom.size()==0){
@@ -407,10 +436,11 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
 
     @Override
     public void onRoomSelected(RoomModel roomModel) {
-        startActivity(new Intent(getActivity(), FirebaseChatActivity.class)
-                .putExtra(Utils.ROOM_ID, roomModel.getKey())
-                .putExtra(Utils.ROOM_TYPE, roomModel.getType())
-                .putExtra(Utils.ROOM_EVENT, roomModel.getInfo().getEvent()));
+        Intent i = new Intent(getActivity(), FirebaseChatActivity.class);
+        i.putExtra(Utils.ROOM_ID, roomModel.getKey());
+        i.putExtra(Utils.ROOM_TYPE, roomModel.getType());
+        i.putExtra(Utils.ROOM_EVENT, roomModel.getInfo().getEvent());
+        super.startActivityForResult(i, 0);
     }
 
     @Override

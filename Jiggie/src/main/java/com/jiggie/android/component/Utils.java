@@ -162,6 +162,9 @@ public class Utils {
     public static final String URL_BLOCK_CHAT = BASE_URL + "app/v3/blockuserwithfbid";
     public static final String URL_DELETE_CHAT = BASE_URL + "app/v3/deletemessageswithfbid";
     public static final String URL_ADD_CHAT = BASE_URL + "app/v3/messages/add";
+    public static final String URL_ADD_GROUP_CHAT = BASE_URL + "app/v3/group/firebase";
+    public static final String URL_CHAT_FIREBASE = BASE_URL + "app/v3/chat/firebase/{fb_id}";
+
     public static final String URL_VERIFY_PHONE_NUMBER = BASE_URL + "app/v3/user/phone/verification/send/{fb_id}/{phone}";
     public static final String URL_VERIFY_VERIFICATION_CODE = BASE_URL + "app/v3/user/phone/verification/validate/{fb_id}/{token}";
     public static final String URL_WALKTHROUGH = BASE_URL + "app/v3/count_walkthrough";

@@ -93,7 +93,7 @@ public class FirebaseChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 if (!isFromYou(item.getFb_id())) {
 
                     //Added by Aga 12-2-2016---
-                    String urlImage = getProfileImage(data.get(position).getFb_id());
+                    String urlImage = getProfileImage(item.getFb_id());
                     //---------
 
                     Glide.with(this.activity).load(urlImage).asBitmap().centerCrop().into(new BitmapImageViewTarget(holder.imageView) {
@@ -108,12 +108,11 @@ public class FirebaseChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         }
                     });
 
-                    final int pos = position;
                     holder.imageView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             final Intent intent = new Intent(activity, ProfileDetailActivity.class);
-                            intent.putExtra(Common.FIELD_FACEBOOK_ID, data.get(pos).getFb_id());
+                            intent.putExtra(Common.FIELD_FACEBOOK_ID, item.getFb_id());
                             activity.startActivity(intent);
                         }
                     });
@@ -187,7 +186,7 @@ public class FirebaseChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private boolean isFromYou(String fb_id){
         boolean isFromYou = false;
         //if(fb_id.equals(AccessToken.getCurrentAccessToken().getUserId())){
-        if(fb_id.equals("111222333")){
+        if(fb_id.equals(FirebaseChatManager.fb_id)){
             isFromYou = true;
         }
         return isFromYou;

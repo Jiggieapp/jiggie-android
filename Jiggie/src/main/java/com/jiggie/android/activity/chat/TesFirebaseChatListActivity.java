@@ -283,7 +283,7 @@ public class TesFirebaseChatListActivity extends ToolbarActivity implements Fire
                     info = new RoomModel.Info(name, avatar, event, last_message, created_at, updated_at);
                 }
 
-                RoomModel roomModel = new RoomModel(key, info, type);
+                RoomModel roomModel = new RoomModel(key, info, type, new ArrayList<RoomModel.Unread>());
 
                 //checker if already just update, if not then added---------------------
                 if(FirebaseChatManager.arrAllRoom.size()==0){

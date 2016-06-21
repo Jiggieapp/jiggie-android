@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.event.EventDetailActivity;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.manager.FirebaseChatManager;
@@ -59,14 +60,14 @@ public class FirebaseChatTabListAdapter extends RecyclerView.Adapter<FirebaseCha
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-            RoomModel roomModel = data.get(position);
+            final RoomModel roomModel = data.get(position);
             long type = roomModel.getType();
             holder.roomModel = roomModel;
             if(type== FirebaseChatManager.TYPE_GROUP){
                 holder.txtUser.setText(roomModel.getInfo().getName());
                 holder.txtMessage.setText(roomModel.getInfo().getLast_message());
             }else{
-                holder.txtUser.setText(roomModel.getInfo().getEvent());
+                holder.txtUser.setText(roomModel.getInfo().getName());
                 holder.txtMessage.setText(roomModel.getInfo().getLast_message());
             }
 
@@ -77,7 +78,8 @@ public class FirebaseChatTabListAdapter extends RecyclerView.Adapter<FirebaseCha
                 throw new RuntimeException(e);
             }
 
-            int unread = data.get(position).getInfo().getUnread();
+            //int unread = roomModel.getInfo().getUnread();
+            long unread = getUnreadCounter(roomModel);
             holder.txtUnread.setText(String.valueOf(unread));
             holder.txtUnread.setVisibility(unread == 0 ? View.INVISIBLE : View.VISIBLE);
             holder.txtTime.setTextColor(ContextCompat.getColor(this.fragment.getContext(), unread == 0 ? android.R.color.darker_gray : R.color.colorAccent));
@@ -98,10 +100,12 @@ public class FirebaseChatTabListAdapter extends RecyclerView.Adapter<FirebaseCha
             holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    String key = roomModel.getKey();
                     if(types== FirebaseChatManager.TYPE_GROUP){
                         //go to event detail
+                        fragment.getActivity().startActivity(new Intent(fragment.getActivity(), EventDetailActivity.class).putExtra(Common.FIELD_EVENT_ID, key));
                     }else{
-                        //fragment.getActivity().startActivity(new Intent(fragment.getActivity(), ProfileDetailActivity.class).putExtra(Common.FIELD_FACEBOOK_ID, item.getFb_id()));
+                        fragment.getActivity().startActivity(new Intent(fragment.getActivity(), ProfileDetailActivity.class).putExtra(Common.FIELD_FACEBOOK_ID, getFbIdFriend(key)));
                     }
                 }
             });
@@ -158,13 +162,46 @@ public class FirebaseChatTabListAdapter extends RecyclerView.Adapter<FirebaseCha
     }
 
     public int countUnread() {
-        final int length = this.data.size();
+        /*final int length = this.data.size();
         int unreadCount = 0;
 
         for (int i = 0; i < length; i++)
             unreadCount += this.data.get(i).getInfo().getUnread() > 0 ? 1 : 0;
 
+        return unreadCount;*/
+
+        final int length = this.data.size();
+        int unreadCount = 0;
+
+        for (int i = 0; i < length; i++){
+            String fb_idMatch = Utils.BLANK;
+            int counter = 0;
+            for(int j=0;j<this.data.size();j++){
+                fb_idMatch = data.get(i).getUnreads().get(j).getFb_id();
+                if(FirebaseChatManager.fb_id.equals(fb_idMatch)){
+                    counter = Integer.parseInt(String.valueOf(data.get(i).getUnreads().get(j).getCounter()));
+                    break;
+                }
+            }
+            unreadCount += counter > 0 ? 1 : 0;
+        }
+
         return unreadCount;
+    }
+
+    private long getUnreadCounter(RoomModel roomModel){
+
+        String fb_idMatch = Utils.BLANK;
+        long counter = 0;
+        for(int j=0;j<this.data.size();j++){
+            fb_idMatch = roomModel.getUnreads().get(j).getFb_id();
+            if(FirebaseChatManager.fb_id.equals(fb_idMatch)){
+                counter = roomModel.getUnreads().get(j).getCounter();
+                break;
+            }
+        }
+
+        return counter;
     }
 
     public String getSimpleDate(String createdAt) throws ParseException {
@@ -172,6 +209,20 @@ public class FirebaseChatTabListAdapter extends RecyclerView.Adapter<FirebaseCha
         final Date date = Common.ISO8601_DATE_FORMAT_UTC.parse(createdAt);
         simpleDate = Common.SIMPLE_12_HOUR_FORMAT.format(date);
         return simpleDate;
+    }
+
+    private String getFbIdFriend(String identifier){
+        String id1 = identifier.substring(0, identifier.indexOf("_"));
+        String id2 = identifier.substring(identifier.indexOf("_")+1, identifier.length());
+
+        String idFriend = Utils.BLANK;
+        if(FirebaseChatManager.fb_id.equals(id1)){
+            idFriend = id2;
+        }else {
+            idFriend = id1;
+        }
+
+        return idFriend;
     }
 
 }

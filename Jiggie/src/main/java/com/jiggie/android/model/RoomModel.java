@@ -2,6 +2,7 @@ package com.jiggie.android.model;
 
 import com.jiggie.android.component.Utils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,11 +13,13 @@ public class RoomModel {
     public String key;
     public Info info;
     public long type;
+    public ArrayList<Unread> unreads;
 
-    public RoomModel(String key, Info info, long type){
+    public RoomModel(String key, Info info, long type, ArrayList<Unread> unreads){
         this.key = key;
         this.info = info;
         this.type = type;
+        this.unreads = unreads;
     }
 
     public String getKey() {
@@ -31,6 +34,10 @@ public class RoomModel {
         return type;
     }
 
+    public ArrayList<Unread> getUnreads() {
+        return unreads;
+    }
+
     public static class Info {
         public String name;
         public String avatar;
@@ -39,7 +46,6 @@ public class RoomModel {
         public String last_message;
         public long created_at;
         public long updated_at;
-        public int unread;
 
         public Info(String name, String avatar, String event, String last_message, long created_at, long updated_at){
             this.name = name;
@@ -73,13 +79,23 @@ public class RoomModel {
         public long getUpdated_at() {
             return updated_at;
         }
+    }
 
-        public int getUnread() {
-            return unread;
+    public static class Unread {
+        String fb_id;
+        long counter;
+
+        public Unread(String fb_id, long counter){
+            this.fb_id = fb_id;
+            this.counter = counter;
         }
 
-        public void setUnread(int unread) {
-            this.unread = unread;
+        public String getFb_id() {
+            return fb_id;
+        }
+
+        public long getCounter() {
+            return counter;
         }
     }
 }
