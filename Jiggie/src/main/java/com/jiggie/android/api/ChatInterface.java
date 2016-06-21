@@ -40,6 +40,6 @@ public interface ChatInterface {
     Call<Success2Model> groupChat(@Url String url, @Body HashMap<String, Object> groupModel);
 
     @GET(Utils.URL_CHAT_FIREBASE)
-    Call<Success2Model> migrateChatFirebase(@Query("fb_id") String fb_id);
+    Call<Success2Model> migrateChatFirebase(@Path("fb_id") String fb_id);
 
 }

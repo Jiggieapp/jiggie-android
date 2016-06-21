@@ -124,18 +124,20 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
             if(adapter==null){
                 getInstance().adapter = new FirebaseChatTabListAdapter(FirebaseChatTabFragment.this, FirebaseChatManager.arrAllRoom, this, this);
                 recyclerView.setAdapter(adapter);
+
+                /*getEmptyView().setVisibility(getInstance().adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+                recyclerView.setVisibility(getInstance().adapter.getItemCount() == 0 ? View.GONE : View.VISIBLE);*/
             }else{
                 adapter.notifyDataSetChanged();
-                this.setHomeTitle();
+
             }
+            this.setHomeTitle();
         }
         this.recyclerView.setLayoutManager(new LinearLayoutManager(super.getContext()));
         this.recyclerView.setAdapter(getInstance().adapter);
 
-        getEmptyView().setVisibility(getInstance().adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
-        recyclerView.setVisibility(getInstance().adapter.getItemCount() == 0 ? View.GONE : View.VISIBLE);
-        if(refreshLayout.isRefreshing())
-            refreshLayout.setRefreshing(false);
+        refreshLayout.setRefreshing(false);
+
     }
 
     @Override
@@ -182,7 +184,7 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
 
     @Override
     public void onRefresh() {
-        ChatManager.loaderMigrateChatFirebase(FirebaseChatManager.fb_id, new OnResponseListener() {
+        /*ChatManager.loaderMigrateChatFirebase(FirebaseChatManager.fb_id, new OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
                 refreshData();
@@ -190,9 +192,11 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
 
             @Override
             public void onFailure(ExceptionModel exceptionModel) {
-                Log.e(TAG, exceptionModel.toString())
+                Log.e(TAG, exceptionModel.toString());
+                refreshLayout.setRefreshing(false);
 ;            }
-        });
+        });*/
+        refreshData();
     }
 
     private void refreshData(){
@@ -216,7 +220,7 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
     private int unreadCount = 0;
     private void setHomeTitle() {
         if (this.homeMain != null) {
-            unreadCount = getInstance().adapter.countUnread();
+            unreadCount = getInstance().adapter.countBadge();
             /*if (unreadCount > 0)
                 this.title = String.format("%s (%d)", getString(R.string.chat), unreadCount);*/
             if(unreadCount > 0)
@@ -237,7 +241,9 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
             }
 
             //else this.title = super.getString(R.string.chat);
+            FirebaseChatManager.badgeChat = String.valueOf(unreadCount);
             this.homeMain.onTabTitleChanged(this);
+
         }
     }
 
@@ -325,7 +331,7 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                refreshLayout.setRefreshing(false);
             }
         };
         queryRoomMembers.addValueEventListener(roomEvent);
@@ -429,7 +435,7 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                refreshLayout.setRefreshing(false);
             }
         });
     }

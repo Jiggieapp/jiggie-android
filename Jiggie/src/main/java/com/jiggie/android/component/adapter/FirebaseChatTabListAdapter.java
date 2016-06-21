@@ -8,6 +8,7 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,6 +80,7 @@ public class FirebaseChatTabListAdapter extends RecyclerView.Adapter<FirebaseCha
             }
 
             //int unread = roomModel.getInfo().getUnread();
+            Log.d(TAG+" countBadge", String.valueOf(countBadge()));
             long unread = getUnreadCounter(roomModel);
             holder.txtUnread.setText(String.valueOf(unread));
             holder.txtUnread.setVisibility(unread == 0 ? View.INVISIBLE : View.VISIBLE);
@@ -189,11 +191,36 @@ public class FirebaseChatTabListAdapter extends RecyclerView.Adapter<FirebaseCha
         return unreadCount;
     }
 
+    public int countBadge(){
+        int countBadge = 0;
+
+        for(int i=0;i<FirebaseChatManager.arrAllRoomMembers.size();i++){
+            String roomId = FirebaseChatManager.arrAllRoomMembers.get(i);
+            for(int j=0;j<FirebaseChatManager.arrAllRoom.size();j++){
+                RoomModel roomModel = FirebaseChatManager.arrAllRoom.get(j);
+                String roomIdMatch = roomModel.getKey();
+                if(roomId==roomIdMatch){
+                    for(int k=0;k<roomModel.getUnreads().size();k++){
+                        RoomModel.Unread unread = roomModel.getUnreads().get(k);
+                        if(FirebaseChatManager.fb_id.equals(unread.getFb_id())){
+                            countBadge = countBadge + Integer.parseInt(String.valueOf(unread.getCounter()));
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        return countBadge;
+    }
+
     private long getUnreadCounter(RoomModel roomModel){
 
         String fb_idMatch = Utils.BLANK;
         long counter = 0;
-        for(int j=0;j<this.data.size();j++){
+
+        for(int j=0;j<roomModel.getUnreads().size();j++){
             fb_idMatch = roomModel.getUnreads().get(j).getFb_id();
             if(FirebaseChatManager.fb_id.equals(fb_idMatch)){
                 counter = roomModel.getUnreads().get(j).getCounter();

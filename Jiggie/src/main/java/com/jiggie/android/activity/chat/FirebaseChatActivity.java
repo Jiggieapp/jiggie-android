@@ -191,7 +191,7 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
 
                 if(adapter==null){
 
-                    adapter = new FirebaseChatAdapter(FirebaseChatActivity.this, arrMessages, event);
+                    adapter = new FirebaseChatAdapter(FirebaseChatActivity.this, arrMessages, event, type);
                     recyclerView.setAdapter(adapter);
 
                     checkActive();
@@ -219,4 +219,9 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        FirebaseChatManager.getFirebaseDatabase().removeEventListener(messageEvent);
+    }
 }

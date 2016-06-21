@@ -59,6 +59,7 @@ import com.jiggie.android.component.Utils;
 import com.jiggie.android.listener.OnResponseListener;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.EventManager;
+import com.jiggie.android.manager.FirebaseChatManager;
 import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.manager.TooltipsManager;
 import com.jiggie.android.model.CityModel;
@@ -977,13 +978,14 @@ public class HomeFragment extends Fragment
             }*/
             else {
                 TextView lblBadge = (TextView) tab.getCustomView().findViewById(R.id.tab_badge);
-                final String badgeCount = fragment.getTitle() /*"13"*/;
+                //final String badgeCount = fragment.getTitle() /*"13"*/;
+                final String badgeCount = FirebaseChatManager.badgeChat;
 
                 if (badgeCount.equals("0")) {
                     lblBadge.setVisibility(View.GONE);
                 } else {
                     lblBadge.setVisibility(View.VISIBLE);
-                    lblBadge.setText(fragment.getTitle());
+                    lblBadge.setText(badgeCount);
                 }
             }
         }
@@ -1043,6 +1045,7 @@ public class HomeFragment extends Fragment
 
         public int getFragmentPosition(Object fragment) {
             final int length = this.fragments.length;
+
             for (int i = 0; i < length; i++) {
                 if (fragment == this.fragments[i])
                     return i;

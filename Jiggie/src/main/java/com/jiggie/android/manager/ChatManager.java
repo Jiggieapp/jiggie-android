@@ -350,6 +350,8 @@ public class ChatManager extends BaseManager{
                     int responseCode = response.code();
 
                     if(responseCode==Utils.CODE_SUCCESS){
+                        Success2Model dataTemp = (Success2Model) response.body();
+                        onResponseListener.onSuccess(dataTemp);
                     }else if(responseCode==Utils.CODE_EMPTY_DATA){
                         onResponseListener.onFailure(new ExceptionModel(Utils.FROM_CHAT, Utils.MSG_EMPTY_DATA));
                     }else{

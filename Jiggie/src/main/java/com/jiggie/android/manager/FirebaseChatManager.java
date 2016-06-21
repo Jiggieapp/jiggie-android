@@ -1,5 +1,6 @@
 package com.jiggie.android.manager;
 
+import com.facebook.AccessToken;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,6 +31,8 @@ public class FirebaseChatManager {
     public static final int TYPE_GROUP = 2;
     public static final int TYPE_PRIVATE = 1;
     public static String fb_id = "444555666";
+    //public static String fb_id = AccessToken.getCurrentAccessToken().getUserId();
+    public static String badgeChat = "0";
 
     public static DatabaseReference getFirebaseDatabase(){
         if(mDatabase==null){

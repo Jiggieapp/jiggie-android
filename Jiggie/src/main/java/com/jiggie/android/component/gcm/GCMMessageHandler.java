@@ -14,7 +14,10 @@ import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.activity.chat.ChatActivity;
+import com.jiggie.android.activity.chat.FirebaseChatActivity;
 import com.jiggie.android.activity.event.EventDetailActivity;
+import com.jiggie.android.component.Utils;
+import com.jiggie.android.manager.FirebaseChatManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.Conversation;
 
@@ -108,9 +111,21 @@ public class GCMMessageHandler extends GcmListenerService {
         } else if (type.equalsIgnoreCase(Common.PUSH_NOTIFICATIONS_TYPE_MATCH)) {
             final String fromm = data.getString(Common.PUSH_NOTIFICATIONS_FROM_NAME);
             too = data.getString(Common.PUSH_NOTIFICATIONS_FROM_ID);
-            intent = new Intent(App.getInstance(), ChatActivity.class);
-            intent.putExtra(Conversation.FIELD_FROM_NAME, fromm);
-            intent.putExtra(Conversation.FIELD_FACEBOOK_ID, too);
+            //intent = new Intent(App.getInstance(), ChatActivity.class);
+
+
+            /*intent.putExtra(Conversation.FIELD_FROM_NAME, fromm);
+            intent.putExtra(Conversation.FIELD_FACEBOOK_ID, too);*/
+
+            //New Chat Firebase-----------------
+            intent = new Intent(App.getInstance(), FirebaseChatActivity.class);
+            String event = Utils.BLANK;
+            String types = String.valueOf(FirebaseChatManager.TYPE_GROUP);
+            intent.putExtra(Utils.ROOM_ID, too);
+            intent.putExtra(Utils.ROOM_TYPE, Long.parseLong(types));
+            intent.putExtra(Utils.ROOM_EVENT, event);
+            //End of new chat firebase----------
+
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                     | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         }
@@ -120,9 +135,20 @@ public class GCMMessageHandler extends GcmListenerService {
         else if (type.equalsIgnoreCase(Common.PUSH_NOTIFICATIONS_TYPE_MESSAGE)) {
             final String fromName = data.getString(Common.PUSH_NOTIFICATIONS_FROM_NAME);
             too = data.getString(Common.PUSH_NOTIFICATIONS_FROM_ID);
-            intent = new Intent(App.getInstance(), ChatActivity.class);
+
+            /*intent = new Intent(App.getInstance(), ChatActivity.class);
             intent.putExtra(Conversation.FIELD_FROM_NAME, fromName);
-            intent.putExtra(Conversation.FIELD_FACEBOOK_ID, too);
+            intent.putExtra(Conversation.FIELD_FACEBOOK_ID, too);*/
+
+            //New Chat Firebase-----------------
+            intent = new Intent(App.getInstance(), FirebaseChatActivity.class);
+            String event = Utils.BLANK;
+            String types = String.valueOf(FirebaseChatManager.TYPE_GROUP);
+            intent.putExtra(Utils.ROOM_ID, too);
+            intent.putExtra(Utils.ROOM_TYPE, Long.parseLong(types));
+            intent.putExtra(Utils.ROOM_EVENT, event);
+            //End of new chat firebase----------
+
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                             | Intent.FLAG_ACTIVITY_CLEAR_TOP
                             //Intent.FLAG_ACTIVITY_REORDER_TO_FRONT

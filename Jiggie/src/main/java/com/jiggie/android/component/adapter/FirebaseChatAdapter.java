@@ -43,11 +43,13 @@ public class FirebaseChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     ArrayList<MessagesModel> data = new ArrayList<>();
     private final static String TAG = FirebaseChatAdapter.class.getSimpleName();
     private String event;
+    private int type;
 
-    public FirebaseChatAdapter(Activity a, ArrayList<MessagesModel> data, String event){
+    public FirebaseChatAdapter(Activity a, ArrayList<MessagesModel> data, String event, int type){
         this.activity = a;
         this.data = data;
         this.event = event;
+        this.type = type;
     }
 
     @Override
@@ -167,8 +169,14 @@ public class FirebaseChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemViewType(int position) {
-        if (position == 0)
-            return CHAT_HEADER;
+        if (position == 0){
+            if(type==FirebaseChatManager.TYPE_GROUP){
+                return CHAT_BODY;
+            }else{
+                return CHAT_HEADER;
+            }
+
+        }
         else return CHAT_BODY;
     }
 
