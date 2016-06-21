@@ -11,6 +11,7 @@ import com.jiggie.android.component.callback.CustomCallback;
 import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.EventModel;
 import com.jiggie.android.model.ExceptionModel;
+import com.jiggie.android.model.TagNewModel;
 import com.jiggie.android.model.TagsListModel;
 import com.jiggie.android.model.likeModel;
 
@@ -66,6 +67,10 @@ public class EventManager extends BaseManager{
 
     private static void actionLikeEvent(String _id, String fb_id, String action, Callback callback) throws IOException {
         getInstance().actionLikeEvent(_id, fb_id, action).enqueue(callback);
+    }
+
+    private static void getTagsListNew(Callback callback) throws IOException {
+        getInstance().getTagsListNew().enqueue(callback);
     }
 
     public static void loaderEvent(String fb_id){
@@ -281,6 +286,40 @@ public class EventManager extends BaseManager{
         }
     }
 
+    public static void loaderTagsNew(final OnResponseEventListener onResponseListener){
+        try {
+            getTagsListNew(new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response) {
+                    //String header = String.valueOf(response.code());
+                    /*String responses = new Gson().toJson(response.body());
+                    Utils.d("res", responses);*/
+
+                    int responseCode = response.code();
+                    if (responseCode == Utils.CODE_SUCCESS) {
+                        onResponseListener.onSuccess(response.body());
+                    } else {
+                        onResponseListener.onFailure(responseCode, Utils.RESPONSE_FAILED);
+                    }
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    Utils.d("Failure", t.toString());
+                    onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + t.toString());
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
+            });
+        }catch (IOException e){
+            Utils.d("Exception", e.toString());
+            onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION + e.toString());
+        }
+    }
+
     public static void saveTagsList(TagsListModel tagsListModel){
         String model = new Gson().toJson(tagsListModel);
         App.getInstance().getSharedPreferences(Utils.PREFERENCE_TAGLIST, Context.MODE_PRIVATE).edit()
@@ -291,6 +330,18 @@ public class EventManager extends BaseManager{
         TagsListModel tagsListModel = new Gson().fromJson(App.getInstance().getSharedPreferences(Utils.PREFERENCE_TAGLIST,
                 Context.MODE_PRIVATE).getString(Utils.TAGLIST_MODEL, ""), TagsListModel.class);
         return tagsListModel;
+    }
+
+    public static void saveTagsListNew(TagNewModel tagNewModel){
+        String model = new Gson().toJson(tagNewModel);
+        App.getInstance().getSharedPreferences(Utils.PREFERENCE_TAGLIST_NEW, Context.MODE_PRIVATE).edit()
+                .putString(Utils.TAGLIST_MODEL, model).apply();
+    }
+
+    public static TagNewModel loadTagsListNew(){
+        TagNewModel tagNewModel = new Gson().fromJson(App.getInstance().getSharedPreferences(Utils.PREFERENCE_TAGLIST_NEW,
+                Context.MODE_PRIVATE).getString(Utils.TAGLIST_MODEL, ""), TagNewModel.class);
+        return tagNewModel;
     }
 
     public static void saveTags(ArrayList<String> jsonArray)

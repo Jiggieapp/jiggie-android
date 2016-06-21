@@ -9,8 +9,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -22,48 +25,50 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
-import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.event.EventDetailActivity;
+import com.jiggie.android.activity.event.EventPresenterImplementation;
+import com.jiggie.android.activity.event.EventView;
 import com.jiggie.android.activity.invite.InviteFriendsActivity;
-import com.jiggie.android.activity.promo.PromotionsActivity;
-import com.jiggie.android.activity.setup.CityActivity;
 import com.jiggie.android.component.FlowLayout;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
+import com.jiggie.android.listener.OnResponseListener;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.manager.TooltipsManager;
+import com.jiggie.android.model.CityModel;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.MemberSettingResultModel;
 import com.jiggie.android.model.PostLocationModel;
-import com.jiggie.android.model.TagsListModel;
+import com.jiggie.android.model.SettingModel;
+import com.jiggie.android.model.TagNewModel;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Set;
 
 import butterknife.Bind;
@@ -76,7 +81,7 @@ import it.sephiroth.android.library.tooltip.Tooltip;
  * Created by rangg on 21/10/2015.
  */
 public class HomeFragment extends Fragment
-        implements ViewPager.OnPageChangeListener, ViewTreeObserver.OnGlobalLayoutListener, HomeMain {
+        implements ViewPager.OnPageChangeListener, ViewTreeObserver.OnGlobalLayoutListener, HomeMain, EventView {
     @Nullable
     @Bind(R.id.appBar)
     AppBarLayout appBarLayout;
@@ -98,6 +103,10 @@ public class HomeFragment extends Fragment
     RelativeLayout relPlace;
     @Bind(R.id.view_shadow)
     View viewShadow;
+    @Bind(R.id.img_drop)
+    ImageView imgDrop;
+    @Bind(R.id.city_container)
+    LinearLayout cityContainer;
 
     private TabFragment lastSelectedFragment;
     private PageAdapter adapter;
@@ -110,14 +119,17 @@ public class HomeFragment extends Fragment
     final int CHAT_TAB = 2;
     final int MORE_TAB = 3;
 
-    private int currentPosition;
+    private int currentPosition = 0;
+    private int temp = -1;
     boolean isAlreadyExpand = false;
     private ArrayList<String> selectedItems = new ArrayList<>();
+    private ArrayList<String> latestSelectedItems = new ArrayList<>();
     private boolean hasChanged;
     ProgressDialog progressDialog;
     boolean isFirstClick = true;
     View bottomSheet;
     AppCompatActivity activity;
+    EventPresenterImplementation eventPresenterImplementation;
 
     @Nullable
     @Override
@@ -129,35 +141,54 @@ public class HomeFragment extends Fragment
     private boolean isNeedToBeRedirected() {
         final SharedPreferences pref = App.getSharedPreferences();
         boolean isNeedToBeRedirected = pref.getBoolean(Utils.IS_NEED_TO_BE_REDIRECTED_TO_EVENT_DETAIL, true);
-
         if (isNeedToBeRedirected) {
             String afSub1 = Utils.AFsub2;
             pref.edit().putBoolean(Utils.IS_NEED_TO_BE_REDIRECTED_TO_EVENT_DETAIL, false).commit();
             return (isNeedToBeRedirected && !afSub1.isEmpty() && !afSub1.equalsIgnoreCase("null"));
-        } else return false;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+        if (savedInstanceState != null) {
+            eventsFragment = (EventsFragment) getFragmentManager().getFragment(savedInstanceState, "eventsfragment");
+            socialTabFragment = (SocialTabFragment) getFragmentManager().getFragment(savedInstanceState, "socialtabfragment");
+            friendsFragment = (FriendsFragment) getFragmentManager().getFragment(savedInstanceState, "friendsfragment");
+            moreFragment = (MoreFragment) getFragmentManager().getFragment(savedInstanceState, "morefragment");
+            temp = savedInstanceState.getInt("position");
+        }
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        //setRetainInstance(true);
         ButterKnife.bind(this, this.rootView);
-
         activity = (AppCompatActivity) super.getActivity();
-        //this.toolbar.setNavigationIcon(R.drawable.logo);
-        //this.toolbar.getLogo().set;
         Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
-        final ImageView imgView = (ImageView) toolbar.findViewById(R.id.logo_image);
-        //imgView.setImageDrawable(getResources().getDrawable(R.drawable.logo2));
-        imgView.setImageDrawable(getResources().getDrawable(R.drawable.logo));
-
+        /*imgView = (ImageView) toolbar.findViewById(R.id.logo_image);
+        imgView.setImageDrawable(getResources().getDrawable(R.drawable.logo));*/
+        addLogoImage();
         this.toolbar.setTitle("");
         activity.setSupportActionBar(toolbar);
 
-        this.adapter = new PageAdapter(this, activity.getSupportFragmentManager());
+        /*activity = (AppCompatActivity) super.getActivity();
+        //this.toolbar.setNavigationIcon(R.drawable.logo);
+        //this.toolbar.getLogo().set;
+        Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
+        imgView = (ImageView) toolbar.findViewById(R.id.logo_image);
+        imgView.setImageDrawable(getResources().getDrawable(R.drawable.logo));
+        this.toolbar.setTitle("");
+        activity.setSupportActionBar(toolbar);*/
+
+        //addLogoImage();
+        this.adapter = new PageAdapter(this, activity.getSupportFragmentManager() /*getChildFragmentManager()*/);
         this.viewPager.setOffscreenPageLimit(this.adapter.getCount());
         this.viewPager.setAdapter(this.adapter);
-
         this.tab.setupWithViewPager(this.viewPager);
         /*this.tab.getTabAt(1).setCustomView(R.layout.tab_custom_with_badge);
         TextView txtView = (TextView) tab.findViewById(R.id.tab_badge);
@@ -165,6 +196,7 @@ public class HomeFragment extends Fragment
         this.viewPager.addOnPageChangeListener(this);
 
         final int tabCount = this.adapter.getCount();
+
         for (int i = 0; i < tabCount; i++) {
             final Fragment fragment = this.adapter.getItem(i);
             if (fragment instanceof AppBarLayout.OnOffsetChangedListener)
@@ -173,90 +205,6 @@ public class HomeFragment extends Fragment
 
         super.setHasOptionsMenu(true);
         this.viewPager.getViewTreeObserver().addOnGlobalLayoutListener(this);
-
-        //Load animation
-        makeOutAnimation = makeOutAnimationInvite = AnimationUtils.loadAnimation(this.getActivity(),
-                R.anim.slide_down);
-
-        makeInAnimation = makeInAnimationInvite = AnimationUtils.loadAnimation(this.getActivity(),
-                R.anim.slide_up);
-
-
-
-        /*makeInAnimation = AnimationUtils.makeInAnimation(this.getActivity(), false);
-        makeOutAnimation = AnimationUtils.makeOutAnimation(this.getActivity(), true);*/
-
-        makeOutAnimation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationEnd(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationStart(Animation animation) {
-                //if(fabInvite.getVisibility() == View.VISIBLE)
-                //{
-                //fabInvite.setVisibility(View.GONE);
-                fabInvite.startAnimation(makeOutAnimationInvite);
-                //}
-                fab.setVisibility(View.VISIBLE);
-            }
-        });
-
-        makeInAnimation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                fab.setVisibility(View.GONE);
-                /*if(fabInvite.getVisibility() == View.GONE)
-                {*/
-                fabInvite.startAnimation(makeInAnimationInvite);
-                /*}*/
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-        });
-
-        makeInAnimationInvite.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationEnd(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationStart(Animation animation) {
-                fabInvite.setVisibility(View.VISIBLE);
-            }
-        });
-
-        makeOutAnimationInvite.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                fabInvite.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationStart(Animation animation) {
-            }
-        });
-
         if (isNeedToBeRedirected()) {
             Intent i = new Intent(super.getActivity(), EventDetailActivity.class);
             i.putExtra(Common.FIELD_EVENT_ID
@@ -272,7 +220,6 @@ public class HomeFragment extends Fragment
         CoordinatorLayout coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.cl_main);
         bottomSheet = coordinatorLayout.findViewById(R.id.bottom_sheet);
         final BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
-
         behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
@@ -281,7 +228,6 @@ public class HomeFragment extends Fragment
                     behavior.setState(BottomSheetBehavior.STATE_EXPANDED);*/
                     behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 }
-                Log.d("state", String.valueOf(newState));
             }
 
             @Override
@@ -303,15 +249,20 @@ public class HomeFragment extends Fragment
                     behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                     isAlreadyExpand = false;
                     viewShadow.setVisibility(View.GONE);
-                    changeTags();
+                    //changeTags();
+                    if (shouldCheckTags()) {
+                        latestSelectedItems.clear();
+                        for (int i = 0; i < selectedItems.size(); i++) {
+                            latestSelectedItems.add(selectedItems.get(i));
+                        }
+                        changeTags();
+                    }
                 } else {
                     fab.setImageResource(R.drawable.ic_action_cancel);
                     behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                     isAlreadyExpand = true;
                     viewShadow.setVisibility(View.VISIBLE);
                 }
-
-
             }
         });
 
@@ -329,7 +280,7 @@ public class HomeFragment extends Fragment
             }
         });
 
-        EventManager.loaderTags(new EventManager.OnResponseEventListener() {
+        /*EventManager.loaderTags(new EventManager.OnResponseEventListener() {
             @Override
             public void onSuccess(Object object) {
                 TagsListModel dataTemp = (TagsListModel) object;
@@ -341,11 +292,25 @@ public class HomeFragment extends Fragment
             public void onFailure(int responseCode, String message) {
                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG);
             }
+        });*/
+
+        EventManager.loaderTagsNew(new EventManager.OnResponseEventListener() {
+            @Override
+            public void onSuccess(Object object) {
+                TagNewModel dataTemp = (TagNewModel) object;
+
+                setTagsNew(dataTemp);
+            }
+
+            @Override
+            public void onFailure(int responseCode, String message) {
+                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG);
+            }
         });
+
         //END OF PART OF BOTTOM SHEET FILTER=================
 
         EventBus.getDefault().register(this);
-
         relPlace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -364,14 +329,34 @@ public class HomeFragment extends Fragment
 
             if (SocialManager.countData > 0) {
                 if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_SOCIAL_TAB)) {
-                    TooltipsManager.initTooltipWithPoint(getActivity(), new Point(TooltipsManager.getCenterPoint(getActivity())[0],
+                    TooltipsManager.initTooltipWithPoint(getActivity(), new Point(TooltipsManager.getCenterPoint(getActivity())[0] - Utils.myPixel(getActivity(), 48),
                             TooltipsManager.getCenterPoint(getActivity())[1] / 3), getActivity().getString(R.string.tooltip_social_tab), Utils.myPixel(getActivity(), 380), Tooltip.Gravity.BOTTOM);
                     TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_SOCIAL_TAB, true);
                 }
             }
         }
-
         //END OF TOOLTIP PART===============
+
+        eventPresenterImplementation = new EventPresenterImplementation(this);
+        SettingModel.Data data = AccountManager.loadSetting().getData();
+        //wandy 08-06-2016
+        if (data.getCityList() == null
+                || data.getCityList().size() == 0) {
+            showProgressDialog();
+            eventPresenterImplementation.getCities();
+        } else {
+            onFinishGetCities(AccountManager.loadSetting().getData().getCityList());
+        }
+    }
+
+    private void addLogoImage() {
+        int[] center = TooltipsManager.getCenterPoint(getActivity());
+        ImageView imgLogo = new ImageView(getActivity());
+        imgLogo.setImageDrawable(getResources().getDrawable(R.drawable.logo));
+        RelativeLayout.LayoutParams param = new RelativeLayout.LayoutParams(Utils.myPixel(getActivity(), 63), Utils.myPixel(getActivity(), 24));
+        param.leftMargin = center[0] - Utils.myPixel(getActivity(), 32);
+        param.addRule(RelativeLayout.CENTER_VERTICAL);
+        relPlace.addView(imgLogo, param);
 
     }
 
@@ -381,6 +366,39 @@ public class HomeFragment extends Fragment
         EventBus.getDefault().unregister(this);
     }
 
+    private boolean shouldCheckTags() {
+        boolean shouldCheckTags = false;
+
+        int currentSizeSelected = selectedItems.size();
+        int latestSizeSelected = latestSelectedItems.size();
+
+        if (currentSizeSelected != latestSizeSelected) {
+            shouldCheckTags = true;
+        } else {
+            for (int i = 0; i < currentSizeSelected; i++) {
+                String tagA = selectedItems.get(i);
+                boolean isFounded = false;
+
+                for (int j = 0; j < latestSizeSelected; j++) {
+                    String tagB = latestSelectedItems.get(j);
+
+                    if (tagA.equals(tagB)) {
+                        isFounded = true;
+                        break;
+                    }
+                }
+
+                if (!isFounded) {
+                    shouldCheckTags = true;
+                    break;
+                }
+            }
+        }
+
+        return shouldCheckTags;
+    }
+
+
     private void changeTags() {
         if (selectedItems.size() > 0) {
             MemberSettingModel memberSettingModel = AccountManager.loadMemberSetting();
@@ -388,6 +406,7 @@ public class HomeFragment extends Fragment
             //MemberSettingResultModel memberSettingModel = AccountManager.loadMemberSetting();
 
             final String experiences = TextUtils.join(",", selectedItems.toArray(new String[this.selectedItems.size()]));
+            Utils.d(TAG, "experiences " + experiences);
             memberSettingModel.setExperiences(experiences);
             //memberSettingModel.getData().getMembersettings().setExperiences(selectedItems);
             showProgressDialog();
@@ -448,7 +467,7 @@ public class HomeFragment extends Fragment
         //return null;
     }
 
-    private void setTags(TagsListModel tagsListModel) {
+    /*private void setTags(TagsListModel tagsListModel) {
         EventManager.saveTags(tagsListModel.getData().getTagslist());
         AccountManager.getUserTags(new AccountManager.OnResponseListener() {
             @Override
@@ -457,8 +476,7 @@ public class HomeFragment extends Fragment
                 ArrayList<String> result = memberSettingResultModel.getData().getMembersettings().getExperiences();
 
                 for (String res : getTags()) {
-                    if(getActivity() != null)
-                    {
+                    if (getActivity() != null) {
                         final View view = getActivity().getLayoutInflater().inflate(R.layout.item_setup_tag, flowLayout, false);
                         final ViewHolder holder = new ViewHolder(getActivity(), view, res);
 
@@ -494,6 +512,91 @@ public class HomeFragment extends Fragment
                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG);
             }
         });
+    }*/
+
+    private void setTagsNew(final TagNewModel tagNewModel) {
+        //EventManager.saveTags(tagsListModel.getData().getTagslist());
+        EventManager.saveTagsListNew(tagNewModel);
+        AccountManager.getUserTags(new AccountManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object) {
+                MemberSettingResultModel memberSettingResultModel = (MemberSettingResultModel) object;
+                ArrayList<String> result = memberSettingResultModel.getData().getMembersettings().getExperiences();
+
+                /*for (String res : getTags()) {
+                    if(getActivity() != null)
+                    {
+                        final View view = getActivity().getLayoutInflater().inflate(R.layout.item_setup_tag, flowLayout, false);
+                        final ViewHolder holder = new ViewHolder(getActivity(), view, res);
+
+                        holder.textView.setText(holder.text);
+
+                        flowLayout.addView(view);
+
+                        if (result.contains(res)) {
+                            selectedItems.add(res);
+                            //holder.checkView.setVisibility(View.GONE);
+                            holder.checkView.setVisibility(View.INVISIBLE);
+                        } else {
+                            //setSelected(holder.container, holder.textView, false);
+                            holder.checkView.setVisibility(View.VISIBLE);
+                        }
+                        //onTagClick(holder);
+                        setSelected(holder, holder.checkView.getVisibility() != View.VISIBLE, res);
+                        hasChanged = false;
+
+                        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                            @Override
+                            public void onGlobalLayout() {
+                                view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                                holder.container.setMinimumWidth(holder.container.getMeasuredWidth());
+                            }
+                        });
+                    }
+                }*/
+
+                int sizeTag = tagNewModel.getData().getTagslist().size();
+                for (int i = 0; i < sizeTag; i++) {
+                    if (getActivity() != null) {
+                        String res = tagNewModel.getData().getTagslist().get(i).getName();
+                        String res2 = "\u2713\u0009" + tagNewModel.getData().getTagslist().get(i).getName();
+                        final View view = getActivity().getLayoutInflater().inflate(R.layout.item_setup_tag, flowLayout, false);
+                        final ViewHolder holder = new ViewHolder(getActivity(), view, res2, i);
+
+                        holder.textView.setText(holder.text);
+
+                        flowLayout.addView(view);
+
+                        if (result.contains(res)) {
+                            selectedItems.add(res);
+                            latestSelectedItems.add(res);
+                            setSelected(holder, true, res, i);
+                        }
+                        else
+                        {
+                            setSelected(holder, false, res, i);
+                        }
+                        holder.checkView.setVisibility(View.GONE);
+                        //onTagClick(holder);
+                        //setSelected(holder, holder.checkView.getVisibility() != View.VISIBLE, res, i);
+                        hasChanged = false;
+
+                        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                            @Override
+                            public void onGlobalLayout() {
+                                view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                                holder.container.setMinimumWidth(holder.container.getMeasuredWidth());
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(int responseCode, String message) {
+                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG);
+            }
+        });
     }
 
     class ViewHolder {
@@ -506,75 +609,101 @@ public class HomeFragment extends Fragment
 
         View parent;
         String text;
+        int position;
 
-        public ViewHolder(final FragmentActivity activity, View parent, String text) {
+        public ViewHolder(final FragmentActivity activity, View parent, String text, final int position) {
             ButterKnife.bind(this, parent);
             this.textView.setText(text);
             this.parent = parent;
             this.text = text;
+            this.position = position;
 
             this.container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (activity != null)
-                        onTagClick(ViewHolder.this);
+                        onTagClick(ViewHolder.this, position);
                 }
             });
         }
     }
 
-    private void onTagClick(ViewHolder holder) {
+    private void onTagClick(ViewHolder holder, int position) {
 
-        boolean selected = holder.checkView.getVisibility() != View.VISIBLE;
+        //boolean selected = holder.checkView.getVisibility() != View.VISIBLE;
+        TagNewModel tagNewModel = EventManager.loadTagsListNew();
+        boolean selected = false;
+        if (holder.textView.getCurrentTextColor() == getResources().getColor(R.color.divider_pantone)) {
+            selected = true;
+        } else {
+            selected = false;
+        }
+
         boolean doNothing = false;
 
-        if (selected)
-            this.selectedItems.add(holder.text);
-        else {
+        if (selected) {
+            //this.selectedItems.add(holder.text);
+            this.selectedItems.add(tagNewModel.getData().getTagslist().get(position).getName());
+        } else {
             if (this.selectedItems.size() == 1) {
                 doNothing = true;
                 selected = false;
             } else {
-                this.selectedItems.remove(holder.text);
+                this.selectedItems.remove(tagNewModel.getData().getTagslist().get(position).getName());
             }
         }
 
         if (!doNothing) {
             //holder.checkView.setVisibility(selected ? View.VISIBLE : View.GONE);
-            setSelected(holder, selected, holder.text);
+            setSelected(holder, selected, holder.text, position);
         }
     }
 
-    private void setSelected(ViewHolder holder, boolean selected, String text) {
-        if (selected) {
+    private void setSelected(ViewHolder holder, boolean selected, String text, int position) {
+        TagNewModel dataTag = EventManager.loadTagsListNew();
+        /*if (selected) {
             if (text.equalsIgnoreCase("Art & Culture")) {
                 holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_red_f));
-                holder.textView.setTextColor(getResources().getColor(R.color.pink));
+                //holder.textView.setTextColor(getResources().getColor(R.color.pink));
                 holder.checkView.setImageResource(R.drawable.ic_tick_pink);
                 //holder.checkView.setImageResource(R.mipmap.ic_check);
+
+                *//*for(int i=0;i<sizeTag;i++){
+                    String nameTag = dataTag.getData().getTagslist().get(i).getName();
+                    if(nameTag.equalsIgnoreCase("Art & Culture")){
+                        holder.textView.setTextColor(Color.parseColor(dataTag.getData().getTagslist().get(i).getColor()));
+                        break;
+                    }
+                }*//*
+
             } else if (text.equalsIgnoreCase("Fashion")) {
                 holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_green));
                 holder.textView.setTextColor(getResources().getColor(R.color.green_tag));
                 holder.checkView.setImageResource(R.drawable.ic_tick_green);
                 //holder.checkView.setImageResource(R.mipmap.ic_check);
+
             } else if (text.equalsIgnoreCase("Nightlife")) {
                 holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_greydark));
                 holder.textView.setTextColor(getResources().getColor(R.color.greydark_tag));
                 holder.checkView.setImageResource(R.drawable.ic_tick_greydark);
                 //holder.checkView.setImageResource(R.mipmap.ic_check);
+
             } else if (text.equalsIgnoreCase("Music")) {
                 holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_blues));
                 holder.textView.setTextColor(getResources().getColor(R.color.bluedark_tag));
                 holder.checkView.setImageResource(R.drawable.ic_tick_blue);
                 //holder.checkView.setImageResource(R.mipmap.ic_check);
+
+
             } else if (text.equalsIgnoreCase("Food & Drink")) {
                 holder.container.setBackground(getResources().getDrawable(R.drawable.btn_yellow_tag_f));
                 holder.textView.setTextColor(getResources().getColor(R.color.yellow_warning));
                 holder.checkView.setImageResource(R.drawable.ic_tick_yellow);
                 //holder.checkView.setImageResource(R.mipmap.ic_check);
+
             } else if (text.equalsIgnoreCase("Featured")) {
-                /*holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_blue));
-                holder.textView.setTextColor(getResources().getColor(R.color.bluedark_tag));*/
+                *//*holder.container.setBackground(getResources().getDrawable(R.drawable.btn_tag_blue));
+                holder.textView.setTextColor(getResources().getColor(R.color.bluedark_tag));*//*
             }
 
         } else {
@@ -582,11 +711,32 @@ public class HomeFragment extends Fragment
             holder.textView.setTextColor(getResources().getColor(R.color.divider_pantone));
             //holder.checkView.setImageResource(R.drawable.ic_tick_grey);
             //holder.checkView.setImageResource(R.drawable.ic_tick_yellow);
+        }*/
+
+        if (selected) {
+            holder.container.setBackground(setDrawableTag(getActivity(), getResources().getColor(R.color.background), Color.parseColor(dataTag.getData().getTagslist().get(position).getColor())));
+            holder.textView.setTextColor(Color.parseColor(dataTag.getData().getTagslist().get(position).getColor()));
+            //holder.checkView.setImageResource(R.drawable.ic_tick_grey);
+            //holder.checkView.setImageResource(R.mipmap.ic_check);
+        } else {
+            holder.container.setBackground(setDrawableTag(getActivity(), getResources().getColor(R.color.background), getResources().getColor(R.color.divider_pantone)));
+            holder.textView.setTextColor(getResources().getColor(R.color.divider_pantone));
         }
 
 
-        holder.checkView.setVisibility(selected ? View.VISIBLE : View.INVISIBLE);
+        //holder.checkView.setVisibility(selected ? View.VISIBLE : View.INVISIBLE);
+        holder.checkView.setVisibility(View.GONE);
         hasChanged = true;
+    }
+
+    public static GradientDrawable setDrawableTag(Activity a, int backgroundColor, int borderColor) {
+        GradientDrawable shape = new GradientDrawable();
+        shape.setShape(GradientDrawable.RECTANGLE);
+        //shape.setCornerRadii(new float[]{Utils.myPixel(a, 100), Utils.myPixel(a, 100), Utils.myPixel(a, 100), Utils.myPixel(a, 100), 0, 0, 0, 0});
+        shape.setCornerRadius(Utils.myPixel(a, 100));
+        //shape.setColor(backgroundColor);
+        shape.setStroke(Utils.myPixel(a, 1), borderColor);
+        return shape;
     }
 
     private void showConfirmationDialog() {
@@ -642,7 +792,8 @@ public class HomeFragment extends Fragment
     @Override
     public void onGlobalLayout() {
         this.viewPager.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-        this.onPageSelected(0);
+
+        this.onPageSelected(currentPosition);
         setupTabIcons();
         if ((super.getArguments() != null) && (super.getArguments().getBoolean("chat", false)))
             this.viewPager.setCurrentItem(2);
@@ -670,9 +821,25 @@ public class HomeFragment extends Fragment
     public void onPageScrollStateChanged(int state) {
     }
 
+
     @Override
     public void onPageSelected(int position) {
-        currentPosition = position;
+
+        /*if(temp > -1)
+        {
+            Utils.d(TAG, "temp value " + temp);
+            position = temp;
+            temp = -1; //kembalikan awal
+            viewPager.setCurrentItem(position);
+        }
+        else
+        {*/
+        if (position == 0) {
+            cityContainer.setVisibility(View.VISIBLE);
+        } else {
+            cityContainer.setVisibility(View.GONE);
+        }
+
         if (position == CHAT_TAB) {
             startFetchChat();
         } else {
@@ -685,26 +852,10 @@ public class HomeFragment extends Fragment
             fab.setVisibility(View.GONE);
             //fabInvite.startAnimation(makeInAnimation);
             fabInvite.setVisibility(View.VISIBLE);
-
-
             bottomSheet.setVisibility(View.GONE);
             SocialManager.isInSocial = false;
         } else if (position == SOCIAL_TAB) {
             showToolbar();
-
-        /*if(fab.getVisibility() == View.VISIBLE)
-        {
-            fab.startAnimation(makeOutAnimation);
-            fab.setVisibility(View.GONE);
-
-        }
-
-
-        if(fabInvite.getVisibility() == View.VISIBLE)
-        {
-            fabInvite.startAnimation(makeOutAnimation);
-            fabInvite.setVisibility(View.GONE);
-        }*/
 
             fab.setVisibility(View.GONE);
             fabInvite.setVisibility(View.GONE);
@@ -712,20 +863,21 @@ public class HomeFragment extends Fragment
 
             TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_SOCIAL_TAB, false);
             SocialManager.isInSocial = true;
-            SocialTabFragment sc = (SocialTabFragment)this.adapter.fragments[position];
+            SocialTabFragment sc = (SocialTabFragment) this.adapter.fragments[position];
             sc.checkTooltipsInSug();
 
             //sc.refreshCard();
             //Log.d("", "");
+            Utils.d(TAG, "socialtabfragment");
             bottomSheet.setVisibility(View.GONE);
-        } else if(position == MORE_TAB){
+        } else if (position == MORE_TAB) {
             showToolbar();
             fab.setVisibility(View.GONE);
             fabInvite.setVisibility(View.GONE);
             bottomSheet.setVisibility(View.GONE);
-        }
 
-        else {
+            //getMoreFragment().onTabSelected();
+        } else if (position == EVENT_TAB) {
             //fab.startAnimation(makeInAnimation);
             fab.setVisibility(View.VISIBLE);
             //fabInvite.startAnimation( makeOutAnimation);
@@ -733,10 +885,15 @@ public class HomeFragment extends Fragment
 
             SocialManager.isInSocial = false;
             bottomSheet.setVisibility(View.VISIBLE);
-        }
 
-        this.lastSelectedFragment = (TabFragment) this.adapter.fragments[position];
+            //adapter.onClick(position);
+            //getMoreFragment().onTabSelected();
+        }
+        //}
+        //currentPosition = position;
+        this.lastSelectedFragment = (TabFragment) this.adapter.getItem(position);
         this.lastSelectedFragment.onTabSelected();
+
     }
 
     private void showToolbar() {
@@ -745,7 +902,7 @@ public class HomeFragment extends Fragment
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appbar.getLayoutParams();
         AppBarLayout.Behavior behavior = (AppBarLayout.Behavior) params.getBehavior();
 
-        int[] consumed = new int[2];
+        //int[] consumed = new int[2];
         //behavior.onNestedPreScroll(coordinator, appbar, null, 0, -1000, consumed);
         behavior.onNestedFling(coordinator, appbar, null, 0, -1000, true);
     }
@@ -794,28 +951,96 @@ public class HomeFragment extends Fragment
         ButterKnife.unbind(this);
     }
 
+    private static EventsFragment eventsFragment;
+    private static SocialTabFragment socialTabFragment;
+    private static FriendsFragment friendsFragment;
+    private static MoreFragment moreFragment;
+
+    public static SocialTabFragment getSocialTabFragment() {
+        if (socialTabFragment == null)
+            socialTabFragment = new SocialTabFragment();
+        return socialTabFragment;
+    }
+
+    public static FriendsFragment getFriendsFragment() {
+        if (friendsFragment == null)
+            friendsFragment = new FriendsFragment();
+        return friendsFragment;
+    }
+
+    public static MoreFragment getMoreFragment() {
+        if (moreFragment == null)
+            moreFragment = new MoreFragment();
+        return moreFragment;
+        //return new MoreFragment();
+    }
+
+    private static EventsFragment getEventsFragment() {
+        if (eventsFragment == null)
+            eventsFragment = new EventsFragment();
+        return eventsFragment;
+    }
+
     private static class PageAdapter extends FragmentPagerAdapter {
         private final Fragment[] fragments;
 
         public PageAdapter(HomeMain homeMain, FragmentManager fm) {
             super(fm);
             this.fragments = new Fragment[]{
-                    //new EventTabFragment()
-                    new EventsFragment()
-                    , new SocialTabFragment()
-                    //, new ChatTabFragment()
-                    , new FriendsFragment()
-                    , new MoreFragment()
+                    getEventsFragment()
+                    , getSocialTabFragment()
+                    , getFriendsFragment()
+                    , getMoreFragment()
             };
-            ((TabFragment) this.fragments[0]).setHomeMain(homeMain);
-            ((TabFragment) this.fragments[1]).setHomeMain(homeMain);
-            ((TabFragment) this.fragments[2]).setHomeMain(homeMain);
-            ((TabFragment) this.fragments[3]).setHomeMain(homeMain);
+            /*((TabFragment) getEventsFragment()).setHomeMain(homeMain);
+            ((TabFragment) getSocialTabFragment()).setHomeMain(homeMain);
+            ((TabFragment) getFriendsFragment()).setHomeMain(homeMain);
+            ((TabFragment) getMoreFragment()).setHomeMain(homeMain);*/
+
+            /*getEventsFragment().setHomeMain(homeMain);
+            getSocialTabFragment().setHomeMain(homeMain);
+            getFriendsFragment().setHomeMain(homeMain);
+            getMoreFragment().setHomeMain(homeMain);*/
+
+            ((TabFragment) fragments[0]).setHomeMain(homeMain);
+            ((TabFragment) fragments[1]).setHomeMain(homeMain);
+            ((TabFragment) fragments[2]).setHomeMain(homeMain);
+            ((TabFragment) fragments[3]).setHomeMain(homeMain);
+        }
+
+        public void onClick(int position) {
+            switch (position) {
+                case 0:
+                    getEventsFragment().onTabSelected();
+                    break;
+                case 1:
+                    getSocialTabFragment().onTabSelected();
+                    break;
+                case 2:
+                    getFriendsFragment().onTabSelected();
+                    break;
+                case 3:
+                    getMoreFragment().onTabSelected();
+                    break;
+            }
         }
 
         @Override
         public Fragment getItem(int position) {
-            return this.fragments[position];
+            switch (position) {
+                case 0:
+                    return getEventsFragment();
+                case 1:
+                    return getSocialTabFragment();
+                case 2:
+                    return getFriendsFragment();
+                case 3:
+                    return getMoreFragment();
+                default:
+                    return null;
+            }
+
+            //return this.fragments[position];
         }
 
         @Override
@@ -840,6 +1065,21 @@ public class HomeFragment extends Fragment
             }
             return -1;
         }
+
+        /*@Override
+        public Parcelable saveState() {
+            return null;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            // Yet another bug in FragmentStatePagerAdapter that destroyItem is called on fragment that hasnt been added. Need to catch
+            try {
+                super.destroyItem(container, position, object);
+            } catch (IllegalStateException ex) {
+                ex.printStackTrace();
+            }
+        }*/
     }
 
     private void setupTabIcons() {
@@ -870,7 +1110,7 @@ public class HomeFragment extends Fragment
         TextView tabFour = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.tab_custom, null);
         tabFour.setText(adapter.getPageTitle(3));
         tabFour.setCompoundDrawablesWithIntrinsicBounds(0, adapter.getIcon(3), 0, 0);
-        tabFour.setPadding(0,Utils.myPixel(getActivity(), 3),0,0);
+        tabFour.setPadding(0, Utils.myPixel(getActivity(), 3), 0, 0);
         tab.getTabAt(MORE_TAB).setCustomView(tabFour);
     }
 
@@ -888,7 +1128,7 @@ public class HomeFragment extends Fragment
                 , new IntentFilter(Utils.FETCH_CHAT_RECEIVER));
 
         if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_SOCIAL_TAB)) {
-            TooltipsManager.initTooltipWithPoint(getActivity(), new Point(TooltipsManager.getCenterPoint(getActivity())[0],
+            TooltipsManager.initTooltipWithPoint(getActivity(), new Point(TooltipsManager.getCenterPoint(getActivity())[0] - Utils.myPixel(getActivity(), 48),
                     TooltipsManager.getCenterPoint(getActivity())[1] / 3), getActivity().getString(R.string.tooltip_social_tab), Utils.myPixel(getActivity(), 380), Tooltip.Gravity.BOTTOM);
             TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_SOCIAL_TAB, true);
         }
@@ -896,7 +1136,12 @@ public class HomeFragment extends Fragment
 
     @Override
     public void onDestroy() {
+        Utils.d(TAG, "ondestroy");
         super.onDestroy();
+        eventsFragment = null;
+        socialTabFragment = null;
+        friendsFragment = null;
+        moreFragment = null;
         try {
             getActivity().unregisterReceiver(fetchChatReceiver);
         } catch (IllegalArgumentException e) {
@@ -925,9 +1170,93 @@ public class HomeFragment extends Fragment
         }
     }
 
-    /*@OnClick(R.id.fab_invite)
-    void onFabInviteClick()
-    {
-        getActivity().startActivity(new Intent(getActivity(), InviteFriendsActivity.class));
-    }*/
+    PopupMenu popup;
+
+    @OnClick(R.id.city_container)
+    public void openContextualMenu() {
+        //registerForContextMenu(imgDrop);
+        if (popup != null)
+            popup.show();
+    }
+
+    int lastSelected = 0;
+
+    @Override
+    public void onFinishGetCities(final ArrayList<CityModel.Data.Citylist> cityLists) {
+        //final ArrayList<CityModel.Data.Citylist> cityLists = cityModel.data.citylist;
+        hideProgressDialog();
+        final String currentAreaEvent = AccountManager.loadMemberSetting().getArea_event();
+        int citySize = cityLists.size();
+        for (int i = 0; i < citySize; i++) {
+
+            if (currentAreaEvent != null && currentAreaEvent.equalsIgnoreCase(cityLists.get(i).getCity())) {
+                txtPlace.setText(cityLists.get(i).getInitial());
+                getPopupMenu().getMenu().add(0, i, i, "\u2713\u0009 " + cityLists.get(i).getCity());
+                lastSelected = i;
+            } else {
+                getPopupMenu().getMenu().add(0, i, i, "  " + cityLists.get(i).getCity());
+            }
+        }
+
+
+        if (citySize > 1) {
+
+            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    final int position = item.getOrder();
+
+                    showProgressDialog();
+                    MemberSettingModel memberSettingModel = AccountManager.loadMemberSetting();
+                    memberSettingModel.setArea_event(cityLists.get(position).getCity());
+                    AccountManager.loaderMemberSetting(memberSettingModel, new OnResponseListener() {
+                        @Override
+                        public void onSuccess(Object object) {
+                            txtPlace.setText(cityLists.get(position).getInitial());
+
+                            if (lastSelected > -1) {
+                                popup.getMenu().removeItem(lastSelected);
+                                popup.getMenu().add(0, lastSelected, lastSelected, " " + cityLists.get(lastSelected).getCity());
+                            }
+                            lastSelected = position;
+                            popup.getMenu().removeItem(position);
+                            popup.getMenu().add(0, position, position, "\u2713\u0009 " + cityLists.get(position).getCity());
+                            hideProgressDialog();
+                            eventsFragment.onRefresh();
+
+                            App.getInstance().trackMixPanelChangeCity(Utils.CHANGE_CITY, cityLists.get(position).getCity(), cityLists.get(position).getInitial());
+                        }
+
+                        @Override
+                        public void onFailure(int responseCode, String message) {
+                            hideProgressDialog();
+                        }
+                    });
+                    return false;
+                }
+            });
+        } else {
+            imgDrop.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private PopupMenu getPopupMenu() {
+        if (popup == null)
+            popup = new PopupMenu(this.getActivity(), cityContainer);
+        return popup;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (getEventsFragment() != null) {
+            outState.putInt("position", currentPosition);
+            getFragmentManager().putFragment(outState, "eventsfragment", getEventsFragment());
+            getFragmentManager().putFragment(outState, "socialtabfragment", getSocialTabFragment());
+            getFragmentManager().putFragment(outState, "friendsfragment", getFriendsFragment());
+            getFragmentManager().putFragment(outState, "morefragment", getMoreFragment());
+        }
+    }
+
+
 }

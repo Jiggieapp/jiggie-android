@@ -5,19 +5,16 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -33,8 +30,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -156,11 +151,10 @@ public class EventsFragment extends Fragment
         this.refreshLayout.setRefreshing(true);
         final AccessToken token = AccessToken.getCurrentAccessToken();
 
-
         EventManager.loaderEvent(token.getUserId());
     }
 
-    EventTabFragment todayFragment, tomorrowFragment, upcomingFragment;
+    //EventTabFragment todayFragment, tomorrowFragment, upcomingFragment;
 
     @Override
     public void onDestroyView() {
@@ -172,31 +166,37 @@ public class EventsFragment extends Fragment
         private final Fragment[] fragments;
 
         public PageAdapter(HomeMain homeMain, FragmentManager fm) {
+
             super(fm);
             Bundle bundle = new Bundle();
             bundle.putInt("position", 0);
-
-            todayFragment = new EventTabFragment();
-            todayFragment.setArguments(bundle);
+            //todayFragment = new EventTabFragment();
+            if(getTodayFragment().getArguments() == null)
+                getTodayFragment().setArguments(bundle);
+            else getTodayFragment().getArguments().putAll(bundle);
 
             bundle = new Bundle();
             bundle.putInt("position", 1);
-            tomorrowFragment = new EventTabFragment();
-            tomorrowFragment.setArguments(bundle);
+            //tomorrowFragment = new EventTabFragment();
+            if(getTomorrowFragment().getArguments() == null)
+                getTomorrowFragment().setArguments(bundle);
+            else getTomorrowFragment().getArguments().putAll(bundle);
 
             bundle = new Bundle();
             bundle.putInt("position", 2);
-            upcomingFragment = new EventTabFragment();
-            upcomingFragment.setArguments(bundle);
+            //upcomingFragment = new EventTabFragment();
+            if(getUpcomingFragment().getArguments() == null)
+                getUpcomingFragment().setArguments(bundle);
+            else getUpcomingFragment().getArguments().putAll(bundle);
 
             /*EventTabFragment todayFragment = EventTabFragment.getInstance(0);
             EventTabFragment tomorrowFragment = EventTabFragment.getInstance(1);
             EventTabFragment upcomingFragment = EventTabFragment.getInstance(2);*/
 
             this.fragments = new Fragment[]{
-                    todayFragment,
-                    tomorrowFragment,
-                    upcomingFragment
+                    getTodayFragment(),
+                    getTomorrowFragment(),
+                    getUpcomingFragment()
             };
 
             ((TabFragment) this.fragments[0]).setHomeMain(homeMain);
@@ -229,6 +229,21 @@ public class EventsFragment extends Fragment
             }
             return -1;
         }
+
+        /*@Override
+        public Parcelable saveState() {
+            return null;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            // Yet another bug in FragmentStatePagerAdapter that destroyItem is called on fragment that hasnt been added. Need to catch
+            try {
+                super.destroyItem(container, position, object);
+            } catch (IllegalStateException ex) {
+                ex.printStackTrace();
+            }
+        }*/
     }
 
     @Nullable
@@ -241,8 +256,7 @@ public class EventsFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        if(Utils.isRefreshDetail){
-            //onRefresh();
+        if (Utils.isRefreshDetail) {
             filter("", false);
             Utils.isRefreshDetail = false;
         }
@@ -251,11 +265,15 @@ public class EventsFragment extends Fragment
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        //setRetainInstance(true);
+
         EventBus.getDefault().register(this);
         ButterKnife.bind(this, this.rootView);
         final AppCompatActivity activity = (AppCompatActivity) super.getActivity();
         this.pageAdapter = new PageAdapter(this,
                 /*((AppCompatActivity)getActivity()).getSupportFragmentManager()*/
+                /*activity.getSupportFragmentManager()*/
+                /*getChildFragmentManager()*/
                 activity.getSupportFragmentManager());
         this.viewPagerEvents.setOffscreenPageLimit(this.pageAdapter.getCount());
         this.viewPagerEvents.setAdapter(pageAdapter);
@@ -271,10 +289,9 @@ public class EventsFragment extends Fragment
 
         super.setHasOptionsMenu(true);
 
-
-        todayFragment.handleSwipeIssue(refreshLayout);
-        tomorrowFragment.handleSwipeIssue(refreshLayout);
-        upcomingFragment.handleSwipeIssue(refreshLayout);
+        getTodayFragment().handleSwipeIssue(refreshLayout);
+        getTomorrowFragment().handleSwipeIssue(refreshLayout);
+        getUpcomingFragment().handleSwipeIssue(refreshLayout);
     }
 
     @Override
@@ -286,10 +303,17 @@ public class EventsFragment extends Fragment
 
     //Added by Aga
     public void onEvent(EventModel eventModel) {
+        /*if(eventModel != null && eventModel.getData() != null && eventModel.getData().getEvents().size() > 0)
+        {
+            ArrayList<EventModel.Data.Events> message = eventModel.getData().getEvents();
+            int size = message.size();
+            setEvents(message);
+        }*/
+
         ArrayList<EventModel.Data.Events> message = eventModel.getData().getEvents();
         int size = message.size();
-
         setEvents(message);
+
         boolean isExpanded = false;
         //if(searchText != null  /* && !searchText.isEmpty()*/)
         if (searchView == null) {
@@ -324,6 +348,7 @@ public class EventsFragment extends Fragment
         EventBus.getDefault().unregister(this);
         ButterKnife.unbind(this);
     }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -376,7 +401,6 @@ public class EventsFragment extends Fragment
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                Utils.d(TAG, "searchtext " + searchText);
                                 if (searchText != null) {
                                     filter(searchText, true);
                                 } else {
@@ -572,5 +596,49 @@ public class EventsFragment extends Fragment
         });
 
         dialogWalkthrough.show();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        getFragmentManager().putFragment(outState, "todayfragment", getTodayFragment());
+        getFragmentManager().putFragment(outState, "tomorrowfragment", getTomorrowFragment());
+        getFragmentManager().putFragment(outState, "upcomingfragment", getUpcomingFragment());
+    }
+
+    private static EventTabFragment todayFragment;
+    private static EventTabFragment tomorrowFragment;
+    private static EventTabFragment upcomingFragment;
+
+    public static EventTabFragment getTodayFragment()
+    {
+        if(todayFragment == null)
+            todayFragment = new EventTabFragment();
+        return todayFragment;
+    }
+
+    public static EventTabFragment getTomorrowFragment()
+    {
+        if(tomorrowFragment == null)
+            tomorrowFragment = new EventTabFragment();
+        return tomorrowFragment;
+    }
+
+    public static EventTabFragment getUpcomingFragment()
+    {
+        if(upcomingFragment == null)
+            upcomingFragment = new EventTabFragment();
+        return upcomingFragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(savedInstanceState != null)
+        {
+            todayFragment = (EventTabFragment) getFragmentManager().getFragment(savedInstanceState, "todayfragment");
+            tomorrowFragment = (EventTabFragment) getFragmentManager().getFragment(savedInstanceState, "tomorrowfragment");
+            upcomingFragment = (EventTabFragment) getFragmentManager().getFragment(savedInstanceState, "upcomingfragment");
+        }
     }
 }

@@ -104,7 +104,15 @@ public class EventTabListAdapter
             String[] tags = new String[item.getTags().size()];
             item.getTags().toArray(tags);
 
-            this.eventTagAdapter = new EventTagAdapter(this.context, R.layout.item_event_tag);
+            //---------
+            StringBuilder builder = new StringBuilder();
+            for(String s : tags) {
+                builder.append(s);
+            }
+            String d = builder.toString();
+            //-----------
+
+            this.eventTagAdapter = new EventTagAdapter(fragment.getActivity(), R.layout.item_event_tag);
 
             eventTagAdapter.setTags(tags);
             LinearLayoutManager layoutManager = new LinearLayoutManager(fragment.getContext()
@@ -121,7 +129,9 @@ public class EventTabListAdapter
 
             final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(item.getStart_datetime());
             final Date endDate = Common.ISO8601_DATE_FORMAT_UTC.parse(item.getEnd_datetime());
-            String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format, Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));
+            /*String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format
+                    , Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));*/
+            String simpleDate = Utils.getTimeForEvent(startDate, endDate, item.getTz());
 
             holder.txtDate.setText(simpleDate);
 

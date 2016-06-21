@@ -657,6 +657,29 @@ public class App extends Application {
     }
     //END OF MIXPANEL PROMO CODE=================================
 
+    //MIXPANEL CHANGE CITY=================================
+    public void trackMixPanelChangeCity(String eventName, String cityName, String cityCode) {
+
+        //USER PART-----------
+        LoginModel login = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin();
+        SettingModel settingModel = AccountManager.loadSetting() == null ? null : AccountManager.loadSetting();
+        //setPeopleMixpanelPromo(login, settingModel);
+        //END OF USER PART---------
+
+        //EVENT PART--------------
+        setEventMixpanelChangeCity(eventName, cityName, cityCode);
+        //END OF EVENT PART-------
+    }
+
+    private void setEventMixpanelChangeCity(String eventName, String cityName, String cityCode) {
+        SimpleJSONObject json = new SimpleJSONObject();
+
+        json.putString("City Name", cityName);
+        json.putString("City Code", cityCode);
+        getInstanceMixpanel().track(eventName, json);
+    }
+    //END OF MIXPANEL CHANGE CITY=================================
+
     public void setSuperPropertiesMixpanel(LoginModel login, SettingModel settingModel) {
         SimpleJSONObject json = new SimpleJSONObject();
         if (login != null) {

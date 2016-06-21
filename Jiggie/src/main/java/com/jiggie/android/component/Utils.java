@@ -20,11 +20,13 @@ import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.BuildConfig;
 import com.jiggie.android.R;
+import com.jiggie.android.model.Common;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import retrofit2.Response;
@@ -96,9 +98,11 @@ public class Utils {
     public static final String LOGIN_MODEL = "login_model";
     public static final String ACCESS_TOKEN = "access_token";
     public static final String COUNTER_EVENT = "counter_event";
+    public static final String HAS_SET_ALARM = "has_set_alarm";
     public static final String INVITE_CODE = "invite_code";
     public static final String INVITE_CODE_MSG_SHARE = "msg_share";
     public static final String PREFERENCE_TAGLIST = "taglist";
+    public static final String PREFERENCE_TAGLIST_NEW = "taglist_new";
     public static final String TAGLIST_MODEL = "taglist_model";
     public static final String IS_FIRST_RUN = "is_first_run";
     public static final String IS_NEED_TO_BE_REDIRECTED_TO_EVENT_DETAIL
@@ -113,6 +117,13 @@ public class Utils {
     public static final String TYPE_VA = "va";
     public static final String TYPE_BP = "bp";
     public static final String TYPE_BCA = "bca";
+    //------------------------
+
+    //SALE TYPE var-----------
+    public static final String SALE_TYPE = "sale_type";
+    public static final String TYPE_MINIMUM_DEPOSIT = "minimum";
+    public static final String TYPE_EXACT_PRICE = "exact";
+    public static final String TYPE_RESERVE = "reserve";
     //------------------------
 
     public static int myPixel(Activity a, int dip) {
@@ -143,6 +154,7 @@ public class Utils {
     public static final String URL_EDIT_ABOUT = BASE_URL + "app/v3/updateuserabout";
     public static final String URL_GET_ACCESS_TOKEN = BASE_URL + "app/v3/userlogin";
     public static final String URL_TAGSLIST = BASE_URL + "app/v3/user/tagslist";
+    public static final String URL_TAGSLIST_NEW = BASE_URL + "app/v3/user/tagslist2";
     public static final String URL_BLOCK_CHAT = BASE_URL + "app/v3/blockuserwithfbid";
     public static final String URL_DELETE_CHAT = BASE_URL + "app/v3/deletemessageswithfbid";
     public static final String URL_ADD_CHAT = BASE_URL + "app/v3/messages/add";
@@ -187,6 +199,9 @@ public class Utils {
     public final static String URL_REDEEM_CODE = BASE_URL + "app/v3/credit/redeem_code";
     //END OF REDEEM CODE URL===============
 
+    //city
+    public final static String URL_GET_CITIES = BASE_URL + "app/v3/user/citylist";
+
     public final static String URL_CREDIT_BALANCE = BASE_URL + "app/v3/credit/balance_credit/{fb_id}";
 
     public static void d(final String tag, final String value) {
@@ -223,6 +238,8 @@ public class Utils {
     public static final String PICTURE_DELETE = "Picture Delete";
 
     public static final String PROMO_CODE = "Use Promo Code";
+
+    public static final String CHANGE_CITY = "Change City";
 
     public static final String TAG = Utils.class.getSimpleName();
     //AppsFlyer properties----
@@ -433,5 +450,22 @@ public class Utils {
 
         //return isAvailable && (coarsePermissionCheck || finePermissionCheck);
         return  isAvailable;
+    }
+
+    public static String getTimeForEvent(Date startDate, Date endDate, String timezone)
+    {
+        /*if(timezone == null || timezone.isEmpty())
+        {
+            timezone = "7";
+        }
+
+        if(timezone == null || timezone.isEmpty())
+        {
+            format.setTimeZone(TimeZone.getDefault());
+        }*/
+        String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format
+                , Common.getStartDateTimeInTimezone(timezone).format(startDate)
+                , Common.getEndDateTimeInTimezone(timezone).format(endDate));
+        return simpleDate;
     }
 }

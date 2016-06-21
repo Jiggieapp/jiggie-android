@@ -177,7 +177,6 @@ public class AccountManager extends BaseManager {
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Utils.d(TAG, "failure");
                     EventBus.getDefault().post(new ExceptionModel(Utils.FROM_MEMBER_SETTING, Utils.MSG_EXCEPTION + t.toString()));
                 }
 
@@ -583,7 +582,7 @@ public class AccountManager extends BaseManager {
         }
     }
 
-    public static void loaderCityList(final OnResponseListener onResponseListener) {
+    public static void loaderCityList(final com.jiggie.android.listener.OnResponseListener onResponseListener) {
         try {
             getCityList(new CustomCallback() {
                 @Override
@@ -621,7 +620,7 @@ public class AccountManager extends BaseManager {
         SettingModel.Data.Payment payment = new SettingModel.Data.Payment();
 
         SettingModel.Data settingData = new SettingModel.Data(login.get_id(), login.getFb_id(), login.getGender(), notifications,
-                login.getUpdated_at(), login.getAccount_type(), login.getExperiences(), login.getGender_interest(), payment, login.getPhone());
+                login.getUpdated_at(), login.getAccount_type(), login.getExperiences(), login.getGender_interest(), payment, login.getPhone(), null);
 
         SettingModel model = new SettingModel(success, settingData);
         model.setIs_new_user(login.is_new_user());
@@ -643,13 +642,12 @@ public class AccountManager extends BaseManager {
         SettingModel.Data.Payment payment = new SettingModel.Data.Payment();
 
         SettingModel.Data settingData = new SettingModel.Data(memberSettingResultModel.get_id(), memberSettingResultModel.getFb_id(), memberSettingResultModel.getGender(), notifications,
-                memberSettingResultModel.getUpdated_at(), memberSettingResultModel.getAccount_type(), memberSettingResultModel.getExperiences(), memberSettingResultModel.getGender_interest(), payment, memberSettingResultModel.getPhone());
+                memberSettingResultModel.getUpdated_at(), memberSettingResultModel.getAccount_type(), memberSettingResultModel.getExperiences(), memberSettingResultModel.getGender_interest(), payment, memberSettingResultModel.getPhone(), null);
 
         //SettingModel model = new SettingModel(success, settingData);
         SettingModel model = AccountManager.loadSetting();
         model.setSuccess(success);
         model.setData(settingData);
-        Utils.d(TAG, "phoneNo " + memberSettingResultModel.getPhone());
         model.getData().setPhone(memberSettingResultModel.getPhone());
         AccountManager.saveSetting(model);
         return model;
@@ -713,7 +711,7 @@ public class AccountManager extends BaseManager {
 
     public static void getAccessToken
         //(final OnFinishGetAccessToken onFinishGetAccessToken)
-    (final CommerceManager.OnResponseListener onResponseListener) {
+        (final CommerceManager.OnResponseListener onResponseListener) {
         getAccessToken(new CustomCallback() {
             @Override
             public void onCustomCallbackResponse(Response response) {
@@ -735,7 +733,6 @@ public class AccountManager extends BaseManager {
         });
     }
 
-
     private static void getAccessToken(Callback callback) {
         final String fb_token = AccessToken.getCurrentAccessToken().getToken();
         AccessTokenModel accessTokenModel = new AccessTokenModel();
@@ -743,8 +740,6 @@ public class AccountManager extends BaseManager {
         getInstance().getAccessToken(Utils.URL_GET_ACCESS_TOKEN,
                 accessTokenModel).enqueue(callback);
     }
-
-
 
     private static void verifyVerificationCode(final String verificationCode, Callback callback) {
         getInstance().verifyVerificationCode(AccessToken.getCurrentAccessToken().getUserId()
@@ -787,6 +782,23 @@ public class AccountManager extends BaseManager {
                 .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
                 .getInt(Utils.COUNTER_EVENT, 0);
         return accessToken;
+    }
+
+    public static void setHasSetAlarm(boolean hasSetAlarm)
+    {
+        App.getInstance()
+                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                .edit()
+                .putBoolean(Utils.HAS_SET_ALARM, hasSetAlarm)
+                .apply();
+    }
+
+    public static boolean getHasSetAlarm()
+    {
+        final boolean hasSetAlarm = App.getInstance()
+                .getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE)
+                .getBoolean(Utils.HAS_SET_ALARM, false);
+        return hasSetAlarm;
     }
 
     public static void setInviteCodeResultModel(final String inviteCodeResultModel)

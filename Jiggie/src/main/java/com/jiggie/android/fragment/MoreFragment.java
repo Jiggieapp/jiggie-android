@@ -1,5 +1,7 @@
 package com.jiggie.android.fragment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -78,6 +80,7 @@ public class MoreFragment extends Fragment implements TabFragment, MoreTabListAd
     private String strCredit = Utils.BLANK;
 
     private ProfileDetailPresenterImplementation profilePresenter;
+    public final static String TAG = MoreFragment.class.getSimpleName();
 
     @Override
     public String getTitle() {
@@ -96,9 +99,19 @@ public class MoreFragment extends Fragment implements TabFragment, MoreTabListAd
 
     @Override
     public void onTabSelected() {
+
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
         if (super.getContext() != null) {
-            if (!this.isTabSelectedOnce)
+            if (!this.isTabSelectedOnce) {
+                /*if (this.adapter == null) {
+                    this.adapter = new MoreTabListAdapter(this, this);
+                }*/
                 this.adapter.initItems();
+            }
             this.adapter.notifyDataSetChanged();
             this.isTabSelectedOnce = true;
         }
@@ -108,23 +121,49 @@ public class MoreFragment extends Fragment implements TabFragment, MoreTabListAd
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = this.rootView = inflater.inflate(R.layout.fragment_more, container, false);
-        ButterKnife.bind(this, view);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ButterKnife.bind(this, this.rootView);
+        preDefine();
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ButterKnife.bind(this, this.rootView);
-
-        preDefine();
+        //setRetainInstance(true);
+        Utils.d(TAG, "onActivityCreated");
 
     }
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Utils.d(TAG, "onCreate");
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Utils.d(TAG, "onAttach");
+    }
+
 
     @Override
     public void onResume() {
         super.onResume();
+        Utils.d(TAG, "onResume");
         loadCredit();
+    }
+
+    @Override
+    public void onDestroy() {
+        Utils.d(TAG, "onDestroy");
+        super.onDestroy();
     }
 
     private void preDefine(){
@@ -191,6 +230,7 @@ public class MoreFragment extends Fragment implements TabFragment, MoreTabListAd
     }
 
     private void setMoreAdapter() {
+        Utils.d(TAG, "setmore adapter");
         this.refreshLayout.setEnabled(false);
         this.recyclerView.setAdapter(this.adapter = new MoreTabListAdapter(this, this));
         this.recyclerView.setLayoutManager(new LinearLayoutManager(super.getContext()));
@@ -337,5 +377,10 @@ public class MoreFragment extends Fragment implements TabFragment, MoreTabListAd
     @Override
     public void fetchDetail() {
         profilePresenter.fetchMemberInfo(AccessToken.getCurrentAccessToken().getUserId());
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 }

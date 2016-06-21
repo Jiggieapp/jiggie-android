@@ -9,7 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="@string/something_went_wrong" />
+        android:text="@string/something_went_wrong"
+        android:textSize="24sp"/>
 
     <Button
         android:id="@+id/btnRetry"

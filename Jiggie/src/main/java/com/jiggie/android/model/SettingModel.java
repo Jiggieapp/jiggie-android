@@ -38,9 +38,11 @@ public class SettingModel {
         String fb_id;
         String gender;
         Notifications notifications;
+        ArrayList<CityModel.Data.Citylist> cityList;
+        String area_event;
 
         public Data(String _id, String fb_id, String gender, Notifications notifications, String update_at, String account_type, ArrayList<String> experiences,
-                    String gender_interest, Payment payment, String phone){
+                    String gender_interest, Payment payment, String phone, ArrayList<CityModel.Data.Citylist> cityList){
             this._id = _id;
             this.fb_id = fb_id;
             this.gender = gender;
@@ -51,6 +53,7 @@ public class SettingModel {
             this.gender_interest = gender_interest;
             this.payment = payment;
             this.phone = phone;
+            this.cityList = cityList;
         }
 
         public String get_id() {
@@ -83,6 +86,25 @@ public class SettingModel {
 
         public void setNotifications(Notifications notifications) {
             this.notifications = notifications;
+        }
+
+        public ArrayList<CityModel.Data.Citylist> getCityList()
+        {
+            return this.cityList;
+        }
+
+        public void setCityList(ArrayList<CityModel.Data.Citylist> cityList)
+        {
+            this.cityList = cityList;
+        }
+
+        public void setAreaEvent(String area_event) {
+            this.area_event = area_event;
+        }
+
+        public String getAreaEvent()
+        {
+            return this.area_event;
         }
 
         public static class Notifications{

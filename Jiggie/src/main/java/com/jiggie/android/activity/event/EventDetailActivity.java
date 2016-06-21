@@ -183,6 +183,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     String event_description = "";
     int lowest_price;
     String fullfilmentType = "";
+    String timezone = "";
 
     ProgressDialog progressDialog;
     public static final String TAG = EventDetailActivity.class.getSimpleName();
@@ -215,6 +216,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         count_like_new = count_like;
         lowest_price = a.getIntExtra(Common.FIELD_EVENT_LOWEST_PRICE, 0);
         fullfilmentType = a.getStringExtra(Common.FIELD_FULLFILMENT_TYPE);
+        timezone = a.getStringExtra(Common.FIELD_EVENT_TIMEZONE);
 
         this.imagePagerIndicatorAdapter = new ImagePagerIndicatorAdapter(super.getSupportFragmentManager(), this.imageViewPager);
         //this.imagePagerIndicator.setAdapter(this.imagePagerIndicatorAdapter.getIndicatorAdapter());
@@ -248,7 +250,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                             (event_day);
                     final Date endDate = Common.ISO8601_DATE_FORMAT_UTC.parse
                             (event_end);
-                    String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format, Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));
+                    //String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format, Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));
+                    String simpleDate = Utils.getTimeForEvent(startDate, endDate, timezone);
                     txtDate.setText(simpleDate);
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -563,11 +566,13 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     public void onEvent(EventDetailModel message) {
         if (message.getFrom().equalsIgnoreCase(TAG)) {
             try {
+                timezone = "";
                 eventDetail = message.getData().getEvents_detail();
                 event_description = eventDetail.getDescription();
                 App.getInstance().trackMixPanelViewEventDetail("View Event Details", eventDetail);
                 elementContainers.setVisibility(View.VISIBLE);
                 elementContainers2.setVisibility(View.VISIBLE);
+                timezone = message.getData().getEvents_detail().getTz();
 
                 if (event_name == null) {
                     super.setToolbarTitle(Utils.BLANK, false);
@@ -667,7 +672,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
                 final Date startDate = Common.ISO8601_DATE_FORMAT_UTC.parse(message.getData().getEvents_detail().getStart_datetime());
                 final Date endDate = Common.ISO8601_DATE_FORMAT_UTC.parse(message.getData().getEvents_detail().getEnd_datetime());
-                String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format, Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));
+                //String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format, Common.SERVER_DATE_FORMAT_ALT.format(startDate), Common.SIMPLE_12_HOUR_FORMAT.format(endDate));
+                String simpleDate = Utils.getTimeForEvent(startDate, endDate, timezone);
                 txtDate.setText(simpleDate);
 
                 swipeRefresh.setRefreshing(false);
@@ -981,6 +987,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 i.putExtra(eventDetail.getClass().getName(), eventDetail);
                 if (event_pics.size() > 0)
                     i.putExtra("images", event_pics.get(0));
+                i.putExtra(Common.FIELD_EVENT_TIMEZONE, timezone);
                 startActivity(i);
             } else
                 Toast.makeText(this, R.string.book_error, Toast.LENGTH_SHORT).show();

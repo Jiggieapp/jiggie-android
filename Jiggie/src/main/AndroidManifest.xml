@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.jiggie.android"
-    android:versionCode="1210"
-    android:versionName="1.5.1">
+    android:versionCode="1227"
+    android:versionName="1.5.4">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -34,7 +34,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:replace="icon">
+        tools:replace="icon"
+
+        >
 
         <!-- <meta-data -->
         <!-- android:name="io.fabric.ApiKey" -->
@@ -58,7 +60,8 @@
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            />
         <activity
             android:name=".activity.TestActivity"
             android:label="@string/app_name"
@@ -413,5 +416,8 @@
             android:exported="true" />
 
         <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
+
+        <receiver
+            android:name=".listener.AlarmReceiver"></receiver>
     </application>
 </manifest>

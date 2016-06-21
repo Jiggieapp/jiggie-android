@@ -256,8 +256,13 @@ public final class SucScreenCCModel {
                 public final String end_series_datetime;
                 public final String created_at;
                 public final String updated_at;
+                public final String tz;
 
-                public Event(String _id, String event_type, String event_id, String start_date, long start_time, String start_datetime, String end_date, long end_time, String end_datetime, String venue_id, String venue_name, String date_full, String start_datetime_str, String end_datetime_str, String fullfillment_type, String fullfillment_value, long event_time, Invited[] invited, Accepted[] accepted, Confirmed[] confirmed, Guestconfirmed[] guestconfirmed, Hostconfirmed[] hostconfirmed, Rejected[] rejected, Cancelled[] cancelled, Host[] hosts, Hoster[] hosters, String source, String description, String location, long rank, String title, boolean inherits, String status, ArrayList<String> tags, String end_series_datetime, String created_at, String updated_at){
+                public String getTz() {
+                    return tz;
+                }
+
+                public Event(String _id, String event_type, String event_id, String start_date, long start_time, String start_datetime, String end_date, long end_time, String end_datetime, String venue_id, String venue_name, String date_full, String start_datetime_str, String end_datetime_str, String fullfillment_type, String fullfillment_value, long event_time, Invited[] invited, Accepted[] accepted, Confirmed[] confirmed, Guestconfirmed[] guestconfirmed, Hostconfirmed[] hostconfirmed, Rejected[] rejected, Cancelled[] cancelled, Host[] hosts, Hoster[] hosters, String source, String description, String location, long rank, String title, boolean inherits, String status, ArrayList<String> tags, String end_series_datetime, String created_at, String updated_at, String tz){
                     this._id = _id;
                     this.event_type = event_type;
                     this.event_id = event_id;
@@ -295,6 +300,8 @@ public final class SucScreenCCModel {
                     this.end_series_datetime = end_series_datetime;
                     this.created_at = created_at;
                     this.updated_at = updated_at;
+                    this.tz = tz;
+
                 }
 
                 public String get_id() {
@@ -645,8 +652,10 @@ public final class SucScreenCCModel {
                     public final String payment_timelimit;
                     public final String _id;
                     public final ArrayList<Term> terms;
+                    public final String extra_charge;
+                    public final String sale_type;
 
-                    public Product_list(String ticket_id, String name, String ticket_type, String max_buy, String quantity, String admin_fee, String tax_percent, String tax_amount, String tip_percent, String tip_amount, String price, String currency, String total_price, String total_price_aftertax, String num_buy, String total_price_all, String payment_timelimit, String _id, ArrayList<Term> terms){
+                    public Product_list(String ticket_id, String name, String ticket_type, String max_buy, String quantity, String admin_fee, String tax_percent, String tax_amount, String tip_percent, String tip_amount, String price, String currency, String total_price, String total_price_aftertax, String num_buy, String total_price_all, String payment_timelimit, String _id, ArrayList<Term> terms, String extra_charge, String sale_type){
                         this.ticket_id = ticket_id;
                         this.name = name;
                         this.ticket_type = ticket_type;
@@ -666,6 +675,8 @@ public final class SucScreenCCModel {
                         this.payment_timelimit = payment_timelimit;
                         this._id = _id;
                         this.terms = terms;
+                        this.extra_charge = extra_charge;
+                        this.sale_type = sale_type;
                     }
 
                     public String getTicket_id() {
@@ -742,6 +753,14 @@ public final class SucScreenCCModel {
 
                     public ArrayList<Term> getTerms() {
                         return terms;
+                    }
+
+                    public String getExtra_charge() {
+                        return extra_charge;
+                    }
+
+                    public String getSale_type() {
+                        return sale_type;
                     }
 
                     public static final class Term {

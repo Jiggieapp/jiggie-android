@@ -1,6 +1,7 @@
 package com.jiggie.android.component.adapter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.support.v4.content.ContextCompat;
@@ -19,8 +20,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.profile.ProfileDetailActivity;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.Chat;
+import com.jiggie.android.model.Common;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -103,6 +106,15 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                             }
                         }
                     });
+
+                    holder.imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            final Intent intent = new Intent(activity, ProfileDetailActivity.class);
+                            intent.putExtra(Common.FIELD_FACEBOOK_ID, toId);
+                            activity.startActivity(intent);
+                        }
+                    });
                 }
             } catch (ParseException e) {
                 throw new RuntimeException(e);
@@ -121,9 +133,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     holderHeader.lblChatHeader.setText(item.getTitle());
                 }
             }
-
-
-
         }
 
     }

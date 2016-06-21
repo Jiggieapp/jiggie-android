@@ -156,7 +156,7 @@ public class MemberSettingModel {
         setLocation(memberSettingResultModel.getData().getMembersettings().getNotifications().isLocation()? 1 : 0);
         setFrom_age(memberSettingResultModel.getData().getMembersettings().getFrom_age() + "");
         setTo_age(memberSettingResultModel.getData().getMembersettings().getTo_age() + "");
-        setArea_event("jakarta");
+        setArea_event(memberSettingResultModel.getData().getMembersettings().getArea_event());
         setDistance(memberSettingResultModel.getData().getMembersettings().getDistance());
     }
 }

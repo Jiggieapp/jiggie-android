@@ -46,6 +46,15 @@ public class EventModel {
             ArrayList<String> photos;
             Integer lowest_price;
             String fullfillment_type;
+            String tz;
+
+            public String getTz() {
+                return tz;
+            }
+
+            public void setTz(String tz) {
+                this.tz = tz;
+            }
 
             public Integer getLowest_price() {
                 return lowest_price;
