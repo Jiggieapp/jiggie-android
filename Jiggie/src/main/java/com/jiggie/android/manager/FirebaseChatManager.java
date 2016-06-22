@@ -1,5 +1,7 @@
 package com.jiggie.android.manager;
 
+import android.util.Log;
+
 import com.facebook.AccessToken;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -7,7 +9,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.jiggie.android.api.OnResponseListener;
+import com.jiggie.android.model.ChatAddModel;
 import com.jiggie.android.model.CollectionRoomMemberModel;
+import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.MessagesModel;
 import com.jiggie.android.model.RoomMembersModel;
 import com.jiggie.android.model.RoomModel;
@@ -64,7 +69,23 @@ public class FirebaseChatManager {
         return getFirebaseDatabase().child("room_members").child(roomId);
     }
 
-    public static void sendMessage(MessagesModel messagesModel, String roomId){
+    public static void deleteChatList(String roomId, String fb_id){
+        getFirebaseDatabase().child("room_members").child(roomId).child(fb_id).setValue(false);
+    }
+
+    public static void updateLastMessage(HashMap<String, Object> updatedRoom, String key){
+        getFirebaseDatabase().child("rooms").child(key).child("info").setValue(updatedRoom);
+    }
+
+    public static void blockChatList(String roomId, String fb_id){
+        getFirebaseDatabase().child("room_members").child(roomId).child(fb_id).removeValue();
+    }
+
+    public static void counterRead(String roomId){
+        getFirebaseDatabase().child("rooms").child(roomId).child("info").child("unread").child(fb_id).setValue(0);
+    }
+
+    public static void sendMessage(MessagesModel messagesModel, String roomId, int type, HashMap<String, Object> privateInfo){
         String key = getFirebaseDatabase().child("messages").child(roomId).push().getKey();
         Map<String, Object> postValues = messagesModel.toMap();
 
@@ -84,9 +105,12 @@ public class FirebaseChatManager {
         }
 
         HashMap<String, Object> result = new HashMap<>();
+        String message = messagesModel.getMessage();
         result.put("event", roomModel.getInfo().getEvent());
-        result.put("identifier", roomModel.getKey());
-        result.put("last_message", messagesModel.getMessage());
+        if(type==TYPE_PRIVATE){
+            result.put("identifier", roomModel.getKey());
+        }
+        result.put("last_message", message);
         result.put("created_at", roomModel.getInfo().getCreated_at());
         result.put("updated_at", messagesModel.getCreated_at());
 
@@ -96,18 +120,13 @@ public class FirebaseChatManager {
         reActivatedDeletedChat(roomId);
 
         updateCounterUnread(roomId, roomModel);
-    }
 
-    public static void deleteChatList(String roomId, String fb_id){
-        getFirebaseDatabase().child("room_members").child(roomId).child(fb_id).setValue(false);
-    }
-
-    public static void updateLastMessage(HashMap<String, Object> updatedRoom, String key){
-        getFirebaseDatabase().child("rooms").child(key).child("info").setValue(updatedRoom);
-    }
-
-    public static void blockChatList(String roomId, String fb_id){
-        getFirebaseDatabase().child("room_members").child(roomId).child(fb_id).removeValue();
+        if(type==TYPE_GROUP){
+            sendGroupChatJannes(roomId, message);
+        }else{
+            //send private
+            sendPrivateChatJannes(key, message, privateInfo);
+        }
     }
 
     private static void reActivatedDeletedChat(String roomId){
@@ -146,16 +165,59 @@ public class FirebaseChatManager {
         ArrayList<RoomModel.Unread> dataUnread = roomModel.getUnreads();
         for(int i=0;i<dataUnread.size();i++){
             String fb_idMatch = dataUnread.get(i).getFb_id();
+            long counter = 0;
             if(fb_idMatch.equals(fb_id)){
-                result.put(fb_idMatch, String.valueOf(0));
+                result.put(fb_idMatch, 0);
             }else{
-                result.put(fb_idMatch, String.valueOf(dataUnread.get(i).getCounter()+1));
+                result.put(fb_idMatch, dataUnread.get(i).getCounter()+1);
+                counter = dataUnread.get(i).getCounter()+1;
             }
+
+            //getFirebaseDatabase().child("rooms").child(roomId).child("info").child("unread").child(fb_idMatch).updateChildren();
         }
-        getFirebaseDatabase().child("rooms").child(roomId).child("info").child("unread").setValue(result);
+        //getFirebaseDatabase().child("rooms").child(roomId).child("info").child("unread").setValue(result);
+        getFirebaseDatabase().child("rooms").child(roomId).child("info").child("unread").updateChildren(result);
     }
 
-    public static void counterRead(String roomId){
-        getFirebaseDatabase().child("rooms").child(roomId).child("info").child("unread").child(fb_id).setValue(String.valueOf(0));
+    private static void sendGroupChatJannes(String key, String message){
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("fb_id", fb_id);
+        result.put("event_id", key);
+        result.put("message", message);
+        ChatManager.loaderGroupChatJannes(result, new OnResponseListener() {
+            @Override
+            public void onSuccess(Object object) {
+                //do nothing
+            }
+
+            @Override
+            public void onFailure(ExceptionModel exceptionModel) {
+                Log.d("group chat jannes", exceptionModel.toString());
+                //do nothing
+            }
+        });
+    }
+
+    private static void sendPrivateChatJannes(String key, String message, HashMap<String, Object> privateInfo){
+        ChatAddModel chatAddModel = new ChatAddModel();
+        chatAddModel.setFromId(AccessToken.getCurrentAccessToken().getUserId());
+        chatAddModel.setHeader("");
+        chatAddModel.setFromName(privateInfo.get("toName").toString());
+        chatAddModel.setMessage(message);
+        chatAddModel.setHosting_id("");
+        //chatAddModel.setKey("kT7bgkacbx73i3yxma09su0u901nu209mnuu30akhkpHJJ");
+        chatAddModel.setKey(key);
+        chatAddModel.setToId(privateInfo.get("toId").toString());
+        ChatManager.loaderAddChatJannes(chatAddModel, new OnResponseListener() {
+            @Override
+            public void onSuccess(Object object) {
+                //do nothing
+            }
+
+            @Override
+            public void onFailure(ExceptionModel exceptionModel) {
+                Log.d("private chat jannes", exceptionModel.toString());
+            }
+        });
     }
 }

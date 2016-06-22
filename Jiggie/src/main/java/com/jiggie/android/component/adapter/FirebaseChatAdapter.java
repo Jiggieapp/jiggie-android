@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -130,6 +131,54 @@ public class FirebaseChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 holderHeader.lblChatHeader.setVisibility(View.VISIBLE);
                 holderHeader.lblChatHeader.setText(event);
             }
+
+            holderHeader.txtMessage.setText(item.getMessage().trim());
+
+            try {
+                String dates = getSimpleDate(Common.ISO8601_DATE_FORMAT.format(new Date(item.getCreated_at())));
+
+                holderHeader.txtLeftTime.setText(dates);
+                holderHeader.txtRightTime.setText(dates);
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+
+            holderHeader.imageView.setVisibility(isFromYou(item.getFb_id()) ? View.GONE : View.VISIBLE);
+            holderHeader.txtLeftTime.setVisibility(isFromYou(item.getFb_id()) ? View.VISIBLE : View.GONE);
+            holderHeader.txtRightTime.setVisibility(isFromYou(item.getFb_id()) ? View.GONE : View.VISIBLE);
+            holderHeader.txtMessage.setBackgroundResource(isFromYou(item.getFb_id()) ? R.drawable.bg_chat_self : R.drawable.bg_chat_blue);
+            holderHeader.txtMessage.setTextColor(ContextCompat.getColor(holderHeader.root.getContext(), isFromYou(item.getFb_id()) ? R.color.textDarkGray : android.R.color.white));
+
+            final LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) holderHeader.root.getLayoutParams();
+            layoutParams.gravity = isFromYou(item.getFb_id()) ? Gravity.END : Gravity.START;
+
+            if (!isFromYou(item.getFb_id())) {
+
+                //Added by Aga 12-2-2016---
+                String urlImage = getProfileImage(item.getFb_id());
+                //---------
+
+                Glide.with(this.activity).load(urlImage).asBitmap().centerCrop().into(new BitmapImageViewTarget(holderHeader.imageView) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        final Resources resources = activity.getResources();
+                        if (resources != null) {
+                            final RoundedBitmapDrawable circularBitmapDrawable = RoundedBitmapDrawableFactory.create(resources, resource);
+                            circularBitmapDrawable.setCircular(true);
+                            super.getView().setImageDrawable(circularBitmapDrawable);
+                        }
+                    }
+                });
+
+                holderHeader.imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final Intent intent = new Intent(activity, ProfileDetailActivity.class);
+                        intent.putExtra(Common.FIELD_FACEBOOK_ID, item.getFb_id());
+                        activity.startActivity(intent);
+                    }
+                });
+            }
         }
     }
 
@@ -159,6 +208,16 @@ public class FirebaseChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     static class ViewHolderHeader extends RecyclerView.ViewHolder {
         @Bind(R.id.lbl_chat_header)
         TextView lblChatHeader;
+        @Bind(R.id.txtRightTime)
+        TextView txtRightTime;
+        @Bind(R.id.txtLeftTime)
+        TextView txtLeftTime;
+        @Bind(R.id.txtMessage)
+        TextView txtMessage;
+        @Bind(R.id.imageView)
+        ImageView imageView;
+        @Bind(R.id.root)
+        View root;
 
         public ViewHolderHeader(View itemView)
         {

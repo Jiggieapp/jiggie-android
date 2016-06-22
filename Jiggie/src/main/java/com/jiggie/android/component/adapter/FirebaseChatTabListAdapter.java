@@ -79,8 +79,6 @@ public class FirebaseChatTabListAdapter extends RecyclerView.Adapter<FirebaseCha
                 throw new RuntimeException(e);
             }
 
-            //int unread = roomModel.getInfo().getUnread();
-            Log.d(TAG+" countBadge", String.valueOf(countBadge()));
             long unread = getUnreadCounter(roomModel);
             holder.txtUnread.setText(String.valueOf(unread));
             holder.txtUnread.setVisibility(unread == 0 ? View.INVISIBLE : View.VISIBLE);
@@ -161,34 +159,6 @@ public class FirebaseChatTabListAdapter extends RecyclerView.Adapter<FirebaseCha
 
     public interface RoomLongClickListener {
         void onRoomLongClick(RoomModel roomModel);
-    }
-
-    public int countUnread() {
-        /*final int length = this.data.size();
-        int unreadCount = 0;
-
-        for (int i = 0; i < length; i++)
-            unreadCount += this.data.get(i).getInfo().getUnread() > 0 ? 1 : 0;
-
-        return unreadCount;*/
-
-        final int length = this.data.size();
-        int unreadCount = 0;
-
-        for (int i = 0; i < length; i++){
-            String fb_idMatch = Utils.BLANK;
-            int counter = 0;
-            for(int j=0;j<this.data.size();j++){
-                fb_idMatch = data.get(i).getUnreads().get(j).getFb_id();
-                if(FirebaseChatManager.fb_id.equals(fb_idMatch)){
-                    counter = Integer.parseInt(String.valueOf(data.get(i).getUnreads().get(j).getCounter()));
-                    break;
-                }
-            }
-            unreadCount += counter > 0 ? 1 : 0;
-        }
-
-        return unreadCount;
     }
 
     public int countBadge(){

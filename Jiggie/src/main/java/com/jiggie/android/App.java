@@ -404,6 +404,7 @@ public class App extends Application {
             json.putString("Purchase Quantity", commEventMixpanelModel.getPurchaseQuantity());
             json.putString("Purchase Amount", commEventMixpanelModel.getPurchaseAmount());
             json.putString("Purchase Discount", commEventMixpanelModel.getPurchaseDiscount());
+            json.putString("Purchase Credit", commEventMixpanelModel.getPurchaseCredit());
             json.putString("Purchase Payment", commEventMixpanelModel.getPurchasePayment());
             json.putString("Purchase Quantity", commEventMixpanelModel.getPurchaseQuantity());
             if (commEventMixpanelModel.isReservation()) {

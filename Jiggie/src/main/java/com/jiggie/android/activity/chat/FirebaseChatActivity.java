@@ -33,6 +33,7 @@ import com.jiggie.android.model.RoomModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -57,6 +58,7 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
     int type;
     private String toName;
     private String toId;
+    boolean fromNotif = false;
 
     public static final String TAG = ChatActivity.class.getSimpleName();
 
@@ -78,12 +80,35 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
 
     private void init(Intent intent)
     {
-
-        //fb_id = AccessToken.getCurrentAccessToken().getUserId();
         roomId = intent.getStringExtra(Utils.ROOM_ID);
-        event = intent.getStringExtra(Utils.ROOM_EVENT);
-        type = (int)intent.getLongExtra(Utils.ROOM_TYPE, 1);
+        fromNotif = intent.getBooleanExtra(Utils.FROM_NOTIF, false);
 
+        if(fromNotif){
+            Query roomDetail = FirebaseChatManager.getQueryRoom(roomId);
+            roomDetail.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    long types = (long) dataSnapshot.child("type").getValue();
+                    type = (int)types;
+                    event = (String) dataSnapshot.child("info").child("event").getValue();
+                    nextInit();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    //do nothing
+
+                }
+            });
+        }else{
+            event = intent.getStringExtra(Utils.ROOM_EVENT);
+            type = (int)intent.getLongExtra(Utils.ROOM_TYPE, 1);
+            nextInit();
+        }
+
+    }
+
+    private void nextInit(){
         super.bindView();
 
         if(type==FirebaseChatManager.TYPE_GROUP){
@@ -158,7 +183,15 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
                 //do nothing
             }
         }
-        FirebaseChatManager.sendMessage(new MessagesModel("aabbcc", FirebaseChatManager.fb_id, name, avatar, txtMessage.getText().toString(), Calendar.getInstance().getTimeInMillis()), roomId);
+
+        HashMap<String, Object> result = new HashMap<>();
+        if(type==FirebaseChatManager.TYPE_PRIVATE){
+            result.put("toId", this.toId);
+            result.put("toName", this.toName);
+        }
+
+        FirebaseChatManager.sendMessage(new MessagesModel("aabbcc", FirebaseChatManager.fb_id, name, avatar, txtMessage.getText().toString(), Calendar.getInstance().getTimeInMillis()), roomId, type, result);
+        txtMessage.setText(Utils.BLANK);
     }
 
     private void getMessages(final String roomId){

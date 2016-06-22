@@ -221,8 +221,6 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
     private void setHomeTitle() {
         if (this.homeMain != null) {
             unreadCount = getInstance().adapter.countBadge();
-            /*if (unreadCount > 0)
-                this.title = String.format("%s (%d)", getString(R.string.chat), unreadCount);*/
             if(unreadCount > 0)
             {
                 if(unreadCount > 99)
@@ -240,7 +238,6 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
                 this.title = "0";
             }
 
-            //else this.title = super.getString(R.string.chat);
             FirebaseChatManager.badgeChat = String.valueOf(unreadCount);
             this.homeMain.onTabTitleChanged(this);
 
@@ -406,7 +403,7 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
                 ArrayList<RoomModel.Unread> arrUnread = new ArrayList<RoomModel.Unread>();
                 for (DataSnapshot unreadSnapshot: dataSnapshot.child("info").child("unread").getChildren()) {
                     String fb_id = (String)unreadSnapshot.getKey();
-                    long counter = Long.parseLong((String)unreadSnapshot.getValue());
+                    long counter = (long)unreadSnapshot.getValue();
 
                     RoomModel.Unread unread = new RoomModel.Unread(fb_id, counter);
                     arrUnread.add(unread);

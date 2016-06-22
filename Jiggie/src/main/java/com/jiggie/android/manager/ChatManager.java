@@ -88,6 +88,10 @@ public class ChatManager extends BaseManager{
         getInstance().groupChat(Utils.URL_ADD_GROUP_CHAT, groupModel).enqueue(callback);
     }
 
+    private static void addGroupChatJannes(HashMap<String, Object> groupModel, Callback callback) throws IOException {
+        getInstance().groupChatJannes(Utils.URL_ADD_GROUP_CHAT_JANNES, groupModel).enqueue(callback);
+    }
+
     public static void loaderChatConversations(String fb_id, String to_id, final String fromFunction){
         try {
             getChatConversations(fb_id, to_id, new CustomCallback() {
@@ -372,6 +376,81 @@ public class ChatManager extends BaseManager{
             });
         }
         catch (IOException e){
+            Utils.d("Exception", e.toString());
+            onResponseListener.onFailure(new ExceptionModel(Utils.FROM_CHAT, Utils.MSG_EXCEPTION + e.toString()));
+        }
+    }
+
+    public static void loaderGroupChatJannes(final HashMap<String, Object> groupModel, final OnResponseListener onResponseListener)
+    {
+        try {
+            addGroupChatJannes(groupModel, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response) {
+                    /*String responses = new Gson().toJson(response.body());
+                    Utils.d("res", responses);*/
+
+                    int responseCode = response.code();
+
+                    if(responseCode==Utils.CODE_SUCCESS){
+                        Success2Model dataTemp = (Success2Model) response.body();
+                        onResponseListener.onSuccess(dataTemp);
+                    }else if(responseCode==Utils.CODE_EMPTY_DATA){
+                        onResponseListener.onFailure(new ExceptionModel(Utils.FROM_CHAT, Utils.MSG_EMPTY_DATA));
+                    }else{
+                        onResponseListener.onFailure(new ExceptionModel(Utils.FROM_CHAT, Utils.RESPONSE_FAILED));
+                    }
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String  t) {
+                    Utils.d("Exception", t.toString());
+                    onResponseListener.onFailure(new ExceptionModel(Utils.FROM_CHAT, Utils.MSG_EXCEPTION + t.toString()));
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
+            });
+        }
+        catch (IOException e){
+            Utils.d("Exception", e.toString());
+            onResponseListener.onFailure(new ExceptionModel(Utils.FROM_CHAT, Utils.MSG_EXCEPTION + e.toString()));
+        }
+    }
+
+    public static void loaderAddChatJannes(ChatAddModel chatAddModel, final OnResponseListener onResponseListener){
+        try {
+            addChat(chatAddModel, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response) {
+                    int responseCode = response.code();
+
+                    if(responseCode==Utils.CODE_SUCCESS){
+                        Success2Model dataTemp = (Success2Model) response.body();
+                        onResponseListener.onSuccess(dataTemp);
+                    }else if(responseCode==Utils.CODE_EMPTY_DATA){
+                        onResponseListener.onFailure(new ExceptionModel(Utils.FROM_CHAT, Utils.MSG_EMPTY_DATA));
+                    }else{
+                        onResponseListener.onFailure(new ExceptionModel(Utils.FROM_CHAT, Utils.RESPONSE_FAILED));
+                    }
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    Utils.d("Exception", t.toString());
+                    onResponseListener.onFailure(new ExceptionModel(Utils.FROM_CHAT, Utils.MSG_EXCEPTION + t.toString()));
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
+
+
+            });
+        }catch (IOException e){
             Utils.d("Exception", e.toString());
             onResponseListener.onFailure(new ExceptionModel(Utils.FROM_CHAT, Utils.MSG_EXCEPTION + e.toString()));
         }

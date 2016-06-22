@@ -23,6 +23,7 @@ import com.jiggie.android.model.MessagesModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -76,7 +77,7 @@ public class TesFirebaseChatDetailActivity extends ToolbarActivity {
                         //do nothing
                     }
                 }
-                FirebaseChatManager.sendMessage(new MessagesModel("aabbcc", fb_id, name, avatar, edtMessage.getText().toString(), Calendar.getInstance().getTimeInMillis()), roomId);
+                FirebaseChatManager.sendMessage(new MessagesModel("aabbcc", fb_id, name, avatar, edtMessage.getText().toString(), Calendar.getInstance().getTimeInMillis()), roomId, 1, null);
             }
         });
     }

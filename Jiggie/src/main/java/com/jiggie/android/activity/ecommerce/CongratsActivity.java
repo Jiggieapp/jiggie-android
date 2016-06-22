@@ -406,12 +406,12 @@ public class CongratsActivity extends ToolbarActivity {
             commEventMixpanelModel = new CommEventMixpanelModel(event.getTitle(), event.getVenue_name(), event.getLocation(), event.getStart_datetime_str(),
                     event.getEnd_datetime_str(), event.getTags(), event.getDescription(), productList.getName(), productList.getTicket_type(),
                     successScreen.getSummary().getTotal_price(), productList.getMax_buy(), successScreen.getSummary().getCreated_at(), productList.getNum_buy(),
-                    successScreen.getSummary().getTotal_price(), "0", successScreen.getPayment_type(), Utils.BLANK, false);
+                    successScreen.getSummary().getTotal_price(), successScreen.getDiscount().getTotal_discount(), successScreen.getCredit().getCredit_used(), successScreen.getPayment_type(), Utils.BLANK, false);
         }else{
             commEventMixpanelModel = new CommEventMixpanelModel(event.getTitle(), event.getVenue_name(), event.getLocation(), event.getStart_datetime_str(),
                     event.getEnd_datetime_str(), event.getTags(), event.getDescription(), productList.getName(), productList.getTicket_type(),
                     successScreen.getSummary().getTotal_price(), productList.getMax_buy(), successScreen.getSummary().getCreated_at(), Utils.BLANK,
-                    successScreen.getSummary().getTotal_price(), "0", successScreen.getPayment_type(), productList.getNum_buy(), true);
+                    successScreen.getSummary().getTotal_price(), successScreen.getDiscount().getTotal_discount(), successScreen.getCredit().getCredit_used(), successScreen.getPayment_type(), productList.getNum_buy(), true);
         }
 
 

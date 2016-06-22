@@ -10,6 +10,10 @@ import android.support.v4.app.NotificationCompat;
 import android.view.View;
 
 import com.google.android.gms.gcm.GcmListenerService;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.MainActivity;
@@ -118,12 +122,10 @@ public class GCMMessageHandler extends GcmListenerService {
             intent.putExtra(Conversation.FIELD_FACEBOOK_ID, too);*/
 
             //New Chat Firebase-----------------
+            String roomId = data.getString("room_id");
             intent = new Intent(App.getInstance(), FirebaseChatActivity.class);
-            String event = Utils.BLANK;
-            String types = String.valueOf(FirebaseChatManager.TYPE_GROUP);
-            intent.putExtra(Utils.ROOM_ID, too);
-            intent.putExtra(Utils.ROOM_TYPE, Long.parseLong(types));
-            intent.putExtra(Utils.ROOM_EVENT, event);
+            intent.putExtra(Utils.ROOM_ID, roomId);
+            intent.putExtra(Utils.FROM_NOTIF, true);
             //End of new chat firebase----------
 
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
@@ -141,18 +143,18 @@ public class GCMMessageHandler extends GcmListenerService {
             intent.putExtra(Conversation.FIELD_FACEBOOK_ID, too);*/
 
             //New Chat Firebase-----------------
+            String roomId = data.getString("room_id");
             intent = new Intent(App.getInstance(), FirebaseChatActivity.class);
-            String event = Utils.BLANK;
-            String types = String.valueOf(FirebaseChatManager.TYPE_GROUP);
-            intent.putExtra(Utils.ROOM_ID, too);
-            intent.putExtra(Utils.ROOM_TYPE, Long.parseLong(types));
-            intent.putExtra(Utils.ROOM_EVENT, event);
-            //End of new chat firebase----------
-
+            intent.putExtra(Utils.ROOM_ID, roomId);
+            intent.putExtra(Utils.FROM_NOTIF, true);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                             | Intent.FLAG_ACTIVITY_CLEAR_TOP
-                            //Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
+                    //Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
             );
+
+            //End of new chat firebase----------
+
+
             //set title and body text for push notifications
             final String[] values = message.split(":");
             message = values.length > 1 ? values[1].trim() : message;
