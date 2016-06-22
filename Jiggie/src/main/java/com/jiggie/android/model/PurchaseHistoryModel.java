@@ -569,7 +569,7 @@ public class PurchaseHistoryModel {
                 public ArrayList<Cancelled> cancelled;
                 public ArrayList<Host> hosts;
                 public ArrayList<Hoster> hosters;
-                public String source;
+                //public String source;
                 public String description;
                 public String location;
                 public long rank;
@@ -659,7 +659,7 @@ public class PurchaseHistoryModel {
                     } else {
                         hosters = null;
                     }
-                    source = in.readString();
+                    //source = in.readString();
                     description = in.readString();
                     location = in.readString();
                     rank = in.readLong();
@@ -762,7 +762,7 @@ public class PurchaseHistoryModel {
                         dest.writeByte((byte) (0x01));
                         dest.writeList(hosters);
                     }
-                    dest.writeString(source);
+                    //dest.writeString(source);
                     dest.writeString(description);
                     dest.writeString(location);
                     dest.writeLong(rank);
@@ -822,7 +822,7 @@ public class PurchaseHistoryModel {
                     this.cancelled = cancelled;
                     this.hosts = hosts;
                     this.hosters = hosters;
-                    this.source = source;
+                    //this.source = source;
                     this.description = description;
                     this.location = location;
                     this.rank = rank;
@@ -944,9 +944,9 @@ public class PurchaseHistoryModel {
                     return hosters;
                 }
 
-                public String getSource() {
+                /*public String getSource() {
                     return source;
-                }
+                }*/
 
                 public String getDescription() {
                     return description;

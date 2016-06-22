@@ -2,6 +2,7 @@ package com.jiggie.android.component.callback;
 
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.BaseManager;
 import com.jiggie.android.manager.CommerceManager;
@@ -73,6 +74,7 @@ public abstract class CustomCallback implements Callback {
     @Override
     public void onFailure(Call call, Throwable t) {
         String d = t.toString();
+        Utils.d(TAG, "CustomCallback " + t.toString());
         if (t instanceof java.net.UnknownHostException) {
             onCustomCallbackFailure(App.getInstance().getResources().getString(R.string.no_internet_connection));
         } else if (t instanceof SocketTimeoutException) {

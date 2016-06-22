@@ -626,7 +626,6 @@ public class CommerceManager extends BaseManager{
 
             @Override
             public void onCustomCallbackFailure(String t) {
-                Utils.d(TAG, "gagal " + t);
                 onResponseListener.onFailure(Utils.CODE_FAILED, t);
             }
 
