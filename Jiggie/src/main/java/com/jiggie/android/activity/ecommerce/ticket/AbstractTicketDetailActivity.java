@@ -126,8 +126,6 @@ public abstract class AbstractTicketDetailActivity extends /*ToolbarWithDotActiv
             {
                 identity_id = guestDetail.identity_id;
             }
-
-
         }
 
         txtGuestName.setText(guestName);

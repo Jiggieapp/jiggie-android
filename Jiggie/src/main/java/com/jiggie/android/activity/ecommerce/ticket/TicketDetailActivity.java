@@ -374,6 +374,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
             if(isLoket && (identity_id.isEmpty() || identity_id == null))
             {
                 isItEnable = false;
+                relGuest.setSelected(true);
             }
 
             if (isItEnable) {
