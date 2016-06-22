@@ -169,7 +169,7 @@ public class CommerceManager extends BaseManager{
 
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());
-                    Utils.d("res", responses);
+                    //Utils.d("res", responses);
 
                     int responseCode = response.code();
                     if (responseCode == Utils.CODE_SUCCESS) {

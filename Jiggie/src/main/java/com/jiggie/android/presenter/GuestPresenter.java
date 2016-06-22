@@ -26,8 +26,6 @@ public class GuestPresenter {
                 new Gson().toJson(guestInfo.data.guest_detail));
         App.getInstance().getSharedPreferences()
             .edit().putString(Utils.GUEST_DETAilS, temp).apply();
-        Utils.d(TAG, "guest " + App.getSharedPreferences()
-                .getString(Utils.GUEST_DETAilS, "superb"));
     }
 
     public PostSummaryModel.Guest_detail loadGuest()

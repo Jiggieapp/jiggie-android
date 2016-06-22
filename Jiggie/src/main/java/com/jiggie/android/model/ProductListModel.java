@@ -102,8 +102,56 @@ public class ProductListModel {
                 int payment_timelimit;
                 String summary;
                 String status;
+                Source source;
 
-                public Purchase(String ticket_id, String name, String ticket_type, int quantity, String admin_fee, String tax_percent, String tax_amount, String tip_percent, String tip_amount, String price, String total_price, String description, String max_purchase, int payment_timelimit, String summary, String status){
+                public Source getSource() {
+                    return source;
+                }
+                /*public list(Source source){
+                    this.source = source;
+                }*/
+
+                public static final class Source {
+                    String name;
+
+                    public String getName() {
+                        return name;
+                    }
+
+                    DataSource data;
+
+                    public Source(String name, DataSource data){
+                        this.name = name;
+                        this.data = data;
+                    }
+
+                    public static final class DataSource {
+                        Section sections[];
+                        String available;
+                        String sold;
+                        String booked;
+                        String price;
+                        String ticket_type;
+                        String id_ticket;
+
+                        public DataSource(Section[] sections, String available, String sold, String booked, String price, String ticket_type, String id_ticket){
+                            this.sections = sections;
+                            this.available = available;
+                            this.sold = sold;
+                            this.booked = booked;
+                            this.price = price;
+                            this.ticket_type = ticket_type;
+                            this.id_ticket = id_ticket;
+                        }
+
+                        public static final class Section {
+                            public Section(){
+                            }
+                        }
+                    }
+                }
+
+                /*public Purchase(String ticket_id, String name, String ticket_type, int quantity, String admin_fee, String tax_percent, String tax_amount, String tip_percent, String tip_amount, String price, String total_price, String description, String max_purchase, int payment_timelimit, String summary, String status){
                     this.ticket_id = ticket_id;
                     this.name = name;
                     this.ticket_type = ticket_type;
@@ -120,7 +168,7 @@ public class ProductListModel {
                     this.payment_timelimit = payment_timelimit;
                     this.summary = summary;
                     this.status = status;
-                }
+                }*/
 
                 protected Purchase(Parcel in) {
                     this.ticket_id = in.readString();

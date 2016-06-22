@@ -20,6 +20,7 @@ public class Common {
     public static final String FIELD_FEED = "feed";
     public static final String FIELD_EVENT_LOWEST_PRICE = "lowest_price";
     public static final String FIELD_FULLFILMENT_TYPE = "fulfillment_type";
+    public static final String IS_LOKET = "IS_LOKET";
 
     public static String FIELD_MATCH_ME = "matchme";
     public static String FIELD_PHONE = "phone";
@@ -52,6 +53,7 @@ public class Common {
     public static String FIELD_FROM_HOWTOPAY = "how_to_pay";
     public static String FIELD_MIN_DEPOSIT = "min_deposit";
     public static String FIELD_STATUS_SOLD_OUT = "sold out";
+    public static String FIELD_IDENTITY_ID = "identity_id";
     public static String FIELD_FROM = "from";
     //public static String FIELD_EXACT_PRICE = "exact_price";
     /*public static String FIELD_TICKET_ID = "ticket_id";

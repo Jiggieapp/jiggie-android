@@ -5,7 +5,6 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
@@ -31,7 +30,7 @@ public abstract class AbstractTicketDetailActivity extends /*ToolbarWithDotActiv
     @Bind(R.id.lblFillYourContactInfo)
     TextView lblFillYourContactInfo;
 
-    String guestName, guestEmail, dialCode, guestPhone;
+    String guestName, guestEmail, dialCode, guestPhone, identity_id;
     @Bind(R.id.txt_guest_name)
     TextView txtGuestName;
     @Bind(R.id.txt_guest_email)
@@ -70,7 +69,12 @@ public abstract class AbstractTicketDetailActivity extends /*ToolbarWithDotActiv
     protected abstract String getToolbarTitle();
     protected abstract String getPageInfo();
 
-    protected void initGuest() {
+    protected void initGuest()
+    {
+        initGuest(false);
+    }
+
+    protected void initGuest(boolean isLoket) {
         //wandy 20-04-2016
         /*
         LoginModel loginModel = AccountManager.loadLogin();
@@ -81,7 +85,8 @@ public abstract class AbstractTicketDetailActivity extends /*ToolbarWithDotActiv
         if (!guestDetail.dial_code.isEmpty()
                 || !guestDetail.phone.isEmpty()
                 || !guestDetail.name.isEmpty()
-                || !guestDetail.email.isEmpty()) {
+                || !guestDetail.email.isEmpty()
+                ) {
             lblFillYourContactInfo.setVisibility(View.GONE);
             relGuestDetail.setVisibility(View.VISIBLE);
             guestName = guestDetail.name;
@@ -109,6 +114,20 @@ public abstract class AbstractTicketDetailActivity extends /*ToolbarWithDotActiv
             guestPhone = getString(R.string.phone_number);
             txtGuestPhone.setTextColor(getResources().getColor(android.R.color.holo_red_light));
             relGuest.setSelected(true);
+        }
+        else if(isLoket)
+        {
+            if(guestDetail == null || guestDetail.identity_id == null || guestDetail.identity_id.isEmpty())
+            {
+                identity_id = "";
+                relGuest.setSelected(true);
+            }
+            else
+            {
+                identity_id = guestDetail.identity_id;
+            }
+
+
         }
 
         txtGuestName.setText(guestName);

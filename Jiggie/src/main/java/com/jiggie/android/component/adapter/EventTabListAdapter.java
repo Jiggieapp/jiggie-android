@@ -213,7 +213,7 @@ public class EventTabListAdapter
             ThemesViewHolder holder = (ThemesViewHolder) viewHolder;
             try {
                 holder.event = item;
-                holder.txtTitle.setText(item.getTitle());
+                //holder.txtTitle.setText(item.getTitle());
 
                 Glide
                         .with(context)
@@ -298,8 +298,8 @@ public class EventTabListAdapter
     }
 
     static class ThemesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @Bind(R.id.txtEventName)
-        TextView txtTitle;
+        /*@Bind(R.id.txtEventName)
+        TextView txtTitle;*/
         //@Bind(R.id.txtDescription)
         //TextView txtDescription;
         @Bind(R.id.image)

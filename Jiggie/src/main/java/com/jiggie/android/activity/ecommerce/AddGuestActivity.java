@@ -53,7 +53,7 @@ public class AddGuestActivity extends ToolbarActivity {
 
     GuestPresenter guestPresenter;
     private static final String TAG = AddGuestActivity.class.getSimpleName();
-    private boolean isLoket = true;
+    private boolean isLoket = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +75,7 @@ public class AddGuestActivity extends ToolbarActivity {
         edt_phone = (EditText)findViewById(R.id.edt_phone);
         rel_save = (RelativeLayout)findViewById(R.id.rel_save);*/
         super.setToolbarTitle(getString(R.string.title_guest), true);
+        isLoket = getIntent().getBooleanExtra(Common.IS_LOKET, false);
 
         relSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,7 +89,7 @@ public class AddGuestActivity extends ToolbarActivity {
                 String guestPhoneN = edtPhone.getText().toString();
                 String guestPhone = /*guest62 +*/ guestPhoneN;
                 String id = "";
-                if(isLoket)
+                if (isLoket)
                     id = edtId.getText().toString();
 
 
@@ -99,8 +100,9 @@ public class AddGuestActivity extends ToolbarActivity {
                         result.putExtra(Common.FIELD_GUEST_EMAIL, guestEmail);
                         result.putExtra(Common.FIELD_GUEST_PHONE, guestPhone);
                         result.putExtra("dial_code", guest62);
+                        result.putExtra(Common.FIELD_IDENTITY_ID, id);
                         PostSummaryModel.Guest_detail gDetail = new PostSummaryModel.Guest_detail
-                                (guestName, guestEmail, guestPhone, guest62);
+                                (guestName, guestEmail, guestPhone, guest62, id);
                         guestPresenter.saveGuest(gDetail);
                         setResult(RESULT_OK, result);
                         finish();
@@ -197,25 +199,27 @@ public class AddGuestActivity extends ToolbarActivity {
             }
         });
 
-        if(isLoket)
-        {
+        if (isLoket) {
             edtId.setVisibility(View.VISIBLE);
             edtId.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-            }
+                }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                edtId.setTextColor(getResources().getColor(R.color.textDarkGray));
-            }
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    edtId.setTextColor(getResources().getColor(R.color.textDarkGray));
+                }
 
-            @Override
-            public void afterTextChanged(Editable s) {
-                checkEnability();
-            }
-        });
+                @Override
+                public void afterTextChanged(Editable s) {
+                    checkEnability();
+                }
+            });
+        }
+        else {
+            edtId.setVisibility(View.GONE);
         }
 
     }
@@ -227,6 +231,7 @@ public class AddGuestActivity extends ToolbarActivity {
         EventDetailModel.Data.EventDetail eventDetail = a.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
         edtName.setText(a.getStringExtra(Common.FIELD_GUEST_NAME));
         edtEmail.setText(a.getStringExtra(Common.FIELD_GUEST_EMAIL));
+        edtId.setText(a.getStringExtra(Common.FIELD_IDENTITY_ID));
         String phone = a.getStringExtra(Common.FIELD_GUEST_PHONE);
         if (!phone.equals(Utils.BLANK)) {
             //String s62 = phone.substring(0, 2);
@@ -294,8 +299,7 @@ public class AddGuestActivity extends ToolbarActivity {
                 edtEmail.setError(Utils.BLANK);
             }
         }
-        if(isLoket && id.isEmpty())
-        {
+        if (isLoket && id.isEmpty()) {
             isError = true;
             edtId.setTextColor(getResources().getColor(android.R.color.holo_red_light));
             edtId.setError(Utils.BLANK);

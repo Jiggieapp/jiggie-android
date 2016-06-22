@@ -204,6 +204,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
         Intent a = super.getIntent();
         event_id = a.getStringExtra(Common.FIELD_EVENT_ID);
+        Utils.d(TAG, "event_id " + event_id);
         eventDetail.set_id(event_id);
         event_name = a.getStringExtra(Common.FIELD_EVENT_NAME);
         event_venue_name = a.getStringExtra(Common.FIELD_EVENT_VENUE_NAME);

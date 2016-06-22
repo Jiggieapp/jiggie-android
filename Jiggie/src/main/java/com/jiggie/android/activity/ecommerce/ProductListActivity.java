@@ -221,17 +221,20 @@ public class ProductListActivity extends ToolbarActivity
                 i.putExtra(Common.FIELD_TRANS_TYPE, itemData.getTicket_type());
                 //Utils.d(TAG, "detailPurchase  brother " + itemData.getSummary());
                 i.putExtra(itemData.getClass().getName(), itemData);
+                i.putExtra(Common.IS_LOKET, itemData.getSource().getName().equalsIgnoreCase("loket") ? true : false);
             } else {
                 i = new Intent(ProductListActivity.this, ReservationActivity.class);
                 ProductListModel.Data.ProductList.Reservation itemData = (ProductListModel.Data.ProductList.Reservation) object;
                 i.putExtra(Common.FIELD_TRANS_TYPE, itemData.getTicket_type());
                 i.putExtra(itemData.getClass().getName(), itemData);
+                //i.putExtra(Common.IS_LOKET, itemData.getSource().getName());
             }
         } else {
             i = new Intent(ProductListActivity.this, TicketDetailActivity.class);
             ProductListModel.Data.ProductList.Purchase itemData = (ProductListModel.Data.ProductList.Purchase) object;
             i.putExtra(Common.FIELD_TRANS_TYPE, itemData.getTicket_type());
             i.putExtra(itemData.getClass().getName(), itemData);
+            i.putExtra(Common.IS_LOKET, itemData.getSource().getName().equalsIgnoreCase("loket") ? true : false);
         }
         i.putExtra(Common.FIELD_EVENT_ID, eventId);
         i.putExtra(Common.FIELD_EVENT_NAME, eventName);

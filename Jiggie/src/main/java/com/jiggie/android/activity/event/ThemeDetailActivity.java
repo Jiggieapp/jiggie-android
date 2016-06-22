@@ -25,6 +25,7 @@ import com.jiggie.android.model.ThemeResultModel;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class ThemeDetailActivity extends ToolbarActivity implements ThemeView
         , EventTabListAdapter.ViewSelectedListener, AppBarLayout.OnOffsetChangedListener{
@@ -167,6 +168,11 @@ public class ThemeDetailActivity extends ToolbarActivity implements ThemeView
         eventName.setText(title);
     }
 
+    @SuppressWarnings("unused")
+    @OnClick(R.id.back_button)
+    void backOnClick() {
+        finish();
+    }
     /*@Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         int maxScroll = appBarLayout.getTotalScrollRange();

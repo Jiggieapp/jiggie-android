@@ -94,14 +94,13 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
 
     private Dialog dialogTerms;
     private String timezone;
-
+    private Boolean isLoket;
 
     @Override
     protected void onCreate() {
         super.setContentView(R.layout.activity_ticket_detail);
         super.bindView();
         super.setToolbarTitle(getResources().getString(R.string.ticket_detail), true);
-
 
         preDefined();
 
@@ -113,7 +112,8 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                 PostSummaryModel.Product_list product_list = new PostSummaryModel.Product_list(ticketId, quantity);
                 ArrayList<PostSummaryModel.Product_list> arrProductList = new ArrayList<PostSummaryModel.Product_list>();
                 arrProductList.add(product_list);
-                PostSummaryModel.Guest_detail guest_detail = new PostSummaryModel.Guest_detail(guestName, guestEmail, guestPhone, dialCode);
+                PostSummaryModel.Guest_detail guest_detail
+                        = new PostSummaryModel.Guest_detail(guestName, guestEmail, guestPhone, dialCode, identity_id);
                 PostSummaryModel postSummaryModel = new PostSummaryModel(AccountManager.loadLogin().getFb_id(), eventId, arrProductList, guest_detail);
 
                 String sd = String.valueOf(new Gson().toJson(postSummaryModel));
@@ -182,6 +182,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                 Intent i = new Intent(TicketDetailActivity.this, AddGuestActivity.class);
                 i.putExtra(Common.FIELD_GUEST_NAME, guestName);
                 i.putExtra(Common.FIELD_GUEST_EMAIL, guestEmail);
+                i.putExtra(Common.FIELD_IDENTITY_ID, identity_id);
                 if (guestPhone.equals(getString(R.string.phone_number))) {
                     i.putExtra(Common.FIELD_GUEST_PHONE, Utils.BLANK);
                 } else {
@@ -191,6 +192,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                 i.putExtra(Common.FIELD_TRANS_TYPE, Common.TYPE_PURCHASE);
                 i.putExtra(detailPurchase.getClass().getName(), detailPurchase);
                 i.putExtra(eventDetail.getClass().getName(), eventDetail);
+                i.putExtra(Common.IS_LOKET, isLoket);
                 startActivityForResult(i, 0);
             }
         });
@@ -248,6 +250,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
         timezone = a.getStringExtra(Common.FIELD_EVENT_TIMEZONE);
         eventDetail = a.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
         detailPurchase = a.getParcelableExtra(ProductListModel.Data.ProductList.Purchase.class.getName());
+        isLoket = a.getBooleanExtra(Common.IS_LOKET, false);
         sendMixpanel(eventDetail);
 
         /*lblEventName.setText(eventName);
@@ -284,48 +287,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
 
         txtTicketDesc.setText(detailPurchase.getDescription());
         lblInfo.setText(getPageInfo());
-
-        //wandy 20-04-2016
-        /*
-        LoginModel loginModel = AccountManager.loadLogin();
-        guestName = loginModel.getUser_first_name() + " " + loginModel.getUser_last_name();
-        guestEmail = loginModel.getEmail();
-        guestPhone = AccountManager.loadSetting().getData().getPhone();*/
-        /*PostSummaryModel.Guest_detail guestDetail = guestPresenter.loadGuest();
-        if (guestDetail != null) {
-            lblFillYourContactInfo.setVisibility(View.GONE);
-            relGuestDetail.setVisibility(View.VISIBLE);
-            guestName = guestDetail.name;
-            guestEmail = guestDetail.email;
-            guestPhone = guestDetail.phone;
-            dialCode = guestDetail.dial_code;
-        } else {
-            lblFillYourContactInfo.setVisibility(View.VISIBLE);
-            relGuestDetail.setVisibility(View.GONE);
-            guestName = "";
-            guestEmail = "";
-            guestPhone = Utils.BLANK;
-            dialCode = "";
-        }
-
-        if (guestPhone.equals(Utils.BLANK)) {
-            guestPhone = getString(R.string.phone_number);
-            txtGuestPhone.setTextColor(getResources().getColor(android.R.color.holo_red_light));
-            relGuest.setSelected(true);
-        }
-
-        txtGuestName.setText(guestName);
-        txtGuestEmail.setText(guestEmail + " | ");
-        if (guestPhone.equals(getString(R.string.phone_number))) {
-            txtGuestPhone.setText(guestPhone);
-        } else {
-            txtGuestPhone.setText("+" + dialCode + guestPhone);
-        }*/
-
-        initGuest();
-        //end of wandy 20-04-2016
-
-
+        initGuest(isLoket);
         checkEnability(guestName, guestEmail, guestPhone);
     }
 
@@ -364,6 +326,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
             guestEmail = data.getStringExtra(Common.FIELD_GUEST_EMAIL);
             guestPhone = data.getStringExtra(Common.FIELD_GUEST_PHONE);
             dialCode = data.getStringExtra("dial_code");
+            identity_id = data.getStringExtra(Common.FIELD_IDENTITY_ID);
             txtGuestName.setText(data.getStringExtra(Common.FIELD_GUEST_NAME));
             txtGuestEmail.setText(guestEmail + " | ");
             if (guestPhone.equals(getString(R.string.phone_number))) {
