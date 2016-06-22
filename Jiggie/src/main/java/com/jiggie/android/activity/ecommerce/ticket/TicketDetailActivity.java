@@ -358,7 +358,6 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
     }
 
     private void checkEnability(String name, String email, String phoneNumber) {
-
         if (isSoldOut) {
             btnDone.setEnabled(false);
         } else {
@@ -370,6 +369,10 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
                 isItEnable = false;
             }
             if (phoneNumber.equals(Utils.BLANK) || phoneNumber.equals(getString(R.string.phone_number))) {
+                isItEnable = false;
+            }
+            if(isLoket && (identity_id.isEmpty() || identity_id == null))
+            {
                 isItEnable = false;
             }
 

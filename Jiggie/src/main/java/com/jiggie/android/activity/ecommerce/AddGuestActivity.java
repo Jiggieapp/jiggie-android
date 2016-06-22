@@ -299,7 +299,7 @@ public class AddGuestActivity extends ToolbarActivity {
                 edtEmail.setError(Utils.BLANK);
             }
         }
-        if (isLoket && id.isEmpty()) {
+        if (isLoket && (id.isEmpty() || id.length() < 8)) {
             isError = true;
             edtId.setTextColor(getResources().getColor(android.R.color.holo_red_light));
             edtId.setError(Utils.BLANK);

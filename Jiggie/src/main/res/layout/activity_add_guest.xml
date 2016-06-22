@@ -55,6 +55,8 @@
             android:layout_marginRight="@dimen/padding_standard"
             android:singleLine="true"
             android:layout_below="@id/edt_name"
+            android:inputType="number"
+            android:maxLength="32"
             />
 
 
