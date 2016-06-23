@@ -41,11 +41,17 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.MainActivity;
+import com.jiggie.android.activity.chat.FirebaseChatActivity;
 import com.jiggie.android.activity.ecommerce.ProductListActivity;
 import com.jiggie.android.activity.invite.InviteFriendsActivity;
+import com.jiggie.android.api.OnResponseListener;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
@@ -54,11 +60,14 @@ import com.jiggie.android.component.volley.SimpleVolleyRequestListener;
 import com.jiggie.android.component.volley.VolleyHandler;
 import com.jiggie.android.fragment.SocialTabFragment;
 import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.manager.ChatManager;
 import com.jiggie.android.manager.EventManager;
+import com.jiggie.android.manager.FirebaseChatManager;
 import com.jiggie.android.manager.GuestManager;
 import com.jiggie.android.manager.InviteManager;
 import com.jiggie.android.manager.ShareManager;
 import com.jiggie.android.manager.TooltipsManager;
+import com.jiggie.android.model.CollectionRoomMemberModel;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.ExceptionModel;
@@ -82,6 +91,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -168,6 +178,10 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     ImageButton backButton;
     @Bind(R.id.event_name)
     TextView eventName;
+    @Bind(R.id.img_chat)
+    ImageView imgChat;
+    @Bind(R.id.txt_count_chat)
+    TextView txtCountChat;
 
     private ImagePagerIndicatorAdapter imagePagerIndicatorAdapter;
     private ImageView[] imageGuests;
@@ -192,6 +206,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     boolean canClickLike = false;
     Timer timerLike, timerInvite;
     TimerTask timerTask, timerTaskInvite;
+    ValueEventListener countChatEvent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -397,6 +412,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
         cekLike();
         //runInvite();
+        watchCountRoomMembers(event_id);
     }
 
     @Override
@@ -580,9 +596,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                     event_name = eventDetail.getTitle().toUpperCase();
                     eventName.setText(eventDetail.getTitle().toUpperCase());
                     txtEventName.setText(event_name);
-                }
-                else
-                {
+                } else {
                     super.setToolbarTitle(message.getData().getEvents_detail().getTitle(), false);
                 }
 
@@ -911,6 +925,37 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
     }
 
+    boolean isLoadingChat = false;
+    @SuppressWarnings("unused")
+    @OnClick(R.id.img_chat)
+    void chatOnClick() {
+
+        if(!isLoadingChat){
+            isLoadingChat = true;
+            HashMap<String, Object> result = new HashMap<>();
+            result.put("fb_id", AccessToken.getCurrentAccessToken().getUserId());
+            result.put("event_id", event_id);
+            ChatManager.loaderGroupChat(result, new OnResponseListener() {
+                @Override
+                public void onSuccess(Object object) {
+                    isLoadingChat = false;
+                    Intent i = new Intent(EventDetailActivity.this, FirebaseChatActivity.class);
+                    i.putExtra(Utils.ROOM_ID, event_id);
+                    i.putExtra(Utils.ROOM_TYPE, Long.parseLong(String.valueOf(FirebaseChatManager.TYPE_GROUP)));
+                    i.putExtra(Utils.ROOM_EVENT, event_name);
+                    startActivity(i);
+                }
+
+                @Override
+                public void onFailure(ExceptionModel exceptionModel) {
+                    Log.e(TAG, exceptionModel.toString());
+                    isLoadingChat = false;
+                }
+            });
+        }
+
+    }
+
     private void runBackgroundLike() {
         if (timerLike != null) {
             timerLike.cancel();
@@ -1036,6 +1081,10 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         super.onDestroy();
         if (file != null)
             file.delete();
+
+        if(countChatEvent!=null){
+            FirebaseChatManager.getFirebaseDatabase().removeEventListener(countChatEvent);
+        }
     }
 
     private void actionLike(final String action) {
@@ -1290,5 +1339,30 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         } else {
             finish();
         }
+    }
+
+    private void watchCountRoomMembers(String roomId){
+        Query queryCollectionRoomMember = FirebaseChatManager.getQueryCollectionRoomMembers(roomId);
+        countChatEvent = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                FirebaseChatManager.arrCollectRoomMembers.clear();
+                for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
+                    String fb_id = (String) messageSnapshot.getKey();
+                    boolean isAvailable = (boolean)messageSnapshot.getValue();
+
+                    CollectionRoomMemberModel collectionRoomMemberModel = new CollectionRoomMemberModel(fb_id, isAvailable);
+                    FirebaseChatManager.arrCollectRoomMembers.add(collectionRoomMemberModel);
+
+                    txtCountChat.setText(String.valueOf(FirebaseChatManager.arrCollectRoomMembers.size()));
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        queryCollectionRoomMember.addValueEventListener(countChatEvent);
     }
 }

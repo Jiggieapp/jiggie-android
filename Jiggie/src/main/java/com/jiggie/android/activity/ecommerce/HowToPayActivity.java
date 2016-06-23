@@ -268,14 +268,14 @@ public class HowToPayActivity extends ToolbarActivity {
             commEventMixpanelModel = new CommEventMixpanelModel(event.getTitle(), event.getVenue_name(), event.getLocation(), event.getStart_datetime_str(),
                     event.getEnd_datetime_str(), event.getTags(), event.getDescription(), order.getProduct_list().get(0).getName(), order.getProduct_list().get(0).getTicket_type(),
                     order.getTotal_price(), order.getProduct_list().get(0).getMax_buy(), successScreen.getCreated_at(), order.getProduct_list().get(0).getNum_buy(),
-                    successScreen.getAmount(), "0", successScreen.getType(), Utils.BLANK, false);
+                    successScreen.getAmount(), "0", "0", successScreen.getType(), Utils.BLANK, false);
         } else {
             commEventMixpanelModel = new CommEventMixpanelModel(eventDetail.getTitle(), eventDetail.getVenue_name(), eventDetail.getVenue().getCity(), eventDetail.getStart_datetime_str(),
                     eventDetail.getEnd_datetime_str(), eventDetail.getTags(), eventDetail.getDescription(), productSummary.getProduct_list().get(0).getName(), productSummary.getProduct_list().get(0).getTicket_type(),
                     productSummary.getTotal_price(), productSummary.getProduct_list().get(0).getMax_buy(), successScreen.getCreated_at(), productSummary.getProduct_list().get(0).getNum_buy(),
-                    successScreen.getAmount(), "0", successScreen.getType(), Utils.BLANK, false);
+                    successScreen.getAmount(), "0", "0", successScreen.getType(), Utils.BLANK, false);
         }
-        App.getInstance().trackMixPanelCommerce(Utils.COMM_FINISH_VA, commEventMixpanelModel);
+        //App.getInstance().trackMixPanelCommerce(Utils.COMM_FINISH_VA, commEventMixpanelModel);
     }
 
     @Override
