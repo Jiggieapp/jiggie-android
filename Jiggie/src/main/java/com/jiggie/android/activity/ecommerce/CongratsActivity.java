@@ -405,16 +405,17 @@ public class CongratsActivity extends ToolbarActivity {
         SucScreenCCModel.Data.Success_screen.Event event = sucScreenCCModel.getData().getSuccess_screen().getEvent();
         SucScreenCCModel.Data.Success_screen.Summary.Product_list productList = successScreen.getSummary().getProduct_list().get(0);
 
-        if (productList.getTicket_type().equalsIgnoreCase(Common.TYPE_RESERVATION)) {
+        if (productList.getTicket_type().equalsIgnoreCase(Common.TYPE_RESERVATION))
+        {
             commEventMixpanelModel = new CommEventMixpanelModel(event.getTitle(), event.getVenue_name(), event.getLocation(), event.getStart_datetime_str(),
                     event.getEnd_datetime_str(), event.getTags(), event.getDescription(), productList.getName(), productList.getTicket_type(),
                     successScreen.getSummary().getTotal_price(), productList.getMax_buy(), successScreen.getSummary().getCreated_at(), productList.getNum_buy(),
-                    successScreen.getSummary().getTotal_price(), "0", successScreen.getPayment_type(), Utils.BLANK, false);
-        } else {
+                    successScreen.getSummary().getTotal_price(), successScreen.getDiscount().getTotal_discount(), successScreen.getCredit().getCredit_used(), successScreen.getPayment_type(), Utils.BLANK, false);
+        }else{
             commEventMixpanelModel = new CommEventMixpanelModel(event.getTitle(), event.getVenue_name(), event.getLocation(), event.getStart_datetime_str(),
                     event.getEnd_datetime_str(), event.getTags(), event.getDescription(), productList.getName(), productList.getTicket_type(),
                     successScreen.getSummary().getTotal_price(), productList.getMax_buy(), successScreen.getSummary().getCreated_at(), Utils.BLANK,
-                    successScreen.getSummary().getTotal_price(), "0", successScreen.getPayment_type(), productList.getNum_buy(), true);
+                    successScreen.getSummary().getTotal_price(), successScreen.getDiscount().getTotal_discount(), successScreen.getCredit().getCredit_used(), successScreen.getPayment_type(), productList.getNum_buy(), true);
         }
 
 
