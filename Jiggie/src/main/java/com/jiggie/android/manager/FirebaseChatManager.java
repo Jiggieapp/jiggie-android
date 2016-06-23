@@ -74,7 +74,7 @@ public class FirebaseChatManager {
     }
 
     public static void updateLastMessage(HashMap<String, Object> updatedRoom, String key){
-        getFirebaseDatabase().child("rooms").child(key).child("info").setValue(updatedRoom);
+        getFirebaseDatabase().child("rooms").child(key).child("info").updateChildren(updatedRoom);
     }
 
     public static void blockChatList(String roomId, String fb_id){
@@ -114,12 +114,25 @@ public class FirebaseChatManager {
         result.put("created_at", roomModel.getInfo().getCreated_at());
         result.put("updated_at", messagesModel.getCreated_at());
 
+        HashMap<String, Object> unread = new HashMap<>();
+        ArrayList<RoomModel.Unread> dataUnread = roomModel.getUnreads();
+        for(int i=0;i<dataUnread.size();i++){
+            String fb_idMatch = dataUnread.get(i).getFb_id();
+            if(fb_idMatch.equals(fb_id)){
+                unread.put(fb_idMatch, 0);
+            }else{
+                unread.put(fb_idMatch, dataUnread.get(i).getCounter()+1);
+            }
+        }
+
+        result.put("unread", unread);
+
         updateLastMessage(result, roomId);
         //end of update last message in room-----------
 
         reActivatedDeletedChat(roomId);
 
-        updateCounterUnread(roomId, roomModel);
+        //updateCounterUnread(roomId, roomModel);
 
         if(type==TYPE_GROUP){
             sendGroupChatJannes(roomId, message);
@@ -135,7 +148,7 @@ public class FirebaseChatManager {
             result.put(arrCollectRoomMembers.get(i).getFb_id(), true);
         }
 
-        getFirebaseDatabase().child("room_members").child(roomId).setValue(result);
+        getFirebaseDatabase().child("room_members").child(roomId).updateChildren(result);
     }
 
     public static void getCollectionRoomMembers(String roomId){
