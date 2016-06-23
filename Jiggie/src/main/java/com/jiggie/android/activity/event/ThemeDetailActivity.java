@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
@@ -103,8 +104,7 @@ public class ThemeDetailActivity extends ToolbarActivity implements ThemeView
         this.recyclerEvents.setLayoutManager(layoutManager);
         this.recyclerEvents.setAdapter(adapter);
 
-
-
+        App.getInstance().trackMixpanelThemeDetail(title);
     }
 
     @Override

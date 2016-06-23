@@ -1,5 +1,6 @@
 package com.jiggie.android;
 
+import android.accounts.Account;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -735,7 +736,58 @@ public class App extends Application {
         getInstanceMixpanel().getPeople().set(json);
     }
 
-    public void trackMixPanelViewEventDetail(String eventName, EventDetailModel.Data.EventDetail eventDetail) {
+    public void trackMixpanelThemeDetail(String eventName)
+    {
+        LoginModel loginModel = AccountManager.loadLogin();
+        SettingModel settingModel = AccountManager.loadSetting();
+        if(loginModel != null)
+        {
+            SimpleJSONObject json = new SimpleJSONObject();
+            /*- FB ID
+                - First Name
+                - Last Name
+                - Device
+                - Birthday
+                - City Country
+                - Email
+                - Gender
+                - Gender Interest
+                - Name and FB ID
+                - App Version
+                - OS
+                - OS Version*/
+            json.putString("FB ID", AccessToken.getCurrentAccessToken().getUserId());
+            json.putString("First name", loginModel.getUser_first_name());
+            json.putString("Last name", loginModel.getUser_last_name());
+            json.putString("Device", Build.DEVICE);
+            json.putString("Birthday", loginModel.getBirthday());
+            final String location = loginModel.getLocation();
+            String[] locations = null;
+            try {
+                locations = TextUtils.isEmpty(location) ? new String[]{"", ""} : location.split(",");
+            } catch (Exception e) {
+
+            }
+            try {
+                json.putString("City Country", locations[0].trim() + " " + locations[1].trim());
+            } catch (Exception e) {
+                json.putString("City Country", locations[0].trim());
+            }
+            json.putString("email", loginModel.getEmail());
+            json.putString("gender", loginModel.getGender());
+            json.putString("gender interest", settingModel.getData().getGender_interest());
+            json.putString("Name and FB ID", loginModel.getUser_first_name() + "_" + loginModel.getUser_last_name()
+                    + "_" + loginModel.getFb_id());
+            json.putString("App Version", getVersionCode(this));
+            json.putString("OS", "Android");
+            json.putString("OS Version", this.getDeviceOSName());
+
+            getInstanceMixpanel().track(eventName, json);
+        }
+    }
+
+    public void trackMixPanelViewEventDetail(String eventName
+            , EventDetailModel.Data.EventDetail eventDetail) {
         SimpleJSONObject json = new SimpleJSONObject();
         final String location = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin().getLocation();
 
@@ -743,7 +795,6 @@ public class App extends Application {
         try {
             locations = TextUtils.isEmpty(location) ? new String[]{"", ""} : location.split(",");
         } catch (Exception e) {
-
         }
 
         final ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -792,7 +843,6 @@ public class App extends Application {
         } catch (Exception e) {
             json.putString("Country", Utils.BLANK);
         }
-
 
         json.putString("Device Model", Build.MODEL);
         json.putString("Manufacturer", Build.MANUFACTURER);
@@ -1004,9 +1054,10 @@ public class App extends Application {
                 }
             }
         }
-
         getInstanceMixpanel().track(eventName, json);
     }
+
+
 
     //Added by Aga
     public static String getVersionName(Context c) {
