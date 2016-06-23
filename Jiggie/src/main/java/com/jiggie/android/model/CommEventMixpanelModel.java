@@ -21,6 +21,7 @@ public class CommEventMixpanelModel {
     String purchaseQuantity;
     String purchaseAmount;
     String purchaseDiscount;
+    String purchaseCredit;
     String purchasePayment;
     String totalGuest;
     boolean isReservation;
@@ -52,7 +53,7 @@ public class CommEventMixpanelModel {
 
     public CommEventMixpanelModel(String eventName, String eventVenueName, String eventVenueCity, String eventStartDate, String eventEndDate, ArrayList<String> tag, String eventDescription,
                                   String ticketName, String ticketType, String ticketPrice, String ticketMaxPerGuest, String dateTime, String purchaseQuantity, String purchaseAmount,
-                                  String purchaseDiscount, String purchasePayment, String totalGuest, boolean isResevation){
+                                  String purchaseDiscount, String purchaseCredit, String purchasePayment, String totalGuest, boolean isResevation){
         this.eventName = eventName;
         this.eventVenueName = eventVenueName;
         this.eventVenueCity = eventVenueCity;
@@ -68,6 +69,7 @@ public class CommEventMixpanelModel {
         this.purchaseQuantity = purchaseQuantity;
         this.purchaseAmount = purchaseAmount;
         this.purchaseDiscount = purchaseDiscount;
+        this.purchaseCredit = purchaseCredit;
         this.purchasePayment = purchasePayment;
         this.totalGuest = totalGuest;
         this.isReservation = isResevation;
@@ -131,6 +133,10 @@ public class CommEventMixpanelModel {
 
     public String getPurchaseDiscount() {
         return purchaseDiscount;
+    }
+
+    public String getPurchaseCredit() {
+        return purchaseCredit;
     }
 
     public String getPurchasePayment() {
