@@ -96,17 +96,11 @@ public class FriendsFragment extends Fragment implements TabFragment, HomeMain, 
         public PageAdapter(HomeMain homeMain, FragmentManager fm) {
             super(fm);
             this.fragments = new Fragment[]{
-<<<<<<< HEAD
-                    ChatTabFragment.getInstance()
-                    , FriendListFragment.getInstance()
-                    //new FriendListFragment(FriendsFragment.this)
-=======
                     //ChatTabFragment.getInstance()
                     FirebaseChatTabFragment.getInstance()
                     //,atTabFragment.getInstance()
                     //FriendListFragment.getInstance(FriendsFragment.this)
-                    , FriendListFragment.getInstance(FriendsFragment.this)
->>>>>>> feature/Firebase_chat_aga
+                    , FriendListFragment.getInstance()
             };
 
             FriendListFragment.getInstance().setOnFriendClickListener(FriendsFragment.this);
