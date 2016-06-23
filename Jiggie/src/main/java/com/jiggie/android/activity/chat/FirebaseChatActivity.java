@@ -2,7 +2,6 @@ package com.jiggie.android.activity.chat;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -12,8 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
-import com.facebook.AccessToken;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
@@ -24,12 +21,8 @@ import com.jiggie.android.component.SimpleTextWatcher;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.FirebaseChatAdapter;
-import com.jiggie.android.component.adapter.FirebaseChatDetailAdapter;
 import com.jiggie.android.manager.FirebaseChatManager;
-import com.jiggie.android.model.CollectionRoomMemberModel;
-import com.jiggie.android.model.Conversation;
 import com.jiggie.android.model.MessagesModel;
-import com.jiggie.android.model.RoomModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
