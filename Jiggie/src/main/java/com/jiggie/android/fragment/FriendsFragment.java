@@ -16,11 +16,18 @@ import android.view.ViewGroup;
 
 import com.jiggie.android.R;
 import com.jiggie.android.activity.chat.ChatActivity;
+import com.jiggie.android.activity.chat.FirebaseChatActivity;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
+import com.jiggie.android.manager.FirebaseChatManager;
 import com.jiggie.android.model.Conversation;
 import com.jiggie.android.model.FriendListModel;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -134,11 +141,45 @@ public class FriendsFragment extends Fragment implements TabFragment, HomeMain, 
 
     @Override
     public void doRedirect(FriendListModel.Data.List_social_friends conversation) {
-        final Intent intent = new Intent(super.getActivity(), ChatActivity.class);
+        /*final Intent intent = new Intent(super.getActivity(), ChatActivity.class);
         intent.putExtra(Conversation.FIELD_PROFILE_IMAGE, conversation.getImg_url());
         intent.putExtra(Conversation.FIELD_FACEBOOK_ID, conversation.getFb_id());
         intent.putExtra(Conversation.FIELD_FROM_NAME, conversation.getFirst_name());
-        super.startActivityForResult(intent, 0);
+        super.startActivityForResult(intent, 0);*/
+
+        //Firebase part-----------------------------------
+        String roomId = Utils.BLANK;
+
+        String a = FirebaseChatManager.fb_id;
+        String b = conversation.getFb_id();
+
+        if(a.length()<b.length()){
+            roomId = a+"_"+b;
+        }else if(a.length()>b.length()){
+            roomId = b+"_"+a;
+        }else{
+            ArrayList<String> d = new ArrayList<>();
+            d.add(a);
+            d.add(b);
+            Collections.sort(d, new Comparator<String>() {
+                @Override
+                public int compare(String lhs, String rhs) {
+                    return lhs.compareToIgnoreCase(rhs);
+                }
+            });
+
+            StringBuilder sb = new StringBuilder();
+            sb.append(d.get(0)).append("_").append(d.get(1));
+
+            //String roomId = d.get(0)+"_"+d.get(1);
+            roomId = sb.toString();
+        }
+
+        final Intent intent = new Intent(getActivity(), FirebaseChatActivity.class);
+        intent.putExtra(Utils.ROOM_ID, roomId);
+        intent.putExtra(Utils.LOAD_ROOM_DETAIL, true);
+        super.startActivity(intent);
+        //End of Firebase part-----------------------------------
     }
 
     @Override

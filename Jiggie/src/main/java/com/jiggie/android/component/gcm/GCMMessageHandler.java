@@ -125,7 +125,7 @@ public class GCMMessageHandler extends GcmListenerService {
             String roomId = data.getString("room_id");
             intent = new Intent(App.getInstance(), FirebaseChatActivity.class);
             intent.putExtra(Utils.ROOM_ID, roomId);
-            intent.putExtra(Utils.FROM_NOTIF, true);
+            intent.putExtra(Utils.LOAD_ROOM_DETAIL, true);
             //End of new chat firebase----------
 
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
@@ -146,7 +146,7 @@ public class GCMMessageHandler extends GcmListenerService {
             String roomId = data.getString("room_id");
             intent = new Intent(App.getInstance(), FirebaseChatActivity.class);
             intent.putExtra(Utils.ROOM_ID, roomId);
-            intent.putExtra(Utils.FROM_NOTIF, true);
+            intent.putExtra(Utils.LOAD_ROOM_DETAIL, true);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                             | Intent.FLAG_ACTIVITY_CLEAR_TOP
                     //Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
