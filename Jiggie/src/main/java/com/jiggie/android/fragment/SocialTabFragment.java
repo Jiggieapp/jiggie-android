@@ -135,6 +135,8 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             progressBar.setVisibility(View.GONE);
         }
         App.getInstance().trackMixPanelEvent("View Social Feed");*/
+        Utils.d(TAG, "ontabselected");
+        App.getInstance().trackMixPanelEvent("View Social Feed");
     }
 
     @Override
@@ -186,7 +188,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             cardEmpty.setVisibility(View.GONE);
             progressBar.setVisibility(View.GONE);
         }
-        App.getInstance().trackMixPanelEvent("View Social Feed");
+
     }
 
     @Nullable
