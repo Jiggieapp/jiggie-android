@@ -130,7 +130,7 @@ public class Utils {
     public static final String ROOM_ID = "roomId";
     public static final String ROOM_EVENT = "roomEvent";
     public static final String ROOM_TYPE = "roomType";
-    public static final String FROM_NOTIF = "fromNotif";
+    public static final String LOAD_ROOM_DETAIL = "loadRoomDetail";
     //-------------------------
 
     public static int myPixel(Activity a, int dip) {
