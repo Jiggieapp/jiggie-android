@@ -924,4 +924,29 @@ public class AccountManager extends BaseManager {
     {
         getInstance().getInviteCode(AccessToken.getCurrentAccessToken().getUserId()).enqueue(callback);
     }
+
+    public static void updateMatchMe(final String isMatchMe, final com.jiggie.android.listener.OnResponseListener onResponseListener)
+    {
+        updateMatchMe(isMatchMe, new CustomCallback() {
+            @Override
+            public void onCustomCallbackResponse(Response response) {
+                onResponseListener.onSuccess(response.body());
+            }
+
+            @Override
+            public void onCustomCallbackFailure(String t) {
+                onResponseListener.onFailure(Utils.CODE_FAILED, t);
+            }
+
+            @Override
+            public void onNeedToRestart() {
+                updateMatchMe(isMatchMe, onResponseListener);
+            }
+        });
+    }
+
+    private static void updateMatchMe(String matchMe, CustomCallback callback)
+    {
+        getInstance().updateMatchMe(AccessToken.getCurrentAccessToken().getUserId(), matchMe).enqueue(callback);
+    }
 }

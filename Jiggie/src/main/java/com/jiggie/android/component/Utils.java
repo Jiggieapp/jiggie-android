@@ -164,6 +164,7 @@ public class Utils {
     public static final String URL_SOCIAL_FEED = BASE_URL + "app/v3/partyfeed/list/{fb_id}/{gender_interest}";
     public static final String URL_GUEST_MATCH = BASE_URL + "app/v3/partyfeed/match/{fb_id}/{from_id}/{type}";
     public static final String URL_SOCIAL_MATCH = BASE_URL + "app/v3/partyfeed_socialmatch/match/{fb_id}/{from_id}/{type}";
+    public static final String URL_UPDATE_MATCH_ME = BASE_URL + "app/v3/partyfeed/settings/{fb_id}/{match_me}";
     public static final String URL_EDIT_ABOUT = BASE_URL + "app/v3/updateuserabout";
     public static final String URL_GET_ACCESS_TOKEN = BASE_URL + "app/v3/userlogin";
     public static final String URL_TAGSLIST = BASE_URL + "app/v3/user/tagslist";
@@ -211,6 +212,8 @@ public class Utils {
     public final static String URL_INVITE_ALL = BASE_URL + "app/v3/credit/invite_all";
     public final static String URL_GET_INVITE_CODE = BASE_URL + "app/v3/credit/invite_code/{fb_id}";
     //END OF INVITE URL============
+
+
 
     //REDEEM CODE URL===============
     public final static String URL_REDEEM_CODE = BASE_URL + "app/v3/credit/redeem_code";

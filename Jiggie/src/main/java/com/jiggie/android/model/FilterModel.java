@@ -58,7 +58,6 @@ public final class FilterModel {
             }
 
             public static final class Payment {
-
                 public Payment(){
                 }
             }

@@ -52,14 +52,13 @@ public class SocialFilterImplementation implements SocialFilterPresenter{
     }
 
     @Override
-    public void updateSetting(final MemberSettingModel memberSettingModel) {
+    public void updateSetting( final MemberSettingModel memberSettingModel) {
        // MemberSettingModel memberSettingModel = new MemberSettingModel(memberSettingResultModel);
         AccountManager.loaderMemberSetting(memberSettingModel, new OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
                 AccountManager.saveMemberSetting(memberSettingModel);
                 SettingModel settingModel = AccountManager.loadSetting();
-                Utils.d(TAG, "getGenderInterest " + memberSettingModel.getGender_interest());
                 settingModel.getData().setGender_interest(memberSettingModel.getGender_interest());
                 boolean isFeed;
                 if(memberSettingModel.getFeed() == 0)
@@ -73,6 +72,32 @@ public class SocialFilterImplementation implements SocialFilterPresenter{
             @Override
             public void onFailure(int responseCode, String message) {
                 socialView.onFailure();
+            }
+        });
+    }
+
+    @Override
+    public void updateMatchMe(final String value) {
+        AccountManager.updateMatchMe(value, new OnResponseListener()
+        {
+            @Override
+            public void onSuccess(Object object) {
+                SettingModel settingModel = AccountManager.loadSetting();
+                if(value.equalsIgnoreCase("yes"))
+                {
+                    settingModel.setMatchme(true);
+                }
+                else
+                {
+                    settingModel.setMatchme(false);
+                }
+                AccountManager.saveSetting(settingModel);
+                socialView.updateSetting();
+            }
+
+            @Override
+            public void onFailure(int responseCode, String message) {
+
             }
         });
     }

@@ -15,4 +15,5 @@ public interface SocialView {
     void saveSocialSetting(MemberSettingResultModel memberSettingResultModel);
     void onSuccess();
     void onFailure();
+    void updateSetting();
 }

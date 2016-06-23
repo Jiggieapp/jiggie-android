@@ -74,7 +74,7 @@ public class SocialManager extends BaseManager {
     }
 
 
-    public static void loaderSocialFeed(String fb_id, String gender_interest) {
+    public static void loaderSocialFeed(String fb_id, String gender_interest, final com.jiggie.android.listener.OnResponseListener onResponseListener) {
         try {
             getSocialFeed(fb_id, gender_interest, new CustomCallback() {
                 @Override
@@ -91,13 +91,15 @@ public class SocialManager extends BaseManager {
                         //Debug.stopMethodTracing();
                         /*EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_FEED
                                 , App.getInstance().getResources().getString(R.string.empty_social)));*/
+                        onResponseListener.onFailure(response.code(), App.getInstance().getResources().getString(R.string.empty_social));
                     }
                 }
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Debug.stopMethodTracing();
-                    EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_FEED, t));
+                    //Debug.stopMethodTracing();
+                    //EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_FEED, t));
+                    onResponseListener.onFailure(Utils.CODE_FAILED, t);
                 }
 
                 @Override

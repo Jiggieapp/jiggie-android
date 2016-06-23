@@ -103,6 +103,8 @@ public class ThemeDetailActivity extends ToolbarActivity implements ThemeView
         this.recyclerEvents.setLayoutManager(layoutManager);
         this.recyclerEvents.setAdapter(adapter);
 
+
+
     }
 
     @Override

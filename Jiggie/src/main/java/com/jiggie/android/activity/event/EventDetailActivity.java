@@ -839,7 +839,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 if (!message.getMessage().equals(Utils.RESPONSE_FAILED + " " + "empty data")) {
                     Toast.makeText(EventDetailActivity.this, message.getMessage(), Toast.LENGTH_SHORT).show();
                 }
-
             }
         }
     }
@@ -926,11 +925,12 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     }
 
     boolean isLoadingChat = false;
+
     @SuppressWarnings("unused")
     @OnClick(R.id.img_chat)
     void chatOnClick() {
 
-        if(!isLoadingChat){
+        if (!isLoadingChat) {
             isLoadingChat = true;
             HashMap<String, Object> result = new HashMap<>();
             result.put("fb_id", AccessToken.getCurrentAccessToken().getUserId());
@@ -1082,7 +1082,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         if (file != null)
             file.delete();
 
-        if(countChatEvent!=null){
+        if (countChatEvent != null) {
             FirebaseChatManager.getFirebaseDatabase().removeEventListener(countChatEvent);
         }
     }
@@ -1341,15 +1341,15 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         }
     }
 
-    private void watchCountRoomMembers(String roomId){
+    private void watchCountRoomMembers(String roomId) {
         Query queryCollectionRoomMember = FirebaseChatManager.getQueryCollectionRoomMembers(roomId);
         countChatEvent = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 FirebaseChatManager.arrCollectRoomMembers.clear();
-                for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
+                for (DataSnapshot messageSnapshot : dataSnapshot.getChildren()) {
                     String fb_id = (String) messageSnapshot.getKey();
-                    boolean isAvailable = (boolean)messageSnapshot.getValue();
+                    boolean isAvailable = (boolean) messageSnapshot.getValue();
 
                     CollectionRoomMemberModel collectionRoomMemberModel = new CollectionRoomMemberModel(fb_id, isAvailable);
                     FirebaseChatManager.arrCollectRoomMembers.add(collectionRoomMemberModel);

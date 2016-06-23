@@ -44,6 +44,7 @@ import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.SocialCardNewAdapter;
+import com.jiggie.android.listener.OnResponseListener;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.manager.TooltipsManager;
@@ -135,7 +136,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             progressBar.setVisibility(View.GONE);
         }
         App.getInstance().trackMixPanelEvent("View Social Feed");*/
-        Utils.d(TAG, "ontabselected");
+        //Utils.d(TAG, "ontabselected brur");
         App.getInstance().trackMixPanelEvent("View Social Feed");
     }
 
@@ -169,7 +170,6 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     public void onResume() {
         super.onResume();
         boolean a = AccountManager.anySettingChange;
-        Utils.d(TAG, "onUserVisibleHint");
         if (this.current == null) {
 
             if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_SOCIAL, false)) {
@@ -177,7 +177,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             }
         }
 
-        if (AccountManager.loadSetting().getData().getNotifications().isFeed()) {
+        if (AccountManager.loadSetting().isMatchme()) {
             if (temp.size() == 0)
                 this.onRefresh();
             else {
@@ -195,7 +195,6 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = this.rootView = inflater.inflate(R.layout.fragment_social, container, false);
-        Utils.d(TAG, "onCreateView");
         ButterKnife.bind(this, view);
         return view;
     }
@@ -204,16 +203,13 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         //setRetainInstance(true);
-        Utils.d(TAG, "onActivityCreated");
 
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         ButterKnife.bind(this, this.rootView);
-
         EventBus.getDefault().register(this);
 
         this.progressBar.setVisibility(View.GONE);
@@ -240,9 +236,27 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             temp = new ArrayList<>();
             isRefreshing = true;
             SettingModel currentSetting = AccountManager.loadSetting();
-            //Debug.startMethodTracing("loaderSocialFeeddddTrack", 1024);
-            SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId() /*"10205703989179267"*/
-                    , currentSetting.getData().getGender_interest());
+            if(currentSetting.isMatchme())
+            {
+                SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId() /*"10205703989179267"*/
+                        , currentSetting.getData().getGender_interest()
+                        , new OnResponseListener() {
+
+                            @Override
+                            public void onSuccess(Object object) {
+
+                            }
+
+                            @Override
+                            public void onFailure(int responseCode, String ex) {
+                                if (ex.contains("no card")) {
+                                    cardEmpty.setVisibility(View.VISIBLE);
+                                }
+                                progressBar.setVisibility(View.GONE);
+                                dismissProgressDialog();
+                            }
+                        });
+            }
         }
     }
 
@@ -357,9 +371,23 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                     isRefreshing = true;
                     SettingModel currentSetting = AccountManager.loadSetting();
                     SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId()
-                            , currentSetting.getData().getGender_interest());
-                }
+                            , currentSetting.getData().getGender_interest()
+                            , new OnResponseListener() {
+                                @Override
+                                public void onSuccess(Object object) {
 
+                                }
+
+                                @Override
+                                public void onFailure(int responseCode, String ex) {
+                                    if (ex.contains("no card")) {
+                                        cardEmpty.setVisibility(View.VISIBLE);
+                                    }
+                                    progressBar.setVisibility(View.GONE);
+                                    dismissProgressDialog();
+                                }
+                            });
+                }
             }
 
             @Override
@@ -450,21 +478,9 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     public void onEvent(ExceptionModel message) {
         isRefreshing = false;
         String ex = message.getMessage();
-        //Utils.d(TAG, "exception " + ex);
         if (message.getFrom().equals(Utils.FROM_SOCIAL_FEED)
                 || message.getFrom().equals(Utils.FROM_SOCIAL_MATCH)
                 || message.getFrom().equals(Utils.FROM_EVENT_DETAIL)) {
-            //if (ex.equals(Utils.RESPONSE_FAILED + " " + "empty data")) {
-            /*if (ex.contains("Empty data"))
-            {
-                //this.layoutSocialize.setVisibility(View.GONE);
-                this.cardEmpty.setVisibility(View.VISIBLE);
-                this.progressBar.setVisibility(View.GONE);
-                dismissProgressDialog();
-                //this.cardGeneral.setVisibility(View.GONE);
-                //this.cardInbound.setVisibility(View.GONE);
-                //this.card.setVisibility(View.GONE);
-            }*/
             if (ex.contains("no card")) {
                 this.cardEmpty.setVisibility(View.VISIBLE);
             }
