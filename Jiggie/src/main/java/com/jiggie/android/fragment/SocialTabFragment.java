@@ -35,6 +35,7 @@ import com.jiggie.android.App;
 import com.jiggie.android.BuildConfig;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.chat.ChatActivity;
+import com.jiggie.android.activity.chat.FirebaseChatActivity;
 import com.jiggie.android.activity.event.EventDetailActivity;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
 import com.jiggie.android.activity.social.SocialFilterActivity;
@@ -46,6 +47,7 @@ import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.SocialCardNewAdapter;
 import com.jiggie.android.listener.OnResponseListener;
 import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.manager.FirebaseChatManager;
 import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.manager.TooltipsManager;
 import com.jiggie.android.manager.WalkthroughManager;
@@ -60,6 +62,8 @@ import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.view.CustomSwipeFlingAdapterView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -789,10 +793,47 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                     public void onSuccess(Object object) {
                         socialCardNewAdapter.deleteFirstItem();
                         dismissProgressDialog();
-                        final Intent intent = new Intent(getActivity()
+
+
+                        /*final Intent intent = new Intent(getActivity()
                                 , ChatActivity.class);
                         intent.putExtra(Conversation.FIELD_FROM_NAME, name);
-                        intent.putExtra(Conversation.FIELD_FACEBOOK_ID, userId);
+                        intent.putExtra(Conversation.FIELD_FACEBOOK_ID, userId);*/
+
+                        //Firebase part-----------------------------------
+                        String roomId = Utils.BLANK;
+
+                        String a = FirebaseChatManager.fb_id;
+                        String b = userId;
+
+                        if(a.length()<b.length()){
+                            roomId = a+"_"+b;
+                        }else if(a.length()>b.length()){
+                            roomId = b+"_"+a;
+                        }else{
+                            ArrayList<String> d = new ArrayList<>();
+                            d.add(a);
+                            d.add(b);
+                            Collections.sort(d, new Comparator<String>() {
+                                @Override
+                                public int compare(String lhs, String rhs) {
+                                    return lhs.compareToIgnoreCase(rhs);
+                                }
+                            });
+
+                            StringBuilder sb = new StringBuilder();
+                            sb.append(d.get(0)).append("_").append(d.get(1));
+
+                            //String roomId = d.get(0)+"_"+d.get(1);
+                            roomId = sb.toString();
+                        }
+
+                        final Intent intent = new Intent(getActivity(), FirebaseChatActivity.class);
+                        intent.putExtra(Utils.ROOM_ID, roomId);
+                        intent.putExtra(Utils.LOAD_ROOM_DETAIL, true);
+                        //End of Firebase part-----------------------------------
+
+
                         getActivity().sendBroadcast(new Intent(getString(R.string.broadcast_social_chat)));
                         startActivity(intent);
 
@@ -856,9 +897,46 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                 app.trackMixPanelEvent("Accept Feed Item", json);
 
                 if ((SocialManager.Type.isInbound(socialMatch)) && (context != null)) {
-                    final Intent intent = new Intent(context, ChatActivity.class);
+
+
+                    /*final Intent intent = new Intent(context, ChatActivity.class);
                     intent.putExtra(Conversation.FIELD_FROM_NAME, socialMatch.getFrom_first_name());
-                    intent.putExtra(Conversation.FIELD_FACEBOOK_ID, socialMatch.getFrom_fb_id());
+                    intent.putExtra(Conversation.FIELD_FACEBOOK_ID, socialMatch.getFrom_fb_id());*/
+
+                    //Firebase part-----------------------------------
+                    String roomId = Utils.BLANK;
+
+                    String a = FirebaseChatManager.fb_id;
+                    String b = socialMatch.getFrom_fb_id();
+
+                    if(a.length()<b.length()){
+                        roomId = a+"_"+b;
+                    }else if(a.length()>b.length()){
+                        roomId = b+"_"+a;
+                    }else{
+                        ArrayList<String> d = new ArrayList<>();
+                        d.add(a);
+                        d.add(b);
+                        Collections.sort(d, new Comparator<String>() {
+                            @Override
+                            public int compare(String lhs, String rhs) {
+                                return lhs.compareToIgnoreCase(rhs);
+                            }
+                        });
+
+                        StringBuilder sb = new StringBuilder();
+                        sb.append(d.get(0)).append("_").append(d.get(1));
+
+                        //String roomId = d.get(0)+"_"+d.get(1);
+                        roomId = sb.toString();
+                    }
+
+                    final Intent intent = new Intent(getActivity(), FirebaseChatActivity.class);
+                    intent.putExtra(Utils.ROOM_ID, roomId);
+                    intent.putExtra(Utils.LOAD_ROOM_DETAIL, true);
+                    //End of Firebase part-----------------------------------
+
+
                     context.sendBroadcast(new Intent(getString(R.string.broadcast_social_chat)));
                     startActivity(intent);
                 }

@@ -1,10 +1,15 @@
 package com.jiggie.android.activity.chat;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
@@ -17,11 +22,14 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.MainActivity;
+import com.jiggie.android.activity.profile.ProfileDetailActivity;
 import com.jiggie.android.component.SimpleTextWatcher;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.FirebaseChatAdapter;
 import com.jiggie.android.manager.FirebaseChatManager;
+import com.jiggie.android.model.Common;
 import com.jiggie.android.model.MessagesModel;
 
 import java.util.ArrayList;
@@ -59,6 +67,8 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
     ValueEventListener messageEvent;
     FirebaseChatAdapter adapter;
 
+    boolean loaded = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +84,7 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
     private void init(Intent intent)
     {
         roomId = intent.getStringExtra(Utils.ROOM_ID);
-        fromNotif = intent.getBooleanExtra(Utils.FROM_NOTIF, false);
+        fromNotif = intent.getBooleanExtra(Utils.LOAD_ROOM_DETAIL, false);
 
         if(fromNotif){
             Query roomDetail = FirebaseChatManager.getQueryRoom(roomId);
@@ -237,11 +247,12 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
 
     private void checkActive(){
         if (isActive()) {
+            loaded = true;
             viewChat.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.GONE);
-            /*invalidateOptionsMenu();
+            invalidateOptionsMenu();
             recyclerView.scrollToPosition(adapter.getItemCount() - 1);
-            setResult(RESULT_OK, new Intent().putExtra(Conversation.FIELD_FACEBOOK_ID, toId));*/
+            //setResult(RESULT_OK, new Intent().putExtra(Conversation.FIELD_FACEBOOK_ID, toId));
         }
     }
 
@@ -249,5 +260,68 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
     protected void onDestroy() {
         super.onDestroy();
         FirebaseChatManager.getFirebaseDatabase().removeEventListener(messageEvent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (this.loaded) {
+            //super.getMenuInflater().inflate(R.menu.menu_chat, menu);
+            super.getMenuInflater().inflate(R.menu.menu_chat, menu);
+            final MenuItem menuBlock = menu.findItem(R.id.action_block);
+            final MenuItem menuProfile = menu.findItem(R.id.action_profile);
+            menuBlock.setTitle(super.getString(R.string.user_chat_block, this.toName));
+            menuProfile.setTitle(super.getString(R.string.user_chat_profile, this.toName));
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_profile) {
+            final Intent intent = new Intent(this, ProfileDetailActivity.class);
+            intent.putExtra(Common.FIELD_FACEBOOK_ID, toId);
+            super.startActivity(intent);
+        } else if (item.getItemId() == R.id.action_block) {
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.confirmation)
+                    .setTitle(super.getString(R.string.user_chat_block, this.toName))
+                    .setNegativeButton(android.R.string.no, null)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            FirebaseChatManager.blockChatList(roomId, FirebaseChatManager.fb_id);
+                            onBackPressed();
+                        }
+                    }).show();
+        }
+        else if(item.getItemId() == R.id.home)
+        {
+            onBackPressed();
+        }
+        /*else if (item.getItemId() == R.id.action_clear) {
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.confirmation)
+                    .setTitle(super.getString(R.string.clear_conversation))
+                    .setNegativeButton(android.R.string.no, null)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            clearConversation();
+                            dialog.dismiss();
+                        }
+                    }).show();
+        }*/
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent i = new Intent(this, MainActivity.class);
+        i.putExtra(Common.TO_TAB_CHAT, true);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+        finish();
     }
 }
