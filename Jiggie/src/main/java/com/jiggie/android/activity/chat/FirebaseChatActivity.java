@@ -353,7 +353,7 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        FirebaseChatManager.getFirebaseDatabase().removeEventListener(messageEvent);
+        //FirebaseChatManager.getFirebaseDatabase().removeEventListener(messageEvent);
     }
 
     @Override
