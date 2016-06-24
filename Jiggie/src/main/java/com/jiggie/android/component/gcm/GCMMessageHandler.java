@@ -203,6 +203,8 @@ public class GCMMessageHandler extends GcmListenerService {
                     (type.equalsIgnoreCase(Common.PUSH_NOTIFICATIONS_TYPE_MESSAGE)
                         && !App.getInstance().getIdChatActive().equalsIgnoreCase(too))) {
                 final PendingIntent pendingIntent = PendingIntent.getActivity(App.getInstance(), Integer.MIN_VALUE, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                /*PendingIntent pendingIntent =
+                        PendingIntent.getActivity(getApplicationContext(), 0, new Intent(), 0);*/
                 final Notification notif = new NotificationCompat.BigTextStyle
                         (new NotificationCompat.Builder(this)
                                 //.setCategory(Notification.CATEGORY_PROMO)
