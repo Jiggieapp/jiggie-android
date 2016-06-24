@@ -86,99 +86,123 @@ public class FirebaseChatManager {
     }
 
     public static void sendMessage(MessagesModel messagesModel, String roomId, int type, HashMap<String, Object> privateInfo){
-        String key = getFirebaseDatabase().child("messages").child(roomId).push().getKey();
-        Map<String, Object> postValues = messagesModel.toMap();
 
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/messages/" + roomId + "/"+key+"/", postValues);
+        try {
+            String key = getFirebaseDatabase().child("messages").child(roomId).push().getKey();
+            Map<String, Object> postValues = messagesModel.toMap();
 
-        getFirebaseDatabase().updateChildren(childUpdates);
+            Map<String, Object> childUpdates = new HashMap<>();
+            childUpdates.put("/messages/" + roomId + "/"+key+"/", postValues);
 
-        //update last message in room-------------
-        RoomModel roomModel = null;
-        for(int i=0;i<arrAllRoom.size();i++){
-            String keyMatch = arrAllRoom.get(i).getKey();
-            if(roomId.equals(keyMatch)){
-                roomModel = arrAllRoom.get(i);
-                break;
+            getFirebaseDatabase().updateChildren(childUpdates);
+
+            //update last message in room-------------
+            RoomModel roomModel = null;
+            for(int i=0;i<arrAllRoom.size();i++){
+                String keyMatch = arrAllRoom.get(i).getKey();
+                if(roomId.equals(keyMatch)){
+                    roomModel = arrAllRoom.get(i);
+                    break;
+                }
             }
-        }
 
-        HashMap<String, Object> result = new HashMap<>();
-        String message = messagesModel.getMessage();
-        result.put("event", roomModel.getInfo().getEvent());
-        if(type==TYPE_PRIVATE){
-            result.put("identifier", roomModel.getKey());
-        }
-        result.put("last_message", message);
-        result.put("created_at", roomModel.getInfo().getCreated_at());
-        result.put("updated_at", messagesModel.getCreated_at());
+            HashMap<String, Object> result = new HashMap<>();
+            String message = messagesModel.getMessage();
+            result.put("event", roomModel.getInfo().getEvent());
+            if(type==TYPE_PRIVATE){
+                result.put("identifier", roomModel.getKey());
+            }
+            result.put("last_message", message);
+            result.put("created_at", roomModel.getInfo().getCreated_at());
+            result.put("updated_at", messagesModel.getCreated_at());
 
-        //unread part------------------------------------
-        HashMap<String, Object> unread = new HashMap<>();
-        ArrayList<RoomModel.Unread> dataUnread = roomModel.getUnreads();
-        for(int i=0;i<dataUnread.size();i++){
-            String fb_idMatch = dataUnread.get(i).getFb_id();
-            if(fb_idMatch.equals(fb_id)){
-                unread.put(fb_idMatch, 0);
+            //unread part------------------------------------
+            HashMap<String, Object> unread = new HashMap<>();
+            ArrayList<RoomModel.Unread> dataUnread = roomModel.getUnreads();
+            for(int i=0;i<dataUnread.size();i++){
+                String fb_idMatch = dataUnread.get(i).getFb_id();
+                if(fb_idMatch.equals(fb_id)){
+                    unread.put(fb_idMatch, 0);
+                }else{
+                    unread.put(fb_idMatch, dataUnread.get(i).getCounter()+1);
+                }
+            }
+
+            result.put("unread", unread);
+            //end of unread part---------------------------------
+
+            updateLastMessage(result, roomId);
+            //end of update last message in room-----------
+
+            //updateCounterUnread(roomId, roomModel);
+
+            if(type==TYPE_GROUP){
+                sendGroupChatJannes(roomId, message);
             }else{
-                unread.put(fb_idMatch, dataUnread.get(i).getCounter()+1);
+                //send private
+                reActivatedDeletedChat(roomId);
+                sendPrivateChatJannes(key, message, privateInfo);
             }
+        }catch (Exception e){
+            Log.d("sendMessage", e.toString());
         }
 
-        result.put("unread", unread);
-        //end of unread part---------------------------------
-
-        updateLastMessage(result, roomId);
-        //end of update last message in room-----------
-
-        //updateCounterUnread(roomId, roomModel);
-
-        if(type==TYPE_GROUP){
-            sendGroupChatJannes(roomId, message);
-        }else{
-            //send private
-            reActivatedDeletedChat(roomId);
-            sendPrivateChatJannes(key, message, privateInfo);
-        }
     }
 
     private static void reActivatedDeletedChat(String roomId){
-        HashMap<String, Object> result = new HashMap<>();
-        for(int i=0;i<arrCollectRoomMembers.size();i++){
-            result.put(arrCollectRoomMembers.get(i).getFb_id(), true);
+
+        try {
+            HashMap<String, Object> result = new HashMap<>();
+            for(int i=0;i<arrCollectRoomMembers.size();i++){
+                result.put(arrCollectRoomMembers.get(i).getFb_id(), true);
+            }
+
+            getFirebaseDatabase().child("room_members").child(roomId).updateChildren(result);
+        }catch (Exception e){
+            Log.d("reActivatedDeletedChat", e.toString());
         }
 
-        getFirebaseDatabase().child("room_members").child(roomId).updateChildren(result);
     }
 
     private static void reActivatedGroupChat(String roomId){
 
-        HashMap<String, Object> result = new HashMap<>();
-        result.put(fb_id, true);
-        getFirebaseDatabase().child("room_members").child(roomId).updateChildren(result);
+        try {
+            HashMap<String, Object> result = new HashMap<>();
+            result.put(fb_id, true);
+            getFirebaseDatabase().child("room_members").child(roomId).updateChildren(result);
+        }catch (Exception e){
+            Log.d("reActivatedGroupChat", e.toString());
+        }
+
     }
 
     public static void getCollectionRoomMembers(String roomId){
-        Query queryCollectionRoomMember = FirebaseChatManager.getQueryCollectionRoomMembers(roomId);
-        queryCollectionRoomMember.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                FirebaseChatManager.arrCollectRoomMembers.clear();
-                for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
-                    String fb_id = (String) messageSnapshot.getKey();
-                    boolean isAvailable = (boolean)messageSnapshot.getValue();
 
-                    CollectionRoomMemberModel collectionRoomMemberModel = new CollectionRoomMemberModel(fb_id, isAvailable);
-                    FirebaseChatManager.arrCollectRoomMembers.add(collectionRoomMemberModel);
+        try {
+            Query queryCollectionRoomMember = FirebaseChatManager.getQueryCollectionRoomMembers(roomId);
+            queryCollectionRoomMember.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    FirebaseChatManager.arrCollectRoomMembers.clear();
+                    for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
+                        String fb_id = (String) messageSnapshot.getKey();
+                        boolean isAvailable = (boolean)messageSnapshot.getValue();
+
+                        CollectionRoomMemberModel collectionRoomMemberModel = new CollectionRoomMemberModel(fb_id, isAvailable);
+                        FirebaseChatManager.arrCollectRoomMembers.add(collectionRoomMemberModel);
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                }
+            });
+        }catch (Exception e){
+            Log.d("getCollectRoomMembers", e.toString());
+        }
+
+
     }
 
     private static void updateCounterUnread(String roomId, RoomModel roomModel){
@@ -201,46 +225,56 @@ public class FirebaseChatManager {
     }
 
     private static void sendGroupChatJannes(String key, String message){
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("fb_id", fb_id);
-        result.put("event_id", key);
-        result.put("message", message);
-        ChatManager.loaderGroupChatJannes(result, new OnResponseListener() {
-            @Override
-            public void onSuccess(Object object) {
-                //do nothing
-            }
 
-            @Override
-            public void onFailure(ExceptionModel exceptionModel) {
-                Log.d("group chat jannes", exceptionModel.toString());
-                //do nothing
-            }
-        });
+        try {
+            HashMap<String, Object> result = new HashMap<>();
+            result.put("fb_id", fb_id);
+            result.put("event_id", key);
+            result.put("message", message);
+            ChatManager.loaderGroupChatJannes(result, new OnResponseListener() {
+                @Override
+                public void onSuccess(Object object) {
+                    //do nothing
+                }
+
+                @Override
+                public void onFailure(ExceptionModel exceptionModel) {
+                    Log.d("group chat jannes", exceptionModel.toString());
+                    //do nothing
+                }
+            });
+        }catch (Exception e){
+            Log.d("sendGroupChatJannes", e.toString());
+        }
 
         reActivatedGroupChat(key);
     }
 
     private static void sendPrivateChatJannes(String key, String message, HashMap<String, Object> privateInfo){
-        ChatAddModel chatAddModel = new ChatAddModel();
-        chatAddModel.setFromId(AccessToken.getCurrentAccessToken().getUserId());
-        chatAddModel.setHeader("");
-        chatAddModel.setFromName(privateInfo.get("toName").toString());
-        chatAddModel.setMessage(message);
-        chatAddModel.setHosting_id("");
-        //chatAddModel.setKey("kT7bgkacbx73i3yxma09su0u901nu209mnuu30akhkpHJJ");
-        chatAddModel.setKey(key);
-        chatAddModel.setToId(privateInfo.get("toId").toString());
-        ChatManager.loaderAddChatJannes(chatAddModel, new OnResponseListener() {
-            @Override
-            public void onSuccess(Object object) {
-                //do nothing
-            }
 
-            @Override
-            public void onFailure(ExceptionModel exceptionModel) {
-                Log.d("private chat jannes", exceptionModel.toString());
-            }
-        });
+        try {
+            ChatAddModel chatAddModel = new ChatAddModel();
+            chatAddModel.setFromId(AccessToken.getCurrentAccessToken().getUserId());
+            chatAddModel.setHeader("");
+            chatAddModel.setFromName(privateInfo.get("toName").toString());
+            chatAddModel.setMessage(message);
+            chatAddModel.setHosting_id("");
+            //chatAddModel.setKey("kT7bgkacbx73i3yxma09su0u901nu209mnuu30akhkpHJJ");
+            chatAddModel.setKey(key);
+            chatAddModel.setToId(privateInfo.get("toId").toString());
+            ChatManager.loaderAddChatJannes(chatAddModel, new OnResponseListener() {
+                @Override
+                public void onSuccess(Object object) {
+                    //do nothing
+                }
+
+                @Override
+                public void onFailure(ExceptionModel exceptionModel) {
+                    Log.d("private chat jannes", exceptionModel.toString());
+                }
+            });
+        }catch (Exception e){
+            Log.d("sendPrivateChatJannes", e.toString());
+        }
     }
 }
