@@ -3,6 +3,7 @@ package com.jiggie.android.model;
 import com.jiggie.android.component.Utils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -78,6 +79,10 @@ public class RoomModel {
 
         public long getUpdated_at() {
             return updated_at;
+        }
+
+        public Date getUpdate(){
+            return new Date(this.updated_at);
         }
     }
 

@@ -178,13 +178,14 @@ public class FriendsFragment extends Fragment implements TabFragment, HomeMain, 
         final Intent intent = new Intent(getActivity(), FirebaseChatActivity.class);
         intent.putExtra(Utils.ROOM_ID, roomId);
         intent.putExtra(Utils.LOAD_ROOM_DETAIL, true);
-        super.startActivity(intent);
+        super.startActivityForResult(intent, 0);
         //End of Firebase part-----------------------------------
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //ChatTabFragment.getInstance().onActivityResult(requestCode, resultCode, data);
+        //FirebaseChatTabFragment.getInstance().onActivityResult(requestCode, resultCode, data);
+        FriendListFragment.getInstance().onActivityResult(requestCode, resultCode, data);
     }
 
 

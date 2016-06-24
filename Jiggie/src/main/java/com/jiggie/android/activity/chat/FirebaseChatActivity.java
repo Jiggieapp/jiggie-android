@@ -37,6 +37,7 @@ import com.jiggie.android.manager.FirebaseChatManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.MessagesModel;
+import com.jiggie.android.model.RoomModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -99,9 +100,93 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
             roomDetail.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
+                    String key = roomId;
+                    //long type = (long) dataSnapshot.child("type").getValue();
+
                     long types = (long) dataSnapshot.child("type").getValue();
                     type = (int)types;
                     event = (String) dataSnapshot.child("info").child("event").getValue();
+
+                    RoomModel.Info info = null;
+                    if(type==FirebaseChatManager.TYPE_GROUP){
+                        String event = (String) dataSnapshot.child("info").child("event").getValue();
+                        String avatar = (String) dataSnapshot.child("info").child("avatar").getValue();
+                        String last_message = (String) dataSnapshot.child("info").child("last_message").getValue();
+                        long created_at = (long) dataSnapshot.child("info").child("created_at").getValue();
+                        long updated_at = (long) dataSnapshot.child("info").child("updated_at").getValue();
+
+                        info = new RoomModel.Info(event, avatar, event, last_message, created_at, updated_at);
+                    }else{
+                        String event = (String) dataSnapshot.child("info").child("event").getValue();
+                        String identifier = (String) dataSnapshot.child("info").child("identifier").getValue();
+                        String last_message = (String) dataSnapshot.child("info").child("last_message").getValue();
+                        long created_at = (long) dataSnapshot.child("info").child("created_at").getValue();
+                        long updated_at = (long) dataSnapshot.child("info").child("updated_at").getValue();
+
+                        String id1 = identifier.substring(0, identifier.indexOf("_"));
+                        String id2 = identifier.substring(identifier.indexOf("_")+1, identifier.length());
+
+                        String name = Utils.BLANK;
+                        String avatar = Utils.BLANK;
+                        String idFriend = Utils.BLANK;
+                        if(FirebaseChatManager.fb_id.equals(id1)){
+                            idFriend = id2;
+                        }else {
+                            idFriend = id1;
+                        }
+
+
+                        for(int i=0;i<FirebaseChatManager.arrUser.size();i++){
+                            String idUser = FirebaseChatManager.arrUser.get(i).getFb_id();
+                            if(idFriend.equals(idUser)){
+                                name = FirebaseChatManager.arrUser.get(i).getName();
+                                avatar = FirebaseChatManager.arrUser.get(i).getAvatar();
+
+                                toName = name;
+                                toId = idFriend;
+                                break;
+                            }else{
+                                //do nothing
+                            }
+                        }
+
+                        info = new RoomModel.Info(name, avatar, event, last_message, created_at, updated_at);
+                    }
+
+                    ArrayList<RoomModel.Unread> arrUnread = new ArrayList<RoomModel.Unread>();
+                    for (DataSnapshot unreadSnapshot: dataSnapshot.child("info").child("unread").getChildren()) {
+                        String fb_id = (String)unreadSnapshot.getKey();
+                        long counter = (long)unreadSnapshot.getValue();
+
+                        RoomModel.Unread unread = new RoomModel.Unread(fb_id, counter);
+                        arrUnread.add(unread);
+                    }
+
+                    RoomModel roomModel = new RoomModel(key, info, type, arrUnread);
+
+                    //checker if already just update, if not then added---------------------
+                    if(FirebaseChatManager.arrAllRoom.size()==0){
+                        FirebaseChatManager.arrAllRoom.add(roomModel);
+                    }else{
+                        boolean isExist = false;
+                        int existPosition = 0;
+                        for(int i=0; i<FirebaseChatManager.arrAllRoom.size();i++){
+                            String keyMatch = FirebaseChatManager.arrAllRoom.get(i).getKey();
+                            if(key.equals(keyMatch)){
+                                existPosition = i;
+                                isExist = true;
+                                break;
+                            }
+                        }
+
+                        if(isExist){
+                            FirebaseChatManager.arrAllRoom.set(existPosition, roomModel);
+                        }else{
+                            FirebaseChatManager.arrAllRoom.add(roomModel);
+                        }
+                    }
+                    //--------------------------------------------------------------------------
+
                     nextInit();
                 }
 
@@ -320,7 +405,7 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
             if (item.getItemId() == R.id.action_profile) {
                 final Intent intent = new Intent(this, EventDetailActivity.class);
                 intent.putExtra(Common.FIELD_EVENT_ID, roomId);
-                super.startActivity(intent);
+                startActivity(intent);
             } else if (item.getItemId() == R.id.action_block) {
                 new AlertDialog.Builder(this)
                         .setMessage(R.string.confirmation)
