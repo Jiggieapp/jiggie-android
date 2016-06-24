@@ -114,6 +114,7 @@ public class FirebaseChatManager {
         result.put("created_at", roomModel.getInfo().getCreated_at());
         result.put("updated_at", messagesModel.getCreated_at());
 
+        //unread part------------------------------------
         HashMap<String, Object> unread = new HashMap<>();
         ArrayList<RoomModel.Unread> dataUnread = roomModel.getUnreads();
         for(int i=0;i<dataUnread.size();i++){
@@ -126,11 +127,10 @@ public class FirebaseChatManager {
         }
 
         result.put("unread", unread);
+        //end of unread part---------------------------------
 
         updateLastMessage(result, roomId);
         //end of update last message in room-----------
-
-        reActivatedDeletedChat(roomId);
 
         //updateCounterUnread(roomId, roomModel);
 
@@ -138,6 +138,7 @@ public class FirebaseChatManager {
             sendGroupChatJannes(roomId, message);
         }else{
             //send private
+            reActivatedDeletedChat(roomId);
             sendPrivateChatJannes(key, message, privateInfo);
         }
     }

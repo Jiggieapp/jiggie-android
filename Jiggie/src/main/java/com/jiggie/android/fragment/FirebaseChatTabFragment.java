@@ -43,6 +43,9 @@ import com.jiggie.android.model.RoomModel;
 import com.jiggie.android.model.UserModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -126,6 +129,14 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
     protected void setAdapters()
     {
         if(FirebaseChatManager.arrAllRoom.size()==FirebaseChatManager.arrAllRoomMembers.size()){
+
+            Collections.sort(FirebaseChatManager.arrAllRoom, new Comparator<RoomModel>() {
+                @Override
+                public int compare(RoomModel lhs, RoomModel rhs) {
+                    return rhs.getInfo().getUpdate().compareTo(lhs.getInfo().getUpdate());
+                }
+            });
+
             if(adapter==null){
                 getInstance().adapter = new FirebaseChatTabListAdapter(FirebaseChatTabFragment.this, FirebaseChatManager.arrAllRoom, this, this);
                 recyclerView.setAdapter(adapter);
@@ -142,6 +153,8 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
         this.recyclerView.setAdapter(getInstance().adapter);
 
         refreshLayout.setRefreshing(false);
+
+        refreshLayout.setEnabled(false);
 
     }
 
