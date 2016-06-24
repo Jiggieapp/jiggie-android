@@ -151,6 +151,13 @@ public class FirebaseChatManager {
         getFirebaseDatabase().child("room_members").child(roomId).updateChildren(result);
     }
 
+    private static void reActivatedGroupChat(String roomId){
+
+        HashMap<String, Object> result = new HashMap<>();
+        result.put(fb_id, true);
+        getFirebaseDatabase().child("room_members").child(roomId).updateChildren(result);
+    }
+
     public static void getCollectionRoomMembers(String roomId){
         Query queryCollectionRoomMember = FirebaseChatManager.getQueryCollectionRoomMembers(roomId);
         queryCollectionRoomMember.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -209,6 +216,8 @@ public class FirebaseChatManager {
                 //do nothing
             }
         });
+
+        reActivatedGroupChat(key);
     }
 
     private static void sendPrivateChatJannes(String key, String message, HashMap<String, Object> privateInfo){

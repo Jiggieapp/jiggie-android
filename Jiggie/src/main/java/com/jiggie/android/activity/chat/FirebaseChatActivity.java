@@ -324,7 +324,7 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
             } else if (item.getItemId() == R.id.action_block) {
                 new AlertDialog.Builder(this)
                         .setMessage(R.string.confirmation)
-                        .setTitle(super.getString(R.string.user_chat_block, this.toName))
+                        .setTitle("Exit Group")
                         .setNegativeButton(android.R.string.no, null)
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             @Override
