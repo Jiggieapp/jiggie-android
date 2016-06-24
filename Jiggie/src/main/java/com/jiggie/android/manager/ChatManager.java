@@ -456,4 +456,38 @@ public class ChatManager extends BaseManager{
         }
     }
 
+    public static void loaderBlockChatNew(String fb_id, String to_id, final OnResponseListener onResponseListener){
+        try {
+            blockChat(fb_id, to_id, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response) {
+                    int responseCode = response.code();
+                    if(responseCode==Utils.CODE_SUCCESS){
+                        Success2Model dataTemp = (Success2Model) response.body();
+                        onResponseListener.onSuccess(dataTemp);
+                    }else if(responseCode==Utils.CODE_EMPTY_DATA){
+                        onResponseListener.onFailure(new ExceptionModel(Utils.FROM_CHAT, Utils.MSG_EMPTY_DATA));
+                    }else{
+                        onResponseListener.onFailure(new ExceptionModel(Utils.FROM_CHAT, Utils.RESPONSE_FAILED));
+                    }
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    Utils.d("Exception", t.toString());
+                    onResponseListener.onFailure(new ExceptionModel(Utils.FROM_CHAT, Utils.MSG_EXCEPTION + t.toString()));
+
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
+            });
+        }catch (IOException e){
+            Utils.d("Exception", e.toString());
+            onResponseListener.onFailure(new ExceptionModel(Utils.FROM_CHAT, Utils.MSG_EXCEPTION + e.toString()));
+        }
+    }
+
 }
