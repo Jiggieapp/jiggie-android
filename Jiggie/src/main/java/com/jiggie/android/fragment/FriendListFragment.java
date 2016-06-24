@@ -191,7 +191,7 @@ public class FriendListFragment extends ChatTabFragment implements FriendsFragme
                     final Intent intent = new Intent(getActivity(), FirebaseChatActivity.class);
                     intent.putExtra(Utils.ROOM_ID, roomId);
                     intent.putExtra(Utils.LOAD_ROOM_DETAIL, true);
-                    FriendListFragment.this.startActivity(intent);
+                    FriendListFragment.this.startActivityForResult(intent, 0);
                     //End of Firebase part-----------------------------------
 
                 }
@@ -227,6 +227,9 @@ public class FriendListFragment extends ChatTabFragment implements FriendsFragme
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if ((resultCode == ChatActivity.RESULT_BLOCKED)) {
+            onRefresh();
+        }
     }
 
 

@@ -468,29 +468,54 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
     }
 
     public void showLongClickDialog(final RoomModel roomModel) {
-        String block = "Block "+roomModel.getInfo().getName();
-        String[] menu = {block, "Delete Chat"};
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity()/*, R.style.fullHeightDialog*/)
-                .setItems(menu, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                            case 0:
-                                FirebaseChatManager.blockChatList(roomModel.getKey(), FirebaseChatManager.fb_id);
-                                dialogLongClick.dismiss();
-                                break;
-                            case 1:
-                                FirebaseChatManager.deleteChatList(roomModel.getKey(), FirebaseChatManager.fb_id);
-                                dialogLongClick.dismiss();
-                                break;
-                            default:
-                                dialogLongClick.dismiss();
-                                break;
+        if(roomModel.getType()==FirebaseChatManager.TYPE_PRIVATE){
+            String block = "Block "+roomModel.getInfo().getName();
+            String[] menu = {block, "Delete Chat"};
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity()/*, R.style.fullHeightDialog*/)
+                    .setItems(menu, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case 0:
+                                    FirebaseChatManager.blockChatList(roomModel.getKey(), FirebaseChatManager.fb_id);
+                                    dialogLongClick.dismiss();
+                                    break;
+                                case 1:
+                                    FirebaseChatManager.deleteChatList(roomModel.getKey(), FirebaseChatManager.fb_id);
+                                    dialogLongClick.dismiss();
+                                    break;
+                                default:
+                                    dialogLongClick.dismiss();
+                                    break;
+                            }
                         }
-                    }
-                });
-        dialogLongClick = builder.create();
-        dialogLongClick.show();
+                    });
+            dialogLongClick = builder.create();
+            dialogLongClick.show();
+        }else{
+            String[] menu = {"Exit Group"};
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity()/*, R.style.fullHeightDialog*/)
+                    .setItems(menu, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case 0:
+                                    FirebaseChatManager.blockChatList(roomModel.getKey(), FirebaseChatManager.fb_id);
+                                    dialogLongClick.dismiss();
+                                    break;
+                                default:
+                                    dialogLongClick.dismiss();
+                                    break;
+                            }
+                        }
+                    });
+            dialogLongClick = builder.create();
+            dialogLongClick.show();
+        }
+
+
     }
 }

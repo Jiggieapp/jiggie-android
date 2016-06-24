@@ -1,5 +1,6 @@
 package com.jiggie.android.activity.chat;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,13 +25,17 @@ import com.google.firebase.database.ValueEventListener;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.MainActivity;
+import com.jiggie.android.activity.event.EventDetailActivity;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
+import com.jiggie.android.api.OnResponseListener;
 import com.jiggie.android.component.SimpleTextWatcher;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.component.adapter.FirebaseChatAdapter;
+import com.jiggie.android.manager.ChatManager;
 import com.jiggie.android.manager.FirebaseChatManager;
 import com.jiggie.android.model.Common;
+import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.MessagesModel;
 
 import java.util.ArrayList;
@@ -68,6 +74,8 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
     FirebaseChatAdapter adapter;
 
     boolean loaded = false;
+    public static final int RESULT_BLOCKED = 10001;
+    ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -195,6 +203,7 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
 
         FirebaseChatManager.sendMessage(new MessagesModel("aabbcc", FirebaseChatManager.fb_id, name, avatar, txtMessage.getText().toString(), Calendar.getInstance().getTimeInMillis()), roomId, type, result);
         txtMessage.setText(Utils.BLANK);
+        this.recyclerView.scrollToPosition(adapter.getItemCount() - 1);
     }
 
     private void getMessages(final String roomId){
@@ -269,50 +278,91 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
             super.getMenuInflater().inflate(R.menu.menu_chat, menu);
             final MenuItem menuBlock = menu.findItem(R.id.action_block);
             final MenuItem menuProfile = menu.findItem(R.id.action_profile);
-            menuBlock.setTitle(super.getString(R.string.user_chat_block, this.toName));
-            menuProfile.setTitle(super.getString(R.string.user_chat_profile, this.toName));
+
+            if(type==FirebaseChatManager.TYPE_PRIVATE){
+                menuBlock.setTitle(super.getString(R.string.user_chat_block, this.toName));
+                menuProfile.setTitle(super.getString(R.string.user_chat_profile, this.toName));
+            }else{
+                menuBlock.setTitle("Exit Group");
+                menuProfile.setTitle(this.event+" Detail");
+            }
+
         }
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_profile) {
-            final Intent intent = new Intent(this, ProfileDetailActivity.class);
-            intent.putExtra(Common.FIELD_FACEBOOK_ID, toId);
-            super.startActivity(intent);
-        } else if (item.getItemId() == R.id.action_block) {
-            new AlertDialog.Builder(this)
-                    .setMessage(R.string.confirmation)
-                    .setTitle(super.getString(R.string.user_chat_block, this.toName))
-                    .setNegativeButton(android.R.string.no, null)
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            FirebaseChatManager.blockChatList(roomId, FirebaseChatManager.fb_id);
-                            onBackPressed();
-                        }
-                    }).show();
+        if(type==FirebaseChatManager.TYPE_PRIVATE){
+            if (item.getItemId() == R.id.action_profile) {
+                final Intent intent = new Intent(this, ProfileDetailActivity.class);
+                intent.putExtra(Common.FIELD_FACEBOOK_ID, toId);
+                super.startActivity(intent);
+            } else if (item.getItemId() == R.id.action_block) {
+                new AlertDialog.Builder(this)
+                        .setMessage(R.string.confirmation)
+                        .setTitle(super.getString(R.string.user_chat_block, this.toName))
+                        .setNegativeButton(android.R.string.no, null)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                FirebaseChatManager.blockChatList(roomId, FirebaseChatManager.fb_id);
+                                blockUser();
+                            }
+                        }).show();
+            }
+            else if(item.getItemId() == R.id.home)
+            {
+                onBackPressed();
+            }
+        }else{
+            if (item.getItemId() == R.id.action_profile) {
+                final Intent intent = new Intent(this, EventDetailActivity.class);
+                intent.putExtra(Common.FIELD_EVENT_ID, roomId);
+                super.startActivity(intent);
+            } else if (item.getItemId() == R.id.action_block) {
+                new AlertDialog.Builder(this)
+                        .setMessage(R.string.confirmation)
+                        .setTitle(super.getString(R.string.user_chat_block, this.toName))
+                        .setNegativeButton(android.R.string.no, null)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                FirebaseChatManager.blockChatList(roomId, FirebaseChatManager.fb_id);
+                                onBackPressed();
+                            }
+                        }).show();
+            }
+            else if(item.getItemId() == R.id.home)
+            {
+                onBackPressed();
+            }
         }
-        else if(item.getItemId() == R.id.home)
-        {
-            onBackPressed();
-        }
-        /*else if (item.getItemId() == R.id.action_clear) {
-            new AlertDialog.Builder(this)
-                    .setMessage(R.string.confirmation)
-                    .setTitle(super.getString(R.string.clear_conversation))
-                    .setNegativeButton(android.R.string.no, null)
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            clearConversation();
-                            dialog.dismiss();
-                        }
-                    }).show();
-        }*/
+
         return super.onOptionsItemSelected(item);
+    }
+
+    private void blockUser(){
+        dialog = App.showProgressDialog(this);
+        ChatManager.loaderBlockChatNew(FirebaseChatManager.fb_id, this.toId, new OnResponseListener() {
+            @Override
+            public void onSuccess(Object object) {
+                if(dialog!=null&&dialog.isShowing()){
+                    dialog.dismiss();
+                }
+                App.getInstance().trackMixPanelEvent("Block User");
+
+                setResult(RESULT_BLOCKED, new Intent());
+                onBackPressed();
+            }
+
+            @Override
+            public void onFailure(ExceptionModel exceptionModel) {
+                Toast.makeText(FirebaseChatActivity.this, getString(R.string.block_failed), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
