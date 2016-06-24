@@ -286,7 +286,7 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
             result.put("toName", this.toName);
         }
 
-        FirebaseChatManager.sendMessage(new MessagesModel("aabbcc", FirebaseChatManager.fb_id, name, avatar, txtMessage.getText().toString(), Calendar.getInstance().getTimeInMillis()), roomId, type, result);
+        FirebaseChatManager.sendMessage(new MessagesModel("aabbcc", FirebaseChatManager.fb_id, name, avatar, txtMessage.getText().toString(), System.currentTimeMillis()), roomId, type, result);
         txtMessage.setText(Utils.BLANK);
         this.recyclerView.scrollToPosition(adapter.getItemCount() - 1);
     }
@@ -405,6 +405,7 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
             if (item.getItemId() == R.id.action_profile) {
                 final Intent intent = new Intent(this, EventDetailActivity.class);
                 intent.putExtra(Common.FIELD_EVENT_ID, roomId);
+                intent.putExtra(Common.FIELD_FROM, TAG);
                 startActivity(intent);
             } else if (item.getItemId() == R.id.action_block) {
                 new AlertDialog.Builder(this)

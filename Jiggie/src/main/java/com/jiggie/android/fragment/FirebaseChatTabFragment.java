@@ -154,8 +154,6 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
 
         refreshLayout.setRefreshing(false);
 
-        refreshLayout.setEnabled(false);
-
     }
 
     @Override
@@ -314,7 +312,7 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                refreshLayout.setRefreshing(false);
             }
         };
         queryUsers.addValueEventListener(userEvent);
