@@ -178,9 +178,16 @@ public class MoreFragment extends Fragment implements TabFragment, MoreTabListAd
         CreditBalanceManager.loaderCreditBalance(AccessToken.getCurrentAccessToken().getUserId(), new CreditBalanceManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
-                SuccessCreditBalanceModel successCreditBalanceModel = (SuccessCreditBalanceModel) object;
-                strCredit = "Credit: " + StringUtility.getCreditBalanceFormat(successCreditBalanceModel.getData().getBalance_credit().getTot_credit_active());
-                textCredit.setText(strCredit);
+
+                try {
+                    SuccessCreditBalanceModel successCreditBalanceModel = (SuccessCreditBalanceModel) object;
+                    strCredit = "Credit: " + StringUtility.getCreditBalanceFormat(successCreditBalanceModel.getData().getBalance_credit().getTot_credit_active());
+                    textCredit.setText(strCredit);
+                }catch (Exception e){
+                    textCredit.setText("Credit: ");
+                }
+
+
             }
 
             @Override
