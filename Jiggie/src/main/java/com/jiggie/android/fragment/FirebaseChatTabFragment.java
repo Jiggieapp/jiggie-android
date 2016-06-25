@@ -123,6 +123,40 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
         View view = this.rootView = inflater.inflate(getLayout(), container, false);
         ButterKnife.bind(this, view);
 
+        this.refreshLayout.setOnRefreshListener(this);
+        this.handler = new Handler();
+
+        final App app = App.getInstance();
+        /*app.registerReceiver(this.notificationReceived, new IntentFilter(super.getString(R.string.broadcast_notification)));
+        app.registerReceiver(this.socialChatReceiver, new IntentFilter(super.getString(R.string.broadcast_social_chat)));
+        app.registerReceiver(chatCounterBroadCastReceiver
+                , new IntentFilter(TAG));*/
+
+        this.recyclerView.setLayoutManager(new LinearLayoutManager(super.getContext()));
+        this.refreshLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                refreshLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                onRefresh();
+            }
+        });
+
+        //wandy 08-05-2016
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int topRowVerticalPosition =
+                        (recyclerView == null || recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
+                refreshLayout.setEnabled(topRowVerticalPosition >= 0);
+
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
+
         return view;
     }
 
@@ -149,7 +183,7 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
             }
             this.setHomeTitle();
         }
-        this.recyclerView.setLayoutManager(new LinearLayoutManager(super.getContext()));
+
         this.recyclerView.setAdapter(adapter);
 
         refreshLayout.setRefreshing(false);
@@ -164,38 +198,7 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
         if(!EventBus.getDefault().isRegistered(this))
             registerEventBus();*/
 
-        this.refreshLayout.setOnRefreshListener(this);
-        this.handler = new Handler();
 
-        final App app = App.getInstance();
-        /*app.registerReceiver(this.notificationReceived, new IntentFilter(super.getString(R.string.broadcast_notification)));
-        app.registerReceiver(this.socialChatReceiver, new IntentFilter(super.getString(R.string.broadcast_social_chat)));
-        app.registerReceiver(chatCounterBroadCastReceiver
-                , new IntentFilter(TAG));*/
-
-        this.refreshLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                refreshLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                onRefresh();
-            }
-        });
-
-        //wandy 08-05-2016
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                int topRowVerticalPosition =
-                        (recyclerView == null || recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
-                refreshLayout.setEnabled(topRowVerticalPosition >= 0);
-
-            }
-
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-        });
     }
 
     @Override
