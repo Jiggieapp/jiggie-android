@@ -834,7 +834,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                         //End of Firebase part-----------------------------------
 
 
-                        getActivity().sendBroadcast(new Intent(getString(R.string.broadcast_social_chat)));
+                        //getActivity().sendBroadcast(new Intent(getString(R.string.broadcast_social_chat)));
                         startActivity(intent);
 
                         if (socialCardNewAdapter.getCount() == 0) {
@@ -937,7 +937,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                     //End of Firebase part-----------------------------------
 
 
-                    context.sendBroadcast(new Intent(getString(R.string.broadcast_social_chat)));
+                    //context.sendBroadcast(new Intent(getString(R.string.broadcast_social_chat)));
                     startActivity(intent);
                 }
 
