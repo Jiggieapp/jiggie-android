@@ -469,10 +469,11 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Intent i = new Intent(this, MainActivity.class);
+        /*Intent i = new Intent(this, MainActivity.class);
         i.putExtra(Common.TO_TAB_CHAT, true);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
+        finish();*/
         finish();
     }
 }
