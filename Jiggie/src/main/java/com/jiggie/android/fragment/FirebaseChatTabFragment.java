@@ -140,6 +140,7 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
                 onRefresh();
             }
         });
+        this.refreshLayout.setDistanceToTriggerSync(999999);
 
         //wandy 08-05-2016
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
@@ -227,7 +228,10 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
             return;
         }
         this.isLoading = true;
+
         this.refreshLayout.setRefreshing(true);
+
+
         this.getFailedView().setVisibility(View.GONE);
 
         if(FirebaseChatManager.arrUser.size()==0){

@@ -130,6 +130,10 @@ public class GCMMessageHandler extends GcmListenerService {
 
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                     | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            if(roomId.contains("_")){
+                too = roomId;
+            }
         }
         //[{Jiggie=cui cui cui cui BARUU,
         //        fromId=10153418311072858, fromName=wandy
@@ -152,6 +156,9 @@ public class GCMMessageHandler extends GcmListenerService {
                     //Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
             );
 
+            if(roomId.contains("_")){
+                too = roomId;
+            }
             //End of new chat firebase----------
 
 

@@ -97,7 +97,6 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
 
         if(fromNotif){
             final Query roomDetail = FirebaseChatManager.getQueryRoom(roomId);
-            //progressBar.setVisibility(View.VISIBLE);
             roomDetail.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -197,7 +196,7 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
                         nextInit();
 
                         roomDetail.removeEventListener(this);
-                        progressBar.setVisibility(View.GONE);
+                        dismissProgressBar();
                     }else{
                         //keep looking
                     }
@@ -208,7 +207,7 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
                 public void onCancelled(DatabaseError databaseError) {
                     //do nothing
                     roomDetail.removeEventListener(this);
-                    //progressBar.setVisibility(View.GONE);
+                    dismissProgressBar();
                 }
             });
         }else{
@@ -219,11 +218,18 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
 
     }
 
+    private void dismissProgressBar(){
+        if(progressBar!=null&&progressBar.getVisibility()==View.VISIBLE){
+            progressBar.setVisibility(View.GONE);
+        }
+    }
+
     private void nextInit(){
         super.bindView();
 
         if(type==FirebaseChatManager.TYPE_GROUP){
             super.setToolbarTitle(event, true);
+            App.getInstance().setIdChatActive(roomId);
         }else {
             /*this.toName = intent.getStringExtra(Conversation.FIELD_FROM_NAME);
             this.toId = intent.getStringExtra(Conversation.FIELD_FACEBOOK_ID);*/
@@ -348,7 +354,7 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                dismissProgressBar();
             }
         };
         queryMessages.addValueEventListener(messageEvent);
@@ -358,7 +364,7 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
         if (isActive()) {
             loaded = true;
             viewChat.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.GONE);
+            dismissProgressBar();
             invalidateOptionsMenu();
             recyclerView.scrollToPosition(adapter.getItemCount() - 1);
             //setResult(RESULT_OK, new Intent().putExtra(Conversation.FIELD_FACEBOOK_ID, toId));
