@@ -357,7 +357,6 @@ public class HomeFragment extends Fragment
         param.leftMargin = center[0] - Utils.myPixel(getActivity(), 32);
         param.addRule(RelativeLayout.CENTER_VERTICAL);
         relPlace.addView(imgLogo, param);
-
     }
 
     @Override
