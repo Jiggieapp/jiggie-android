@@ -130,6 +130,10 @@ public class GCMMessageHandler extends GcmListenerService {
 
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                     | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            if(roomId.contains("_")){
+                too = roomId;
+            }
         }
         //[{Jiggie=cui cui cui cui BARUU,
         //        fromId=10153418311072858, fromName=wandy
@@ -152,6 +156,9 @@ public class GCMMessageHandler extends GcmListenerService {
                     //Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
             );
 
+            if(roomId.contains("_")){
+                too = roomId;
+            }
             //End of new chat firebase----------
 
 
@@ -203,6 +210,8 @@ public class GCMMessageHandler extends GcmListenerService {
                     (type.equalsIgnoreCase(Common.PUSH_NOTIFICATIONS_TYPE_MESSAGE)
                         && !App.getInstance().getIdChatActive().equalsIgnoreCase(too))) {
                 final PendingIntent pendingIntent = PendingIntent.getActivity(App.getInstance(), Integer.MIN_VALUE, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                /*PendingIntent pendingIntent =
+                        PendingIntent.getActivity(getApplicationContext(), 0, new Intent(), 0);*/
                 final Notification notif = new NotificationCompat.BigTextStyle
                         (new NotificationCompat.Builder(this)
                                 //.setCategory(Notification.CATEGORY_PROMO)

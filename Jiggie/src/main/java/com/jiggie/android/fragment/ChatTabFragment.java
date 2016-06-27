@@ -160,7 +160,7 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
 
         final App app = App.getInstance();
         //app.registerReceiver(this.notificationReceived, new IntentFilter(super.getString(R.string.broadcast_notification)));
-        app.registerReceiver(this.socialChatReceiver, new IntentFilter(super.getString(R.string.broadcast_social_chat)));
+        //app.registerReceiver(this.socialChatReceiver, new IntentFilter(super.getString(R.string.broadcast_social_chat)));
         /*app.registerReceiver(chatCounterBroadCastReceiver
                 , new IntentFilter(TAG));*/
 
@@ -409,7 +409,7 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         return this.failedView;
     }
 
-    private BroadcastReceiver notificationReceived = new BroadcastReceiver() {
+    /*private BroadcastReceiver notificationReceived = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             // check getContext() to make sure the fragment is not destroyed.
@@ -425,7 +425,7 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
         public void onReceive(Context context, Intent intent) {
             notificationReceived.onReceive(context, intent);
         }
-    };
+    };*/
 
     private Runnable checkNewMessageRunnable = new Runnable() {
         @Override
@@ -441,7 +441,7 @@ public class ChatTabFragment extends Fragment implements TabFragment, SwipeRefre
     public void onDestroy() {
         final App app = App.getInstance();
         //app.unregisterReceiver(this.notificationReceived);
-        app.unregisterReceiver(this.socialChatReceiver);
+        //app.unregisterReceiver(this.socialChatReceiver);
         //app.unregisterReceiver(this.chatCounterBroadCastReceiver);
         /*if(handler != null)
             handler.removeCallbacks(mHandlerTask);*/

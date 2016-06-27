@@ -1354,7 +1354,11 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                     CollectionRoomMemberModel collectionRoomMemberModel = new CollectionRoomMemberModel(fb_id, isAvailable);
                     FirebaseChatManager.arrCollectRoomMembers.add(collectionRoomMemberModel);
 
-                    txtCountChat.setText(String.valueOf(FirebaseChatManager.arrCollectRoomMembers.size()));
+                    if(FirebaseChatManager.arrCollectRoomMembers.size()==0){
+                        txtCountChat.setText("Chat");
+                    }else{
+                        txtCountChat.setText("Chat ("+String.valueOf(FirebaseChatManager.arrCollectRoomMembers.size())+")");
+                    }
                 }
             }
 

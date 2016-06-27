@@ -43,6 +43,9 @@ import com.jiggie.android.model.RoomModel;
 import com.jiggie.android.model.UserModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -120,39 +123,6 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
         View view = this.rootView = inflater.inflate(getLayout(), container, false);
         ButterKnife.bind(this, view);
 
-        return view;
-    }
-
-    protected void setAdapters()
-    {
-        if(FirebaseChatManager.arrAllRoom.size()==FirebaseChatManager.arrAllRoomMembers.size()){
-            if(adapter==null){
-                getInstance().adapter = new FirebaseChatTabListAdapter(FirebaseChatTabFragment.this, FirebaseChatManager.arrAllRoom, this, this);
-                recyclerView.setAdapter(adapter);
-
-                /*getEmptyView().setVisibility(getInstance().adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
-                recyclerView.setVisibility(getInstance().adapter.getItemCount() == 0 ? View.GONE : View.VISIBLE);*/
-            }else{
-                adapter.notifyDataSetChanged();
-
-            }
-            this.setHomeTitle();
-        }
-        this.recyclerView.setLayoutManager(new LinearLayoutManager(super.getContext()));
-        this.recyclerView.setAdapter(getInstance().adapter);
-
-        refreshLayout.setRefreshing(false);
-
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        /*ButterKnife.bind(this, this.rootView);
-
-        if(!EventBus.getDefault().isRegistered(this))
-            registerEventBus();*/
-
         this.refreshLayout.setOnRefreshListener(this);
         this.handler = new Handler();
 
@@ -162,6 +132,7 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
         app.registerReceiver(chatCounterBroadCastReceiver
                 , new IntentFilter(TAG));*/
 
+        this.recyclerView.setLayoutManager(new LinearLayoutManager(super.getContext()));
         this.refreshLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -169,6 +140,7 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
                 onRefresh();
             }
         });
+        this.refreshLayout.setDistanceToTriggerSync(999999);
 
         //wandy 08-05-2016
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener(){
@@ -185,6 +157,49 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
                 super.onScrollStateChanged(recyclerView, newState);
             }
         });
+
+        return view;
+    }
+
+    protected void setAdapters()
+    {
+        if(FirebaseChatManager.arrAllRoom.size()==FirebaseChatManager.arrAllRoomMembers.size()){
+
+            Collections.sort(FirebaseChatManager.arrAllRoom, new Comparator<RoomModel>() {
+                @Override
+                public int compare(RoomModel lhs, RoomModel rhs) {
+                    return rhs.getInfo().getUpdate().compareTo(lhs.getInfo().getUpdate());
+                }
+            });
+
+            if(adapter==null){
+                getInstance().adapter = new FirebaseChatTabListAdapter(FirebaseChatTabFragment.this, FirebaseChatManager.arrAllRoom, this, this);
+                recyclerView.setAdapter(adapter);
+
+                /*getEmptyView().setVisibility(getInstance().adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+                recyclerView.setVisibility(getInstance().adapter.getItemCount() == 0 ? View.GONE : View.VISIBLE);*/
+            }else{
+                adapter.notifyDataSetChanged();
+
+            }
+            this.setHomeTitle();
+        }
+
+        this.recyclerView.setAdapter(adapter);
+
+        refreshLayout.setRefreshing(false);
+
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        /*ButterKnife.bind(this, this.rootView);
+
+        if(!EventBus.getDefault().isRegistered(this))
+            registerEventBus();*/
+
+
     }
 
     @Override
@@ -213,7 +228,10 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
             return;
         }
         this.isLoading = true;
+
         this.refreshLayout.setRefreshing(true);
+
+
         this.getFailedView().setVisibility(View.GONE);
 
         if(FirebaseChatManager.arrUser.size()==0){
@@ -301,7 +319,7 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                refreshLayout.setRefreshing(false);
             }
         };
         queryUsers.addValueEventListener(userEvent);
@@ -468,29 +486,54 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
     }
 
     public void showLongClickDialog(final RoomModel roomModel) {
-        String block = "Block "+roomModel.getInfo().getName();
-        String[] menu = {block, "Delete Chat"};
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity()/*, R.style.fullHeightDialog*/)
-                .setItems(menu, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        switch (which) {
-                            case 0:
-                                FirebaseChatManager.blockChatList(roomModel.getKey(), FirebaseChatManager.fb_id);
-                                dialogLongClick.dismiss();
-                                break;
-                            case 1:
-                                FirebaseChatManager.deleteChatList(roomModel.getKey(), FirebaseChatManager.fb_id);
-                                dialogLongClick.dismiss();
-                                break;
-                            default:
-                                dialogLongClick.dismiss();
-                                break;
+        if(roomModel.getType()==FirebaseChatManager.TYPE_PRIVATE){
+            String block = "Block "+roomModel.getInfo().getName();
+            String[] menu = {block, "Delete Chat"};
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity()/*, R.style.fullHeightDialog*/)
+                    .setItems(menu, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case 0:
+                                    FirebaseChatManager.blockChatList(roomModel.getKey(), FirebaseChatManager.fb_id);
+                                    dialogLongClick.dismiss();
+                                    break;
+                                case 1:
+                                    FirebaseChatManager.deleteChatList(roomModel.getKey(), FirebaseChatManager.fb_id);
+                                    dialogLongClick.dismiss();
+                                    break;
+                                default:
+                                    dialogLongClick.dismiss();
+                                    break;
+                            }
                         }
-                    }
-                });
-        dialogLongClick = builder.create();
-        dialogLongClick.show();
+                    });
+            dialogLongClick = builder.create();
+            dialogLongClick.show();
+        }else{
+            String[] menu = {"Exit Group"};
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity()/*, R.style.fullHeightDialog*/)
+                    .setItems(menu, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            switch (which) {
+                                case 0:
+                                    FirebaseChatManager.blockChatList(roomModel.getKey(), FirebaseChatManager.fb_id);
+                                    dialogLongClick.dismiss();
+                                    break;
+                                default:
+                                    dialogLongClick.dismiss();
+                                    break;
+                            }
+                        }
+                    });
+            dialogLongClick = builder.create();
+            dialogLongClick.show();
+        }
+
+
     }
 }

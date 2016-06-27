@@ -30,6 +30,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -73,7 +74,11 @@ public class FirebaseChatTabListAdapter extends RecyclerView.Adapter<FirebaseCha
             }
 
             try {
-                String dates = getSimpleDate(Common.ISO8601_DATE_FORMAT.format(new Date(roomModel.getInfo().getUpdated_at())));
+
+                int gmtOffset = TimeZone.getDefault().getRawOffset();
+                long date = roomModel.getInfo().getUpdated_at() - gmtOffset;
+
+                String dates = getSimpleDate(Common.ISO8601_DATE_FORMAT.format(new Date(date)));
                 holder.txtTime.setText(dates);
             } catch (ParseException e) {
                 throw new RuntimeException(e);

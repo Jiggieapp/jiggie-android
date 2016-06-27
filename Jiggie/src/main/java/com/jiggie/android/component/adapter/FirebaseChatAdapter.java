@@ -31,6 +31,7 @@ import com.jiggie.android.model.MessagesModel;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.TimeZone;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -76,7 +77,12 @@ public class FirebaseChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 holder.txtMessage.setText(item.getMessage().trim());
 
                 try {
-                    String dates = getSimpleDate(Common.ISO8601_DATE_FORMAT.format(new Date(item.getCreated_at())));
+
+                    int gmtOffset = TimeZone.getDefault().getRawOffset();
+                    long date = item.getCreated_at() - gmtOffset;
+
+                    String dates = getSimpleDate(Common.ISO8601_DATE_FORMAT.format(new Date(date)));
+
 
                     holder.txtLeftTime.setText(dates);
                     holder.txtRightTime.setText(dates);
