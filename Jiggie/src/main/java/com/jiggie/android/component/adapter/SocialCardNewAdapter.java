@@ -70,14 +70,21 @@ public class SocialCardNewAdapter extends BaseAdapter {
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(context);
             convertView = inflater.inflate(R.layout.item_social_card_general, parent, false);
+            /*Utils.d(TAG, "typefeed " + getItem(position).getType_feed());
+            if(getItem(position).getType_feed() == Utils.TYPE_FEED_EVENT)
+            {
+                holder = new ViewHolder(convertView, model.getFrom_first_name(), onSocialCardClickListener);
+            }
+            else
+            {
+                holder = new ViewHolder(convertView, model.getFrom_first_name(), null);
+            }*/
             holder = new ViewHolder(convertView, model.getFrom_first_name(), onSocialCardClickListener);
             convertView.setTag(holder);
             assert convertView != null;
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-
-
 
         Glide
                 .with(context)
@@ -86,25 +93,36 @@ public class SocialCardNewAdapter extends BaseAdapter {
                 .centerCrop()
                 .into(holder.generalImage);
 
+        if(getItem(position).getType_feed() == Utils.TYPE_FEED_EVENT)
+        {
+            if (getItem(position).getType().equalsIgnoreCase("approved")) {
+                holder.generalTxtEvent.setText(model.getEvent_name());
+                holder.generalTxtUser.setText(context.getString(R.string.wants_to_go_with
+                        , model.getFrom_first_name()));
+                holder.generalTxtConnect.setText(
+                        context.getResources().getString(R.string.interested_ask));
+                holder.chat_icon.setVisibility(View.VISIBLE);
 
-        if (getItem(position).getType().equalsIgnoreCase("approved")) {
-            holder.generalTxtEvent.setText(model.getEvent_name());
-            holder.generalTxtUser.setText(context.getString(R.string.wants_to_go_with
-                    , model.getFrom_first_name()));
-            holder.generalTxtConnect.setText(
-                    context.getResources().getString(R.string.interested_ask));
-            holder.chat_icon.setVisibility(View.VISIBLE);
-
-        } else {
-            holder.generalTxtEvent.setText(model.getEvent_name());
-            holder.generalTxtUser.setText(context.getString(R.string.user_viewing
-                    , model.getFrom_first_name()));
+            } else {
+                holder.generalTxtEvent.setText(model.getEvent_name());
+                holder.generalTxtUser.setText(context.getString(R.string.user_viewing
+                        , model.getFrom_first_name()));
+                holder.generalTxtConnect.setText(context.getString(R.string.connect_with
+                        , model.getFrom_first_name()));
+                holder.generalBtnYes.setText(context.getResources().getString(R.string.connect));
+                holder.generalBtnNo.setText(context.getResources().getString(R.string.skip));
+                holder.chat_icon.setVisibility(View.GONE);
+            }
+        }
+        else if(getItem(position).getType_feed() == Utils.TYPE_FEED_NEARBY)
+        {
+            holder.generalTxtEvent.setText("Is Nearby");
+            holder.generalTxtUser.setText( model.getFrom_first_name());
             holder.generalTxtConnect.setText(context.getString(R.string.connect_with
                     , model.getFrom_first_name()));
-            holder.generalBtnYes.setText(context.getResources().getString(R.string.connect));
-            holder.generalBtnNo.setText(context.getResources().getString(R.string.skip));
             holder.chat_icon.setVisibility(View.GONE);
         }
+
         //holder.chat_icon.setVisibility(View.VISIBLE);
         setBtnYesGeneral(holder.generalBtnYes);
 
@@ -125,20 +143,7 @@ public class SocialCardNewAdapter extends BaseAdapter {
 
         holder.chat_icon.bringToFront();
         holder.imgConnect.bringToFront();
-        //holder.imgConnect.setAlpha((float) 0);
         holder.imgSkip.bringToFront();
-        //holder.imgSkip.setAlpha((float) 0);
-        //holder.lblContainer.bringToFront();
-
-        /*holder.lblContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(context, EventDetailActivity.class);
-                i.putExtra(Common.FIELD_EVENT_ID, model.getEvent_id());
-                i.putExtra(Common.FIELD_EVENT_NAME, model.getEvent_name());
-                context.startActivity(i);
-            }
-        });*/
 
         holder.generalBtnYes.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -219,7 +224,8 @@ public class SocialCardNewAdapter extends BaseAdapter {
         ViewHolder(View view, final String name, OnSocialCardClickListener onSocialCardClickListener) {
             ButterKnife.bind(this, view);
             //generalTxtUser = (TextView) ;
-            this.onSocialCardClickListener = onSocialCardClickListener;
+            if(onSocialCardClickListener != null)
+                this.onSocialCardClickListener = onSocialCardClickListener;
         }
 
         /*@OnClick(R.id.btnNoGeneral)

@@ -59,6 +59,15 @@ public class SocialModel {
             String image;
             boolean badge_booking;
             boolean badge_ticket;
+            int type_feed;
+
+            public int getType_feed() {
+                return type_feed;
+            }
+
+            public void setType_feed(int type_feed) {
+                this.type_feed = type_feed;
+            }
 
             public String getImage() {
                 return image;
@@ -85,6 +94,7 @@ public class SocialModel {
             }
 
             public String getFrom_first_name() {
+                from_first_name = from_first_name.substring(0,1).toUpperCase() + from_first_name.substring(1);
                 return from_first_name;
             }
 

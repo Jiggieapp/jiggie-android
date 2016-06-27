@@ -162,8 +162,11 @@ public class Utils {
     public static final String URL_SHARE_APPS = BASE_URL + "app/v3/invitelink";
     public static final String URL_SHARE_EVENT = BASE_URL + "app/v3/invitelink";
     public static final String URL_SOCIAL_FEED = BASE_URL + "app/v3/partyfeed/list/{fb_id}/{gender_interest}";
+    public static final String URL_SOCIAL_FEED_2 = BASE_URL + "app/v4/partyfeed/list/{fb_id}/{gender_interest}";
     public static final String URL_GUEST_MATCH = BASE_URL + "app/v3/partyfeed/match/{fb_id}/{from_id}/{type}";
     public static final String URL_SOCIAL_MATCH = BASE_URL + "app/v3/partyfeed_socialmatch/match/{fb_id}/{from_id}/{type}";
+    public static final String URL_SOCIAL_NEARBY_MATCH = BASE_URL + "app/v3/partyfeed_nearby/match/{fb_id}/{from_id}/{type}";
+
     public static final String URL_UPDATE_MATCH_ME = BASE_URL + "app/v3/partyfeed/settings/{fb_id}/{match_me}";
     public static final String URL_EDIT_ABOUT = BASE_URL + "app/v3/updateuserabout";
     public static final String URL_GET_ACCESS_TOKEN = BASE_URL + "app/v3/userlogin";
@@ -488,4 +491,8 @@ public class Utils {
                 , Common.getEndDateTimeInTimezone(timezone).format(endDate));
         return simpleDate;
     }
+
+    //social
+    public final static int TYPE_FEED_EVENT = 1;
+    public final static int TYPE_FEED_NEARBY = 2;
 }

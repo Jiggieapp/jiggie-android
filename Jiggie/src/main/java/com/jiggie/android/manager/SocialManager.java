@@ -62,11 +62,16 @@ public class SocialManager extends BaseManager {
     }
 
     private static void getSocialFeed(String fb_id, String gender_interest, Callback callback) throws IOException {
-        getInstance().getSocialFeed(fb_id, gender_interest).enqueue(callback);
+        //getInstance().getSocialFeed(fb_id, gender_interest).enqueue(callback);
+        getInstance().getSocialFeedWithNearby(fb_id, gender_interest).enqueue(callback);
     }
 
     private static void getSocialMatch(String fb_id, String from_id, String type, Callback callback) throws IOException {
         getInstance().getSocialMatch(fb_id, from_id, type).enqueue(callback);
+    }
+
+    private static void getSocialMatchNearby(String fb_id, String from_id, String type, Callback callback) throws IOException {
+        getInstance().getSocialMatchNearby(fb_id, from_id, type).enqueue(callback);
     }
 
     private static void postLocation(PostLocationModel postLocationModel, Callback callback) throws IOException {
@@ -136,7 +141,7 @@ public class SocialManager extends BaseManager {
 
                 @Override
                 public void onCustomCallbackFailure(String t) {
-                    Log.d("Failure", t.toString());
+                    Utils.d("Failure", t.toString());
                     //EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_MATCH, Utils.MSG_EXCEPTION + t.toString()));
                     onResponseListener.onFailure(Utils.CODE_FAILED, Utils.RESPONSE_FAILED);
 
@@ -148,10 +153,52 @@ public class SocialManager extends BaseManager {
                 }
             });
         } catch (IOException e) {
-            Log.d("Exception", e.toString());
+            Utils.d("Exception", e.toString());
             EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_MATCH, Utils.MSG_EXCEPTION + e.toString()));
         }
     }
+
+    public static void loaderSocialMatchNearby(String fb_id, String from_id, String type, final OnResponseListener onResponseListener) {
+        try {
+            getSocialMatchNearby(fb_id, from_id, type, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response) {
+
+                    //String header = String.valueOf(response.code());
+                    //String responses = new Gson().toJson(response.body());
+                    //Utils.d("res", responses);
+
+                    if (response.code() == Utils.CODE_SUCCESS) {
+                        Success2Model dataTemp = (Success2Model) response.body();
+                        dataTemp.setFrom(TAG);
+                        onResponseListener.onSuccess(dataTemp);
+                        //EventBus.getDefault().post(dataTemp);
+                    } else {
+                        //EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_MATCH, Utils.RESPONSE_FAILED));
+                        onResponseListener.onFailure(Utils.CODE_FAILED, Utils.RESPONSE_FAILED);
+                    }
+
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    Utils.d("Failure", t.toString());
+                    //EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_MATCH, Utils.MSG_EXCEPTION + t.toString()));
+                    onResponseListener.onFailure(Utils.CODE_FAILED, Utils.RESPONSE_FAILED);
+
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
+            });
+        } catch (IOException e) {
+            Utils.d("Exception", e.toString());
+            EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_MATCH, Utils.MSG_EXCEPTION + e.toString()));
+        }
+    }
+
 
     public static void loaderSocialMatch(String fb_id, String from_id, String type) {
         try {
@@ -244,8 +291,36 @@ public class SocialManager extends BaseManager {
                 }
             });
         } catch (IOException e) {
-            //Log.d("Exception", e.toString());
-            //EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_MATCH, Utils.MSG_EXCEPTION + e.toString()));
+        }
+    }
+
+    public static void loaderSocialMatchNearbyAsync(String fb_id, String from_id, final String type, final boolean confirm) {
+        try {
+            getSocialMatchNearby(fb_id, from_id, type, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response) {
+                    trackMixPanel(confirm);
+                    if (response.code() == Utils.CODE_SUCCESS) {
+                        Success2Model dataTemp = (Success2Model) response.body();
+                        dataTemp.setFrom(TAG);
+                        //EventBus.getDefault().post(dataTemp);
+                    } else {
+                        //EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_MATCH, Utils.RESPONSE_FAILED));
+                    }
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    //Log.d("Failure", t.toString());
+                    EventBus.getDefault().post(new ExceptionModel(Utils.FROM_SOCIAL_MATCH, Utils.MSG_EXCEPTION + t.toString()));
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
+            });
+        } catch (IOException e) {
         }
     }
 
