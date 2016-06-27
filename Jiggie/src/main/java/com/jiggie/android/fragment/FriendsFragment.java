@@ -93,7 +93,10 @@ public class FriendsFragment extends Fragment implements TabFragment, HomeMain, 
             tabSmall.setText(fragment.getTitle());
         }
 
-        this.homeMain.onTabTitleChanged(this);
+        if(position==0){
+            this.homeMain.onTabTitleChanged(this);
+        }
+
     }
 
 
