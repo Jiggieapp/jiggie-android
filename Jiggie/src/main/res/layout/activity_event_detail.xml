@@ -183,7 +183,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
-                            android:layout_toRightOf="@id/img_chat" />
+                            android:layout_toRightOf="@id/img_chat"
+                            android:text="@string/chat"/>
 
                         <ImageView
                             android:id="@+id/img_share"
