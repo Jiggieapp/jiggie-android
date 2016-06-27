@@ -1,6 +1,7 @@
 package com.jiggie.android.activity.chat;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -311,7 +312,11 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
         HashMap<String, Object> chatModel = new HashMap<>();
         String message = txtMessage.getText().toString();
         chatModel.put("fb_id", FirebaseChatManager.fb_id);
-        //chatModel.put("member_fb_id", FirebaseChatManager.fb_id);
+        if(type==FirebaseChatManager.TYPE_GROUP){
+            chatModel.put("member_fb_id", "");
+        }else{
+            chatModel.put("member_fb_id", toId);
+        }
         chatModel.put("message", message);
         chatModel.put("room_id", roomId);
         chatModel.put("type", String.valueOf(type));
@@ -326,6 +331,10 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
                 //failure
             }
         });
+
+        if(type==FirebaseChatManager.TYPE_PRIVATE){
+            FirebaseChatManager.reActivatedDeletedChat(roomId);
+        }
 
         txtMessage.setText(Utils.BLANK);
         this.recyclerView.scrollToPosition(adapter.getItemCount() - 1);
@@ -501,4 +510,5 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
         finish();*/
         finish();
     }
+
 }

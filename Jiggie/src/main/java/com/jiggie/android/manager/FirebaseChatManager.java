@@ -149,7 +149,7 @@ public class FirebaseChatManager {
 
     }
 
-    private static void reActivatedDeletedChat(String roomId){
+    public static void reActivatedDeletedChat(String roomId){
 
         try {
             HashMap<String, Object> result = new HashMap<>();
