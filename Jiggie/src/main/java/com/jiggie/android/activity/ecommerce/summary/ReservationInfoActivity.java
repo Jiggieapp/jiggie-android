@@ -214,11 +214,8 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         venueName = a.getStringExtra(Common.FIELD_VENUE_NAME);
         startTime = a.getStringExtra(Common.FIELD_STARTTIME);
         minDeposit = a.getStringExtra(Common.FIELD_MIN_DEPOSIT);
-<<<<<<< .merge_file_a05212
         timezone = a.getStringExtra(Common.FIELD_EVENT_TIMEZONE);
-=======
         max_guest = a.getIntExtra(Common.FIELD_MAX_GUEST, 0);
->>>>>>> .merge_file_a04668
         productSummary = a.getParcelableExtra(SummaryModel.Data.Product_summary.class.getName());
         eventDetail = a.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
         order_id = productSummary.getOrder_id();

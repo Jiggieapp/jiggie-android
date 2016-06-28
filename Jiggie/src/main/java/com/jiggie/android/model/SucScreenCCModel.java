@@ -409,15 +409,6 @@ public final class SucScreenCCModel {
                     return hosters;
                 }
 
-                /*public String getSource() {
-                    return source;
-<<<<<<< .merge_file_a13176
-                }
-*/
-=======
-                }*/
-
->>>>>>> .merge_file_a04052
                 public String getDescription() {
                     return description;
                 }
