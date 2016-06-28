@@ -146,11 +146,7 @@ public final class SummaryModel{
                 return discount;
             }
 
-<<<<<<< .merge_file_a17480
-            public int getMin_deposit_amount() {
-=======
             public String getMin_deposit_amount() {
->>>>>>> .merge_file_a23628
                 return min_deposit_amount;
             }
 
@@ -471,11 +467,7 @@ public final class SummaryModel{
                 last_payment = (LastPayment) in.readValue(LastPayment.class.getClassLoader());
                 credit = (Credit) in.readValue(Credit.class.getClassLoader());
                 discount = (Discount) in.readValue(Discount.class.getClassLoader());
-<<<<<<< .merge_file_a17480
-                min_deposit_amount = in.readInt();
-=======
                 min_deposit_amount = in.readString();
->>>>>>> .merge_file_a23628
             }
 
             public static class LastPayment implements Parcelable {
@@ -757,11 +749,7 @@ public final class SummaryModel{
                 dest.writeValue(last_payment);
                 dest.writeValue(credit);
                 dest.writeValue(discount);
-<<<<<<< .merge_file_a17480
-                dest.writeInt(min_deposit_amount);
-=======
                 dest.writeString(min_deposit_amount);
->>>>>>> .merge_file_a23628
             }
 
             @SuppressWarnings("unused")
