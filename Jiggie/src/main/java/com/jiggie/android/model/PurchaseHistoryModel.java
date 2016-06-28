@@ -569,7 +569,7 @@ public class PurchaseHistoryModel {
                 public ArrayList<Cancelled> cancelled;
                 public ArrayList<Host> hosts;
                 public ArrayList<Hoster> hosters;
-                public String source;
+                //public String source;
                 public String description;
                 public String location;
                 public long rank;
@@ -659,7 +659,7 @@ public class PurchaseHistoryModel {
                     } else {
                         hosters = null;
                     }
-                    source = in.readString();
+                    //source = in.readString();
                     description = in.readString();
                     location = in.readString();
                     rank = in.readLong();
@@ -762,7 +762,7 @@ public class PurchaseHistoryModel {
                         dest.writeByte((byte) (0x01));
                         dest.writeList(hosters);
                     }
-                    dest.writeString(source);
+                    //dest.writeString(source);
                     dest.writeString(description);
                     dest.writeString(location);
                     dest.writeLong(rank);
@@ -794,7 +794,7 @@ public class PurchaseHistoryModel {
                     }
                 };
 
-                public Event(String _id, String event_type, String event_id, String start_date, long start_time, String start_datetime, String end_date, long end_time, String end_datetime, String venue_id, String venue_name, String date_full, String start_datetime_str, String end_datetime_str, String fullfillment_type, String fullfillment_value, long event_time, /*ArrayList<Photo> photos,*/ ArrayList<Invited> invited, ArrayList<Accepted> accepted, ArrayList<Confirmed> confirmed, ArrayList<Guestconfirmed> guestconfirmed, ArrayList<Hostconfirmed> hostconfirmed, ArrayList<Rejected> rejected, ArrayList<Cancelled> cancelled, ArrayList<Host> hosts, ArrayList<Hoster> hosters, String source, String description, String location, long rank, String title, boolean inherits, String status, ArrayList<String> tags, String end_series_datetime, /*boolean visible,*/ String created_at, String updated_at) {
+                public Event(String _id, String event_type, String event_id, String start_date, long start_time, String start_datetime, String end_date, long end_time, String end_datetime, String venue_id, String venue_name, String date_full, String start_datetime_str, String end_datetime_str, String fullfillment_type, String fullfillment_value, long event_time, /*ArrayList<Photo> photos,*/ ArrayList<Invited> invited, ArrayList<Accepted> accepted, ArrayList<Confirmed> confirmed, ArrayList<Guestconfirmed> guestconfirmed, ArrayList<Hostconfirmed> hostconfirmed, ArrayList<Rejected> rejected, ArrayList<Cancelled> cancelled, ArrayList<Host> hosts, ArrayList<Hoster> hosters/*, String source*/, String description, String location, long rank, String title, boolean inherits, String status, ArrayList<String> tags, String end_series_datetime, /*boolean visible,*/ String created_at, String updated_at) {
                     this._id = _id;
                     this.event_type = event_type;
                     this.event_id = event_id;
@@ -822,7 +822,7 @@ public class PurchaseHistoryModel {
                     this.cancelled = cancelled;
                     this.hosts = hosts;
                     this.hosters = hosters;
-                    this.source = source;
+                    //this.source = source;
                     this.description = description;
                     this.location = location;
                     this.rank = rank;
@@ -944,9 +944,9 @@ public class PurchaseHistoryModel {
                     return hosters;
                 }
 
-                public String getSource() {
+                /*public String getSource() {
                     return source;
-                }
+                }*/
 
                 public String getDescription() {
                     return description;

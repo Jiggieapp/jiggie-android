@@ -517,9 +517,9 @@ public class ReservationActivity extends AbstractTicketDetailActivity {
                         i.putExtra(Common.FIELD_STARTTIME, startTime);
                         i.putExtra(productSummary.getClass().getName(), productSummary);
                         i.putExtra(eventDetail.getClass().getName(), eventDetail);
-                        //i.putExtra(Common.FIELD_MIN_DEPOSIT, detailReservation.getMin_deposit_amount());
-                        i.putExtra(Common.FIELD_MIN_DEPOSIT, String.valueOf(productSummary.getMin_deposit_amount()));
+                        i.putExtra(Common.FIELD_MIN_DEPOSIT, productSummary.getMin_deposit_amount());
                         i.putExtra(Utils.SALE_TYPE, sale_type);
+                        i.putExtra(Common.FIELD_MAX_GUEST, max);
                         startActivity(i);
                     }
 

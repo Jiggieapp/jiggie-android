@@ -59,9 +59,9 @@ public final class SummaryModel{
             public final LastPayment last_payment;
             public final Credit credit;
             public final Discount discount;
-            public final int min_deposit_amount;
+            public final String min_deposit_amount;
 
-            public Product_summary(String code, String order_status, String payment_status, long order_id, String fb_id, String event_id, String event_name, ArrayList<Product_list> product_list, Guest_detail guest_detail, String total_tax_amount, String total_tip_amount, String total_adminfee, String total_price, LastPayment last_payment, Credit credit, Discount discount, int min_deposit_amount){
+            public Product_summary(String code, String order_status, String payment_status, long order_id, String fb_id, String event_id, String event_name, ArrayList<Product_list> product_list, Guest_detail guest_detail, String total_tax_amount, String total_tip_amount, String total_adminfee, String total_price, LastPayment last_payment, Credit credit, Discount discount, String min_deposit_amount){
                 this.code = code;
                 this.order_status = order_status;
                 this.payment_status = payment_status;
@@ -145,7 +145,7 @@ public final class SummaryModel{
                 return discount;
             }
 
-            public int getMin_deposit_amount() {
+            public String getMin_deposit_amount() {
                 return min_deposit_amount;
             }
 
@@ -466,7 +466,7 @@ public final class SummaryModel{
                 last_payment = (LastPayment) in.readValue(LastPayment.class.getClassLoader());
                 credit = (Credit) in.readValue(Credit.class.getClassLoader());
                 discount = (Discount) in.readValue(Discount.class.getClassLoader());
-                min_deposit_amount = in.readInt();
+                min_deposit_amount = in.readString();
             }
 
             public static class LastPayment implements Parcelable {
@@ -748,7 +748,7 @@ public final class SummaryModel{
                 dest.writeValue(last_payment);
                 dest.writeValue(credit);
                 dest.writeValue(discount);
-                dest.writeInt(min_deposit_amount);
+                dest.writeString(min_deposit_amount);
             }
 
             @SuppressWarnings("unused")

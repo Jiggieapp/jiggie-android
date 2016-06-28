@@ -461,4 +461,14 @@ public class Utils {
         //return isAvailable && (coarsePermissionCheck || finePermissionCheck);
         return  isAvailable;
     }
+
+    public static String getGuestFormat(int count){
+        String guest = Utils.BLANK;
+        if(count==1){
+            guest = String.valueOf(count)+" guest";
+        }else{
+            guest = String.valueOf(count)+" guests";
+        }
+        return guest;
+    }
 }
