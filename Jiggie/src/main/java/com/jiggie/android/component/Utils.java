@@ -496,4 +496,13 @@ public class Utils {
     //social
     public final static int TYPE_FEED_EVENT = 1;
     public final static int TYPE_FEED_NEARBY = 2;
+    public static String getGuestFormat(int count){
+        String guest = Utils.BLANK;
+        if(count==1){
+            guest = String.valueOf(count)+" guest";
+        }else{
+            guest = String.valueOf(count)+" guests";
+        }
+        return guest;
+    }
 }

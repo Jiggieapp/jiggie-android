@@ -131,7 +131,7 @@ public class GCMMessageHandler extends GcmListenerService {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                     | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-            if(roomId.contains("_")){
+            if(!roomId.contains("_")){
                 too = roomId;
             }
         }
@@ -156,7 +156,7 @@ public class GCMMessageHandler extends GcmListenerService {
                     //Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
             );
 
-            if(roomId.contains("_")){
+            if(!roomId.contains("_")){
                 too = roomId;
             }
             //End of new chat firebase----------
@@ -206,6 +206,10 @@ public class GCMMessageHandler extends GcmListenerService {
         }*/
 
         if (intent != null) {
+
+            String a = App.getInstance().getIdChatActive();
+            String b = too;
+
             if (!type.equalsIgnoreCase(Common.PUSH_NOTIFICATIONS_TYPE_MESSAGE) ||
                     (type.equalsIgnoreCase(Common.PUSH_NOTIFICATIONS_TYPE_MESSAGE)
                         && !App.getInstance().getIdChatActive().equalsIgnoreCase(too))) {

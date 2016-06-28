@@ -511,4 +511,15 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
         finish();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        App.getInstance().setIdChatActive(Utils.BLANK);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        App.getInstance().setIdChatActive(Utils.BLANK);
+    }
 }

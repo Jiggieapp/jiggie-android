@@ -152,7 +152,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
     private final int INCREMENT_VALUE = 500000;
     boolean isPaying = false;
     private static final String TAG = ReservationInfoActivity.class.getSimpleName();
-    int extra_charge = 0;
+    int extra_charge = 0, max_guest = 0;
     String sale_type = Utils.BLANK;
 
     public static String getPaymentApiUrl() {
@@ -214,7 +214,11 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         venueName = a.getStringExtra(Common.FIELD_VENUE_NAME);
         startTime = a.getStringExtra(Common.FIELD_STARTTIME);
         minDeposit = a.getStringExtra(Common.FIELD_MIN_DEPOSIT);
+<<<<<<< .merge_file_a05212
         timezone = a.getStringExtra(Common.FIELD_EVENT_TIMEZONE);
+=======
+        max_guest = a.getIntExtra(Common.FIELD_MAX_GUEST, 0);
+>>>>>>> .merge_file_a04668
         productSummary = a.getParcelableExtra(SummaryModel.Data.Product_summary.class.getName());
         eventDetail = a.getParcelableExtra(EventDetailModel.Data.EventDetail.class.getName());
         order_id = productSummary.getOrder_id();
@@ -288,7 +292,14 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
             e.printStackTrace();
         }
 
-        txtDftTitle.setText(dataProduct.getName());
+        int num_buy = Integer.parseInt(dataProduct.getNum_buy());
+        if(num_buy>max_guest){
+            num_buy = max_guest;
+        }else{
+            //do nothing
+        }
+
+        txtDftTitle.setText(dataProduct.getName()+" ("+Utils.getGuestFormat(num_buy)+")");
         txtDftFill.setText(StringUtility.getRupiahFormat(dataProduct.getPrice()));
         //txtTaxxFill.setText(StringUtility.getRupiahFormat(dataProduct.getTax_amount()));
         txtTaxxFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_tax_amount()));
@@ -339,6 +350,9 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
         if (extra_charge > 0) {
             txtExtrachargeTitle.setVisibility(View.VISIBLE);
             txtExtrachargeFill.setVisibility(View.VISIBLE);
+            int divide = Integer.parseInt(dataProduct.getNum_buy())-max_guest;
+            String extraPerGuest = StringUtility.getRupiahFormat(String.valueOf(extra_charge/divide));
+            txtExtrachargeTitle.setText("Add'l "+Utils.getGuestFormat(divide)+" ("+extraPerGuest+"/guest)");
             txtExtrachargeFill.setText(StringUtility.getRupiahFormat(dataProduct.getExtra_charge()));
         }else{
             relExtracharge.setVisibility(View.GONE);

@@ -263,6 +263,7 @@ public final class SucScreenCCModel {
                 }
 
                 public Event(String _id, String event_type, String event_id, String start_date, long start_time, String start_datetime, String end_date, long end_time, String end_datetime, String venue_id, String venue_name, String date_full, String start_datetime_str, String end_datetime_str, String fullfillment_type, String fullfillment_value, long event_time, Invited[] invited, Accepted[] accepted, Confirmed[] confirmed, Guestconfirmed[] guestconfirmed, Hostconfirmed[] hostconfirmed, Rejected[] rejected, Cancelled[] cancelled, Host[] hosts, Hoster[] hosters, String description, String location, long rank, String title, boolean inherits, String status, ArrayList<String> tags, String end_series_datetime, String created_at, String updated_at, String tz){
+
                     this._id = _id;
                     this.event_type = event_type;
                     this.event_id = event_id;
@@ -410,8 +411,13 @@ public final class SucScreenCCModel {
 
                 /*public String getSource() {
                     return source;
+<<<<<<< .merge_file_a13176
                 }
 */
+=======
+                }*/
+
+>>>>>>> .merge_file_a04052
                 public String getDescription() {
                     return description;
                 }

@@ -95,7 +95,11 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
 
     @Override
     public String getTitle() {
-        return this.homeMain.getContext().getString(R.string.chat);
+        try {
+            return this.homeMain.getContext().getString(R.string.chat);
+        }catch (Exception e){
+            return getString(R.string.chat);
+        }
     }
 
     @Override

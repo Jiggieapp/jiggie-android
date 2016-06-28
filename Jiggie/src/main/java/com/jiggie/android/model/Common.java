@@ -55,6 +55,7 @@ public class Common {
     public static String FIELD_STATUS_SOLD_OUT = "sold out";
     public static String FIELD_IDENTITY_ID = "identity_id";
     public static String FIELD_FROM = "from";
+    public static String FIELD_MAX_GUEST = "max_guest";
     //public static String FIELD_EXACT_PRICE = "exact_price";
     /*public static String FIELD_TICKET_ID = "ticket_id";
     public static String FIELD_TICKET_NAME = "ticket_name";

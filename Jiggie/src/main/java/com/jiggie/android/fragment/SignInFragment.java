@@ -46,6 +46,7 @@ import com.jiggie.android.component.service.FacebookImageSyncService;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.manager.EventManager;
+import com.jiggie.android.manager.FirebaseChatManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.LoginModel;
@@ -478,6 +479,8 @@ public class SignInFragment extends Fragment {
             if (activity != null)
                 activity.finish();
         }
+
+        FirebaseChatManager.fb_id = AccessToken.getCurrentAccessToken().getUserId();
     }
 
     private void doOperator() {
