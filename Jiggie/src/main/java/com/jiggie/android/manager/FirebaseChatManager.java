@@ -292,7 +292,7 @@ public class FirebaseChatManager {
         if(arrCollectRoomMembers!=null&&arrCollectRoomMembers.size()>0){
             arrCollectRoomMembers.clear();
         }
-        fb_id = Utils.BLANK;
+        //fb_id = Utils.BLANK;
         badgeChat = "0";
     }
 }
