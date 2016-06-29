@@ -22,6 +22,7 @@ import com.jiggie.android.model.PostLocationModel;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.SocialModel;
 import com.jiggie.android.model.Success2Model;
+import com.jiggie.android.model.SuccessLocationModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -329,14 +330,13 @@ public class SocialManager extends BaseManager {
             postLocation(postLocationModel, new CustomCallback() {
                 @Override
                 public void onCustomCallbackResponse(Response response) {
-
                     //String header = String.valueOf(response.code());
-                    String responses = new Gson().toJson(response.body());
-                    Log.d("res", response.toString());
+                    //String responses = new Gson().toJson(response.body());
+                    Utils.d("res", response.toString());
 
                     int responseCode = response.code();
                     if (responseCode == Utils.CODE_SUCCESS) {
-                        Success2Model dataTemp = (Success2Model) response.body();
+                        SuccessLocationModel dataTemp = (SuccessLocationModel) response.body();
                         if (dataTemp.getResponse() == 1) {
                             onResponseListener.onSuccess(dataTemp);
 

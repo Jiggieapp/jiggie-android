@@ -188,7 +188,6 @@ public class MainActivity extends AppCompatActivity
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
                     .build();
-
             mGoogleApiClient.connect();
         }
     }
@@ -386,7 +385,6 @@ public class MainActivity extends AppCompatActivity
                         App.getSharedPreferences().edit().putBoolean(Utils.PREFERENCE_GPS, true).commit();
                         showDialog();
                     }
-
                 }
                 //End here
 
