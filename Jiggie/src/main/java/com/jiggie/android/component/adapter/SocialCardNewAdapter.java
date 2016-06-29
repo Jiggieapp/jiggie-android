@@ -120,15 +120,15 @@ public class SocialCardNewAdapter extends BaseAdapter {
                 holder.generalBtnYes.setText(context.getResources().getString(R.string.connect));
                 holder.generalBtnNo.setText(context.getResources().getString(R.string.skip));
                 holder.chat_icon.setVisibility(View.GONE);
+                holder.generalTxtUser.setText(model.getFrom_first_name());
             }else{
                 holder.chat_icon.setVisibility(View.VISIBLE);
+                holder.generalTxtUser.setText(context.getString(R.string.approved_nearby, model.getFrom_first_name()));
             }
 
             holder.generalTxtEvent.setText("Is Nearby");
-            holder.generalTxtUser.setText( model.getFrom_first_name());
             holder.generalTxtConnect.setText(context.getString(R.string.connect_with
                     , model.getFrom_first_name()));
-
         }
 
         //holder.chat_icon.setVisibility(View.VISIBLE);

@@ -1199,7 +1199,7 @@ public class HomeFragment extends Fragment
         final String currentAreaEvent = AccountManager.loadMemberSetting().getArea_event();
         int citySize = cityLists.size();
         for (int i = 0; i < citySize; i++) {
-            Utils.d(TAG, currentAreaEvent + " city " + cityLists.get(i).getCity());
+            Utils.d(TAG, currentAreaEvent + " cityy " + cityLists.get(i).getCity());
             if (currentAreaEvent != null && currentAreaEvent.equalsIgnoreCase(cityLists.get(i).getCity())) {
                 txtPlace.setText(cityLists.get(i).getInitial());
                 getPopupMenu().getMenu().add(0, i, i, "\u2713\u0009 " + cityLists.get(i).getCity());

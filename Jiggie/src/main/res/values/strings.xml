@@ -469,6 +469,6 @@
     <string name="user_event">%1$s\'s Events</string>
 
     <string name="your_event">Events you are interested in</string>
-
+    <string name="approved_nearby">%1$s wants to connect with you and</string>
 
 </resources>
