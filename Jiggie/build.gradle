@@ -101,7 +101,7 @@ allprojects {
 
 dependencies {
 
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.7@aar') {
         transitive = true;
     }
     compile files('libs/AF-Android-SDK-v3.3.0.jar')
