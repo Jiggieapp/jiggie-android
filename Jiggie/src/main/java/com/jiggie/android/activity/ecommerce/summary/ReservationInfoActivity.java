@@ -296,7 +296,7 @@ public class ReservationInfoActivity extends AbstractPurchaseSumaryActivity {
             //do nothing
         }
 
-        txtDftTitle.setText(dataProduct.getName()+" ("+Utils.getGuestFormat(num_buy)+")");
+        txtDftTitle.setText(dataProduct.getName()+" ("+Utils.getGuestFormat(num_buy)+" - Estimate)");
         txtDftFill.setText(StringUtility.getRupiahFormat(dataProduct.getPrice()));
         //txtTaxxFill.setText(StringUtility.getRupiahFormat(dataProduct.getTax_amount()));
         txtTaxxFill.setText(StringUtility.getRupiahFormat(productSummary.getTotal_tax_amount()));
