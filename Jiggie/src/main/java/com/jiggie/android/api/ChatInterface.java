@@ -45,4 +45,7 @@ public interface ChatInterface {
     @POST
     Call<Success2Model> groupChatJannes(@Url String url, @Body HashMap<String, Object> groupModel);
 
+    @POST
+    Call<Success2Model> addChatFirebase(@Url String url, @Body HashMap<String, Object> chatModel);
+
 }

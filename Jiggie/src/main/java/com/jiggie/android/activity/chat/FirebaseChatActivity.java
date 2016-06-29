@@ -1,6 +1,7 @@
 package com.jiggie.android.activity.chat;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -66,7 +67,7 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
     int type;
     private String toName;
     private String toId;
-    boolean fromNotif = false;
+    boolean needLoadDetail = false;
 
     public static final String TAG = ChatActivity.class.getSimpleName();
 
@@ -74,7 +75,7 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
     ValueEventListener messageEvent;
     FirebaseChatAdapter adapter;
 
-    boolean loaded = false;
+    boolean loaded = false, fromNotif = false;
     public static final int RESULT_BLOCKED = 10001;
     ProgressDialog dialog;
 
@@ -93,9 +94,10 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
     private void init(Intent intent)
     {
         roomId = intent.getStringExtra(Utils.ROOM_ID);
-        fromNotif = intent.getBooleanExtra(Utils.LOAD_ROOM_DETAIL, false);
+        needLoadDetail = intent.getBooleanExtra(Utils.LOAD_ROOM_DETAIL, false);
+        fromNotif = intent.getBooleanExtra(Utils.FROM_NOTIF, false);
 
-        if(fromNotif){
+        if(needLoadDetail){
             final Query roomDetail = FirebaseChatManager.getQueryRoom(roomId);
             roomDetail.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -206,7 +208,7 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
                     //do nothing
-                    roomDetail.removeEventListener(this);
+                    //roomDetail.removeEventListener(this);
                     dismissProgressBar();
                 }
             });
@@ -307,7 +309,34 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
             result.put("toName", this.toName);
         }
 
-        FirebaseChatManager.sendMessage(new MessagesModel("aabbcc", FirebaseChatManager.fb_id, name, avatar, txtMessage.getText().toString(), System.currentTimeMillis()), roomId, type, result);
+        //FirebaseChatManager.sendMessage(new MessagesModel("aabbcc", FirebaseChatManager.fb_id, name, avatar, txtMessage.getText().toString(), System.currentTimeMillis()), roomId, type, result);
+        HashMap<String, Object> chatModel = new HashMap<>();
+        String message = txtMessage.getText().toString();
+        chatModel.put("fb_id", FirebaseChatManager.fb_id);
+        if(type==FirebaseChatManager.TYPE_GROUP){
+            chatModel.put("member_fb_id", "");
+        }else{
+            chatModel.put("member_fb_id", toId);
+        }
+        chatModel.put("message", message);
+        chatModel.put("room_id", roomId);
+        chatModel.put("type", String.valueOf(type));
+        ChatManager.loaderAddChatFirebase(chatModel, new OnResponseListener() {
+            @Override
+            public void onSuccess(Object object) {
+                //success
+            }
+
+            @Override
+            public void onFailure(ExceptionModel exceptionModel) {
+                //failure
+            }
+        });
+
+        if(type==FirebaseChatManager.TYPE_PRIVATE){
+            FirebaseChatManager.reActivatedDeletedChat(roomId);
+        }
+
         txtMessage.setText(Utils.BLANK);
         this.recyclerView.scrollToPosition(adapter.getItemCount() - 1);
     }
@@ -475,11 +504,27 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        /*Intent i = new Intent(this, MainActivity.class);
-        i.putExtra(Common.TO_TAB_CHAT, true);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
-        finish();*/
-        finish();
+        if(fromNotif){
+            Intent i = new Intent(this, MainActivity.class);
+            i.putExtra(Common.TO_TAB_CHAT, true);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
+            finish();
+        }else{
+            finish();
+        }
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        App.getInstance().setIdChatActive(Utils.BLANK);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        App.getInstance().setIdChatActive(Utils.BLANK);
     }
 }

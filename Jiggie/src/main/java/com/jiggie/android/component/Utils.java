@@ -131,6 +131,7 @@ public class Utils {
     public static final String ROOM_EVENT = "roomEvent";
     public static final String ROOM_TYPE = "roomType";
     public static final String LOAD_ROOM_DETAIL = "loadRoomDetail";
+    public static final String FROM_NOTIF = "fromNotif";
     //-------------------------
 
     public static int myPixel(Activity a, int dip) {
@@ -178,6 +179,7 @@ public class Utils {
     public static final String URL_ADD_GROUP_CHAT = BASE_URL + "app/v3/group/firebase";
     public static final String URL_CHAT_FIREBASE = BASE_URL + "app/v3/chat/firebase/{fb_id}";
     public static final String URL_ADD_GROUP_CHAT_JANNES = BASE_URL + "app/v3/group/notif";
+    public static final String URL_ADD_CHAT_FIREBASE = BASE_URL + "app/v3/firebase/post_message";
 
     public static final String URL_VERIFY_PHONE_NUMBER = BASE_URL + "app/v3/user/phone/verification/send/{fb_id}/{phone}";
     public static final String URL_VERIFY_VERIFICATION_CODE = BASE_URL + "app/v3/user/phone/verification/validate/{fb_id}/{token}";
@@ -495,4 +497,13 @@ public class Utils {
     //social
     public final static int TYPE_FEED_EVENT = 1;
     public final static int TYPE_FEED_NEARBY = 2;
+    public static String getGuestFormat(int count){
+        String guest = Utils.BLANK;
+        if(count==1){
+            guest = String.valueOf(count)+" guest";
+        }else{
+            guest = String.valueOf(count)+" guests";
+        }
+        return guest;
+    }
 }

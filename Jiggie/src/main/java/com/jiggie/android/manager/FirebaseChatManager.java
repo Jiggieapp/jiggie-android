@@ -10,6 +10,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.jiggie.android.api.OnResponseListener;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.model.ChatAddModel;
 import com.jiggie.android.model.CollectionRoomMemberModel;
 import com.jiggie.android.model.ExceptionModel;
@@ -149,7 +150,7 @@ public class FirebaseChatManager {
 
     }
 
-    private static void reActivatedDeletedChat(String roomId){
+    public static void reActivatedDeletedChat(String roomId){
 
         try {
             HashMap<String, Object> result = new HashMap<>();
@@ -276,5 +277,22 @@ public class FirebaseChatManager {
         }catch (Exception e){
             Log.d("sendPrivateChatJannes", e.toString());
         }
+    }
+
+    public static void clearDataFirebase(){
+        if(arrUser!=null&&arrUser.size()>0){
+            arrUser.clear();
+        }
+        if(arrAllRoom!=null&&arrAllRoom.size()>0){
+            arrAllRoom.clear();
+        }
+        if(arrAllRoomMembers!=null&&arrAllRoomMembers.size()>0){
+            arrAllRoomMembers.clear();
+        }
+        if(arrCollectRoomMembers!=null&&arrCollectRoomMembers.size()>0){
+            arrCollectRoomMembers.clear();
+        }
+        fb_id = Utils.BLANK;
+        badgeChat = "0";
     }
 }

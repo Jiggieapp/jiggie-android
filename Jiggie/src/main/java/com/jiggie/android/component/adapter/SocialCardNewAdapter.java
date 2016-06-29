@@ -116,11 +116,19 @@ public class SocialCardNewAdapter extends BaseAdapter {
         }
         else if(getItem(position).getType_feed() == Utils.TYPE_FEED_NEARBY)
         {
+            if (!getItem(position).getType().equalsIgnoreCase("approved")) {
+                holder.generalBtnYes.setText(context.getResources().getString(R.string.connect));
+                holder.generalBtnNo.setText(context.getResources().getString(R.string.skip));
+                holder.chat_icon.setVisibility(View.GONE);
+            }else{
+                holder.chat_icon.setVisibility(View.VISIBLE);
+            }
+
             holder.generalTxtEvent.setText("Is Nearby");
             holder.generalTxtUser.setText( model.getFrom_first_name());
             holder.generalTxtConnect.setText(context.getString(R.string.connect_with
                     , model.getFrom_first_name()));
-            holder.chat_icon.setVisibility(View.GONE);
+
         }
 
         //holder.chat_icon.setVisibility(View.VISIBLE);

@@ -1,12 +1,16 @@
 package com.jiggie.android.component.adapter;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -46,6 +50,7 @@ public class FirebaseChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private final static String TAG = FirebaseChatAdapter.class.getSimpleName();
     private String event;
     private int type;
+    private Dialog dialogLongClick;
 
     public FirebaseChatAdapter(Activity a, ArrayList<MessagesModel> data, String event, int type){
         this.activity = a;
@@ -72,7 +77,7 @@ public class FirebaseChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         final MessagesModel item = data.get(position);
         if(holderr instanceof FirebaseChatAdapter.ViewHolderBody)
         {
-            FirebaseChatAdapter.ViewHolderBody holder = (FirebaseChatAdapter.ViewHolderBody) holderr;
+            final FirebaseChatAdapter.ViewHolderBody holder = (FirebaseChatAdapter.ViewHolderBody) holderr;
 
                 holder.txtMessage.setText(item.getMessage().trim());
 
@@ -126,6 +131,14 @@ public class FirebaseChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         }
                     });
                 }
+
+            holder.txtMessage.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    showLongClickDialog(item.getMessage().trim());
+                    return true;
+                }
+            });
         }
         else if(holderr instanceof ViewHolderHeader)
         {
@@ -185,6 +198,14 @@ public class FirebaseChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     }
                 });
             }
+
+            holderHeader.txtMessage.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    showLongClickDialog(item.getMessage().trim());
+                    return true;
+                }
+            });
         }
     }
 
@@ -278,4 +299,38 @@ public class FirebaseChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         //return "http://www.johndoe.pro/img/John_Doe.jpg";
     }
     //end of var return------------------------
+
+    public void showLongClickDialog(final String text) {
+
+        String[] menu = {"Copy Message"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity/*, R.style.fullHeightDialog*/)
+                .setItems(menu, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                setClipboard(text);
+                                dialogLongClick.dismiss();
+                                break;
+                            default:
+                                dialogLongClick.dismiss();
+                                break;
+                        }
+                    }
+                });
+        dialogLongClick = builder.create();
+        dialogLongClick.show();
+    }
+
+    private void setClipboard(String text) {
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB) {
+            android.text.ClipboardManager clipboard = (android.text.ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
+            clipboard.setText(text);
+        } else {
+            android.content.ClipboardManager clipboard = (android.content.ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
+            android.content.ClipData clip = android.content.ClipData.newPlainText("Copied referral link", text);
+            clipboard.setPrimaryClip(clip);
+        }
+    }
 }

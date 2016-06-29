@@ -21,6 +21,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +57,7 @@ import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.manager.SocialManager;
+import com.jiggie.android.manager.FirebaseChatManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.LoginModel;
@@ -205,12 +207,16 @@ public class SignInFragment extends Fragment
                             (TutorialFragmentAdapter.TutorialFragment) tutorialAdapter.getItem(position);
 
                     if (position == 5) {
-                        fragment.getContentView().setVisibility(View.GONE);
-                        fragment.getImageViews().setVisibility(View.GONE);
-                        fragment.getImageHelps().setVisibility(View.VISIBLE);
+                        try {
+                            fragment.getContentView().setVisibility(View.GONE);
+                            fragment.getImageViews().setVisibility(View.GONE);
+                            fragment.getImageHelps().setVisibility(View.VISIBLE);
 
-                        imagePagerIndicator.setVisibility(View.GONE);
-                        txtSkip.setVisibility(View.GONE);
+                            imagePagerIndicator.setVisibility(View.GONE);
+                            txtSkip.setVisibility(View.GONE);
+                        }catch (Exception e){
+                            Log.d(TAG, e.toString());
+                        }
                     } else {
                         fragment.getImageHelps().setVisibility(View.GONE);
 
@@ -493,6 +499,8 @@ public class SignInFragment extends Fragment
             /*if (activity != null)
                 activity.finish();*/
         }
+
+        FirebaseChatManager.fb_id = AccessToken.getCurrentAccessToken().getUserId();
     }
 
     //successLocationModel.getData().city.city
