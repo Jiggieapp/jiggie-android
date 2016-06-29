@@ -188,6 +188,7 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
         this.recyclerView.setAdapter(adapter);
 
         refreshLayout.setRefreshing(false);
+        this.isLoading = false;
 
     }
 
