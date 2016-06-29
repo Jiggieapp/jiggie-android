@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,7 +93,12 @@ public class EventTagAdapter
 
 
         TagNewModel tagNewModel = EventManager.loadTagsListNew();
-        int sizeTag = tagNewModel.getData().getTagslist().size();
+        int sizeTag = 0;
+        try {
+            sizeTag = tagNewModel.getData().getTagslist().size();
+        }catch (Exception e){
+            Log.d(TAG, e.toString());
+        }
 
         String rr = new Gson().toJson(tagNewModel);
 
