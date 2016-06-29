@@ -464,7 +464,7 @@
     <string name="invite_code_has_been_copied">Your invite code has been copied</string>
 
     <string name="confirm_contact">Please allow the application to access your contacts</string>
-
+    <string name="confirm_loation">Please allow the application to access your location</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="user_event">%1$s\'s Events</string>
 

@@ -1161,6 +1161,7 @@ public class App extends Application {
         } else return;
     }
 
+
     private String getSimOperatorName() {
         if (this.simOperatorName == null) {
             final TelephonyManager telephonyManager = (TelephonyManager) super.getSystemService(Context.TELEPHONY_SERVICE);

@@ -62,6 +62,7 @@ import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.manager.TooltipsManager;
 import com.jiggie.android.model.CityModel;
 import com.jiggie.android.model.Common;
+import com.jiggie.android.model.EventModel;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.MemberSettingResultModel;
@@ -338,7 +339,7 @@ public class HomeFragment extends Fragment
         //END OF TOOLTIP PART===============
 
         eventPresenterImplementation = new EventPresenterImplementation(this);
-        SettingModel.Data data = AccountManager.loadSetting().getData();
+        /*SettingModel.Data data = AccountManager.loadSetting().getData();
         //wandy 08-06-2016
         if (data.getCityList() == null
                 || data.getCityList().size() == 0) {
@@ -346,7 +347,7 @@ public class HomeFragment extends Fragment
             eventPresenterImplementation.getCities();
         } else {
             onFinishGetCities(AccountManager.loadSetting().getData().getCityList());
-        }
+        }*/
     }
 
     private void addLogoImage() {
@@ -357,7 +358,6 @@ public class HomeFragment extends Fragment
         param.leftMargin = center[0] - Utils.myPixel(getActivity(), 32);
         param.addRule(RelativeLayout.CENTER_VERTICAL);
         relPlace.addView(imgLogo, param);
-
     }
 
     @Override
@@ -571,9 +571,7 @@ public class HomeFragment extends Fragment
                             selectedItems.add(res);
                             latestSelectedItems.add(res);
                             setSelected(holder, true, res, i);
-                        }
-                        else
-                        {
+                        } else {
                             setSelected(holder, false, res, i);
                         }
                         holder.checkView.setVisibility(View.GONE);
@@ -760,7 +758,7 @@ public class HomeFragment extends Fragment
         builder.show();
     }
 
-    public static void sendLocationInfo() {
+    public static void sendLocationInfo(final boolean isLogin) {
         //PART of postLocation
         //PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), "-6.2216706", "106.8401574");
         if (AccessToken.getCurrentAccessToken() != null && AccessToken.getCurrentAccessToken() != null) {
@@ -768,7 +766,7 @@ public class HomeFragment extends Fragment
 
             if (userId != null && SocialManager.lat != null && SocialManager.lng != null) {
                 //PART of postLocation
-                PostLocationModel postLocationModel = new PostLocationModel(userId, SocialManager.lat, SocialManager.lng);
+                PostLocationModel postLocationModel = new PostLocationModel(userId, SocialManager.lat, SocialManager.lng, isLogin);
                 //PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), "-6.2216706", "106.8401574");
                 /*String responses = new Gson().toJson(postLocationModel);
                 Utils.d("res", responses);*/
@@ -977,8 +975,9 @@ public class HomeFragment extends Fragment
     }
 
     private static EventsFragment getEventsFragment() {
-        if (eventsFragment == null)
+        if (eventsFragment == null) {
             eventsFragment = new EventsFragment();
+        }
         return eventsFragment;
     }
 
@@ -1002,6 +1001,7 @@ public class HomeFragment extends Fragment
             getSocialTabFragment().setHomeMain(homeMain);
             getFriendsFragment().setHomeMain(homeMain);
             getMoreFragment().setHomeMain(homeMain);*/
+
 
             ((TabFragment) fragments[0]).setHomeMain(homeMain);
             ((TabFragment) fragments[1]).setHomeMain(homeMain);
@@ -1183,6 +1183,15 @@ public class HomeFragment extends Fragment
 
     int lastSelected = 0;
 
+    void onEvent(final ArrayList<CityModel.Data.Citylist> cityLists)
+    {
+        SettingModel settingModel = AccountManager.loadSetting();
+        settingModel.getData().getCityList().clear();
+        AccountManager.saveSetting(settingModel);
+        getPopupMenu().getMenu().clear();
+        onFinishGetCities(cityLists);
+    }
+
     @Override
     public void onFinishGetCities(final ArrayList<CityModel.Data.Citylist> cityLists) {
         //final ArrayList<CityModel.Data.Citylist> cityLists = cityModel.data.citylist;
@@ -1190,7 +1199,7 @@ public class HomeFragment extends Fragment
         final String currentAreaEvent = AccountManager.loadMemberSetting().getArea_event();
         int citySize = cityLists.size();
         for (int i = 0; i < citySize; i++) {
-
+            Utils.d(TAG, currentAreaEvent + " city " + cityLists.get(i).getCity());
             if (currentAreaEvent != null && currentAreaEvent.equalsIgnoreCase(cityLists.get(i).getCity())) {
                 txtPlace.setText(cityLists.get(i).getInitial());
                 getPopupMenu().getMenu().add(0, i, i, "\u2713\u0009 " + cityLists.get(i).getCity());
@@ -1199,10 +1208,7 @@ public class HomeFragment extends Fragment
                 getPopupMenu().getMenu().add(0, i, i, "  " + cityLists.get(i).getCity());
             }
         }
-
-
         if (citySize > 1) {
-
             popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
@@ -1242,6 +1248,11 @@ public class HomeFragment extends Fragment
         }
     }
 
+    @Override
+    public void onFinishGetEvents(EventModel eventModel) {
+
+    }
+
     private PopupMenu getPopupMenu() {
         if (popup == null)
             popup = new PopupMenu(this.getActivity(), cityContainer);
@@ -1259,6 +1270,4 @@ public class HomeFragment extends Fragment
             getFragmentManager().putFragment(outState, "morefragment", getMoreFragment());
         }
     }
-
-
 }

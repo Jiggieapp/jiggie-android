@@ -74,6 +74,49 @@ public class EventManager extends BaseManager{
         getInstance().getTagsListNew().enqueue(callback);
     }
 
+    public static void loaderEvent2(String fb_id, final com.jiggie.android.listener.OnResponseListener onResponseListener)
+    {
+        try {
+            getEventList(fb_id, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response) {
+                    //String header = String.valueOf(response.code());
+                    /*String responses = new Gson().toJson(response.body());
+                    Utils.d("res", responses);*/
+                    if(response.code()==Utils.CODE_SUCCESS){
+                        EventModel dataTemp = (EventModel) response.body();
+                        onResponseListener.onSuccess(dataTemp);
+                        //EventBus.getDefault().post(dataTemp);
+                    }
+                    else if(response.code() == Utils.CODE_EMPTY_DATA)
+                    {
+                        //EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT, Utils.MSG_EMPTY_DATA));
+                        onResponseListener.onFailure(Utils.CODE_EMPTY_DATA, Utils.MSG_EMPTY_DATA);
+                    }
+                    else{
+                        //EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT, Utils.RESPONSE_FAILED));
+                        onResponseListener.onFailure(response.code(), Utils.RESPONSE_FAILED);
+                    }
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    //EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT, Utils.MSG_EXCEPTION + t.toString()));
+                    onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION);
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
+            });
+        }catch (IOException e){
+            Utils.d(TAG, e.toString());
+            //EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT, Utils.MSG_EXCEPTION + e.toString()));
+            onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION);
+        }
+    }
+
     public static void loaderEvent(String fb_id){
         try {
             getEventList(fb_id, new CustomCallback() {

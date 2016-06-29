@@ -5,4 +5,5 @@ package com.jiggie.android.activity.event;
  */
 public interface EventPresenter {
     void getCities();
+    void loadEvents();
 }
