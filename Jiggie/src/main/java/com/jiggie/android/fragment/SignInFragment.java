@@ -1,21 +1,30 @@
 package com.jiggie.android.fragment;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -29,13 +38,16 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.HttpMethod;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.google.gson.Gson;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.MainActivity;
+import com.jiggie.android.activity.invite.InviteFriendsActivity;
 import com.jiggie.android.activity.setup.SetupTagsActivity;
 import com.jiggie.android.api.OnResponseListener;
 import com.jiggie.android.component.StringUtility;
@@ -46,15 +58,16 @@ import com.jiggie.android.component.service.FacebookImageSyncService;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.CommerceManager;
 import com.jiggie.android.manager.EventManager;
+import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.MemberSettingModel;
+import com.jiggie.android.model.PostLocationModel;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.TagsListModel;
 import com.jiggie.android.view.CircleIndicatorView;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.ParseException;
@@ -75,7 +88,8 @@ import rx.schedulers.Schedulers;
 /**
  * Created by rangg on 21/10/2015.
  */
-public class SignInFragment extends Fragment {
+public class SignInFragment extends Fragment
+        implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
     private static final String[] FACEBOOK_PERMISSIONS = new String[]{
             "public_profile", "email", "user_about_me", "user_birthday", "user_photos", "user_location",
             "user_friends"
@@ -107,6 +121,7 @@ public class SignInFragment extends Fragment {
     private static final String TAG = SignInFragment.class.getSimpleName();
 
     Button btnSignIn;
+    GoogleApiClient mGoogleApiClient = null;
 
     @Nullable
     @Override
@@ -470,19 +485,19 @@ public class SignInFragment extends Fragment {
             app.trackMixPanelEvent("Sign Up");
             //wandy 24-03-2016
             //app.startActivity(new Intent(app, SetupTagsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
-            doOperator();
+            checkLocation();
+            //doOperator();
             //end of wandy 24-03-2016
 
             app.startService(new Intent
                     (app, FacebookImageSyncService.class));
-            if (activity != null)
-                activity.finish();
+            /*if (activity != null)
+                activity.finish();*/
         }
     }
 
     private void doOperator() {
-        Observable<TagsListModel> observableTagList
-                = Observable.create(new Observable.OnSubscribe<TagsListModel>() {
+        Observable<TagsListModel> observableTagList = Observable.create(new Observable.OnSubscribe<TagsListModel>() {
             @Override
             public void call(final Subscriber<? super TagsListModel> subscriber) {
                 EventManager.loaderTagsList(new OnResponseListener() {
@@ -504,6 +519,7 @@ public class SignInFragment extends Fragment {
                         //Utils.d(TAG, "doOnNext");
                         //EventManager.saveTagsList(tagsListModel);
                         EventManager.saveTags(tagsListModel.getData().getTagslist());
+
                     }
                 })
                 .doOnError(new Action1<Throwable>() {
@@ -538,14 +554,14 @@ public class SignInFragment extends Fragment {
         memberSettingModel.setFeed(1);
         memberSettingModel.setExperiences(TextUtils.join(",", getTags()));
         //wandy 08-06-2016
-        memberSettingModel.setArea_event("jakarta");
+        //memberSettingModel.setArea_event("jakarta");
         AccountManager.loaderMemberSetting(memberSettingModel);
 
         currentSettingModel.getData().getNotifications().setLocation(true);
         currentSettingModel.getData().getNotifications().setChat(true);
         currentSettingModel.getData().getNotifications().setFeed(true);
         //wandy 09-06-2016
-        currentSettingModel.getData().setAreaEvent("jakarta");
+        //currentSettingModel.getData().setAreaEvent("jakarta");
         //end of wandy 09-06-2016
 
         AccountManager.saveSetting(currentSettingModel);
@@ -557,6 +573,10 @@ public class SignInFragment extends Fragment {
                         | Intent.FLAG_ACTIVITY_NEW_TASK));*//*
                 *//*.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)*//*
                 *//*intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)*//*);*/
+
+        final MainActivity activity = (MainActivity) getActivity();
+        if (activity != null)
+            activity.finish();
         Intent i = new Intent(App.getInstance(), MainActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         App.getInstance().startActivity(i);
@@ -615,4 +635,189 @@ public class SignInFragment extends Fragment {
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
+
+    @Override
+    public void onStop() {
+        if (mGoogleApiClient != null)
+            mGoogleApiClient.disconnect();
+        super.onStop();
+    }
+
+    private void checkLocation() {
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this.getActivity())
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+            mGoogleApiClient.connect();
+        }
+    }
+
+    LocationManager locationManager;
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Location mLastLocation = null;
+
+        locationManager = (LocationManager) this.getActivity()
+                .getSystemService(getActivity().LOCATION_SERVICE);
+        if (locationManager != null) {
+            try {
+                mLastLocation = locationManager
+                        .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            } catch (SecurityException e) {
+                Utils.d(getString(R.string.tag_location), e.toString());
+            }
+
+            if (mLastLocation != null) {
+                SocialManager.lat = String.valueOf(mLastLocation.getLatitude());
+                SocialManager.lng = String.valueOf(mLastLocation.getLongitude());
+            } else {
+                /*Utils.d(TAG, "masuk sini");
+                LocationRequest mLocationRequest = new LocationRequest();
+                mLocationRequest.setInterval(10000);
+                mLocationRequest.setFastestInterval(5000);
+                mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);*/
+                //LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+                /*locationManager.requestLocationUpdates(
+                        LocationManager.NETWORK_PROVIDER, 10 * 1000, 0, this);*/
+                askForLocationPermission();
+                /*locationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER, 2 * 60 * 1000, 10, this);*/
+                /*LocationServices.FusedLocationApi.getLastLocation(
+                    mGoogleApiClient);*/
+            }
+        }
+
+        if (mLastLocation != null) {
+            sendToServer(mLastLocation);
+        } /*else {
+            //Utils.d(getString(R.string.tag_location), getString(R.string.error_loc_failed));
+            Utils.d(TAG, "else  post location");
+            //doOperator();
+        }*/
+        //actionResults();
+    }
+
+    final int PERMISSION_REQUEST_CONTACT = 18;
+
+    private void askForLocationPermission()
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ActivityCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
+                            != PackageManager.PERMISSION_GRANTED) {
+                // Should we show an explanation?
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this.getActivity(),
+                        Manifest.permission.ACCESS_COARSE_LOCATION)
+                    || ActivityCompat.shouldShowRequestPermissionRationale(this.getActivity(),
+                                Manifest.permission.ACCESS_COARSE_LOCATION )) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
+                    builder.setTitle("Location access needed");
+                    builder.setPositiveButton(android.R.string.ok, null);
+                    builder.setMessage(getResources().getString(R.string.confirm_loation));//TODO put real question
+                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @TargetApi(Build.VERSION_CODES.M)
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            requestPermissions(
+                                    new String[]
+                                            {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}
+                                    , PERMISSION_REQUEST_CONTACT);
+                        }
+                    });
+                    builder.show();
+                    // Show an expanation to the user *asynchronously* -- don't block
+                    // this thread waiting for the user's response! After the user
+                    // sees the explanation, try again to request the permission.
+
+                } else {
+
+                    // No explanation needed, we can request the permission.
+                    ActivityCompat.requestPermissions(this.getActivity(),
+                            new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                            PERMISSION_REQUEST_CONTACT);
+
+                    // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                    // app-defined int constant. The callback method gets the
+                    // result of the request.
+                }
+            } else {
+                locationManager.requestLocationUpdates(
+                        LocationManager.NETWORK_PROVIDER, 10 * 1000, 0, this);
+            }
+        } else {
+            locationManager.requestLocationUpdates(
+                    LocationManager.NETWORK_PROVIDER, 10 * 1000, 0, this);
+        }
+    }
+
+    private void sendToServer(Location location)
+    {
+        /*SocialManager.lat = String.valueOf(location.getLatitude());
+        SocialManager.lng = String.valueOf(location.getLongitude());*/
+        SocialManager.lat = "-8.70100";
+        SocialManager.lng = "115.17049";
+
+        if (AccessToken.getCurrentAccessToken() != null && AccessToken.getCurrentAccessToken() != null) {
+            final String userId = AccessToken.getCurrentAccessToken().getUserId();
+
+            if (userId != null && SocialManager.lat != null && SocialManager.lng != null) {
+                //PART of postLocation
+                PostLocationModel postLocationModel = new PostLocationModel(userId, SocialManager.lat, SocialManager.lng, false);
+                SocialManager.loaderLocation(postLocationModel, new SocialManager.OnResponseListener() {
+                    @Override
+                    public void onSuccess(Object object) {
+                        Utils.d(TAG, "post location success");
+                        doOperator();
+                    }
+
+                    @Override
+                    public void onFailure(int responseCode, String message) {
+                        Utils.d(TAG, "fail post location success");
+                        doOperator();
+                    }
+                });
+                //end here
+            }
+        }
+    }
+
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Utils.d(TAG, "on connection suspended");
+        doOperator();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Utils.d(TAG, "on connection failed");
+        doOperator();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Utils.d(TAG, "location " + location.getLatitude() + " " + location.getLongitude());
+        locationManager.removeUpdates(this);
+        sendToServer(location);
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        Utils.d(TAG, "on status changed");
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+        Utils.d(TAG, "on provider enabled");
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+        Utils.d(TAG, "on provider disabled");
+    }
+
 }

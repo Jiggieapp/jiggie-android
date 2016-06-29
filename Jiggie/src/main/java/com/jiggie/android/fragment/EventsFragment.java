@@ -38,11 +38,14 @@ import com.facebook.AccessToken;
 import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.event.EventPresenterImplementation;
+import com.jiggie.android.activity.event.EventView;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.manager.WalkthroughManager;
+import com.jiggie.android.model.CityModel;
 import com.jiggie.android.model.EventModel;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.PostWalkthroughModel;
@@ -59,7 +62,7 @@ import de.greenrobot.event.EventBus;
  */
 public class EventsFragment extends Fragment
         implements ViewPager.OnPageChangeListener, HomeMain
-        , ViewTreeObserver.OnGlobalLayoutListener, TabFragment, SwipeRefreshLayout.OnRefreshListener {
+        , ViewTreeObserver.OnGlobalLayoutListener, TabFragment, SwipeRefreshLayout.OnRefreshListener, EventView {
     @Bind(R.id.time_tab)
     TabLayout timeTab;
     @Bind(R.id.viewpagerevents)
@@ -77,6 +80,7 @@ public class EventsFragment extends Fragment
     private String searchText;
     private Dialog dialogWalkthrough;
     SearchView searchView;
+    EventPresenterImplementation eventPresenterImplementation;
 
     @Override
     public String getTitle() {
@@ -151,7 +155,9 @@ public class EventsFragment extends Fragment
         this.refreshLayout.setRefreshing(true);
         final AccessToken token = AccessToken.getCurrentAccessToken();
 
-        EventManager.loaderEvent(token.getUserId());
+        //EventManager.loaderEvent(token.getUserId());
+        eventPresenterImplementation.getCities();
+        //onRefreshListener.doOnRefresh();
     }
 
     //EventTabFragment todayFragment, tomorrowFragment, upcomingFragment;
@@ -298,6 +304,7 @@ public class EventsFragment extends Fragment
     public void onGlobalLayout() {
         this.viewPagerEvents.getViewTreeObserver().removeOnGlobalLayoutListener(this);
         //this.onPageSelected(0);
+        eventPresenterImplementation = new EventPresenterImplementation(this);
         onRefresh();
     }
 
@@ -312,6 +319,7 @@ public class EventsFragment extends Fragment
 
         ArrayList<EventModel.Data.Events> message = eventModel.getData().getEvents();
         int size = message.size();
+        Utils.d(TAG, "di sini " + size);
         setEvents(message);
         setThemes(eventModel.getData().getThemes());
 
@@ -698,5 +706,15 @@ public class EventsFragment extends Fragment
             tomorrowFragment = (EventTabFragment) getFragmentManager().getFragment(savedInstanceState, "tomorrowfragment");
             upcomingFragment = (EventTabFragment) getFragmentManager().getFragment(savedInstanceState, "upcomingfragment");
         }
+    }
+
+    @Override
+    public void onFinishGetCities(ArrayList<CityModel.Data.Citylist> citylist) {
+        EventBus.getDefault().post(citylist);
+    }
+
+    @Override
+    public void onFinishGetEvents(EventModel eventModel) {
+        //EventBus.getDefault().post(eventModel);
     }
 }

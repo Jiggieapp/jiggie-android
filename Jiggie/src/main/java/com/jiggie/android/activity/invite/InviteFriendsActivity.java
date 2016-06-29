@@ -221,7 +221,6 @@ public class InviteFriendsActivity extends ToolbarActivity implements SwipeRefre
                 } else {
 
                     // No explanation needed, we can request the permission.
-
                     ActivityCompat.requestPermissions(InviteFriendsActivity.this,
                             new String[]{Manifest.permission.READ_CONTACTS},
                             PERMISSION_REQUEST_CONTACT);

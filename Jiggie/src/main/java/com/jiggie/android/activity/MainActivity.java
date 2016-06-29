@@ -132,8 +132,6 @@ public class MainActivity extends AppCompatActivity
             final String str = GoogleApiAvailability.getInstance().getErrorString(code);
             Toast.makeText(this, str, Toast.LENGTH_LONG).show();
         }
-
-
     }
 
     @Override
@@ -225,12 +223,10 @@ public class MainActivity extends AppCompatActivity
             SocialManager.lat = String.valueOf(mLastLocation.getLatitude());
             SocialManager.lng = String.valueOf(mLastLocation.getLongitude());
 
-            HomeFragment.sendLocationInfo();
+            HomeFragment.sendLocationInfo(true);
         } else {
             Utils.d(getString(R.string.tag_location), getString(R.string.error_loc_failed));
         }
-
-
         //actionResults();
     }
 

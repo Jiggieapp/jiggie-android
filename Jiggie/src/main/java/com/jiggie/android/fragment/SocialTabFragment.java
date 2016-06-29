@@ -326,9 +326,8 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             @Override
             public void onEventClicked() {
                 if (socialCardNewAdapter.getItem(0).getType_feed() == Utils.TYPE_FEED_EVENT) {
-                    Utils.d(TAG, "event");
                     onGeneralClick();
-                } else Utils.d(TAG, "nearby");
+                }
             }
 
             @Override
