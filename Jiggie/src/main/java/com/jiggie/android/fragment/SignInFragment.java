@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -193,12 +194,16 @@ public class SignInFragment extends Fragment {
                             (TutorialFragmentAdapter.TutorialFragment) tutorialAdapter.getItem(position);
 
                     if (position == 5) {
-                        fragment.getContentView().setVisibility(View.GONE);
-                        fragment.getImageViews().setVisibility(View.GONE);
-                        fragment.getImageHelps().setVisibility(View.VISIBLE);
+                        try {
+                            fragment.getContentView().setVisibility(View.GONE);
+                            fragment.getImageViews().setVisibility(View.GONE);
+                            fragment.getImageHelps().setVisibility(View.VISIBLE);
 
-                        imagePagerIndicator.setVisibility(View.GONE);
-                        txtSkip.setVisibility(View.GONE);
+                            imagePagerIndicator.setVisibility(View.GONE);
+                            txtSkip.setVisibility(View.GONE);
+                        }catch (Exception e){
+                            Log.d(TAG, e.toString());
+                        }
                     } else {
                         fragment.getImageHelps().setVisibility(View.GONE);
 
