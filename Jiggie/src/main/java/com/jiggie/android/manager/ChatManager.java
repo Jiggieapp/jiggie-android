@@ -318,7 +318,7 @@ public class ChatManager extends BaseManager{
 
                     int responseCode = response.code();
 
-                    if(responseCode==Utils.CODE_SUCCESS){
+                    if(responseCode==Utils.CODE_SUCCESS||responseCode==403){
                         Success2Model dataTemp = (Success2Model) response.body();
                         onResponseListener.onSuccess(dataTemp);
                     }else if(responseCode==Utils.CODE_EMPTY_DATA){

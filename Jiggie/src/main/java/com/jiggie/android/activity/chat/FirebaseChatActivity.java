@@ -67,7 +67,7 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
     int type;
     private String toName;
     private String toId;
-    boolean fromNotif = false;
+    boolean needLoadDetail = false;
 
     public static final String TAG = ChatActivity.class.getSimpleName();
 
@@ -75,7 +75,7 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
     ValueEventListener messageEvent;
     FirebaseChatAdapter adapter;
 
-    boolean loaded = false;
+    boolean loaded = false, fromNotif = false;
     public static final int RESULT_BLOCKED = 10001;
     ProgressDialog dialog;
 
@@ -94,9 +94,10 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
     private void init(Intent intent)
     {
         roomId = intent.getStringExtra(Utils.ROOM_ID);
-        fromNotif = intent.getBooleanExtra(Utils.LOAD_ROOM_DETAIL, false);
+        needLoadDetail = intent.getBooleanExtra(Utils.LOAD_ROOM_DETAIL, false);
+        fromNotif = intent.getBooleanExtra(Utils.FROM_NOTIF, false);
 
-        if(fromNotif){
+        if(needLoadDetail){
             final Query roomDetail = FirebaseChatManager.getQueryRoom(roomId);
             roomDetail.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -503,12 +504,16 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        /*Intent i = new Intent(this, MainActivity.class);
-        i.putExtra(Common.TO_TAB_CHAT, true);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(i);
-        finish();*/
-        finish();
+        if(fromNotif){
+            Intent i = new Intent(this, MainActivity.class);
+            i.putExtra(Common.TO_TAB_CHAT, true);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
+            finish();
+        }else{
+            finish();
+        }
+
     }
 
     @Override
