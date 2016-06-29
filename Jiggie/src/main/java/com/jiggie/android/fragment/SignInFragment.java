@@ -568,10 +568,11 @@ public class SignInFragment extends Fragment
         memberSettingModel.setFeed(1);
         memberSettingModel.setExperiences(TextUtils.join(",", getTags()));
         //wandy 08-06-2016
-        Utils.d(TAG, "city " + city);
+        Utils.d(TAG, "city actiondone " + city);
         if(!city.isEmpty())
             memberSettingModel.setArea_event(city);
-        //memberSettingModel.setArea_event("jakarta");
+        else
+            memberSettingModel.setArea_event("jakarta");
         AccountManager.loaderMemberSetting(memberSettingModel);
 
         currentSettingModel.getData().getNotifications().setLocation(true);
@@ -580,7 +581,7 @@ public class SignInFragment extends Fragment
         //wandy 09-06-2016
         if(!city.isEmpty())
             currentSettingModel.getData().setAreaEvent(city);
-        //currentSettingModel.getData().setAreaEvent("jakarta");
+        else currentSettingModel.getData().setAreaEvent("jakarta");
         //end of wandy 09-06-2016
 
         AccountManager.saveSetting(currentSettingModel);
@@ -716,7 +717,7 @@ public class SignInFragment extends Fragment
             sendToServer(mLastLocation);
         } else {
             //Utils.d(getString(R.string.tag_location), getString(R.string.error_loc_failed));
-            doOperator();
+            //doOperator();
         }
         //actionResults();
     }
@@ -789,7 +790,6 @@ public class SignInFragment extends Fragment
 
                     @Override
                     public void onFailure(int responseCode, String message) {
-                        Utils.d(TAG, "failure");
                         doOperator();
                     }
                 });
@@ -811,7 +811,6 @@ public class SignInFragment extends Fragment
 
     @Override
     public void onLocationChanged(Location location) {
-        Utils.d(TAG, "location " + location.getLatitude() + " " + location.getLongitude());
         if (ActivityCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -831,16 +830,19 @@ public class SignInFragment extends Fragment
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
         Utils.d(TAG, "on status changed");
+        doOperator();
     }
 
     @Override
     public void onProviderEnabled(String provider) {
         Utils.d(TAG, "on provider enabled");
+        doOperator();
     }
 
     @Override
     public void onProviderDisabled(String provider) {
         Utils.d(TAG, "on provider disabled");
+        doOperator();
     }
 
 }

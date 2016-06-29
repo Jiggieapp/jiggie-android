@@ -98,8 +98,8 @@ public class App extends Application {
         this.database = new DatabaseConnection(this);
 
         // Setup handler for uncaught exceptions.
-        androidDefaultUEH = Thread.getDefaultUncaughtExceptionHandler();
-        Thread.setDefaultUncaughtExceptionHandler(handler);
+        //androidDefaultUEH = Thread.getDefaultUncaughtExceptionHandler();
+        //Thread.setDefaultUncaughtExceptionHandler(handler);
     }
 
     @Override
