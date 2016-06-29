@@ -89,12 +89,16 @@ public class FriendsFragment extends Fragment implements TabFragment, HomeMain, 
         final int position = this.pageAdapter.getFragmentPosition(fragment);
         final TabLayout.Tab tabSmall = position >= 0 ? this.tab.getTabAt(position) : null;
 
-        if (tabSmall != null) {
-            tabSmall.setText(fragment.getTitle());
-        }
+        try{
+            if (tabSmall != null) {
+                tabSmall.setText(fragment.getTitle());
+            }
 
-        if(position==0){
-            this.homeMain.onTabTitleChanged(this);
+            if(position==0){
+                this.homeMain.onTabTitleChanged(this);
+            }
+        }catch (Exception e){
+
         }
 
     }
