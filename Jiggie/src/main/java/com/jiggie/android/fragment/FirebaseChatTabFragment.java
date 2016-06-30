@@ -310,18 +310,35 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
         userEvent = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
-                    String key = (String) messageSnapshot.getKey();
-                    //String fb_id = String.valueOf(messageSnapshot.child("fb_id").getValue());
-                    String name = (String) messageSnapshot.child("name").getValue();
-                    String avatar = (String) messageSnapshot.child("avatar").getValue();
 
-                    UserModel userModel = new UserModel(key, key, name, avatar);
-                    FirebaseChatManager.arrUser.add(userModel);
+                boolean isDataExist = dataSnapshot.exists();
+
+                if(isDataExist){
+                    for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
+
+                        boolean isData2Exist = messageSnapshot.exists();
+                        boolean isNameExist = messageSnapshot.child("name").exists();
+                        boolean isAvatarExist = messageSnapshot.child("avatar").exists();
+
+                        if(isData2Exist&&isNameExist&&isAvatarExist){
+                            String key = (String) messageSnapshot.getKey();
+                            //String fb_id = String.valueOf(messageSnapshot.child("fb_id").getValue());
+                            String name = (String) messageSnapshot.child("name").getValue();
+                            String avatar = (String) messageSnapshot.child("avatar").getValue();
+
+                            UserModel userModel = new UserModel(key, key, name, avatar);
+                            FirebaseChatManager.arrUser.add(userModel);
+                        }else{
+                            //do nothing
+                        }
+
+                    }
+
+                    /*String sd = String.valueOf(new Gson().toJson(FirebaseChatManager.arrUser));
+                    Log.d("sd","sd");*/
+                }else{
+                    //do nothing
                 }
-
-                String sd = String.valueOf(new Gson().toJson(FirebaseChatManager.arrUser));
-                Log.d("sd","sd");
             }
 
             @Override
@@ -342,29 +359,40 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
                     FirebaseChatManager.arrAllRoomMembers.clear();
                     FirebaseChatManager.arrAllRoom.clear();
 
-                    for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
+                    boolean isDataExist = dataSnapshot.exists();
 
-                        String key = (String)messageSnapshot.getKey();
+                    if(isDataExist){
+                        for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
 
+                            boolean isDatasExist = messageSnapshot.exists();
 
-                        FirebaseChatManager.arrAllRoomMembers.add(key);
+                            if(isDatasExist){
+                                String key = (String)messageSnapshot.getKey();
+                                FirebaseChatManager.arrAllRoomMembers.add(key);
 
-                        getRoomDetail(key);
+                                getRoomDetail(key);
+                            }else{
+                                //do nothing
+                            }
 
+                        }
+
+                        sizeRoom = FirebaseChatManager.arrAllRoomMembers.size();
+
+                        if(sizeRoom==0){
+                            refreshLayout.setRefreshing(false);
+                            isLoading = false;
+                            getEmptyView().setVisibility(View.VISIBLE);
+                            recyclerView.setVisibility(View.GONE);
+                            contentView2.setVisibility(View.VISIBLE);
+                        }
+
+                        /*Log.d("sd",String.valueOf(sizeRoom));
+                        String sd = String.valueOf(new Gson().toJson(FirebaseChatManager.arrAllRoom));*/
+                    }else {
+                        //do nothing
                     }
 
-                    sizeRoom = FirebaseChatManager.arrAllRoomMembers.size();
-
-                    if(sizeRoom==0){
-                        refreshLayout.setRefreshing(false);
-                        isLoading = false;
-                        getEmptyView().setVisibility(View.VISIBLE);
-                        recyclerView.setVisibility(View.GONE);
-                        contentView2.setVisibility(View.VISIBLE);
-                    }
-
-                    Log.d("sd",String.valueOf(sizeRoom));
-                    String sd = String.valueOf(new Gson().toJson(FirebaseChatManager.arrAllRoom));
                 }
 
                 @Override
@@ -386,11 +414,12 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                String key = (String) dataSnapshot.getKey();
-
+                boolean isDataExist = dataSnapshot.exists();
+                boolean isInfoExist = dataSnapshot.child("info").exists();
                 boolean isTypeExist = dataSnapshot.child("type").exists();
 
-                if(isTypeExist){
+                if(isDataExist&&isInfoExist&&isTypeExist){
+                    String key = (String) dataSnapshot.getKey();
                     long type = (long) dataSnapshot.child("type").getValue();
 
                     RoomModel.Info info = null;
@@ -475,7 +504,7 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
 
                     setAdapters();
                 }else{
-                    Toast.makeText(getActivity(), "Sorry, there's value which is not reachable", Toast.LENGTH_SHORT).show();
+                    //do nothing
                 }
 
             }

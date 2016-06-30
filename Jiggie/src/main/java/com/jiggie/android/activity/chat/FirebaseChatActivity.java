@@ -348,37 +348,56 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 arrMessages.clear();
-                for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
-                    String messageId = (String) messageSnapshot.getKey();
-                    String fb_id = String.valueOf(messageSnapshot.child("fb_id").getValue());
-                    String message = String.valueOf(messageSnapshot.child("message").getValue());
-                    long created_at = (long)messageSnapshot.child("created_at").getValue();
 
-                    String name = Utils.BLANK, avatar = Utils.BLANK;
-                    for(int i=0;i<FirebaseChatManager.arrUser.size();i++){
-                        String fb_idMatch = FirebaseChatManager.arrUser.get(i).getFb_id();
-                        if(fb_id.equals(fb_idMatch)){
-                            name = FirebaseChatManager.arrUser.get(i).getName();
-                            avatar = FirebaseChatManager.arrUser.get(i).getAvatar();
+                boolean isDataExist = dataSnapshot.exists();
+
+                if(isDataExist){
+                    for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
+
+                        boolean isDatasExist = messageSnapshot.exists();
+                        boolean isIdExist = messageSnapshot.child("fb_id").exists();
+                        boolean isMsgExist = messageSnapshot.child("message").exists();
+                        boolean isCreatedAtExist = messageSnapshot.child("created_at").exists();
+
+                        if(isDatasExist&&isIdExist&&isMsgExist&&isCreatedAtExist){
+                            String messageId = (String) messageSnapshot.getKey();
+                            String fb_id = String.valueOf(messageSnapshot.child("fb_id").getValue());
+                            String message = String.valueOf(messageSnapshot.child("message").getValue());
+                            long created_at = (long)messageSnapshot.child("created_at").getValue();
+
+                            String name = Utils.BLANK, avatar = Utils.BLANK;
+                            for(int i=0;i<FirebaseChatManager.arrUser.size();i++){
+                                String fb_idMatch = FirebaseChatManager.arrUser.get(i).getFb_id();
+                                if(fb_id.equals(fb_idMatch)){
+                                    name = FirebaseChatManager.arrUser.get(i).getName();
+                                    avatar = FirebaseChatManager.arrUser.get(i).getAvatar();
+                                }else{
+                                    //do nothing
+                                }
+                            }
+
+                            MessagesModel messagesModel = new MessagesModel(messageId, fb_id, name, avatar, message, created_at);
+                            arrMessages.add(messagesModel);
                         }else{
                             //do nothing
                         }
+
                     }
 
-                    MessagesModel messagesModel = new MessagesModel(messageId, fb_id, name, avatar, message, created_at);
-                    arrMessages.add(messagesModel);
-                }
+                    if(adapter==null){
 
-                if(adapter==null){
+                        adapter = new FirebaseChatAdapter(FirebaseChatActivity.this, arrMessages, event, type);
+                        recyclerView.setAdapter(adapter);
 
-                    adapter = new FirebaseChatAdapter(FirebaseChatActivity.this, arrMessages, event, type);
-                    recyclerView.setAdapter(adapter);
-
-                    checkActive();
+                        checkActive();
+                    }else{
+                        adapter.notifyDataSetChanged();
+                        checkActive();
+                    }
                 }else{
-                    adapter.notifyDataSetChanged();
-                    checkActive();
+                    //do nothing
                 }
+
             }
 
             @Override
