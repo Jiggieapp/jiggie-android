@@ -48,4 +48,10 @@ public interface ChatInterface {
     @POST
     Call<Success2Model> addChatFirebase(@Url String url, @Body HashMap<String, Object> chatModel);
 
+    @POST
+    Call<Success2Model> blockChatFirebase(@Url String url, @Body HashMap<String, Object> blockModel);
+
+    @POST
+    Call<Success2Model> deleteChatFirebase(@Url String url, @Body HashMap<String, Object> deleteModel);
+
 }

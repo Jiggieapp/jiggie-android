@@ -55,7 +55,12 @@ public class FirebaseChatManager {
     }
 
     public static Query getQueryRoomMembers(String fb_id){
-        return getFirebaseDatabase().child("room_members").orderByChild(fb_id).equalTo(true);
+        String a = "";
+        try {
+            return getFirebaseDatabase().child("room_members").orderByChild(fb_id).equalTo(true);
+        }catch (Exception e){
+            return null;
+        }
     }
 
     public static Query getQueryRoom(String key){

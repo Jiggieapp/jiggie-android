@@ -442,8 +442,10 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                FirebaseChatManager.blockChatList(roomId, FirebaseChatManager.fb_id);
-                                blockUser();
+                                //FirebaseChatManager.blockChatList(roomId, FirebaseChatManager.fb_id);
+                                //blockUser();
+                                blockChatList(roomId);
+                                //onBackPressed();
                             }
                         }).show();
             }
@@ -466,8 +468,9 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                FirebaseChatManager.blockChatList(roomId, FirebaseChatManager.fb_id);
-                                onBackPressed();
+                                //FirebaseChatManager.blockChatList(roomId, FirebaseChatManager.fb_id);
+                                blockChatList(roomId);
+                                //onBackPressed();
                             }
                         }).show();
             }
@@ -526,5 +529,38 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
     protected void onStop() {
         super.onStop();
         App.getInstance().setIdChatActive(Utils.BLANK);
+    }
+
+    private void blockChatList(String roomId){
+        HashMap<String, Object> blockModel = new HashMap<>();
+        blockModel.put("fb_id", FirebaseChatManager.fb_id);
+
+        if(type==FirebaseChatManager.TYPE_PRIVATE){
+            blockModel.put("member_fb_id", toId);
+        }else{
+            blockModel.put("member_fb_id", Utils.BLANK);
+        }
+
+        blockModel.put("type", String.valueOf(type));
+        blockModel.put("room_id", roomId);
+
+        ChatManager.loaderBlockChatFirebase(blockModel, new OnResponseListener() {
+            @Override
+            public void onSuccess(Object object) {
+                if(dialog!=null&&dialog.isShowing()){
+                    dialog.dismiss();
+                }
+                App.getInstance().trackMixPanelEvent("Block User");
+
+                setResult(RESULT_BLOCKED, new Intent());
+                onBackPressed();
+            }
+
+            @Override
+            public void onFailure(ExceptionModel exceptionModel) {
+                Toast.makeText(FirebaseChatActivity.this, getString(R.string.block_failed), Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 }
