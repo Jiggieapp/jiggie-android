@@ -166,7 +166,6 @@ public class AccountManager extends BaseManager {
                         dataTemp.setFrom(Utils.FROM_PROFILE_SETTING);
                         EventBus.getDefault().post(dataTemp);
                         AccountManager.saveMemberSetting(memberSettingModel);
-                        Utils.d("HomeFragment", "laod membersetting " );
 
                         /*MemberSettingResultModel memberSettingModel = (MemberSettingResultModel) response.body();
                         AccountManager.saveMemberSetting(memberSettingModel);*/

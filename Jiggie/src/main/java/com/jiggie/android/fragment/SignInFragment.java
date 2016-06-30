@@ -1,6 +1,7 @@
 package com.jiggie.android.fragment;
 
 import android.Manifest;
+import android.accounts.Account;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -62,6 +63,7 @@ import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.LoginModel;
 import com.jiggie.android.model.MemberSettingModel;
+import com.jiggie.android.model.MemberSettingResultModel;
 import com.jiggie.android.model.PostLocationModel;
 import com.jiggie.android.model.SettingModel;
 import com.jiggie.android.model.SuccessLocationModel;
@@ -364,18 +366,21 @@ public class SignInFragment extends Fragment
                         return;
                     }
                 }
+                checkLocation();
+            }
+        }
+    };
 
-                final AccessToken token = AccessToken.getCurrentAccessToken();
-                final Bundle parameters = new Bundle();
-
-                final GraphRequest request = GraphRequest.newMeRequest(token, profileCallback);
+    private void beforeOperator()
+    {
+        final AccessToken token = AccessToken.getCurrentAccessToken();
+        final Bundle parameters = new Bundle();
+        final GraphRequest request = GraphRequest.newMeRequest(token, profileCallback);
                 parameters.putString("fields", "id, email, gender, birthday, bio, first_name" +
                         ", last_name, location, friends");
                 request.setParameters(parameters);
                 request.executeAsync();
-            }
-        }
-    };
+    }
 
     private GraphRequest.GraphJSONObjectCallback profileCallback = new GraphRequest.GraphJSONObjectCallback() {
         @Override
@@ -416,32 +421,13 @@ public class SignInFragment extends Fragment
                 //Added by Aga 11-2-2016
                 loginModel.setDevice_type("2");
                 //------------
+                if(SocialManager.lat != null && SocialManager.lng != null)
+                {
+                    loginModel.setLatitude(SocialManager.lat);
+                    loginModel.setLongitude(SocialManager.lng);
+                }
 
                 loginModel.setDevice_id(Utils.DEVICE_ID);
-
-                /*try {
-                    AccountManager.getFriendList(new JSONObject(object.optString("friends")), new com.jiggie.android.listener.OnResponseListener() {
-                        @Override
-                        public void onSuccess(Object object) {
-                            String name = loginModel.getUser_first_name() + " " + loginModel.getUser_last_name();
-
-                            AccountManager.loaderLogin(loginModel);
-                            App.getInstance().setUserLoggedIn();
-                            App.getSharedPreferences().edit()
-                                    .putString(Common.PREF_FACEBOOK_NAME, name)
-                                    .putString(Common.PREF_FACEBOOK_ID, loginModel.getFb_id())
-                                    .apply();
-                            AccountManager.saveLogin(loginModel);
-                        }
-
-                        @Override
-                        public void onFailure(int responseCode, String message) {
-
-                        }
-                    });
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }*/
 
                 String name = loginModel.getUser_first_name() + " " + loginModel.getUser_last_name();
                 AccountManager.loaderLogin(loginModel);
@@ -490,8 +476,8 @@ public class SignInFragment extends Fragment
             //wandy 24-03-2016
             //app.startActivity(new Intent(app, SetupTagsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
             this.progressDialog = App.showProgressDialog(getContext());
-            checkLocation();
-            //doOperator();
+            //checkLocation();
+            doOperator();
             //end of wandy 24-03-2016
 
             app.startService(new Intent
@@ -505,7 +491,7 @@ public class SignInFragment extends Fragment
 
     //successLocationModel.getData().city.city
 
-    private void doOperator(final String city)
+    private void doOperator()
     {
         Observable<TagsListModel> observableTagList = Observable.create(new Observable.OnSubscribe<TagsListModel>() {
             @Override
@@ -528,6 +514,7 @@ public class SignInFragment extends Fragment
                     public void call(TagsListModel tagsListModel) {
                         //Utils.d(TAG, "doOnNext");
                         //EventManager.saveTagsList(tagsListModel);
+                        Utils.d(TAG, "call nol");
                         EventManager.saveTags(tagsListModel.getData().getTagslist());
 
                     }
@@ -544,19 +531,24 @@ public class SignInFragment extends Fragment
         observableTagList
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Action1<TagsListModel>() {
+                    @Override
+                    public void call(TagsListModel tagsListModel) {
+                        Utils.d(TAG, "call satu");
+                    }
+                })
+
                 .subscribe(new Action1<TagsListModel>() {
                     @Override
                     public void call(TagsListModel tagsListModel) {
-                        actionDone(city);
+                        Utils.d(TAG, "call dua");
+                        actionDone();
                     }
                 });
     }
 
-    private void doOperator() {
-        doOperator("");
-    }
 
-    private void actionDone(final String city) {
+    private void actionDone() {
         final MemberSettingModel memberSettingModel = new MemberSettingModel();
         final SettingModel currentSettingModel = AccountManager.loadSetting();
         memberSettingModel.setAccount_type(currentSettingModel.getData().getAccount_type());
@@ -568,20 +560,18 @@ public class SignInFragment extends Fragment
         memberSettingModel.setFeed(1);
         memberSettingModel.setExperiences(TextUtils.join(",", getTags()));
         //wandy 08-06-2016
-        Utils.d(TAG, "city actiondone " + city);
-        if(!city.isEmpty())
-            memberSettingModel.setArea_event(city);
-        else
-            memberSettingModel.setArea_event("jakarta");
+        /*if(!city.isEmpty())
+            memberSettingModel.setArea_event(city);*/
+        //else memberSettingModel.setArea_event("jakarta");
         AccountManager.loaderMemberSetting(memberSettingModel);
 
         currentSettingModel.getData().getNotifications().setLocation(true);
         currentSettingModel.getData().getNotifications().setChat(true);
         currentSettingModel.getData().getNotifications().setFeed(true);
         //wandy 09-06-2016
-        if(!city.isEmpty())
-            currentSettingModel.getData().setAreaEvent(city);
-        else currentSettingModel.getData().setAreaEvent("jakarta");
+        /*if(!city.isEmpty())
+            currentSettingModel.getData().setAreaEvent(city);*/
+        //else currentSettingModel.getData().setAreaEvent("jakarta");
         //end of wandy 09-06-2016
 
         AccountManager.saveSetting(currentSettingModel);
@@ -594,7 +584,7 @@ public class SignInFragment extends Fragment
                 *//*.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)*//*
                 *//*intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)*//*);*/
 
-        if(progressDialog != null && progressDialog.isShowing())
+        /*if(progressDialog != null && progressDialog.isShowing())
             progressDialog.dismiss();
 
         final MainActivity activity = (MainActivity) getActivity();
@@ -602,7 +592,49 @@ public class SignInFragment extends Fragment
             activity.finish();
         Intent i = new Intent(App.getInstance(), MainActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        App.getInstance().startActivity(i);
+        App.getInstance().startActivity(i);*/
+
+        AccountManager.loaderSettingNew(AccessToken.getCurrentAccessToken().getUserId(),
+                new com.jiggie.android.listener.OnResponseListener() {
+                    @Override
+                    public void onSuccess(Object object) {
+                        //socialView.dismissProgressDialog();
+                        /*socialView.hideErrorLayout();
+                        MemberSettingResultModel result = (MemberSettingResultModel) object;
+                        socialView.updateUI(result);*/
+                        if(progressDialog != null && progressDialog.isShowing())
+                            progressDialog.dismiss();
+
+                        MemberSettingResultModel result = (MemberSettingResultModel) object;
+                        MemberSettingModel ms = AccountManager.loadMemberSetting();
+                        ms.setArea_event(result.getData().getMembersettings().getArea_event());
+                        AccountManager.saveMemberSetting(ms);
+
+
+                        final SettingModel tempSettingModel = AccountManager.loadSetting();
+                        tempSettingModel.getData().setAreaEvent(result.getData().getMembersettings().getArea_event());
+                        AccountManager.saveSetting(tempSettingModel);
+
+                        Utils.d(TAG, "area event "
+                                + AccountManager.loadMemberSetting().getArea_event() + " "
+                                + AccountManager.loadSetting().getData().getAreaEvent());
+
+                        final MainActivity activity = (MainActivity) getActivity();
+                        if (activity != null)
+                            activity.finish();
+                        Intent i = new Intent(App.getInstance(), MainActivity.class);
+                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        App.getInstance().startActivity(i);
+                    }
+
+                    @Override
+                    public void onFailure(int responseCode, String message) {
+                        //socialView.showErrorLayout();
+                        if(progressDialog != null && progressDialog.isShowing())
+                            progressDialog.dismiss();
+                    }
+                }
+        );
 
     }
 
@@ -714,7 +746,7 @@ public class SignInFragment extends Fragment
         }
 
         if (mLastLocation != null) {
-            sendToServer(mLastLocation);
+            //sendToServer(mLastLocation);
         } else {
             //Utils.d(getString(R.string.tag_location), getString(R.string.error_loc_failed));
             //doOperator();
@@ -768,7 +800,7 @@ public class SignInFragment extends Fragment
         }
     }
 
-    private void sendToServer(Location location) {
+    /*private void sendToServer(Location location) {
         SocialManager.lat = String.valueOf(location.getLatitude());
         SocialManager.lng = String.valueOf(location.getLongitude());
         //SocialManager.lat = "-8.70100";
@@ -785,7 +817,7 @@ public class SignInFragment extends Fragment
                     public void onSuccess(Object object) {
                         SuccessLocationModel successLocationModel = (SuccessLocationModel) object;
                         //Utils.d(TAG, "success location model y " + successLocationModel.getData().city.city);
-                        doOperator(successLocationModel.getData().city.city);
+                        doOperator();
                     }
 
                     @Override
@@ -796,12 +828,12 @@ public class SignInFragment extends Fragment
                 //end here
             }
         }
-    }
+    }*/
 
 
     @Override
     public void onConnectionSuspended(int i) {
-        doOperator();
+        //doOperator();
     }
 
     @Override
@@ -824,25 +856,26 @@ public class SignInFragment extends Fragment
             return;
         }
         locationManager.removeUpdates(this);
-        sendToServer(location);
+        //sendToServer(location);
+        beforeOperator();
     }
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
         Utils.d(TAG, "on status changed");
-        doOperator();
+        beforeOperator();
     }
 
     @Override
     public void onProviderEnabled(String provider) {
         Utils.d(TAG, "on provider enabled");
-        doOperator();
+        beforeOperator();
     }
 
     @Override
     public void onProviderDisabled(String provider) {
         Utils.d(TAG, "on provider disabled");
-        doOperator();
+        beforeOperator();
     }
 
 }

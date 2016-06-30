@@ -408,6 +408,7 @@ public class HomeFragment extends Fragment
             final String experiences = TextUtils.join(",", selectedItems.toArray(new String[this.selectedItems.size()]));
             Utils.d(TAG, "experiences " + experiences);
             memberSettingModel.setExperiences(experiences);
+            Utils.d(TAG, "changetags " + memberSettingModel.getArea_event());
             //memberSettingModel.getData().getMembersettings().setExperiences(selectedItems);
             showProgressDialog();
             AccountManager.loaderMemberSetting2(memberSettingModel, new AccountManager.OnResponseListener() {
@@ -774,7 +775,6 @@ public class HomeFragment extends Fragment
                 SocialManager.loaderLocation(postLocationModel, new SocialManager.OnResponseListener() {
                     @Override
                     public void onSuccess(Object object) {
-                        Utils.d("location", "post location success");
                     }
 
                     @Override
@@ -866,7 +866,6 @@ public class HomeFragment extends Fragment
 
             //sc.refreshCard();
             //Log.d("", "");
-            Utils.d(TAG, "socialtabfragment");
             bottomSheet.setVisibility(View.GONE);
         } else if (position == MORE_TAB) {
             showToolbar();
@@ -1138,7 +1137,6 @@ public class HomeFragment extends Fragment
 
     @Override
     public void onDestroy() {
-        Utils.d(TAG, "ondestroy");
         super.onDestroy();
         eventsFragment = null;
         socialTabFragment = null;
@@ -1185,6 +1183,9 @@ public class HomeFragment extends Fragment
 
     void onEvent(final ArrayList<CityModel.Data.Citylist> cityLists)
     {
+        Utils.d(TAG, "area event "
+                + AccountManager.loadMemberSetting().getArea_event() + " "
+                + AccountManager.loadSetting().getData().getAreaEvent());
         SettingModel settingModel = AccountManager.loadSetting();
         settingModel.getData().getCityList().clear();
         AccountManager.saveSetting(settingModel);

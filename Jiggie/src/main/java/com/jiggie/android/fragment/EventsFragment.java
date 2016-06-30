@@ -637,11 +637,8 @@ public class EventsFragment extends Fragment
             public void onCancel(DialogInterface dialog) {
                 Utils.SHOW_WALKTHROUGH_EVENT = false;
                 App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, false).commit();
-
                 PostWalkthroughModel postWalkthroughModel = new PostWalkthroughModel(AccessToken.getCurrentAccessToken().getUserId(), Utils.TAB_EVENT, Utils.DEVICE_ID);
-
                 String sd = String.valueOf(new Gson().toJson(postWalkthroughModel));
-
                 WalkthroughManager.loaderPostWalkthrough(postWalkthroughModel);
             }
         });
@@ -711,6 +708,7 @@ public class EventsFragment extends Fragment
     @Override
     public void onFinishGetCities(ArrayList<CityModel.Data.Citylist> citylist) {
         EventBus.getDefault().post(citylist);
+        //((HomeFragment) this.getActivity()).onEvent(citylist);
     }
 
     @Override
