@@ -371,7 +371,7 @@ public class TicketDetailActivity extends AbstractTicketDetailActivity {
             if (phoneNumber.equals(Utils.BLANK) || phoneNumber.equals(getString(R.string.phone_number))) {
                 isItEnable = false;
             }
-            if(isLoket && (identity_id.isEmpty() || identity_id == null))
+            if(isLoket && (identity_id == null || identity_id.isEmpty()))
             {
                 isItEnable = false;
                 relGuest.setSelected(true);

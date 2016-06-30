@@ -22,8 +22,7 @@
             android:background="@color/colorPrimary"
             app:layout_scrollFlags="scroll|enterAlways"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:titleTextColor="@android:color/white"
-            >
+            app:titleTextColor="@android:color/white">
 
             <RelativeLayout
                 android:id="@+id/rel_place"

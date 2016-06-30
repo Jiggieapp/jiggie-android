@@ -66,6 +66,7 @@ import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.MemberSettingResultModel;
 import com.jiggie.android.model.PostLocationModel;
 import com.jiggie.android.model.SettingModel;
+import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SuccessLocationModel;
 import com.jiggie.android.model.TagsListModel;
 import com.jiggie.android.view.CircleIndicatorView;
@@ -423,6 +424,8 @@ public class SignInFragment extends Fragment
                 //------------
                 if(SocialManager.lat != null && SocialManager.lng != null)
                 {
+                    /*SocialManager.lat = "-8.70100";
+                    SocialManager.lng = "115.17049";*/
                     loginModel.setLatitude(SocialManager.lat);
                     loginModel.setLongitude(SocialManager.lng);
                 }
@@ -531,13 +534,12 @@ public class SignInFragment extends Fragment
         observableTagList
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<TagsListModel>() {
+                /*.doOnNext(new Action1<TagsListModel>() {
                     @Override
                     public void call(TagsListModel tagsListModel) {
                         Utils.d(TAG, "call satu");
                     }
-                })
-
+                })*/
                 .subscribe(new Action1<TagsListModel>() {
                     @Override
                     public void call(TagsListModel tagsListModel) {
@@ -563,8 +565,19 @@ public class SignInFragment extends Fragment
         /*if(!city.isEmpty())
             memberSettingModel.setArea_event(city);*/
         //else memberSettingModel.setArea_event("jakarta");
-        AccountManager.loaderMemberSetting(memberSettingModel);
+        //AccountManager.loaderMemberSetting(memberSettingModel);
+        AccountManager.loaderMemberSetting(memberSettingModel, new com.jiggie.android.listener.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object) {
+                fetchMemberSetting();
+            }
 
+            @Override
+            public void onFailure(int responseCode, String message) {
+                if(progressDialog != null && progressDialog.isShowing())
+                    progressDialog.dismiss();
+            }
+        });
         currentSettingModel.getData().getNotifications().setLocation(true);
         currentSettingModel.getData().getNotifications().setChat(true);
         currentSettingModel.getData().getNotifications().setFeed(true);
@@ -575,7 +588,7 @@ public class SignInFragment extends Fragment
         //end of wandy 09-06-2016
 
         AccountManager.saveSetting(currentSettingModel);
-        App.getSharedPreferences().edit().putBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, true).apply();
+
         /*getActivity().finish();
         App.getInstance().startActivity(new Intent(App.getInstance()
                 , MainActivity.class)
@@ -594,6 +607,11 @@ public class SignInFragment extends Fragment
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         App.getInstance().startActivity(i);*/
 
+
+    }
+
+    private void fetchMemberSetting()
+    {
         AccountManager.loaderSettingNew(AccessToken.getCurrentAccessToken().getUserId(),
                 new com.jiggie.android.listener.OnResponseListener() {
                     @Override
@@ -610,7 +628,6 @@ public class SignInFragment extends Fragment
                         ms.setArea_event(result.getData().getMembersettings().getArea_event());
                         AccountManager.saveMemberSetting(ms);
 
-
                         final SettingModel tempSettingModel = AccountManager.loadSetting();
                         tempSettingModel.getData().setAreaEvent(result.getData().getMembersettings().getArea_event());
                         AccountManager.saveSetting(tempSettingModel);
@@ -618,24 +635,52 @@ public class SignInFragment extends Fragment
                         Utils.d(TAG, "area event "
                                 + AccountManager.loadMemberSetting().getArea_event() + " "
                                 + AccountManager.loadSetting().getData().getAreaEvent());
-
+                        App.getSharedPreferences().edit().putBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, true).apply();
                         final MainActivity activity = (MainActivity) getActivity();
                         if (activity != null)
                             activity.finish();
                         Intent i = new Intent(App.getInstance(), MainActivity.class);
                         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         App.getInstance().startActivity(i);
+
+                        if (ActivityCompat.checkSelfPermission(SignInFragment.this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                                != PackageManager.PERMISSION_GRANTED
+                                && ActivityCompat.checkSelfPermission(SignInFragment.this.getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            // TODO: Consider calling
+                            //    ActivityCompat#requestPermissions
+                            // here to request the missing permissions, and then overriding
+                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                            //                                          int[] grantResults)
+                            // to handle the case where the user grants the permission. See the documentation
+                            // for ActivityCompat#requestPermissions for more details.
+                            return;
+                        }
+                        if(locationManager != null)
+                            locationManager.removeUpdates(SignInFragment.this);
                     }
 
                     @Override
                     public void onFailure(int responseCode, String message) {
                         //socialView.showErrorLayout();
+                        if (ActivityCompat.checkSelfPermission(SignInFragment.this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                                != PackageManager.PERMISSION_GRANTED
+                                && ActivityCompat.checkSelfPermission(SignInFragment.this.getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            // TODO: Consider calling
+                            //    ActivityCompat#requestPermissions
+                            // here to request the missing permissions, and then overriding
+                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                            //                                          int[] grantResults)
+                            // to handle the case where the user grants the permission. See the documentation
+                            // for ActivityCompat#requestPermissions for more details.
+                            return;
+                        }
+                        if(locationManager != null)
+                            locationManager.removeUpdates(SignInFragment.this);
                         if(progressDialog != null && progressDialog.isShowing())
                             progressDialog.dismiss();
                     }
                 }
         );
-
     }
 
     private Set<String> getTags() {
