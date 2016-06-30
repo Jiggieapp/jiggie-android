@@ -180,6 +180,8 @@ public class Utils {
     public static final String URL_CHAT_FIREBASE = BASE_URL + "app/v3/chat/firebase/{fb_id}";
     public static final String URL_ADD_GROUP_CHAT_JANNES = BASE_URL + "app/v3/group/notif";
     public static final String URL_ADD_CHAT_FIREBASE = BASE_URL + "app/v3/firebase/post_message";
+    public static final String URL_BLOCK_CHAT_FIREBASE = BASE_URL + "app/v3/firebase/block_chat";
+    public static final String URL_DELETE_CHAT_FIREBASE = BASE_URL + "app/v3/firebase/delete_chat";
 
     public static final String URL_VERIFY_PHONE_NUMBER = BASE_URL + "app/v3/user/phone/verification/send/{fb_id}/{phone}";
     public static final String URL_VERIFY_VERIFICATION_CODE = BASE_URL + "app/v3/user/phone/verification/validate/{fb_id}/{token}";

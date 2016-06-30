@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -46,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -66,7 +68,7 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
     FrameLayout contentView2;
 
     public FirebaseChatTabListAdapter adapter;
-    private boolean isLoading;
+    private boolean isLoading = false;
     protected HomeMain homeMain;
     private View failedView;
     private View emptyView;
@@ -189,6 +191,9 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
 
         refreshLayout.setRefreshing(false);
         this.isLoading = false;
+        getEmptyView().setVisibility(View.GONE);
+        recyclerView.setVisibility(View.VISIBLE);
+        contentView2.setVisibility(View.GONE);
 
     }
 
@@ -215,6 +220,7 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
             public void onFailure(ExceptionModel exceptionModel) {
                 Log.e(TAG, exceptionModel.toString());
                 refreshLayout.setRefreshing(false);
+                isLoading = false;
 ;            }
         });
         //refreshData();
@@ -321,6 +327,7 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 refreshLayout.setRefreshing(false);
+                isLoading = false;
             }
         };
         queryUsers.addValueEventListener(userEvent);
@@ -328,35 +335,46 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
 
     private void getRoomMembers(){
         Query queryRoomMembers = FirebaseChatManager.getQueryRoomMembers(FirebaseChatManager.fb_id);
-        roomEvent = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                FirebaseChatManager.arrAllRoomMembers.clear();
-                FirebaseChatManager.arrAllRoom.clear();
-                for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
+        if(queryRoomMembers!=null){
+            roomEvent = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    FirebaseChatManager.arrAllRoomMembers.clear();
+                    FirebaseChatManager.arrAllRoom.clear();
 
-                    String key = (String)messageSnapshot.getKey();
+                    for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
+
+                        String key = (String)messageSnapshot.getKey();
 
 
-                    FirebaseChatManager.arrAllRoomMembers.add(key);
+                        FirebaseChatManager.arrAllRoomMembers.add(key);
 
-                    getRoomDetail(key);
+                        getRoomDetail(key);
 
+                    }
+
+                    sizeRoom = FirebaseChatManager.arrAllRoomMembers.size();
+
+                    if(sizeRoom==0){
+                        refreshLayout.setRefreshing(false);
+                        isLoading = false;
+                        getEmptyView().setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
+                        contentView2.setVisibility(View.VISIBLE);
+                    }
+
+                    Log.d("sd",String.valueOf(sizeRoom));
+                    String sd = String.valueOf(new Gson().toJson(FirebaseChatManager.arrAllRoom));
                 }
 
-                sizeRoom = FirebaseChatManager.arrAllRoomMembers.size();
-
-                Log.d("sd",String.valueOf(sizeRoom));
-                String sd = String.valueOf(new Gson().toJson(FirebaseChatManager.arrAllRoom));
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                refreshLayout.setRefreshing(false);
-            }
-        };
-        queryRoomMembers.addValueEventListener(roomEvent);
-
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    refreshLayout.setRefreshing(false);
+                    isLoading = false;
+                }
+            };
+            queryRoomMembers.addValueEventListener(roomEvent);
+        }
 
     }
 
@@ -367,107 +385,105 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
         queryRoom.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 String key = (String) dataSnapshot.getKey();
-                long type = (long) dataSnapshot.child("type").getValue();
 
-                RoomModel.Info info = null;
-                if(type==FirebaseChatManager.TYPE_GROUP){
-                    String event = (String) dataSnapshot.child("info").child("event").getValue();
-                    String avatar = (String) dataSnapshot.child("info").child("avatar").getValue();
-                    String last_message = (String) dataSnapshot.child("info").child("last_message").getValue();
-                    long created_at = (long) dataSnapshot.child("info").child("created_at").getValue();
-                    long updated_at = (long) dataSnapshot.child("info").child("updated_at").getValue();
+                boolean isTypeExist = dataSnapshot.child("type").exists();
 
-                    info = new RoomModel.Info(event, avatar, event, last_message, created_at, updated_at);
-                }else{
-                    String event = (String) dataSnapshot.child("info").child("event").getValue();
-                    String identifier = (String) dataSnapshot.child("info").child("identifier").getValue();
-                    String last_message = (String) dataSnapshot.child("info").child("last_message").getValue();
-                    long created_at = (long) dataSnapshot.child("info").child("created_at").getValue();
-                    long updated_at = (long) dataSnapshot.child("info").child("updated_at").getValue();
+                if(isTypeExist){
+                    long type = (long) dataSnapshot.child("type").getValue();
 
-                    String id1 = identifier.substring(0, identifier.indexOf("_"));
-                    String id2 = identifier.substring(identifier.indexOf("_")+1, identifier.length());
+                    RoomModel.Info info = null;
+                    if(type==FirebaseChatManager.TYPE_GROUP){
+                        String event = (String) dataSnapshot.child("info").child("event").getValue();
+                        String avatar = (String) dataSnapshot.child("info").child("avatar").getValue();
+                        String last_message = (String) dataSnapshot.child("info").child("last_message").getValue();
+                        long created_at = (long) dataSnapshot.child("info").child("created_at").getValue();
+                        long updated_at = (long) dataSnapshot.child("info").child("updated_at").getValue();
 
-                    String name = Utils.BLANK;
-                    String avatar = Utils.BLANK;
-                    String idFriend = Utils.BLANK;
-                    if(FirebaseChatManager.fb_id.equals(id1)){
-                        idFriend = id2;
-                    }else {
-                        idFriend = id1;
-                    }
-
-
-                    for(int i=0;i<FirebaseChatManager.arrUser.size();i++){
-                        String idUser = FirebaseChatManager.arrUser.get(i).getFb_id();
-                        if(idFriend.equals(idUser)){
-                            name = FirebaseChatManager.arrUser.get(i).getName();
-                            avatar = FirebaseChatManager.arrUser.get(i).getAvatar();
-                            break;
-                        }else{
-                            //do nothing
-                        }
-                    }
-
-                    info = new RoomModel.Info(name, avatar, event, last_message, created_at, updated_at);
-                }
-
-                //Firebase testing project-----------------------
-                /*ArrayList<RoomModel.Unread> arrUnread = new ArrayList<RoomModel.Unread>();
-                for (DataSnapshot unreadSnapshot: dataSnapshot.child("unread").getChildren()) {
-                    String fb_id = (String)unreadSnapshot.getKey();
-                    long counter = (long)unreadSnapshot.getValue();
-
-                    RoomModel.Unread unread = new RoomModel.Unread(fb_id, counter);
-                    arrUnread.add(unread);
-                }*/
-                //------------------------------------------------
-
-                ArrayList<RoomModel.Unread> arrUnread = new ArrayList<RoomModel.Unread>();
-                for (DataSnapshot unreadSnapshot: dataSnapshot.child("info").child("unread").getChildren()) {
-                    String fb_id = (String)unreadSnapshot.getKey();
-                    long counter = (long)unreadSnapshot.getValue();
-
-                    RoomModel.Unread unread = new RoomModel.Unread(fb_id, counter);
-                    arrUnread.add(unread);
-                }
-
-                RoomModel roomModel = new RoomModel(key, info, type, arrUnread);
-
-                //checker if already just update, if not then added---------------------
-                if(FirebaseChatManager.arrAllRoom.size()==0){
-                    FirebaseChatManager.arrAllRoom.add(roomModel);
-                }else{
-                    boolean isExist = false;
-                    int existPosition = 0;
-                    for(int i=0; i<FirebaseChatManager.arrAllRoom.size();i++){
-                        String keyMatch = FirebaseChatManager.arrAllRoom.get(i).getKey();
-                        if(key.equals(keyMatch)){
-                            existPosition = i;
-                            isExist = true;
-                            break;
-                        }
-                    }
-
-                    if(isExist){
-                        FirebaseChatManager.arrAllRoom.set(existPosition, roomModel);
+                        info = new RoomModel.Info(event, avatar, event, last_message, created_at, updated_at);
                     }else{
-                        FirebaseChatManager.arrAllRoom.add(roomModel);
+                        String event = (String) dataSnapshot.child("info").child("event").getValue();
+                        String identifier = (String) dataSnapshot.child("info").child("identifier").getValue();
+                        String last_message = (String) dataSnapshot.child("info").child("last_message").getValue();
+                        long created_at = (long) dataSnapshot.child("info").child("created_at").getValue();
+                        long updated_at = (long) dataSnapshot.child("info").child("updated_at").getValue();
+
+                        String id1 = identifier.substring(0, identifier.indexOf("_"));
+                        String id2 = identifier.substring(identifier.indexOf("_")+1, identifier.length());
+
+                        String name = Utils.BLANK;
+                        String avatar = Utils.BLANK;
+                        String idFriend = Utils.BLANK;
+                        if(FirebaseChatManager.fb_id.equals(id1)){
+                            idFriend = id2;
+                        }else {
+                            idFriend = id1;
+                        }
+
+
+                        for(int i=0;i<FirebaseChatManager.arrUser.size();i++){
+                            String idUser = FirebaseChatManager.arrUser.get(i).getFb_id();
+                            if(idFriend.equals(idUser)){
+                                name = FirebaseChatManager.arrUser.get(i).getName();
+                                avatar = FirebaseChatManager.arrUser.get(i).getAvatar();
+                                break;
+                            }else{
+                                //do nothing
+                            }
+                        }
+
+                        info = new RoomModel.Info(name, avatar, event, last_message, created_at, updated_at);
                     }
+
+                    ArrayList<RoomModel.Unread> arrUnread = new ArrayList<RoomModel.Unread>();
+                    for (DataSnapshot unreadSnapshot: dataSnapshot.child("info").child("unread").getChildren()) {
+                        String fb_id = (String)unreadSnapshot.getKey();
+                        long counter = (long)unreadSnapshot.getValue();
+
+                        RoomModel.Unread unread = new RoomModel.Unread(fb_id, counter);
+                        arrUnread.add(unread);
+                    }
+
+                    RoomModel roomModel = new RoomModel(key, info, type, arrUnread);
+
+                    //checker if already just update, if not then added---------------------
+                    if(FirebaseChatManager.arrAllRoom.size()==0){
+                        FirebaseChatManager.arrAllRoom.add(roomModel);
+                    }else{
+                        boolean isExist = false;
+                        int existPosition = 0;
+                        for(int i=0; i<FirebaseChatManager.arrAllRoom.size();i++){
+                            String keyMatch = FirebaseChatManager.arrAllRoom.get(i).getKey();
+                            if(key.equals(keyMatch)){
+                                existPosition = i;
+                                isExist = true;
+                                break;
+                            }
+                        }
+
+                        if(isExist){
+                            FirebaseChatManager.arrAllRoom.set(existPosition, roomModel);
+                        }else{
+                            FirebaseChatManager.arrAllRoom.add(roomModel);
+                        }
+                    }
+                    //--------------------------------------------------------------------------
+
+                    String sds = String.valueOf(new Gson().toJson(FirebaseChatManager.arrAllRoom));
+                    Log.d("sd","sd");
+
+                    setAdapters();
+                }else{
+                    Toast.makeText(getActivity(), "Sorry, there's value which is not reachable", Toast.LENGTH_SHORT).show();
                 }
-                //--------------------------------------------------------------------------
-
-                String sds = String.valueOf(new Gson().toJson(FirebaseChatManager.arrAllRoom));
-                Log.d("sd","sd");
-
-                setAdapters();
 
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 refreshLayout.setRefreshing(false);
+                isLoading = false;
             }
         });
     }
@@ -498,11 +514,13 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
                         public void onClick(DialogInterface dialog, int which) {
                             switch (which) {
                                 case 0:
-                                    FirebaseChatManager.blockChatList(roomModel.getKey(), FirebaseChatManager.fb_id);
+                                    //FirebaseChatManager.blockChatList(roomModel.getKey(), FirebaseChatManager.fb_id);
+                                    blockChatList(roomModel.getKey(), roomModel);
                                     dialogLongClick.dismiss();
                                     break;
                                 case 1:
-                                    FirebaseChatManager.deleteChatList(roomModel.getKey(), FirebaseChatManager.fb_id);
+                                    //FirebaseChatManager.deleteChatList(roomModel.getKey(), FirebaseChatManager.fb_id);
+                                    deleteChatList(roomModel.getKey());
                                     dialogLongClick.dismiss();
                                     break;
                                 default:
@@ -522,7 +540,8 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
                         public void onClick(DialogInterface dialog, int which) {
                             switch (which) {
                                 case 0:
-                                    FirebaseChatManager.blockChatList(roomModel.getKey(), FirebaseChatManager.fb_id);
+                                    //FirebaseChatManager.blockChatList(roomModel.getKey(), FirebaseChatManager.fb_id);
+                                    blockChatList(roomModel.getKey(), roomModel);
                                     dialogLongClick.dismiss();
                                     break;
                                 default:
@@ -535,6 +554,72 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
             dialogLongClick.show();
         }
 
+
+    }
+
+    private void deleteChatList(String roomId){
+
+        String id1 = roomId.substring(0, roomId.indexOf("_"));
+        String id2 = roomId.substring(roomId.indexOf("_")+1, roomId.length());
+
+        String idFriend = Utils.BLANK;
+        if(FirebaseChatManager.fb_id.equals(id1)){
+            idFriend = id2;
+        }else {
+            idFriend = id1;
+        }
+
+        HashMap<String, Object> deleteModel = new HashMap<>();
+        deleteModel.put("fb_id", FirebaseChatManager.fb_id);
+        deleteModel.put("member_fb_id", idFriend);
+
+        ChatManager.loaderDeleteChatFirebase(deleteModel, new OnResponseListener() {
+            @Override
+            public void onSuccess(Object object) {
+                //do nothing
+            }
+
+            @Override
+            public void onFailure(ExceptionModel exceptionModel) {
+                //do nothing
+            }
+        });
+    }
+
+    private void blockChatList(String roomId, RoomModel roomModel){
+        HashMap<String, Object> blockModel = new HashMap<>();
+        blockModel.put("fb_id", FirebaseChatManager.fb_id);
+
+        if(roomModel.getType()==FirebaseChatManager.TYPE_PRIVATE){
+            String id1 = roomId.substring(0, roomId.indexOf("_"));
+            String id2 = roomId.substring(roomId.indexOf("_")+1, roomId.length());
+
+            String idFriend = Utils.BLANK;
+            if(FirebaseChatManager.fb_id.equals(id1)){
+                idFriend = id2;
+            }else {
+                idFriend = id1;
+            }
+            blockModel.put("member_fb_id", idFriend);
+        }
+        else{
+            blockModel.put("member_fb_id", Utils.BLANK);
+        }
+
+        blockModel.put("type", String.valueOf(roomModel.getType()));
+        blockModel.put("room_id", roomId);
+
+        ChatManager.loaderBlockChatFirebase(blockModel, new OnResponseListener() {
+            @Override
+            public void onSuccess(Object object) {
+                //do nothing
+            }
+
+            @Override
+            public void onFailure(ExceptionModel exceptionModel) {
+                //do nothing
+            }
+        });
 
     }
 }
