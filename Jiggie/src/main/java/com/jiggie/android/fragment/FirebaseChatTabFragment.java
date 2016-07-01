@@ -82,6 +82,7 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
     private static FirebaseChatTabFragment instance;
 
     ValueEventListener userEvent, roomEvent;
+    //ArrayList<UserModel> arrUser = new ArrayList<>();
 
     public static FirebaseChatTabFragment getInstance()
     {
@@ -244,6 +245,7 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
         if(FirebaseChatManager.arrUser.size()==0){
             getUsers();
         }
+        //arrUser = FirebaseChatManager.getArrUser();
         getRoomMembers();
     }
 
@@ -450,7 +452,6 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
                             idFriend = id1;
                         }
 
-
                         for(int i=0;i<FirebaseChatManager.arrUser.size();i++){
                             String idUser = FirebaseChatManager.arrUser.get(i).getFb_id();
                             if(idFriend.equals(idUser)){
@@ -534,8 +535,9 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
     public void showLongClickDialog(final RoomModel roomModel) {
 
         if(roomModel.getType()==FirebaseChatManager.TYPE_PRIVATE){
-            String block = "Block "+roomModel.getInfo().getName();
-            String[] menu = {block, "Delete Chat"};
+            final String block = "Block "+roomModel.getInfo().getName();
+            final String delete = "Delete "+roomModel.getInfo().getName();
+            String[] menu = {block, delete};
 
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity()/*, R.style.fullHeightDialog*/)
                     .setItems(menu, new DialogInterface.OnClickListener() {
@@ -544,12 +546,33 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
                             switch (which) {
                                 case 0:
                                     //FirebaseChatManager.blockChatList(roomModel.getKey(), FirebaseChatManager.fb_id);
-                                    blockChatList(roomModel.getKey(), roomModel);
+                                    new AlertDialog.Builder(getActivity())
+                                            .setMessage(R.string.confirmation)
+                                            .setTitle(block)
+                                            .setNegativeButton(android.R.string.no, null)
+                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                    blockChatList(roomModel.getKey(), roomModel);
+                                                }
+                                            }).show();
+
                                     dialogLongClick.dismiss();
                                     break;
                                 case 1:
                                     //FirebaseChatManager.deleteChatList(roomModel.getKey(), FirebaseChatManager.fb_id);
-                                    deleteChatList(roomModel.getKey());
+                                    new AlertDialog.Builder(getActivity())
+                                            .setMessage(R.string.confirmation)
+                                            .setTitle(delete)
+                                            .setNegativeButton(android.R.string.no, null)
+                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                    deleteChatList(roomModel.getKey());
+                                                }
+                                            }).show();
                                     dialogLongClick.dismiss();
                                     break;
                                 default:
@@ -570,7 +593,18 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
                             switch (which) {
                                 case 0:
                                     //FirebaseChatManager.blockChatList(roomModel.getKey(), FirebaseChatManager.fb_id);
-                                    blockChatList(roomModel.getKey(), roomModel);
+                                    new AlertDialog.Builder(getActivity())
+                                            .setMessage(R.string.confirmation)
+                                            .setTitle("Exit Group")
+                                            .setNegativeButton(android.R.string.no, null)
+                                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                    blockChatList(roomModel.getKey(), roomModel);
+                                                }
+                                            }).show();
+
                                     dialogLongClick.dismiss();
                                     break;
                                 default:
@@ -616,6 +650,7 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
     }
 
     private void blockChatList(String roomId, RoomModel roomModel){
+        FirebaseChatManager.isNeedRefreshFriend = true;
         HashMap<String, Object> blockModel = new HashMap<>();
         blockModel.put("fb_id", FirebaseChatManager.fb_id);
 

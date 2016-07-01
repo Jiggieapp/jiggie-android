@@ -62,6 +62,16 @@ public class FriendsFragment extends Fragment implements TabFragment, HomeMain, 
         //pageAdapter = new PageAdapter(this, getActivity().getSupportFragmentManager());
         pageAdapter = new PageAdapter(this, super.getActivity().getSupportFragmentManager());
         viewPager.setAdapter(pageAdapter);
+        viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                Fragment a = pageAdapter.getItem(position);
+                if(a instanceof FriendListFragment){
+                    ((FriendListFragment) a).onTabSelected();
+                }
+            }
+        });
         tab.setupWithViewPager(viewPager);
     }
 

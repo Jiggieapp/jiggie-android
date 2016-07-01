@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.gcm.GcmListenerService;
@@ -134,6 +135,13 @@ public class GCMMessageHandler extends GcmListenerService {
 
             if(!roomId.contains("_")){
                 too = roomId;
+            }else{
+                try {
+                    intent.putExtra(Conversation.FIELD_FROM_NAME, fromm);
+                    intent.putExtra(Conversation.FIELD_FACEBOOK_ID, too);
+                }catch (Exception e){
+                    Log.d(TAG, e.toString());
+                }
             }
         }
         //[{Jiggie=cui cui cui cui BARUU,
@@ -160,6 +168,13 @@ public class GCMMessageHandler extends GcmListenerService {
 
             if(!roomId.contains("_")){
                 too = roomId;
+            }else{
+                try {
+                    intent.putExtra(Conversation.FIELD_FROM_NAME, fromName);
+                    intent.putExtra(Conversation.FIELD_FACEBOOK_ID, too);
+                }catch (Exception e){
+                    Log.d(TAG, e.toString());
+                }
             }
             //End of new chat firebase----------
 
@@ -208,9 +223,6 @@ public class GCMMessageHandler extends GcmListenerService {
         }*/
 
         if (intent != null) {
-
-            String a = App.getInstance().getIdChatActive();
-            String b = too;
 
             if (!type.equalsIgnoreCase(Common.PUSH_NOTIFICATIONS_TYPE_MESSAGE) ||
                     (type.equalsIgnoreCase(Common.PUSH_NOTIFICATIONS_TYPE_MESSAGE)
