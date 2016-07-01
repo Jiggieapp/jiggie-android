@@ -361,7 +361,15 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
         }
 
         txtMessage.setText(Utils.BLANK);
-        this.recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+
+        try {
+            if(arrMessages.size()>0){
+                this.recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+            }
+        }catch (Exception e){
+            Log.d(TAG, e.toString());
+        }
+
     }
 
     private void getMessages(final String roomId){
