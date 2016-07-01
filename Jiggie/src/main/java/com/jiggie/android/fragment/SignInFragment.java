@@ -217,7 +217,7 @@ public class SignInFragment extends Fragment
 
                             imagePagerIndicator.setVisibility(View.GONE);
                             txtSkip.setVisibility(View.GONE);
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             Log.d(TAG, e.toString());
                         }
                     } else {
@@ -367,20 +367,20 @@ public class SignInFragment extends Fragment
                         return;
                     }
                 }
-                checkLocation();
+                //checkLocation();
+                askForLocationPermission();
             }
         }
     };
 
-    private void beforeOperator()
-    {
+    private void beforeOperator() {
         final AccessToken token = AccessToken.getCurrentAccessToken();
         final Bundle parameters = new Bundle();
         final GraphRequest request = GraphRequest.newMeRequest(token, profileCallback);
-                parameters.putString("fields", "id, email, gender, birthday, bio, first_name" +
-                        ", last_name, location, friends");
-                request.setParameters(parameters);
-                request.executeAsync();
+        parameters.putString("fields", "id, email, gender, birthday, bio, first_name" +
+                ", last_name, location, friends");
+        request.setParameters(parameters);
+        request.executeAsync();
     }
 
     private GraphRequest.GraphJSONObjectCallback profileCallback = new GraphRequest.GraphJSONObjectCallback() {
@@ -422,8 +422,7 @@ public class SignInFragment extends Fragment
                 //Added by Aga 11-2-2016
                 loginModel.setDevice_type("2");
                 //------------
-                if(SocialManager.lat != null && SocialManager.lng != null)
-                {
+                if (SocialManager.lat != null && SocialManager.lng != null) {
                     /*SocialManager.lat = "-8.70100";
                     SocialManager.lng = "115.17049";*/
                     loginModel.setLatitude(SocialManager.lat);
@@ -494,8 +493,7 @@ public class SignInFragment extends Fragment
 
     //successLocationModel.getData().city.city
 
-    private void doOperator()
-    {
+    private void doOperator() {
         Observable<TagsListModel> observableTagList = Observable.create(new Observable.OnSubscribe<TagsListModel>() {
             @Override
             public void call(final Subscriber<? super TagsListModel> subscriber) {
@@ -574,7 +572,7 @@ public class SignInFragment extends Fragment
 
             @Override
             public void onFailure(int responseCode, String message) {
-                if(progressDialog != null && progressDialog.isShowing())
+                if (progressDialog != null && progressDialog.isShowing())
                     progressDialog.dismiss();
             }
         });
@@ -606,12 +604,9 @@ public class SignInFragment extends Fragment
         Intent i = new Intent(App.getInstance(), MainActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         App.getInstance().startActivity(i);*/
-
-
     }
 
-    private void fetchMemberSetting()
-    {
+    private void fetchMemberSetting() {
         AccountManager.loaderSettingNew(AccessToken.getCurrentAccessToken().getUserId(),
                 new com.jiggie.android.listener.OnResponseListener() {
                     @Override
@@ -620,7 +615,7 @@ public class SignInFragment extends Fragment
                         /*socialView.hideErrorLayout();
                         MemberSettingResultModel result = (MemberSettingResultModel) object;
                         socialView.updateUI(result);*/
-                        if(progressDialog != null && progressDialog.isShowing())
+                        if (progressDialog != null && progressDialog.isShowing())
                             progressDialog.dismiss();
 
                         MemberSettingResultModel result = (MemberSettingResultModel) object;
@@ -655,7 +650,7 @@ public class SignInFragment extends Fragment
                             // for ActivityCompat#requestPermissions for more details.
                             return;
                         }
-                        if(locationManager != null)
+                        if (locationManager != null)
                             locationManager.removeUpdates(SignInFragment.this);
                     }
 
@@ -674,9 +669,9 @@ public class SignInFragment extends Fragment
                             // for ActivityCompat#requestPermissions for more details.
                             return;
                         }
-                        if(locationManager != null)
+                        if (locationManager != null)
                             locationManager.removeUpdates(SignInFragment.this);
-                        if(progressDialog != null && progressDialog.isShowing())
+                        if (progressDialog != null && progressDialog.isShowing())
                             progressDialog.dismiss();
                     }
                 }
@@ -744,13 +739,17 @@ public class SignInFragment extends Fragment
     }
 
     private void checkLocation() {
+        Utils.d(TAG, "check location");
         if (mGoogleApiClient == null) {
+            Utils.d(TAG, "before connect");
             mGoogleApiClient = new GoogleApiClient.Builder(this.getActivity())
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
                     .build();
+            Utils.d(TAG, "before connect 2");
             mGoogleApiClient.connect();
+            Utils.d(TAG, "before connect 3" );
         }
     }
 
@@ -758,36 +757,28 @@ public class SignInFragment extends Fragment
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        Utils.d(TAG, "on connect");
         Location mLastLocation = null;
 
         locationManager = (LocationManager) this.getActivity()
                 .getSystemService(getActivity().LOCATION_SERVICE);
         if (locationManager != null) {
             try {
-                mLastLocation = locationManager
-                        .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+               /* mLastLocation = locationManager
+                        .getLastKnownLocation(LocationManager.GPS_PROVIDER);*/
+                locationManager.requestLocationUpdates(
+                        LocationManager.NETWORK_PROVIDER, 10 * 1000, 0, this);
             } catch (SecurityException e) {
                 Utils.d(getString(R.string.tag_location), e.toString());
             }
 
-            if (mLastLocation != null) {
+            /*if (mLastLocation != null) {
                 SocialManager.lat = String.valueOf(mLastLocation.getLatitude());
                 SocialManager.lng = String.valueOf(mLastLocation.getLongitude());
             } else {
-                /*Utils.d(TAG, "masuk sini");
-                LocationRequest mLocationRequest = new LocationRequest();
-                mLocationRequest.setInterval(10000);
-                mLocationRequest.setFastestInterval(5000);
-                mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);*/
-                //LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-                /*locationManager.requestLocationUpdates(
-                        LocationManager.NETWORK_PROVIDER, 10 * 1000, 0, this);*/
-                askForLocationPermission();
-                /*locationManager.requestLocationUpdates(
-                        LocationManager.GPS_PROVIDER, 2 * 60 * 1000, 10, this);*/
-                /*LocationServices.FusedLocationApi.getLastLocation(
-                    mGoogleApiClient);*/
-            }
+                locationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER, 10 * 1000, 0, this);
+            }*/
         }
 
         if (mLastLocation != null) {
@@ -802,12 +793,14 @@ public class SignInFragment extends Fragment
     final int PERMISSION_REQUEST_LOCATION = 18;
 
     private void askForLocationPermission() {
+        Utils.d(TAG, "ask for location permission");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (ActivityCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED &&
                     ActivityCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
                             != PackageManager.PERMISSION_GRANTED) {
                 // Should we show an explanation?
+                Utils.d(TAG, "ask for location permission android M");
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this.getActivity(),
                         Manifest.permission.ACCESS_COARSE_LOCATION)
                         || ActivityCompat.shouldShowRequestPermissionRationale(this.getActivity(),
@@ -831,17 +824,50 @@ public class SignInFragment extends Fragment
                 } else {
 
                     // No explanation needed, we can request the permission.
-                    ActivityCompat.requestPermissions(this.getActivity(),
+                    Utils.d(TAG, "masuk di sini minta permission brother");
+                    /*ActivityCompat.requestPermissions(this.getActivity(),
                             new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
-                            PERMISSION_REQUEST_LOCATION);
+                            PERMISSION_REQUEST_LOCATION);*/
+                    requestPermissions(
+                            new String[]
+                                    {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}
+                            , PERMISSION_REQUEST_LOCATION);
                 }
             } else {
-                locationManager.requestLocationUpdates(
-                        LocationManager.NETWORK_PROVIDER, 10 * 1000, 0, this);
+                checkLocation();
             }
         } else {
-            locationManager.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER, 10 * 1000, 0, this);
+            checkLocation();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        Utils.d(TAG, "request code " + requestCode);
+        switch (requestCode) {
+            case PERMISSION_REQUEST_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Utils.d(TAG, "masuk sini");
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    /*locationManager.requestLocationUpdates(
+                            LocationManager.GPS_PROVIDER, 10 * 1000, 0, this);*/
+                    checkLocation();
+
+                } else {
+                    Utils.d(TAG, "masuk sana");
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    beforeOperator();
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
         }
     }
 
@@ -878,12 +904,14 @@ public class SignInFragment extends Fragment
 
     @Override
     public void onConnectionSuspended(int i) {
+        Utils.d(TAG, "on connection suspended");
         //doOperator();
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        doOperator();
+        Utils.d(TAG, "on connection failed");
+        //doOperator();
     }
 
     @Override
@@ -902,6 +930,7 @@ public class SignInFragment extends Fragment
         }
         locationManager.removeUpdates(this);
         //sendToServer(location);
+        Utils.d(TAG, "on location changed");
         beforeOperator();
     }
 
