@@ -5,6 +5,7 @@ import com.jiggie.android.model.ChatAddModel;
 import com.jiggie.android.model.ChatConversationModel;
 import com.jiggie.android.model.ChatListModel;
 import com.jiggie.android.model.Success2Model;
+import com.jiggie.android.model.SuccessGroupRoomModel;
 
 import java.util.HashMap;
 
@@ -37,7 +38,7 @@ public interface ChatInterface {
     Call<Success2Model> addChat(@Url String url, @Body ChatAddModel chatAddModel);
 
     @POST
-    Call<Success2Model> groupChat(@Url String url, @Body HashMap<String, Object> groupModel);
+    Call<SuccessGroupRoomModel> groupChat(@Url String url, @Body HashMap<String, Object> groupModel);
 
     @GET(Utils.URL_CHAT_FIREBASE)
     Call<Success2Model> migrateChatFirebase(@Path("fb_id") String fb_id);

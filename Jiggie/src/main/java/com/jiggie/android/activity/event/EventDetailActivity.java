@@ -73,6 +73,7 @@ import com.jiggie.android.model.EventDetailModel;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.GuestModel;
 import com.jiggie.android.model.ShareLinkModel;
+import com.jiggie.android.model.SuccessGroupRoomModel;
 import com.jiggie.android.model.likeModel;
 import com.viewpagerindicator.CirclePageIndicator;
 
@@ -938,9 +939,10 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             ChatManager.loaderGroupChat(result, new OnResponseListener() {
                 @Override
                 public void onSuccess(Object object) {
+                    SuccessGroupRoomModel successGroupRoomModel = (SuccessGroupRoomModel)object;
                     isLoadingChat = false;
                     Intent i = new Intent(EventDetailActivity.this, FirebaseChatActivity.class);
-                    i.putExtra(Utils.ROOM_ID, event_id);
+                    i.putExtra(Utils.ROOM_ID, successGroupRoomModel.getData().getGroup().getRoom_id());
                     i.putExtra(Utils.ROOM_TYPE, Long.parseLong(String.valueOf(FirebaseChatManager.TYPE_GROUP)));
                     i.putExtra(Utils.ROOM_EVENT, event_name);
                     startActivity(i);

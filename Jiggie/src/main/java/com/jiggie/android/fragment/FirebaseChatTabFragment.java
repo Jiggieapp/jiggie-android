@@ -40,6 +40,7 @@ import com.jiggie.android.manager.ChatManager;
 import com.jiggie.android.manager.FirebaseChatManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.ExceptionModel;
+import com.jiggie.android.model.FLRefreshModel;
 import com.jiggie.android.model.RoomModel;
 import com.jiggie.android.model.UserModel;
 
@@ -51,6 +52,7 @@ import java.util.HashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by LTE on 6/19/2016.
@@ -205,8 +207,6 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
 
         if(!EventBus.getDefault().isRegistered(this))
             registerEventBus();*/
-
-
     }
 
     @Override
@@ -677,6 +677,7 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
             @Override
             public void onSuccess(Object object) {
                 //do nothing
+                EventBus.getDefault().post(new FLRefreshModel(true));
             }
 
             @Override
@@ -686,4 +687,10 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
         });
 
     }
+
+    /*@Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }*/
 }

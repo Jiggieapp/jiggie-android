@@ -62,7 +62,7 @@ public class FriendsFragment extends Fragment implements TabFragment, HomeMain, 
         //pageAdapter = new PageAdapter(this, getActivity().getSupportFragmentManager());
         pageAdapter = new PageAdapter(this, super.getActivity().getSupportFragmentManager());
         viewPager.setAdapter(pageAdapter);
-        viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
+        /*viewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener(){
             @Override
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
@@ -71,7 +71,7 @@ public class FriendsFragment extends Fragment implements TabFragment, HomeMain, 
                     ((FriendListFragment) a).onTabSelected();
                 }
             }
-        });
+        });*/
         tab.setupWithViewPager(viewPager);
     }
 
