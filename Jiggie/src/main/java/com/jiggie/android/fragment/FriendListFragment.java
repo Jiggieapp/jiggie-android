@@ -24,6 +24,7 @@ import com.jiggie.android.manager.FirebaseChatManager;
 import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.model.ChatListModel;
 import com.jiggie.android.model.Conversation;
+import com.jiggie.android.model.FLRefreshModel;
 import com.jiggie.android.model.FriendListModel;
 import com.jiggie.android.model.PostFriendModel;
 
@@ -60,13 +61,13 @@ public class FriendListFragment extends ChatTabFragment implements FriendsFragme
         getInstance().onFriendClickListener = onFriendClickListener;
     }
 
-    @Override
+    /*@Override
     public void onTabSelected() {
         super.onTabSelected();
         if(FirebaseChatManager.isNeedRefreshFriend){
             onRefresh();
         }
-    }
+    }*/
 
     @Nullable
     @Override
@@ -78,6 +79,8 @@ public class FriendListFragment extends ChatTabFragment implements FriendsFragme
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        if(!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
     }
 
     @Override
@@ -244,9 +247,18 @@ public class FriendListFragment extends ChatTabFragment implements FriendsFragme
         }
     }
 
-
     public interface OnFriendClickListener
     {
         void doRedirect(FriendListModel.Data.List_social_friends listSocialFriends);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    public void onEvent(FLRefreshModel message) {
+        onRefresh();
     }
 }
