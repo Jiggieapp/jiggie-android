@@ -62,7 +62,7 @@ public class Utils {
     public static final String FROM_COMPLETING_WALKTHROUGH_LOCATION = "complete_walkthrough_location";
     public static final String FROM_APPSFLYER = "appsflyer";
     public static final String FROM_MIXPANEL = "mixpanel";
-    public static final String HAS_LOAD_GROUP_INFO = "has_load_group_info";
+    public static final String HAS_LOAD_GUEST_INFO = "has_load_group_info";
 
     public static boolean SHOW_WALKTHROUGH_EVENT = true;
     public static boolean SHOW_WALKTHROUGH_SOCIAL = true;

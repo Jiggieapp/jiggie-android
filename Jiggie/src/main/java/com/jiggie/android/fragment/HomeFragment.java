@@ -439,7 +439,6 @@ public class HomeFragment extends Fragment
         }
         //this.progressDialog.setVisibility(View.GONE);
         //this.failedView.setVisibility(View.VISIBLE);
-
         hideProgressDialog();
     }
 
@@ -1183,9 +1182,7 @@ public class HomeFragment extends Fragment
 
     void onEvent(final ArrayList<CityModel.Data.Citylist> cityLists)
     {
-        Utils.d(TAG, "area event "
-                + AccountManager.loadMemberSetting().getArea_event() + " "
-                + AccountManager.loadSetting().getData().getAreaEvent());
+
         SettingModel settingModel = AccountManager.loadSetting();
         settingModel.getData().getCityList().clear();
         AccountManager.saveSetting(settingModel);
@@ -1197,10 +1194,11 @@ public class HomeFragment extends Fragment
     public void onFinishGetCities(final ArrayList<CityModel.Data.Citylist> cityLists) {
         //final ArrayList<CityModel.Data.Citylist> cityLists = cityModel.data.citylist;
         hideProgressDialog();
+
         final String currentAreaEvent = AccountManager.loadMemberSetting().getArea_event();
         int citySize = cityLists.size();
+        Toast.makeText(this.getActivity(), "Lorem ipsum " + citySize, Toast.LENGTH_LONG).show();
         for (int i = 0; i < citySize; i++) {
-            Utils.d(TAG, currentAreaEvent + " cityy " + cityLists.get(i).getCity());
             if (currentAreaEvent != null && currentAreaEvent.equalsIgnoreCase(cityLists.get(i).getCity())) {
                 txtPlace.setText(cityLists.get(i).getInitial());
                 getPopupMenu().getMenu().add(0, i, i, "\u2713\u0009 " + cityLists.get(i).getCity());
@@ -1210,7 +1208,7 @@ public class HomeFragment extends Fragment
             }
         }
         if (citySize > 1) {
-            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            getPopupMenu().setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     final int position = item.getOrder();
@@ -1224,12 +1222,12 @@ public class HomeFragment extends Fragment
                             txtPlace.setText(cityLists.get(position).getInitial());
 
                             if (lastSelected > -1) {
-                                popup.getMenu().removeItem(lastSelected);
-                                popup.getMenu().add(0, lastSelected, lastSelected, " " + cityLists.get(lastSelected).getCity());
+                                getPopupMenu().getMenu().removeItem(lastSelected);
+                                getPopupMenu().getMenu().add(0, lastSelected, lastSelected, " " + cityLists.get(lastSelected).getCity());
                             }
                             lastSelected = position;
-                            popup.getMenu().removeItem(position);
-                            popup.getMenu().add(0, position, position, "\u2713\u0009 " + cityLists.get(position).getCity());
+                            getPopupMenu().getMenu().removeItem(position);
+                            getPopupMenu().getMenu().add(0, position, position, "\u2713\u0009 " + cityLists.get(position).getCity());
                             hideProgressDialog();
                             eventsFragment.onRefresh();
 

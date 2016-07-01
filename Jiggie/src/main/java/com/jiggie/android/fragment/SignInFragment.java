@@ -422,9 +422,10 @@ public class SignInFragment extends Fragment
                 //Added by Aga 11-2-2016
                 loginModel.setDevice_type("2");
                 //------------
-                if (SocialManager.lat != null && SocialManager.lng != null) {
-                    /*SocialManager.lat = "-8.70100";
+                /*  SocialManager.lat = "-8.70100";
                     SocialManager.lng = "115.17049";*/
+                if (SocialManager.lat != null && SocialManager.lng != null) {
+
                     loginModel.setLatitude(SocialManager.lat);
                     loginModel.setLongitude(SocialManager.lng);
                 }
@@ -433,7 +434,7 @@ public class SignInFragment extends Fragment
 
                 String name = loginModel.getUser_first_name() + " " + loginModel.getUser_last_name();
                 AccountManager.loaderLogin(loginModel);
-                App.getInstance().setUserLoggedIn();
+
                 App.getSharedPreferences().edit()
                         .putString(Common.PREF_FACEBOOK_NAME, name)
                         .putString(Common.PREF_FACEBOOK_ID, loginModel.getFb_id())
@@ -514,7 +515,6 @@ public class SignInFragment extends Fragment
                     @Override
                     public void call(TagsListModel tagsListModel) {
                         //Utils.d(TAG, "doOnNext");
-                        //EventManager.saveTagsList(tagsListModel);
                         Utils.d(TAG, "call nol");
                         EventManager.saveTags(tagsListModel.getData().getTagslist());
 
@@ -541,7 +541,6 @@ public class SignInFragment extends Fragment
                 .subscribe(new Action1<TagsListModel>() {
                     @Override
                     public void call(TagsListModel tagsListModel) {
-                        Utils.d(TAG, "call dua");
                         actionDone();
                     }
                 });
@@ -627,9 +626,7 @@ public class SignInFragment extends Fragment
                         tempSettingModel.getData().setAreaEvent(result.getData().getMembersettings().getArea_event());
                         AccountManager.saveSetting(tempSettingModel);
 
-                        Utils.d(TAG, "area event "
-                                + AccountManager.loadMemberSetting().getArea_event() + " "
-                                + AccountManager.loadSetting().getData().getAreaEvent());
+                        App.getInstance().setUserLoggedIn();
                         App.getSharedPreferences().edit().putBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, true).apply();
                         final MainActivity activity = (MainActivity) getActivity();
                         if (activity != null)
@@ -930,6 +927,8 @@ public class SignInFragment extends Fragment
         }
         locationManager.removeUpdates(this);
         //sendToServer(location);
+        SocialManager.lat = location.getLatitude() + "";
+        SocialManager.lng = location.getLongitude() + "";
         Utils.d(TAG, "on location changed");
         beforeOperator();
     }
