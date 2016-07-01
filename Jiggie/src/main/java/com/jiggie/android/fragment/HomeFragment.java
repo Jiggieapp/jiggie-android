@@ -1180,9 +1180,8 @@ public class HomeFragment extends Fragment
 
     int lastSelected = 0;
 
-    void onEvent(final ArrayList<CityModel.Data.Citylist> cityLists)
+    public void onEvent(final ArrayList<CityModel.Data.Citylist> cityLists)
     {
-
         SettingModel settingModel = AccountManager.loadSetting();
         settingModel.getData().getCityList().clear();
         AccountManager.saveSetting(settingModel);
@@ -1197,7 +1196,7 @@ public class HomeFragment extends Fragment
 
         final String currentAreaEvent = AccountManager.loadMemberSetting().getArea_event();
         int citySize = cityLists.size();
-        Toast.makeText(this.getActivity(), "Lorem ipsum " + citySize, Toast.LENGTH_LONG).show();
+        //Toast.makeText(this.getActivity(), "Lorem ipsum " + citySize, Toast.LENGTH_LONG).show();
         for (int i = 0; i < citySize; i++) {
             if (currentAreaEvent != null && currentAreaEvent.equalsIgnoreCase(cityLists.get(i).getCity())) {
                 txtPlace.setText(cityLists.get(i).getInitial());
