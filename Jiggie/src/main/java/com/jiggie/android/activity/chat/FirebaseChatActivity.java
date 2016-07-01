@@ -573,6 +573,7 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
     }
 
     private void blockChatList(String roomId){
+        dialog = App.showProgressDialog(this);
         HashMap<String, Object> blockModel = new HashMap<>();
         blockModel.put("fb_id", FirebaseChatManager.fb_id);
 
