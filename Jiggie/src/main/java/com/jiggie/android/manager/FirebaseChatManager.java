@@ -39,6 +39,8 @@ public class FirebaseChatManager {
     //public static String fb_id = "444555666";
     public static String fb_id = AccessToken.getCurrentAccessToken().getUserId();
     public static String badgeChat = "0";
+    public static long sizeArrUser = 0;
+    public static boolean isNeedRefreshFriend = false;
 
     public static DatabaseReference getFirebaseDatabase(){
         if(mDatabase==null){
@@ -89,6 +91,60 @@ public class FirebaseChatManager {
 
     public static void counterRead(String roomId){
         getFirebaseDatabase().child("rooms").child(roomId).child("info").child("unread").child(fb_id).setValue(0);
+    }
+
+    public static ArrayList<UserModel> getArrUser(){
+        if(arrUser.size()>0){
+            return arrUser;
+        }else{
+            Query queryUsers = FirebaseChatManager.getQueryUsers();
+            ValueEventListener userEvent = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    boolean isDataExist = dataSnapshot.exists();
+                    sizeArrUser = dataSnapshot.getChildrenCount();
+                    if(isDataExist){
+                        for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
+
+                            boolean isData2Exist = messageSnapshot.exists();
+                            boolean isNameExist = messageSnapshot.child("name").exists();
+                            boolean isAvatarExist = messageSnapshot.child("avatar").exists();
+
+                            if(isData2Exist&&isNameExist&&isAvatarExist){
+                                String key = (String) messageSnapshot.getKey();
+                                //String fb_id = String.valueOf(messageSnapshot.child("fb_id").getValue());
+                                String name = (String) messageSnapshot.child("name").getValue();
+                                String avatar = (String) messageSnapshot.child("avatar").getValue();
+
+                                UserModel userModel = new UserModel(key, key, name, avatar);
+                                FirebaseChatManager.arrUser.add(userModel);
+                            }else{
+                                //do nothing
+                            }
+
+                        }
+
+                    /*String sd = String.valueOf(new Gson().toJson(FirebaseChatManager.arrUser));
+                    Log.d("sd","sd");*/
+                    }else{
+                        //do nothing
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            };
+            queryUsers.addValueEventListener(userEvent);
+
+            if(arrUser.size()==sizeArrUser){
+                return arrUser;
+            }else{
+                //do nothing
+            }
+            return arrUser;
+        }
     }
 
     public static void sendMessage(MessagesModel messagesModel, String roomId, int type, HashMap<String, Object> privateInfo){
