@@ -226,6 +226,7 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
 
 
         }else{
+            dismissProgressBar();
             event = intent.getStringExtra(Utils.ROOM_EVENT);
             type = (int)intent.getLongExtra(Utils.ROOM_TYPE, 1);
             nextInit();
@@ -360,7 +361,15 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
         }
 
         txtMessage.setText(Utils.BLANK);
-        this.recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+
+        try {
+            if(arrMessages.size()>0){
+                this.recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+            }
+        }catch (Exception e){
+            Log.d(TAG, e.toString());
+        }
+
     }
 
     private void getMessages(final String roomId){
@@ -372,58 +381,73 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
                 arrMessages.clear();
 
                 boolean isDataExist = dataSnapshot.exists();
+                long sizeMsg = dataSnapshot.getChildrenCount();
 
                 if(isDataExist){
-                    for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
 
-                        boolean isDatasExist = messageSnapshot.exists();
-                        boolean isIdExist = messageSnapshot.child("fb_id").exists();
-                        boolean isMsgExist = messageSnapshot.child("message").exists();
-                        boolean isCreatedAtExist = messageSnapshot.child("created_at").exists();
+                    if(sizeMsg>0){
+                        for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
 
-                        if(isDatasExist&&isIdExist&&isMsgExist&&isCreatedAtExist){
-                            String messageId = (String) messageSnapshot.getKey();
-                            String fb_id = String.valueOf(messageSnapshot.child("fb_id").getValue());
-                            String message = String.valueOf(messageSnapshot.child("message").getValue());
-                            long created_at = (long)messageSnapshot.child("created_at").getValue();
+                            boolean isDatasExist = messageSnapshot.exists();
+                            boolean isIdExist = messageSnapshot.child("fb_id").exists();
+                            boolean isMsgExist = messageSnapshot.child("message").exists();
+                            boolean isCreatedAtExist = messageSnapshot.child("created_at").exists();
 
-                            String name = Utils.BLANK, avatar = Utils.BLANK;
-                            for(int i=0;i<arrUser.size();i++){
-                                String fb_idMatch = arrUser.get(i).getFb_id();
-                                if(fb_id.equals(fb_idMatch)){
-                                    name = arrUser.get(i).getName();
-                                    avatar = arrUser.get(i).getAvatar();
-                                }else{
-                                    //do nothing
+                            if(isDatasExist&&isIdExist&&isMsgExist&&isCreatedAtExist){
+                                String messageId = (String) messageSnapshot.getKey();
+                                String fb_id = String.valueOf(messageSnapshot.child("fb_id").getValue());
+                                String message = String.valueOf(messageSnapshot.child("message").getValue());
+                                long created_at = (long)messageSnapshot.child("created_at").getValue();
+
+                                String name = Utils.BLANK, avatar = Utils.BLANK;
+                                for(int i=0;i<arrUser.size();i++){
+                                    String fb_idMatch = arrUser.get(i).getFb_id();
+                                    if(fb_id.equals(fb_idMatch)){
+                                        name = arrUser.get(i).getName();
+                                        avatar = arrUser.get(i).getAvatar();
+                                    }else{
+                                        //do nothing
+                                    }
                                 }
+
+                                MessagesModel messagesModel = new MessagesModel(messageId, fb_id, name, avatar, message, created_at);
+                                arrMessages.add(messagesModel);
+                            }else{
+                                //do nothing
                             }
 
-                            MessagesModel messagesModel = new MessagesModel(messageId, fb_id, name, avatar, message, created_at);
-                            arrMessages.add(messagesModel);
-                        }else{
-                            //do nothing
                         }
 
-                    }
+                        if(adapter==null){
 
-                    if(adapter==null){
+                            adapter = new FirebaseChatAdapter(FirebaseChatActivity.this, arrMessages, event, type);
+                            recyclerView.setAdapter(adapter);
 
-                        adapter = new FirebaseChatAdapter(FirebaseChatActivity.this, arrMessages, event, type);
-                        recyclerView.setAdapter(adapter);
-
-                        checkActive();
+                            checkActive();
+                        }else{
+                            adapter.notifyDataSetChanged();
+                            checkActive();
+                        }
                     }else{
-                        adapter.notifyDataSetChanged();
+                        recyclerView.setAdapter(null);
                         checkActive();
+                        dismissProgressBar();
                     }
+
+
                 }else{
                     //do nothing
+                    recyclerView.setAdapter(null);
+                    checkActive();
+                    dismissProgressBar();
                 }
 
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+                recyclerView.setAdapter(null);
+                checkActive();
                 dismissProgressBar();
             }
         };
@@ -436,7 +460,17 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
             viewChat.setVisibility(View.VISIBLE);
             dismissProgressBar();
             invalidateOptionsMenu();
-            recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+
+            try {
+                if(arrMessages.size()>0){
+                    recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+                }
+            }catch (Exception e){
+                Log.d(TAG, e.toString());
+            }
+
+
+
             //setResult(RESULT_OK, new Intent().putExtra(Conversation.FIELD_FACEBOOK_ID, toId));
         }
     }
