@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -36,9 +37,11 @@ import com.jiggie.android.component.adapter.FirebaseChatAdapter;
 import com.jiggie.android.manager.ChatManager;
 import com.jiggie.android.manager.FirebaseChatManager;
 import com.jiggie.android.model.Common;
+import com.jiggie.android.model.Conversation;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.MessagesModel;
 import com.jiggie.android.model.RoomModel;
+import com.jiggie.android.model.UserModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -78,6 +81,7 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
     boolean loaded = false, fromNotif = false;
     public static final int RESULT_BLOCKED = 10001;
     ProgressDialog dialog;
+    ArrayList<UserModel> arrUser = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +91,13 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
         App.runningActivity = this;
 
         final Intent intent = super.getIntent();
+
+        try {
+            arrUser = FirebaseChatManager.getArrUser();
+        }catch (Exception e){
+            Log.d(TAG, e.toString());
+        }
+
         init(intent);
 
     }
@@ -144,11 +155,11 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
                             }
 
 
-                            for(int i=0;i<FirebaseChatManager.arrUser.size();i++){
-                                String idUser = FirebaseChatManager.arrUser.get(i).getFb_id();
+                            for(int i=0;i<arrUser.size();i++){
+                                String idUser = arrUser.get(i).getFb_id();
                                 if(idFriend.equals(idUser)){
-                                    name = FirebaseChatManager.arrUser.get(i).getName();
-                                    avatar = FirebaseChatManager.arrUser.get(i).getAvatar();
+                                    name = arrUser.get(i).getName();
+                                    avatar = arrUser.get(i).getAvatar();
 
                                     toName = name;
                                     toId = idFriend;
@@ -212,7 +223,10 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
                     dismissProgressBar();
                 }
             });
+
+
         }else{
+            dismissProgressBar();
             event = intent.getStringExtra(Utils.ROOM_EVENT);
             type = (int)intent.getLongExtra(Utils.ROOM_TYPE, 1);
             nextInit();
@@ -247,15 +261,24 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
             }
 
 
-            for(int i=0;i<FirebaseChatManager.arrUser.size();i++){
-                String idUser = FirebaseChatManager.arrUser.get(i).getFb_id();
+            for(int i=0;i<arrUser.size();i++){
+                String idUser = arrUser.get(i).getFb_id();
                 if(idFriend.equals(idUser)){
-                    toName = FirebaseChatManager.arrUser.get(i).getName();
-                    toId = FirebaseChatManager.arrUser.get(i).getFb_id();
+                    toName = arrUser.get(i).getName();
+                    toId = arrUser.get(i).getFb_id();
                     break;
                 }else{
                     //do nothing
                 }
+            }
+
+            try {
+                if(fromNotif&&type==FirebaseChatManager.TYPE_PRIVATE){
+                    toId = getIntent().getStringExtra(Conversation.FIELD_FACEBOOK_ID);
+                    toName = getIntent().getStringExtra(Conversation.FIELD_FROM_NAME);
+                }
+            }catch (Exception e){
+                Log.d(TAG, e.toString());
             }
 
             App.getInstance().setIdChatActive(toId);
@@ -293,11 +316,11 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
     @SuppressWarnings("unused")
     void btnSendOnClick() {
         String name = Utils.BLANK, avatar = Utils.BLANK;
-        for(int i=0;i<FirebaseChatManager.arrUser.size();i++){
-            String fb_idMatch = FirebaseChatManager.arrUser.get(i).getFb_id();
+        for(int i=0;i<arrUser.size();i++){
+            String fb_idMatch = arrUser.get(i).getFb_id();
             if(FirebaseChatManager.fb_id.equals(fb_idMatch)){
-                name = FirebaseChatManager.arrUser.get(i).getName();
-                avatar = FirebaseChatManager.arrUser.get(i).getAvatar();
+                name = arrUser.get(i).getName();
+                avatar = arrUser.get(i).getAvatar();
             }else{
                 //do nothing
             }
@@ -338,7 +361,15 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
         }
 
         txtMessage.setText(Utils.BLANK);
-        this.recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+
+        try {
+            if(arrMessages.size()>0){
+                this.recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+            }
+        }catch (Exception e){
+            Log.d(TAG, e.toString());
+        }
+
     }
 
     private void getMessages(final String roomId){
@@ -348,41 +379,75 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 arrMessages.clear();
-                for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
-                    String messageId = (String) messageSnapshot.getKey();
-                    String fb_id = String.valueOf(messageSnapshot.child("fb_id").getValue());
-                    String message = String.valueOf(messageSnapshot.child("message").getValue());
-                    long created_at = (long)messageSnapshot.child("created_at").getValue();
 
-                    String name = Utils.BLANK, avatar = Utils.BLANK;
-                    for(int i=0;i<FirebaseChatManager.arrUser.size();i++){
-                        String fb_idMatch = FirebaseChatManager.arrUser.get(i).getFb_id();
-                        if(fb_id.equals(fb_idMatch)){
-                            name = FirebaseChatManager.arrUser.get(i).getName();
-                            avatar = FirebaseChatManager.arrUser.get(i).getAvatar();
-                        }else{
-                            //do nothing
+                boolean isDataExist = dataSnapshot.exists();
+                long sizeMsg = dataSnapshot.getChildrenCount();
+
+                if(isDataExist){
+
+                    if(sizeMsg>0){
+                        for (DataSnapshot messageSnapshot: dataSnapshot.getChildren()) {
+
+                            boolean isDatasExist = messageSnapshot.exists();
+                            boolean isIdExist = messageSnapshot.child("fb_id").exists();
+                            boolean isMsgExist = messageSnapshot.child("message").exists();
+                            boolean isCreatedAtExist = messageSnapshot.child("created_at").exists();
+
+                            if(isDatasExist&&isIdExist&&isMsgExist&&isCreatedAtExist){
+                                String messageId = (String) messageSnapshot.getKey();
+                                String fb_id = String.valueOf(messageSnapshot.child("fb_id").getValue());
+                                String message = String.valueOf(messageSnapshot.child("message").getValue());
+                                long created_at = (long)messageSnapshot.child("created_at").getValue();
+
+                                String name = Utils.BLANK, avatar = Utils.BLANK;
+                                for(int i=0;i<arrUser.size();i++){
+                                    String fb_idMatch = arrUser.get(i).getFb_id();
+                                    if(fb_id.equals(fb_idMatch)){
+                                        name = arrUser.get(i).getName();
+                                        avatar = arrUser.get(i).getAvatar();
+                                    }else{
+                                        //do nothing
+                                    }
+                                }
+
+                                MessagesModel messagesModel = new MessagesModel(messageId, fb_id, name, avatar, message, created_at);
+                                arrMessages.add(messagesModel);
+                            }else{
+                                //do nothing
+                            }
+
                         }
+
+                        if(adapter==null){
+
+                            adapter = new FirebaseChatAdapter(FirebaseChatActivity.this, arrMessages, event, type);
+                            recyclerView.setAdapter(adapter);
+
+                            checkActive();
+                        }else{
+                            adapter.notifyDataSetChanged();
+                            checkActive();
+                        }
+                    }else{
+                        recyclerView.setAdapter(null);
+                        checkActive();
+                        dismissProgressBar();
                     }
 
-                    MessagesModel messagesModel = new MessagesModel(messageId, fb_id, name, avatar, message, created_at);
-                    arrMessages.add(messagesModel);
-                }
 
-                if(adapter==null){
-
-                    adapter = new FirebaseChatAdapter(FirebaseChatActivity.this, arrMessages, event, type);
-                    recyclerView.setAdapter(adapter);
-
-                    checkActive();
                 }else{
-                    adapter.notifyDataSetChanged();
+                    //do nothing
+                    recyclerView.setAdapter(null);
                     checkActive();
+                    dismissProgressBar();
                 }
+
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+                recyclerView.setAdapter(null);
+                checkActive();
                 dismissProgressBar();
             }
         };
@@ -395,7 +460,17 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
             viewChat.setVisibility(View.VISIBLE);
             dismissProgressBar();
             invalidateOptionsMenu();
-            recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+
+            try {
+                if(arrMessages.size()>0){
+                    recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+                }
+            }catch (Exception e){
+                Log.d(TAG, e.toString());
+            }
+
+
+
             //setResult(RESULT_OK, new Intent().putExtra(Conversation.FIELD_FACEBOOK_ID, toId));
         }
     }
@@ -442,8 +517,10 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                FirebaseChatManager.blockChatList(roomId, FirebaseChatManager.fb_id);
-                                blockUser();
+                                //FirebaseChatManager.blockChatList(roomId, FirebaseChatManager.fb_id);
+                                //blockUser();
+                                blockChatList(roomId);
+                                //onBackPressed();
                             }
                         }).show();
             }
@@ -466,8 +543,9 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                FirebaseChatManager.blockChatList(roomId, FirebaseChatManager.fb_id);
-                                onBackPressed();
+                                //FirebaseChatManager.blockChatList(roomId, FirebaseChatManager.fb_id);
+                                blockChatList(roomId);
+                                //onBackPressed();
                             }
                         }).show();
             }
@@ -526,5 +604,39 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
     protected void onStop() {
         super.onStop();
         App.getInstance().setIdChatActive(Utils.BLANK);
+    }
+
+    private void blockChatList(String roomId){
+        dialog = App.showProgressDialog(this);
+        HashMap<String, Object> blockModel = new HashMap<>();
+        blockModel.put("fb_id", FirebaseChatManager.fb_id);
+
+        if(type==FirebaseChatManager.TYPE_PRIVATE){
+            blockModel.put("member_fb_id", toId);
+        }else{
+            blockModel.put("member_fb_id", Utils.BLANK);
+        }
+
+        blockModel.put("type", String.valueOf(type));
+        blockModel.put("room_id", roomId);
+
+        ChatManager.loaderBlockChatFirebase(blockModel, new OnResponseListener() {
+            @Override
+            public void onSuccess(Object object) {
+                if(dialog!=null&&dialog.isShowing()){
+                    dialog.dismiss();
+                }
+                App.getInstance().trackMixPanelEvent("Block User");
+
+                setResult(RESULT_BLOCKED, new Intent());
+                onBackPressed();
+            }
+
+            @Override
+            public void onFailure(ExceptionModel exceptionModel) {
+                Toast.makeText(FirebaseChatActivity.this, getString(R.string.block_failed), Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 }

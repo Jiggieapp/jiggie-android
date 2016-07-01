@@ -60,7 +60,13 @@ public class FriendListFragment extends ChatTabFragment implements FriendsFragme
         getInstance().onFriendClickListener = onFriendClickListener;
     }
 
-
+    @Override
+    public void onTabSelected() {
+        super.onTabSelected();
+        if(FirebaseChatManager.isNeedRefreshFriend){
+            onRefresh();
+        }
+    }
 
     @Nullable
     @Override
@@ -128,6 +134,7 @@ public class FriendListFragment extends ChatTabFragment implements FriendsFragme
 
     @Override
     public void onRefresh() {
+        FirebaseChatManager.isNeedRefreshFriend = false;
         fetchChat();
     }
 
