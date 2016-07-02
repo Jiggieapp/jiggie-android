@@ -816,7 +816,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                         String a = FirebaseChatManager.fb_id;
                         String b = userId;
 
-                        if (a.length() < b.length()) {
+                        /*if (a.length() < b.length()) {
                             roomId = a + "_" + b;
                         } else if (a.length() > b.length()) {
                             roomId = b + "_" + a;
@@ -836,7 +836,22 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
 
                             //String roomId = d.get(0)+"_"+d.get(1);
                             roomId = sb.toString();
-                        }
+                        }*/
+
+                        ArrayList<String> d = new ArrayList<>();
+                        d.add(a);
+                        d.add(b);
+                        Collections.sort(d, new Comparator<String>() {
+                            @Override
+                            public int compare(String lhs, String rhs) {
+                                return lhs.compareToIgnoreCase(rhs);
+                            }
+                        });
+
+                        StringBuilder sb = new StringBuilder();
+                        sb.append(d.get(0)).append("_").append(d.get(1));
+
+                        roomId = sb.toString();
 
                         final Intent intent = new Intent(getActivity(), FirebaseChatActivity.class);
                         intent.putExtra(Utils.ROOM_ID, roomId);
@@ -881,7 +896,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                         String a = FirebaseChatManager.fb_id;
                         String b = userId;
 
-                        if (a.length() < b.length()) {
+                        /*if (a.length() < b.length()) {
                             roomId = a + "_" + b;
                         } else if (a.length() > b.length()) {
                             roomId = b + "_" + a;
@@ -901,7 +916,23 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
 
                             //String roomId = d.get(0)+"_"+d.get(1);
                             roomId = sb.toString();
-                        }
+                        }*/
+
+                        ArrayList<String> d = new ArrayList<>();
+                        d.add(a);
+                        d.add(b);
+                        Collections.sort(d, new Comparator<String>() {
+                            @Override
+                            public int compare(String lhs, String rhs) {
+                                return lhs.compareToIgnoreCase(rhs);
+                            }
+                        });
+
+                        StringBuilder sb = new StringBuilder();
+                        sb.append(d.get(0)).append("_").append(d.get(1));
+
+                        //String roomId = d.get(0)+"_"+d.get(1);
+                        roomId = sb.toString();
 
                         final Intent intent = new Intent(getActivity(), FirebaseChatActivity.class);
                         intent.putExtra(Utils.ROOM_ID, roomId);
@@ -991,7 +1022,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                     String a = FirebaseChatManager.fb_id;
                     String b = socialMatch.getFrom_fb_id();
 
-                    if (a.length() < b.length()) {
+                    /*if (a.length() < b.length()) {
                         roomId = a + "_" + b;
                     } else if (a.length() > b.length()) {
                         roomId = b + "_" + a;
@@ -1011,7 +1042,23 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
 
                         //String roomId = d.get(0)+"_"+d.get(1);
                         roomId = sb.toString();
-                    }
+                    }*/
+
+                    ArrayList<String> d = new ArrayList<>();
+                    d.add(a);
+                    d.add(b);
+                    Collections.sort(d, new Comparator<String>() {
+                        @Override
+                        public int compare(String lhs, String rhs) {
+                            return lhs.compareToIgnoreCase(rhs);
+                        }
+                    });
+
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(d.get(0)).append("_").append(d.get(1));
+
+                    //String roomId = d.get(0)+"_"+d.get(1);
+                    roomId = sb.toString();
 
                     final Intent intent = new Intent(getActivity(), FirebaseChatActivity.class);
                     intent.putExtra(Utils.ROOM_ID, roomId);
