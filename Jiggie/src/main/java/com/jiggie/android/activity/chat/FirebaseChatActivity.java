@@ -90,6 +90,7 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_chat);
+        super.bindView();
 
         App.runningActivity = this;
 
@@ -257,7 +258,7 @@ public class FirebaseChatActivity extends ToolbarActivity implements ViewTreeObs
     }
 
     private void nextInit(){
-        super.bindView();
+
 
         if(type==FirebaseChatManager.TYPE_GROUP){
             super.setToolbarTitle(event, true);
