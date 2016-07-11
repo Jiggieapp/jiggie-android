@@ -10,6 +10,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
@@ -221,7 +222,16 @@ public class ProductListActivity extends ToolbarActivity
                 i.putExtra(Common.FIELD_TRANS_TYPE, itemData.getTicket_type());
                 //Utils.d(TAG, "detailPurchase  brother " + itemData.getSummary());
                 i.putExtra(itemData.getClass().getName(), itemData);
-                i.putExtra(Common.IS_LOKET, itemData.getSource().getName().equalsIgnoreCase("loket") ? true : false);
+
+                boolean sources;
+                try {
+                    sources = itemData.getSource().getName().equalsIgnoreCase("loket") ? true : false;
+                }catch (Exception e){
+                    Log.d(TAG, e.toString());
+                    sources = false;
+                }
+                i.putExtra(Common.IS_LOKET, sources);
+
             } else {
                 i = new Intent(ProductListActivity.this, ReservationActivity.class);
                 ProductListModel.Data.ProductList.Reservation itemData = (ProductListModel.Data.ProductList.Reservation) object;
@@ -234,7 +244,15 @@ public class ProductListActivity extends ToolbarActivity
             ProductListModel.Data.ProductList.Purchase itemData = (ProductListModel.Data.ProductList.Purchase) object;
             i.putExtra(Common.FIELD_TRANS_TYPE, itemData.getTicket_type());
             i.putExtra(itemData.getClass().getName(), itemData);
-            i.putExtra(Common.IS_LOKET, itemData.getSource().getName().equalsIgnoreCase("loket") ? true : false);
+            
+            boolean sources;
+            try {
+                sources = itemData.getSource().getName().equalsIgnoreCase("loket") ? true : false;
+            }catch (Exception e){
+                Log.d(TAG, e.toString());
+                sources = false;
+            }
+            i.putExtra(Common.IS_LOKET, sources);
         }
         i.putExtra(Common.FIELD_EVENT_ID, eventId);
         i.putExtra(Common.FIELD_EVENT_NAME, eventName);
