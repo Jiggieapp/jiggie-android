@@ -194,7 +194,11 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
 
         refreshLayout.setRefreshing(false);
         this.isLoading = false;
-        getEmptyView().setVisibility(View.GONE);
+        try{
+            getEmptyView().setVisibility(View.GONE);
+        }catch (Exception e){
+            Log.d(TAG, e.toString());
+        }
         recyclerView.setVisibility(View.VISIBLE);
         contentView2.setVisibility(View.GONE);
 

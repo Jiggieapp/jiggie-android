@@ -237,12 +237,14 @@ public class HomeFragment extends Fragment
 
             }
         });
+        behavior.setPeekHeight(Utils.myPixel(getActivity(), 0));
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isFirstClick) {
                     isFirstClick = false;
-                    behavior.setPeekHeight(Utils.myPixel(getActivity(), 156));
+                    //behavior.setPeekHeight(Utils.myPixel(getActivity(), 156));
+                    behavior.setPeekHeight(Utils.myPixel(getActivity(), 162));
                 }
 
                 if (isAlreadyExpand) {
