@@ -295,7 +295,11 @@ public class ProductListActivity extends ToolbarActivity
         CommerceManager.loaderProductList(eventId, new CommerceManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
-                if(swipeRefresh.getContext() == null) return;
+                if(swipeRefresh!=null){
+                    if(swipeRefresh.getContext() == null){
+                        return;
+                    }
+                }
                 ProductListModel data = (ProductListModel) object;
 
                 if (data != null) {

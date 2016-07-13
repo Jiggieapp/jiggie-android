@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -117,12 +118,19 @@ public class FriendListFragment extends ChatTabFragment implements FriendsFragme
 
         if(friendListModel != null)
         {
-            for(FriendListModel.Data.List_social_friends list_social_friends : friendListModel.getData().getList_social_friends())
-            {
-                //list_social_friends.setIs_connect("false");
-                adapterrr.add(list_social_friends);
+            try {
+                if(friendListModel.getData().getList_social_friends()!=null){
+                    for(FriendListModel.Data.List_social_friends list_social_friends : friendListModel.getData().getList_social_friends())
+                    {
+                        //list_social_friends.setIs_connect("false");
+                        adapterrr.add(list_social_friends);
+                    }
+                    adapterrr.notifyDataSetChanged();
+                }
+            }catch (Exception e){
+                Log.d(TAG, e.toString());
             }
-            adapterrr.notifyDataSetChanged();
+
         }
         if(refreshLayout.isRefreshing())
             refreshLayout.setRefreshing(false);
