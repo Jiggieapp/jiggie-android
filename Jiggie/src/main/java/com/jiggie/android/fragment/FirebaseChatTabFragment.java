@@ -194,7 +194,11 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
 
         refreshLayout.setRefreshing(false);
         this.isLoading = false;
-        getEmptyView().setVisibility(View.GONE);
+        try{
+            getEmptyView().setVisibility(View.GONE);
+        }catch (Exception e){
+            Log.d(TAG, e.toString());
+        }
         recyclerView.setVisibility(View.VISIBLE);
         contentView2.setVisibility(View.GONE);
 
@@ -277,6 +281,10 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
     }
 
     private View getEmptyView() {
+        this.emptyView = null;
+        if(contentView2.getChildCount()>0){
+            contentView2.removeAllViews();
+        }
         if (this.emptyView == null) {
             //Added by Aga
             contentView2.setVisibility(View.VISIBLE);
@@ -379,20 +387,22 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
 
                         }
 
-                        sizeRoom = FirebaseChatManager.arrAllRoomMembers.size();
 
-                        if(sizeRoom==0){
-                            refreshLayout.setRefreshing(false);
-                            isLoading = false;
-                            getEmptyView().setVisibility(View.VISIBLE);
-                            recyclerView.setVisibility(View.GONE);
-                            contentView2.setVisibility(View.VISIBLE);
-                        }
 
                         /*Log.d("sd",String.valueOf(sizeRoom));
                         String sd = String.valueOf(new Gson().toJson(FirebaseChatManager.arrAllRoom));*/
                     }else {
                         //do nothing
+                    }
+
+                    sizeRoom = FirebaseChatManager.arrAllRoomMembers.size();
+
+                    if(sizeRoom==0){
+                        refreshLayout.setRefreshing(false);
+                        isLoading = false;
+                        getEmptyView().setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
+                        contentView2.setVisibility(View.VISIBLE);
                     }
 
                 }

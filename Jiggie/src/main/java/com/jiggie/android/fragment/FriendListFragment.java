@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -117,12 +118,19 @@ public class FriendListFragment extends ChatTabFragment implements FriendsFragme
 
         if(friendListModel != null)
         {
-            for(FriendListModel.Data.List_social_friends list_social_friends : friendListModel.getData().getList_social_friends())
-            {
-                //list_social_friends.setIs_connect("false");
-                adapterrr.add(list_social_friends);
+            try {
+                if(friendListModel.getData().getList_social_friends()!=null){
+                    for(FriendListModel.Data.List_social_friends list_social_friends : friendListModel.getData().getList_social_friends())
+                    {
+                        //list_social_friends.setIs_connect("false");
+                        adapterrr.add(list_social_friends);
+                    }
+                    adapterrr.notifyDataSetChanged();
+                }
+            }catch (Exception e){
+                Log.d(TAG, e.toString());
             }
-            adapterrr.notifyDataSetChanged();
+
         }
         if(refreshLayout.isRefreshing())
             refreshLayout.setRefreshing(false);
@@ -181,7 +189,7 @@ public class FriendListFragment extends ChatTabFragment implements FriendsFragme
                     String a = FirebaseChatManager.fb_id;
                     String b = conversation.getFb_id();
 
-                    if(a.length()<b.length()){
+                    /*if(a.length()<b.length()){
                         roomId = a+"_"+b;
                     }else if(a.length()>b.length()){
                         roomId = b+"_"+a;
@@ -201,7 +209,23 @@ public class FriendListFragment extends ChatTabFragment implements FriendsFragme
 
                         //String roomId = d.get(0)+"_"+d.get(1);
                         roomId = sb.toString();
-                    }
+                    }*/
+
+                    ArrayList<String> d = new ArrayList<>();
+                    d.add(a);
+                    d.add(b);
+                    Collections.sort(d, new Comparator<String>() {
+                        @Override
+                        public int compare(String lhs, String rhs) {
+                            return lhs.compareToIgnoreCase(rhs);
+                        }
+                    });
+
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(d.get(0)).append("_").append(d.get(1));
+
+                    //String roomId = d.get(0)+"_"+d.get(1);
+                    roomId = sb.toString();
 
                     final Intent intent = new Intent(getActivity(), FirebaseChatActivity.class);
                     intent.putExtra(Utils.ROOM_ID, roomId);
