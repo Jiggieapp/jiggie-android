@@ -5,6 +5,9 @@ import com.jiggie.android.model.ChatAddModel;
 import com.jiggie.android.model.ChatConversationModel;
 import com.jiggie.android.model.ChatListModel;
 import com.jiggie.android.model.Success2Model;
+import com.jiggie.android.model.SuccessGroupRoomModel;
+
+import java.util.HashMap;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -33,5 +36,23 @@ public interface ChatInterface {
 
     @POST
     Call<Success2Model> addChat(@Url String url, @Body ChatAddModel chatAddModel);
+
+    @POST
+    Call<SuccessGroupRoomModel> groupChat(@Url String url, @Body HashMap<String, Object> groupModel);
+
+    @GET(Utils.URL_CHAT_FIREBASE)
+    Call<Success2Model> migrateChatFirebase(@Path("fb_id") String fb_id);
+
+    @POST
+    Call<Success2Model> groupChatJannes(@Url String url, @Body HashMap<String, Object> groupModel);
+
+    @POST
+    Call<Success2Model> addChatFirebase(@Url String url, @Body HashMap<String, Object> chatModel);
+
+    @POST
+    Call<Success2Model> blockChatFirebase(@Url String url, @Body HashMap<String, Object> blockModel);
+
+    @POST
+    Call<Success2Model> deleteChatFirebase(@Url String url, @Body HashMap<String, Object> deleteModel);
 
 }

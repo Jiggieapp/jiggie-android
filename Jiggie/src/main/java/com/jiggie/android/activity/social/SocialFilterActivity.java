@@ -16,8 +16,10 @@ import com.jiggie.android.R;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.activity.ToolbarActivity;
 import com.jiggie.android.fragment.SocialTabFragment;
+import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.MemberSettingResultModel;
+import com.jiggie.android.model.SettingModel;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -151,9 +153,12 @@ public class SocialFilterActivity extends ToolbarActivity implements SocialView 
         this.memberSettingResultModel = memberSettingResultModel;
         memberSettings
                 = memberSettingResultModel.getData().getMembersettings();
-        MemberSettingResultModel.Data.MemberSettings.Notifications notifications
+        /*MemberSettingResultModel.Data.MemberSettings.Notifications notifications
                 = memberSettings.getNotifications();
-        final boolean isSocialize = notifications.isFeed();
+        final boolean isSocialize = notifications.isFeed();*/
+
+        SettingModel settingModel = AccountManager.loadSetting();
+        final boolean isSocialize = settingModel.isMatchme();
 
         switchSocialize.setChecked(isSocialize);
         setSocializeText(isSocialize);
@@ -194,6 +199,7 @@ public class SocialFilterActivity extends ToolbarActivity implements SocialView 
     public void onSuccess() {
         Toast.makeText(this, getResources().getString(R.string.preferred_experience), Toast.LENGTH_SHORT).show();
         Intent i = new Intent(SocialTabFragment.TAG);
+        Utils.d(TAG, "isChecked " + switchSocialize.isChecked());
         i.putExtra(Utils.IS_ON, switchSocialize.isChecked());
         sendBroadcast(i);
         dismissPleaseWaitDialog();
@@ -203,6 +209,20 @@ public class SocialFilterActivity extends ToolbarActivity implements SocialView 
     @Override
     public void onFailure() {
         dismissPleaseWaitDialog();
+    }
+
+    @Override
+    public void updateSetting() {
+        //memberSettings.getNotifications().setFeed(switchSocialize.isChecked());
+        memberSettings.setFrom_age(Integer.parseInt(sliderAgeDouble.getLeftPinValue()));
+        memberSettings.setTo_age(Integer.parseInt(sliderAgeDouble.getRightPinValue()));
+        //memberSettings.setArea_event("jakarta");
+        memberSettings.setDistance(sliderLocation.getProgress());
+
+        //MemberSettingModel temp = new MemberSettingModel(new MemberSettingResultModel());
+        memberSettingResultModel.getData().setMembersettings(memberSettings);
+        MemberSettingModel temp = new MemberSettingModel(memberSettingResultModel);
+        presenter.updateSetting(temp);
     }
 
     ProgressDialog progressDialog;
@@ -223,16 +243,11 @@ public class SocialFilterActivity extends ToolbarActivity implements SocialView 
     @OnClick(R.id.btnApply)
     public void onBtnApplyClick() {
         showPleaseWaitDialog();
-        memberSettings.getNotifications().setFeed(switchSocialize.isChecked());
-        memberSettings.setFrom_age(Integer.parseInt(sliderAgeDouble.getLeftPinValue()));
-        memberSettings.setTo_age(Integer.parseInt(sliderAgeDouble.getRightPinValue()));
-        memberSettings.setArea_event("jakarta");
-        memberSettings.setDistance(sliderLocation.getProgress());
-
-        //MemberSettingModel temp = new MemberSettingModel(new MemberSettingResultModel());
-        memberSettingResultModel.getData().setMembersettings(memberSettings);
-        MemberSettingModel temp = new MemberSettingModel(memberSettingResultModel);
-        presenter.updateSetting(temp);
+        String matchMe;
+        if(switchSocialize.isChecked())
+            matchMe = "yes";
+        else matchMe = "no";
+        presenter.updateMatchMe(matchMe);
     }
 
     @OnClick(R.id.lbl_male)
@@ -286,4 +301,6 @@ public class SocialFilterActivity extends ToolbarActivity implements SocialView 
 
         sliderAgeDouble.setRangePinsByValue(MIN_AGE, MAX_AGE);
     }
+
+
 }

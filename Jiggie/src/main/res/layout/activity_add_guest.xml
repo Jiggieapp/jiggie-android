@@ -34,12 +34,31 @@
             app:met_primaryColor="@color/skyBlue"
             app:met_textColorHint="@color/common_plus_signin_btn_text_light_disabled"
             app:met_errorColor="@android:color/holo_red_light"
-            android:layout_alignParentTop="true"
             android:textSize="16sp"
             android:layout_marginLeft="@dimen/padding_standard"
             android:layout_marginRight="@dimen/padding_standard"
-            android:layout_marginTop="@dimen/padding_fars"
+            android:layout_below="@+id/edt_id"
             android:singleLine="true"/>
+
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/edt_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/guest_id"
+            app:met_baseColor="@color/textDarkGray"
+            app:met_primaryColor="@color/skyBlue"
+            app:met_textColorHint="@color/common_plus_signin_btn_text_light_disabled"
+            app:met_errorColor="@android:color/holo_red_light"
+            android:textSize="16sp"
+            android:layout_marginTop="@dimen/padding_fars"
+            android:layout_marginLeft="@dimen/padding_standard"
+            android:layout_marginRight="@dimen/padding_standard"
+            android:singleLine="true"
+            android:maxLength="32"
+            android:layout_alignParentTop="true"
+            android:digits="abcdefghijklmnopqrstuvwxyz1234567890 "
+            />
+
 
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/edt_email"

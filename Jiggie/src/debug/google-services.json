@@ -1,0 +1,113 @@
+{
+  "project_info": {
+    "project_number": "540424998611",
+    "firebase_url": "https://jiggie-dev.firebaseio.com",
+    "project_id": "jiggie-dev",
+    "storage_bucket": "jiggie-dev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:540424998611:android:f9153e67fe2443fa",
+        "android_client_info": {
+          "package_name": "com.jiggie.android.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "540424998611-c0cdrpjh3kcs3ikpe0celgl1lh8e5c09.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jiggie.android.debug",
+            "certificate_hash": "C70C650F84DA05151E494AEFEE92DD739DC36ED5"
+          }
+        },
+        {
+          "client_id": "540424998611-e904v96o5csa92emvkk3kca12k4bqaq8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6nMApcGYTNr4NVLgULA1cTwpx0S6DHG4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "540424998611-e904v96o5csa92emvkk3kca12k4bqaq8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "540424998611-hlmjvhnmj91298ripou25h0at0odlhtg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.partyhost.jiggiedev"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:540424998611:android:2920789f3c36f1bb",
+        "android_client_info": {
+          "package_name": "com.jiggie.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "540424998611-70ge9m5vdpn1dh75cplb6cdfmmnm6l6h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jiggie.android",
+            "certificate_hash": "29762280D9AFA581067D2A11298B802545B7F3B2"
+          }
+        },
+        {
+          "client_id": "540424998611-e904v96o5csa92emvkk3kca12k4bqaq8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6nMApcGYTNr4NVLgULA1cTwpx0S6DHG4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "540424998611-e904v96o5csa92emvkk3kca12k4bqaq8.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "540424998611-hlmjvhnmj91298ripou25h0at0odlhtg.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.partyhost.jiggiedev"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

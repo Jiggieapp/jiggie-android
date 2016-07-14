@@ -13,4 +13,6 @@ public interface SocialFilterPresenter {
     void fetchSetting();
 
     void updateSetting(MemberSettingModel memberSettingResultModel);
+
+    void updateMatchMe(String value);
 }

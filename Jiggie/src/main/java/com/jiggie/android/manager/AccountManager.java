@@ -485,6 +485,7 @@ public class AccountManager extends BaseManager {
         /*if(memberSettingModel.getFb_id() == null)
             memberSettingModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
         */
+        Utils.d(TAG, "homefragment " + memberSettingModel.getArea_event());
         String model = new Gson().toJson(memberSettingModel);
         App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
                 .putString(Utils.MEMBER_SETTING_MODEL, model).apply();
@@ -923,5 +924,30 @@ public class AccountManager extends BaseManager {
     private static void getInviteCode(final Callback callback)
     {
         getInstance().getInviteCode(AccessToken.getCurrentAccessToken().getUserId()).enqueue(callback);
+    }
+
+    public static void updateMatchMe(final String isMatchMe, final com.jiggie.android.listener.OnResponseListener onResponseListener)
+    {
+        updateMatchMe(isMatchMe, new CustomCallback() {
+            @Override
+            public void onCustomCallbackResponse(Response response) {
+                onResponseListener.onSuccess(response.body());
+            }
+
+            @Override
+            public void onCustomCallbackFailure(String t) {
+                onResponseListener.onFailure(Utils.CODE_FAILED, t);
+            }
+
+            @Override
+            public void onNeedToRestart() {
+                updateMatchMe(isMatchMe, onResponseListener);
+            }
+        });
+    }
+
+    private static void updateMatchMe(String matchMe, CustomCallback callback)
+    {
+        getInstance().updateMatchMe(AccessToken.getCurrentAccessToken().getUserId(), matchMe).enqueue(callback);
     }
 }

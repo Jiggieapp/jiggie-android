@@ -6,20 +6,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -44,7 +40,6 @@ import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.gcm.GCMRegistrationService;
 import com.jiggie.android.component.service.FacebookImageSyncService;
 import com.jiggie.android.fragment.HomeFragment;
-import com.jiggie.android.fragment.MoreFragment;
 import com.jiggie.android.fragment.SignInFragment;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.CommerceManager;
@@ -132,8 +127,6 @@ public class MainActivity extends AppCompatActivity
             final String str = GoogleApiAvailability.getInstance().getErrorString(code);
             Toast.makeText(this, str, Toast.LENGTH_LONG).show();
         }
-
-
     }
 
     @Override
@@ -190,7 +183,6 @@ public class MainActivity extends AppCompatActivity
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
                     .build();
-
             mGoogleApiClient.connect();
         }
     }
@@ -225,12 +217,10 @@ public class MainActivity extends AppCompatActivity
             SocialManager.lat = String.valueOf(mLastLocation.getLatitude());
             SocialManager.lng = String.valueOf(mLastLocation.getLongitude());
 
-            HomeFragment.sendLocationInfo();
+            HomeFragment.sendLocationInfo(true);
         } else {
             Utils.d(getString(R.string.tag_location), getString(R.string.error_loc_failed));
         }
-
-
         //actionResults();
     }
 
@@ -390,7 +380,6 @@ public class MainActivity extends AppCompatActivity
                         App.getSharedPreferences().edit().putBoolean(Utils.PREFERENCE_GPS, true).commit();
                         showDialog();
                     }
-
                 }
                 //End here
 
@@ -406,9 +395,9 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     //wandy 20-04-2016
                     //sblm navigate to home, pastikan sudah ambil guest info sekali aja
-                    if (!App.getInstance().getSharedPreferences().getBoolean(Utils.HAS_LOAD_GROUP_INFO, false)) {
+                    if (!App.getInstance().getSharedPreferences().getBoolean(Utils.HAS_LOAD_GUEST_INFO, false)) {
                         App.getSharedPreferences().edit().putBoolean
-                                (Utils.HAS_LOAD_GROUP_INFO, true).apply();
+                                (Utils.HAS_LOAD_GUEST_INFO, true).apply();
                         final GuestPresenter guestPresenter = new GuestPresenter();
                         guestPresenter.loadGuestInfo(new GuestPresenter.OnFinishGetGuestInfo() {
                             @Override

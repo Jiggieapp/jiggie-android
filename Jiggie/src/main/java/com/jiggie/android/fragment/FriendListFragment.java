@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,19 +14,25 @@ import android.widget.Toast;
 import com.facebook.AccessToken;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.chat.ChatActivity;
+import com.jiggie.android.activity.chat.FirebaseChatActivity;
 import com.jiggie.android.activity.chat.FriendListPresenterImplementation;
 import com.jiggie.android.activity.chat.FriendsFragmentView;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.ChatTabListAdapter;
 import com.jiggie.android.component.adapter.FriendListAdapter;
 import com.jiggie.android.listener.OnResponseListener;
+import com.jiggie.android.manager.FirebaseChatManager;
 import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.model.ChatListModel;
 import com.jiggie.android.model.Conversation;
+import com.jiggie.android.model.FLRefreshModel;
 import com.jiggie.android.model.FriendListModel;
 import com.jiggie.android.model.PostFriendModel;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 
 import de.greenrobot.event.EventBus;
 
@@ -55,7 +62,13 @@ public class FriendListFragment extends ChatTabFragment implements FriendsFragme
         getInstance().onFriendClickListener = onFriendClickListener;
     }
 
-
+    /*@Override
+    public void onTabSelected() {
+        super.onTabSelected();
+        if(FirebaseChatManager.isNeedRefreshFriend){
+            onRefresh();
+        }
+    }*/
 
     @Nullable
     @Override
@@ -67,6 +80,8 @@ public class FriendListFragment extends ChatTabFragment implements FriendsFragme
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        if(!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
     }
 
     @Override
@@ -103,12 +118,19 @@ public class FriendListFragment extends ChatTabFragment implements FriendsFragme
 
         if(friendListModel != null)
         {
-            for(FriendListModel.Data.List_social_friends list_social_friends : friendListModel.getData().getList_social_friends())
-            {
-                //list_social_friends.setIs_connect("false");
-                adapterrr.add(list_social_friends);
+            try {
+                if(friendListModel.getData().getList_social_friends()!=null){
+                    for(FriendListModel.Data.List_social_friends list_social_friends : friendListModel.getData().getList_social_friends())
+                    {
+                        //list_social_friends.setIs_connect("false");
+                        adapterrr.add(list_social_friends);
+                    }
+                    adapterrr.notifyDataSetChanged();
+                }
+            }catch (Exception e){
+                Log.d(TAG, e.toString());
             }
-            adapterrr.notifyDataSetChanged();
+
         }
         if(refreshLayout.isRefreshing())
             refreshLayout.setRefreshing(false);
@@ -123,6 +145,7 @@ public class FriendListFragment extends ChatTabFragment implements FriendsFragme
 
     @Override
     public void onRefresh() {
+        FirebaseChatManager.isNeedRefreshFriend = false;
         fetchChat();
     }
 
@@ -152,13 +175,64 @@ public class FriendListFragment extends ChatTabFragment implements FriendsFragme
                 @Override
                 public void onSuccess(Object object) {
                     dismissProgressDialog();
-                    final Intent intent = new Intent(getActivity(), ChatActivity.class);
+                    /*final Intent intent = new Intent(getActivity(), ChatActivity.class);
                     intent.putExtra(Conversation.FIELD_PROFILE_IMAGE, conversation.getImg_url());
                     intent.putExtra(Conversation.FIELD_FACEBOOK_ID, conversation.getFb_id());
                     intent.putExtra(Conversation.FIELD_FROM_NAME, conversation.getFirst_name());
                     FriendListFragment.this.startActivityForResult(intent, 0);
-                    conversation.setIs_connect("true");
+                    conversation.setIs_connect("true");*/
                     //adapterrr.notifyDataSetChanged();
+
+                    //Firebase part-----------------------------------
+                    String roomId = Utils.BLANK;
+
+                    String a = FirebaseChatManager.fb_id;
+                    String b = conversation.getFb_id();
+
+                    /*if(a.length()<b.length()){
+                        roomId = a+"_"+b;
+                    }else if(a.length()>b.length()){
+                        roomId = b+"_"+a;
+                    }else{
+                        ArrayList<String> d = new ArrayList<>();
+                        d.add(a);
+                        d.add(b);
+                        Collections.sort(d, new Comparator<String>() {
+                            @Override
+                            public int compare(String lhs, String rhs) {
+                                return lhs.compareToIgnoreCase(rhs);
+                            }
+                        });
+
+                        StringBuilder sb = new StringBuilder();
+                        sb.append(d.get(0)).append("_").append(d.get(1));
+
+                        //String roomId = d.get(0)+"_"+d.get(1);
+                        roomId = sb.toString();
+                    }*/
+
+                    ArrayList<String> d = new ArrayList<>();
+                    d.add(a);
+                    d.add(b);
+                    Collections.sort(d, new Comparator<String>() {
+                        @Override
+                        public int compare(String lhs, String rhs) {
+                            return lhs.compareToIgnoreCase(rhs);
+                        }
+                    });
+
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(d.get(0)).append("_").append(d.get(1));
+
+                    //String roomId = d.get(0)+"_"+d.get(1);
+                    roomId = sb.toString();
+
+                    final Intent intent = new Intent(getActivity(), FirebaseChatActivity.class);
+                    intent.putExtra(Utils.ROOM_ID, roomId);
+                    intent.putExtra(Utils.LOAD_ROOM_DETAIL, true);
+                    FriendListFragment.this.startActivityForResult(intent, 0);
+                    //End of Firebase part-----------------------------------
+
                 }
 
                 @Override
@@ -192,11 +266,23 @@ public class FriendListFragment extends ChatTabFragment implements FriendsFragme
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if ((resultCode == ChatActivity.RESULT_BLOCKED)) {
+            onRefresh();
+        }
     }
-
 
     public interface OnFriendClickListener
     {
         void doRedirect(FriendListModel.Data.List_social_friends listSocialFriends);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    public void onEvent(FLRefreshModel message) {
+        onRefresh();
     }
 }

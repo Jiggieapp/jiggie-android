@@ -1,6 +1,7 @@
 package com.jiggie.android.activity.event;
 
 import com.jiggie.android.model.CityModel;
+import com.jiggie.android.model.EventModel;
 
 import java.util.ArrayList;
 
@@ -10,4 +11,5 @@ import java.util.ArrayList;
 public interface EventView {
     //void onFinishGetCities(CityModel cityModel);
     void onFinishGetCities(ArrayList<CityModel.Data.Citylist> citylist);
+    void onFinishGetEvents(EventModel eventModel);
 }

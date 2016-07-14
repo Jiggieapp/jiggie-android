@@ -35,6 +35,7 @@ import com.jiggie.android.App;
 import com.jiggie.android.BuildConfig;
 import com.jiggie.android.R;
 import com.jiggie.android.activity.chat.ChatActivity;
+import com.jiggie.android.activity.chat.FirebaseChatActivity;
 import com.jiggie.android.activity.event.EventDetailActivity;
 import com.jiggie.android.activity.profile.ProfileDetailActivity;
 import com.jiggie.android.activity.social.SocialFilterActivity;
@@ -44,7 +45,9 @@ import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.SocialCardNewAdapter;
+import com.jiggie.android.listener.OnResponseListener;
 import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.manager.FirebaseChatManager;
 import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.manager.TooltipsManager;
 import com.jiggie.android.manager.WalkthroughManager;
@@ -59,6 +62,8 @@ import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.view.CustomSwipeFlingAdapterView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -135,6 +140,8 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             progressBar.setVisibility(View.GONE);
         }
         App.getInstance().trackMixPanelEvent("View Social Feed");*/
+        //Utils.d(TAG, "ontabselected brur");
+        App.getInstance().trackMixPanelEvent("View Social Feed");
     }
 
     @Override
@@ -167,7 +174,6 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     public void onResume() {
         super.onResume();
         boolean a = AccountManager.anySettingChange;
-        Utils.d(TAG, "onUserVisibleHint");
         if (this.current == null) {
 
             if (App.getSharedPreferences().getBoolean(Utils.SET_WALKTHROUGH_SOCIAL, false)) {
@@ -175,7 +181,7 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             }
         }
 
-        if (AccountManager.loadSetting().getData().getNotifications().isFeed()) {
+        if (AccountManager.loadSetting().isMatchme()) {
             if (temp.size() == 0)
                 this.onRefresh();
             else {
@@ -186,14 +192,13 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             cardEmpty.setVisibility(View.GONE);
             progressBar.setVisibility(View.GONE);
         }
-        App.getInstance().trackMixPanelEvent("View Social Feed");
+
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = this.rootView = inflater.inflate(R.layout.fragment_social, container, false);
-        Utils.d(TAG, "onCreateView");
         ButterKnife.bind(this, view);
         return view;
     }
@@ -202,16 +207,13 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         //setRetainInstance(true);
-        Utils.d(TAG, "onActivityCreated");
 
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         ButterKnife.bind(this, this.rootView);
-
         EventBus.getDefault().register(this);
 
         this.progressBar.setVisibility(View.GONE);
@@ -238,9 +240,26 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             temp = new ArrayList<>();
             isRefreshing = true;
             SettingModel currentSetting = AccountManager.loadSetting();
-            //Debug.startMethodTracing("loaderSocialFeeddddTrack", 1024);
-            SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId() /*"10205703989179267"*/
-                    , currentSetting.getData().getGender_interest());
+            if (currentSetting.isMatchme()) {
+                SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId() /*"10205703989179267"*/
+                        , currentSetting.getData().getGender_interest()
+                        , new OnResponseListener() {
+
+                            @Override
+                            public void onSuccess(Object object) {
+
+                            }
+
+                            @Override
+                            public void onFailure(int responseCode, String ex) {
+                                if (ex.contains("no card")) {
+                                    cardEmpty.setVisibility(View.VISIBLE);
+                                }
+                                progressBar.setVisibility(View.GONE);
+                                dismissProgressDialog();
+                            }
+                        });
+            }
         }
     }
 
@@ -283,7 +302,6 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
         }
 
         SocialManager.countData = message.getData().getSocial_feeds().size();
-
         socialCardNewAdapter = new SocialCardNewAdapter(temp
                 , getActivity(), this, getActivity());
         //socialCardNewAdapter.clear();
@@ -302,19 +320,14 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                 getActivity().startActivity(i);
             }
         });
-        /*ImageView testtt = (ImageView) flingAdapterView.findViewById(R.id.imageUserGeneral);
-        testtt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getActivity(), ProfileDetailActivity.class);
-                i.putExtra(Common.FIELD_FACEBOOK_ID, socialCardNewAdapter.getItem(0).getFrom_fb_id());
-                getActivity().startActivity(i);
-            }
-        });*/
+
+
         flingAdapterView.setOnEventClickListener(new CustomSwipeFlingAdapterView.OnEventClickListener() {
             @Override
             public void onEventClicked() {
-                onGeneralClick();
+                if (socialCardNewAdapter.getItem(0).getType_feed() == Utils.TYPE_FEED_EVENT) {
+                    onGeneralClick();
+                }
             }
 
             @Override
@@ -326,7 +339,6 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             public void onConnectClicked() {
                 flingAdapterView.getSelectedView().findViewById(R.id.image_connect).setAlpha((float) 1.0);
             }
-
         });
 
         flingAdapterView.setFlingListener(new CustomSwipeFlingAdapterView.onFlingListener() {
@@ -337,15 +349,32 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
 
             @Override
             public void onLeftCardExit(Object o) {
-                matchAsync(socialCardNewAdapter.getItem(0).getFrom_fb_id(), false);
+                SocialModel.Data.SocialFeeds item = socialCardNewAdapter.getItem(0);
+                if (item.getType_feed() == 1) {
+                    matchAsync(item.getFrom_fb_id(), false);
+                } else {
+                    matchNearbyAsync(item.getFrom_fb_id(), false);
+                }
+
             }
 
             @Override
             public void onRightCardExit(Object o) {
-                if (SocialManager.Type.isInbound(socialCardNewAdapter.getItem(0))) {
-                    match(socialCardNewAdapter.getItem(0).getFrom_fb_id()
-                            , socialCardNewAdapter.getItem(0).getFrom_first_name());
-                } else matchAsync(socialCardNewAdapter.getItem(0).getFrom_fb_id(), true);
+                SocialModel.Data.SocialFeeds item = socialCardNewAdapter.getItem(0);
+                if (item.getType_feed() == 1) {
+
+                    //matchAsync(item.getFrom_fb_id(), false);
+                    if (SocialManager.Type.isInbound(item)) {
+                        match(item.getFrom_fb_id()
+                                , item.getFrom_first_name());
+                    } else matchAsync(item.getFrom_fb_id(), true);
+                } else {
+                    //matchAsync(item.getFrom_fb_id(), false);
+                    if (SocialManager.Type.isInbound(item)) {
+                        matchNearby(item.getFrom_fb_id()
+                                , item.getFrom_first_name());
+                    } else matchNearbyAsync(item.getFrom_fb_id(), true);
+                }
             }
 
             @Override
@@ -355,9 +384,23 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                     isRefreshing = true;
                     SettingModel currentSetting = AccountManager.loadSetting();
                     SocialManager.loaderSocialFeed(AccessToken.getCurrentAccessToken().getUserId()
-                            , currentSetting.getData().getGender_interest());
-                }
+                            , currentSetting.getData().getGender_interest()
+                            , new OnResponseListener() {
+                                @Override
+                                public void onSuccess(Object object) {
 
+                                }
+
+                                @Override
+                                public void onFailure(int responseCode, String ex) {
+                                    if (ex.contains("no card")) {
+                                        cardEmpty.setVisibility(View.VISIBLE);
+                                    }
+                                    progressBar.setVisibility(View.GONE);
+                                    dismissProgressDialog();
+                                }
+                            });
+                }
             }
 
             @Override
@@ -448,21 +491,9 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
     public void onEvent(ExceptionModel message) {
         isRefreshing = false;
         String ex = message.getMessage();
-        //Utils.d(TAG, "exception " + ex);
         if (message.getFrom().equals(Utils.FROM_SOCIAL_FEED)
                 || message.getFrom().equals(Utils.FROM_SOCIAL_MATCH)
                 || message.getFrom().equals(Utils.FROM_EVENT_DETAIL)) {
-            //if (ex.equals(Utils.RESPONSE_FAILED + " " + "empty data")) {
-            /*if (ex.contains("Empty data"))
-            {
-                //this.layoutSocialize.setVisibility(View.GONE);
-                this.cardEmpty.setVisibility(View.VISIBLE);
-                this.progressBar.setVisibility(View.GONE);
-                dismissProgressDialog();
-                //this.cardGeneral.setVisibility(View.GONE);
-                //this.cardInbound.setVisibility(View.GONE);
-                //this.card.setVisibility(View.GONE);
-            }*/
             if (ex.contains("no card")) {
                 this.cardEmpty.setVisibility(View.VISIBLE);
             }
@@ -762,19 +793,71 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
             SocialManager.loaderSocialMatch(AccessToken.getCurrentAccessToken().getUserId(), this.current.getFrom_fb_id(), confirm ? "approved" : "denied");
     }
 
-    private void match(final String userId, final String name) {
+    private void matchNearby(final String userId, final String name)
+    {
         showProgressDialog();
-        SocialManager.loaderSocialMatch(
+        SocialManager.loaderSocialMatchNearby(
                 AccessToken.getCurrentAccessToken().getUserId()
                 , userId /*"102261920139380"*/, "approved", new SocialManager.OnResponseListener() {
                     @Override
                     public void onSuccess(Object object) {
                         socialCardNewAdapter.deleteFirstItem();
                         dismissProgressDialog();
-                        final Intent intent = new Intent(getActivity()
+
+                        /*final Intent intent = new Intent(getActivity()
                                 , ChatActivity.class);
                         intent.putExtra(Conversation.FIELD_FROM_NAME, name);
-                        intent.putExtra(Conversation.FIELD_FACEBOOK_ID, userId);
+                        intent.putExtra(Conversation.FIELD_FACEBOOK_ID, userId);*/
+
+                        //Firebase part-----------------------------------
+                        String roomId = Utils.BLANK;
+
+                        String a = FirebaseChatManager.fb_id;
+                        String b = userId;
+
+                        /*if (a.length() < b.length()) {
+                            roomId = a + "_" + b;
+                        } else if (a.length() > b.length()) {
+                            roomId = b + "_" + a;
+                        } else {
+                            ArrayList<String> d = new ArrayList<>();
+                            d.add(a);
+                            d.add(b);
+                            Collections.sort(d, new Comparator<String>() {
+                                @Override
+                                public int compare(String lhs, String rhs) {
+                                    return lhs.compareToIgnoreCase(rhs);
+                                }
+                            });
+
+                            StringBuilder sb = new StringBuilder();
+                            sb.append(d.get(0)).append("_").append(d.get(1));
+
+                            //String roomId = d.get(0)+"_"+d.get(1);
+                            roomId = sb.toString();
+                        }*/
+
+                        ArrayList<String> d = new ArrayList<>();
+                        d.add(a);
+                        d.add(b);
+                        Collections.sort(d, new Comparator<String>() {
+                            @Override
+                            public int compare(String lhs, String rhs) {
+                                return lhs.compareToIgnoreCase(rhs);
+                            }
+                        });
+
+                        StringBuilder sb = new StringBuilder();
+                        sb.append(d.get(0)).append("_").append(d.get(1));
+
+                        roomId = sb.toString();
+
+                        final Intent intent = new Intent(getActivity(), FirebaseChatActivity.class);
+                        intent.putExtra(Utils.ROOM_ID, roomId);
+                        intent.putExtra(Utils.LOAD_ROOM_DETAIL, true);
+                        //End of Firebase part-----------------------------------
+
+
                         getActivity().sendBroadcast(new Intent(getString(R.string.broadcast_social_chat)));
                         startActivity(intent);
 
@@ -791,16 +874,104 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                 });
     }
 
+    private void match(final String userId, final String name) {
+        showProgressDialog();
+        SocialManager.loaderSocialMatch(
+                AccessToken.getCurrentAccessToken().getUserId()
+                , userId /*"102261920139380"*/, "approved", new SocialManager.OnResponseListener() {
+                    @Override
+                    public void onSuccess(Object object) {
+                        socialCardNewAdapter.deleteFirstItem();
+                        dismissProgressDialog();
+
+                        /*final Intent intent = new Intent(getActivity()
+                                , ChatActivity.class);
+                        intent.putExtra(Conversation.FIELD_FROM_NAME, name);
+                        intent.putExtra(Conversation.FIELD_FACEBOOK_ID, userId);*/
+
+                        //Firebase part-----------------------------------
+                        String roomId = Utils.BLANK;
+
+                        String a = FirebaseChatManager.fb_id;
+                        String b = userId;
+
+                        /*if (a.length() < b.length()) {
+                            roomId = a + "_" + b;
+                        } else if (a.length() > b.length()) {
+                            roomId = b + "_" + a;
+                        } else {
+                            ArrayList<String> d = new ArrayList<>();
+                            d.add(a);
+                            d.add(b);
+                            Collections.sort(d, new Comparator<String>() {
+                                @Override
+                                public int compare(String lhs, String rhs) {
+                                    return lhs.compareToIgnoreCase(rhs);
+                                }
+                            });
+
+                            StringBuilder sb = new StringBuilder();
+                            sb.append(d.get(0)).append("_").append(d.get(1));
+
+                            //String roomId = d.get(0)+"_"+d.get(1);
+                            roomId = sb.toString();
+                        }*/
+
+                        ArrayList<String> d = new ArrayList<>();
+                        d.add(a);
+                        d.add(b);
+                        Collections.sort(d, new Comparator<String>() {
+                            @Override
+                            public int compare(String lhs, String rhs) {
+                                return lhs.compareToIgnoreCase(rhs);
+                            }
+                        });
+
+                        StringBuilder sb = new StringBuilder();
+                        sb.append(d.get(0)).append("_").append(d.get(1));
+
+                        //String roomId = d.get(0)+"_"+d.get(1);
+                        roomId = sb.toString();
+
+                        final Intent intent = new Intent(getActivity(), FirebaseChatActivity.class);
+                        intent.putExtra(Utils.ROOM_ID, roomId);
+                        intent.putExtra(Utils.LOAD_ROOM_DETAIL, true);
+                        //End of Firebase part-----------------------------------
+
+
+                        //getActivity().sendBroadcast(new Intent(getString(R.string.broadcast_social_chat)));
+                        startActivity(intent);
+
+                        if (socialCardNewAdapter.getCount() == 0) {
+                            progressBar.setVisibility(View.GONE);
+                            cardEmpty.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(int responseCode, String message) {
+                        dismissProgressDialog();
+                    }
+                });
+    }
+
     private void matchAsync(final String fromFbId, final boolean confirm) {
-        /*SocialManager.loaderSocialMatchAsync
-                (AccessToken.getCurrentAccessToken().getUserId()
-                        , fromFbId, confirm ? "approved" : "denied");*/
         socialCardNewAdapter.deleteFirstItem();
         if (socialCardNewAdapter.getCount() == 0) {
             this.progressBar.setVisibility(View.GONE);
             this.cardEmpty.setVisibility(View.VISIBLE);
         }
         SocialManager.loaderSocialMatchAsync(AccessToken.getCurrentAccessToken().getUserId()
+                , fromFbId, confirm ? "approved" : "denied", confirm);
+    }
+
+    private void matchNearbyAsync(final String fromFbId, final boolean confirm) {
+        socialCardNewAdapter.deleteFirstItem();
+        if (socialCardNewAdapter.getCount() == 0) {
+            this.progressBar.setVisibility(View.GONE);
+            this.cardEmpty.setVisibility(View.VISIBLE);
+        }
+        SocialManager.loaderSocialMatchNearbyAsync(AccessToken.getCurrentAccessToken().getUserId()
                 , fromFbId, confirm ? "approved" : "denied", confirm);
     }
 
@@ -838,10 +1009,63 @@ public class SocialTabFragment extends Fragment implements TabFragment, SocialCa
                 app.trackMixPanelEvent("Accept Feed Item", json);
 
                 if ((SocialManager.Type.isInbound(socialMatch)) && (context != null)) {
-                    final Intent intent = new Intent(context, ChatActivity.class);
+
+
+                    /*final Intent intent = new Intent(context, ChatActivity.class);
                     intent.putExtra(Conversation.FIELD_FROM_NAME, socialMatch.getFrom_first_name());
-                    intent.putExtra(Conversation.FIELD_FACEBOOK_ID, socialMatch.getFrom_fb_id());
-                    context.sendBroadcast(new Intent(getString(R.string.broadcast_social_chat)));
+                    intent.putExtra(Conversation.FIELD_FACEBOOK_ID, socialMatch.getFrom_fb_id());*/
+
+                    //Firebase part-----------------------------------
+                    String roomId = Utils.BLANK;
+
+                    String a = FirebaseChatManager.fb_id;
+                    String b = socialMatch.getFrom_fb_id();
+
+                    /*if (a.length() < b.length()) {
+                        roomId = a + "_" + b;
+                    } else if (a.length() > b.length()) {
+                        roomId = b + "_" + a;
+                    } else {
+                        ArrayList<String> d = new ArrayList<>();
+                        d.add(a);
+                        d.add(b);
+                        Collections.sort(d, new Comparator<String>() {
+                            @Override
+                            public int compare(String lhs, String rhs) {
+                                return lhs.compareToIgnoreCase(rhs);
+                            }
+                        });
+
+                        StringBuilder sb = new StringBuilder();
+                        sb.append(d.get(0)).append("_").append(d.get(1));
+
+                        //String roomId = d.get(0)+"_"+d.get(1);
+                        roomId = sb.toString();
+                    }*/
+
+                    ArrayList<String> d = new ArrayList<>();
+                    d.add(a);
+                    d.add(b);
+                    Collections.sort(d, new Comparator<String>() {
+                        @Override
+                        public int compare(String lhs, String rhs) {
+                            return lhs.compareToIgnoreCase(rhs);
+                        }
+                    });
+
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(d.get(0)).append("_").append(d.get(1));
+
+                    //String roomId = d.get(0)+"_"+d.get(1);
+                    roomId = sb.toString();
+
+                    final Intent intent = new Intent(getActivity(), FirebaseChatActivity.class);
+                    intent.putExtra(Utils.ROOM_ID, roomId);
+                    intent.putExtra(Utils.LOAD_ROOM_DETAIL, true);
+                    //End of Firebase part-----------------------------------
+
+
+                    //context.sendBroadcast(new Intent(getString(R.string.broadcast_social_chat)));
                     startActivity(intent);
                 }
 

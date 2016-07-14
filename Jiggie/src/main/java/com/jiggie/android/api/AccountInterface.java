@@ -80,4 +80,7 @@ public interface AccountInterface{
     @GET(Utils.URL_GET_INVITE_CODE)
     Call<InviteCodeResultModel> getInviteCode(@Path("fb_id") String fbId);
 
+    @GET(Utils.URL_UPDATE_MATCH_ME)
+    Call<Success2Model> updateMatchMe(@Path("fb_id") String fb_id, @Path("match_me") String matchMe);
+
 }

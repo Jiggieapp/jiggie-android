@@ -44,6 +44,7 @@ import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.MoreTabListAdapter;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.CreditBalanceManager;
+import com.jiggie.android.manager.FirebaseChatManager;
 import com.jiggie.android.model.Common;
 import com.jiggie.android.model.MemberInfoModel;
 import com.jiggie.android.model.SuccessCreditBalanceModel;
@@ -213,9 +214,16 @@ public class MoreFragment extends Fragment implements TabFragment, MoreTabListAd
         CreditBalanceManager.loaderCreditBalance(AccessToken.getCurrentAccessToken().getUserId(), new CreditBalanceManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object) {
-                SuccessCreditBalanceModel successCreditBalanceModel = (SuccessCreditBalanceModel) object;
-                strCredit = "Credit: " + StringUtility.getCreditBalanceFormat(successCreditBalanceModel.getData().getBalance_credit().getTot_credit_active());
-                textCredit.setText(strCredit);
+
+                try {
+                    SuccessCreditBalanceModel successCreditBalanceModel = (SuccessCreditBalanceModel) object;
+                    strCredit = "Credit: " + StringUtility.getCreditBalanceFormat(successCreditBalanceModel.getData().getBalance_credit().getTot_credit_active());
+                    textCredit.setText(strCredit);
+                }catch (Exception e){
+                    textCredit.setText("Credit: ");
+                }
+
+
             }
 
             @Override
@@ -264,7 +272,7 @@ public class MoreFragment extends Fragment implements TabFragment, MoreTabListAd
 
                                 AccountManager.onLogout();
 
-                                //getActivity().finish();
+                                FirebaseChatManager.clearDataFirebase();
 
                                 //added by Aga 22-1-2016
                                 Intent i = new Intent(getActivity(), SplashActivity.class);

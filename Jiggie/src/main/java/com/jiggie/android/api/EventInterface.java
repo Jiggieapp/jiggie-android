@@ -6,9 +6,13 @@ import com.jiggie.android.model.EventModel;
 import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.TagNewModel;
 import com.jiggie.android.model.TagsListModel;
+import com.jiggie.android.model.ThemePostModel;
+import com.jiggie.android.model.ThemeResultModel;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 /**
@@ -30,4 +34,7 @@ public interface EventInterface {
 
     @GET(Utils.URL_LIKE_EVENT)
     Call<Success2Model> actionLikeEvent(@Path("event_id") String event_id, @Path("fb_id") String fb_id, @Path("action") String action);
+
+    @POST(Utils.URL_GET_THEME)
+    Call<ThemeResultModel> getTheme(@Body ThemePostModel themeResultModel);
 }

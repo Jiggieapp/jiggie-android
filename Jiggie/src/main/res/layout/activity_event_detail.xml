@@ -167,13 +167,33 @@
                             android:layout_toRightOf="@id/img_love" />
 
                         <ImageView
-                            android:id="@+id/img_share"
+                            android:id="@+id/img_chat"
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:layout_centerVertical="true"
                             android:layout_marginLeft="@dimen/padding_standard"
                             android:layout_marginRight="@dimen/padding_standard_half"
                             android:layout_toRightOf="@id/txt_count_like"
+                            android:contentDescription="@null"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/img_chat" />
+
+                        <TextView
+                            android:id="@+id/txt_count_chat"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@id/img_chat"
+                            android:text="@string/chat"/>
+
+                        <ImageView
+                            android:id="@+id/img_share"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="@dimen/padding_standard"
+                            android:layout_marginRight="@dimen/padding_standard_half"
+                            android:layout_toRightOf="@id/txt_count_chat"
                             android:contentDescription="@null"
                             android:scaleType="centerCrop"
                             android:src="@drawable/ic_share" />

@@ -149,11 +149,10 @@ public class MemberSettingModel {
         setFb_id(memberSettingResultModel.getData().getMembersettings().getFb_id());
         setAccount_type(memberSettingResultModel.getData().getMembersettings().getAccount_type());
         setChat(memberSettingResultModel.getData().getMembersettings().getNotifications().isChat() ? 1 : 0);
-        setExperiences(experiences);
         setFeed(memberSettingResultModel.getData().getMembersettings().getNotifications().isFeed() ? 1 : 0);
-        setGender_interest(memberSettingResultModel.getData().getMembersettings().getGender_interest());
-        //setPhotos(photos);
         setLocation(memberSettingResultModel.getData().getMembersettings().getNotifications().isLocation()? 1 : 0);
+        setExperiences(experiences);
+        setGender_interest(memberSettingResultModel.getData().getMembersettings().getGender_interest());
         setFrom_age(memberSettingResultModel.getData().getMembersettings().getFrom_age() + "");
         setTo_age(memberSettingResultModel.getData().getMembersettings().getTo_age() + "");
         setArea_event(memberSettingResultModel.getData().getMembersettings().getArea_event());

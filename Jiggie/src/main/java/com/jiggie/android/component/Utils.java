@@ -62,7 +62,7 @@ public class Utils {
     public static final String FROM_COMPLETING_WALKTHROUGH_LOCATION = "complete_walkthrough_location";
     public static final String FROM_APPSFLYER = "appsflyer";
     public static final String FROM_MIXPANEL = "mixpanel";
-    public static final String HAS_LOAD_GROUP_INFO = "has_load_group_info";
+    public static final String HAS_LOAD_GUEST_INFO = "has_load_group_info";
 
     public static boolean SHOW_WALKTHROUGH_EVENT = true;
     public static boolean SHOW_WALKTHROUGH_SOCIAL = true;
@@ -126,7 +126,21 @@ public class Utils {
     public static final String TYPE_RESERVE = "reserve";
     //------------------------
 
+    //FIREBASE CHAT------------
+    public static final String ROOM_ID = "roomId";
+    public static final String ROOM_EVENT = "roomEvent";
+    public static final String ROOM_TYPE = "roomType";
+    public static final String LOAD_ROOM_DETAIL = "loadRoomDetail";
+    public static final String FROM_NOTIF = "fromNotif";
+    //-------------------------
+
     public static int myPixel(Activity a, int dip) {
+        float scale = a.getResources().getDisplayMetrics().density;
+        int pixel = (int) ((dip - 0.5f) * scale);
+        return pixel;
+    }
+
+    public static int myPixel(Context a, int dip) {
         float scale = a.getResources().getDisplayMetrics().density;
         int pixel = (int) ((dip - 0.5f) * scale);
         return pixel;
@@ -149,8 +163,12 @@ public class Utils {
     public static final String URL_SHARE_APPS = BASE_URL + "app/v3/invitelink";
     public static final String URL_SHARE_EVENT = BASE_URL + "app/v3/invitelink";
     public static final String URL_SOCIAL_FEED = BASE_URL + "app/v3/partyfeed/list/{fb_id}/{gender_interest}";
+    public static final String URL_SOCIAL_FEED_2 = BASE_URL + "app/v4/partyfeed/list/{fb_id}/{gender_interest}";
     public static final String URL_GUEST_MATCH = BASE_URL + "app/v3/partyfeed/match/{fb_id}/{from_id}/{type}";
     public static final String URL_SOCIAL_MATCH = BASE_URL + "app/v3/partyfeed_socialmatch/match/{fb_id}/{from_id}/{type}";
+    public static final String URL_SOCIAL_NEARBY_MATCH = BASE_URL + "app/v3/partyfeed_nearby/match/{fb_id}/{from_id}/{type}";
+
+    public static final String URL_UPDATE_MATCH_ME = BASE_URL + "app/v3/partyfeed/settings/{fb_id}/{match_me}";
     public static final String URL_EDIT_ABOUT = BASE_URL + "app/v3/updateuserabout";
     public static final String URL_GET_ACCESS_TOKEN = BASE_URL + "app/v3/userlogin";
     public static final String URL_TAGSLIST = BASE_URL + "app/v3/user/tagslist";
@@ -158,6 +176,13 @@ public class Utils {
     public static final String URL_BLOCK_CHAT = BASE_URL + "app/v3/blockuserwithfbid";
     public static final String URL_DELETE_CHAT = BASE_URL + "app/v3/deletemessageswithfbid";
     public static final String URL_ADD_CHAT = BASE_URL + "app/v3/messages/add";
+    public static final String URL_ADD_GROUP_CHAT = BASE_URL + "app/v3/group/firebase";
+    public static final String URL_CHAT_FIREBASE = BASE_URL + "app/v3/chat/firebase/{fb_id}";
+    public static final String URL_ADD_GROUP_CHAT_JANNES = BASE_URL + "app/v3/group/notif";
+    public static final String URL_ADD_CHAT_FIREBASE = BASE_URL + "app/v3/firebase/post_message";
+    public static final String URL_BLOCK_CHAT_FIREBASE = BASE_URL + "app/v3/firebase/block_chat";
+    public static final String URL_DELETE_CHAT_FIREBASE = BASE_URL + "app/v3/firebase/delete_chat";
+
     public static final String URL_VERIFY_PHONE_NUMBER = BASE_URL + "app/v3/user/phone/verification/send/{fb_id}/{phone}";
     public static final String URL_VERIFY_VERIFICATION_CODE = BASE_URL + "app/v3/user/phone/verification/validate/{fb_id}/{token}";
     public static final String URL_WALKTHROUGH = BASE_URL + "app/v3/count_walkthrough";
@@ -179,7 +204,7 @@ public class Utils {
     public static final String URL_GUEST_INFO = BASE_URL + "app/v3/product/guest_info/{fb_id}";
     public final static String URL_POST_LOCATION = BASE_URL + "app/v3/save_longlat";
     public final static String URL_FREE_PAYMENT = BASE_URL + "app/v3/product/free_payment";
-
+    public static final String URL_GET_THEME = BASE_URL + "app/v3/events/themes";
     public final static String URL_UPLOAD = BASE_URL + "app/v3/member/upload";
     public final static String URL_LIKE_EVENT = BASE_URL + "app/v3/event/likes/{event_id}/{fb_id}/{action}";
     public final static String URL_CITY = BASE_URL + "app/v3/user/citylist";
@@ -194,6 +219,8 @@ public class Utils {
     public final static String URL_INVITE_ALL = BASE_URL + "app/v3/credit/invite_all";
     public final static String URL_GET_INVITE_CODE = BASE_URL + "app/v3/credit/invite_code/{fb_id}";
     //END OF INVITE URL============
+
+
 
     //REDEEM CODE URL===============
     public final static String URL_REDEEM_CODE = BASE_URL + "app/v3/credit/redeem_code";
@@ -467,5 +494,18 @@ public class Utils {
                 , Common.getStartDateTimeInTimezone(timezone).format(startDate)
                 , Common.getEndDateTimeInTimezone(timezone).format(endDate));
         return simpleDate;
+    }
+
+    //social
+    public final static int TYPE_FEED_EVENT = 1;
+    public final static int TYPE_FEED_NEARBY = 2;
+    public static String getGuestFormat(int count){
+        String guest = Utils.BLANK;
+        if(count==1){
+            guest = String.valueOf(count)+" guest";
+        }else{
+            guest = String.valueOf(count)+" guests";
+        }
+        return guest;
     }
 }

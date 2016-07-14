@@ -26,12 +26,14 @@ public class GuestInfo {
             public String name;
             public String dial_code;
             public String phone;
+            public String identity_id;
 
-            public Guest_detail(String email, String name, String dial_code, String phone){
+            public Guest_detail(String email, String name, String dial_code, String phone, String identity_id){
                 this.email = email;
                 this.name = name;
                 this.dial_code = dial_code;
                 this.phone = phone;
+                this.identity_id = identity_id;
             }
         }
     }

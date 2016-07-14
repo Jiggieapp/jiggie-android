@@ -38,11 +38,14 @@ import com.facebook.AccessToken;
 import com.google.gson.Gson;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.event.EventPresenterImplementation;
+import com.jiggie.android.activity.event.EventView;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.manager.EventManager;
 import com.jiggie.android.manager.WalkthroughManager;
+import com.jiggie.android.model.CityModel;
 import com.jiggie.android.model.EventModel;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.PostWalkthroughModel;
@@ -59,7 +62,7 @@ import de.greenrobot.event.EventBus;
  */
 public class EventsFragment extends Fragment
         implements ViewPager.OnPageChangeListener, HomeMain
-        , ViewTreeObserver.OnGlobalLayoutListener, TabFragment, SwipeRefreshLayout.OnRefreshListener {
+        , ViewTreeObserver.OnGlobalLayoutListener, TabFragment, SwipeRefreshLayout.OnRefreshListener, EventView {
     @Bind(R.id.time_tab)
     TabLayout timeTab;
     @Bind(R.id.viewpagerevents)
@@ -77,6 +80,7 @@ public class EventsFragment extends Fragment
     private String searchText;
     private Dialog dialogWalkthrough;
     SearchView searchView;
+    EventPresenterImplementation eventPresenterImplementation;
 
     @Override
     public String getTitle() {
@@ -151,7 +155,9 @@ public class EventsFragment extends Fragment
         this.refreshLayout.setRefreshing(true);
         final AccessToken token = AccessToken.getCurrentAccessToken();
 
-        EventManager.loaderEvent(token.getUserId());
+        //EventManager.loaderEvent(token.getUserId());
+        eventPresenterImplementation.getCities();
+        //onRefreshListener.doOnRefresh();
     }
 
     //EventTabFragment todayFragment, tomorrowFragment, upcomingFragment;
@@ -298,6 +304,7 @@ public class EventsFragment extends Fragment
     public void onGlobalLayout() {
         this.viewPagerEvents.getViewTreeObserver().removeOnGlobalLayoutListener(this);
         //this.onPageSelected(0);
+        eventPresenterImplementation = new EventPresenterImplementation(this);
         onRefresh();
     }
 
@@ -312,7 +319,9 @@ public class EventsFragment extends Fragment
 
         ArrayList<EventModel.Data.Events> message = eventModel.getData().getEvents();
         int size = message.size();
+        Utils.d(TAG, "di sini " + size);
         setEvents(message);
+        setThemes(eventModel.getData().getThemes());
 
         boolean isExpanded = false;
         //if(searchText != null  /* && !searchText.isEmpty()*/)
@@ -445,6 +454,17 @@ public class EventsFragment extends Fragment
         EventManager.events = events;
     }
 
+    private ArrayList<EventModel.Data.Theme> themes;
+
+    public ArrayList<EventModel.Data.Theme> getThemes() {
+        return themes;
+    }
+
+    public void setThemes(ArrayList<EventModel.Data.Theme> themes) {
+        this.themes = themes;
+    }
+
+
     private void filter(String searchText, boolean isSearch) {
         ArrayList<EventModel.Data.Events> todayEvents = new ArrayList<>();
         ArrayList<EventModel.Data.Events> tomorrowEvents = new ArrayList<>();
@@ -455,6 +475,50 @@ public class EventsFragment extends Fragment
                 searchText = "";
             //timeTab.setVisibility(View.VISIBLE);
             searchText = searchText.toLowerCase();
+
+
+            //wandy16-06-2016
+            for(EventModel.Data.Theme themeEvent : getThemes())
+            {
+                if (themeEvent.status != null && (themeEvent.name.toLowerCase().contains(searchText)
+                        || searchText.equals(""))) {
+                    EventModel.Data.Events tempEvent = new EventModel.Data.Events(themeEvent);
+                    if (!isSearch) {
+                        Utils.d(TAG, "tempEvent " + themeEvent.status);
+                        if(themeEvent.status.equalsIgnoreCase(Utils.DATE_TODAY))
+                        {
+                            todayEvents.add(tempEvent);
+                        }
+                        else if(themeEvent.status.equalsIgnoreCase(Utils.DATE_TOMORROW))
+                        {
+                            tomorrowEvents.add(tempEvent);
+                        }
+                        else if(themeEvent.status.equalsIgnoreCase(Utils.DATE_UPCOMING))
+                        {
+                            upcomingEvents.add(tempEvent);
+                        }
+                    }
+                    else {
+                        hideTab();
+                        switch (currentPosition) {
+                            case 0:
+                                todayEvents.add(tempEvent);
+                                //todayFragment.onEvent(todayEvents);
+                                break;
+                            case 1:
+                                tomorrowEvents.add(tempEvent);
+                                //tomorrowFragment.onEvent(tomorrowEvents);
+                                break;
+                            case 2:
+                                upcomingEvents.add(tempEvent);
+                                //upcomingFragment.onEvent(upcomingEvents);
+                                break;
+                        }
+                    }
+                }
+            }
+            //end of wandy
+
             for (EventModel.Data.Events tempEvent : getEvents()) {
                 //new Date(event.getDate_day());
                 if (tempEvent.getTitle().toLowerCase().contains(searchText)
@@ -464,6 +528,7 @@ public class EventsFragment extends Fragment
                     if (!isSearch) {
                         showTab();
                         final String diffDays = Utils.calculateTime(tempEvent.getStart_datetime());
+                        tempEvent.isEvent = true;
                         if (diffDays.equals(Utils.DATE_TODAY)) {
                             todayEvents.add(tempEvent);
                         } else if (diffDays.equals(Utils.DATE_TOMORROW)) {
@@ -498,6 +563,7 @@ public class EventsFragment extends Fragment
             viewPagerEvents.setPagingEnabled(false);
             hideTab();
         }
+
 
         todayFragment.onEvent(todayEvents);
         tomorrowFragment.onEvent(tomorrowEvents);
@@ -571,11 +637,8 @@ public class EventsFragment extends Fragment
             public void onCancel(DialogInterface dialog) {
                 Utils.SHOW_WALKTHROUGH_EVENT = false;
                 App.getSharedPreferences().edit().putBoolean(Utils.SET_WALKTHROUGH_EVENT, false).commit();
-
                 PostWalkthroughModel postWalkthroughModel = new PostWalkthroughModel(AccessToken.getCurrentAccessToken().getUserId(), Utils.TAB_EVENT, Utils.DEVICE_ID);
-
                 String sd = String.valueOf(new Gson().toJson(postWalkthroughModel));
-
                 WalkthroughManager.loaderPostWalkthrough(postWalkthroughModel);
             }
         });
@@ -640,5 +703,16 @@ public class EventsFragment extends Fragment
             tomorrowFragment = (EventTabFragment) getFragmentManager().getFragment(savedInstanceState, "tomorrowfragment");
             upcomingFragment = (EventTabFragment) getFragmentManager().getFragment(savedInstanceState, "upcomingfragment");
         }
+    }
+
+    @Override
+    public void onFinishGetCities(ArrayList<CityModel.Data.Citylist> citylist) {
+        EventBus.getDefault().post(citylist);
+        //((HomeFragment) this.getActivity()).onEvent(citylist);
+    }
+
+    @Override
+    public void onFinishGetEvents(EventModel eventModel) {
+        //EventBus.getDefault().post(eventModel);
     }
 }

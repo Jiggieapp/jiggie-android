@@ -13,6 +13,7 @@ import com.jiggie.android.model.EventModel;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.TagNewModel;
 import com.jiggie.android.model.TagsListModel;
+import com.jiggie.android.model.ThemePostModel;
 import com.jiggie.android.model.likeModel;
 
 import java.io.IOException;
@@ -71,6 +72,49 @@ public class EventManager extends BaseManager{
 
     private static void getTagsListNew(Callback callback) throws IOException {
         getInstance().getTagsListNew().enqueue(callback);
+    }
+
+    public static void loaderEvent2(String fb_id, final com.jiggie.android.listener.OnResponseListener onResponseListener)
+    {
+        try {
+            getEventList(fb_id, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response) {
+                    //String header = String.valueOf(response.code());
+                    /*String responses = new Gson().toJson(response.body());
+                    Utils.d("res", responses);*/
+                    if(response.code()==Utils.CODE_SUCCESS){
+                        EventModel dataTemp = (EventModel) response.body();
+                        onResponseListener.onSuccess(dataTemp);
+                        //EventBus.getDefault().post(dataTemp);
+                    }
+                    else if(response.code() == Utils.CODE_EMPTY_DATA)
+                    {
+                        //EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT, Utils.MSG_EMPTY_DATA));
+                        onResponseListener.onFailure(Utils.CODE_EMPTY_DATA, Utils.MSG_EMPTY_DATA);
+                    }
+                    else{
+                        //EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT, Utils.RESPONSE_FAILED));
+                        onResponseListener.onFailure(response.code(), Utils.RESPONSE_FAILED);
+                    }
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String t) {
+                    //EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT, Utils.MSG_EXCEPTION + t.toString()));
+                    onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION);
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
+            });
+        }catch (IOException e){
+            Utils.d(TAG, e.toString());
+            //EventBus.getDefault().post(new ExceptionModel(Utils.FROM_EVENT, Utils.MSG_EXCEPTION + e.toString()));
+            onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION);
+        }
     }
 
     public static void loaderEvent(String fb_id){
@@ -363,6 +407,33 @@ public class EventManager extends BaseManager{
     public interface OnResponseEventListener {
         public void onSuccess(Object object);
         public void onFailure(int responseCode, String message);
+    }
+
+    public static void loadTheme(final String themeId, final com.jiggie.android.listener.OnResponseListener onResponseListener)
+    {
+        ThemePostModel themePostModel = new ThemePostModel();
+        themePostModel.themes_id.add(themeId);
+        doLoadTheme(themePostModel, new CustomCallback() {
+            @Override
+            public void onCustomCallbackResponse(Response response) {
+                onResponseListener.onSuccess(response.body());
+            }
+
+            @Override
+            public void onCustomCallbackFailure(String t) {
+
+            }
+
+            @Override
+            public void onNeedToRestart() {
+                loadTheme(themeId, onResponseListener);
+            }
+        });
+    }
+
+    private static void doLoadTheme(ThemePostModel themePostModel, Callback callback)
+    {
+        getInstance().getTheme(themePostModel).enqueue(callback);
     }
 
 }

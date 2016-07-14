@@ -5,6 +5,5 @@ package com.jiggie.android.listener;
  */
 public interface OnResponseListener {
     void onSuccess(Object object);
-
     void onFailure(int responseCode, String message);
 }

@@ -8,7 +8,7 @@
     <string name="gcm_project_number">680009696864</string>
 
     <!--old Google key -->
-    <string name="google_api_key">AIzaSyDI11veTh3B7nPq1x_tVQcuoUf-9otkpEg</string>
+    <!--<string name="google_api_key">AIzaSyDI11veTh3B7nPq1x_tVQcuoUf-9otkpEg</string>-->
 
     <!--Google key debug-->
     <!--<string name="google_api_key">AIzaSyBpLaTKk463uthyYbVFsRb2SJA8oVRyqew</string>-->
@@ -251,6 +251,7 @@
 
     <string name="title_guest">CONTACT DETAIL</string>
     <string name="guest_name">Guest name</string>
+    <string name="guest_id">Id Card Number (KTP/Passport)</string>
     <string name="guest_email">Email</string>
     <string name="guest_62">+62</string>
     <string name="guest_phone">Phone number</string>
@@ -463,11 +464,11 @@
     <string name="invite_code_has_been_copied">Your invite code has been copied</string>
 
     <string name="confirm_contact">Please allow the application to access your contacts</string>
-
+    <string name="confirm_loation">Please allow the application to access your location</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="user_event">%1$s\'s Events</string>
 
     <string name="your_event">Events you are interested in</string>
-
+    <string name="approved_nearby">%1$s wants to connect with you and</string>
 
 </resources>

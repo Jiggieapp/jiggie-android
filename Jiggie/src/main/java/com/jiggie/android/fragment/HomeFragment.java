@@ -57,10 +57,12 @@ import com.jiggie.android.component.Utils;
 import com.jiggie.android.listener.OnResponseListener;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.EventManager;
+import com.jiggie.android.manager.FirebaseChatManager;
 import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.manager.TooltipsManager;
 import com.jiggie.android.model.CityModel;
 import com.jiggie.android.model.Common;
+import com.jiggie.android.model.EventModel;
 import com.jiggie.android.model.ExceptionModel;
 import com.jiggie.android.model.MemberSettingModel;
 import com.jiggie.android.model.MemberSettingResultModel;
@@ -236,12 +238,14 @@ public class HomeFragment extends Fragment
 
             }
         });
+        behavior.setPeekHeight(Utils.myPixel(getActivity(), 0));
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isFirstClick) {
                     isFirstClick = false;
-                    behavior.setPeekHeight(Utils.myPixel(getActivity(), 156));
+                    //behavior.setPeekHeight(Utils.myPixel(getActivity(), 156));
+                    behavior.setPeekHeight(Utils.myPixel(getActivity(), 162));
                 }
 
                 if (isAlreadyExpand) {
@@ -298,7 +302,6 @@ public class HomeFragment extends Fragment
             @Override
             public void onSuccess(Object object) {
                 TagNewModel dataTemp = (TagNewModel) object;
-
                 setTagsNew(dataTemp);
             }
 
@@ -338,7 +341,7 @@ public class HomeFragment extends Fragment
         //END OF TOOLTIP PART===============
 
         eventPresenterImplementation = new EventPresenterImplementation(this);
-        SettingModel.Data data = AccountManager.loadSetting().getData();
+        /*SettingModel.Data data = AccountManager.loadSetting().getData();
         //wandy 08-06-2016
         if (data.getCityList() == null
                 || data.getCityList().size() == 0) {
@@ -346,7 +349,7 @@ public class HomeFragment extends Fragment
             eventPresenterImplementation.getCities();
         } else {
             onFinishGetCities(AccountManager.loadSetting().getData().getCityList());
-        }
+        }*/
     }
 
     private void addLogoImage() {
@@ -357,7 +360,6 @@ public class HomeFragment extends Fragment
         param.leftMargin = center[0] - Utils.myPixel(getActivity(), 32);
         param.addRule(RelativeLayout.CENTER_VERTICAL);
         relPlace.addView(imgLogo, param);
-
     }
 
     @Override
@@ -408,6 +410,7 @@ public class HomeFragment extends Fragment
             final String experiences = TextUtils.join(",", selectedItems.toArray(new String[this.selectedItems.size()]));
             Utils.d(TAG, "experiences " + experiences);
             memberSettingModel.setExperiences(experiences);
+            Utils.d(TAG, "changetags " + memberSettingModel.getArea_event());
             //memberSettingModel.getData().getMembersettings().setExperiences(selectedItems);
             showProgressDialog();
             AccountManager.loaderMemberSetting2(memberSettingModel, new AccountManager.OnResponseListener() {
@@ -438,7 +441,6 @@ public class HomeFragment extends Fragment
         }
         //this.progressDialog.setVisibility(View.GONE);
         //this.failedView.setVisibility(View.VISIBLE);
-
         hideProgressDialog();
     }
 
@@ -571,9 +573,7 @@ public class HomeFragment extends Fragment
                             selectedItems.add(res);
                             latestSelectedItems.add(res);
                             setSelected(holder, true, res, i);
-                        }
-                        else
-                        {
+                        } else {
                             setSelected(holder, false, res, i);
                         }
                         holder.checkView.setVisibility(View.GONE);
@@ -760,7 +760,7 @@ public class HomeFragment extends Fragment
         builder.show();
     }
 
-    public static void sendLocationInfo() {
+    public static void sendLocationInfo(final boolean isLogin) {
         //PART of postLocation
         //PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), "-6.2216706", "106.8401574");
         if (AccessToken.getCurrentAccessToken() != null && AccessToken.getCurrentAccessToken() != null) {
@@ -768,7 +768,7 @@ public class HomeFragment extends Fragment
 
             if (userId != null && SocialManager.lat != null && SocialManager.lng != null) {
                 //PART of postLocation
-                PostLocationModel postLocationModel = new PostLocationModel(userId, SocialManager.lat, SocialManager.lng);
+                PostLocationModel postLocationModel = new PostLocationModel(userId, SocialManager.lat, SocialManager.lng, isLogin);
                 //PostLocationModel postLocationModel = new PostLocationModel(AccessToken.getCurrentAccessToken().getUserId(), "-6.2216706", "106.8401574");
                 /*String responses = new Gson().toJson(postLocationModel);
                 Utils.d("res", responses);*/
@@ -776,7 +776,6 @@ public class HomeFragment extends Fragment
                 SocialManager.loaderLocation(postLocationModel, new SocialManager.OnResponseListener() {
                     @Override
                     public void onSuccess(Object object) {
-                        Utils.d("location", "post location success");
                     }
 
                     @Override
@@ -868,7 +867,6 @@ public class HomeFragment extends Fragment
 
             //sc.refreshCard();
             //Log.d("", "");
-            Utils.d(TAG, "socialtabfragment");
             bottomSheet.setVisibility(View.GONE);
         } else if (position == MORE_TAB) {
             showToolbar();
@@ -933,13 +931,14 @@ public class HomeFragment extends Fragment
             }*/
             else {
                 TextView lblBadge = (TextView) tab.getCustomView().findViewById(R.id.tab_badge);
-                final String badgeCount = fragment.getTitle() /*"13"*/;
+                //final String badgeCount = fragment.getTitle() /*"13"*/;
+                final String badgeCount = FirebaseChatManager.badgeChat;
 
                 if (badgeCount.equals("0")) {
                     lblBadge.setVisibility(View.GONE);
                 } else {
                     lblBadge.setVisibility(View.VISIBLE);
-                    lblBadge.setText(fragment.getTitle());
+                    lblBadge.setText(badgeCount);
                 }
             }
         }
@@ -976,8 +975,9 @@ public class HomeFragment extends Fragment
     }
 
     private static EventsFragment getEventsFragment() {
-        if (eventsFragment == null)
+        if (eventsFragment == null) {
             eventsFragment = new EventsFragment();
+        }
         return eventsFragment;
     }
 
@@ -1001,6 +1001,7 @@ public class HomeFragment extends Fragment
             getSocialTabFragment().setHomeMain(homeMain);
             getFriendsFragment().setHomeMain(homeMain);
             getMoreFragment().setHomeMain(homeMain);*/
+
 
             ((TabFragment) fragments[0]).setHomeMain(homeMain);
             ((TabFragment) fragments[1]).setHomeMain(homeMain);
@@ -1059,6 +1060,7 @@ public class HomeFragment extends Fragment
 
         public int getFragmentPosition(Object fragment) {
             final int length = this.fragments.length;
+
             for (int i = 0; i < length; i++) {
                 if (fragment == this.fragments[i])
                     return i;
@@ -1136,7 +1138,6 @@ public class HomeFragment extends Fragment
 
     @Override
     public void onDestroy() {
-        Utils.d(TAG, "ondestroy");
         super.onDestroy();
         eventsFragment = null;
         socialTabFragment = null;
@@ -1181,14 +1182,24 @@ public class HomeFragment extends Fragment
 
     int lastSelected = 0;
 
+    public void onEvent(final ArrayList<CityModel.Data.Citylist> cityLists)
+    {
+        SettingModel settingModel = AccountManager.loadSetting();
+        settingModel.getData().getCityList().clear();
+        AccountManager.saveSetting(settingModel);
+        getPopupMenu().getMenu().clear();
+        onFinishGetCities(cityLists);
+    }
+
     @Override
     public void onFinishGetCities(final ArrayList<CityModel.Data.Citylist> cityLists) {
         //final ArrayList<CityModel.Data.Citylist> cityLists = cityModel.data.citylist;
         hideProgressDialog();
+
         final String currentAreaEvent = AccountManager.loadMemberSetting().getArea_event();
         int citySize = cityLists.size();
+        //Toast.makeText(this.getActivity(), "Lorem ipsum " + citySize, Toast.LENGTH_LONG).show();
         for (int i = 0; i < citySize; i++) {
-
             if (currentAreaEvent != null && currentAreaEvent.equalsIgnoreCase(cityLists.get(i).getCity())) {
                 txtPlace.setText(cityLists.get(i).getInitial());
                 getPopupMenu().getMenu().add(0, i, i, "\u2713\u0009 " + cityLists.get(i).getCity());
@@ -1197,11 +1208,8 @@ public class HomeFragment extends Fragment
                 getPopupMenu().getMenu().add(0, i, i, "  " + cityLists.get(i).getCity());
             }
         }
-
-
         if (citySize > 1) {
-
-            popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            getPopupMenu().setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     final int position = item.getOrder();
@@ -1215,12 +1223,12 @@ public class HomeFragment extends Fragment
                             txtPlace.setText(cityLists.get(position).getInitial());
 
                             if (lastSelected > -1) {
-                                popup.getMenu().removeItem(lastSelected);
-                                popup.getMenu().add(0, lastSelected, lastSelected, " " + cityLists.get(lastSelected).getCity());
+                                getPopupMenu().getMenu().removeItem(lastSelected);
+                                getPopupMenu().getMenu().add(0, lastSelected, lastSelected, " " + cityLists.get(lastSelected).getCity());
                             }
                             lastSelected = position;
-                            popup.getMenu().removeItem(position);
-                            popup.getMenu().add(0, position, position, "\u2713\u0009 " + cityLists.get(position).getCity());
+                            getPopupMenu().getMenu().removeItem(position);
+                            getPopupMenu().getMenu().add(0, position, position, "\u2713\u0009 " + cityLists.get(position).getCity());
                             hideProgressDialog();
                             eventsFragment.onRefresh();
 
@@ -1240,6 +1248,11 @@ public class HomeFragment extends Fragment
         }
     }
 
+    @Override
+    public void onFinishGetEvents(EventModel eventModel) {
+
+    }
+
     private PopupMenu getPopupMenu() {
         if (popup == null)
             popup = new PopupMenu(this.getActivity(), cityContainer);
@@ -1257,6 +1270,4 @@ public class HomeFragment extends Fragment
             getFragmentManager().putFragment(outState, "morefragment", getMoreFragment());
         }
     }
-
-
 }

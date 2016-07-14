@@ -74,6 +74,7 @@ android {
 
     dexOptions {
         incremental true
+        javaMaxHeapSize "4g"
     }
 
     defaultConfig {
@@ -101,7 +102,7 @@ allprojects {
 
 dependencies {
 
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.7@aar') {
         transitive = true;
     }
     compile files('libs/AF-Android-SDK-v3.3.0.jar')
@@ -120,9 +121,9 @@ dependencies {
     compile 'com.mcxiaoke.volley:library:1.0.19'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.loopj.android:android-async-http:1.4.9'
-    compile 'com.google.android.gms:play-services-gcm:8.4.0'
-    compile 'com.google.android.gms:play-services-maps:8.4.0'
-    compile 'com.google.android.gms:play-services-location:8.4.0'
+    compile 'com.google.android.gms:play-services-gcm:9.0.2'
+    compile 'com.google.android.gms:play-services-maps:9.0.2'
+    compile 'com.google.android.gms:play-services-location:9.0.2'
     compile 'com.squareup.retrofit2:retrofit:2.0.2'
     //compile 'com.squareup.retrofit2:converter-gson:2.0.2'
     compile 'com.squareup.retrofit2:converter-gson:2.0.0'
@@ -147,4 +148,8 @@ dependencies {
 
     //swipeable cards
     //compile 'com.github.kikoso:SwipeableCards:1.1-RELEASE@aar'
+
+    compile 'com.google.firebase:firebase-database:9.0.2'
 }
+
+apply plugin: 'com.google.gms.google-services'

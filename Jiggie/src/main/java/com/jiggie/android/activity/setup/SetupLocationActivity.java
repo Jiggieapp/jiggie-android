@@ -154,7 +154,7 @@ public class SetupLocationActivity extends BaseActivity {
         memberSettingModel.setFeed(intent.getBooleanExtra(SetupNotificationActivity.PARAM_NOTIFICATION, true) ? 1 : 0);
         memberSettingModel.setExperiences(TextUtils.join(",", intent.getStringArrayExtra(SetupTagsActivity.PARAM_EXPERIENCES)));
         //wandy 08-06-2016
-        memberSettingModel.setArea_event("jakarta");
+        //memberSettingModel.setArea_event("jakarta");
         //end of wandy 08-06-2016
         AccountManager.loaderMemberSetting(memberSettingModel);
         currentSettingModel.getData().getNotifications().setLocation(isChecked);
@@ -165,7 +165,7 @@ public class SetupLocationActivity extends BaseActivity {
         currentSettingModel.getData().setExperiences(arrExperiences);
 
         //wandy 09-06-2016
-        currentSettingModel.getData().setAreaEvent("jakarta");
+        //currentSettingModel.getData().setAreaEvent("jakarta");
         AccountManager.saveSetting(currentSettingModel);
     }
 }

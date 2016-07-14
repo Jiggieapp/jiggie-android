@@ -87,7 +87,6 @@ public class FilterActivity extends ToolbarActivity implements ViewTreeObserver.
         }
         else
         {
-            Utils.d(TAG, "getTags tidak null");
             AccountManager.getUserTagList();
         }
     }

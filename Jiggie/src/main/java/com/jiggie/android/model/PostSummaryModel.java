@@ -33,12 +33,14 @@ public final class PostSummaryModel{
         public final String email;
         public final String phone;
         public final String dial_code;
+        public final String identity_id;
 
-        public Guest_detail(String name, String email, String phone, String dial_code){
+        public Guest_detail(String name, String email, String phone, String dial_code, String identity_id){
             this.name = name;
             this.email = email;
             this.phone = phone;
             this.dial_code = dial_code;
+            this.identity_id = identity_id;
         }
     }
 }

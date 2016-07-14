@@ -2,13 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.jiggie.android"
-    android:versionCode="1228"
-    android:versionName="1.5.4">
+    android:versionCode="1262"
+    android:versionName="1.6.20">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.pesrmission.USE_CREDENTIALS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -34,9 +34,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:replace="icon"
-
-        >
+        tools:replace="icon">
 
         <!-- <meta-data -->
         <!-- android:name="io.fabric.ApiKey" -->
@@ -93,6 +91,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.chat.FirebaseChatActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name"
@@ -419,5 +423,15 @@
 
         <receiver
             android:name=".listener.AlarmReceiver"></receiver>
+
+        <activity
+            android:name=".activity.event.ThemeDetailActivity"
+            android:label=""
+            android:theme="@style/SplashTheme">
+            <!--<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>-->
+        </activity>
     </application>
 </manifest>

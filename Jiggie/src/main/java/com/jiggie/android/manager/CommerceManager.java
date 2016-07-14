@@ -169,7 +169,7 @@ public class CommerceManager extends BaseManager{
 
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());
-                    Utils.d("res", responses);
+                    //Utils.d("res", responses);
 
                     int responseCode = response.code();
                     if (responseCode == Utils.CODE_SUCCESS) {
@@ -216,7 +216,7 @@ public class CommerceManager extends BaseManager{
 
                     //String header = String.valueOf(response.code());
                     String responses = new Gson().toJson(response.body());
-                    Utils.d("res", response.toString());
+                    //Utils.d("res", response.toString());
 
                     int responseCode = response.code();
                     if (responseCode == Utils.CODE_SUCCESS) {
@@ -626,7 +626,6 @@ public class CommerceManager extends BaseManager{
 
             @Override
             public void onCustomCallbackFailure(String t) {
-                Utils.d(TAG, "gagal " + t);
                 onResponseListener.onFailure(Utils.CODE_FAILED, t);
             }
 

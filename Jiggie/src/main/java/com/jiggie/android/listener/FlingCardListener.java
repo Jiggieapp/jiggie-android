@@ -78,13 +78,10 @@ public class FlingCardListener implements View.OnTouchListener {
 
 
     public boolean onTouch(View view, MotionEvent event) {
-
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
-
                 // from http://android-developers.blogspot.com/2010/06/making-sense-of-multitouch.html
                 // Save the ID of this pointer
-
                 mActivePointerId = event.getPointerId(0);
                 float x = 0;
                 float y = 0;
@@ -118,7 +115,6 @@ public class FlingCardListener implements View.OnTouchListener {
 
                 view.getParent().requestDisallowInterceptTouchEvent(true);
                 break;
-
             case MotionEvent.ACTION_UP:
                 mActivePointerId = INVALID_POINTER_ID;
                 resetCardViewOnStack();
@@ -141,7 +137,6 @@ public class FlingCardListener implements View.OnTouchListener {
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
-
                 // Find the index of the active pointer and fetch its position
                 final int pointerIndexMove = event.findPointerIndex(mActivePointerId);
                 final float xMove = event.getX(pointerIndexMove);
