@@ -423,6 +423,7 @@
     <string name="tooltip_share">\“Share this event with your friends and see who wants to go\”</string>
     <string name="tooltip_yes_suggested">\“Don\'t be shy! Tap \“Yes\” (or swipe card right) to let this person know you want to connect. If they also tap \“Yes\” then a chat conversation begins.</string>
     <string name="tooltip_yes_inbound">\“Congrats! Someone wants to connect with you. \“Tap here to begin chatting.\”</string>
+    <string name="tooltip_chat_group">\“Chat with other guests interested in this event\”</string>
 
 
     <string name="interested_ask">Interested?</string>

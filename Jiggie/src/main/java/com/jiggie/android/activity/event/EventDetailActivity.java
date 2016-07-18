@@ -405,10 +405,15 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         txtCountLike.setText(String.valueOf(count_like));
 
         if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_SHARE))
-
         {
             TooltipsManager.initTooltipWithAnchor(this, imgShare, getString(R.string.tooltip_share), Utils.myPixel(this, 380), Tooltip.Gravity.BOTTOM);
             TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_SHARE, true);
+        }
+
+        if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_CHAT_GROUP))
+        {
+            TooltipsManager.initTooltipWithAnchor(this, imgChat, getString(R.string.tooltip_chat_group), Utils.myPixel(this, 380), Tooltip.Gravity.BOTTOM);
+            TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_CHAT_GROUP, true);
         }
 
         cekLike();
