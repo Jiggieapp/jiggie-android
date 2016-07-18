@@ -481,15 +481,6 @@ public class Utils {
 
     public static String getTimeForEvent(Date startDate, Date endDate, String timezone)
     {
-        /*if(timezone == null || timezone.isEmpty())
-        {
-            timezone = "7";
-        }
-
-        if(timezone == null || timezone.isEmpty())
-        {
-            format.setTimeZone(TimeZone.getDefault());
-        }*/
         String simpleDate = App.getInstance().getResources().getString(R.string.event_date_format
                 , Common.getStartDateTimeInTimezone(timezone).format(startDate)
                 , Common.getEndDateTimeInTimezone(timezone).format(endDate));
