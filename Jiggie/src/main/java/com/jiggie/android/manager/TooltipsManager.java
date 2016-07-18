@@ -24,6 +24,7 @@ public class TooltipsManager {
     public static boolean CAN_SHOW_TOOLTIP_EVENT_LIST = false;
     public static boolean CAN_SHOW_TOOLTIP_LIKE = false;
     public static boolean CAN_SHOW_TOOLTIP_SOCIAL_TAB = false;
+    public static boolean CAN_SHOW_TOOLTIP_CHAT_GROUP = false;
     public static boolean CAN_SHOW_TOOLTIP_SHARE = false;
     public static boolean CAN_SHOW_YES_SUGGESTED = false;
     public static boolean CAN_SHOW_YES_INBOUND = false;
@@ -32,17 +33,20 @@ public class TooltipsManager {
     public static final String TOOLTIP_LIKE = "tooltip_like";
     public static final String TOOLTIP_SOCIAL_TAB = "tooltip_social_tab";
     public static final String TOOLTIP_SHARE = "tooltip_share";
+    public static final String TOOLTIP_CHAT_GROUP = "tooltip_chat_group";
     public static final String TOOLTIP_YES_SUGGESTED = "tooltip_yes_suggested";
     public static final String TOOLTIP_YES_INBOUND = "tooltip_yes_inbound";
     public static boolean ALREADY_SHOW_TOOLTIP_EVENT_LIST_TODAY = false;
     public static boolean ALREADY_SHOW_TOOLTIP_LIKE_TODAY = false;
     public static boolean ALREADY_SHOW_TOOLTIP_SOCIAL_TAB_TODAY = false;
+    public static boolean ALREADY_SHOW_TOOLTIP_CHAT_GROUP_TODAY = false;
     public static boolean ALREADY_SHOW_TOOLTIP_SHARE_TODAY = false;
     public static boolean ALREADY_SHOW_YES_SUGGESTED_TODAY = false;
     public static boolean ALREADY_SHOW_YES_INBOUND_TODAY = false;
     public static final String ALREADY_TOOLTIP_EVENT_LIST = "tooltip_event_list";
     public static final String ALREADY_TOOLTIP_LIKE = "tooltip_like";
     public static final String ALREADY_TOOLTIP_SOCIAL_TAB = "tooltip_social_tab";
+    public static final String ALREADY_TOOLTIP_CHAT_GROUP = "tooltip_chat_group";
     public static final String ALREADY_TOOLTIP_SHARE = "tooltip_share";
     public static final String ALREADY_TOOLTIP_YES_SUGGESTED = "tooltip_yes_suggested";
     public static final String ALREADY_TOOLTIP_YES_INBOUND = "tooltip_yes_inbound";
@@ -67,6 +71,7 @@ public class TooltipsManager {
             CAN_SHOW_TOOLTIP_EVENT_LIST = App.getSharedPreferences().getBoolean(TOOLTIP_EVENT_LIST, false);
             CAN_SHOW_TOOLTIP_LIKE = App.getSharedPreferences().getBoolean(TOOLTIP_LIKE, false);
             CAN_SHOW_TOOLTIP_SOCIAL_TAB = App.getSharedPreferences().getBoolean(TOOLTIP_SOCIAL_TAB, false);
+            CAN_SHOW_TOOLTIP_CHAT_GROUP = App.getSharedPreferences().getBoolean(TOOLTIP_CHAT_GROUP, false);
             CAN_SHOW_TOOLTIP_SHARE = App.getSharedPreferences().getBoolean(TOOLTIP_SHARE, false);
             CAN_SHOW_YES_SUGGESTED = App.getSharedPreferences().getBoolean(TOOLTIP_YES_SUGGESTED, false);
             CAN_SHOW_YES_INBOUND = App.getSharedPreferences().getBoolean(TOOLTIP_YES_INBOUND, false);
@@ -75,16 +80,18 @@ public class TooltipsManager {
                 ALREADY_SHOW_TOOLTIP_EVENT_LIST_TODAY = false;
                 ALREADY_SHOW_TOOLTIP_LIKE_TODAY = false;
                 ALREADY_SHOW_TOOLTIP_SOCIAL_TAB_TODAY = false;
+                ALREADY_SHOW_TOOLTIP_CHAT_GROUP_TODAY = false;
                 ALREADY_SHOW_TOOLTIP_SHARE_TODAY = false;
                 ALREADY_SHOW_YES_SUGGESTED_TODAY = false;
                 ALREADY_SHOW_YES_INBOUND_TODAY = false;
 
                 App.getSharedPreferences().edit().putBoolean(ALREADY_TOOLTIP_EVENT_LIST, ALREADY_SHOW_TOOLTIP_EVENT_LIST_TODAY).putBoolean(ALREADY_TOOLTIP_LIKE, ALREADY_SHOW_TOOLTIP_LIKE_TODAY).putBoolean(ALREADY_TOOLTIP_SOCIAL_TAB, ALREADY_SHOW_TOOLTIP_SOCIAL_TAB_TODAY)
-                        .putBoolean(ALREADY_TOOLTIP_SHARE, ALREADY_SHOW_TOOLTIP_SHARE_TODAY).putBoolean(ALREADY_TOOLTIP_YES_SUGGESTED, ALREADY_SHOW_YES_SUGGESTED_TODAY).putBoolean(ALREADY_TOOLTIP_YES_INBOUND, ALREADY_SHOW_YES_INBOUND_TODAY).commit();
+                        .putBoolean(ALREADY_TOOLTIP_CHAT_GROUP, ALREADY_SHOW_TOOLTIP_CHAT_GROUP_TODAY).putBoolean(ALREADY_TOOLTIP_SHARE, ALREADY_SHOW_TOOLTIP_SHARE_TODAY).putBoolean(ALREADY_TOOLTIP_YES_SUGGESTED, ALREADY_SHOW_YES_SUGGESTED_TODAY).putBoolean(ALREADY_TOOLTIP_YES_INBOUND, ALREADY_SHOW_YES_INBOUND_TODAY).commit();
             }else{
                 ALREADY_SHOW_TOOLTIP_EVENT_LIST_TODAY = App.getSharedPreferences().getBoolean(ALREADY_TOOLTIP_EVENT_LIST, false);
                 ALREADY_SHOW_TOOLTIP_LIKE_TODAY = App.getSharedPreferences().getBoolean(ALREADY_TOOLTIP_LIKE, false);
                 ALREADY_SHOW_TOOLTIP_SOCIAL_TAB_TODAY = App.getSharedPreferences().getBoolean(ALREADY_TOOLTIP_SOCIAL_TAB, false);
+                ALREADY_SHOW_TOOLTIP_CHAT_GROUP_TODAY = App.getSharedPreferences().getBoolean(ALREADY_TOOLTIP_CHAT_GROUP, false);
                 ALREADY_SHOW_TOOLTIP_SHARE_TODAY = App.getSharedPreferences().getBoolean(ALREADY_TOOLTIP_SHARE, false);
                 ALREADY_SHOW_YES_SUGGESTED_TODAY = App.getSharedPreferences().getBoolean(ALREADY_TOOLTIP_YES_SUGGESTED, false);
                 ALREADY_SHOW_YES_INBOUND_TODAY = App.getSharedPreferences().getBoolean(ALREADY_TOOLTIP_YES_INBOUND, false);
@@ -139,7 +146,7 @@ public class TooltipsManager {
                     can = false;
                 }
             }
-        }else if(tootipAt.equals(TOOLTIP_SHARE)){
+        }else if(tootipAt.equals(TOOLTIP_CHAT_GROUP)){
             if(CAN_SHOW_TOOLTIP_EVENT_LIST){
                 can = false;
             }else if(CAN_SHOW_TOOLTIP_LIKE){
@@ -147,6 +154,27 @@ public class TooltipsManager {
             }else if(CAN_SHOW_TOOLTIP_SOCIAL_TAB){
                 can = false;
             }else{
+                if(CAN_SHOW_TOOLTIP_CHAT_GROUP){
+                    if (ALREADY_SHOW_TOOLTIP_CHAT_GROUP_TODAY){
+                        can = false;
+                    }else{
+                        can = true;
+                    }
+                }else{
+                    can = false;
+                }
+            }
+        }
+        else if(tootipAt.equals(TOOLTIP_SHARE)){
+            if(CAN_SHOW_TOOLTIP_EVENT_LIST){
+                can = false;
+            }else if(CAN_SHOW_TOOLTIP_LIKE){
+                can = false;
+            }else if(CAN_SHOW_TOOLTIP_SOCIAL_TAB){
+                can = false;
+            }else if(CAN_SHOW_TOOLTIP_CHAT_GROUP){
+                can = false;
+            } else{
                 if(CAN_SHOW_TOOLTIP_SHARE){
                     if (ALREADY_SHOW_TOOLTIP_SHARE_TODAY){
                         can = false;
@@ -235,7 +263,10 @@ public class TooltipsManager {
         }else if(action.equals(ALREADY_TOOLTIP_SOCIAL_TAB)){
             ALREADY_SHOW_TOOLTIP_SOCIAL_TAB_TODAY = value;
             App.getSharedPreferences().edit().putBoolean(ALREADY_TOOLTIP_SOCIAL_TAB, ALREADY_SHOW_TOOLTIP_SOCIAL_TAB_TODAY).commit();
-        }else if(action.equals(ALREADY_TOOLTIP_SHARE)){
+        }else if(action.equals(ALREADY_TOOLTIP_CHAT_GROUP)){
+            ALREADY_SHOW_TOOLTIP_CHAT_GROUP_TODAY = value;
+            App.getSharedPreferences().edit().putBoolean(ALREADY_TOOLTIP_CHAT_GROUP, ALREADY_SHOW_TOOLTIP_CHAT_GROUP_TODAY).commit();
+        } else if(action.equals(ALREADY_TOOLTIP_SHARE)){
             ALREADY_SHOW_TOOLTIP_SHARE_TODAY = value;
             App.getSharedPreferences().edit().putBoolean(ALREADY_TOOLTIP_SHARE, ALREADY_SHOW_TOOLTIP_SHARE_TODAY).commit();
         }else if(action.equals(ALREADY_TOOLTIP_YES_SUGGESTED)){
@@ -258,7 +289,10 @@ public class TooltipsManager {
         }else if(action.equals(TOOLTIP_SOCIAL_TAB)){
             CAN_SHOW_TOOLTIP_SOCIAL_TAB = value;
             App.getSharedPreferences().edit().putBoolean(TOOLTIP_SOCIAL_TAB, CAN_SHOW_TOOLTIP_SOCIAL_TAB).commit();
-        }else if(action.equals(TOOLTIP_SHARE)){
+        }else if(action.equals(TOOLTIP_CHAT_GROUP)){
+            CAN_SHOW_TOOLTIP_CHAT_GROUP = value;
+            App.getSharedPreferences().edit().putBoolean(TOOLTIP_CHAT_GROUP, ALREADY_SHOW_TOOLTIP_CHAT_GROUP_TODAY).commit();
+        } else if(action.equals(TOOLTIP_SHARE)){
             CAN_SHOW_TOOLTIP_SHARE = value;
             App.getSharedPreferences().edit().putBoolean(TOOLTIP_SHARE, ALREADY_SHOW_TOOLTIP_SHARE_TODAY).commit();
         }else if(action.equals(TOOLTIP_YES_SUGGESTED)){
@@ -274,22 +308,24 @@ public class TooltipsManager {
         CAN_SHOW_TOOLTIP_EVENT_LIST = true;
         CAN_SHOW_TOOLTIP_LIKE = true;
         CAN_SHOW_TOOLTIP_SOCIAL_TAB = true;
+        CAN_SHOW_TOOLTIP_CHAT_GROUP = true;
         CAN_SHOW_TOOLTIP_SHARE = true;
         CAN_SHOW_YES_SUGGESTED = true;
         CAN_SHOW_YES_INBOUND = true;
 
         App.getSharedPreferences().edit().putBoolean(TOOLTIP_EVENT_LIST, true).putBoolean(TOOLTIP_LIKE, true).putBoolean(TOOLTIP_SOCIAL_TAB, true)
-                .putBoolean(TOOLTIP_SHARE, true).putBoolean(TOOLTIP_YES_SUGGESTED, true).putBoolean(TOOLTIP_YES_INBOUND, true).commit();
+                .putBoolean(TOOLTIP_CHAT_GROUP, true).putBoolean(TOOLTIP_SHARE, true).putBoolean(TOOLTIP_YES_SUGGESTED, true).putBoolean(TOOLTIP_YES_INBOUND, true).commit();
 
         ALREADY_SHOW_TOOLTIP_EVENT_LIST_TODAY = false;
         ALREADY_SHOW_TOOLTIP_LIKE_TODAY = false;
         ALREADY_SHOW_TOOLTIP_SOCIAL_TAB_TODAY = false;
+        ALREADY_SHOW_TOOLTIP_CHAT_GROUP_TODAY = false;
         ALREADY_SHOW_TOOLTIP_SHARE_TODAY = false;
         ALREADY_SHOW_YES_SUGGESTED_TODAY = false;
         ALREADY_SHOW_YES_INBOUND_TODAY = false;
 
         App.getSharedPreferences().edit().putBoolean(ALREADY_TOOLTIP_EVENT_LIST, ALREADY_SHOW_TOOLTIP_EVENT_LIST_TODAY).putBoolean(ALREADY_TOOLTIP_LIKE, ALREADY_SHOW_TOOLTIP_LIKE_TODAY).putBoolean(ALREADY_TOOLTIP_SOCIAL_TAB, ALREADY_SHOW_TOOLTIP_SOCIAL_TAB_TODAY)
-                .putBoolean(ALREADY_TOOLTIP_SHARE, ALREADY_SHOW_TOOLTIP_SHARE_TODAY).putBoolean(ALREADY_TOOLTIP_YES_SUGGESTED, ALREADY_SHOW_YES_SUGGESTED_TODAY).putBoolean(ALREADY_TOOLTIP_YES_INBOUND, ALREADY_SHOW_YES_INBOUND_TODAY).commit();
+                .putBoolean(ALREADY_TOOLTIP_CHAT_GROUP, ALREADY_SHOW_TOOLTIP_CHAT_GROUP_TODAY).putBoolean(ALREADY_TOOLTIP_SHARE, ALREADY_SHOW_TOOLTIP_SHARE_TODAY).putBoolean(ALREADY_TOOLTIP_YES_SUGGESTED, ALREADY_SHOW_YES_SUGGESTED_TODAY).putBoolean(ALREADY_TOOLTIP_YES_INBOUND, ALREADY_SHOW_YES_INBOUND_TODAY).commit();
     }
 
     public static void initTooltipWithAnchor(Context a, View viewAnchor, String text, int width, Tooltip.Gravity gravity){
