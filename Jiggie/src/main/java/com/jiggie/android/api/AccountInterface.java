@@ -83,4 +83,7 @@ public interface AccountInterface{
     @GET(Utils.URL_UPDATE_MATCH_ME)
     Call<Success2Model> updateMatchMe(@Path("fb_id") String fb_id, @Path("match_me") String matchMe);
 
+    @GET(Utils.URL_LOGOUT)
+    Call<Success2Model> logout(@Path("fb_id") String fb_id);
+
 }
