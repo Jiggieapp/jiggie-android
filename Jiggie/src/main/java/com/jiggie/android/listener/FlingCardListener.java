@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 
+import com.jiggie.android.App;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.view.LinearRegression;
 
 /**
@@ -77,6 +79,13 @@ public class FlingCardListener implements View.OnTouchListener {
     }
 
 
+    private static final int MAX_CLICK_DISTANCE = 15;
+
+    private long pressStartTime;
+    private float pressedX;
+    private float pressedY;
+    private boolean isMoving;
+
     public boolean onTouch(View view, MotionEvent event) {
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
@@ -89,6 +98,10 @@ public class FlingCardListener implements View.OnTouchListener {
                 try {
                     x = event.getX(mActivePointerId);
                     y = event.getY(mActivePointerId);
+
+                    pressedX = x;
+                    pressedY = y;
+
                     success = true;
                 } catch (IllegalArgumentException e) {
                     Log.w(TAG, "Exception in onTouch(view, event) : " + mActivePointerId, e);
@@ -116,9 +129,18 @@ public class FlingCardListener implements View.OnTouchListener {
                 view.getParent().requestDisallowInterceptTouchEvent(true);
                 break;
             case MotionEvent.ACTION_UP:
+                /*if (*//*pressDuration < MAX_CLICK_DURATION && *//*distance(pressedX, pressedY, event.getX(), event.getY()) < MAX_CLICK_DISTANCE) {
+                    // Click event has occurred
+                    mActivePointerId = INVALID_POINTER_ID;
+                    resetCardViewOnStack();
+                    view.getParent().requestDisallowInterceptTouchEvent(false);
+                }*/
+
                 mActivePointerId = INVALID_POINTER_ID;
                 resetCardViewOnStack();
                 view.getParent().requestDisallowInterceptTouchEvent(false);
+                isMoving = false;
+                Utils.d(TAG, "up ");
                 break;
 
             case MotionEvent.ACTION_POINTER_DOWN:
@@ -135,6 +157,7 @@ public class FlingCardListener implements View.OnTouchListener {
                     final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
                     mActivePointerId = event.getPointerId(newPointerIndex);
                 }
+
                 break;
             case MotionEvent.ACTION_MOVE:
                 // Find the index of the active pointer and fetch its position
@@ -147,23 +170,31 @@ public class FlingCardListener implements View.OnTouchListener {
                 final float dx = xMove - aDownTouchX;
                 final float dy = yMove - aDownTouchY;
 
-
-                // Move the frame
-                aPosX += dx;
-                aPosY += dy;
-
-                // calculate the rotation degrees
-                float distobjectX = aPosX - objectX;
-                float rotation = BASE_ROTATION_DEGREES * 2.f * distobjectX / parentWidth;
-                if (touchPosition == TOUCH_BELOW) {
-                    rotation = -rotation;
+                if(!isMoving)
+                {
+                    if(distance(pressedX, pressedY, event.getX(), event.getY()) > MAX_CLICK_DISTANCE) {
+                        isMoving = true;
+                    }
                 }
+                else
+                {
+                    // Move the frame
+                    aPosX += dx;
+                    aPosY += dy;
 
-                //in this area would be code for doing something with the view as the frame moves.
-                frame.setX(aPosX);
-                frame.setY(aPosY);
-                frame.setRotation(rotation);
-                mFlingListener.onScroll(getScrollProgressPercent());
+                    // calculate the rotation degrees
+                    float distobjectX = aPosX - objectX;
+                    float rotation = BASE_ROTATION_DEGREES * 2.f * distobjectX / parentWidth;
+                    if (touchPosition == TOUCH_BELOW) {
+                        rotation = -rotation;
+                    }
+
+                    //in this area would be code for doing something with the view as the frame moves.
+                    frame.setX(aPosX);
+                    frame.setY(aPosY);
+                    frame.setRotation(rotation);
+                    mFlingListener.onScroll(getScrollProgressPercent());
+                }
                 break;
 
             case MotionEvent.ACTION_CANCEL: {
@@ -174,6 +205,17 @@ public class FlingCardListener implements View.OnTouchListener {
         }
 
         return true;
+    }
+
+    private static float distance(float x1, float y1, float x2, float y2) {
+        float dx = x1 - x2;
+        float dy = y1 - y2;
+        float distanceInPx = (float) Math.sqrt(dx * dx + dy * dy);
+        return pxToDp(distanceInPx);
+    }
+
+    private static float pxToDp(float px) {
+        return px / App.getInstance().getResources().getDisplayMetrics().density;
     }
 
     private float getScrollProgressPercent() {

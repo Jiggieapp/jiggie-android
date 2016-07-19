@@ -485,7 +485,6 @@ public class AccountManager extends BaseManager {
         /*if(memberSettingModel.getFb_id() == null)
             memberSettingModel.setFb_id(AccessToken.getCurrentAccessToken().getUserId());
         */
-        Utils.d(TAG, "homefragment " + memberSettingModel.getArea_event());
         String model = new Gson().toJson(memberSettingModel);
         App.getInstance().getSharedPreferences(Utils.PREFERENCE_SETTING, Context.MODE_PRIVATE).edit()
                 .putString(Utils.MEMBER_SETTING_MODEL, model).apply();
