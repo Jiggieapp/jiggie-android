@@ -290,8 +290,14 @@ public class FirebaseChatTabFragment extends Fragment implements TabFragment, Sw
             contentView2.setVisibility(View.VISIBLE);
             //-------------
 
-            this.emptyView = LayoutInflater.from(super.getContext()).inflate(R.layout.fragment_chat_empty, this.contentView2, false);
-            this.contentView2.addView(this.emptyView);
+            try{
+                this.emptyView = LayoutInflater.from(super.getContext()).inflate(R.layout.fragment_chat_empty, this.contentView2, false);
+                this.contentView2.addView(this.emptyView);
+            }catch (Exception e){
+                Log.d(TAG, e.toString());
+            }
+
+
         }
         return this.emptyView;
     }
