@@ -45,7 +45,7 @@ public class FirebaseChatManager {
     public static DatabaseReference getFirebaseDatabase(){
         if(mDatabase==null){
             firebaseDatabase = FirebaseDatabase.getInstance();
-            //firebaseDatabase.setPersistenceEnabled(true);
+            firebaseDatabase.setPersistenceEnabled(true);
             mDatabase = firebaseDatabase.getReference();
         }
 
