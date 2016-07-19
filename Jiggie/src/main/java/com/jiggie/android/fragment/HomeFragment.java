@@ -1,5 +1,7 @@
 package com.jiggie.android.fragment;
 
+import android.Manifest;
+import android.accounts.Account;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -9,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.GradientDrawable;
@@ -21,6 +24,7 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -46,10 +50,12 @@ import android.widget.Toast;
 import com.facebook.AccessToken;
 import com.jiggie.android.App;
 import com.jiggie.android.R;
+import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.activity.event.EventDetailActivity;
 import com.jiggie.android.activity.event.EventPresenterImplementation;
 import com.jiggie.android.activity.event.EventView;
 import com.jiggie.android.activity.invite.InviteFriendsActivity;
+import com.jiggie.android.activity.setup.SetupTagsActivity;
 import com.jiggie.android.component.FlowLayout;
 import com.jiggie.android.component.HomeMain;
 import com.jiggie.android.component.TabFragment;
@@ -408,9 +414,7 @@ public class HomeFragment extends Fragment
             //MemberSettingResultModel memberSettingModel = AccountManager.loadMemberSetting();
 
             final String experiences = TextUtils.join(",", selectedItems.toArray(new String[this.selectedItems.size()]));
-            Utils.d(TAG, "experiences " + experiences);
             memberSettingModel.setExperiences(experiences);
-            Utils.d(TAG, "changetags " + memberSettingModel.getArea_event());
             //memberSettingModel.getData().getMembersettings().setExperiences(selectedItems);
             showProgressDialog();
             AccountManager.loaderMemberSetting2(memberSettingModel, new AccountManager.OnResponseListener() {
@@ -1182,8 +1186,7 @@ public class HomeFragment extends Fragment
 
     int lastSelected = 0;
 
-    public void onEvent(final ArrayList<CityModel.Data.Citylist> cityLists)
-    {
+    public void onEvent(final ArrayList<CityModel.Data.Citylist> cityLists) {
         SettingModel settingModel = AccountManager.loadSetting();
         settingModel.getData().getCityList().clear();
         AccountManager.saveSetting(settingModel);
@@ -1196,55 +1199,96 @@ public class HomeFragment extends Fragment
         //final ArrayList<CityModel.Data.Citylist> cityLists = cityModel.data.citylist;
         hideProgressDialog();
 
-        final String currentAreaEvent = AccountManager.loadMemberSetting().getArea_event();
-        int citySize = cityLists.size();
-        //Toast.makeText(this.getActivity(), "Lorem ipsum " + citySize, Toast.LENGTH_LONG).show();
-        for (int i = 0; i < citySize; i++) {
-            if (currentAreaEvent != null && currentAreaEvent.equalsIgnoreCase(cityLists.get(i).getCity())) {
-                txtPlace.setText(cityLists.get(i).getInitial());
-                getPopupMenu().getMenu().add(0, i, i, "\u2713\u0009 " + cityLists.get(i).getCity());
-                lastSelected = i;
-            } else {
-                getPopupMenu().getMenu().add(0, i, i, "  " + cityLists.get(i).getCity());
-            }
+        MemberSettingModel memberSettingModel = AccountManager.loadMemberSetting();
+        //memberSettingModel = null;
+        if (memberSettingModel != null)
+        {
+            doGetCities(memberSettingModel, cityLists);
         }
-        if (citySize > 1) {
-            getPopupMenu().setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    final int position = item.getOrder();
-
-                    showProgressDialog();
-                    MemberSettingModel memberSettingModel = AccountManager.loadMemberSetting();
-                    memberSettingModel.setArea_event(cityLists.get(position).getCity());
-                    AccountManager.loaderMemberSetting(memberSettingModel, new OnResponseListener() {
+        else {
+            AccountManager.loaderSettingNew(AccessToken.getCurrentAccessToken().getUserId(),
+                    new com.jiggie.android.listener.OnResponseListener() {
                         @Override
                         public void onSuccess(Object object) {
-                            txtPlace.setText(cityLists.get(position).getInitial());
+                            if (progressDialog != null && progressDialog.isShowing())
+                                progressDialog.dismiss();
 
-                            if (lastSelected > -1) {
-                                getPopupMenu().getMenu().removeItem(lastSelected);
-                                getPopupMenu().getMenu().add(0, lastSelected, lastSelected, " " + cityLists.get(lastSelected).getCity());
-                            }
-                            lastSelected = position;
-                            getPopupMenu().getMenu().removeItem(position);
-                            getPopupMenu().getMenu().add(0, position, position, "\u2713\u0009 " + cityLists.get(position).getCity());
-                            hideProgressDialog();
-                            eventsFragment.onRefresh();
+                            MemberSettingResultModel result = (MemberSettingResultModel) object;
+                            MemberSettingModel ms = AccountManager.loadMemberSetting();
+                            ms.setArea_event(result.getData().getMembersettings().getArea_event());
+                            AccountManager.saveMemberSetting(ms);
 
-                            App.getInstance().trackMixPanelChangeCity(Utils.CHANGE_CITY, cityLists.get(position).getCity(), cityLists.get(position).getInitial());
+                            final SettingModel tempSettingModel = AccountManager.loadSetting();
+                            tempSettingModel.getData().setAreaEvent(result.getData().getMembersettings().getArea_event());
+                            AccountManager.saveSetting(tempSettingModel);
+
+                            doGetCities(AccountManager.loadMemberSetting(), cityLists);
                         }
 
                         @Override
                         public void onFailure(int responseCode, String message) {
-                            hideProgressDialog();
+                            //socialView.showErrorLayout();
+                            if (progressDialog != null && progressDialog.isShowing())
+                                progressDialog.dismiss();
                         }
-                    });
-                    return false;
+                    }
+            );
+        }
+    }
+
+    private void doGetCities(MemberSettingModel memberSettingModel, final ArrayList<CityModel.Data.Citylist> cityLists)
+    {
+        {
+            final String currentAreaEvent = memberSettingModel.getArea_event();
+            int citySize = cityLists.size();
+            //Toast.makeText(this.getActivity(), "Lorem ipsum " + citySize, Toast.LENGTH_LONG).show();
+            for (int i = 0; i < citySize; i++) {
+                if (currentAreaEvent != null && currentAreaEvent.equalsIgnoreCase(cityLists.get(i).getCity())) {
+                    txtPlace.setText(cityLists.get(i).getInitial());
+                    getPopupMenu().getMenu().add(0, i, i, "\u2713\u0009 " + cityLists.get(i).getCity());
+                    lastSelected = i;
+                } else {
+                    getPopupMenu().getMenu().add(0, i, i, "  " + cityLists.get(i).getCity());
                 }
-            });
-        } else {
-            imgDrop.setVisibility(View.INVISIBLE);
+            }
+            if (citySize > 1) {
+                getPopupMenu().setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        final int position = item.getOrder();
+
+                        showProgressDialog();
+                        MemberSettingModel memberSettingModel = AccountManager.loadMemberSetting();
+                        memberSettingModel.setArea_event(cityLists.get(position).getCity());
+                        AccountManager.loaderMemberSetting(memberSettingModel, new OnResponseListener() {
+                            @Override
+                            public void onSuccess(Object object) {
+                                txtPlace.setText(cityLists.get(position).getInitial());
+
+                                if (lastSelected > -1) {
+                                    getPopupMenu().getMenu().removeItem(lastSelected);
+                                    getPopupMenu().getMenu().add(0, lastSelected, lastSelected, " " + cityLists.get(lastSelected).getCity());
+                                }
+                                lastSelected = position;
+                                getPopupMenu().getMenu().removeItem(position);
+                                getPopupMenu().getMenu().add(0, position, position, "\u2713\u0009 " + cityLists.get(position).getCity());
+                                hideProgressDialog();
+                                eventsFragment.onRefresh();
+
+                                App.getInstance().trackMixPanelChangeCity(Utils.CHANGE_CITY, cityLists.get(position).getCity(), cityLists.get(position).getInitial());
+                            }
+
+                            @Override
+                            public void onFailure(int responseCode, String message) {
+                                hideProgressDialog();
+                            }
+                        });
+                        return false;
+                    }
+                });
+            } else {
+                imgDrop.setVisibility(View.INVISIBLE);
+            }
         }
     }
 

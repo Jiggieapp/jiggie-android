@@ -14,6 +14,7 @@ import com.jiggie.android.component.ImageCompressionAsyncTask;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.listener.OnResponseListener;
 import com.jiggie.android.manager.AccountManager;
+import com.jiggie.android.model.Common;
 import com.jiggie.android.model.MemberInfoModel;
 import com.jiggie.android.model.Success2Model;
 import com.jiggie.android.model.SuccessUploadModel;
@@ -53,6 +54,9 @@ public class ProfileDetailPresenterImplementation implements ProfileDetailPresen
                     memberInfo = memberInfoModel.getData().getMemberinfo();
                     profileDetailView.onSuccess(memberInfoModel);
                     profileDetailView.loadImages(memberInfoModel.getData().getMemberinfo().getPhotos());
+                    App.getSharedPreferences().edit()
+                            .putString(Common.PREF_IMAGE, memberInfoModel.getData().getMemberinfo().getPhotos().get(0))
+                            .apply();
                 }
 
                 @Override

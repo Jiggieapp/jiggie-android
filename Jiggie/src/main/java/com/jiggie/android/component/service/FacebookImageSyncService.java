@@ -164,13 +164,20 @@ public class FacebookImageSyncService extends Service {
                     }
                 }
 
-                String d = newFiles[0];
+                if (newFiles.length > 0)
+                {
+                    String d = newFiles[0];
+                    // save the list of images to the cache.
+                    preferences.edit()
+                            .putStringSet(Common.PREF_IMAGES, files)
+                            .putString(Common.PREF_IMAGE, newFiles[0])
+                            .apply();
+                }
+                else
+                {
 
-                // save the list of images to the cache.
-                preferences.edit()
-                        .putStringSet(Common.PREF_IMAGES, files)
-                        .putString(Common.PREF_IMAGE, newFiles[0])
-                        .apply();
+                }
+
                 changed = changed || preferences.getBoolean(Common.PREF_IMAGES_UPLOADED, false);
 
                 if ((newLogin) || (changed))

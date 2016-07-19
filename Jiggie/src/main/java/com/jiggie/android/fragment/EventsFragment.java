@@ -153,7 +153,7 @@ public class EventsFragment extends Fragment
         }
         this.isLoading = true;
         this.refreshLayout.setRefreshing(true);
-        final AccessToken token = AccessToken.getCurrentAccessToken();
+        //final AccessToken token = AccessToken.getCurrentAccessToken();
 
         //EventManager.loaderEvent(token.getUserId());
         eventPresenterImplementation.getCities();
