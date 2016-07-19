@@ -54,6 +54,7 @@ public class MemberSettingResultModel {
             public int to_age;
             public int distance;
             public String area_event;
+            public String latlng_location;
 
             public int getFrom_age() {
                 return from_age;
@@ -167,7 +168,11 @@ public class MemberSettingResultModel {
                 this.updated_at = updated_at;
             }
 
-            public MemberSettings(String _id, String account_type, ArrayList<String> experiences, String fb_id, String gender, String gender_interest, Notifications notifications, Payment payment, String phone, String updated_at) {
+            public String getLatlng_location() {
+                return latlng_location;
+            }
+
+            public MemberSettings(String _id, String account_type, ArrayList<String> experiences, String fb_id, String gender, String gender_interest, Notifications notifications, Payment payment, String phone, String updated_at, String latlng_location) {
                 this._id = _id;
                 this.account_type = account_type;
                 this.experiences = experiences;
@@ -178,6 +183,7 @@ public class MemberSettingResultModel {
                 this.payment = payment;
                 this.phone = phone;
                 this.updated_at = updated_at;
+                this.latlng_location = latlng_location;
             }
 
             public static final class Notifications {
