@@ -66,6 +66,7 @@ import com.jiggie.android.manager.FirebaseChatManager;
 import com.jiggie.android.manager.GuestManager;
 import com.jiggie.android.manager.InviteManager;
 import com.jiggie.android.manager.ShareManager;
+import com.jiggie.android.manager.SocialManager;
 import com.jiggie.android.manager.TooltipsManager;
 import com.jiggie.android.model.CollectionRoomMemberModel;
 import com.jiggie.android.model.Common;
@@ -208,6 +209,9 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
     Timer timerLike, timerInvite;
     TimerTask timerTask, timerTaskInvite;
     ValueEventListener countChatEvent;
+
+    String area_event = Utils.BLANK;
+    String lat_lon = Utils.BLANK;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -419,6 +423,18 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         cekLike();
         //runInvite();
         watchCountRoomMembers(event_id);
+
+        try{
+            area_event = AccountManager.loadMemberSetting().getArea_event();
+            lat_lon = AccountManager.loadMemberSetting().getLatlng_location();
+
+            if(lat_lon==null){
+                lat_lon = Utils.BLANK;
+            }
+        }catch (Exception e){
+            Log.d(TAG, e.toString());
+        }
+
     }
 
     @Override
@@ -592,7 +608,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 timezone = "";
                 eventDetail = message.getData().getEvents_detail();
                 event_description = eventDetail.getDescription();
-                App.getInstance().trackMixPanelViewEventDetail("View Event Details", eventDetail);
+                App.getInstance().trackMixPanelViewEventDetail("View Event Details", eventDetail, area_event, lat_lon);
                 elementContainers.setVisibility(View.VISIBLE);
                 elementContainers2.setVisibility(View.VISIBLE);
                 timezone = message.getData().getEvents_detail().getTz();
@@ -912,14 +928,14 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             if (count_like_new > 0) {
                 count_like_new = count_like_new - 1;
             }
-            App.getInstance().trackMixPanelViewEventDetail("Unlike Event Detail", eventDetail);
+            App.getInstance().trackMixPanelViewEventDetail("Unlike Event Detail", eventDetail, area_event, lat_lon);
             //actionLike(Utils.ACTION_LIKE_NO);
         } else {
             imgLove.setSelected(true);
             count_like_new = count_like_new + 1;
             //actionLike(Utils.ACTION_LIKE_YES);
 
-            App.getInstance().trackMixPanelViewEventDetail("Like Event Detail", eventDetail);
+            App.getInstance().trackMixPanelViewEventDetail("Like Event Detail", eventDetail, area_event, lat_lon);
         }
         txtCountLike.setText(String.valueOf(count_like_new));
         canClickLike = false;
@@ -1176,7 +1192,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
     private void shareEvent() throws UnsupportedEncodingException {
         if (this.shareLinkModel != null) {
-            App.getInstance().trackMixPanelViewEventDetail("Share Event", eventDetail);
+            App.getInstance().trackMixPanelViewEventDetail("Share Event", eventDetail, area_event, lat_lon);
             /*Utils.d(TAG, Build.VERSION.SDK_INT + " " + Build.VERSION_CODES.LOLLIPOP_MR1);
             if (android.os.Build.VERSION.SDK_INT
                     < Build.VERSION_CODES.LOLLIPOP_MR1) {

@@ -21,6 +21,7 @@ public class MemberSettingModel {
     String area_event;
     String from_age;
     String to_age;
+    String latlng_location;
 
     public String getFrom_age() {
         return from_age;
@@ -131,6 +132,14 @@ public class MemberSettingModel {
         this.photos = photos;
     }
 
+    public String getLatlng_location() {
+        return latlng_location;
+    }
+
+    public void setLatlng_location(String latlng_location) {
+        this.latlng_location = latlng_location;
+    }
+
     public MemberSettingModel()
     {}
 
@@ -157,5 +166,6 @@ public class MemberSettingModel {
         setTo_age(memberSettingResultModel.getData().getMembersettings().getTo_age() + "");
         setArea_event(memberSettingResultModel.getData().getMembersettings().getArea_event());
         setDistance(memberSettingResultModel.getData().getMembersettings().getDistance());
+        setLatlng_location(memberSettingResultModel.getData().getMembersettings().getLatlng_location());
     }
 }
