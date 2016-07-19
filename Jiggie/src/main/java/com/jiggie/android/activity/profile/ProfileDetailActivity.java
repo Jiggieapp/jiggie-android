@@ -125,7 +125,6 @@ public class ProfileDetailActivity extends ToolbarActivity
         this.appBar.addOnOffsetChangedListener(this);
 
         super.setToolbarTitle("", true);
-
     }
 
     @Override
