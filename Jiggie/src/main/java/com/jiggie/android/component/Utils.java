@@ -231,6 +231,8 @@ public class Utils {
 
     public final static String URL_CREDIT_BALANCE = BASE_URL + "app/v3/credit/balance_credit/{fb_id}";
 
+    public final static String URL_LOGOUT = BASE_URL + "app/v3/logout/{fb_id}";
+
     public static void d(final String tag, final String value) {
         if(BuildConfig.DEBUG)
         {

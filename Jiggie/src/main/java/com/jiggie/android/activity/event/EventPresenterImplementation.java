@@ -1,5 +1,7 @@
 package com.jiggie.android.activity.event;
 
+import android.util.Log;
+
 import com.facebook.AccessToken;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.callback.CustomCallback;
@@ -63,6 +65,14 @@ public class EventPresenterImplementation implements EventPresenter {
             }
         });*/
 
-        EventManager.loaderEvent(AccessToken.getCurrentAccessToken().getUserId());
+        try{
+            if(AccessToken.getCurrentAccessToken().getUserId()!=null){
+                EventManager.loaderEvent(AccessToken.getCurrentAccessToken().getUserId());
+            }
+        }catch (Exception e){
+            Log.d(TAG, e.toString());
+        }
+
+
     }
 }

@@ -950,4 +950,29 @@ public class AccountManager extends BaseManager {
     {
         getInstance().updateMatchMe(AccessToken.getCurrentAccessToken().getUserId(), matchMe).enqueue(callback);
     }
+
+    public static void loaderLogout(final com.jiggie.android.listener.OnResponseListener onResponseListener)
+    {
+        logout(new CustomCallback() {
+            @Override
+            public void onCustomCallbackResponse(Response response) {
+                onResponseListener.onSuccess(response.body());
+            }
+
+            @Override
+            public void onCustomCallbackFailure(String t) {
+                onResponseListener.onFailure(Utils.CODE_FAILED, t);
+            }
+
+            @Override
+            public void onNeedToRestart() {
+                loaderLogout(onResponseListener);
+            }
+        });
+    }
+
+    private static void logout(CustomCallback callback)
+    {
+        getInstance().logout(AccessToken.getCurrentAccessToken().getUserId()).enqueue(callback);
+    }
 }

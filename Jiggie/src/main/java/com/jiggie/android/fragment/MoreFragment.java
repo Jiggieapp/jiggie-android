@@ -1,6 +1,7 @@
 package com.jiggie.android.fragment;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
@@ -42,6 +44,7 @@ import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.TabFragment;
 import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.adapter.MoreTabListAdapter;
+import com.jiggie.android.listener.OnResponseListener;
 import com.jiggie.android.manager.AccountManager;
 import com.jiggie.android.manager.CreditBalanceManager;
 import com.jiggie.android.manager.FirebaseChatManager;
@@ -266,30 +269,48 @@ public class MoreFragment extends Fragment implements TabFragment, MoreTabListAd
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                App.getSharedPreferences().edit().clear().putBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, true).apply();
-                                App.getSharedPreferences().edit().clear().apply();
-                                LoginManager.getInstance().logOut();
+                                final ProgressDialog progressDialog = App.showProgressDialog(getActivity());
+                                progressDialog.show();
+                                AccountManager.loaderLogout(new OnResponseListener() {
+                                    @Override
+                                    public void onSuccess(Object object) {
+                                        if(progressDialog!=null&&progressDialog.isShowing()){
+                                            progressDialog.dismiss();
+                                        }
+                                        App.getSharedPreferences().edit().clear().putBoolean(SetupTagsActivity.PREF_SETUP_COMPLETED, true).apply();
+                                        App.getSharedPreferences().edit().clear().apply();
+                                        LoginManager.getInstance().logOut();
 
-                                AccountManager.onLogout();
+                                        AccountManager.onLogout();
 
-                                FirebaseChatManager.clearDataFirebase();
+                                        FirebaseChatManager.clearDataFirebase();
 
-                                //added by Aga 22-1-2016
-                                Intent i = new Intent(getActivity(), SplashActivity.class);
-                                //i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                //i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
-                                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                                startActivity(i);
-                                getActivity().finish();
+                                        //added by Aga 22-1-2016
+                                        Intent i = new Intent(getActivity(), SplashActivity.class);
+                                        //i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        //i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                                                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                        startActivity(i);
+                                        getActivity().finish();
 
-                                /*Intent intent = getBaseContext().getPackageManager()
-                                        .getLaunchIntentForPackage(getBaseContext().getPackageName());
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(intent);*/
-                                //finish();
+                                        /*Intent intent = getBaseContext().getPackageManager()
+                                                .getLaunchIntentForPackage(getBaseContext().getPackageName());
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(intent);*/
+                                                //finish();
 
-                                //----------------------
+                                        //----------------------
+                                    }
+
+                                    @Override
+                                    public void onFailure(int responseCode, String message) {
+                                        if(progressDialog!=null&&progressDialog.isShowing()){
+                                            progressDialog.dismiss();
+                                        }
+                                        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                                    }
+                                });
 
                             }
                         }).show();

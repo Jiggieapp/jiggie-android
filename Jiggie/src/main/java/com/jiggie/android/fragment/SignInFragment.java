@@ -221,7 +221,12 @@ public class SignInFragment extends Fragment
                             Log.d(TAG, e.toString());
                         }
                     } else {
-                        fragment.getImageHelps().setVisibility(View.GONE);
+
+                        try {
+                            fragment.getImageHelps().setVisibility(View.GONE);
+                        }catch (Exception e){
+                            Log.d(TAG, e.toString());
+                        }
 
                         imagePagerIndicator.setVisibility(View.VISIBLE);
                         txtSkip.setVisibility(View.VISIBLE);

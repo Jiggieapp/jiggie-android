@@ -87,7 +87,12 @@ public class FirebaseChatTabListAdapter extends RecyclerView.Adapter<FirebaseCha
             long unread = getUnreadCounter(roomModel);
             holder.txtUnread.setText(String.valueOf(unread));
             holder.txtUnread.setVisibility(unread == 0 ? View.INVISIBLE : View.VISIBLE);
-            holder.txtTime.setTextColor(ContextCompat.getColor(this.fragment.getContext(), unread == 0 ? android.R.color.darker_gray : R.color.colorAccent));
+
+            try {
+                holder.txtTime.setTextColor(ContextCompat.getColor(this.fragment.getContext(), unread == 0 ? android.R.color.darker_gray : R.color.colorAccent));
+            }catch (Exception e){
+                Log.d(TAG, e.toString());
+            }
 
             //Added by Aga 12-2-2016---
             String urlImage = data.get(position).getInfo().getAvatar();
