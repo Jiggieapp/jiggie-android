@@ -233,6 +233,8 @@ public class Utils {
 
     public final static String URL_LOGOUT = BASE_URL + "app/v3/logout/{fb_id}";
 
+    public final static String URL_RATE_REVIEW = BASE_URL + "app/v3/review_rate";
+
     public static void d(final String tag, final String value) {
         if(BuildConfig.DEBUG)
         {
