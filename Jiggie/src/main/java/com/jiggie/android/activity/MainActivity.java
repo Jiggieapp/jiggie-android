@@ -925,15 +925,29 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void showThanksDialog() {
-        final AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
-                .setMessage(getString(R.string.rate_thanks))
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).create();
-        dialog.setCancelable(false);
+        final Dialog dialog = new Dialog(MainActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_rate_thx);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
+        View relOutside = (View)dialog.findViewById(R.id.layout_dialog_rate);
+        RelativeLayout relDialog = (RelativeLayout)dialog.findViewById(R.id.rel_dialog);
+
+        relOutside.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        relDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //do nothing
+                dialog.dismiss();
+            }
+        });
+
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
     }
