@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/layout_dialog_rate"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#E6000000"/>
+
+    <RelativeLayout
+        android:id="@+id/rel_dialog"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_transparent"
+        android:layout_marginTop="@dimen/padding_standard"
+        android:layout_marginRight="@dimen/padding_standard"
+        android:layout_marginLeft="@dimen/padding_standard"
+        android:layout_centerInParent="true">
+
+        <ImageView
+            android:id="@+id/img_check"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:src="@drawable/image_check2"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/padding_standard_half"
+            android:layout_marginBottom="@dimen/padding_standard_half"/>
+
+        <TextView
+            android:id="@+id/txt_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/img_check"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/padding_standard_half"
+            android:textSize="@dimen/font_subhead_size"
+            android:text="@string/rate_thanks_title"
+            android:textColor="@android:color/black"/>
+
+        <TextView
+            android:id="@+id/txt_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/padding_standard_half"
+            android:layout_marginRight="@dimen/padding_standard_half"
+            android:layout_marginBottom="@dimen/padding_standard"
+            android:textSize="@dimen/font_subhead_size"
+            android:textAlignment="center"
+            android:gravity="center_horizontal"
+            android:text="@string/rate_thanks"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

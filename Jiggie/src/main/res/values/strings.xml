@@ -475,6 +475,7 @@
     <string name="rate_msg">How would you rate your Jiggie experience?</string>
     <string name="rate_hint">Enter your feedback...</string>
     <string name="rate_send">Send Feedback</string>
-    <string name="rate_thanks">Thanks for your rate and review</string>
+    <string name="rate_thanks_title">Feedback Sent</string>
+    <string name="rate_thanks">Thanks you. Your feedback is greatly appreciated.</string>
 
 </resources>
