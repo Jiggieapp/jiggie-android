@@ -1,12 +1,18 @@
 package com.jiggie.android.activity;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -14,13 +20,25 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.provider.Settings;
+import android.support.annotation.ColorInt;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatRatingBar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RatingBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.appsflyer.AppsFlyerConversionListener;
@@ -426,6 +444,8 @@ public class MainActivity extends AppCompatActivity
                         this.navigateToHome();
                         showRateDialog();
                     }
+
+                    showNewRateDialog();
                 }
 
                 //INVITE FRIENDS PART===========================
@@ -765,4 +785,79 @@ public class MainActivity extends AppCompatActivity
         super.onRestoreInstanceState(savedInstanceState);
         Utils.d(TAG, "onRestoreInstanceState 2");
     }*/
+
+    private void showNewRateDialog() {
+        final Dialog dialog = new Dialog(MainActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_rate);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
+        Button btnLater = (Button) dialog.findViewById(R.id.btn_later);
+        final Button btnSendFeedback = (Button) dialog.findViewById(R.id.btn_send);
+        final RelativeLayout relFeedback = (RelativeLayout)dialog.findViewById(R.id.rel_feedback);
+        EditText edtFeedback = (EditText)dialog.findViewById(R.id.edt_feedback);
+        AppCompatRatingBar ratingBar = (AppCompatRatingBar)dialog.findViewById(R.id.rate_bar);
+        View relOutside = (View)dialog.findViewById(R.id.layout_dialog_rate);
+        RelativeLayout relDialog = (RelativeLayout)dialog.findViewById(R.id.rel_dialog);
+
+        LayerDrawable stars = (LayerDrawable) ratingBar.getProgressDrawable();
+        // Filled stars
+        setRatingStarColor(stars.getDrawable(2), ContextCompat.getColor(MainActivity.this, R.color.purple));
+        // Half filled stars
+        setRatingStarColor(stars.getDrawable(1), ContextCompat.getColor(MainActivity.this, R.color.purple));
+        // Empty stars
+        setRatingStarColor(stars.getDrawable(0), ContextCompat.getColor(MainActivity.this, R.color.text_grey_caption));
+
+        btnSendFeedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        btnLater.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+                if(rating==0){
+                    relFeedback.setVisibility(View.GONE);
+                    btnSendFeedback.setVisibility(View.GONE);
+                }else if(rating>0&&rating<4){
+                    relFeedback.setVisibility(View.VISIBLE);
+                    btnSendFeedback.setVisibility(View.VISIBLE);
+                }else{
+                    dialog.dismiss();
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + App.class.getPackage().getName())));
+                }
+            }
+        });
+        relOutside.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        relDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //do nothing
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
+    }
+
+    private void setRatingStarColor(Drawable drawable, @ColorInt int color)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            DrawableCompat.setTint(drawable, color);
+        else
+            drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+    }
 }

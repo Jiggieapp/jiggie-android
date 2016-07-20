@@ -471,5 +471,9 @@
 
     <string name="your_event">Events you are interested in</string>
 
+    <string name="rate_title">Rate our App</string>
+    <string name="rate_msg">How would you rate your Jiggie experience?</string>
+    <string name="rate_hint">Enter your feedback...</string>
+    <string name="rate_send">Send Feedback</string>
 
 </resources>
