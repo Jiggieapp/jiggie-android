@@ -19,6 +19,7 @@ import com.jiggie.android.model.SuccessTokenModel;
 import com.jiggie.android.model.SuccessUploadModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -86,4 +87,6 @@ public interface AccountInterface{
     @GET(Utils.URL_LOGOUT)
     Call<Success2Model> logout(@Path("fb_id") String fb_id);
 
+    @POST
+    Call<Success2Model> rateReview(@Url String url, @Body HashMap<String, Object> rateModel);
 }

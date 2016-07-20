@@ -3,9 +3,11 @@ package com.jiggie.android.activity;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -77,6 +79,7 @@ import com.jiggie.android.model.SuccessCreditBalanceModel;
 import com.jiggie.android.presenter.GuestPresenter;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Map;
 
 import de.greenrobot.event.EventBus;
@@ -92,6 +95,7 @@ public class MainActivity extends AppCompatActivity
 
     String appsfl = "";
     GoogleApiClient mGoogleApiClient = null;
+    String rate = "0";
 
     private boolean isFirstRun() {
         final SharedPreferences pref = App.getSharedPreferences();
@@ -796,7 +800,7 @@ public class MainActivity extends AppCompatActivity
         Button btnLater = (Button) dialog.findViewById(R.id.btn_later);
         final Button btnSendFeedback = (Button) dialog.findViewById(R.id.btn_send);
         final RelativeLayout relFeedback = (RelativeLayout)dialog.findViewById(R.id.rel_feedback);
-        EditText edtFeedback = (EditText)dialog.findViewById(R.id.edt_feedback);
+        final EditText edtFeedback = (EditText)dialog.findViewById(R.id.edt_feedback);
         AppCompatRatingBar ratingBar = (AppCompatRatingBar)dialog.findViewById(R.id.rate_bar);
         View relOutside = (View)dialog.findViewById(R.id.layout_dialog_rate);
         RelativeLayout relDialog = (RelativeLayout)dialog.findViewById(R.id.rel_dialog);
@@ -813,6 +817,30 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+
+                HashMap<String, Object> rateModel = new HashMap<>();
+                rateModel.put("fb_id", AccessToken.getCurrentAccessToken().getUserId());
+                rateModel.put("rate", rate);
+                rateModel.put("feed_back", edtFeedback.getText().toString());
+                rateModel.put("device_type", "2");
+                rateModel.put("version", getVersionName(MainActivity.this));
+                rateModel.put("model", Build.MODEL);
+
+                progressDialog = App.showProgressDialog(MainActivity.this);
+
+                AccountManager.loaderRate(rateModel, new AccountManager.OnResponseListener() {
+                    @Override
+                    public void onSuccess(Object object) {
+                        hideProgressDialog();
+                        showThanksDialog();
+                    }
+
+                    @Override
+                    public void onFailure(int responseCode, String message) {
+                        hideProgressDialog();
+                    }
+                });
+
             }
         });
         btnLater.setOnClickListener(new View.OnClickListener() {
@@ -821,9 +849,13 @@ public class MainActivity extends AppCompatActivity
                 dialog.dismiss();
             }
         });
+
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+
+                rate = String.valueOf(rating);
+
                 if(rating==0){
                     relFeedback.setVisibility(View.GONE);
                     btnSendFeedback.setVisibility(View.GONE);
@@ -859,5 +891,31 @@ public class MainActivity extends AppCompatActivity
             DrawableCompat.setTint(drawable, color);
         else
             drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+    }
+
+    private String getVersionName(Context c) {
+        PackageInfo pi = null;
+        try {
+            pi = c.getPackageManager()
+                    .getPackageInfo(getPackageName(), PackageManager.GET_META_DATA);
+
+        } catch (Exception e) {
+            // e.printStackTrace();
+        }
+        return pi.versionName;
+    }
+
+    private void showThanksDialog() {
+        final AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+                .setMessage(getString(R.string.rate_thanks))
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create();
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
     }
 }
