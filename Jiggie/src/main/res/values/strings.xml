@@ -471,6 +471,12 @@
 
     <string name="your_event">Events you are interested in</string>
     <string name="approved_nearby">%1$s wants to connect with you and</string>
+    <string name="rate_title">Rate our App</string>
+    <string name="rate_msg">How would you rate your Jiggie experience?</string>
+    <string name="rate_hint">Enter your feedback...</string>
+    <string name="rate_send">Send Feedback</string>
+    <string name="rate_thanks_title">Feedback Sent</string>
+    <string name="rate_thanks">Thanks you. Your feedback is greatly appreciated.</string>
 
     <string name="transition_name_fab" translatable="false">fab_play</string>
     <string name="play_vector_path" translatable="false">M6,5 l12,7 l0,0 l-12,0z M6,12 l12,0 l0,0 l-12,7z</string>

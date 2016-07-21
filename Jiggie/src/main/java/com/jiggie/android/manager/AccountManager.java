@@ -114,6 +114,10 @@ public class AccountManager extends BaseManager {
         getInstance().getCityList().enqueue(callback);
     }
 
+    private static void postRate(HashMap<String, Object> rateModel, Callback callback) throws IOException {
+        getInstance().rateReview(Utils.URL_RATE_REVIEW, rateModel).enqueue(callback);
+    }
+
     public static void loaderLogin(LoginModel loginRequestModel) {
         try {
             postLogin(loginRequestModel, new CustomCallback() {
@@ -973,5 +977,44 @@ public class AccountManager extends BaseManager {
     private static void logout(CustomCallback callback)
     {
         getInstance().logout(AccessToken.getCurrentAccessToken().getUserId()).enqueue(callback);
+    }
+
+    public static void loaderRate(final HashMap<String, Object> rateModel, final OnResponseListener onResponseListener)
+    {
+        try {
+            postRate(rateModel, new CustomCallback() {
+                @Override
+                public void onCustomCallbackResponse(Response response) {
+                    /*String responses = new Gson().toJson(response.body());
+                    Utils.d("res", responses);*/
+
+                    int responseCode = response.code();
+
+                    if(responseCode==Utils.CODE_SUCCESS){
+                        Success2Model dataTemp = (Success2Model) response.body();
+                        onResponseListener.onSuccess(dataTemp);
+                    }else if(responseCode==Utils.CODE_EMPTY_DATA){
+                        onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EMPTY_DATA);
+                    }else{
+                        onResponseListener.onFailure(Utils.CODE_FAILED, Utils.MSG_EXCEPTION);
+                    }
+                }
+
+                @Override
+                public void onCustomCallbackFailure(String  t) {
+                    Utils.d("Exception", t.toString());
+                    onResponseListener.onFailure(Utils.CODE_FAILED, t);
+                }
+
+                @Override
+                public void onNeedToRestart() {
+
+                }
+            });
+        }
+        catch (IOException e){
+            Utils.d("Exception", e.toString());
+            onResponseListener.onFailure(Utils.CODE_FAILED, e.toString());
+        }
     }
 }

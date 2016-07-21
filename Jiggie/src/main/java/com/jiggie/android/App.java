@@ -787,7 +787,7 @@ public class App extends Application {
     }
 
     public void trackMixPanelViewEventDetail(String eventName
-            , EventDetailModel.Data.EventDetail eventDetail) {
+            , EventDetailModel.Data.EventDetail eventDetail, String area_event, String lat_lon) {
         SimpleJSONObject json = new SimpleJSONObject();
         final String location = AccountManager.loadLogin() == null ? null : AccountManager.loadLogin().getLocation();
 
@@ -936,6 +936,16 @@ public class App extends Application {
                     json.putString("Event Venue Zip", eventDetail.getVenue().getZip());
                 } catch (Exception e) {
                     json.putString("Event Venue Zip", Utils.BLANK);
+                }
+
+                try{
+                    if(eventName.equals("View Event Details")){
+                        json.putString("Area Event", area_event);
+                        json.putString("Lat Lng", lat_lon);
+                    }
+                }catch (Exception e){
+                    json.putString("Area Event", Utils.BLANK);
+                    json.putString("Lat Lng", Utils.BLANK);
                 }
 
             }
