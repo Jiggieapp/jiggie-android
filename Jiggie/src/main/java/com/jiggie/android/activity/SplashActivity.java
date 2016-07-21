@@ -36,19 +36,11 @@ public class SplashActivity extends Activity
                 && AccessToken.getCurrentAccessToken().getUserId() != null
                 && !AccessToken.getCurrentAccessToken().getUserId().isEmpty())
         {
-            if(!AccountManager.getHasSetAlarm())
+            /*if(!AccountManager.getHasSetAlarm())
             {
                 AccountManager.setHasSetAlarm(true);
                 setRecurringAlarm(this);
-            }
-            /*Timer timer = new Timer();
-            TimerTask timerTask = new TimerTask() {
-                @Override
-                public void run() {
-
-                }
-            };
-            timer.schedule(timerTask, getRemainingTimeUntilMidnight());*/
+            }*/
         }
         Intent i = new Intent(this, MainActivity.class);
         //Intent i = new Intent(this, EditProfileActivity.class);

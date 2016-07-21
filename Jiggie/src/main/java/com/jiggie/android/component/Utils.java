@@ -220,11 +220,15 @@ public class Utils {
     public final static String URL_GET_INVITE_CODE = BASE_URL + "app/v3/credit/invite_code/{fb_id}";
     //END OF INVITE URL============
 
-
-
     //REDEEM CODE URL===============
     public final static String URL_REDEEM_CODE = BASE_URL + "app/v3/credit/redeem_code";
     //END OF REDEEM CODE URL===============
+
+    //SOUNDCLOUD
+    //http://api.soundcloud.com/tracks/257659076?client_id=9147700913ab2472e144035ab0d72b5f
+    private final static String BASE_URL_SOUNDCLOUD = "http://api.soundcloud.com/tracks/";
+    private final static String SOUNDCLOUD_CLIENT_ID = "9147700913ab2472e144035ab0d72b5f";
+    public final static String URL_SOUNDCLOUD_TRACK_URL = BASE_URL_SOUNDCLOUD + "{track_id}?client_id=" + SOUNDCLOUD_CLIENT_ID ;
 
     //city
     public final static String URL_GET_CITIES = BASE_URL + "app/v3/user/citylist";

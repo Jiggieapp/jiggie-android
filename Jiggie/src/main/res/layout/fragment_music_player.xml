@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/lbl_track_artist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/padding_standard"
+        android:layout_toLeftOf="@+id/player_container"
+        android:layout_alignParentLeft="true"
+        android:gravity="left"
+        android:paddingRight="@dimen/padding_standard"
+        android:textAllCaps="true"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/font_subhead_size"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/lbl_track_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lbl_track_artist"
+        android:layout_marginLeft="@dimen/padding_standard"
+        android:layout_toLeftOf="@+id/player_container"
+        android:layout_alignParentLeft="true"
+        android:gravity="left"
+        android:paddingRight="@dimen/padding_standard"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/font_subhead_size" />
+
+    <RelativeLayout
+        android:id="@+id/player_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/padding_standard">
+
+        <ImageView
+            android:id="@+id/img_play_prev"
+            android:layout_width="@dimen/ic_prev_width"
+            android:layout_height="@dimen/ic_prev_height"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/container"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_play_prev"
+            android:paddingRight="@dimen/padding_standard_half"/>
+
+        <ImageView
+            android:id="@+id/img_play_next"
+            android:layout_width="@dimen/ic_prev_width"
+            android:layout_height="@dimen/ic_prev_height"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_play_next"
+            android:paddingLeft="@dimen/padding_standard_half"/>
+
+        <RelativeLayout
+            android:id="@+id/container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/img_play_next">
+
+            <com.jiggie.android.view.CirclePlay
+                android:id="@+id/circle_loading"
+                android:layout_width="@dimen/circle_play_width"
+                android:layout_height="@dimen/circle_play_height"
+                android:layout_alignBaseline="@+id/fab_play"
+                android:layout_centerInParent="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/spinner_blue_loading"
+                app:shape="circle" />
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab_play"
+                android:layout_width="@dimen/fab_play_width"
+                android:layout_height="@dimen/fab_play_height"
+                android:layout_centerInParent="true"
+                android:background="@color/colorPrimary"
+                android:scaleType="center"
+                android:src="@drawable/ic_play_animatable"
+                android:tint="@color/blue_one"
+                app:backgroundTint="@android:color/white"
+                app:elevation="0dp" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <!--<com.jiggie.android.view.ProgressView
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_toRightOf="@id/fab_play"
+        />
+-->
+</RelativeLayout>
