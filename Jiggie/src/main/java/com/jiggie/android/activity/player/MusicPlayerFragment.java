@@ -219,4 +219,10 @@ public class MusicPlayerFragment extends Fragment
             progressView.setProgress(position);
         }*/
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stop();
+    }
 }

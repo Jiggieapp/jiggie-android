@@ -435,6 +435,13 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             Log.d(TAG, e.toString());
         }
 
+        imgChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_CHAT_GROUP, false);
+            }
+        });
+
     }
 
     @Override
@@ -1391,5 +1398,15 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             }
         };
         queryCollectionRoomMember.addValueEventListener(countChatEvent);
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_SHARE))
+        {
+            TooltipsManager.initTooltipWithAnchor(this, imgShare, getString(R.string.tooltip_share), Utils.myPixel(this, 380), Tooltip.Gravity.BOTTOM);
+            TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_SHARE, true);
+        }
     }
 }
