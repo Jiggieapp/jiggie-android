@@ -1,5 +1,6 @@
 package com.jiggie.android.activity.player;
 
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.listener.OnResponseListener;
 import com.jiggie.android.manager.PlayerManager;
 import com.jiggie.android.model.SoundcloudModel;
@@ -21,6 +22,7 @@ public class PlayerPresenterImplementation implements PlayerPresenter {
             @Override
             public void onSuccess(Object object) {
                 SoundcloudModel soundcloudModel = (SoundcloudModel) object;
+
                 playerView.getTrackDetail(soundcloudModel);
             }
 

@@ -228,7 +228,8 @@ public class Utils {
     //http://api.soundcloud.com/tracks/257659076?client_id=9147700913ab2472e144035ab0d72b5f
     private final static String BASE_URL_SOUNDCLOUD = "http://api.soundcloud.com/tracks/";
     private final static String SOUNDCLOUD_CLIENT_ID = "9147700913ab2472e144035ab0d72b5f";
-    public final static String URL_SOUNDCLOUD_TRACK_URL = BASE_URL_SOUNDCLOUD + "{track_id}?client_id=" + SOUNDCLOUD_CLIENT_ID ;
+    public final static String URL_SOUNDCLOUD_CLIENT_ID = "?client_id=" + SOUNDCLOUD_CLIENT_ID;
+    public final static String URL_SOUNDCLOUD_TRACK_URL = BASE_URL_SOUNDCLOUD + "{track_id}" + URL_SOUNDCLOUD_CLIENT_ID ;
 
     //city
     public final static String URL_GET_CITIES = BASE_URL + "app/v3/user/citylist";

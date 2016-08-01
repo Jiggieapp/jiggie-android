@@ -51,6 +51,7 @@ import com.jiggie.android.activity.MainActivity;
 import com.jiggie.android.activity.chat.FirebaseChatActivity;
 import com.jiggie.android.activity.ecommerce.ProductListActivity;
 import com.jiggie.android.activity.invite.InviteFriendsActivity;
+import com.jiggie.android.activity.player.MusicPlayerFragment;
 import com.jiggie.android.api.OnResponseListener;
 import com.jiggie.android.component.StringUtility;
 import com.jiggie.android.component.Utils;
@@ -212,6 +213,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
     String area_event = Utils.BLANK;
     String lat_lon = Utils.BLANK;
+
+    MusicPlayerFragment musicPlayerFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -408,14 +411,12 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
 
         txtCountLike.setText(String.valueOf(count_like));
 
-        if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_SHARE))
-        {
+        if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_SHARE)) {
             TooltipsManager.initTooltipWithAnchor(this, imgShare, getString(R.string.tooltip_share), Utils.myPixel(this, 380), Tooltip.Gravity.BOTTOM);
             TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_SHARE, true);
         }
 
-        if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_CHAT_GROUP))
-        {
+        if (TooltipsManager.canShowTooltipAt(TooltipsManager.TOOLTIP_CHAT_GROUP)) {
             TooltipsManager.initTooltipWithAnchor(this, imgChat, getString(R.string.tooltip_chat_group), Utils.myPixel(this, 380), Tooltip.Gravity.BOTTOM);
             TooltipsManager.setAlreadyShowTooltips(TooltipsManager.ALREADY_TOOLTIP_CHAT_GROUP, true);
         }
@@ -424,17 +425,16 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
         //runInvite();
         watchCountRoomMembers(event_id);
 
-        try{
+        try {
             area_event = AccountManager.loadMemberSetting().getArea_event();
             lat_lon = AccountManager.loadMemberSetting().getLatlng_location();
 
-            if(lat_lon==null){
+            if (lat_lon == null) {
                 lat_lon = Utils.BLANK;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.d(TAG, e.toString());
         }
-
     }
 
     @Override
@@ -451,10 +451,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                 }*//*
             }
         }, 1000);*/
-
         cekCounter();
-
-
     }
 
     private void cekCounter() {
@@ -844,6 +841,25 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             txtPriceFill.setVisibility(View.GONE);
             linPrice.setBackgroundColor(getResources().getColor(android.R.color.transparent));
         }
+
+        //soundcloud
+
+        musicPlayerFragment = new MusicPlayerFragment();
+
+        Bundle bundle = new Bundle();
+        String trackId = message.getData().getEvents_detail().getSoundcloud().get(0);
+        if(trackId.startsWith("http://api.soundcloud.com/tracks/"))
+        {
+            final int length = "http://api.soundcloud.com/tracks/".length();
+            //final int start = trackId.indexOf("http://api.soundcloud.com/tracks/");
+            final int end = trackId.indexOf("/stream");
+            trackId = trackId.substring(length, end);
+        }
+        //http://api.soundcloud.com/tracks/257659076/stream?client_id=
+        bundle.putString("trackId", trackId);
+        musicPlayerFragment.setArguments(bundle);
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.music_player_fragment, musicPlayerFragment).commit();
     }
 
     public void onEvent(ExceptionModel message) {
@@ -960,7 +976,7 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             ChatManager.loaderGroupChat(result, new OnResponseListener() {
                 @Override
                 public void onSuccess(Object object) {
-                    SuccessGroupRoomModel successGroupRoomModel = (SuccessGroupRoomModel)object;
+                    SuccessGroupRoomModel successGroupRoomModel = (SuccessGroupRoomModel) object;
                     isLoadingChat = false;
                     Intent i = new Intent(EventDetailActivity.this, FirebaseChatActivity.class);
                     i.putExtra(Utils.ROOM_ID, successGroupRoomModel.getData().getGroup().getRoom_id());
@@ -1377,10 +1393,10 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
                     CollectionRoomMemberModel collectionRoomMemberModel = new CollectionRoomMemberModel(fb_id, isAvailable);
                     FirebaseChatManager.arrCollectRoomMembers.add(collectionRoomMemberModel);
 
-                    if(FirebaseChatManager.arrCollectRoomMembers.size()==0){
+                    if (FirebaseChatManager.arrCollectRoomMembers.size() == 0) {
                         txtCountChat.setText("Chat");
-                    }else{
-                        txtCountChat.setText("Chat ("+String.valueOf(FirebaseChatManager.arrCollectRoomMembers.size())+")");
+                    } else {
+                        txtCountChat.setText("Chat (" + String.valueOf(FirebaseChatManager.arrCollectRoomMembers.size()) + ")");
                     }
                 }
             }

@@ -235,13 +235,20 @@
                         android:layout_marginTop="@dimen/padding_standard_half"
                         android:gravity="left" />
 
-                    <fragment
+                    <!--<fragment
                         android:name="com.jiggie.android.activity.player.MusicPlayerFragment"
                         android:id="@+id/fragment_program_detail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="30dp"
-                        android:layout_marginTop="@dimen/padding_standard_half"/>
+                        android:layout_marginTop="@dimen/padding_standard_half"/>-->
+
+                    <FrameLayout
+                        android:id="@+id/music_player_fragment"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="30dp"
+                        android:layout_marginTop="@dimen/padding_standard_half" />
 
                     <View
                         android:layout_width="match_parent"
