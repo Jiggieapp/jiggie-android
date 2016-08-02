@@ -435,13 +435,6 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             Log.d(TAG, e.toString());
         }
 
-        imgChat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_CHAT_GROUP, false);
-            }
-        });
-
     }
 
     @Override
@@ -967,6 +960,8 @@ public class EventDetailActivity extends ToolbarActivity implements SwipeRefresh
             ChatManager.loaderGroupChat(result, new OnResponseListener() {
                 @Override
                 public void onSuccess(Object object) {
+                    TooltipsManager.setCanShowTooltips(TooltipsManager.TOOLTIP_CHAT_GROUP, false);
+
                     SuccessGroupRoomModel successGroupRoomModel = (SuccessGroupRoomModel)object;
                     isLoadingChat = false;
                     Intent i = new Intent(EventDetailActivity.this, FirebaseChatActivity.class);
