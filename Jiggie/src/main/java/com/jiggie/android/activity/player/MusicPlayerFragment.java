@@ -54,6 +54,7 @@ public class MusicPlayerFragment extends Fragment
     PlayerPresenterImplementation implementation;
     private MusicService musicService;
     private SoundcloudModel soundcloudModel;
+    private String streamUrl;
 
     @Bind(R.id.fab_play)
     FloatingActionButton fabPlay;
@@ -76,10 +77,10 @@ public class MusicPlayerFragment extends Fragment
             final int position = musicService.getPosition();
             /*final int duration = mService.getDuration();*/
             //onUpdateProgress(position, duration);
-            onUpdateProgress(position);
             sendEmptyMessageDelayed(0, DateUtils.SECOND_IN_MILLIS);
         }
     };
+
 
     @Nullable
     @Override
@@ -117,7 +118,7 @@ public class MusicPlayerFragment extends Fragment
                 {
                     ((Animatable) playDrawable).start();
                     ((Animatable) pauseDrawable).stop();
-                    play();
+                    play(streamUrl);
                     circlePlay.start();
                 }
             }
@@ -141,12 +142,27 @@ public class MusicPlayerFragment extends Fragment
         Message msg = Message.obtain();
         msg.what = HandlerAction.STOP;
         sendMessage(msg);
+
     }
 
-    private void play()
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stop();
+        getActivity().unregisterReceiver(broadcastReceiver);
+    }
+
+    private void play(String stringUri)
     {
-        final String stringUri = "http://api.soundcloud.com/tracks/257659076/stream?client_id=9147700913ab2472e144035ab0d72b5f";
-        Utils.d(TAG, "play ");
+        //final String stringUri = "http://api.soundcloud.com/tracks/257659076/stream?client_id=9147700913ab2472e144035ab0d72b5f";
+        /*if(mPlayerMessenger == null)
+        {
+            MusicService.LocalBinder binder = (MusicService.LocalBinder) service ;
+            musicService = binder.getService();
+            mPlayerMessenger = new Messenger(binder.getIBinder());
+            mIsBound = true;
+        }*/
+        stringUri = stringUri + Utils.URL_SOUNDCLOUD_CLIENT_ID;
         Uri uri = Uri.parse(stringUri);
         Message msg = Message.obtain();
         msg.what = HandlerAction.PLAY_URI;
@@ -175,9 +191,13 @@ public class MusicPlayerFragment extends Fragment
     public void getTrackDetail(SoundcloudModel soundcloudModel) {
         this.soundcloudModel = soundcloudModel;
         //progressView.setMax((int)(soundcloudModel.duration / 1000));
-        musicService.setDuration(soundcloudModel.duration);
-        lblTrackArtist.setText(soundcloudModel.user.username);
-        lblTrackTitle.setText(soundcloudModel.title);
+        if(this.soundcloudModel != null)
+        {
+            this.streamUrl = soundcloudModel.stream_url;
+            musicService.setDuration(soundcloudModel.duration);
+            lblTrackArtist.setText(soundcloudModel.user.username);
+            lblTrackTitle.setText(soundcloudModel.title);
+        }
     }
 
     @Override
@@ -185,6 +205,7 @@ public class MusicPlayerFragment extends Fragment
         super.onResume();
         getActivity().registerReceiver(broadcastReceiver,new IntentFilter(TAG));
     }
+
 
     private BroadcastReceiver broadcastReceiver =
             new BroadcastReceiver() {
@@ -202,27 +223,17 @@ public class MusicPlayerFragment extends Fragment
             musicService = binder.getService();
             mPlayerMessenger = new Messenger(binder.getIBinder());
             mIsBound = true;
-            implementation.getTrackDetail("257659076");
+            final String trackId = getArguments().getString("trackId");
+            implementation.getTrackDetail(trackId);
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name)
         {
+            Utils.d(TAG, "service disconnected");
             mIsBound = false;
             mPlayerMessenger = null;
         }
     };
 
-    private void onUpdateProgress(int position)
-    {
-        /*if (progressView != null) {
-            progressView.setProgress(position);
-        }*/
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        stop();
-    }
 }

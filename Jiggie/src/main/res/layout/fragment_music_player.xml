@@ -5,6 +5,14 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@android:color/darker_gray"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="@dimen/padding_standard"/>
+
     <TextView
         android:id="@+id/lbl_track_artist"
         android:layout_width="wrap_content"
@@ -17,7 +25,8 @@
         android:textAllCaps="true"
         android:textColor="@android:color/black"
         android:textSize="@dimen/font_subhead_size"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_below="@+id/divider"/>
 
     <TextView
         android:id="@+id/lbl_track_title"
@@ -32,12 +41,16 @@
         android:textColor="@android:color/black"
         android:textSize="@dimen/font_subhead_size" />
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/player_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="@dimen/padding_standard">
+        android:layout_alignParentEnd="false"
+        android:layout_marginRight="@dimen/padding_standard"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_below="@+id/divider">
 
         <ImageView
             android:id="@+id/img_play_prev"
@@ -48,16 +61,6 @@
             android:scaleType="fitXY"
             android:src="@drawable/ic_play_prev"
             android:paddingRight="@dimen/padding_standard_half"/>
-
-        <ImageView
-            android:id="@+id/img_play_next"
-            android:layout_width="@dimen/ic_prev_width"
-            android:layout_height="@dimen/ic_prev_height"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_play_next"
-            android:paddingLeft="@dimen/padding_standard_half"/>
 
         <RelativeLayout
             android:id="@+id/container"
@@ -87,7 +90,19 @@
                 app:backgroundTint="@android:color/white"
                 app:elevation="0dp" />
         </RelativeLayout>
-    </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/img_play_next"
+            android:layout_width="@dimen/ic_prev_width"
+            android:layout_height="@dimen/ic_prev_height"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_play_next"
+            android:paddingLeft="@dimen/padding_standard_half"/>
+
+
+    </LinearLayout>
 
     <!--<com.jiggie.android.view.ProgressView
         android:id="@+id/progress"

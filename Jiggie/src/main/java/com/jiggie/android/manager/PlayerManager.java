@@ -1,6 +1,7 @@
 package com.jiggie.android.manager;
 
 import com.jiggie.android.api.SoundcloudInterface;
+import com.jiggie.android.component.Utils;
 import com.jiggie.android.component.callback.CustomCallback;
 import com.jiggie.android.listener.OnResponseListener;
 import com.jiggie.android.model.SoundcloudModel;
@@ -19,11 +20,12 @@ public class PlayerManager extends BaseManager {
         return instance;
     }
 
-    public static void getTrackDetail(String trackId, final OnResponseListener onResponseListener)
+    public static void getTrackDetail(final String trackId, final OnResponseListener onResponseListener)
     {
         getTrackDetail(trackId, new CustomCallback() {
             @Override
             public void onCustomCallbackResponse(Response response) {
+                Utils.d("bruh " + trackId, Utils.print(response));
                 onResponseListener.onSuccess(response.body());
             }
 

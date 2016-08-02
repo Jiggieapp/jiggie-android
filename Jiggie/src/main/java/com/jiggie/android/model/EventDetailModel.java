@@ -145,17 +145,16 @@ public class EventDetailModel {
             String fullfillment_type;
             String fullfillment_value;
             ArrayList<String> photos;
-
             String description;
             String title;
             ArrayList<String> tags;
             String tz;
             ArrayList<GuestViewed> guests_viewed;
             Venue venue;
-
             boolean is_liked;
             int likes;
             int lowest_price;
+            ArrayList<String> soundcloud;
 
             public int getLowest_price() {
                 return lowest_price;
@@ -175,7 +174,7 @@ public class EventDetailModel {
 
             public EventDetail(String _id, String event_id, String start_datetime, String end_datetime, String venue_id, String venue_name, String start_datetime_str, String end_datetime_str,
                                String fullfillment_type, String fullfillment_value, ArrayList<String> photos, String description, String title, ArrayList<String> tags,
-                               ArrayList<GuestViewed> guests_viewed, Venue venue, boolean is_liked, int likes, int lowest_price, String tz){
+                               ArrayList<GuestViewed> guests_viewed, Venue venue, boolean is_liked, int likes, int lowest_price, String tz, ArrayList<String> soundcloud){
                 this._id = _id;
                 this.event_id = event_id;
                 this.start_datetime = start_datetime;
@@ -196,6 +195,7 @@ public class EventDetailModel {
                 this.likes = likes;
                 this.lowest_price = lowest_price;
                 this.tz = tz;
+                this.soundcloud = soundcloud;
             }
 
             public EventDetail()
@@ -271,6 +271,14 @@ public class EventDetailModel {
 
             public int getLikes() {
                 return likes;
+            }
+
+            public ArrayList<String> getSoundcloud() {
+                return soundcloud;
+            }
+
+            public void setSoundcloud(ArrayList<String> soundcloud) {
+                this.soundcloud = soundcloud;
             }
 
             protected EventDetail(Parcel in) {
