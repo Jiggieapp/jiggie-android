@@ -9,6 +9,7 @@ import android.content.ServiceConnection;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,6 +22,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,11 +45,12 @@ import butterknife.OnClick;
  * Created by Wandy on 7/20/2016.
  */
 public class MusicPlayerFragment extends Fragment
-        implements PlayerView{
+        implements PlayerView, MediaPlayer.OnCompletionListener, MediaPlayer.OnErrorListener,
+        MediaPlayer.OnInfoListener, MediaPlayer.OnPreparedListener{
 
     private final String TAG = MusicPlayerFragment.class.getSimpleName();
     private Drawable playDrawable, pauseDrawable;
-    private boolean isPlaying = false;
+    //private boolean isPlaying = false;
     private Messenger mPlayerMessenger;
     private boolean mIsBound = false;
     private Context mContext;
@@ -70,6 +73,17 @@ public class MusicPlayerFragment extends Fragment
 
     @Bind(R.id.lbl_track_title)
     TextView lblTrackTitle;
+
+    //soundcloud aga part-------------
+    private final int STATE_IDLE = 0;
+    private final int STATE_INITIALIZED = 1;
+    private final int STATE_PREPARED = 2;
+    private final int STATE_STARTED = 3;
+    private final int STATE_PAUSED = 4;
+    private final int STATE_STOPPED = 5;
+    private int STATE_PLAYER = STATE_IDLE;
+    MediaPlayer mediaPlayer;
+    //----------------------------------
 
     private final Handler mUpdateProgressHandler = new Handler() {
         @Override
@@ -104,36 +118,64 @@ public class MusicPlayerFragment extends Fragment
                 //supportFinishAfterTransition();
             }
         });
+
+        initPlayer();
+    }
+
+    private void initPlayer(){
+        mediaPlayer = new MediaPlayer();
+        mediaPlayer.setOnPreparedListener(this);
+        mediaPlayer.setOnInfoListener(this);
+        mediaPlayer.setOnErrorListener(this);
+        mediaPlayer.setOnCompletionListener(this);
+        try {
+            mediaPlayer.setDataSource(getActivity(), Uri.parse(streamUrl+Utils.URL_SOUNDCLOUD_CLIENT_ID));
+            STATE_PLAYER = STATE_INITIALIZED;
+        }catch (Exception e){
+            Log.d(TAG, e.toString());
+        }
     }
 
     @OnClick(R.id.fab_play)
     public void onFabClick() {
         if(soundcloudModel != null)
         {
-            if(!isPlaying)
+            if(!mediaPlayer.isPlaying())
             {
-                isPlaying = true;
                 fabPlay.setImageDrawable(playDrawable);
                 if(playDrawable instanceof Animatable)
                 {
                     ((Animatable) playDrawable).start();
                     ((Animatable) pauseDrawable).stop();
-                    play(streamUrl);
+                    //play(streamUrl);
                     circlePlay.start();
                 }
+
+                if(STATE_PLAYER==STATE_IDLE){
+                    initPlayer();
+                    mediaPlayer.prepareAsync();
+                }else if(STATE_PLAYER==STATE_INITIALIZED||STATE_PLAYER==STATE_STOPPED){
+                    mediaPlayer.prepareAsync();
+                }else{
+                    mediaPlayer.start();
+                }
+
             }
             else
             {
-                isPlaying = false;
                 fabPlay.setImageDrawable(pauseDrawable);
                 if(playDrawable instanceof Animatable)
                 {
                     ((Animatable) pauseDrawable).start();
                     ((Animatable) playDrawable).stop();
-                    stop();
+                    //stop();
                     circlePlay.stop();
                 }
+                mediaPlayer.pause();
+                STATE_PLAYER = STATE_PAUSED;
             }
+        }else{
+            Log.d(TAG, "song null");
         }
     }
 
@@ -143,13 +185,6 @@ public class MusicPlayerFragment extends Fragment
         msg.what = HandlerAction.STOP;
         sendMessage(msg);
 
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        stop();
-        getActivity().unregisterReceiver(broadcastReceiver);
     }
 
     private void play(String stringUri)
@@ -203,7 +238,7 @@ public class MusicPlayerFragment extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().registerReceiver(broadcastReceiver,new IntentFilter(TAG));
+        //getActivity().registerReceiver(broadcastReceiver,new IntentFilter(TAG));
     }
 
 
@@ -235,5 +270,55 @@ public class MusicPlayerFragment extends Fragment
             mPlayerMessenger = null;
         }
     };
+
+    //SOUNDCLOUD AGA PART-------------------
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(mediaPlayer.isPlaying()){
+            fabPlay.setImageDrawable(pauseDrawable);
+            if(playDrawable instanceof Animatable)
+            {
+                ((Animatable) pauseDrawable).start();
+                ((Animatable) playDrawable).stop();
+                circlePlay.stop();
+            }
+            mediaPlayer.stop();
+            STATE_PLAYER = STATE_STOPPED;
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        /*stop();
+        getActivity().unregisterReceiver(broadcastReceiver);*/
+        mediaPlayer.reset();
+        mediaPlayer.release();
+    }
+
+    @Override
+    public boolean onInfo(MediaPlayer mp, int what, int extra) {
+        return false;
+    }
+
+    @Override
+    public boolean onError(MediaPlayer mp, int what, int extra) {
+        return false;
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        STATE_PLAYER = STATE_STOPPED;
+    }
+
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+        STATE_PLAYER = STATE_PREPARED;
+        mediaPlayer.start();
+        STATE_PLAYER = STATE_STARTED;
+    }
+    //END OF SOUNDCLOUD AGA PART----------------------------
 
 }

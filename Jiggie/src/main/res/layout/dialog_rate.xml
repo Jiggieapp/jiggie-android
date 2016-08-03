@@ -6,8 +6,7 @@
     <View
         android:id="@+id/layout_dialog_rate"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#E6000000"/>
+        android:layout_height="match_parent"/>
 
     <ScrollView
         android:layout_width="280dp"
@@ -30,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/padding_standard_half"
+                android:layout_marginTop="@dimen/padding_standard"
                 android:layout_marginBottom="@dimen/padding_standard_half"
                 android:textSize="@dimen/signin_text_size"
                 android:text="@string/rate_title"
@@ -52,7 +51,7 @@
                 android:id="@+id/rate_bar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/padding_standard_half"
+                android:layout_margin="@dimen/padding_standard"
                 android:layout_below="@id/title_msg"
                 android:numStars="5"
                 android:stepSize="1"
@@ -88,7 +87,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_below="@id/rel_feedback"
-                android:layout_alignParentRight="true">
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/padding_standard_half">
                 <Button
                     android:id="@+id/btn_later"
                     android:layout_width="wrap_content"

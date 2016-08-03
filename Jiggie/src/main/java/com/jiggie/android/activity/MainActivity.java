@@ -35,6 +35,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
@@ -79,6 +80,8 @@ import com.jiggie.android.presenter.GuestPresenter;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import de.greenrobot.event.EventBus;
 
@@ -94,6 +97,8 @@ public class MainActivity extends AppCompatActivity
     String appsfl = "";
     GoogleApiClient mGoogleApiClient = null;
     String rate = "0";
+    boolean canEditRate = true;
+    float firstRate = 0;
 
     private boolean isFirstRun() {
         final SharedPreferences pref = App.getSharedPreferences();
@@ -368,6 +373,7 @@ public class MainActivity extends AppCompatActivity
         dialog.show();
     }
 
+    boolean showRate = true;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -440,6 +446,10 @@ public class MainActivity extends AppCompatActivity
                         this.navigateToHome();
                         //showRateDialog();
                         showNewRateDialog();
+                        /*if(showRate){
+                            showRate = false;
+                            showNewRateDialog();
+                        }*/
                     }
 
                 }
@@ -481,6 +491,10 @@ public class MainActivity extends AppCompatActivity
                 this.navigateToHome();
                 //showRateDialog();
                 showNewRateDialog();
+                /*if(showRate){
+                    showRate = false;
+                    showNewRateDialog();
+                }*/
             }
         }
     }
@@ -817,8 +831,29 @@ public class MainActivity extends AppCompatActivity
                 setRatingStarColor(stars.getDrawable(2), ContextCompat.getColor(MainActivity.this, R.color.purple));
                 // Half filled stars
                 setRatingStarColor(stars.getDrawable(1), ContextCompat.getColor(MainActivity.this, R.color.purple));
-                // Empty stars
-                setRatingStarColor(stars.getDrawable(0), ContextCompat.getColor(MainActivity.this, R.color.text_grey_caption));
+
+                try{
+                    int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+                    if (currentapiVersion == Build.VERSION_CODES.M){
+                        // Empty stars
+                        setRatingStarColor(stars.getDrawable(0), ContextCompat.getColor(MainActivity.this, R.color.text_grey_caption));
+                    } else{
+                        // Empty stars
+                        setRatingStarColor(stars.getDrawable(0), ContextCompat.getColor(MainActivity.this, R.color.purple));
+                    }
+                }catch (Exception e){
+                    setRatingStarColor(stars.getDrawable(0), ContextCompat.getColor(MainActivity.this, R.color.text_grey_caption));
+                }
+
+                relFeedback.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        edtFeedback.requestFocus();
+                        edtFeedback.requestFocusFromTouch();
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+                    }
+                });
 
                 btnSendFeedback.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -840,6 +875,7 @@ public class MainActivity extends AppCompatActivity
                             @Override
                             public void onSuccess(Object object) {
                                 hideProgressDialog();
+
                                 showThanksDialog();
                             }
 
@@ -858,23 +894,36 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
 
+
+
                 ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
                     @Override
                     public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
 
                         rate = String.valueOf(rating);
 
-                        if(rating==0){
-                            relFeedback.setVisibility(View.GONE);
-                            btnSendFeedback.setVisibility(View.GONE);
-                        }else if(rating>0&&rating<4){
-                            relFeedback.setVisibility(View.VISIBLE);
-                            btnSendFeedback.setVisibility(View.VISIBLE);
+                        if(canEditRate){
+                            canEditRate = false;
+                            firstRate = rating;
+                            ratingBar.setRating(rating);
+
+                            if(rating==0){
+                                relFeedback.setVisibility(View.GONE);
+                                btnSendFeedback.setVisibility(View.GONE);
+                            }else if(rating>0&&rating<4){
+                                relFeedback.setVisibility(View.VISIBLE);
+                                btnSendFeedback.setVisibility(View.VISIBLE);
+                            }else{
+                                dialog.dismiss();
+                                pref.edit().putLong(snoozePref, Long.MAX_VALUE).apply();
+                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + App.class.getPackage().getName())));
+                            }
+
                         }else{
-                            dialog.dismiss();
-                            pref.edit().putLong(snoozePref, Long.MAX_VALUE).apply();
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + App.class.getPackage().getName())));
+                            ratingBar.setRating(firstRate);
                         }
+
+                        ratingBar.setStepSize(0);
                     }
                 });
                 relOutside.setOnClickListener(new View.OnClickListener() {
@@ -942,5 +991,14 @@ public class MainActivity extends AppCompatActivity
 
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
+
+        Timer timerDialog = new Timer();
+        TimerTask tskDialog = new TimerTask() {
+            @Override
+            public void run() {
+                dialog.dismiss();
+            }
+        };
+        timerDialog.schedule(tskDialog, 3000);
     }
 }
