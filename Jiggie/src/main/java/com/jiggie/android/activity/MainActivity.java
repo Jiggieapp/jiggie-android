@@ -445,10 +445,11 @@ public class MainActivity extends AppCompatActivity
                     } else {
                         this.navigateToHome();
                         //showRateDialog();
-                        if(showRate){
+                        showNewRateDialog();
+                        /*if(showRate){
                             showRate = false;
                             showNewRateDialog();
-                        }
+                        }*/
                     }
 
                 }
@@ -489,11 +490,11 @@ public class MainActivity extends AppCompatActivity
             } else {
                 this.navigateToHome();
                 //showRateDialog();
-                //showNewRateDialog();
-                if(showRate){
+                showNewRateDialog();
+                /*if(showRate){
                     showRate = false;
                     showNewRateDialog();
-                }
+                }*/
             }
         }
     }
@@ -803,144 +804,144 @@ public class MainActivity extends AppCompatActivity
             final SharedPreferences pref = App.getSharedPreferences();
             final long lastTime = pref.getLong(snoozePref, 0);
 
-            /*if (lastTime == 0) {
+            if (lastTime == 0) {
                 // rate app dialog never showed, wait for 1 day app usage.
                 final long nextTime = System.currentTimeMillis() + (24 * 60 * 60 * 1000);
                 pref.edit().putLong(snoozePref, nextTime).apply();
             } else if (lastTime <= System.currentTimeMillis()) {
                 final long nextTime = System.currentTimeMillis() + (7 * 24 * 60 * 60 * 1000); // 7 Days
-                pref.edit().putLong(snoozePref, nextTime).apply();*/
+                pref.edit().putLong(snoozePref, nextTime).apply();
 
-            final Dialog dialog = new Dialog(MainActivity.this);
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.setContentView(R.layout.dialog_rate);
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+                final Dialog dialog = new Dialog(MainActivity.this);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.dialog_rate);
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
 
-            Button btnLater = (Button) dialog.findViewById(R.id.btn_later);
-            final Button btnSendFeedback = (Button) dialog.findViewById(R.id.btn_send);
-            final RelativeLayout relFeedback = (RelativeLayout)dialog.findViewById(R.id.rel_feedback);
-            final EditText edtFeedback = (EditText)dialog.findViewById(R.id.edt_feedback);
-            AppCompatRatingBar ratingBar = (AppCompatRatingBar)dialog.findViewById(R.id.rate_bar);
-            View relOutside = (View)dialog.findViewById(R.id.layout_dialog_rate);
-            RelativeLayout relDialog = (RelativeLayout)dialog.findViewById(R.id.rel_dialog);
+                Button btnLater = (Button) dialog.findViewById(R.id.btn_later);
+                final Button btnSendFeedback = (Button) dialog.findViewById(R.id.btn_send);
+                final RelativeLayout relFeedback = (RelativeLayout)dialog.findViewById(R.id.rel_feedback);
+                final EditText edtFeedback = (EditText)dialog.findViewById(R.id.edt_feedback);
+                AppCompatRatingBar ratingBar = (AppCompatRatingBar)dialog.findViewById(R.id.rate_bar);
+                View relOutside = (View)dialog.findViewById(R.id.layout_dialog_rate);
+                RelativeLayout relDialog = (RelativeLayout)dialog.findViewById(R.id.rel_dialog);
 
-            LayerDrawable stars = (LayerDrawable) ratingBar.getProgressDrawable();
-            // Filled stars
-            setRatingStarColor(stars.getDrawable(2), ContextCompat.getColor(MainActivity.this, R.color.purple));
-            // Half filled stars
-            setRatingStarColor(stars.getDrawable(1), ContextCompat.getColor(MainActivity.this, R.color.purple));
+                LayerDrawable stars = (LayerDrawable) ratingBar.getProgressDrawable();
+                // Filled stars
+                setRatingStarColor(stars.getDrawable(2), ContextCompat.getColor(MainActivity.this, R.color.purple));
+                // Half filled stars
+                setRatingStarColor(stars.getDrawable(1), ContextCompat.getColor(MainActivity.this, R.color.purple));
 
-            try{
-                int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-                if (currentapiVersion == Build.VERSION_CODES.M){
-                    // Empty stars
-                    setRatingStarColor(stars.getDrawable(0), ContextCompat.getColor(MainActivity.this, R.color.text_grey_caption));
-                } else{
-                    // Empty stars
-                    setRatingStarColor(stars.getDrawable(0), ContextCompat.getColor(MainActivity.this, R.color.purple));
-                }
-            }catch (Exception e){
-                setRatingStarColor(stars.getDrawable(0), ContextCompat.getColor(MainActivity.this, R.color.text_grey_caption));
-            }
-
-            relFeedback.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    edtFeedback.requestFocus();
-                    edtFeedback.requestFocusFromTouch();
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
-                }
-            });
-
-            btnSendFeedback.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                    pref.edit().putLong(snoozePref, Long.MAX_VALUE).apply();
-
-                    HashMap<String, Object> rateModel = new HashMap<>();
-                    rateModel.put("fb_id", AccessToken.getCurrentAccessToken().getUserId());
-                    rateModel.put("rate", rate);
-                    rateModel.put("feed_back", edtFeedback.getText().toString());
-                    rateModel.put("device_type", "2");
-                    rateModel.put("version", getVersionName(MainActivity.this));
-                    rateModel.put("model", Build.MODEL);
-
-                    progressDialog = App.showProgressDialog(MainActivity.this);
-
-                    AccountManager.loaderRate(rateModel, new AccountManager.OnResponseListener() {
-                        @Override
-                        public void onSuccess(Object object) {
-                            hideProgressDialog();
-
-                            showThanksDialog();
-                        }
-
-                        @Override
-                        public void onFailure(int responseCode, String message) {
-                            hideProgressDialog();
-                        }
-                    });
-
-                }
-            });
-            btnLater.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-
-
-
-            ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-                @Override
-                public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-
-                    rate = String.valueOf(rating);
-
-                    if(canEditRate){
-                        canEditRate = false;
-                        firstRate = rating;
-                        ratingBar.setRating(rating);
-
-                        if(rating==0){
-                            relFeedback.setVisibility(View.GONE);
-                            btnSendFeedback.setVisibility(View.GONE);
-                        }else if(rating>0&&rating<4){
-                            relFeedback.setVisibility(View.VISIBLE);
-                            btnSendFeedback.setVisibility(View.VISIBLE);
-                        }else{
-                            dialog.dismiss();
-                            pref.edit().putLong(snoozePref, Long.MAX_VALUE).apply();
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + App.class.getPackage().getName())));
-                        }
-
-                    }else{
-                        ratingBar.setRating(firstRate);
+                try{
+                    int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+                    if (currentapiVersion == Build.VERSION_CODES.M){
+                        // Empty stars
+                        setRatingStarColor(stars.getDrawable(0), ContextCompat.getColor(MainActivity.this, R.color.text_grey_caption));
+                    } else{
+                        // Empty stars
+                        setRatingStarColor(stars.getDrawable(0), ContextCompat.getColor(MainActivity.this, R.color.purple));
                     }
+                }catch (Exception e){
+                    setRatingStarColor(stars.getDrawable(0), ContextCompat.getColor(MainActivity.this, R.color.text_grey_caption));
+                }
 
-                    ratingBar.setStepSize(0);
-                }
-            });
-            relOutside.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-            relDialog.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //do nothing
-                }
-            });
+                relFeedback.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        edtFeedback.requestFocus();
+                        edtFeedback.requestFocusFromTouch();
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+                    }
+                });
 
-            dialog.setCanceledOnTouchOutside(true);
-            dialog.show();
-            //}
+                btnSendFeedback.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        pref.edit().putLong(snoozePref, Long.MAX_VALUE).apply();
+
+                        HashMap<String, Object> rateModel = new HashMap<>();
+                        rateModel.put("fb_id", AccessToken.getCurrentAccessToken().getUserId());
+                        rateModel.put("rate", rate);
+                        rateModel.put("feed_back", edtFeedback.getText().toString());
+                        rateModel.put("device_type", "2");
+                        rateModel.put("version", getVersionName(MainActivity.this));
+                        rateModel.put("model", Build.MODEL);
+
+                        progressDialog = App.showProgressDialog(MainActivity.this);
+
+                        AccountManager.loaderRate(rateModel, new AccountManager.OnResponseListener() {
+                            @Override
+                            public void onSuccess(Object object) {
+                                hideProgressDialog();
+
+                                showThanksDialog();
+                            }
+
+                            @Override
+                            public void onFailure(int responseCode, String message) {
+                                hideProgressDialog();
+                            }
+                        });
+
+                    }
+                });
+                btnLater.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+
+
+                ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+                    @Override
+                    public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
+
+                        rate = String.valueOf(rating);
+
+                        if(canEditRate){
+                            canEditRate = false;
+                            firstRate = rating;
+                            ratingBar.setRating(rating);
+
+                            if(rating==0){
+                                relFeedback.setVisibility(View.GONE);
+                                btnSendFeedback.setVisibility(View.GONE);
+                            }else if(rating>0&&rating<4){
+                                relFeedback.setVisibility(View.VISIBLE);
+                                btnSendFeedback.setVisibility(View.VISIBLE);
+                            }else{
+                                dialog.dismiss();
+                                pref.edit().putLong(snoozePref, Long.MAX_VALUE).apply();
+                                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + App.class.getPackage().getName())));
+                            }
+
+                        }else{
+                            ratingBar.setRating(firstRate);
+                        }
+
+                        ratingBar.setStepSize(0);
+                    }
+                });
+                relOutside.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+                relDialog.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //do nothing
+                    }
+                });
+
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
+            }
         }
     }
 
